@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_30_155805) do
+ActiveRecord::Schema.define(version: 2019_10_30_194545) do
 
   create_table "action_text_rich_texts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name", null: false
@@ -50,12 +50,6 @@ ActiveRecord::Schema.define(version: 2019_10_30_155805) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "clients_stories", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
-    t.bigint "story_id", null: false
-    t.bigint "client_id", null: false
-    t.index ["story_id", "client_id"], name: "index_clients_stories_on_story_id_and_client_id", unique: true
-  end
-
   create_table "communities", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.integer "pipeline_index"
     t.string "name"
@@ -72,12 +66,6 @@ ActiveRecord::Schema.define(version: 2019_10_30_155805) do
     t.string "note", default: ""
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-  end
-
-  create_table "data_locations_stories", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
-    t.bigint "story_id", null: false
-    t.bigint "data_location_id", null: false
-    t.index ["story_id", "data_location_id"], name: "index_data_locations_stories_on_story_id_and_data_location_id", unique: true
   end
 
   create_table "photo_buckets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
@@ -110,10 +98,33 @@ ActiveRecord::Schema.define(version: 2019_10_30_155805) do
     t.index ["writer_id"], name: "index_stories_on_writer_id"
   end
 
-  create_table "stories_story_sections", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+  create_table "stories__clients", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.bigint "story_id", null: false
+    t.bigint "client_id", null: false
+    t.index ["story_id", "client_id"], name: "index_stories__clients_on_story_id_and_client_id", unique: true
+  end
+
+  create_table "stories__data_locations", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.bigint "story_id", null: false
+    t.bigint "data_location_id", null: false
+    t.index ["story_id", "data_location_id"], name: "index_stories__data_locations_on_story_id_and_data_location_id", unique: true
+  end
+
+  create_table "stories__photo_buckets", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.bigint "story_id", null: false
+    t.bigint "photo_bucket_id", null: false
+    t.index ["story_id", "photo_bucket_id"], name: "index_stories__photo_buckets_on_story_id_and_photo_bucket_id", unique: true
+  end
+
+  create_table "stories__story_sections", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.bigint "story_id", null: false
     t.bigint "story_section_id", null: false
-    t.index ["story_id", "story_section_id"], name: "index_stories_story_sections_on_story_id_and_story_section_id", unique: true
+    t.index ["story_id", "story_section_id"], name: "index_stories__story_sections_on_story_id_and_story_section_id", unique: true
+  end
+
+  create_table "stories__story_tags", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.bigint "story_id", null: false
+    t.bigint "story_tag_id", null: false
   end
 
   create_table "story_sections", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
