@@ -1,0 +1,2 @@
+class PhotoBucket < ApplicationRecord
+end
