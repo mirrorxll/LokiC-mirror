@@ -4,6 +4,8 @@ class CreateStories < ActiveRecord::Migration[6.0] # :nodoc:
   def change
     create_table :stories do |t|
       t.string  :name,            default: ''
+      t.string  :headline,        default: ''
+      t.string  :body,            default: ''
       t.string  :description,     default: ''
       t.string  :frequency,       default: ''
       t.string  :level,           default: ''
@@ -12,7 +14,6 @@ class CreateStories < ActiveRecord::Migration[6.0] # :nodoc:
       t.date    :last_export,     default: nil
       t.date    :deadline,        default: nil
       t.boolean :status,          default: true
-      t.string  :staging_table,   default: ''
       t.boolean :blocked,         default: false
 
       t.belongs_to :developer

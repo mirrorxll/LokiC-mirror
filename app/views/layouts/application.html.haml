@@ -6,10 +6,34 @@
     = csrf_meta_tags
     = csp_meta_tag
     = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload'
-    -#= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload'
+    = javascript_pack_tag 'application', 'data-turbolinks-track': 'reload'
   %body
-    %p.notice
-      = notice
-    %p.alert
-      = alert
-    = yield
+    %nav.navbar.navbar-expand-lg.navbar-light.bg-light
+      %a.navbar-brand{href: '#'} LokiC
+      %button.navbar-toggler{"aria-controls" => "navbarNavDropdown", "aria-expanded" => "false",
+                             "aria-label" => "Toggle navigation", "data-target" => "#navbarNavDropdown",
+                              "data-toggle" => "collapse", :type => "button"}
+        %span.navbar-toggler-icon
+      #navbarNavDropdown.collapse.navbar-collapse
+        %ul.navbar-nav.w-100
+          %li.nav-item.active
+            %a.nav-link{:href => "#"}
+              Home
+              %span.sr-only (current)
+          %li.nav-item
+            %a.nav-link{:href => "#"} Features
+            - if current_user
+              %li.nav-item.ml-auto
+                = link_to('Edit Profile', edit_user_registration_path, class: 'nav-link')
+              %li.nav-item
+                = link_to('Log Out', destroy_user_session_path, class: 'nav-link', method: :delete)
+
+    - if notice
+      %p.alert.alert-success.text-center
+        = notice
+    - if alert
+      %p.alert.alert-danger.text-center
+        = alert
+    .container
+      = yield
+

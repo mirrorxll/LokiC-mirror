@@ -1,0 +1,2 @@
+class PhotoBucketsController < ApplicationController
+end

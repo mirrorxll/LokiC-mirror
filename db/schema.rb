@@ -78,8 +78,17 @@ ActiveRecord::Schema.define(version: 2019_10_30_194545) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "sections", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.integer "pipeline_index"
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "stories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name", default: ""
+    t.string "headline", default: ""
+    t.string "body", default: ""
     t.string "description", default: ""
     t.string "frequency", default: ""
     t.string "level", default: ""
@@ -88,7 +97,6 @@ ActiveRecord::Schema.define(version: 2019_10_30_194545) do
     t.date "last_export"
     t.date "deadline"
     t.boolean "status", default: true
-    t.string "staging_table", default: ""
     t.boolean "blocked", default: false
     t.bigint "developer_id"
     t.bigint "writer_id"
@@ -116,37 +124,23 @@ ActiveRecord::Schema.define(version: 2019_10_30_194545) do
     t.index ["story_id", "photo_bucket_id"], name: "index_stories__photo_buckets_on_story_id_and_photo_bucket_id", unique: true
   end
 
-  create_table "stories__story_sections", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+  create_table "stories__sections", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.bigint "story_id", null: false
-    t.bigint "story_section_id", null: false
-    t.index ["story_id", "story_section_id"], name: "index_stories__story_sections_on_story_id_and_story_section_id", unique: true
+    t.bigint "section_id", null: false
+    t.index ["story_id", "section_id"], name: "index_stories__sections_on_story_id_and_section_id", unique: true
   end
 
-  create_table "stories__story_tags", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+  create_table "stories__tags", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.bigint "story_id", null: false
-    t.bigint "story_tag_id", null: false
+    t.bigint "tag_id", null: false
+    t.index ["story_id", "tag_id"], name: "index_stories__tags_on_story_id_and_tag_id", unique: true
   end
 
-  create_table "story_sections", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+  create_table "tags", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.integer "pipeline_index"
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-  end
-
-  create_table "story_tags", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
-    t.integer "pipeline_index"
-    t.string "name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
-  create_table "templates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
-    t.text "text"
-    t.bigint "story_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["story_id"], name: "index_templates_on_story_id"
   end
 
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-class CreateStorySections < ActiveRecord::Migration[6.0] # :nodoc:
+class CreateSections < ActiveRecord::Migration[6.0] # :nodoc:
   def change
-    create_table :story_sections do |t|
+    create_table :sections do |t|
       t.integer :pipeline_index
       t.string  :name
 
