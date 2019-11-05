@@ -1,0 +1,15 @@
+= form_with(model: story) do |form|
+  .div.field
+    = form.label          :headline
+    %br
+    = form.text_field     :headline
+    %br
+    = form.label          :body
+    %br
+    = form.rich_text_area :body
+    %br
+    = form.label          :description
+    %br
+    = form.text_field     :description
+    %br
+    = form.submit

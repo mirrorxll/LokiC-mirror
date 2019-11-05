@@ -7,8 +7,6 @@ class CreateStories < ActiveRecord::Migration[6.0] # :nodoc:
       t.string  :headline,        default: ''
       t.string  :body,            default: ''
       t.string  :description,     default: ''
-      t.string  :frequency,       default: ''
-      t.string  :level,           default: ''
       t.date    :desired_launch,  default: nil
       t.date    :last_launch,     default: nil
       t.date    :last_export,     default: nil

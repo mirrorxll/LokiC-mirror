@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_30_194545) do
+ActiveRecord::Schema.define(version: 2019_11_04_151754) do
 
   create_table "action_text_rich_texts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name", null: false
@@ -68,6 +68,18 @@ ActiveRecord::Schema.define(version: 2019_10_30_194545) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "frequencies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "levels", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "photo_buckets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.integer "pipeline_index"
     t.string "name"
@@ -90,8 +102,6 @@ ActiveRecord::Schema.define(version: 2019_10_30_194545) do
     t.string "headline", default: ""
     t.string "body", default: ""
     t.string "description", default: ""
-    t.string "frequency", default: ""
-    t.string "level", default: ""
     t.date "desired_launch"
     t.date "last_launch"
     t.date "last_export"
@@ -116,6 +126,18 @@ ActiveRecord::Schema.define(version: 2019_10_30_194545) do
     t.bigint "story_id", null: false
     t.bigint "data_location_id", null: false
     t.index ["story_id", "data_location_id"], name: "index_stories__data_locations_on_story_id_and_data_location_id", unique: true
+  end
+
+  create_table "stories__frequencies", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.bigint "story_id", null: false
+    t.bigint "frequency_id", null: false
+    t.index ["story_id", "frequency_id"], name: "index_stories__frequencies_on_story_id_and_frequency_id"
+  end
+
+  create_table "stories__levels", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.bigint "story_id", null: false
+    t.bigint "level_id", null: false
+    t.index ["story_id", "level_id"], name: "index_stories__levels_on_story_id_and_level_id"
   end
 
   create_table "stories__photo_buckets", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|

@@ -1,10 +1,14 @@
 # frozen_string_literal: true
 
 class StoriesController < ApplicationController # :nodoc:
-  before_action :find_book, except: %i[index]
+  before_action :find_story, except: %i[index]
 
   def index
     @stories = Story.all
+
+    filter_params.each do |key, value|
+      @stories = @stories.public_send(key, value) if value.present?
+    end
   end
 
   def show; end
@@ -29,15 +33,21 @@ class StoriesController < ApplicationController # :nodoc:
 
   private
 
-  def find_book
+  def find_story
     @story = Story.find(params[:id])
   end
 
   def story_params
     params.require(:story).permit(
-      :name, :headline, :body, :description, :frequency, :level,
-      :desired_launch, :last_launch, :last_export, :deadline, :status,
-      :blocked, :writer_id, :developer_id
+      :name, :headline, :body, :description, :desired_launch,
+      :last_launch, :last_export, :deadline, :status, :blocked,
+      :writer_id, :developer_id
+    )
+  end
+
+  def filter_params
+    params.slice(
+      :writer, :developer, :client, :level, :frequency
     )
   end
 end

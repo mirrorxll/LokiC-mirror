@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  devise_for :users
+  devise_for :users, controllers: { registrations: 'registrations' }
 
   root 'stories#index'
 
   resources :stories do
     resources :clients, only: %i[index] do
-      post    :add,     on: :member
+      post    :add,     on: :collection
       delete  :remove,  on: :member
     end
 
