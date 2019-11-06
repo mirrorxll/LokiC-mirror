@@ -1,4 +1,4 @@
-= form_with(url: stories_path, method: :get, local: true) do |form|
+= form_with(url: stories_path, method: :get, local: true, html: { class: 'd-inline' }) do |form|
   = form.label :writer
   = form.collection_select :writer, User.all, :id, :name, prompt: true
   = form.label :developer
@@ -9,4 +9,9 @@
   = form.collection_select :level, Level.all, :id, :name, prompt: true
   = form.label :frequency
   = form.collection_select :frequency, Frequency.all, :id, :name, prompt: true
-  = form.submit 'GO', class: 'btn btn-sm btn-success'
+  = form.label :status
+  = form.select :status, statuses, prompt: true
+  = form.submit 'Find', class: 'btn btn-sm btn-success'
+
+#reset.d-inline
+  = link_to('Reset', stories_path, class: 'btn btn-sm btn-success')

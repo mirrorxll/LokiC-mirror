@@ -1,0 +1,3 @@
+= form_with(url: add_story_level_path(@story), local: true, html: { onchange: 'this.submit();' }) do |form|
+  = form.label :level
+  = form.collection_select :client_id, Level.all, :id, :name

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-class CreateCommunities < ActiveRecord::Migration[6.0] # :nodoc:
+class CreateProjects < ActiveRecord::Migration[6.0] # :nodoc:
   def change
-    create_table :communities do |t|
+    create_table :projects do |t|
       t.integer :pipeline_index
       t.string  :name
 

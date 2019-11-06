@@ -1,15 +1,36 @@
-= form_with(model: story) do |form|
+= form_with(model: @story, html: { onchange: 'this.submit();' }) do |form|
   .div.field
     = form.label          :headline
-    %br
+    %br/
     = form.text_field     :headline
-    %br
+    %br/
     = form.label          :body
-    %br
+    %br/
     = form.rich_text_area :body
-    %br
+    %br/
     = form.label          :description
-    %br
+    %br/
     = form.text_field     :description
-    %br
-    = form.submit
+    %hr/
+    .row
+      .col-3
+        = form.label          :deadline
+        %br/
+        = form.date_field     :deadline
+      .col-3
+        = form.label          :desired_launch
+        %br/
+        = form.date_field     :desired_launch
+      .col-3
+        = form.label          :last_launch
+        %br/
+        = form.date_field     :last_launch
+      .col-3
+        = form.label          :last_export
+        %br/
+        = form.date_field     :last_export
+    %hr/
+    .row
+      .col-2
+        = form.label  'Status'
+        = form.select :status, statuses

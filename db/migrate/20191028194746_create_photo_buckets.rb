@@ -5,8 +5,8 @@ class CreatePhotoBuckets < ActiveRecord::Migration[6.0] # :nodoc:
     create_table :photo_buckets do |t|
       t.integer :pipeline_index
       t.string  :name
-      t.string  :minimum_height
-      t.string  :minimum_width
+      t.integer :minimum_height
+      t.integer :minimum_width
       t.string  :aspect_ratio
 
       t.timestamps

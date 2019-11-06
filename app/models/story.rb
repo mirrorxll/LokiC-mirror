@@ -24,14 +24,18 @@ class Story < ApplicationRecord # :nodoc:
   end
 
   def self.client(id)
-    Client.find(id).stories
+    includes(:clients).where(clients: { id: id })
   end
 
   def self.level(id)
-    Level.find(id).stories
+    includes(:levels).where(levels: { id: id })
   end
 
   def self.frequency(id)
-    Frequency.find(id).stories
+    includes(:frequencies).where(frequencies: { id: id })
+  end
+
+  def self.status(status)
+    where(status: status)
   end
 end
