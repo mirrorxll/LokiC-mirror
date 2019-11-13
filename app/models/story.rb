@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Story < ApplicationRecord # :nodoc:
+  default_scope { order(created_at: :desc) }
+
   has_rich_text :body
 
   belongs_to :writer,     class_name: 'User'
@@ -14,7 +16,7 @@ class Story < ApplicationRecord # :nodoc:
   has_and_belongs_to_many :levels,          join_table: 'stories__levels'
   has_and_belongs_to_many :frequencies,     join_table: 'stories__frequencies'
 
-  # scopes
+  # filter
   def self.writer(id)
     where(writer_id: id)
   end
@@ -28,7 +30,7 @@ class Story < ApplicationRecord # :nodoc:
   end
 
   def self.level(id)
-    includes(:levels).where(levels: { id: id })
+    includes(:level).where(levels: { id: id })
   end
 
   def self.frequency(id)

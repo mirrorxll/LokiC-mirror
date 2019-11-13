@@ -4,12 +4,18 @@ class ClientsController < ApplicationController # :nodoc:
   before_action :find_story
   before_action :find_client
 
-  def add
-    @story.clients << @client unless @story.clients.exists?(@client.id)
+  def include
+    if @story.clients.exists?(@client.id)
+      render json: { error: 'Bad Request' }, status: 400 and return
+    end
+
+    @story.clients << @client
   end
 
-  def remove
-    @story.clients.destroy @client if @story.clients.exists?(@client.id)
+  def exclude
+    return unless @story.clients.exists?(@client.id)
+
+    @story.clients.destroy @client
   end
 
   private
@@ -19,6 +25,6 @@ class ClientsController < ApplicationController # :nodoc:
   end
 
   def find_client
-    @client = Client.find(params[:client_id])
+    @client = Client.find(params[:id])
   end
 end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class StoriesController < ApplicationController # :nodoc:
-  before_action :find_story, except: %i[index]
+  before_action :find_story, except: %i[index new create]
 
   def index
     @stories = Story.all
@@ -19,6 +19,13 @@ class StoriesController < ApplicationController # :nodoc:
 
   def create
     @story = Story.new(story_params)
+    @story.writer = current_user
+
+    if @story.save
+      redirect_to story_path(@story)
+    else
+      render :new
+    end
   end
 
   def edit; end

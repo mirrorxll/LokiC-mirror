@@ -1,0 +1,4 @@
+- @story.frequencies.each do |fr|
+  %div{id: "frequency-#{fr.id}"}
+    = fr.name
+    = link_to('X', exclude_story_frequency_path(story_id: @story.id, id: fr.id), method: :delete, remote: true)

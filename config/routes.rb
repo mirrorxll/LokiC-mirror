@@ -8,38 +8,38 @@ Rails.application.routes.draw do
 
   resources :stories do
     resources :data_locations, only: %i[] do
-      post    :add,     on: :collection
-      delete  :remove,  on: :member
+      post    :include, on: :collection
+      delete  :exclude, on: :member
     end
 
     resources :clients, only: %i[] do
-      post    :add,     on: :collection
-      delete  :remove,  on: :member
+      post    :include, on: :collection
+      delete  :exclude, on: :member
     end
 
     resources :sections, only: %i[] do
-      post    :add,     on: :collection
-      delete  :remove,  on: :member
+      post    :include, on: :collection
+      delete  :exclude, on: :member
     end
 
     resources :tags, only: %i[] do
-      post    :add,     on: :collection
-      delete  :remove,  on: :member
+      post    :include, on: :collection
+      delete  :exclude, on: :member
     end
 
     resources :photo_buckets, only: %i[] do
-      post    :add,     on: :collection
-      delete  :remove,  on: :member
+      post    :include, on: :collection
+      delete  :exclude, on: :member
     end
 
-    resource :frequency, only: %i[] do
-      post    :add,     on: :collection
-      delete  :remove,  on: :member
+    resources :frequencies, only: %i[] do
+      post    :include, on: :collection
+      delete  :exclude, on: :member
     end
 
-    resource :level, only: %i[] do
-      post    :add,     on: :collection
-      delete  :remove,  on: :member
+    resources :levels, only: %i[] do
+      post    :include, on: :collection
+      delete  :exclude, on: :member
     end
   end
 end

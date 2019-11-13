@@ -1,0 +1,3 @@
+= form_with(url: include_story_sections_path(@story), local: true, html: { onchange: 'this.submit();' }) do |form|
+  = form.label :sections
+  = form.collection_select :client_id, Section.all, :id, :name, prompt: true

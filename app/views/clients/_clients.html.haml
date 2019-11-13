@@ -1,0 +1,4 @@
+- @story.clients.each do |cl|
+  %div{id: "client-#{cl.id}"}
+    = cl.name
+    = link_to('X', exclude_story_client_path(story_id: @story.id, id: cl.id), method: :delete, remote: true)

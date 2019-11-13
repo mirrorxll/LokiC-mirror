@@ -1,5 +1,9 @@
-= form_with(model: @story, html: { onchange: 'this.submit();' }) do |form|
+= form_with(model: @story, html: onchange_submit?) do |form|
   .div.field
+    = form.label          :name
+    %br/
+    = form.text_field     :name
+    %br/
     = form.label          :headline
     %br/
     = form.text_field     :headline
@@ -30,7 +34,11 @@
         %br/
         = form.date_field     :last_export
     %hr/
-    .row
-      .col-2
-        = form.label  'Status'
-        = form.select :status, statuses
+
+    - if select_statuses?
+      .row
+        .col-2
+          = form.label  :status
+          = form.select :status, statuses, prompt: true
+    - else
+      = form.submit :create

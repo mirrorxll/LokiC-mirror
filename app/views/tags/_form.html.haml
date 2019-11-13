@@ -1,0 +1,3 @@
+= form_with(url: include_story_tags_path(@story), local: true, html: { onchange: 'this.submit();' }) do |form|
+  = form.label :tags
+  = form.collection_select :client_id, Tag.all, :id, :name, prompt: true

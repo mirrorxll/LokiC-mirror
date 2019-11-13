@@ -4,10 +4,8 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '2.6.3'
 
 gem 'activeadmin'
-gem 'bootstrap', '~> 4.3.1'
 gem 'devise'
 gem 'devise-bootstrap-views', '~> 1.0'
-gem 'jquery-rails'
 
 # haml's engine
 gem 'haml-rails', '~> 2.0'

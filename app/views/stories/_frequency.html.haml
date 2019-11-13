@@ -1,3 +1,0 @@
-= form_with(url: add_story_frequency_path(@story), local: true, html: { onchange: 'this.submit();' }) do |form|
-  = form.label :frequency
-  = form.collection_select :client_id, Frequency.all, :id, :name

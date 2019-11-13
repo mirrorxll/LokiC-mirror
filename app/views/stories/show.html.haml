@@ -1,11 +1,29 @@
 = render 'template'
 %hr/
-= render 'clients'
+
+%section#frequency
+  - if @story.frequencies.present?
+    = render 'frequencies/frequency'
+  - else
+    = render 'frequencies/form'
 %hr/
-= render 'sections'
+
+%section#level
+  - if @story.levels.present?
+    = render 'levels/level'
+  - else
+    = render 'levels/form'
 %hr/
-= render 'tags'
+
+%section#clients
+  = render 'clients/form'
+  = render 'clients/clients'
 %hr/
-= render 'frequency'
+
+= render 'sections/form'
+%section#sections
 %hr/
-= render 'level'
+
+= render 'tags/form'
+%section#tags
+%hr/
