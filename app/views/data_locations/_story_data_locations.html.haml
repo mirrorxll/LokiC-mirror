@@ -1,0 +1,4 @@
+- @story.data_locations.each do |dl|
+  %div{id: "data-location-#{dl.id}"}
+    = link_to(dl.name, data_location_path(dl))
+    = link_to('X', exclude_story_data_location_path(story_id: @story.id, id: dl.id), method: :delete, remote: true)

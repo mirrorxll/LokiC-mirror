@@ -1,0 +1,4 @@
+= form_with(url: include_story_data_locations_path(@story)) do |form|
+  = form.label :data_location
+  = form.collection_select :data_location_id, DataLocation.all, :id, :name, { prompt: true }, { name: :id }
+  = form.submit 'Add', data: { disable_with: "..." }

@@ -1,0 +1,10 @@
+= form_with(model: @data_location) do |form|
+  - %i[name source dataset note].each do |field|
+    .row
+      .col-1
+        = form.label field
+      .col-11
+        = form.text_field field
+  .row
+    .col-11.offset-1
+      = form.submit 'Add', data: { disable_with: "..." }

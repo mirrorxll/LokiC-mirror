@@ -1,41 +1,42 @@
 = render 'template'
 %hr/
 
--#%secion#data-locations
--#  =render 'data_locations/form'
--#  =render 'data_locations/data_locations'
+%secion#data-locations
+  =render 'data_locations/select_form'
+  =render 'data_locations/story_data_locations'
+%hr/
 
 %section#frequency
   - if @story.frequencies.present?
-    = render 'frequencies/frequency'
+    = render 'frequencies/story_frequency'
   - else
     = render 'frequencies/form'
 %hr/
 
 %section#level
   - if @story.levels.present?
-    = render 'levels/level'
+    = render 'levels/story_level'
   - else
     = render 'levels/form'
 %hr/
 
 %section#clients
   = render 'clients/form'
-  = render 'clients/clients'
+  = render 'clients/story_clients'
 %hr/
 
 %section#sections
   = render 'sections/form'
-  = render 'sections/sections'
+  = render 'sections/story_sections'
 %hr/
 
 %section#tags
   = render 'tags/form'
-  = render 'tags/tags'
+  = render 'tags/story_tags'
 %hr/
 
 %section#photo-bucket
   - if @story.photo_buckets.present?
-    = render 'photo_buckets/photo_bucket'
+    = render 'photo_buckets/story_photo_bucket'
   - else
     = render 'photo_buckets/form'

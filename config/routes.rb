@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   devise_for :users, controllers: { registrations: 'registrations' }
 
   root 'stories#index'
-  resources :data_locations
+  resources :data_locations, except: %i[]
 
   resources :stories do
     resources :data_locations, only: %i[] do

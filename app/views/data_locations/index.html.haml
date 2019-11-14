@@ -1,0 +1,19 @@
+%section#new-data-location
+  = render 'data_locations/new_edit_form'
+%hr/
+
+%section#data-location
+  - @data_locations.each do |dl|
+    .row
+      %small.col-3
+        = dl.name
+      %small.col-3
+        = domain_name(dl.source)
+      %small.col-3
+        = dl.dataset
+      %small.col-2
+        = dl.note
+      .col-1
+        = link_to(image_tag('d_loc_edit_icon.png'), edit_data_location_path(dl), class: 'd-loc-edit-icon img')
+        = link_to(image_tag('d_loc_show_icon.png'), data_location_path(dl), class: 'd-loc-show-icon img')
+    %hr/
