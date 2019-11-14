@@ -1,0 +1,4 @@
+- @story.tags.each do |tag|
+  %div{id: "tag-#{tag.id}"}
+    = tag.name
+    = link_to('X', exclude_story_tag_path(story_id: @story.id, id: tag.id), method: :delete, remote: true)

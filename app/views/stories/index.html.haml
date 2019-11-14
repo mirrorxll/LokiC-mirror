@@ -16,7 +16,7 @@
     .col-5
       NAME
   - @stories.each do |story|
-    .row
+    .row{id: "story-#{story.id}"}
       .col-1
         = story.id
       .col-5.text-left

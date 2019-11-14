@@ -5,13 +5,13 @@ class FrequenciesController < ApplicationController # :nodoc:
   before_action :find_frequency
 
   def include
-    return if @story.frequencies.count.positive?
+    render_400 && return if @story.frequencies.count.positive?
 
     @story.frequencies << @frequency
   end
 
   def exclude
-    return unless @story.frequencies.exists?(@frequency.id)
+    render_400 && return unless @story.frequencies.exists?(@frequency.id)
 
     @story.frequencies.clear
   end

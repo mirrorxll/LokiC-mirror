@@ -1,6 +1,10 @@
 = render 'template'
 %hr/
 
+-#%secion#data-locations
+-#  =render 'data_locations/form'
+-#  =render 'data_locations/data_locations'
+
 %section#frequency
   - if @story.frequencies.present?
     = render 'frequencies/frequency'
@@ -20,10 +24,18 @@
   = render 'clients/clients'
 %hr/
 
-= render 'sections/form'
 %section#sections
+  = render 'sections/form'
+  = render 'sections/sections'
 %hr/
 
-= render 'tags/form'
 %section#tags
+  = render 'tags/form'
+  = render 'tags/tags'
 %hr/
+
+%section#photo-bucket
+  - if @story.photo_buckets.present?
+    = render 'photo_buckets/photo_bucket'
+  - else
+    = render 'photo_buckets/form'

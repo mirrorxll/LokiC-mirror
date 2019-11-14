@@ -30,7 +30,7 @@ class Story < ApplicationRecord # :nodoc:
   end
 
   def self.level(id)
-    includes(:level).where(levels: { id: id })
+    includes(:levels).where(levels: { id: id })
   end
 
   def self.frequency(id)
