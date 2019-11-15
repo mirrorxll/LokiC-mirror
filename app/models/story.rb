@@ -3,8 +3,6 @@
 class Story < ApplicationRecord # :nodoc:
   default_scope { order(created_at: :desc) }
 
-  has_rich_text :body
-
   belongs_to :writer,     class_name: 'User'
   belongs_to :developer,  class_name: 'User', optional: true
 
