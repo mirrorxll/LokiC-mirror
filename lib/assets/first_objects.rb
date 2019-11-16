@@ -5,14 +5,12 @@ class FirstObjects # :nodoc:
     [
       {
         name: 'Story Type 1',
-        headline: 'Some Headline',
         body: 'Some Body',
         description: 'Some Description',
         writer: User.first
       },
       {
         name: 'Story Type 2',
-        headline: 'Some Headline',
         body: 'Some Body',
         description: 'Some Description',
         writer: User.first

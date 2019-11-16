@@ -4,8 +4,7 @@ class CreateStories < ActiveRecord::Migration[6.0] # :nodoc:
   def change
     create_table :stories do |t|
       t.string  :name,            default: 'New Story Type'
-      t.string  :headline,        default: ''
-      t.string  :body,            default: ''
+      t.text    :body
       t.string  :description,     default: ''
       t.date    :desired_launch,  default: nil
       t.date    :last_launch,     default: nil

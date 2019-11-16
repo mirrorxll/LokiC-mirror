@@ -4,13 +4,9 @@
     %br/
     = form.text_field     :name
     %br/
-    = form.label          :headline
-    %br/
-    = form.text_field     :headline
-    %br/
-    = form.label          :body
-    %br/
-    = form.text_area :body
+    .field{"data-controller" => "summernote"}
+      = form.label :body
+      = form.text_area :body, data: { editor: 'summernote' }
     %br/
     = form.label          :description
     %br/

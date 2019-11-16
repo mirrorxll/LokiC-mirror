@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_04_151754) do
+ActiveRecord::Schema.define(version: 2019_11_16_125611) do
 
   create_table "action_text_rich_texts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name", null: false
@@ -98,15 +98,14 @@ ActiveRecord::Schema.define(version: 2019_11_04_151754) do
   end
 
   create_table "stories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
-    t.string "name", default: ""
-    t.string "headline", default: ""
-    t.string "body", default: ""
+    t.string "name", default: "New Story Type"
+    t.text "body"
     t.string "description", default: ""
     t.date "desired_launch"
     t.date "last_launch"
     t.date "last_export"
     t.date "deadline"
-    t.string "status", default: "Not started"
+    t.string "status", default: "Not Started"
     t.bigint "developer_id"
     t.bigint "writer_id"
     t.datetime "created_at", precision: 6, null: false
@@ -118,14 +117,12 @@ ActiveRecord::Schema.define(version: 2019_11_04_151754) do
   create_table "stories__clients", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.bigint "story_id", null: false
     t.bigint "client_id", null: false
-    t.index ["client_id", "story_id"], name: "index_stories__clients_on_client_id_and_story_id", unique: true
     t.index ["story_id", "client_id"], name: "index_stories__clients_on_story_id_and_client_id", unique: true
   end
 
   create_table "stories__data_locations", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.bigint "story_id", null: false
     t.bigint "data_location_id", null: false
-    t.index ["data_location_id", "story_id"], name: "index_stories__data_locations_on_data_location_id_and_story_id", unique: true
     t.index ["story_id", "data_location_id"], name: "index_stories__data_locations_on_story_id_and_data_location_id", unique: true
   end
 
@@ -146,14 +143,12 @@ ActiveRecord::Schema.define(version: 2019_11_04_151754) do
   create_table "stories__photo_buckets", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.bigint "story_id", null: false
     t.bigint "photo_bucket_id", null: false
-    t.index ["photo_bucket_id", "story_id"], name: "index_stories__photo_buckets_on_photo_bucket_id_and_story_id", unique: true
     t.index ["story_id", "photo_bucket_id"], name: "index_stories__photo_buckets_on_story_id_and_photo_bucket_id", unique: true
   end
 
   create_table "stories__sections", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.bigint "story_id", null: false
     t.bigint "section_id", null: false
-    t.index ["section_id", "story_id"], name: "index_stories__sections_on_section_id_and_story_id", unique: true
     t.index ["story_id", "section_id"], name: "index_stories__sections_on_story_id_and_section_id", unique: true
   end
 
@@ -161,7 +156,11 @@ ActiveRecord::Schema.define(version: 2019_11_04_151754) do
     t.bigint "story_id", null: false
     t.bigint "tag_id", null: false
     t.index ["story_id", "tag_id"], name: "index_stories__tags_on_story_id_and_tag_id", unique: true
-    t.index ["tag_id", "story_id"], name: "index_stories__tags_on_tag_id_and_story_id", unique: true
+  end
+
+  create_table "summernote_uploads", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "tags", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|

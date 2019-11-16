@@ -46,9 +46,8 @@ class StoriesController < ApplicationController # :nodoc:
 
   def story_params
     params.require(:story).permit(
-      :name, :headline, :body, :description, :desired_launch,
-      :last_launch, :last_export, :deadline, :status, :blocked,
-      :writer_id, :developer_id
+      :name, :body, :description, :desired_launch, :last_launch,
+      :last_export, :deadline, :status, :blocked, :writer_id, :developer_id
     )
   end
 

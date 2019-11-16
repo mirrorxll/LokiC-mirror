@@ -5,6 +5,7 @@ Rails.application.routes.draw do
 
   root 'stories#index'
   resources :data_locations, except: %i[]
+  resources :summernote_uploads, only: %i[create destroy]
 
   resources :stories do
     resources :data_locations, only: %i[] do
