@@ -1,17 +1,16 @@
-= form_with(model: @story, html: onchange_submit?) do |form|
+= form_with(model: @story) do |form|
   .div.field
     = form.label          :name
     %br/
     = form.text_field     :name
     %br/
-    .field{"data-controller" => "summernote"}
+    %div{"data-controller" => "summernote"}
       = form.label :body
       = form.text_area :body, data: { editor: 'summernote' }
     %br/
     = form.label          :description
     %br/
-    = form.text_field     :description
-    %hr/
+    = form.text_area      :description
     .row
       .col-3
         = form.label          :deadline
@@ -29,12 +28,11 @@
         = form.label          :last_export
         %br/
         = form.date_field     :last_export
-    %hr/
+    %br/
 
-    - if select_statuses?
+    - if action_name.eql?('show')
       .row
         .col-2
           = form.label  :status
           = form.select :status, statuses, prompt: true
-    - else
-      = form.submit :create
+    = form.submit action_name.eql?('show') ? :update : :create

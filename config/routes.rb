@@ -33,14 +33,16 @@ Rails.application.routes.draw do
       delete  :exclude, on: :member
     end
 
-    resources :frequencies, only: %i[] do
+    resources :frequencies, path: 'frequency', only: %i[] do
       post    :include, on: :collection
       delete  :exclude, on: :member
     end
 
-    resources :levels, only: %i[] do
+    resources :levels, path: 'level', only: %i[] do
       post    :include, on: :collection
       delete  :exclude, on: :member
     end
+
+    resources :staging_tables, path: 'staging_table', except: %i[index]
   end
 end

@@ -14,6 +14,8 @@ class Story < ApplicationRecord # :nodoc:
   has_and_belongs_to_many :levels,          join_table: 'stories__levels'
   has_and_belongs_to_many :frequencies,     join_table: 'stories__frequencies'
 
+  has_one :staging_table
+
   # filter
   def self.writer(id)
     where(writer_id: id)

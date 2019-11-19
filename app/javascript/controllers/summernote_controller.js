@@ -21,7 +21,6 @@ export default class extends Controller {
     }
 
     connect(){
-        console.log("summernote connected.")
         $('[data-editor="summernote"]').summernote({
             height: 300,
             focus: true,
@@ -37,12 +36,17 @@ export default class extends Controller {
                 ['table', ['table']],
                 ['insert', ['link', 'picture', 'video']],
                 ['view', ['fullscreen', 'codeview', 'help']]
-            ],
+            ]
         });
+
+        if ($('.note-editor.note-frame.card').length > 1) {
+            $('[data-controller="summernote"]').first().children().last().remove()
+        }
+
         function sendFile(file, toSummernote){
-            console.log('called sendFile().')
-            let data = new FormData()
-            data.append('upload[image]', file)
+            console.log('called sendFile().');
+            let data = new FormData();
+            data.append('upload[image]', file);
             $.ajax({
                 data: data,
                 type: 'POST',
@@ -51,11 +55,11 @@ export default class extends Controller {
                 contentType: false,
                 processData: false,
                 success: function(data){
-                    console.log("image url: ", data.url)
-                    console.log('successfully created.')
-                    let img = document.createElement("IMG")
-                    img.src = data.url
-                    img.setAttribute('id', data.upload_id)
+                    console.log("image url: ", data.url);
+                    console.log('successfully created.');
+                    let img = document.createElement("IMG");
+                    img.src = data.url;
+                    img.setAttribute('id', data.upload_id);
                     toSummernote.summernote("insertNode", img)
                 }
             })

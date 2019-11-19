@@ -1,42 +1,18 @@
-= render 'template'
+%section#edit-template
+  = render 'stories/edit_template'
 %hr/
 
-%secion#data-locations
-  =render 'data_locations/select_form'
-  =render 'data_locations/story_data_locations'
+%section#show-template
+  = render 'stories/show_template'
 %hr/
 
-%section#frequency
-  - if @story.frequencies.present?
-    = render 'frequencies/story_frequency'
+%section#staging-table
+  - if @story.staging_table.present?
+    = render 'staging_tables/columns'
   - else
-    = render 'frequencies/form'
+    = render 'staging_tables/form'
 %hr/
 
-%section#level
-  - if @story.levels.present?
-    = render 'levels/story_level'
-  - else
-    = render 'levels/form'
-%hr/
-
-%section#clients
-  = render 'clients/form'
-  = render 'clients/story_clients'
-%hr/
-
-%section#sections
-  = render 'sections/form'
-  = render 'sections/story_sections'
-%hr/
-
-%section#tags
-  = render 'tags/form'
-  = render 'tags/story_tags'
-%hr/
-
-%section#photo-bucket
-  - if @story.photo_buckets.present?
-    = render 'photo_buckets/story_photo_bucket'
-  - else
-    = render 'photo_buckets/form'
+%section#code
+  #upload
+  #execute
