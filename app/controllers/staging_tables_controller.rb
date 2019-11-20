@@ -7,18 +7,8 @@ class StagingTablesController < ApplicationController # :nodoc:
     @staging_table = @story.staging_table
   end
 
-  def new
-    @staging_table = StagingTable.new
-  end
-
   def create
-    @staging_table = StagingTable.new(staging_table_params)
-
-    if @staging_table.save
-      'Create'
-    else
-      render :new
-    end
+    # <<<<<<<<<<<<
   end
 
   def edit
@@ -44,6 +34,20 @@ class StagingTablesController < ApplicationController # :nodoc:
   end
 
   def staging_table_params
-    params.require(:staging_table).permit(:name, :columns)
+    index = 1
+    table_params = { name: params[:staging_table].delete(:name), columns: [] }
+
+    loop do
+      break if params[:staging_table][:"column_name_#{index}"].nil? ||
+          params[:staging_table][:"column_type_#{index}"].nil?
+
+      table_params[:columns] << {
+          "#{params[:staging_table][:"column_name_#{index}"]}":
+              params[:staging_table][:"column_type_#{index}"]
+      }
+      index += 1
+    end
+
+    table_params
   end
 end

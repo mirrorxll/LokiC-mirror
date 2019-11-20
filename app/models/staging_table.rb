@@ -2,4 +2,5 @@
 
 class StagingTable < ApplicationRecord # :nodoc:
   belongs_to :story
+
 end

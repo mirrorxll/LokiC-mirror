@@ -43,6 +43,6 @@ Rails.application.routes.draw do
       delete  :exclude, on: :member
     end
 
-    resources :staging_tables, path: 'staging_table', except: %i[index]
+    resources :staging_tables, path: 'staging_table', except: %i[index new]
   end
 end
