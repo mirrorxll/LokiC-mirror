@@ -12,7 +12,7 @@ $(document).on('turbolinks:load', function () {
                 .attr({name: `staging_table[column_name_${index}]`, id: `staging_table_column_name_${index}`});
             $(this).find('label[for^="staging_table_column_type_"]')
                 .attr({for: `staging_table_column_type_${index}`});
-            $(this).find('input[name^="staging_table[column_type_"]')
+            $(this).find('select[name^="staging_table[column_type_"]')
                 .attr({name: `staging_table[column_type_${index}]`, id: `staging_table_column_type_${index}`});
             $(this).find('div[id^="rm-column-"]').attr({id: `rm-column-${index}`})
         });
@@ -25,9 +25,22 @@ $(document).on('turbolinks:load', function () {
         $(editable_block).append(
             `<div id="column-${count}">
                 <label for="staging_table_column_name_${count}">Column ${count}</label>
-                <input type="text" name="staging_table[column_name_${count}]" id="staging_table_column_name_${count}">
+                <input type="text" name="staging_table[column_name_${count}]" id="staging_table_column_name_${count}" required>
                 <label for="staging_table_column_type_${count}">Type</label>
-                <input type="text" name="staging_table[column_type_${count}]" id="staging_table_column_type_${count}">
+                <select name="staging_table[column_type_${count}]" id="staging_table_column_type_${count}"><option value="TINYINT">tinyint</option>
+                    <option value="INT">int</option>
+                    <option value="BIGINT">bigint</option>
+                    <option value="DECIMAL">decimal</option>
+                    <option value="FLOAT">float</option>
+                    <option value="VARCHAR(255)">varchar(255)</option>
+                    <option value="TEXT">text</option>
+                    <option value="LONGTEXT">longtext</option>
+                    <option value="TIME">time</option>
+                    <option value="DATE">date</option>
+                    <option value="YEAR">year</option>
+                    <option value="DATETIME">datetime</option>
+                    <option value="JSON">json</option>
+                </select>
                 <div id="rm-column-${count}" class="remove-column"></div>
             </div>`
         );

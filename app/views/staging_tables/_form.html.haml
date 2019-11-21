@@ -1,11 +1,9 @@
 = form_with(model: [@story, (@story.staging_table || @story.build_staging_table)] ) do |form|
   = form.label :table_name
-  = form.text_field :name
+  = form.text_field :name, required: true
   -# The blocks below will process by JS
   %div#columns-editable
   #add-column
     +
   %br/
   =form.submit action_name.eql?('edit') ? :update : :create
-
--#['TINYINT','INT','BIGINT','DECIMAL','FLOAT','VARCHAR','TEXT','LONGTEXT','TIME','DATE','YEAR','DATETIME','JSON']

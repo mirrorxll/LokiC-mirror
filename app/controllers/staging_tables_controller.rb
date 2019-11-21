@@ -8,7 +8,13 @@ class StagingTablesController < ApplicationController # :nodoc:
   end
 
   def create
-    # <<<<<<<<<<<<
+    @staging_table = @story.build_staging_table(staging_table_params)
+
+    if @staging_table.save
+      @staging_table.generate
+    else
+      flash[:error] = "Table wasn't created"
+    end
   end
 
   def edit
@@ -34,20 +40,6 @@ class StagingTablesController < ApplicationController # :nodoc:
   end
 
   def staging_table_params
-    index = 1
-    table_params = { name: params[:staging_table].delete(:name), columns: [] }
-
-    loop do
-      break if params[:staging_table][:"column_name_#{index}"].nil? ||
-          params[:staging_table][:"column_type_#{index}"].nil?
-
-      table_params[:columns] << {
-          "#{params[:staging_table][:"column_name_#{index}"]}":
-              params[:staging_table][:"column_type_#{index}"]
-      }
-      index += 1
-    end
-
-    table_params
+    StagingTable.transform(params)
   end
 end
