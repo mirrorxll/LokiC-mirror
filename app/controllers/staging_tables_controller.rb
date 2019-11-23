@@ -13,8 +13,7 @@ class StagingTablesController < ApplicationController # :nodoc:
     elsif StagingTable.exists?(params[:staging_table][:name])
       flash[:error] = "Table with passed name already exist."
     else
-      @staging_table = @story.create_staging_table(staging_table_params)
-      @staging_table.generate
+      @story.create_staging_table(staging_table_params).generate
     end
 
     render 'create_update'
@@ -24,7 +23,8 @@ class StagingTablesController < ApplicationController # :nodoc:
 
   def update
     if @story.staging_table
-      @staging_table = @story.staging_table.update(staging_table_params)
+      updated_params = @story.staging_table.modify(staging_table_params)
+      @story.staging_table.update(updated_params)
     else
       flash[:error] = "Table was removed or renamed."
     end

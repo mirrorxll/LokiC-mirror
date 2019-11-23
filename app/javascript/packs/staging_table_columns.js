@@ -2,7 +2,7 @@
 //     function removeColumnAndSaveEnum() {
 //         $(this.parentNode).remove();
 //
-//         $('#columns-editable').children().each(function(index) {
+//         $('#queries-editable').children().each(function(index) {
 //             index++;
 //             $(this).attr({id: `column-${index}`});
 //             $(this).find('label[for^="staging_table_column_name_"]')
@@ -19,7 +19,7 @@
 //     }
 //
 //     $('#add-column').on('click', function () {
-//         let editable_block = $('#columns-editable');
+//         let editable_block = $('#queries-editable');
 //         let count = editable_block.children().length + 1;
 //
 //         $(editable_block).append(

@@ -6,15 +6,14 @@
     - if action_name.eql?('edit')
       - @story.staging_table.columns.each_with_index do |column, i|
         %div{ id: "column-#{i + 1}"}
-          = form.label :"column_#{i + 1}"
-          = form.text_field :"column_name_#{i + 1}", value: column['name']
-          = form.label :"column_#{i + 1}"
-          = form.select :"column_type_#{i + 1}", data_types, selected: column['type']
+          = form.label :"column_name_#{column['id']}", "#{i + 1}"
+          = form.text_field :"column_name_#{column['id']}", value: column['name']
+          = form.label :"column_type_#{column['id']}", 'Type'
+          = form.select :"column_type_#{column['id']}", data_types, selected: column['type']
           %div.remove-column.d-inline-block{ id: "rm-column-#{i + 1}", onclick: 'removeColumnAndSaveEnum(this)' } -
   #add-column
     +
   %br/
   =form.submit action_name.eql?('edit') ? :update : :create
 
-%script
-  = render 'staging_tables/staging_table_columns', formats: :js
+= render 'staging_tables/staging_table_columns'

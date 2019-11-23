@@ -99,7 +99,7 @@ ActiveRecord::Schema.define(version: 2019_11_18_192538) do
 
   create_table "staging_tables", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name"
-    t.text "columns"
+    t.text "queries"
     t.boolean "created"
     t.bigint "story_id"
     t.datetime "created_at", precision: 6, null: false

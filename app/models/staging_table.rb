@@ -16,8 +16,20 @@ class StagingTable < ApplicationRecord # :nodoc:
 
   def generate
     ActiveRecord::Base.connection.execute(
-        Hle::Queries.create_table(self)
+      Hle::Queries.create_table(self)
     )
+  end
+
+  def modify(params)
+    queries = [
+      Hle::Queries.alter_table_add_columns(name, columns, params[:columns]),
+      Hle::Queries.alter_table_drop_columns(name, columns, params[:columns]),
+      Hle::Queries.alter_table_change_columns(name, columns, params[:columns])
+    ]
+
+    queries.compact.each { |q| ActiveRecord::Base.connection.execute(q) }
+
+    params
   end
 
   def exists?(name)
