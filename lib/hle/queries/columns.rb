@@ -14,6 +14,10 @@ module Hle
       def self.changed(curr_columns, modify_columns)
 
       end
+
+      def self.ids(columns)
+        columns.keys.map { |key| key.to_s.split('_').last }.uniq
+      end
     end
   end
 end

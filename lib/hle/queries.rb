@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'queries/queries'
+require_relative 'queries/columns'
 
 module Hle
   module Queries # :nodoc:
@@ -41,9 +41,7 @@ module Hle
     end
 
     def self.transform(params = {})
-      ids = params[:staging_table].keys.map { |key| key.to_s.split('_').last }.uniq
-
-      ids.map do |id|
+      Columns.ids(params[:staging_table]).map do |id|
         {
           id: id,
           name: params[:staging_table][:"column_name_#{id}"],
