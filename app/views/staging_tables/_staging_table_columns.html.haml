@@ -1,5 +1,5 @@
-<script>
-  var editable_block = $('#queries-editable');
+:javascript
+  var editable_block = $('#columns-editable');
 
   $('#add-column').click(function () {
       let count = editable_block.children().length + 1;
@@ -39,7 +39,7 @@
       editable_block.children().each(function(index) {
           index++;
           $(this).attr({id: `column-${index}`});
-          $(this).find('label[for*="_column_name_"]').text('index');
+          $(this).find('label[for*="_column_name_"]').text(index);
           $(this).find('div[id^="rm-column-"]').attr({id: `rm-column-${index}`})
       });
   }
@@ -48,8 +48,7 @@
       n = n || 16;
       let result = '';
       while (n--){
-          result += Math.floor(Math.random()*16).toString(16).toUpperCase();
+          result += Math.floor(Math.random() * 16).toString(16).toUpperCase();
       }
       return result;
   }
-</script>

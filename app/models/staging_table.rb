@@ -24,12 +24,11 @@ class StagingTable < ApplicationRecord # :nodoc:
     queries = [
       Hle::Queries.alter_table_add_columns(name, columns, params[:columns]),
       Hle::Queries.alter_table_drop_columns(name, columns, params[:columns]),
-      Hle::Queries.alter_table_change_columns(name, columns, params[:columns])
+      Hle::Queries.alter_table_change_columns(name, columns, params[:columns]),
+      Hle::Queries.rename_table(name, params[:name])
     ]
 
     queries.compact.each { |q| ActiveRecord::Base.connection.execute(q) }
-
-    params
   end
 
   def exists?(name)

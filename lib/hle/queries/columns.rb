@@ -2,21 +2,36 @@
 
 module Hle
   module Queries
-    class Columns
+    module Columns # :nodoc:
+      # name, type
       def self.added(curr_columns, modify_columns)
-
+        modify_columns.map do |m_c|
+          curr_columns.any? { |c_c| c_c['id'].eql?(m_c[:id]) } ? nil : m_c
+        end.compact
       end
 
+      # name
       def self.dropped(curr_columns, modify_columns)
-
+        curr_columns.map do |c_c|
+          modify_columns.none? { |m_c| m_c[:id].eql?(c_c['id']) } ? c_c : nil
+        end.compact
       end
 
+      # @return [{old_name: 'old', new_name: 'new', new_type: 'type'}]
       def self.changed(curr_columns, modify_columns)
+        ids = Ids.from_pure(curr_columns) & Ids.from_pure(modify_columns)
 
-      end
+        ids.map do |id|
+          c_col = curr_columns.find { |c| c['id'].eql?(id) }
+          m_col = modify_columns.find { |m| m[:id].eql?(id) }
+          next if c_col.symbolize_keys.eql?(m_col)
 
-      def self.ids(columns)
-        columns.keys.map { |key| key.to_s.split('_').last }.uniq
+          {
+            old_name: c_col['name'],
+            new_name: m_col[:name],
+            new_type: m_col[:type]
+          }
+        end.compact
       end
     end
   end
