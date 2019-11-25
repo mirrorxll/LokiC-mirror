@@ -6,48 +6,20 @@ require_relative 'queries/ids'
 module Hle
   module Queries # :nodoc:
     def self.create_table(params)
-      query = %|CREATE TABLE IF NOT EXISTS `#{params[:name]}_staging` (id INT AUTO_INCREMENT PRIMARY KEY, |
-      params[:columns].each do |column|
-        query += %(`#{column['name']}` #{column['type']}, )
-      end
-
-      query[0...-2] + ') ENGINE=INNODB;'
+      q = %|CREATE TABLE IF NOT EXISTS `#{params[:name]}_staging` (id INT AUTO_INCREMENT PRIMARY KEY, |
+      params[:columns].each { |column| q += %(`#{column[:name]}` #{column[:type]}, ) }
+      q[0...-2] + ') ENGINE=INNODB;'
     end
 
-    def self.alter_table_add_columns(table_name, curr_columns, modify_columns)
-      columns = Columns.added(curr_columns, modify_columns)
-      return if columns.empty?
-
-      query = %(ALTER TABLE `#{table_name}_staging` ADD COLUMN )
-      columns.each do |column|
-        query += %(`#{column[:name]}` #{column[:type]}, )
+    def self.alter_table(t_name, cur_col, mod_col)
+      q = ["ALTER TABLE `#{t_name}_staging`"]
+      Columns.dropped(cur_col, mod_col).each { |c| q << "DROP COLUMN `#{c['name']}`," }
+      Columns.added(cur_col, mod_col).each { |c| q << "ADD COLUMN `#{c[:name]}` #{c[:type]}," }
+      Columns.changed(cur_col, mod_col).each do |c|
+        q << "CHANGE COLUMN `#{c[:old_name]}` `#{c[:new_name]}` #{c[:new_type]},"
       end
 
-      query[0...-2] + ';'
-    end
-
-    def self.alter_table_drop_columns(table_name, curr_columns, modify_columns)
-      columns = Columns.dropped(curr_columns, modify_columns)
-      return if columns.empty?
-
-      query = %(ALTER TABLE `#{table_name}_staging` DROP COLUMN )
-      columns.each do |column|
-        query += %(`#{column['name']}`, )
-      end
-
-      query[0...-2] + ';'
-    end
-
-    def self.alter_table_change_columns(table_name, curr_columns, modify_columns)
-      columns = Columns.changed(curr_columns, modify_columns)
-      return if columns.empty?
-
-      query = %(ALTER TABLE `#{table_name}_staging` CHANGE COLUMN )
-      columns.each do |column|
-        query += %(`#{column[:old_name]}` `#{column[:new_name]}` #{column[:new_type]}, )
-      end
-
-      query[0...-2] + ';'
+      q.count > 1 ? q.join(' ')[0..-2] + ';' : nil
     end
 
     def self.rename_table(curr_name, modify_name)

@@ -2,34 +2,37 @@
 
 class StagingTablesController < ApplicationController # :nodoc:
   before_action :find_story
+  before_action :staging_table_params, only: %i[create update]
 
   def show
     @staging_table = @story.staging_table
   end
 
   def create
-    if @story.staging_table
-      flash[:error] = 'Table for this story type already exist.'
-    elsif StagingTable.exists?(params[:staging_table][:name])
-      flash[:error] = 'Table with passed name already exist.'
-    else
-      @story.create_staging_table(staging_table_params).generate
-    end
+    flash[:error] =
+      if @story.staging_table
+        'Table for this story type already exist.'
+      elsif StagingTable.exists?(params[:staging_table][:name])
+        'Table with passed name already exist.'
+      else
+        StagingTable.generate(@staging_table_params)
+      end
 
+    @story.create_staging_table(@staging_table_params) unless flash[:error]
     render 'create_update'
   end
 
   def edit; end
 
   def update
-    if @story.staging_table
-      updated_params = staging_table_params
-      @story.staging_table.modify(updated_params)
-      @story.staging_table.update(updated_params)
-    else
-      flash[:error] = 'Table was removed or renamed.'
-    end
+    flash[:error] =
+      if @story.staging_table
+        @story.staging_table.modify(@staging_table_params)
+      else
+        'Table was removed or renamed.'
+      end
 
+    @story.staging_table.update(@staging_table_params) unless flash[:error]
     render 'create_update'
   end
 
@@ -44,6 +47,6 @@ class StagingTablesController < ApplicationController # :nodoc:
   end
 
   def staging_table_params
-    StagingTable.name_columns_from(params)
+    @staging_table_params = StagingTable.name_columns_from(params)
   end
 end

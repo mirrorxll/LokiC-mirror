@@ -14,21 +14,28 @@ class StagingTable < ApplicationRecord # :nodoc:
     }
   end
 
-  def generate
+  def self.generate(params)
     ActiveRecord::Base.connection.execute(
-      Hle::Queries.create_table(self)
+      Hle::Queries.create_table(params)
     )
+
+  rescue ActiveRecord::StatementInvalid => e
+    e.message
   end
 
   def modify(params)
     queries = [
-      Hle::Queries.alter_table_add_columns(name, columns, params[:columns]),
-      Hle::Queries.alter_table_drop_columns(name, columns, params[:columns]),
-      Hle::Queries.alter_table_change_columns(name, columns, params[:columns]),
-      Hle::Queries.rename_table(name, params[:name])
+      'BEGIN;',
+      Hle::Queries.alter_table(name, columns, params[:columns]),
+      Hle::Queries.rename_table(name, params[:name]),
+      'COMMIT;'
     ]
 
     queries.compact.each { |q| ActiveRecord::Base.connection.execute(q) }
+    nil
+  rescue ActiveRecord::StatementInvalid => e
+    ActiveRecord::Base.connection.execute('ROLLBACK;')
+    e.message
   end
 
   def exists?(name)
