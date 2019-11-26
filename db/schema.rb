@@ -71,6 +71,12 @@ ActiveRecord::Schema.define(version: 2019_11_18_192538) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "newwwwwww_staging", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.integer "s", limit: 1
+    t.datetime "asd"
+    t.integer "asdf", limit: 1
+  end
+
   create_table "photo_buckets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.integer "pipeline_index"
     t.string "name"
@@ -99,8 +105,7 @@ ActiveRecord::Schema.define(version: 2019_11_18_192538) do
 
   create_table "staging_tables", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name"
-    t.text "queries"
-    t.boolean "created"
+    t.text "columns"
     t.bigint "story_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -109,7 +114,7 @@ ActiveRecord::Schema.define(version: 2019_11_18_192538) do
 
   create_table "stories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name", default: "New Story Type"
-    t.text "body"
+    t.text "body", size: :long
     t.string "description", default: ""
     t.date "desired_launch"
     t.date "last_launch"
@@ -169,6 +174,7 @@ ActiveRecord::Schema.define(version: 2019_11_18_192538) do
   end
 
   create_table "summernote_uploads", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.text "image", size: :long
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

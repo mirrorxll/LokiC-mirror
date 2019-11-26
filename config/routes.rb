@@ -5,9 +5,10 @@ Rails.application.routes.draw do
 
   root 'stories#index'
   resources :data_locations, except: %i[]
-  resources :summernote_uploads, only: %i[create destroy]
 
   resources :stories do
+    resources :upload_codes, path: 'upload_code', only: %i[create destroy]
+
     resources :data_locations, only: %i[] do
       post    :include, on: :collection
       delete  :exclude, on: :member

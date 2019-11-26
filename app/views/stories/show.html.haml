@@ -1,10 +1,10 @@
--#%section#edit-template
--#  = render 'stories/edit_template'
--#%hr/
--#
--#%section#show-template
--#  = render 'stories/show_template'
--#%hr/
+%section#edit-template
+  = render 'stories/edit_template'
+%hr/
+
+%section#show-template
+  = render 'stories/show_template'
+%hr/
 
 %section#staging-table
   - if @story.staging_table.present?
@@ -14,5 +14,9 @@
 %hr/
 
 %section#code
-  #upload
+  - if @story.code.attached?
+    = render 'upload_codes/story_code'
+  -else
+    = render 'upload_codes/form'
+  #sheduler
   #execute

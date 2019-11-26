@@ -5,7 +5,6 @@ class CreateStagingTables < ActiveRecord::Migration[6.0] # :nodoc:
     create_table :staging_tables do |t|
       t.string  :name
       t.text    :columns
-      t.boolean :created
 
       t.belongs_to :story
 

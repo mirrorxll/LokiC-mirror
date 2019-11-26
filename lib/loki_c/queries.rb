@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require_relative 'queries/columns'
-require_relative 'queries/ids'
+require 'loki_c/queries/columns'
+require 'loki_c/queries/ids'
 
-module Hle
+module LokiC
   module Queries # :nodoc:
     def self.create_table(params)
       q = %|CREATE TABLE IF NOT EXISTS `#{params[:name]}_staging` (id INT AUTO_INCREMENT PRIMARY KEY, |

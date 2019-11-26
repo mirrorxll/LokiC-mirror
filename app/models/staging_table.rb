@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'hle/queries'
+require 'loki_c/queries'
 
 class StagingTable < ApplicationRecord # :nodoc:
   serialize :columns, JSON
@@ -10,15 +10,14 @@ class StagingTable < ApplicationRecord # :nodoc:
   def self.name_columns_from(params)
     {
       name: params[:staging_table].delete(:name),
-      columns: Hle::Queries.transform(params)
+      columns: LokiC::Queries.transform(params)
     }
   end
 
   def self.generate(params)
     ActiveRecord::Base.connection.execute(
-      Hle::Queries.create_table(params)
+      LokiC::Queries.create_table(params)
     )
-
   rescue ActiveRecord::StatementInvalid => e
     e.message
   end
@@ -26,9 +25,9 @@ class StagingTable < ApplicationRecord # :nodoc:
   def modify(params)
     queries = [
       'BEGIN;',
-      Hle::Queries.alter_table(name, columns, params[:columns]),
-      Hle::Queries.rename_table(name, params[:name]),
-      'COMMIT;'
+      LokiC::Queries.alter_table(name, columns, params[:columns]),
+      'COMMIT;',
+      LokiC::Queries.rename_table(name, params[:name])
     ]
 
     queries.compact.each { |q| ActiveRecord::Base.connection.execute(q) }

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Hle
+module LokiC
   module Queries
     module Columns # :nodoc:
       # name, type

@@ -12,8 +12,6 @@ require("channels");
 import '../stylesheets/application'
 import 'bootstrap'
 import 'controllers'
-import './staging_table_columns'
-
 
 document.addEventListener('turbolinks:load', () => {
     $('[data-toggle="tooltip"]').tooltip();
