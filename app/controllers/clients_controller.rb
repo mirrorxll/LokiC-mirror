@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class ClientsController < ApplicationController # :nodoc:
-  before_action :find_story
   before_action :find_client
 
   def include
@@ -17,10 +16,6 @@ class ClientsController < ApplicationController # :nodoc:
   end
 
   private
-
-  def find_story
-    @story = Story.find(params[:story_id])
-  end
 
   def find_client
     @client = Client.find(params[:id])

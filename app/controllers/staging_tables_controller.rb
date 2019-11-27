@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class StagingTablesController < ApplicationController # :nodoc:
-  before_action :find_story
   before_action :staging_table_params, only: %i[create update]
 
   def show
@@ -41,10 +40,6 @@ class StagingTablesController < ApplicationController # :nodoc:
   end
 
   private
-
-  def find_story
-    @story = Story.find(params[:story_id])
-  end
 
   def staging_table_params
     @staging_table_params = StagingTable.name_columns_from(params)

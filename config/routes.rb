@@ -7,8 +7,6 @@ Rails.application.routes.draw do
   resources :data_locations, except: %i[]
 
   resources :stories do
-    resources :upload_codes, path: 'upload_code', only: %i[create destroy]
-
     resources :data_locations, only: %i[] do
       post    :include, on: :collection
       delete  :exclude, on: :member
@@ -45,5 +43,11 @@ Rails.application.routes.draw do
     end
 
     resources :staging_tables, path: 'staging_table', except: %i[index new]
+    resources :codes, path: 'upload_code', only: %i[create destroy]
+
+    resources :populations, path: 'populate', only: %i[] do
+      post    :run_code, on: :collection
+      delete  :purge_table, on: :collection
+    end
   end
 end

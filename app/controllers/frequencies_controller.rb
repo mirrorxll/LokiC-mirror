@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class FrequenciesController < ApplicationController # :nodoc:
-  before_action :find_story
   before_action :find_frequency
 
   def include
@@ -17,10 +16,6 @@ class FrequenciesController < ApplicationController # :nodoc:
   end
 
   private
-
-  def find_story
-    @story = Story.find(params[:story_id])
-  end
 
   def find_frequency
     @frequency = Frequency.find(params[:id])

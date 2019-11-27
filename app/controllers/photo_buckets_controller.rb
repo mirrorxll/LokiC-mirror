@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class PhotoBucketsController < ApplicationController # :nodoc:
-  before_action :find_story
   before_action :find_photo_bucket
 
   def include
@@ -17,10 +16,6 @@ class PhotoBucketsController < ApplicationController # :nodoc:
   end
 
   private
-
-  def find_story
-    @story = Story.find(params[:story_id])
-  end
 
   def find_photo_bucket
     @photo_bucket = PhotoBucket.find(params[:id])

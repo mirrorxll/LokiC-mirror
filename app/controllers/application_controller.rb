@@ -2,6 +2,7 @@
 
 class ApplicationController < ActionController::Base # :nodoc:
   before_action :authenticate_user!
+  before_action :find_story
 
   private
 
@@ -12,5 +13,9 @@ class ApplicationController < ActionController::Base # :nodoc:
 
   def render_400
     render json: { error: 'Bad Request' }, status: 400
+  end
+
+  def find_story
+    @story = Story.find(params[:story_id])
   end
 end

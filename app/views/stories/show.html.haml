@@ -15,8 +15,9 @@
 
 %section#code
   - if @story.code.attached?
-    = render 'upload_codes/story_code'
+    = render 'codes/story_code'
   -else
-    = render 'upload_codes/form'
-  #sheduler
+    = render 'codes/form'
+  %hr
   #execute
+    = link_to('EXECUTE', run_code_story_populations_path(@story), method: :post)

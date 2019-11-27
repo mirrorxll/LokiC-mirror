@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class LevelsController < ApplicationController # :nodoc:
-  before_action :find_story
   before_action :find_level
 
   def include
@@ -17,10 +16,6 @@ class LevelsController < ApplicationController # :nodoc:
   end
 
   private
-
-  def find_story
-    @story = Story.find(params[:story_id])
-  end
 
   def find_level
     @level = Level.find(params[:id])

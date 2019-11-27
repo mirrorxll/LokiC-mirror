@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class TagsController < ApplicationController # :nodoc:
-  before_action :find_story
   before_action :find_tag
 
   def include
@@ -17,10 +16,6 @@ class TagsController < ApplicationController # :nodoc:
   end
 
   private
-
-  def find_story
-    @story = Story.find(params[:story_id])
-  end
 
   def find_tag
     @tag = Tag.find(params[:id])

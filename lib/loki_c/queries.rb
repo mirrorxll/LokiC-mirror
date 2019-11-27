@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'loki_c/queries/columns'
-require 'loki_c/queries/ids'
-
 module LokiC
   module Queries # :nodoc:
     def self.create_table(params)

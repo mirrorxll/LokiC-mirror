@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
-require 'loki_c/connection'
-require 'loki_c/queries.rb'
-require 'loki_c/story.rb'
-
 module LokiC # :nodoc:
-  # ...
+  autoload :Story, 'loki_c/story.rb'
+  autoload :Queries, 'loki_c/queries.rb'
+  autoload :Connection, 'loki_c/connect.rb'
+  autoload :Mysql, 'loki_c/connect/mysql.rb'
 end

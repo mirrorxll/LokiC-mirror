@@ -1,0 +1,3 @@
+%p
+  = link_to('code', url_for(@story.code))
+  = link_to('remove code', story_code_path(@story), method: :delete)

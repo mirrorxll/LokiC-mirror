@@ -18,6 +18,8 @@ class Story < ApplicationRecord # :nodoc:
 
   has_one :staging_table
 
+  before_create { self.filename = SecureRandom.hex(6) }
+
   # filter
   def self.writer(id)
     where(writer_id: id)

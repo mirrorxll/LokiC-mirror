@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class SectionsController < ApplicationController # :nodoc:
-  before_action :find_story
   before_action :find_section
 
   def include
@@ -17,10 +16,6 @@ class SectionsController < ApplicationController # :nodoc:
   end
 
   private
-
-  def find_story
-    @story = Story.find(params[:story_id])
-  end
 
   def find_section
     @section = Section.find(params[:id])

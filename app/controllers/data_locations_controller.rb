@@ -2,7 +2,7 @@
 
 class DataLocationsController < ApplicationController # :nodoc:
   before_action :find_data_location, except: %i[index new create]
-  before_action :find_story, only: %i[include exclude]
+  skip_before_action :find_story, except: %i[include exclude]
 
   def index
     @data_locations = DataLocation.all
@@ -51,10 +51,6 @@ class DataLocationsController < ApplicationController # :nodoc:
   end
 
   private
-
-  def find_story
-    @story = Story.find(params[:story_id])
-  end
 
   def find_data_location
     @data_location = DataLocation.find(params[:id])

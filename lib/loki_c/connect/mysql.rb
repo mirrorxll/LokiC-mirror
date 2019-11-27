@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module LokiC
-  module Connection
+  module Connect
     class Mysql # :nodoc:
       def self.on(host, database)
         Mysql2::Client.new(
