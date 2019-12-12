@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 class PopulationsController < ApplicationController # :nodoc:
-  def run_code
-    LokiC::Story::Population.new(@story).run #(population_params)
+  def execute
+    @story.staging_table&.execute_population({})
   end
 
-  def purge_table
-    LokiC::Story::Population.new(@story.id).purge(population_params)
+  def purge
+    @story.staging_table.purge_last_population
   end
 
   private

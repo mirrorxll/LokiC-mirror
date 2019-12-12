@@ -3,10 +3,14 @@
 class Story < ApplicationRecord # :nodoc:
   default_scope { order(created_at: :desc) }
 
-  has_one_attached :code
 
   belongs_to :writer,     class_name: 'User'
   belongs_to :developer,  class_name: 'User', optional: true
+
+  has_one :staging_table
+  has_many :story_iterations, dependent: :destroy
+
+  has_one_attached :code
 
   has_and_belongs_to_many :clients,         join_table: 'stories__clients'
   has_and_belongs_to_many :data_locations,  join_table: 'stories__data_locations'
@@ -15,8 +19,6 @@ class Story < ApplicationRecord # :nodoc:
   has_and_belongs_to_many :photo_buckets,   join_table: 'stories__photo_buckets'
   has_and_belongs_to_many :levels,          join_table: 'stories__levels'
   has_and_belongs_to_many :frequencies,     join_table: 'stories__frequencies'
-
-  has_one :staging_table
 
   before_create { self.filename = SecureRandom.hex(6) }
 

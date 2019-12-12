@@ -25,14 +25,8 @@ module LokiC
       %(RENAME TABLE `#{curr_name}_staging` TO `#{modify_name}_staging`;)
     end
 
-    def self.transform(params = {})
-      Ids.from_raw(params[:staging_table]).map do |id|
-        {
-          id: id,
-          name: params[:staging_table][:"column_name_#{id}"],
-          type: params[:staging_table][:"column_type_#{id}"]
-        }
-      end
+    def self.delete_from(t_name, iteration)
+      %(DELETE FROM TABLE `#{t_name}_staging` WHERE iteration = "#{iteration}";)
     end
   end
 end

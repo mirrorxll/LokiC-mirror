@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  devise_for :users, controllers: { registrations: 'registrations' }
+  devise_for :users, controllers: { registrations: 'registrations', sessions: 'sessions' }
 
   root 'stories#index'
-  resources :data_locations, except: %i[]
+  resources :data_locations
 
   resources :stories do
     resources :data_locations, only: %i[] do
@@ -46,8 +46,8 @@ Rails.application.routes.draw do
     resources :codes, path: 'upload_code', only: %i[create destroy]
 
     resources :populations, path: 'populate', only: %i[] do
-      post    :run_code, on: :collection
-      delete  :purge_table, on: :collection
+      post    :execute, on: :collection
+      delete  :purge, on: :collection
     end
   end
 end

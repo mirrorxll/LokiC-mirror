@@ -1,11 +1,23 @@
+%h6.border-bottom.border-dark
+  Edit Template
 %section#edit-template
   = render 'stories/edit_template'
 %hr/
 
+%h6.border-bottom.border-dark
+  Show Template
 %section#show-template
   = render 'stories/show_template'
 %hr/
 
+%h6.border-bottom.border-dark
+  Story Configuration
+%section#story-configuration
+  = render 'stories/config_story'
+%hr/
+
+%h6.border-bottom.border-dark
+  Story Table
 %section#staging-table
   - if @story.staging_table.present?
     = render 'staging_tables/columns'
@@ -13,11 +25,14 @@
     = render 'staging_tables/form'
 %hr/
 
-%section#code
+%h6.border-bottom.border-dark
+  Story Code Upload
+%section#code-file
   - if @story.code.attached?
     = render 'codes/story_code'
-  -else
+  - else
     = render 'codes/form'
   %hr
-  #execute
-    = link_to('EXECUTE', run_code_story_populations_path(@story), method: :post)
+
+- if @story.code.attached?
+  = render 'codes/execute'

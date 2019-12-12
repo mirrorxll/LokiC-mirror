@@ -10,7 +10,7 @@ class StagingTable < ApplicationRecord # :nodoc:
   def self.name_columns_from(params)
     {
       name: params[:staging_table].delete(:name),
-      columns: LokiC::Queries.transform(params)
+      columns: LokiC::Queries::Columns.transform(params)
     }
   end
 
@@ -37,7 +37,26 @@ class StagingTable < ApplicationRecord # :nodoc:
     e.message
   end
 
-  def exists?(name)
-    ActiveRecord::Base.connections.table_exists?("#{name}_staging")
+  def execute_population(options)
+    if story.story_iterations.count.zero? || story.story_iterations.last.populate_status
+      story.story_iterations.create
+    end
+
+    ex = LokiC::Story::Population.run(story, options)
+    story.story_iterations.last.update!(populate_status: 1) if ex
+  end
+
+  def purge_last_population
+    ActiveRecord::Base.connection.execute(
+      LokiC::Queries.delete_from(name, story.iterations.last)
+    )
+  end
+
+  def execute_creation(options)
+
+  end
+
+  def purge_last_creation
+
   end
 end

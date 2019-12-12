@@ -10,17 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_18_192538) do
-
-  create_table "action_text_rich_texts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
-    t.string "name", null: false
-    t.text "body", size: :long
-    t.string "record_type", null: false
-    t.bigint "record_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["record_type", "record_id", "name"], name: "index_action_text_rich_texts_uniqueness", unique: true
-  end
+ActiveRecord::Schema.define(version: 2019_12_07_135916) do
 
   create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name", null: false
@@ -71,12 +61,6 @@ ActiveRecord::Schema.define(version: 2019_11_18_192538) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "newwwwwww_staging", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
-    t.integer "s", limit: 1
-    t.datetime "asd"
-    t.integer "asdf", limit: 1
-  end
-
   create_table "photo_buckets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.integer "pipeline_index"
     t.string "name"
@@ -115,12 +99,13 @@ ActiveRecord::Schema.define(version: 2019_11_18_192538) do
   create_table "stories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name", default: "New Story Type"
     t.text "body", size: :long
-    t.string "description", default: ""
+    t.string "description", default: "..."
     t.date "desired_launch"
     t.date "last_launch"
     t.date "last_export"
     t.date "deadline"
     t.string "status", default: "Not Started"
+    t.string "filename", default: ""
     t.bigint "developer_id"
     t.bigint "writer_id"
     t.datetime "created_at", precision: 6, null: false
@@ -173,10 +158,14 @@ ActiveRecord::Schema.define(version: 2019_11_18_192538) do
     t.index ["story_id", "tag_id"], name: "index_stories__tags_on_story_id_and_tag_id", unique: true
   end
 
-  create_table "summernote_uploads", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
-    t.text "image", size: :long
+  create_table "story_iterations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.string "iteration"
+    t.boolean "populate_status", default: false
+    t.boolean "stories_create_status", default: false
+    t.bigint "story_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["story_id"], name: "index_story_iterations_on_story_id"
   end
 
   create_table "tags", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|

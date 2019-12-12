@@ -17,7 +17,6 @@ module LokiC
         end.compact
       end
 
-      # @return [{old_name: 'old', new_name: 'new', new_type: 'type'}]
       def self.changed(curr_columns, modify_columns)
         ids = Ids.from_pure(curr_columns) & Ids.from_pure(modify_columns)
 
@@ -32,6 +31,16 @@ module LokiC
             new_type: m_col[:type]
           }
         end.compact
+      end
+
+      def self.transform(params = {})
+        Ids.from_raw(params[:staging_table]).map do |id|
+          {
+              id: id,
+              name: params[:staging_table][:"column_name_#{id}"],
+              type: params[:staging_table][:"column_type_#{id}"]
+          }
+        end
       end
     end
   end

@@ -1,0 +1,4 @@
+const codeFile = $('#code-file');
+
+codeFile.empty().html(`<%= render 'codes/story_code' %>`)
+$(`<%= render 'codes/execute'%>`).insertAfter(codeFile)

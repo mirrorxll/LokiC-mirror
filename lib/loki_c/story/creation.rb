@@ -3,14 +3,11 @@
 module LokiC
   module Story
     class Creation < BlobToFile # :nodoc:
-      def initialize(story_id)
-        super(story_id)
-      end
-
-      def run(*args)
+      def self.run(story, options = {})
+        file_to_require(story)
         pid = fork do
-          load "loki_c/story/code/#{@filename}.rb"
-          creation(args)
+          require_relative "#{Rails.root}/lib/loki_c/story/code/#{@story.filename}.rb"
+          creation(options)
         end
 
         Process.wait(pid)

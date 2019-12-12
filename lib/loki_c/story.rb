@@ -3,11 +3,11 @@
 module LokiC
   module Story
     class BlobToFile # :nodoc:
-      def initialize(story)
-        @story = story
-        File.open("#{Rails.root}/lib/loki_c/story/code/#{@story.filename}.rb", 'wb') do |file|
-          file.write(@story.code.download)
-        end
+      def self.file_to_require(story)
+        file = "#{Rails.root}/lib/loki_c/story/code/#{story.filename}.rb"
+        File.open(file, 'wb') { |f| f.write(story.code.download) }
+
+        file
       end
     end
   end
