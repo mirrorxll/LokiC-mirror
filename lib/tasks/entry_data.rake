@@ -6,9 +6,9 @@ namespace :db do
   desc 'Push couple of the test stories to db'
   task entry_data: :environment do
     User.create!(
-      name: 'Initial User',
-      email: 'loki-c@dev.com',
-      password: '123456'
+      name: Rails.application.credentials.development[:tasks][:user_name],
+      email: Rails.application.credentials.development[:tasks][:user_mail],
+      password: Rails.application.credentials.development[:tasks][:user_pass]
     )
     puts 'User was created.'
 
@@ -17,14 +17,5 @@ namespace :db do
       eval("#{class_name}.create(FirstObjects.#{method})", __FILE__, __LINE__)
     end
     puts 'Data was entry.'
-  end
-
-  desc 'Create User'
-  task :create_user, %i[name email password] => :environment do |t, args|
-    User.create!(
-      name: args['name'],
-      email: args['email'],
-      password: args['password']
-    )
   end
 end
