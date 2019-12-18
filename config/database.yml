@@ -15,11 +15,11 @@ default: &default
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   socket: /var/run/mysqld/mysqld.sock
 
-development:
-  <<: *default
-  database: LokiC_development
-  username: <%= Rails.application.credentials.mysql[:user] %>
-  password: <%= Rails.application.credentials.mysql[:password] %>
+#development:
+#  <<: *default
+#  database: LokiC_development
+#  username: <%#= Rails.application.credentials.mysql[:user] %>
+#  password: <%#= Rails.application.credentials.mysql[:password] %>
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -49,6 +49,7 @@ test:
 #
 production:
   <<: *default
-  database: LokiC_production
-  username: LokiC
-  password: <%= ENV['LOKIC_DATABASE_PASSWORD'] %>
+  url: mysql2://ad9p7oj0jlnftq7x:p0ym09e4li4bwe7f@rtzsaka6vivj2zp1.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/hnpgeizhf61rz9nn
+  database: LokiC
+  username: ad9p7oj0jlnftq7x
+  password: p0ym09e4li4bwe7f
