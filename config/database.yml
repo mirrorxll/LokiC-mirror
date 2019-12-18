@@ -13,13 +13,13 @@ default: &default
   adapter: mysql2
   encoding: utf8mb4
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  username: <%= Rails.application.credentials.mysql[:user] %>
-  password: <%= Rails.application.credentials.mysql[:password] %>
   socket: /var/run/mysqld/mysqld.sock
 
 development:
   <<: *default
   database: LokiC_development
+  username: <%= Rails.application.credentials.mysql[:user] %>
+  password: <%= Rails.application.credentials.mysql[:password] %>
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
