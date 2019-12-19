@@ -1,7 +1,11 @@
-%hr/
+#dates-and-status
+  = render 'stories/dates'
+  %br
+  = render 'stories/status'
+%br
 #data-locations
-  =render 'data_locations/select_form'
-  =render 'data_locations/story_data_locations'
+  = render 'data_locations/select_form'
+  = render 'data_locations/story_data_locations'
 %br/
 #frequency
   - if @story.frequencies.present?

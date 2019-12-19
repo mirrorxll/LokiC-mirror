@@ -31,7 +31,15 @@ class StoriesController < ApplicationController # :nodoc:
   def edit; end
 
   def update
-    @story.update(story_params)
+    @story.update!(story_params)
+  end
+
+  def dates
+    @story.update!(dates_params)
+  end
+
+  def dev_status
+    @story.update!(dev_status__params)
   end
 
   def destroy
@@ -55,5 +63,16 @@ class StoriesController < ApplicationController # :nodoc:
     params.slice(
       :writer, :developer, :client, :level, :frequency, :status
     )
+  end
+
+  def dates_params
+    params.require(:story).permit(
+      :deadline, :deadline, :desired_launch,
+      :last_launch, :last_export
+    )
+  end
+
+  def dev_status__params
+    params.require(:story).permit(:dev_status)
   end
 end

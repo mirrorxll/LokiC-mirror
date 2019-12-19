@@ -7,6 +7,9 @@ Rails.application.routes.draw do
   resources :data_locations
 
   resources :stories do
+    put :dates, on: :member
+    put :dev_status, on: :member
+
     resources :data_locations, only: %i[] do
       post    :include, on: :collection
       delete  :exclude, on: :member

@@ -13,7 +13,7 @@ namespace :db do
 
     FirstObjects.methods(false).sort.each do |method|
       class_name = method.to_s.split('_').map(&:capitalize).join
-      eval("#{class_name}.create(FirstObjects.#{method})", __FILE__, __LINE__)
+      eval("#{class_name}.create(FirstObjects.#{method})")
     end
     puts 'Data was entry.'
   end
