@@ -19,7 +19,7 @@ namespace :db do
   end
 
   desc 'create user'
-  task create_user:, %i[name email pass] => :environment do |t, args|
+  task :create_user, %i[name email pass] => :environment do |t, args|
     User.create!(
       name: args['name'],
       email: args['email'],
