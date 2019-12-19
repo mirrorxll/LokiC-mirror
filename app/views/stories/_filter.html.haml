@@ -9,8 +9,8 @@
   = form.collection_select :level, Level.all, :id, :name, prompt: true
   = form.label :frequency
   = form.collection_select :frequency, Frequency.all, :id, :name, prompt: true
-  = form.label :status
-  = form.select :status, statuses, prompt: true
+  = form.label :dev_status
+  = form.select :dev_status, dev_statuses, prompt: true
   = form.submit 'Find', class: 'btn btn-sm btn-success'
 
 #reset.d-inline

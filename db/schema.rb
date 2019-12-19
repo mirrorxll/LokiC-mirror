@@ -104,7 +104,7 @@ ActiveRecord::Schema.define(version: 2019_12_07_135916) do
     t.date "last_launch"
     t.date "last_export"
     t.date "deadline"
-    t.string "status", default: "Not Started"
+    t.string "dev_status", default: "Not Started"
     t.string "filename", default: ""
     t.bigint "developer_id"
     t.bigint "writer_id"
