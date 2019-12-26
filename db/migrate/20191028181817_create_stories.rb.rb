@@ -11,7 +11,6 @@ class CreateStories < ActiveRecord::Migration[6.0] # :nodoc:
       t.date    :last_export,     default: nil
       t.date    :deadline,        default: nil
       t.string  :dev_status,      default: 'Not Started'
-      t.string  :filename,        default: ''
 
       t.belongs_to :developer
       t.belongs_to :writer

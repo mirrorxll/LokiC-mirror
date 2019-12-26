@@ -105,7 +105,6 @@ ActiveRecord::Schema.define(version: 2019_12_07_135916) do
     t.date "last_export"
     t.date "deadline"
     t.string "dev_status", default: "Not Started"
-    t.string "filename", default: ""
     t.bigint "developer_id"
     t.bigint "writer_id"
     t.datetime "created_at", precision: 6, null: false
@@ -161,7 +160,7 @@ ActiveRecord::Schema.define(version: 2019_12_07_135916) do
   create_table "story_iterations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "iteration"
     t.boolean "populate_status", default: false
-    t.boolean "stories_create_status", default: false
+    t.boolean "create_status", default: false
     t.bigint "story_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false

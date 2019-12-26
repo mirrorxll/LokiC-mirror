@@ -2,7 +2,7 @@
 
 class PopulationsController < ApplicationController # :nodoc:
   def execute
-    @story.staging_table&.execute_population({})
+    @story.staging_table.execute_code('populate', {})
   end
 
   def purge

@@ -20,7 +20,10 @@ class Story < ApplicationRecord # :nodoc:
   has_and_belongs_to_many :levels,          join_table: 'stories__levels'
   has_and_belongs_to_many :frequencies,     join_table: 'stories__frequencies'
 
-  before_create { self.filename = SecureRandom.hex(6) }
+  def filename
+    "StoryType#{id}"
+  end
+  alias module_name filename
 
   # filter
   def self.writer(id)
