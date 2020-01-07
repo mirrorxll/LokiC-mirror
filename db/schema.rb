@@ -158,7 +158,7 @@ ActiveRecord::Schema.define(version: 2019_12_07_135916) do
   end
 
   create_table "story_iterations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
-    t.string "iteration"
+    t.string "number"
     t.boolean "populate_status", default: false
     t.boolean "create_status", default: false
     t.bigint "story_id"

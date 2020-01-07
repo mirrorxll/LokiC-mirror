@@ -7,6 +7,8 @@ class StagingTable < ApplicationRecord # :nodoc:
 
   belongs_to :story
 
+  before_create { self.name = "#{name}_staging" }
+
   def self.name_columns_from(params)
     {
       name: params[:staging_table].delete(:name),
@@ -47,6 +49,16 @@ class StagingTable < ApplicationRecord # :nodoc:
   def purge_last_population
     ActiveRecord::Base.connection.execute(
       LokiC::Queries.delete_from(name, story.iterations.last)
+    )
+  end
+
+  def purge_last_creation
+
+  end
+
+  def truncate
+    ActiveRecord::Base.connection.execute(
+      LokiC::Queries.truncate(name)
     )
   end
 end

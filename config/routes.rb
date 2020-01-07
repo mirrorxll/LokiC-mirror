@@ -45,7 +45,10 @@ Rails.application.routes.draw do
       delete  :exclude, on: :member
     end
 
-    resources :staging_tables, path: 'staging_table', except: %i[index new]
+    resources :staging_tables, path: 'staging_table', except: %i[index new] do
+      put     :truncate
+    end
+
     resources :codes, path: 'upload_code', only: %i[create destroy]
 
     resources :populations, path: 'populate', only: %i[] do

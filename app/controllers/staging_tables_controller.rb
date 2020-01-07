@@ -35,6 +35,10 @@ class StagingTablesController < ApplicationController # :nodoc:
     render 'create_update'
   end
 
+  def truncate
+    @story.staging_table.truncate
+  end
+
   def destroy
     @story.staging_table.delete
   end

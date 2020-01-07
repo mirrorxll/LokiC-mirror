@@ -16,7 +16,7 @@ module LokiC
     end
 
     def self.alter_table(t_name, cur_col, mod_col)
-      q = ["ALTER TABLE `#{t_name}_staging`"]
+      q = ["ALTER TABLE `#{t_name}`"]
       Columns.dropped(cur_col, mod_col).each { |c| q << "DROP COLUMN `#{c['name']}`," }
       Columns.added(cur_col, mod_col).each { |c| q << "ADD COLUMN `#{c[:name]}` #{c[:type]}," }
       Columns.changed(cur_col, mod_col).each do |c|
@@ -29,11 +29,15 @@ module LokiC
     def self.rename_table(curr_name, modify_name)
       return if curr_name.eql?(modify_name)
 
-      %(RENAME TABLE `#{curr_name}_staging` TO `#{modify_name}_staging`;)
+      %(RENAME TABLE `#{curr_name}` TO `#{modify_name}`;)
     end
 
     def self.delete_from(t_name, iteration)
-      %(DELETE FROM TABLE `#{t_name}_staging` WHERE iteration = "#{iteration}";)
+      %(DELETE FROM TABLE `#{t_name}` WHERE iteration = "#{iteration}";)
+    end
+
+    def self.truncate(name)
+      %(TRUNCATE TABLE `#{name}` WHERE iteration = "#{iteration}";)
     end
   end
 end
