@@ -3,7 +3,7 @@
 class CreateStoryIterations < ActiveRecord::Migration[6.0] # :nodoc:
   def change
     create_table :story_iterations do |t|
-      t.string  :iteration
+      t.string  :number
       t.boolean :populate_status,       default: false
       t.boolean :create_status,         default: false
 

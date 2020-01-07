@@ -38,13 +38,10 @@ class StagingTable < ApplicationRecord # :nodoc:
   end
 
   def execute_code(method, options)
-    if story.story_iterations.count.zero? ||
-       story.story_iterations.last.attributes.values_at(:populate_status, :create_status).all?(true)
-      story.story_iterations.create
-    end
-
     ex = LokiC::Story::Code.run(story, method, options)
-    story.story_iterations.last.update!("#{method}_status": 1) if ex
+    story.story_iterations.last.update!("#{method}_status": 1) unless ex
+
+    ex
   end
 
   def purge_last_population

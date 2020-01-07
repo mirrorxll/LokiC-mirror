@@ -3,7 +3,14 @@
 module LokiC
   module Queries # :nodoc:
     def self.create_table(params)
-      q = %|CREATE TABLE IF NOT EXISTS `#{params[:name]}_staging` (id INT AUTO_INCREMENT PRIMARY KEY, |
+      q = "CREATE TABLE IF NOT EXISTS `#{params[:name]}_staging` ("\
+           'id INT AUTO_INCREMENT PRIMARY KEY, '\
+           'source_table_id INT, '\
+           'client_id INT, '\
+           'client_name VARCHAR(255), '\
+           'project_id INT, '\
+           'project_name VARCHAR(255), '\
+           'publish_on VARCHAR(10), '
       params[:columns].each { |column| q += %(`#{column[:name]}` #{column[:type]}, ) }
       q[0...-2] + ') ENGINE=INNODB;'
     end
