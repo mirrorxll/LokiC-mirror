@@ -2,7 +2,7 @@
 
 class CreationsController < ApplicationController # :nodoc:
   def execute
-    @story.staging_table.execute_creation
+    @story.staging_table.execute_code('create', {})
   end
 
   def purge

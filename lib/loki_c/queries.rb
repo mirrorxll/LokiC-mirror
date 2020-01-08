@@ -26,14 +26,26 @@ module LokiC
       q.count > 1 ? q.join(' ')[0..-2] + ';' : nil
     end
 
-    def self.rename_table(curr_name, modify_name)
-      return if curr_name.eql?(modify_name)
+    def self.rename_table(curr_t_name, modify_t_name)
+      return if curr_t_name.eql?(modify_t_name)
 
-      %(RENAME TABLE `#{curr_name}` TO `#{modify_name}`;)
+      %(RENAME TABLE `#{curr_t_name}` TO `#{modify_t_name}`;)
     end
 
-    def self.delete_from(t_name, iteration)
+    def self.delete_population(t_name, iteration)
       %(DELETE FROM TABLE `#{t_name}` WHERE iteration = "#{iteration}";)
+    end
+
+    def self.select_iteration(t_name, iteration)
+      %(SELECT * FROM `#{t_name}` WHERE iteration = "#{iteration}";)
+    end
+
+    def self.delete_creation(t_name, iteration)
+      # %(DELETE FROM TABLE `#{t_name}` WHERE iteration = "#{iteration}";)
+    end
+
+    def drop_table(name)
+      %(DROP TABLE `#{name}`;)
     end
 
     def self.truncate(name)

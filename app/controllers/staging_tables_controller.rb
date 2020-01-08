@@ -25,7 +25,7 @@ class StagingTablesController < ApplicationController # :nodoc:
 
   def update
     flash[:error] =
-      if @story.staging_table
+      if StagingTable.exists?(params[:staging_table][:name])
         @story.staging_table.modify(@staging_table_params)
       else
         'Table was removed or renamed.'
@@ -40,6 +40,7 @@ class StagingTablesController < ApplicationController # :nodoc:
   end
 
   def destroy
+    @story.staging_table.drop_table
     @story.staging_table.delete
   end
 

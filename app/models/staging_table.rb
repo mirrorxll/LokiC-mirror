@@ -46,14 +46,28 @@ class StagingTable < ApplicationRecord # :nodoc:
     ex
   end
 
+  def iteration_rows(number)
+    ActiveRecord::Base.connection.execute(
+      LokiC::Queries.select_iteration(name, number)
+    )
+  end
+
   def purge_last_population
     ActiveRecord::Base.connection.execute(
-      LokiC::Queries.delete_from(name, story.iterations.last)
+      LokiC::Queries.delete_population(name, story.iterations.last)
     )
   end
 
   def purge_last_creation
+    ActiveRecord::Base.connection.execute(
+      LokiC::Queries.delete_creation(name, story.iterations.last)
+    )
+  end
 
+  def drop_table
+    ActiveRecord::Base.connection.execute(
+      LokiC::Queries.drop_table(name)
+    )
   end
 
   def truncate
