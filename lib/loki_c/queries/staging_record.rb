@@ -2,21 +2,23 @@
 
 module LokiC
   module Queries
-    class StageRecord # :nodoc:
-      def initialize(story, hash)
-        hash[:iteration] = iteration(story)[:number]
-        @record = transform(story, hash)
+    class StagingRecord # :nodoc:
+      def initialize(story, hash_to_record)
+        hash_to_record[:iteration] = iteration(story)[:number]
+        @record = transform(story, hash_to_record)
+        @client = Mysql2.new('jdbc:mysql://localhost:3306/LokiC_development', 'LokiC_development')
       end
 
-      def insert_dup_on_query
-        "insert into `#{@record[:table_name]}` "\
-        "(#{@record[:keys]}) values(#{@record[:values]}) "\
-        "on duplicate key update #{@record[:updates]};"
+      def insert_duplicate_on
+        @client.query(insert_dup_on_query)
       end
 
-      def insert_ignore_query
-        "insert ignore into `#{@record[:table_name]}` "\
-        "(#{@record[:keys]}) values(#{@record[:values]});"
+      def insert_ignore
+        @client.query(insert_ignore_query)
+      end
+
+      def close
+        @client.close
       end
 
       private
@@ -44,6 +46,17 @@ module LokiC
         statuses = it.last.attributes.values_at(:populate_status, :create_status)
 
         count.zero? || statuses.all?(true)
+      end
+
+      def insert_dup_on_query
+        "insert into `#{@record[:table_name]}` "\
+        "(#{@record[:keys]}) values(#{@record[:values]}) "\
+        "on duplicate key update #{@record[:updates]};"
+      end
+
+      def insert_ignore_query
+        "insert ignore into `#{@record[:table_name]}` "\
+        "(#{@record[:keys]}) values(#{@record[:values]});"
       end
     end
   end

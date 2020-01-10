@@ -46,7 +46,7 @@ class StagingTable < ApplicationRecord # :nodoc:
     ex
   end
 
-  def iteration_rows(number)
+  def rows(number)
     ActiveRecord::Base.connection.execute(
       LokiC::Queries.select_iteration(name, number)
     )

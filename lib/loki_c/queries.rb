@@ -6,6 +6,7 @@ module LokiC
       q = "CREATE TABLE IF NOT EXISTS `#{params[:name]}_staging` ("\
            'id INT AUTO_INCREMENT PRIMARY KEY, '\
            'source_table_id INT, '\
+           'story_created TINYINT, '\
            'client_id INT, '\
            'client_name VARCHAR(255), '\
            'project_id INT, '\
