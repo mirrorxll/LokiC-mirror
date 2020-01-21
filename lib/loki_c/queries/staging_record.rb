@@ -11,14 +11,12 @@ module LokiC
 
       def insert_duplicate_on
         @client.query(insert_dup_on_query)
+        close_connection
       end
 
       def insert_ignore
         @client.query(insert_ignore_query)
-      end
-
-      def close
-        @client.close
+        close_connection
       end
 
       private
@@ -57,6 +55,10 @@ module LokiC
       def insert_ignore_query
         "insert ignore into `#{@record[:table_name]}` "\
         "(#{@record[:keys]}) values(#{@record[:values]});"
+      end
+
+      def close_connection
+        @client.close
       end
     end
   end
