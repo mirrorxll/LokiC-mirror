@@ -6,6 +6,8 @@ ruby '2.6.3'
 gem 'activeadmin'
 gem 'devise'
 gem 'devise-bootstrap-views', '~> 1.0'
+gem 'sidekiq'
+gem 'sidekiq-status'
 
 # haml's engine
 gem 'haml-rails', '~> 2.0'

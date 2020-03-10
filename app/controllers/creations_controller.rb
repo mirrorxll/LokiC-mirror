@@ -2,10 +2,10 @@
 
 class CreationsController < ApplicationController # :nodoc:
   def execute
-    @story.staging_table.execute_code('create', {})
+    CreationJob.perform_async(@story.id)
   end
 
   def purge
-    @story.staging_table.purge_last_creation
+    PurgeLastCreationJob.perform_async(@story.id)
   end
 end

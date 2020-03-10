@@ -2,11 +2,11 @@
 
 class PopulationsController < ApplicationController # :nodoc:
   def execute
-    @story.staging_table.execute_code('populate', {})
+    PopulationJob.perform_later(@story.id)
   end
 
   def purge
-    @story.staging_table.purge_last_population
+    PurgeLastPopulationJob.perform_later(@story.id)
   end
 
   private
