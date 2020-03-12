@@ -33,7 +33,7 @@ module LokiC
     config.generators.system_tests = nil
 
     # ActiveJob backend
-    config.active_job.queue_adapter = :sidekiq
+    # config.active_job.queue_adapter = :sidekiq
 
     config.autoload_paths += %W[#{config.root}/lib/]
   end

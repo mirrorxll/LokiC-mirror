@@ -4,14 +4,14 @@ class FirstObjects # :nodoc:
   def self.story_type
     [
       {
-        type_name: 'Story Type 1',
+        name: 'Story Type 1',
         body: 'Some Body',
         description: 'Some Description',
         editor: User.first,
         data_location: DataLocation.first
       },
       {
-        type_name: 'Story Type 2',
+        name: 'Story Type 2',
         body: 'Some Body',
         description: 'Some Description',
         editor: User.first,

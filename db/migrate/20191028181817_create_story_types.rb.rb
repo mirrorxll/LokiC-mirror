@@ -3,7 +3,7 @@
 class CreateStoryTypes < ActiveRecord::Migration[6.0] # :nodoc:
   def change
     create_table :story_types do |t|
-      t.string  :type_name
+      t.string  :name
       t.string  :headline
       t.string  :teaser, limit: 500
       t.text    :body, limit: 100_000

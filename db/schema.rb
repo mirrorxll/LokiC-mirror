@@ -117,7 +117,7 @@ ActiveRecord::Schema.define(version: 2019_12_07_135916) do
   end
 
   create_table "story_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
-    t.string "type_name"
+    t.string "name"
     t.string "headline"
     t.string "teaser", limit: 500
     t.text "body", size: :medium

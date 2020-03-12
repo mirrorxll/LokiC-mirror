@@ -34,11 +34,11 @@ class DataLocationsController < ApplicationController # :nodoc:
 
   def update
     if @data_location.update(data_location_params)
-      SendNotificationToSlackJob.perform_async(
-        channel: 'remainder_tool_test',
-        text: '......',
-        as_user: true
+      SendNotificationToSlackWorker.perform_async(
+        'remainder_tool_test',
+        '......'
       )
+
       redirect_to @data_location
     else
       render :edit
