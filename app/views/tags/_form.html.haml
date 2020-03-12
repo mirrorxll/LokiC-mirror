@@ -1,4 +1,4 @@
-= form_with(url: include_story_tags_path(@story)) do |form|
+= form_with(url: include_story_type_tags_path(@story_type)) do |form|
   = form.label :tags
   = form.collection_select :tag_id, Tag.all, :id, :name, { prompt: true }, { name: :id }
   = form.submit 'Add', data: { disable_with: "..." }

@@ -1,5 +1,0 @@
-= form_with(model: @story, url: dev_status_story_path(@story), method: :put, html: { onchange: 'this.submit();' }) do |form|
-  .row
-    .col-3
-      = form.label  :dev_status
-      = form.select :dev_status, dev_statuses

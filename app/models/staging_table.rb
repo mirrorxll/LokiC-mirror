@@ -5,7 +5,7 @@ require 'loki_c/queries'
 class StagingTable < ApplicationRecord # :nodoc:
   serialize :columns, JSON
 
-  belongs_to :story
+  belongs_to :story_type
 
   before_create { self.name = "#{name}_staging" }
 
@@ -40,8 +40,8 @@ class StagingTable < ApplicationRecord # :nodoc:
   end
 
   def execute_code(method, options)
-    ex = LokiC::Story::Code.run(story, method, options)
-    story.story_iterations.last.update!("#{method}_status": 1) unless ex
+    ex = LokiC::StoryType::Code.run(story_type, method, options)
+    story_type.story_type_iterations.last.update!("#{method}_status": 1) unless ex
 
     ex
   end

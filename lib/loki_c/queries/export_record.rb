@@ -34,7 +34,7 @@ module LokiC
 
       # insert to export table
       def insert_query
-        %|insert into stories_to_export (
+        %|insert into story_types_to_export (
             headline,
             teaser,
             output,

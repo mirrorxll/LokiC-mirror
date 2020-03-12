@@ -6,7 +6,7 @@ class CreateStagingTables < ActiveRecord::Migration[6.0] # :nodoc:
       t.string  :name
       t.text    :columns
 
-      t.belongs_to :story
+      t.belongs_to :story_type
 
       t.timestamps
     end

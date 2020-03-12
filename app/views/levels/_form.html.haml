@@ -1,4 +1,4 @@
-= form_with(url: include_story_levels_path(@story)) do |form|
+= form_with(url: include_story_type_levels_path(@story_type)) do |form|
   = form.label :level
   = form.collection_select :level_id, Level.all, :id, :name, { prompt: true }, { name: :id }
   = form.submit 'Add', data: { disable_with: "..." }

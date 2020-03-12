@@ -1,0 +1,4 @@
+- @story_type.photo_buckets.each do |pb|
+  %div{id: "photo-bucket-#{pb.id}"}
+    = pb.name
+    = link_to('X', exclude_story_photo_bucket_path(story_type_id: @story_type.id, id: pb.id), method: :delete, remote: true)

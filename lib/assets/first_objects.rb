@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class FirstObjects # :nodoc:
-  def self.story
+  def self.story_type
     [
       {
         type_name: 'Story Type 1',

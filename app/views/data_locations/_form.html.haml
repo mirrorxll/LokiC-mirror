@@ -4,7 +4,7 @@
       .col-3
         =form.label field
       .col-9
-        -if %i[:cron_scraping evaluated].include?(field)
+        -if %i[cron_scraping evaluated].include?(field)
           =form.check_box field
         -else
           =form.text_field field

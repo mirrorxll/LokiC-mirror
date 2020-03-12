@@ -2,10 +2,10 @@
 
 class CodesController < ApplicationController # :nodoc:
   def create
-    @story.code.attach(params[:code]) unless @story.code.attached?
+    @story_type.code.attach(params[:code]) unless @story_type.code.attached?
   end
 
   def destroy
-    @story.code.purge if @story.code.attached?
+    @story_type.code.purge if @story_type.code.attached?
   end
 end

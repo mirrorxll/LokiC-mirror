@@ -1,10 +1,10 @@
-= form_with(model: [@story, (@story.staging_table || @story.build_staging_table)] ) do |form|
+= form_with(model: [@story_type, (@story_type.staging_table || @story_type.build_staging_table)] ) do |form|
   = form.label :table_name
   = form.text_field :name, required: true
   -# The blocks below will process by JS
   %div#columns-editable
     - if action_name.eql?('edit')
-      - @story.staging_table.columns.each_with_index do |column, i|
+      - @story_type.staging_table.columns.each_with_index do |column, i|
         %div{ id: "column-#{i + 1}"}
           = form.label :"column_name_#{column['id']}", "#{i + 1}"
           = form.text_field :"column_name_#{column['id']}", value: column['name']

@@ -1,4 +1,0 @@
-- @story.levels.each do |lvl|
-  %div{id: "level-#{lvl.id}"}
-    = lvl.name
-    = link_to('X', exclude_story_level_path(story_id: @story.id, id: lvl.id), method: :delete, remote: true)

@@ -1,5 +1,0 @@
-.row
-  #code-download.col-2
-    = link_to('download', url_for(@story.code))
-  #code-remove.col-2
-    = link_to('remove', story_code_path(story_id: @story.id, id: @story.id), method: :delete, remote: true)

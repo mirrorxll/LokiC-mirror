@@ -42,5 +42,5 @@ yarn-debug.log*
 Gemfile.lock
 
 # Ignore Uploaded Code
-/lib/loki_c/story/code/*
+/lib/loki_c/story_type/code/*
 

@@ -3,7 +3,7 @@
 require_relative '../assets/first_objects.rb'
 
 namespace :db do
-  desc 'Push couple of the test stories to db'
+  desc 'Push couple of the test story_types to db'
   task entry_data: :environment do
     User.create!(
       first_name: 'Sergey',
@@ -23,7 +23,8 @@ namespace :db do
   desc 'create user'
   task :create_user, %i[name email pass] => :environment do |t, args|
     User.create!(
-      name: args['name'],
+      first_name: args['first_name'],
+      last_name: args['last_name'],
       email: args['email'],
       password: args['pass']
     )

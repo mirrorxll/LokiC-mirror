@@ -7,8 +7,8 @@ class User < ApplicationRecord # :nodoc:
 
   enum account: %i[admin editor manager developer]
 
-  has_one :story, foreign_key: :editor_id
-  has_many :stories, foreign_key: :developer_id
+  has_one :story_type, foreign_key: :editor_id
+  has_many :story_types, foreign_key: :developer_id
   has_many :data_locations
 
   def username

@@ -1,0 +1,14 @@
+= form_with(model: @story_type) do |form|
+  .div.field
+    = form.label          :name
+    %br/
+    = form.text_field     :name
+    %br/
+    %div{"data-controller" => "summernote"}
+      = form.label :body
+      = form.text_area :body, data: { editor: 'summernote' }
+    %br/
+    = form.label          :description
+    %br/
+    = form.text_area      :description
+    = form.submit action_name.eql?('show') ? :update : :create

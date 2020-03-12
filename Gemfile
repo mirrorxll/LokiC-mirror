@@ -7,7 +7,9 @@ gem 'activeadmin'
 gem 'devise'
 gem 'devise-bootstrap-views', '~> 1.0'
 gem 'sidekiq'
+gem 'sidekiq-cron'
 gem 'sidekiq-status'
+gem 'slack-ruby-client'
 
 # haml's engine
 gem 'haml-rails', '~> 2.0'

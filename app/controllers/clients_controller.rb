@@ -4,15 +4,15 @@ class ClientsController < ApplicationController # :nodoc:
   before_action :find_client
 
   def include
-    render_400 && return if @story.clients.exists?(@client.id)
+    render_400 && return if @story_type.clients.exists?(@client.id)
 
-    @story.clients << @client
+    @story_type.clients << @client
   end
 
   def exclude
-    render_400 && return unless @story.clients.exists?(@client.id)
+    render_400 && return unless @story_type.clients.exists?(@client.id)
 
-    @story.clients.destroy(@client)
+    @story_type.clients.destroy(@client)
   end
 
   private

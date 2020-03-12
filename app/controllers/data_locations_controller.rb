@@ -2,7 +2,7 @@
 
 class DataLocationsController < ApplicationController # :nodoc:
   before_action :find_data_location, except: %i[index new create]
-  skip_before_action :find_story
+  skip_before_action :find_story_type
 
   def index
     @data_locations = DataLocation.all
@@ -13,7 +13,7 @@ class DataLocationsController < ApplicationController # :nodoc:
   end
 
   def show
-    @stories = @data_location.stories
+    @story_types = @data_location.story_types
   end
 
   def new
@@ -34,6 +34,11 @@ class DataLocationsController < ApplicationController # :nodoc:
 
   def update
     if @data_location.update(data_location_params)
+      SendNotificationToSlackJob.perform_async(
+        channel: 'remainder_tool_test',
+        text: '......',
+        as_user: true
+      )
       redirect_to @data_location
     else
       render :edit

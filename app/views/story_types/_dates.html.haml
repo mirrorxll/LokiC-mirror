@@ -1,0 +1,19 @@
+= form_with(model: @story_type, url: dates_story_type_path(@story_type), method: :put, html: { onchange: 'this.submit();' }) do |form|
+  .row
+    .col-3
+      = form.label          :deadline
+      %br/
+      = form.date_field     :deadline
+    .col-3
+      = form.label          :desired_launch
+      %br/
+      = form.date_field     :desired_launch
+    .col-3
+      = form.label          :last_launch
+      %br/
+      = form.date_field     :last_launch
+    .col-3
+      = form.label          :last_export
+      %br/
+      = form.date_field     :last_export
+    %br/

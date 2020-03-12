@@ -4,15 +4,15 @@ class LevelsController < ApplicationController # :nodoc:
   before_action :find_level
 
   def include
-    render_400 && return if @story.levels.count.positive?
+    render_400 && return if @story_type.levels.count.positive?
 
-    @story.levels << @level
+    @story_type.levels << @level
   end
 
   def exclude
-    render_400 && return unless @story.levels.exists?(@level.id)
+    render_400 && return unless @story_type.levels.exists?(@level.id)
 
-    @story.levels.clear
+    @story_type.levels.clear
   end
 
   private

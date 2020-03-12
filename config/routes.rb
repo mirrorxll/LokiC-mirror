@@ -6,10 +6,10 @@ Rails.application.routes.draw do
 
   mount Sidekiq::Web => '/sidekiq'
 
-  root 'stories#index'
+  root 'story_types#index'
   resources :data_locations
 
-  resources :stories do
+  resources :story_types do
     put :dates, on: :member
     put :dev_status, on: :member
 

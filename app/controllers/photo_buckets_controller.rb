@@ -4,15 +4,15 @@ class PhotoBucketsController < ApplicationController # :nodoc:
   before_action :find_photo_bucket
 
   def include
-    render_400 && return if @story.photo_buckets.count.positive?
+    render_400 && return if @story_type.photo_buckets.count.positive?
 
-    @story.photo_buckets << @photo_bucket
+    @story_type.photo_buckets << @photo_bucket
   end
 
   def exclude
-    render_400 && return unless @story.photo_buckets.exists?(@photo_bucket.id)
+    render_400 && return unless @story_type.photo_buckets.exists?(@photo_bucket.id)
 
-    @story.photo_buckets.clear
+    @story_type.photo_buckets.clear
   end
 
   private

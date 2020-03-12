@@ -1,0 +1,5 @@
+.row{id: "story-#{story_type.id}"}
+  .col-1.text-center
+    = story_type.id
+  .col-5.text-left
+    = link_to(story_type.type_name, story_type_path(story_type))

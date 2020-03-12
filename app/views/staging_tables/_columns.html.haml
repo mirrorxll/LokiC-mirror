@@ -1,11 +1,11 @@
 %p
   Table Name:
-  = @story.staging_table.name
-- @story.reload.staging_table.columns.each do |column|
+  = @story_type.staging_table.name
+- @story_type.reload.staging_table.columns.each do |column|
   %p
     = "#{column['name']} : #{column['type']}"
 %p
   = link_to('edit',
-      edit_story_staging_table_path(story_id: @story.id, id: @story.staging_table.id),
+      edit_story_staging_table_path(story_type_id: @story_type.id, id: @story_type.staging_table.id),
       class: 'btn btn-sm btn-success',
       remote: true)

@@ -1,6 +1,6 @@
 $('#data-locations').append(`
   <div id="data-location-<%= @data_location.id %>">
     <%= link_to(@data_location.name, data_location_path(@data_location)) %>
-    <%= link_to('X', exclude_story_data_location_path(story_id: @story.id, id: @data_location.id), method: :delete, remote: true) %>
+    <%= link_to('X', exclude_story_data_location_path(story_type_id: @story_type.id, id: @data_location.id), method: :delete, remote: true) %>
   </div>
 `)

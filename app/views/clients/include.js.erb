@@ -1,6 +1,6 @@
 $('#clients').append(`
   <div id="client-<%= @client.id %>">
     <%= @client.name %>
-    <%= link_to('X', exclude_story_client_path(story_id: @story.id, id: @client.id), method: :delete, remote: true) %>
+    <%= link_to('X', exclude_story_client_path(story_type_id: @story_type.id, id: @client.id), method: :delete, remote: true) %>
   </div>
 `)
