@@ -1,5 +1,7 @@
-class PurgeLastCreationJob < ApplicationJob
-  queue_as :purge_last_creation
+# frozen_string_literal: true
+
+class PurgeLastCreationWorker
+  include Sidekiq::Worker
 
   def perform(story_type_id)
     story_type = StoryType.find(story_type_id)
