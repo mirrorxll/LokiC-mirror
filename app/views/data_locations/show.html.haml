@@ -1,0 +1,9 @@
+-data_location_keys.each do |key|
+  .row
+    .col-4
+      =key.to_s.humanize
+    .col-8
+      -if key.eql?(:cron_scraping)
+        =@data_location[key].eql?(1) ? true : false
+      -else
+        =@data_location[key]

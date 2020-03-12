@@ -1,18 +1,18 @@
 %section#new-data-location
-  = render 'data_locations/new_edit_form'
+  =link_to('Add new Data location', new_data_location_path)
 %hr/
 
 %section#data-location
   - @data_locations.each do |dl|
     .row
       %small.col-3
-        = dl.name
+        = dl.source_name
       %small.col-3
-        = domain_name(dl.source)
+        = domain_name(dl.scrape_source)
       %small.col-3
-        = dl.dataset
+        = dl.data_set_location
       %small.col-2
-        = dl.note
+        = dl.data_set_evaluation_document.present? ? 'evaluated' : ''
       .col-1
         = link_to(image_tag('d_loc_edit_icon.png'), edit_data_location_path(dl), class: 'd-loc-edit-icon img')
         = link_to(image_tag('d_loc_show_icon.png'), data_location_path(dl), class: 'd-loc-show-icon img')

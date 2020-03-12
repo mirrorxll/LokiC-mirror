@@ -6,13 +6,16 @@ namespace :db do
   desc 'Push couple of the test stories to db'
   task entry_data: :environment do
     User.create!(
-      name: 'Init User',
-      email: 'loki.c@dev.loc',
+      first_name: 'Sergey',
+      last_name: 'Emelyanov',
+      account_type: 'admin',
+      email: 'evilx@loki.com',
       password: '123456'
     )
 
     FirstObjects.methods(false).sort.each do |method|
       class_name = method.to_s.split('_').map(&:capitalize).join
+      puts method
       eval("#{class_name}.create(FirstObjects.#{method})")
     end
     puts 'Data was entry.'

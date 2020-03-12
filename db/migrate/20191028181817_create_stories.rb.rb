@@ -3,17 +3,20 @@
 class CreateStories < ActiveRecord::Migration[6.0] # :nodoc:
   def change
     create_table :stories do |t|
-      t.string  :name,            default: 'New Story Type'
-      t.text    :body,            limit:   4_294_967_295
-      t.string  :description,     default: '...'
-      t.date    :desired_launch,  default: nil
-      t.date    :last_launch,     default: nil
-      t.date    :last_export,     default: nil
-      t.date    :deadline,        default: nil
-      t.string  :dev_status,      default: 'Not Started'
+      t.string  :type_name
+      t.string  :headline
+      t.string  :teaser, limit: 500
+      t.text    :body, limit: 100_000
+      t.string  :description, limit: 1000
+      t.date    :desired_launch
+      t.date    :last_launch
+      t.date    :last_export
+      t.date    :deadline
+      t.string  :dev_status, default: 'Not Started'
 
+      t.belongs_to :editor
       t.belongs_to :developer
-      t.belongs_to :writer
+      t.belongs_to :data_location
 
       t.timestamps
     end

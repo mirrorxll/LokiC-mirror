@@ -41,12 +41,22 @@ ActiveRecord::Schema.define(version: 2019_12_07_135916) do
   end
 
   create_table "data_locations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
-    t.string "name", default: ""
-    t.string "source", default: ""
-    t.string "dataset", default: ""
-    t.string "note", default: ""
+    t.string "source_name"
+    t.string "data_set_location"
+    t.string "data_set_evaluation_document"
+    t.boolean "evaluated", default: false
+    t.string "scrape_dev_developer_name"
+    t.string "scrape_source"
+    t.string "scrape_frequency"
+    t.string "data_release_frequency"
+    t.boolean "cron_scraping", default: false
+    t.string "scrape_developer_comments", limit: 1000
+    t.string "source_key_explaining_data"
+    t.string "gather_task"
+    t.bigint "user_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_data_locations_on_user_id"
   end
 
   create_table "frequencies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
@@ -97,32 +107,30 @@ ActiveRecord::Schema.define(version: 2019_12_07_135916) do
   end
 
   create_table "stories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
-    t.string "name", default: "New Story Type"
-    t.text "body", size: :long
-    t.string "description", default: "..."
+    t.string "type_name"
+    t.string "headline"
+    t.string "teaser", limit: 500
+    t.text "body", size: :medium
+    t.string "description", limit: 1000
     t.date "desired_launch"
     t.date "last_launch"
     t.date "last_export"
     t.date "deadline"
     t.string "dev_status", default: "Not Started"
+    t.bigint "editor_id"
     t.bigint "developer_id"
-    t.bigint "writer_id"
+    t.bigint "data_location_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["data_location_id"], name: "index_stories_on_data_location_id"
     t.index ["developer_id"], name: "index_stories_on_developer_id"
-    t.index ["writer_id"], name: "index_stories_on_writer_id"
+    t.index ["editor_id"], name: "index_stories_on_editor_id"
   end
 
   create_table "stories__clients", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.bigint "story_id", null: false
     t.bigint "client_id", null: false
     t.index ["story_id", "client_id"], name: "index_stories__clients_on_story_id_and_client_id", unique: true
-  end
-
-  create_table "stories__data_locations", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
-    t.bigint "story_id", null: false
-    t.bigint "data_location_id", null: false
-    t.index ["story_id", "data_location_id"], name: "index_stories__data_locations_on_story_id_and_data_location_id", unique: true
   end
 
   create_table "stories__frequencies", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
@@ -175,18 +183,18 @@ ActiveRecord::Schema.define(version: 2019_12_07_135916) do
   end
 
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
-    t.string "account"
-    t.string "email", default: "", null: false
-    t.string "encrypted_password", default: "", null: false
-    t.string "name", default: "", null: false
+    t.string "email", null: false
+    t.string "encrypted_password", null: false
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
+    t.string "first_name", null: false
+    t.string "last_name", null: false
+    t.string "account_type", null: false
     t.datetime "remember_created_at"
-    t.boolean "admin", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["name"], name: "index_users_on_name"
+    t.index ["first_name", "last_name"], name: "index_users_on_first_name_and_last_name"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
