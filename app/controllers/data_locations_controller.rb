@@ -2,13 +2,19 @@
 
 class DataLocationsController < ApplicationController # :nodoc:
   before_action :find_data_location, except: %i[index new create]
-  skip_before_action :find_story, except: %i[include exclude]
+  skip_before_action :find_story
 
   def index
     @data_locations = DataLocation.all
+
+    if params[:filter]
+      @data_locations = @data_locations.where(data_location_filter_params)
+    end
   end
 
-  def show; end
+  def show
+    @stories = @data_location.stories
+  end
 
   def new
     @data_location = DataLocation.new
@@ -38,22 +44,14 @@ class DataLocationsController < ApplicationController # :nodoc:
     @data_location.destroy
   end
 
-  def include
-    render_400 && return if @story.data_locations.exists?(@data_location.id)
-
-    @story.data_locations << @data_location
-  end
-
-  def exclude
-    render_400 && return unless @story.data_locations.exists?(@data_location.id)
-
-    @story.data_locations.destroy(@data_location)
-  end
-
   private
 
   def find_data_location
     @data_location = DataLocation.find(params[:id])
+  end
+
+  def data_location_filter_params
+    params.require(:filter).permit(:evaluated)
   end
 
   def data_location_params
@@ -61,6 +59,7 @@ class DataLocationsController < ApplicationController # :nodoc:
       :source_name,
       :data_set_location,
       :data_set_evaluation_document,
+      :evaluated,
       :scrape_dev_developer_name,
       :scrape_source,
       :scrape_frequency,

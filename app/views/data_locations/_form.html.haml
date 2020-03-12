@@ -4,10 +4,10 @@
       .col-3
         =form.label field
       .col-9
-        -if field.eql?(:cron_scraping)
+        -if %i[:cron_scraping evaluated].include?(field)
           =form.check_box field
         -else
           =form.text_field field
   .row
     .col-12
-      =form.submit 'Add', data: { disable_with: "..." }
+      =form.submit  data: { disable_with: "..." }

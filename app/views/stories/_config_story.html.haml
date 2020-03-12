@@ -3,10 +3,6 @@
   %br
   = render 'stories/dev_status'
 %br
-#data-locations
-  = render 'data_locations/select_form'
-  = render 'data_locations/story_data_locations'
-%br/
 #frequency
   - if @story.frequencies.present?
     = render 'frequencies/story_frequency'

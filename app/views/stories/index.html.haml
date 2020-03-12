@@ -9,15 +9,10 @@
 %hr/
 %hr/
 
-%section#stories.text-center
+%section#stories
   .row
-    .col-1
+    .col-1.text-center
       ROW
-    .col-5
+    .col-11
       NAME
-  - @stories.each do |story|
-    .row{id: "story-#{story.id}"}
-      .col-1
-        = story.id
-      .col-5.text-left
-        = link_to(story.name, story_path(story))
+  =render @stories

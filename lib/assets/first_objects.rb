@@ -34,7 +34,8 @@ class FirstObjects # :nodoc:
         cron_scraping: true,
         scrape_developer_comments: 'bla bla bla',
         source_key_explaining_data: 'https://..',
-        gather_task: 'https://'
+        gather_task: 'https://',
+        user: User.first
       },
       {
         source_name: 'US Department of Agriculture',
@@ -47,7 +48,8 @@ class FirstObjects # :nodoc:
         cron_scraping: false,
         scrape_developer_comments: 'bla bla bla',
         source_key_explaining_data: 'https://..',
-        gather_task: 'https://'
+        gather_task: 'https://',
+        user: User.first
       }
     ]
   end

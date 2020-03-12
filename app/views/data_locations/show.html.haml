@@ -1,9 +1,24 @@
--data_location_keys.each do |key|
+%section#data-location
+  %a{ href: edit_data_location_path(@data_location),
+      style: 'text-decoration: none; color: black;' }
+    -data_location_keys.each do |key|
+      .row
+        .col-4
+          =key.to_s.humanize
+        .col-8
+          -if key.eql?(:cron_scraping)
+            =@data_location[key].eql?(1) ? true : false
+          -else
+            =@data_location[key]
+
+%section#filter
+  %hr
+  =render 'stories/filter'
+  %hr
+%section#stories
   .row
-    .col-4
-      =key.to_s.humanize
-    .col-8
-      -if key.eql?(:cron_scraping)
-        =@data_location[key].eql?(1) ? true : false
-      -else
-        =@data_location[key]
+    .col-1.text-center
+      ROW
+    .col-11
+      NAME
+  =render @stories

@@ -15,8 +15,7 @@ namespace :db do
 
     FirstObjects.methods(false).sort.each do |method|
       class_name = method.to_s.split('_').map(&:capitalize).join
-      puts method
-      eval("#{class_name}.create(FirstObjects.#{method})")
+      eval("#{class_name}.create!(FirstObjects.#{method})")
     end
     puts 'Data was entry.'
   end
