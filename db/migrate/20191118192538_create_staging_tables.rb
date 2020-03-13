@@ -4,7 +4,7 @@ class CreateStagingTables < ActiveRecord::Migration[6.0] # :nodoc:
   def change
     create_table :staging_tables do |t|
       t.string  :name
-      t.text    :columns
+      t.json    :columns
 
       t.belongs_to :story_type
 

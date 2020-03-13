@@ -5,16 +5,9 @@ require_relative '../assets/first_objects.rb'
 namespace :db do
   desc 'Push couple of the test story_types to db'
   task entry_data: :environment do
-    User.create!(
-      first_name: 'Sergey',
-      last_name: 'Emelyanov',
-      account_type: 'admin',
-      email: 'evilx@loki.com',
-      password: '123456'
-    )
-
     FirstObjects.methods(false).sort.each do |method|
-      class_name = method.to_s.split('_').map(&:capitalize).join
+
+      class_name = method[2..-1].to_s.split('_').map(&:capitalize).join
       eval("#{class_name}.create!(FirstObjects.#{method})")
     end
     puts 'Data was entry.'

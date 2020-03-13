@@ -9,8 +9,9 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.0] # :nodoc:
       t.datetime  :reset_password_sent_at
       t.string    :first_name,                null: false
       t.string    :last_name,                 null: false
-      t.string    :account_type,              null: false
       t.datetime  :remember_created_at
+
+      t.belongs_to :account_type
 
       t.timestamps
     end

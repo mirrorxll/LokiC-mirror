@@ -34,6 +34,7 @@ class DataLocationsController < ApplicationController # :nodoc:
 
   def update
     if @data_location.update(data_location_params)
+      # if @data_location.evaluated
       SendNotificationToSlackWorker.perform_async(
         'remainder_tool_test',
         '......'
@@ -65,7 +66,7 @@ class DataLocationsController < ApplicationController # :nodoc:
       :data_set_location,
       :data_set_evaluation_document,
       :evaluated,
-      :scrape_dev_developer_name,
+      :scrape_developer_name,
       :scrape_source,
       :scrape_frequency,
       :data_release_frequency,

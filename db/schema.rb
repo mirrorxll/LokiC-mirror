@@ -10,7 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_07_135916) do
+ActiveRecord::Schema.define(version: 2020_03_13_144006) do
+
+  create_table "account_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.string "name"
+    t.json "permissions"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name", null: false
@@ -45,7 +52,8 @@ ActiveRecord::Schema.define(version: 2019_12_07_135916) do
     t.string "data_set_location"
     t.string "data_set_evaluation_document"
     t.boolean "evaluated", default: false
-    t.string "scrape_dev_developer_name"
+    t.datetime "evaluated_at"
+    t.string "scrape_developer_name"
     t.string "scrape_source"
     t.string "scrape_frequency"
     t.string "data_release_frequency"
@@ -54,8 +62,10 @@ ActiveRecord::Schema.define(version: 2019_12_07_135916) do
     t.string "source_key_explaining_data"
     t.string "gather_task"
     t.bigint "user_id"
+    t.bigint "evaluator_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["evaluator_id"], name: "index_data_locations_on_evaluator_id"
     t.index ["user_id"], name: "index_data_locations_on_user_id"
   end
 
@@ -99,21 +109,20 @@ ActiveRecord::Schema.define(version: 2019_12_07_135916) do
 
   create_table "staging_tables", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name"
-    t.text "columns"
+    t.json "columns"
     t.bigint "story_type_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["story_type_id"], name: "index_staging_tables_on_story_type_id"
   end
 
-  create_table "story_iterations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
-    t.string "number"
+  create_table "story_type_iterations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.boolean "populate_status", default: false
     t.boolean "create_status", default: false
     t.bigint "story_type_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["story_type_id"], name: "index_story_iterations_on_story_type_id"
+    t.index ["story_type_id"], name: "index_story_type_iterations_on_story_type_id"
   end
 
   create_table "story_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
@@ -189,10 +198,11 @@ ActiveRecord::Schema.define(version: 2019_12_07_135916) do
     t.datetime "reset_password_sent_at"
     t.string "first_name", null: false
     t.string "last_name", null: false
-    t.string "account_type", null: false
     t.datetime "remember_created_at"
+    t.bigint "account_type_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["account_type_id"], name: "index_users_on_account_type_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["first_name", "last_name"], name: "index_users_on_first_name_and_last_name"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

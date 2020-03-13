@@ -3,8 +3,6 @@
 require 'loki_c/queries'
 
 class StagingTable < ApplicationRecord # :nodoc:
-  serialize :columns, JSON
-
   belongs_to :story_type
 
   before_create { self.name = "#{name}_staging" }
