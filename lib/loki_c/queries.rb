@@ -2,18 +2,16 @@
 
 module LokiC
   module Queries # :nodoc:
-    def self.create_table(params)
-      q = "CREATE TABLE IF NOT EXISTS `#{params[:name]}_staging` ("\
-           'id INT AUTO_INCREMENT PRIMARY KEY, '\
-           'source_table_id INT, '\
-           'story_created TINYINT, '\
-           'client_id INT, '\
-           'client_name VARCHAR(255), '\
-           'project_id INT, '\
-           'project_name VARCHAR(255), '\
-           'publish_on VARCHAR(10), '
-      params[:columns].each { |column| q += %(`#{column[:name]}` #{column[:type]}, ) }
-      q[0...-2] + ') ENGINE=INNODB;'
+    def self.create_table
+      ActiveRecord::Base.connected_to(database: { slow: :hle }) do
+        ActiveRecord::Migration.create_table("il_parole_staging", if_not_exists: true)
+        ActiveRecord::Migration.add_column("il_parole_staging", :story_created, :boolean)
+        ActiveRecord::Migration.add_column("il_parole_staging", :client_id, :integer)
+        ActiveRecord::Migration.add_column("il_parole_staging", :client_name, :string)
+        ActiveRecord::Migration.add_column("il_parole_staging", :project_id, :integer)
+        ActiveRecord::Migration.add_column("il_parole_staging", :project_name, :string)
+        ActiveRecord::Migration.add_column("il_parole_staging", :publish_on, :datetime)
+      end
     end
 
     def self.alter_table(t_name, cur_col, mod_col)

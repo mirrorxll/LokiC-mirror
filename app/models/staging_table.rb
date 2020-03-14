@@ -5,8 +5,6 @@ require 'loki_c/queries'
 class StagingTable < ApplicationRecord # :nodoc:
   belongs_to :story_type
 
-  before_create { self.name = "#{name}_staging" }
-
   def self.name_columns_from(params)
     {
       name: params[:staging_table].delete(:name),
@@ -14,12 +12,10 @@ class StagingTable < ApplicationRecord # :nodoc:
     }
   end
 
-  def self.generate(params)
-    ActiveRecord::Base.connection.execute(
-      LokiC::Queries.create_table(params)
-    )
-  rescue ActiveRecord::StatementInvalid => e
-    e.message
+  def self.generate
+    LokiC::Queries.create_table
+  # rescue ActiveRecord::StatementInvalid => e
+  #   e.message
   end
 
   def modify(params)

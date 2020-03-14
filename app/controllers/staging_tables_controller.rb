@@ -11,8 +11,6 @@ class StagingTablesController < ApplicationController # :nodoc:
     flash[:error] =
       if @story_type.staging_table
         'Table for this story type already exist.'
-      elsif StagingTable.exists?(params[:staging_table][:name])
-        'Table with passed name already exist.'
       else
         StagingTable.generate(@staging_table_params)
       end
@@ -47,6 +45,7 @@ class StagingTablesController < ApplicationController # :nodoc:
   private
 
   def staging_table_params
-    @staging_table_params = StagingTable.name_columns_from(params)
+    columns = params.require(:staging_table).permit!
+    @staging_table_columns = StagingTable.name_columns_from(columns)
   end
 end

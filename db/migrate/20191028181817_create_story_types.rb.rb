@@ -6,7 +6,7 @@ class CreateStoryTypes < ActiveRecord::Migration[6.0] # :nodoc:
       t.string  :name
       t.string  :headline
       t.string  :teaser, limit: 500
-      t.text    :body, limit: 100_000
+      t.text    :body, limit: 1_572_864
       t.string  :description, limit: 1000
       t.date    :desired_launch
       t.date    :last_launch

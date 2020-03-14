@@ -1,6 +1,4 @@
 = form_with(model: [@story_type, (@story_type.staging_table || @story_type.build_staging_table)] ) do |form|
-  = form.label :table_name
-  = form.text_field :name, required: true
   -# The blocks below will process by JS
   %div#columns-editable
     - if action_name.eql?('edit')
