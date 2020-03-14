@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module LokiC
-  module Queries
+  module StagingTable
     module Columns # :nodoc:
       # name, type
       def self.added(curr_columns, modify_columns)
@@ -33,14 +33,18 @@ module LokiC
         end.compact
       end
 
-      def self.transform(params = {})
-        Ids.from_raw(params[:staging_table]).map do |id|
-          {
-              id: id,
-              name: params[:staging_table][:"column_name_#{id}"],
-              type: params[:staging_table][:"column_type_#{id}"]
-          }
+      def self.transform_init(params)
+        params.group_by { |k, _v| k.split('_').last }.map do |id, column|
+          hash = column.to_h
+
+          { hash["column_name_#{id}"] => hash["column_type_#{id}"] }
         end
+      end
+
+      # column[0] - column name
+      # column[1] - column type
+      def self.transform_exist(params)
+        params.map { |column| [column[0], column[1]] }
       end
     end
   end

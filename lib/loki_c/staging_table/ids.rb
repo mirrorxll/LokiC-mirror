@@ -3,6 +3,10 @@
 module LokiC
   module Queries
     module Ids # :nodoc:
+      def self.transform(columns)
+
+      end
+
       def self.from_raw(columns)
         columns.keys.map { |key| key.to_s.split('_').last }.uniq
       end

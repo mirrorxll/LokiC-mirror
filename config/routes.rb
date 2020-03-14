@@ -49,7 +49,8 @@ Rails.application.routes.draw do
     end
 
     resources :staging_tables, path: 'staging_table', except: %i[index new] do
-      put     :truncate
+      put     :attach, on: :collection
+      put     :truncate, on: :member
     end
 
     resources :codes, path: 'upload_code', only: %i[create destroy]

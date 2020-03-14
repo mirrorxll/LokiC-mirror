@@ -1,22 +1,26 @@
 # frozen_string_literal: true
 
 class StagingTablesController < ApplicationController # :nodoc:
-  before_action :staging_table_params, only: %i[create update]
+  before_action :new_staging_table_params, only: %i[create]
 
-  def show
-    @staging_table = @story_type.staging_table
-  end
+  def show; end
 
   def create
     flash[:error] =
-      if @story_type.staging_table
+      if @story_type.staging_table.present?
         'Table for this story type already exist.'
-      else
-        StagingTable.generate(@staging_table_params)
       end
 
-    @story_type.create_staging_table(@staging_table_params) unless flash[:error]
+    if flash[:error].nil?
+      @staging_table = StagingTable.create(story_type: @story_type)
+      @staging_table.create_tbl(@staging_table_columns)
+    end
+
     render 'create_update'
+  end
+
+  def attach
+
   end
 
   def edit; end
@@ -44,8 +48,16 @@ class StagingTablesController < ApplicationController # :nodoc:
 
   private
 
-  def staging_table_params
+  def new_staging_table_params
     columns = params.require(:staging_table).permit!
-    @staging_table_columns = StagingTable.name_columns_from(columns)
+    @staging_table_columns = LokiC::StagingTable::Columns.transform_init(columns.to_h)
+  end
+
+  def attach_staging_table_params
+    params.require(:table).permit(:name)
+  end
+
+  def exist_staging_table_params
+
   end
 end

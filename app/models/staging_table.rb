@@ -1,21 +1,23 @@
 # frozen_string_literal: true
 
-require 'loki_c/queries'
+require_relative '../../lib/loki_c/staging_table/columns.rb'
+require_relative '../../lib/loki_c/staging_table/ids.rb'
 
 class StagingTable < ApplicationRecord # :nodoc:
+  before_create { self.name = "#{story_type.id}_staging" }
+
   belongs_to :story_type
 
-  def self.name_columns_from(params)
-    {
-      name: params[:staging_table].delete(:name),
-      columns: LokiC::Queries::Columns.transform(params)
-    }
+  def attach_tbl(table)
+    LokiC::StagingTable.attach(table[:name])
   end
 
-  def self.generate
-    LokiC::Queries.create_table
-  # rescue ActiveRecord::StatementInvalid => e
-  #   e.message
+  def create_tbl(columns)
+    LokiC::StagingTable.create(name, columns)
+  end
+
+  def columns_list
+    LokiC::StagingTable.columns(name)
   end
 
   def modify(params)

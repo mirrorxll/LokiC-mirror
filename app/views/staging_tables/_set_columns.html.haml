@@ -3,14 +3,13 @@
 
   $('#add-column').click(function () {
       let count = editable_block.children().length + 1;
-      let id =  hex(6).toLowerCase();
 
       $(editable_block).append(
           `<div id="column-${count}">
-              <label for="staging_table_column_name_${id}">${count}</label>
-              <input type="text" name="staging_table[column_name_${id}]" id="staging_table_column_name_${id}" required>
-              <label for="staging_table_column_type_${id}">Type</label>
-              <select name="staging_table[column_type_${id}]" id="staging_table_column_type_${id}"><option value="TINYINT">TINYINT</option>
+              <label for="staging_table_column_name_${count}">${count}</label>
+              <input type="text" name="staging_table[column_name_${count}]" id="staging_table_column_name_${count}" required>
+              <label for="staging_table_column_type_${count}">Type</label>
+              <select name="staging_table[column_type_${count}]" id="staging_table_column_type_${count}"><option value="TINYINT">TINYINT</option>
                   <option value="INT">INT</option>
                   <option value="BIGINT">BIGINT</option>
                   <option value="DECIMAL">DECIMAL</option>
@@ -42,13 +41,4 @@
           $(this).find('label[for*="_column_name_"]').text(index);
           $(this).find('div[id^="rm-column-"]').attr({id: `rm-column-${index}`})
       });
-  }
-
-  function hex(n){
-      n = n || 16;
-      let result = '';
-      while (n--){
-          result += Math.floor(Math.random() * 16).toString(16).toUpperCase();
-      }
-      return result;
   }

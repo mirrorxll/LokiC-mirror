@@ -1,0 +1,4 @@
+=form_with(url: attach_story_type_staging_tables_path(@story_type.id), method: :put) do |form|
+  =form.label :existing_table_name
+  =form.text_field "table[name]"
+  =form.submit :attach
