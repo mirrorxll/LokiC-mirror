@@ -1,0 +1,6 @@
+$('#data-locations').append(`
+  <div id="data-location-<%= @data_set.id %>">
+    <%= link_to(@data_set.name, data_set_path(@data_set)) %>
+    <%= link_to('X', exclude_story_data_set_path(story_type_id: @story_type.id, id: @data_set.id), method: :delete, remote: true) %>
+  </div>
+`)

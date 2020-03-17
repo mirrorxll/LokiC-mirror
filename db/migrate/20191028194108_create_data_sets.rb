@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-class CreateDataLocations < ActiveRecord::Migration[6.0] # :nodoc:
+class CreateDataSets < ActiveRecord::Migration[6.0] # :nodoc:
   def change
-    create_table :data_locations do |t|
+    create_table :data_sets do |t|
       t.string    :source_name
       t.string    :data_set_location
       t.string    :data_set_evaluation_document

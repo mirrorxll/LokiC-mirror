@@ -7,13 +7,13 @@ Rails.application.routes.draw do
   mount Sidekiq::Web => '/sidekiq'
 
   root 'story_types#index'
-  resources :data_locations
+  resources :data_sets
 
   resources :story_types do
     put :dates, on: :member
     put :dev_status, on: :member
 
-    resources :data_locations, only: %i[] do
+    resources :data_sets, only: %i[] do
       post    :include, on: :collection
       delete  :exclude, on: :member
     end

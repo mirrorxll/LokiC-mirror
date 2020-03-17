@@ -1,4 +1,4 @@
--url = controller_name.eql?('story_types') ? story_types_path : data_location_path(@data_location.id)
+-url = controller_name.eql?('story_types') ? story_types_path : data_set_path(@data_set.id)
 
 =form_with(url: url, method: :get, local: true, html: { class: 'd-inline' }) do |form|
   =form.label :editor

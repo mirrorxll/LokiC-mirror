@@ -5,11 +5,18 @@ require_relative '../assets/first_objects.rb'
 namespace :db do
   desc 'Push couple of the test story_types to db'
   task entry_data: :environment do
-    FirstObjects.methods(false).sort.each do |method|
+    FirstObjects.account_type.each { |obj| AccountType.create!(obj)}
+    FirstObjects.user.each { |obj| User.create!(obj) }
+    FirstObjects.data_set.each { |obj| DataSet.create!(obj) }
+    FirstObjects.story_type.each { |obj| StoryType.create!(obj) }
+    FirstObjects.client.each { |obj| Client.create!(obj) }
+    FirstObjects.project.each { |obj| Project.create!(obj) }
+    FirstObjects.section.each { |obj| Section.create!(obj) }
+    FirstObjects.tag.each { |obj| Tag.create!(obj) }
+    FirstObjects.photo_bucket.each { |obj| PhotoBucket.create!(obj) }
+    FirstObjects.level.each { |obj| Level.create!(obj) }
+    FirstObjects.frequency.each { |obj| Frequency.create!(obj) }
 
-      class_name = method[2..-1].to_s.split('_').map(&:capitalize).join
-      eval("#{class_name}.create!(FirstObjects.#{method})")
-    end
     puts 'Data was entry.'
   end
 
@@ -21,7 +28,7 @@ namespace :db do
       email: args['email'],
       password: args['pass']
     )
+
     puts 'User was created.'
   end
-
 end

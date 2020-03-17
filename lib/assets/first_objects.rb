@@ -1,30 +1,194 @@
 # frozen_string_literal: true
 
 class FirstObjects # :nodoc:
-  def self.a_account_type
+  def self.account_type
     [
       {
-        name: 'admin',
+        name: 'super-user',
         permissions: {
-
+          other_user: {
+            read: true,
+            create: true,
+            update: true,
+            delete: true
+          },
+          data_set: {
+            read: true,
+            create: true,
+            update: true,
+            delete: true
+          },
+          story_type: {
+            create: true,
+            delete: true,
+            distribution: {
+              read: true,
+              update: true
+            },
+            dev_status: {
+              read: true,
+              update: true
+            },
+            template: {
+              read: true,
+              update: true
+            },
+            configuration: {
+              read: true,
+              update: true
+            },
+            staging_table: {
+              read: true,
+              update: true
+            },
+            code: {
+              read: true,
+              update: true
+            },
+            sample: {
+              read: true,
+              update: true
+            },
+            schedule: {
+              read: true,
+              update: true
+            },
+            export: {
+              read: true,
+              update: true
+            }
+          }
         }
       },
       {
         name: 'manager',
         permissions: {
-
+          other_user: {
+            read: true,
+            create: true
+          },
+          data_set: {
+            read: true,
+            create: true,
+            update: true
+          },
+          story_type: {
+            create: true,
+            distribution: {
+              read: true,
+              update: true
+            },
+            dev_status: {
+              read: true,
+              update: true
+            },
+            template: {
+              read: true,
+              update: true
+            },
+            configuration: {
+              read: true,
+              update: true
+            },
+            staging_table: {
+              read: true,
+              update: true
+            },
+            code: {
+              read: true,
+              update: true
+            },
+            sample: {
+              read: true,
+              update: true
+            },
+            schedule: {
+              read: true,
+              update: true
+            },
+            export: {
+              read: true,
+              update: true
+            }
+          }
+        }
+      },
+      {
+        name: 'editor',
+        permissions: {
+          other_user: {},
+          data_set: {
+            read: true
+          },
+          story_type: {
+            create: true,
+            delete: true,
+            distribution: {
+              read: true,
+              update: true
+            },
+            dev_status: {},
+            template: {
+              read: true,
+              update: true
+            },
+            configuration: {
+              read: true,
+              update: true
+            },
+            staging_table: {},
+            code: {},
+            sample: {},
+            schedule: {},
+            export: {}
+          }
         }
       },
       {
         name: 'developer',
         permissions: {
-
+          other_user: {},
+          data_set: {},
+          story_type: {
+            distribution: {},
+            dev_status: {
+              read: true,
+              update: true
+            },
+            template: {
+              read: true,
+              update: true
+            },
+            configuration: {
+              read: true
+            },
+            staging_table: {
+              read: true,
+              update: true
+            },
+            code: {
+              read: true,
+              update: true
+            },
+            sample: {
+              read: true,
+              update: true
+            },
+            schedule: {
+              read: true,
+              update: true
+            },
+            export: {
+              read: true,
+              update: true
+            }
+          }
         }
       }
     ]
   end
 
-  def self.b_user
+  def self.user
     [
       {
         first_name: 'Sergey',
@@ -43,7 +207,7 @@ class FirstObjects # :nodoc:
     ]
   end
 
-  def self.c_data_location
+  def self.data_set
     [
       {
         source_name: 'Gas Buddy',
@@ -78,14 +242,14 @@ class FirstObjects # :nodoc:
     ]
   end
 
-  def self.d_story_type
+  def self.story_type
     [
       {
         name: 'Story Type 1',
         body: 'Some Body',
         description: 'Some Description',
         editor: User.first,
-        data_location: DataLocation.first
+        data_set: DataSet.first
       },
       {
         name: 'Story Type 2',
@@ -93,12 +257,12 @@ class FirstObjects # :nodoc:
         description: 'Some Description',
         editor: User.first,
         developer: User.first,
-        data_location: DataLocation.last
+        data_set: DataSet.last
       }
     ]
   end
 
-  def self.e_client
+  def self.client
     [
       {
         pipeline_index: 120,
@@ -111,7 +275,7 @@ class FirstObjects # :nodoc:
     ]
   end
 
-  def self.f_project
+  def self.project
     [
       {
         pipeline_index: 655,
@@ -126,7 +290,7 @@ class FirstObjects # :nodoc:
     ]
   end
 
-  def self.g_section
+  def self.section
     [
       {
         pipeline_index: 16,
@@ -139,7 +303,7 @@ class FirstObjects # :nodoc:
     ]
   end
 
-  def self.h_tag
+  def self.tag
     [
       {
         pipeline_index: 3,
@@ -152,7 +316,7 @@ class FirstObjects # :nodoc:
     ]
   end
 
-  def self.i_photo_bucket
+  def self.photo_bucket
     [
       {
         pipeline_index: 136,
@@ -171,11 +335,11 @@ class FirstObjects # :nodoc:
     ]
   end
 
-  def self.j_level
+  def self.level
     %w[Zip City County State USA].map { |item| { name: item } }
   end
 
-  def self.k_frequency
+  def self.frequency
     %w[Weekly Monthly Quarterly Semi-Annually Annually Biennial].map do |item|
       { name: item }
     end

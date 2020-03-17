@@ -1,15 +1,15 @@
 %section#data-location
-  %a{ href: edit_data_location_path(@data_location),
+  %a{ href: edit_data_set_path(@data_set),
       style: 'text-decoration: none; color: black;' }
-    -data_location_keys.each do |key|
+    -data_set_keys.each do |key|
       .row
         .col-4
           =key.to_s.humanize
         .col-8
           -if key.eql?(:cron_scraping)
-            =@data_location[key].eql?(1) ? true : false
+            =@data_set[key].eql?(1) ? true : false
           -else
-            =@data_location[key]
+            =@data_set[key]
 
 %section#filter
   %hr

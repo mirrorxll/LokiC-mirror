@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-module DataLocationsHelper # :nodoc:
+module DataSetsHelper # :nodoc:
   def domain_name(link, options = {})
     match = link[%r{https?:\/\/([^\/]+)}, 1]
     match ? link_to(match, link, options) : link
   end
 
-  def data_location_keys
+  def data_set_keys
     %i[
       source_name
       data_set_location

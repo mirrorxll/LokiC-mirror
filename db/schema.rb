@@ -47,7 +47,7 @@ ActiveRecord::Schema.define(version: 2020_03_13_144006) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "data_locations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+  create_table "data_sets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "source_name"
     t.string "data_set_location"
     t.string "data_set_evaluation_document"
@@ -65,8 +65,8 @@ ActiveRecord::Schema.define(version: 2020_03_13_144006) do
     t.bigint "evaluator_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["evaluator_id"], name: "index_data_locations_on_evaluator_id"
-    t.index ["user_id"], name: "index_data_locations_on_user_id"
+    t.index ["evaluator_id"], name: "index_data_sets_on_evaluator_id"
+    t.index ["user_id"], name: "index_data_sets_on_user_id"
   end
 
   create_table "frequencies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
@@ -138,10 +138,10 @@ ActiveRecord::Schema.define(version: 2020_03_13_144006) do
     t.string "dev_status", default: "Not Started"
     t.bigint "editor_id"
     t.bigint "developer_id"
-    t.bigint "data_location_id"
+    t.bigint "data_set_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["data_location_id"], name: "index_story_types_on_data_location_id"
+    t.index ["data_set_id"], name: "index_story_types_on_data_set_id"
     t.index ["developer_id"], name: "index_story_types_on_developer_id"
     t.index ["editor_id"], name: "index_story_types_on_editor_id"
   end

@@ -16,7 +16,7 @@ class CreateStoryTypes < ActiveRecord::Migration[6.0] # :nodoc:
 
       t.belongs_to :editor
       t.belongs_to :developer
-      t.belongs_to :data_location
+      t.belongs_to :data_set
 
       t.timestamps
     end

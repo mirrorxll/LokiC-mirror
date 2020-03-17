@@ -1,4 +1,4 @@
-= form_with(url: data_locations_path, method: :get, local: true,
+= form_with(url: data_sets_path, method: :get, local: true,
             html: { onchange: 'this.submit();' }) do |form|
   = form.label 'filter[evaluated]', :evaluate
   = form.select 'filter[evaluated]', [['evaluated', 1], ['not evaluated', 0]], prompt: true

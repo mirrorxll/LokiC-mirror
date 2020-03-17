@@ -7,7 +7,7 @@ class StoryType < ApplicationRecord # :nodoc:
 
   belongs_to :editor,     class_name: 'User'
   belongs_to :developer,  class_name: 'User', optional: true
-  belongs_to :data_location
+  belongs_to :data_set
 
   has_one :staging_table
   has_many :story_type_iterations, dependent: :destroy
@@ -18,11 +18,6 @@ class StoryType < ApplicationRecord # :nodoc:
   has_and_belongs_to_many :photo_buckets,   join_table: 'story_types__photo_buckets'
   has_and_belongs_to_many :levels,          join_table: 'story_types__levels'
   has_and_belongs_to_many :frequencies,     join_table: 'story_types__frequencies'
-
-  def filename
-    "StoryType#{id}"
-  end
-  alias module_name filename
 
   # filter
   def self.writer(id)
