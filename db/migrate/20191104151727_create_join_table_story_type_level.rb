@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CreateJoinTableStoryTypeLevel < ActiveRecord::Migration[6.0] # :nodoc:
+class CreateJoinTableStoryTypeLevel < ActiveRecord::Migration[5.2] # :nodoc:
   def change
     create_join_table :story_types, :levels, table_name: 'story_types__levels' do |t|
       t.index :story_type_id, unique: true

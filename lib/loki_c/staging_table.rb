@@ -7,34 +7,27 @@ module LokiC
     require_relative 'staging_table/columns.rb'
 
     def self.attach(t_name)
-      ActiveRecord::Base.connected_to(database: { slow: :hle }) do
-        columns = ActiveRecord::Base.connection.execute(Queries.column_list(t_name))
-        columns = Ids.transform(columns)
-
-      end
+      columns = ActiveRecord::Base.connection.execute(Queries.column_list(t_name))
+      columns = Ids.transform(columns)
     end
 
-    def self.create(name, columns)
-      ActiveRecord::Base.connected_to(database: { slow: :hle }) do
-        ActiveRecord::Migration.create_table(name, if_not_exists: true)
-        ActiveRecord::Migration.add_column(name, :story_created, :boolean)
-        ActiveRecord::Migration.add_column(name, :client_id, :integer)
-        ActiveRecord::Migration.add_column(name, :client_name, :string)
-        ActiveRecord::Migration.add_column(name, :project_id, :integer)
-        ActiveRecord::Migration.add_column(name, :project_name, :string)
-        ActiveRecord::Migration.add_column(name, :publish_on, :datetime)
+    def self.create(t_name, columns)
+      ActiveRecord::Migration.create_table(t_name, if_not_exists: true)
+      ActiveRecord::Migration.add_column(t_name, :story_created, :boolean)
+      ActiveRecord::Migration.add_column(t_name, :client_id, :integer)
+      ActiveRecord::Migration.add_column(t_name, :client_name, :string)
+      ActiveRecord::Migration.add_column(t_name, :project_id, :integer)
+      ActiveRecord::Migration.add_column(t_name, :project_name, :string)
+      ActiveRecord::Migration.add_column(t_name, :publish_on, :datetime)
 
+      columns.each do |c_name, c_type|
+        ActiveRecord::Migration.add_column(t_name, c_name, c_type)
       end
     end
 
     def self.columns(t_name)
-      columns = []
-      ActiveRecord::Base.connected_to(database: { slow: :hle }) do
-        columns = ActiveRecord::Base.connection.execute(Queries.column_list(t_name)).to_a
-        columns = Columns.transform_exist(columns)
-      end
-
-      columns
+      columns = ActiveRecord::Base.connection.execute(Queries.column_list(t_name)).to_a
+      Columns.transform_exist(columns)
     end
 
     def self.alter(t_name, cur_col, mod_col)

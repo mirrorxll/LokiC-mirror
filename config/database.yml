@@ -1,4 +1,4 @@
-# MySQL. Versions 5.5.8 and up are supported.
+# MySQL. Versions 5.1.10 and up are supported.
 #
 # Install the MySQL driver
 #   gem install mysql2
@@ -11,41 +11,42 @@
 #
 default: &default
   adapter: mysql2
-  encoding: utf8mb4
+  encoding: utf8
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+# use for the connect to db05
+#  username: data_miner
+#  password: data_miner
+#  host: db05.blockshopper.com
+#  port: 3306
+
+# use for connect to localhost
   username: root
   password: Qw12345678*
+
   socket: /var/run/mysqld/mysqld.sock
 
 development:
-  primary:
-    <<: *default
-    database: LokiC_development
-  hle:
-    <<: *default
-    database: loki_storycreator_development
+  <<: *default
+  database: LokiC_development
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
-  primary:
-    <<: *default
-    database: LokiC_test
-  hle:
-    <<: *default
-    database: loki_storycreator_test
+  <<: *default
+  database: LokiC_test
 
-# As with config/credentials.yml, you never want to store sensitive information,
+# As with config/secrets.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
 # ever seen by anyone, they now have access to your database.
 #
 # Instead, provide the password as a unix environment variable when you boot
-# the app. Read https://guides.rubyonrails.org/configuring.html#configuring-a-database
+# the app. Read http://guides.rubyonrails.org/configuring.html#configuring-a-database
 # for a full rundown on how to provide these environment variables in a
 # production deployment.
 #
-# On Heroku and other platform providers, you may have a full connect URL
+# On Heroku and other platform providers, you may have a full connection URL
 # available as an environment variable. For example:
 #
 #   DATABASE_URL="mysql2://myuser:mypass@localhost/somedatabase"
@@ -57,4 +58,6 @@ test:
 #
 production:
   <<: *default
-  database: LokiC
+  database: LokiC_production
+  username: LokiC
+  password: <%= ENV['LOKIC_DATABASE_PASSWORD'] %>

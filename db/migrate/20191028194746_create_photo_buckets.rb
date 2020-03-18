@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CreatePhotoBuckets < ActiveRecord::Migration[6.0] # :nodoc:
+class CreatePhotoBuckets < ActiveRecord::Migration[5.2] # :nodoc:
   def change
     create_table :photo_buckets do |t|
       t.integer :pipeline_index

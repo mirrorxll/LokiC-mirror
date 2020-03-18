@@ -1,0 +1,5 @@
+$('#tags').append(`
+%div{:id => "tag-#{@tag.id}"}
+  = @tag.name
+  = link_to('X', exclude_story_type_tag_path(story_type_id: @story_type.id, id: @tag.id), method: :delete, remote: true)
+`)

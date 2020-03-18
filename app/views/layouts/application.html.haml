@@ -5,14 +5,14 @@
     %title LokiC
     = csrf_meta_tags
     = csp_meta_tag
-    = stylesheet_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload'
-    = javascript_pack_tag 'application', 'data-turbolinks-track': 'reload'
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
   %body
     %nav.navbar.navbar-expand-lg.navbar-light.bg-light
       = link_to('LokiC', root_path, class: 'navbar-brand')
       %button.navbar-toggler{"aria-controls" => "navbarNavDropdown", "aria-expanded" => "false",
-                             "aria-label" => "Toggle navigation", "data-target" => "#navbarNavDropdown",
-                              "data-toggle" => "collapse", :type => "button"}
+                               "aria-label" => "Toggle navigation", "data-target" => "#navbarNavDropdown",
+                                "data-toggle" => "collapse", :type => "button"}
         %span.navbar-toggler-icon
       #navbarNavDropdown.collapse.navbar-collapse
         %ul.navbar-nav.w-100

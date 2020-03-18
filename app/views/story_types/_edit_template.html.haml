@@ -6,7 +6,7 @@
     %br/
     %div{"data-controller" => "summernote"}
       = form.label :body
-      = form.text_area :body, data: { editor: 'summernote' }
+      = form.text_area :body, 'data-provider': :summernote
     %br/
     = form.label          :description
     %br/

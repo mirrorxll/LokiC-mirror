@@ -1,5 +1,5 @@
 module StagingTablesHelper
   def data_types
-    %w[TINYINT INT BIGINT DECIMAL FLOAT VARCHAR(255) TEXT LONGTEXT TIME DATE YEAR DATETIME JSON]
+    %i[boolean date datetime decimal float integer string text time timestamp]
   end
 end

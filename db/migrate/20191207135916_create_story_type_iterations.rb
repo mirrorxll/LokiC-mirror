@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CreateStoryTypeIterations < ActiveRecord::Migration[6.0] # :nodoc:
+class CreateStoryTypeIterations < ActiveRecord::Migration[5.2] # :nodoc:
   def change
     create_table :story_type_iterations do |t|
       t.boolean :populate_status,       default: false

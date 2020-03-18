@@ -4,6 +4,8 @@ require_relative '../../lib/loki_c/staging_table/columns.rb'
 require_relative '../../lib/loki_c/staging_table/ids.rb'
 
 class StagingTable < ApplicationRecord # :nodoc:
+  serialize :editable, JSON
+
   before_create { self.name = "#{story_type.id}_staging" }
 
   belongs_to :story_type

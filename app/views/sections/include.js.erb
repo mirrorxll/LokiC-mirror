@@ -1,6 +1,0 @@
-$('#sections').append(`
-  <div id="section-<%= @section.id %>">
-    <%= @section.name %>
-    <%= link_to('X', exclude_story_section_path(story_type_id: @story_type.id, id: @section.id), method: :delete, remote: true) %>
-  </div>
-`)

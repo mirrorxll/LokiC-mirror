@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CreateStoryTypes < ActiveRecord::Migration[6.0] # :nodoc:
+class CreateStoryTypes < ActiveRecord::Migration[5.2] # :nodoc:
   def change
     create_table :story_types do |t|
       t.string  :name

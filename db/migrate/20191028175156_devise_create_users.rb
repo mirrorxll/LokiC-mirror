@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DeviseCreateUsers < ActiveRecord::Migration[6.0] # :nodoc:
+class DeviseCreateUsers < ActiveRecord::Migration[5.2] # :nodoc:
   def change
     create_table :users do |t|
       t.string    :email,                     null: false
