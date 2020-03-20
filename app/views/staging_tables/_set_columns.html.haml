@@ -1,44 +1,72 @@
 :javascript
   var editable_block = $('#columns-editable');
-
   $('#add-column').click(function () {
-      let count = editable_block.children().length + 1;
+    let count = editable_block.children().length + 1;
 
-      $(editable_block).append(
-          `<div id="column-${count}">
-              <label for="staging_table_column_name_${count}">${count}</label>
-              <input type="text" name="staging_table[column_name_${count}]" id="staging_table_column_name_${count}" required>
-              <label for="staging_table_column_type_${count}">Type</label>
-              <select name="staging_table[column_type_${count}]" id="staging_table_column_type_${count}"><option value="TINYINT">TINYINT</option>
-                  <option value="INT">INT</option>
-                  <option value="BIGINT">BIGINT</option>
-                  <option value="DECIMAL">DECIMAL</option>
-                  <option value="FLOAT">FLOAT</option>
-                  <option value="VARCHAR(255)">VARCHAR(255)</option>
-                  <option value="TEXT">TEXT</option>
-                  <option value="LONGTEXT">LONGTEXT</option>
-                  <option value="TIME">TIME</option>
-                  <option value="DATE">DATE</option>
-                  <option value="YEAR">YEAR</option>
-                  <option value="DATETIME">DATETIME</option>
-                  <option value="JSON">JSON</option>
-              </select>
-              <div id="rm-column-${count}" class="remove-column d-inline-block" onclick="removeColumnAndSaveEnum(this)">-</div>
-          </div>`
-      );
+    $(editable_block).append(
+        `<div id="col_${count}">
+            <div id="rm_col_${count}" class="d-inline-block" onclick="removeColumnAndSaveEnum(this)">-</div>
+            <input type="text" name="staging_table[${count}[name]]" id="staging_table_${count}_name" required>
+            <select name="staging_table[${count}[type]]" id="staging_table_${count}_type" onchange="optionsForColumnType(this)">
+                <option value="smallint">smallint</option>
+                <option value="mediumint">mediumint</option>
+                <option value="integer">integer</option>
+                <option value="bigint">bigint</option>
+                <option value="float">float</option>
+                <option value="decimal">decimal</option>
+                <option value="date">date</option>
+                <option value="time">time</option>
+                <option value="datetime">datetime</option>
+                <option value="string">string</option>
+                <option value="text">text</option>
+                <option value="boolean">boolean</option>
+            </select>
+        </div>`
+    );
   });
 
-  $('div[id^="rm-column-"]').each(function() {
-      $(this).click('removeColumnAndSaveEnum(this)')
+  $('div[id^="rm_col"]').each(function() {
+    $(this).click('removeColumnAndSaveEnum(this)')
+  });
+
+  $('select[id$="type"]').each(function() {
+    $(this).click('optionsForColumnType(this)')
   });
 
   function removeColumnAndSaveEnum(elem) {
-      $(elem.parentNode).remove();
+    $(elem.parentNode).remove();
+    editable_block.children().each(function(index, el) {
+        index++;
+        $(el).attr({id: `col_${index}`});
+        $(el).find('[id^="rm_col_"]').attr({id: `rm_col_${index}`});
+        $(el).find('[id$="name"]').attr({name: `staging_table[${index}[name]]`, id: `staging_table_${index}_name`});
+        $(el).find('[id$="type"]').attr({name: `staging_table[${index}[type]]`, id: `staging_table_${index}_type`});
+        $(el).find('[id$="limit"]').attr({name: `staging_table[${index}[opts[limit]]]`, id: `staging_table_${index}_opts_limit`});
+        $(el).find('[id$="precision"]').attr({name: `staging_table[${index}[opts[precision]]]`, id: `staging_table_${index}_opts_precision`});
+        $(el).find('[id$="scale"]').attr({name: `staging_table[${index}[opts[scale]]]`, id: `staging_table_${index}_opts_scale`});
+    });
+  }
 
-      editable_block.children().each(function(index) {
-          index++;
-          $(this).attr({id: `column-${index}`});
-          $(this).find('label[for*="_column_name_"]').text(index);
-          $(this).find('div[id^="rm-column-"]').attr({id: `rm-column-${index}`})
-      });
+  function optionsForColumnType(elem) {
+    let count = elem.selectedIndex + 1;
+    let parent = elem.parentNode;
+
+    while (parent.childElementCount > 3)
+      $(elem).next().remove();
+
+    switch (elem.options[elem.selectedIndex].value) {
+      case 'decimal':
+        $(parent).append(`
+          <input placeholder="precision" type="text"
+            name="staging_table[${count}[opts[precision]]]" id="staging_table_${count}_opts_precision">
+          <input placeholder="scale" type="text"
+            name="staging_table[${count}[opts[scale]]]" id="staging_table_${count}_opts_scale">`);
+        break;
+      case 'string':
+        $(parent).append(`
+          <input placeholder="limit" type="text"
+            name="staging_table[${count}[opts[limit]]]" id="staging_table_${count}_opts_limit">
+        `);
+        break;
+    }
   }

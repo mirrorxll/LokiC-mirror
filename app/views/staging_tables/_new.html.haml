@@ -1,13 +1,3 @@
-=form_with(url: story_type_staging_tables_path(@story_type)) do |form|
-  %div#columns-editable
-    %div{ id: "column-#{1}" }
-      =form.label :staging_table_column_name_1, '1'
-      =form.text_field "staging_table[column_name_1]"
-      =form.label :staging_table_column_type_1, 'type'
-      =form.select "staging_table[column_type_1]", data_types
-      %div.remove-column.d-inline-block{ id: "rm-column-#{1}", onclick: 'removeColumnAndSaveEnum(this)' }
-        -
-  #add-column
-    +
-  %br/
-  =form.submit action_name.eql?('edit') ? :update : :create
+=render 'staging_tables/new_form'
+=render 'staging_tables/attach_form'
+=render 'staging_tables/set_columns'

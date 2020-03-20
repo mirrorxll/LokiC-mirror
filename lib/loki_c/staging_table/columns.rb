@@ -2,7 +2,7 @@
 
 module LokiC
   module StagingTable
-    module Columns # :nodoc:
+    class Columns # :nodoc:
       # name, type
       # def self.added(curr_columns, modify_columns)
       #   modify_columns.map do |m_c|
@@ -33,20 +33,27 @@ module LokiC
       #   end.compact
       # end
 
-      def self.to_active_record
-
-      def self.transform_init(params)
-        params.group_by { |k, _v| k.split('_').last }.map do |id, column|
-          hash = column.to_h
-
-          { hash["column_name_#{id}"] => hash["column_type_#{id}"] }
+      def self.transform_init(columns)
+        cols = columns.map do |_id, column|
+          opts = (column[:opts] || {})
+          { column[:name] => [column[:type], opts] }
         end
+
+        cols.count.positive? ? cols.reduce(:merge) : {}
       end
 
-      # column[0] - column name
-      # column[1] - column type
-      def self.transform_exist(params)
-        params.map { |column| [column[0], column[1]] }
+      # key - column name
+      # value - column type
+      def self.transform_exist(columns)
+        return {} if columns.empty?
+
+        columns.map { |col| { col[0] => col[1] } }.reduce(:merge)
+      end
+
+      private
+
+      def self.sql_to_ar(type)
+
       end
     end
   end

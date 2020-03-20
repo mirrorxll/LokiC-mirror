@@ -2,10 +2,14 @@
   Table Name:
   =@story_type.staging_table.name
 
--@story_type.staging_table.columns_list.each do |column|
-  %p
-    ="#{column[0]} : #{column[1]}"
+-columns = @story_type.staging_table.tbl_columns
+-if columns.count.positive?
+  -columns.each do |name, type|
+    %p
+      ="#{name} : #{type}"
+-else
+  No columns.
 %p
-  =link_to('edit',
+  =link_to('edit columns list',
            edit_story_type_staging_table_path(story_type_id: @story_type.id, id: @story_type.staging_table.id),
            class: 'btn btn-sm btn-success', remote: true)

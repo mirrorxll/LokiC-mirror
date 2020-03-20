@@ -1,5 +1,5 @@
 module StagingTablesHelper
   def data_types
-    %i[boolean date datetime decimal float integer string text time timestamp]
+    %i[smallint mediumint integer bigint float decimal date time datetime string text boolean]
   end
 end

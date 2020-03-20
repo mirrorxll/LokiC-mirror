@@ -6,6 +6,10 @@ module LokiC
     require_relative 'staging_table/queries.rb'
     require_relative 'staging_table/columns.rb'
 
+    def self.exists?(t_name)
+      ActiveRecord::Base.connection.table_exists?(t_name)
+    end
+
     def self.attach(t_name)
       columns = ActiveRecord::Base.connection.execute(Queries.column_list(t_name))
       columns = Ids.transform(columns)
@@ -21,13 +25,18 @@ module LokiC
       ActiveRecord::Migration.add_column(t_name, :publish_on, :datetime)
 
       columns.each do |c_name, c_type|
-        ActiveRecord::Migration.add_column(t_name, c_name, c_type)
+        ActiveRecord::Migration.add_column(t_name, c_name, c_type[0], c_type[1].symbolize_keys)
       end
     end
 
     def self.columns(t_name)
       columns = ActiveRecord::Base.connection.execute(Queries.column_list(t_name)).to_a
       Columns.transform_exist(columns)
+    end
+
+    def self.columns_by_hash(t_name)
+      hashed = columns(t_name).map { |t, n| { SecureRandom.hex(3) => { t => n } } }
+      hashed.reduce(:merge)
     end
 
     def self.alter(t_name, cur_col, mod_col)
