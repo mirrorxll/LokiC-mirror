@@ -1,2 +1,22 @@
 =form_with(model: [@story_type, @staging_table], method: :put) do |form|
-  -@staging_table.editable
+  #add-column
+    +
+  %div#columns-editable
+    -@staging_table.editable.each do |hex, column|
+      %div{ id: "col_#{hex}" }
+        %div.remove-column.d-inline-block{ id: "rm_col_#{hex}", onclick: 'removeColumnAndSaveEnum(this)' } -
+        =form.text_field "#{hex}[name]",
+                         { value: column[:name], placeholder: 'name', id: "staging_table_#{hex}_name", require: true }
+        =form.select "#{hex}[type]",
+                     options_for_select(data_types, column[:type]),
+                     { id: "staging_table_#{hex}_type", onchange: 'optionsForColumnType(this)' }
+        .d-inline-block
+          -if column[:type].eql?('string')
+            =form.text_field "#{hex}[opts[limit]]",
+                             { value: column[:opts][:limit], placeholder: 'limit', id: "staging_table_#{hex}_opts_limit", require: true }
+          -elsif column[:type].eql?('decimal')
+            =form.text_field "#{hex}[opts[precision]]",
+                             { value: column[:opts][:precision], placeholder: 'precision', id: "staging_table_#{hex}_opts_precision", require: true}
+            =form.text_field "#{hex}[opts[scale]]",
+                             { value: column[:opts][:scale], placeholder: 'scale', id: "staging_table_#{hex}_opts_scale", require: true }
+  =form.submit :update

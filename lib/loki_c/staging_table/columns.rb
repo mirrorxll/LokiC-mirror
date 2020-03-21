@@ -3,7 +3,6 @@
 module LokiC
   module StagingTable
     class Columns # :nodoc:
-      # name, type
       # def self.added(curr_columns, modify_columns)
       #   modify_columns.map do |m_c|
       #     curr_columns.any? { |c_c| c_c['id'].eql?(m_c[:id]) } ? nil : m_c
@@ -34,26 +33,47 @@ module LokiC
       # end
 
       def self.transform_init(columns)
-        cols = columns.map do |_id, column|
-          opts = (column[:opts] || {})
-          { column[:name] => [column[:type], opts] }
+        columns.map do |_id, column|
+          column['opts'] ||= {}
+          column.deep_symbolize_keys
         end
-
-        cols.count.positive? ? cols.reduce(:merge) : {}
       end
 
-      # key - column name
-      # value - column type
       def self.transform_exist(columns)
+        return [] if columns.empty?
+
+        columns.map do |col|
+          type_opts = sql_to_ar(col[1])
+          { name: col[0] }.merge(type_opts)
+        end
+      end
+
+      def self.transform_by_hex(columns)
         return {} if columns.empty?
 
-        columns.map { |col| { col[0] => col[1] } }.reduce(:merge)
+        hashed = columns.map do |column|
+          { SecureRandom.hex(3) => column }
+        end
+
+        hashed.reduce(:merge)
       end
 
-      private
-
       def self.sql_to_ar(type)
+        tp, opt = type.split(/[()]/)
 
+        case tp
+        when 'tinyint'
+          { type: 'boolean' }
+        when 'int'
+          { type: 'integer' }
+        when 'decimal'
+          pr, scl = opt.split(',')
+          { type: 'decimal', opts: { precision: pr, scale: scl } }
+        when 'varchar'
+          { type: 'string', opts: { limit: opt } }
+        else
+          { type: tp }
+        end
       end
     end
   end

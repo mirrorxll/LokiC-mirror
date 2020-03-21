@@ -2,7 +2,8 @@
 
 class StagingTablesController < ApplicationController # :nodoc:
   before_action :attach_staging_table_params, only: %i[attach]
-  before_action :new_staging_table_params, only: %i[create]
+  before_action :create_staging_table_params, only: %i[create]
+  before_action :update_staging_table_params, only: %i[update]
 
   def attach
     flash[:error] =
@@ -48,7 +49,7 @@ class StagingTablesController < ApplicationController # :nodoc:
       if @staging_table.nil?
         'Table was attached or delete. Please update the page.'
       elsif !StagingTable.tbl_exists?(@staging_table.name)
-        'Someone drop table for this story type. Please check it.'
+        'Someone drop or table for this story type. Please check it.'
       end
 
     @staging_table.prepare_editable if flash[:error].nil?
@@ -57,23 +58,27 @@ class StagingTablesController < ApplicationController # :nodoc:
   end
 
   def update
-    flash[:error] =
-      if StagingTable.exists?(params[:staging_table][:name])
-        @story_type.staging_table.modify(@staging_table_params)
-      else
-        'Table was removed or renamed.'
-      end
+    @staging_table = @story_type.staging_table
 
-    @story_type.staging_table.update(@staging_table_params) unless flash[:error]
-    render 'attach_create_update'
+    puts @staging_table.editable
+    puts params.require(:staging_table).permit!
+      .to_hash.each_with_object({}) { |(k, v), obj| obj[k] = v.deep_symbolize_keys }
+    # flash[:error] =
+    #   if StagingTable.exists?(@staging_table.name)
+    #     @story_type.staging_table.modify(@staging_table_params)
+    #   else
+    #     'Table was removed or renamed.'
+    #   end
+    #
+    # render 'attach_create_update'
   end
 
   def truncate
-    @story_type.staging_table.truncate
+    @story_type.staging_table.truncate_tbl
   end
 
-  def destroy
-    @story_type.staging_table.drop_table
+  def drop
+    @story_type.staging_table.drop_tbl
     @story_type.staging_table.delete
 
     render 'detach_delete'
@@ -81,10 +86,10 @@ class StagingTablesController < ApplicationController # :nodoc:
 
   private
 
-  def new_staging_table_params
-    columns = params.require(:staging_table).permit!
+  def create_staging_table_params
+    columns = params.require(:staging_table).permit!.to_hash
     @staging_table_columns =
-      LokiC::StagingTable::Columns.transform_init(columns.to_h)
+      LokiC::StagingTable::Columns.transform_init(columns)
   end
 
   def attach_staging_table_params
@@ -92,7 +97,7 @@ class StagingTablesController < ApplicationController # :nodoc:
       params.require(:staging_table).permit(:name)
   end
 
-  def exist_staging_table_params
+  def update_staging_table_params
 
   end
 end

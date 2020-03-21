@@ -3,13 +3,25 @@
   =@story_type.staging_table.name
 
 -columns = @story_type.staging_table.tbl_columns
+-puts columns
 -if columns.count.positive?
-  -columns.each do |name, type|
+  -columns.each do |col|
     %p
-      ="#{name} : #{type}"
+      ="#{col[:name]}: #{col[:type]}"
 -else
   No columns.
-%p
-  =link_to('edit columns list',
-           edit_story_type_staging_table_path(story_type_id: @story_type.id, id: @story_type.staging_table.id),
+.btn-group
+  =link_to('edit columns',
+           edit_story_type_staging_table_path(@story_type),
            class: 'btn btn-sm btn-success', remote: true)
+
+.btn-group.ml-3
+  =link_to('detach',
+           detach_story_type_staging_table_path(@story_type),
+           class: 'btn btn-sm btn-warning', method: :delete, remote: true)
+  =link_to('truncate',
+           truncate_story_type_staging_table_path(@story_type.id),
+           class: 'btn btn-sm btn-danger', method: :put,  remote: true)
+  =link_to('drop',
+           drop_story_type_staging_table_path(@story_type.id),
+           class: 'btn btn-sm btn-danger', method: :delete, remote: true)

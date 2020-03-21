@@ -1,10 +1,11 @@
-=form_with(url: story_type_staging_tables_path(@story_type)) do |form|
+=form_with(model: [@story_type, @story_type.build_staging_table], url: story_type_staging_table_path(@story_type)) do |form|
   #add-column
     +
   %div#columns-editable
-    %div{ id: "col_1" }
-      %div.remove-column.d-inline-block{ id: "rm_col_1", onclick: 'removeColumnAndSaveEnum(this)' } -
-      =form.text_field "staging_table[1[name]]", { require: true, id: 'staging_table_1_name' }
-      =form.select "staging_table[1[type]]", data_types, {}, { id: 'staging_table_1_type', onchange: 'optionsForColumnType(this)' }
+    -hex = SecureRandom.hex(3)
+    %div{ id: "col_#{hex}" }
+      %div.remove-column.d-inline-block{ id: "rm_col_#{hex}", onclick: 'removeColumnAndSaveEnum(this)' } -
+      =form.text_field "#{hex}[name]", { require: true, id: "staging_table_#{hex}_name" }
+      =form.select "#{hex}[type]", data_types, {}, { id: "staging_table_#{hex}_type", onchange: 'optionsForColumnType(this)' }
   %br/
-  =form.submit action_name.eql?('edit') ? :update : :create
+  =form.submit :create

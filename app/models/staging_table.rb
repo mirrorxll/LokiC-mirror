@@ -3,27 +3,30 @@
 require_relative '../../lib/loki_c/staging_table.rb'
 
 class StagingTable < ApplicationRecord # :nodoc:
-  serialize :editable, JSON
-
-  before_create { self.name = "#{story_type.id}_staging" }
+  serialize :editable, Hash
 
   belongs_to :story_type
 
+  before_create { self.name = "#{story_type.id}_staging" }
+
   def tbl_columns
     LokiC::StagingTable.columns(name)
-  end
-
-  def attach_tbl(table)
-    LokiC::StagingTable.attach(table[:name])
   end
 
   def create_tbl(columns)
     LokiC::StagingTable.create(name, columns)
   end
 
+  def drop_tbl
+    LokiC::StagingTable.drop(name)
+  end
+
+  def truncate_tbl
+    LokiC::StagingTable.truncate(name)
+  end
+
   def prepare_editable
-    editable = LokiC::StagingTable.columns_by_hash(name)
-    return if editable.nil?
+    self.editable = LokiC::StagingTable.columns_by_hex(name)
 
     save
   end
@@ -65,18 +68,6 @@ class StagingTable < ApplicationRecord # :nodoc:
   # def purge_last_creation
   #   ActiveRecord::Base.connection.execute(
   #     LokiC::Queries.delete_creation(name, story.iterations.last)
-  #   )
-  # end
-  #
-  # def drop_table
-  #   ActiveRecord::Base.connection.execute(
-  #     LokiC::Queries.drop_table(name)
-  #   )
-  # end
-  #
-  # def truncate
-  #   ActiveRecord::Base.connection.execute(
-  #     LokiC::Queries.truncate(name)
   #   )
   # end
 
