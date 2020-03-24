@@ -5,9 +5,9 @@
 -columns = @story_type.staging_table.tbl_columns
 -puts columns
 -if columns.count.positive?
-  -columns.each do |col|
+  -columns.each do |_id, col|
     %p
-      ="#{col[:name]}: #{col[:type]}"
+      ="#{col[:name]}: #{col[:type]} | #{col[:opts]}"
 -else
   No columns.
 .btn-group

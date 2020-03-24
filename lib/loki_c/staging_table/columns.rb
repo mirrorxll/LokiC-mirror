@@ -3,59 +3,58 @@
 module LokiC
   module StagingTable
     class Columns # :nodoc:
-      # def self.added(curr_columns, modify_columns)
-      #   modify_columns.map do |m_c|
-      #     curr_columns.any? { |c_c| c_c['id'].eql?(m_c[:id]) } ? nil : m_c
-      #   end.compact
-      # end
-      #
-      # # name
-      # def self.dropped(curr_columns, modify_columns)
-      #   curr_columns.map do |c_c|
-      #     modify_columns.none? { |m_c| m_c[:id].eql?(c_c['id']) } ? c_c : nil
-      #   end.compact
-      # end
-      #
-      # def self.changed(curr_columns, modify_columns)
-      #   ids = Ids.from_pure(curr_columns) & Ids.from_pure(modify_columns)
-      #
-      #   ids.map do |id|
-      #     c_col = curr_columns.find { |c| c['id'].eql?(id) }
-      #     m_col = modify_columns.find { |m| m[:id].eql?(id) }
-      #     next if c_col.symbolize_keys.eql?(m_col)
-      #
-      #     {
-      #       old_name: c_col['name'],
-      #       new_name: m_col[:name],
-      #       new_type: m_col[:type]
-      #     }
-      #   end.compact
-      # end
+      def self.dropped(curr_col, mod_col)
+        current = curr_col.keys
+        modify = mod_col.keys
 
-      def self.transform_init(columns)
-        columns.map do |_id, column|
-          column['opts'] ||= {}
-          column.deep_symbolize_keys
+        current.each_with_object([]) do |c_hex, obj|
+          obj << c_hex unless modify.include?(c_hex)
         end
       end
 
-      def self.transform_exist(columns)
+      def self.added(curr_col, mod_col)
+        current = curr_col.keys
+        modify = mod_col.keys
+
+        modify.each_with_object([]) do |m_hex, obj|
+          obj << m_hex unless current.include?(m_hex)
+        end
+      end
+
+      def self.changed(curr_col, mod_col)
+        a = curr_col.keys.each_with_object([]) do |hex, obj|
+          current = curr_col[hex]
+          modify = mod_col[hex]
+          next if current.eql?(modify)
+
+          upd = {}
+          upd[:old_name] = current[:name]
+          upd[:new_name] = modify[:name]
+          upd[:type] = modify[:type]
+          upd[:opts] = modify[:opts]
+
+          obj << upd
+        end
+      end
+
+      def self.frontend_transform(columns)
         return [] if columns.empty?
 
-        columns.map do |col|
-          type_opts = sql_to_ar(col[1])
-          { name: col[0] }.merge(type_opts)
+        columns.each_with_object({}) do |(id, column), hash|
+          column['opts'] ||= {}
+
+          hash[id.to_sym] = column.deep_symbolize_keys
         end
       end
 
-      def self.transform_by_hex(columns)
-        return {} if columns.empty?
+      def self.backend_transform(columns)
+        return [] if columns.empty?
 
-        hashed = columns.map do |column|
-          { SecureRandom.hex(3) => column }
+        columns.each_with_object({}) do |col, hash|
+          type_opts = sql_to_ar(col[1])
+
+          hash[SecureRandom.hex(3).to_sym] = { name: col[0] }.merge(type_opts)
         end
-
-        hashed.reduce(:merge)
       end
 
       def self.sql_to_ar(type)
@@ -63,16 +62,16 @@ module LokiC
 
         case tp
         when 'tinyint'
-          { type: 'boolean' }
+          { type: 'boolean', opts: {} }
         when 'int'
-          { type: 'integer' }
+          { type: 'integer', opts: {} }
         when 'decimal'
           pr, scl = opt.split(',')
           { type: 'decimal', opts: { precision: pr, scale: scl } }
         when 'varchar'
           { type: 'string', opts: { limit: opt } }
         else
-          { type: tp }
+          { type: tp, opts: {} }
         end
       end
     end

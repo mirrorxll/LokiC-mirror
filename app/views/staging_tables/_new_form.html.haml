@@ -4,7 +4,7 @@
   %div#columns-editable
     -hex = SecureRandom.hex(3)
     %div{ id: "col_#{hex}" }
-      %div.remove-column.d-inline-block{ id: "rm_col_#{hex}", onclick: 'removeColumnAndSaveEnum(this)' } -
+      %div.remove-column.d-inline-block{ id: "rm_col_#{hex}", onclick: 'removeColumn(this)' } -
       =form.text_field "#{hex}[name]", { require: true, id: "staging_table_#{hex}_name" }
       =form.select "#{hex}[type]", data_types, {}, { id: "staging_table_#{hex}_type", onchange: 'optionsForColumnType(this)' }
   %br/

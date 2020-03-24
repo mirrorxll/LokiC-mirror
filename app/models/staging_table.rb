@@ -25,27 +25,16 @@ class StagingTable < ApplicationRecord # :nodoc:
     LokiC::StagingTable.truncate(name)
   end
 
-  def prepare_editable
-    self.editable = LokiC::StagingTable.columns_by_hex(name)
+  def save_columns
+    self.editable = tbl_columns
 
     save
   end
 
-  # def modify(params)
-  #   queries = [
-  #     'BEGIN;',
-  #     LokiC::Queries.alter_table(name, columns, params[:columns]),
-  #     'COMMIT;',
-  #     LokiC::Queries.rename_table(name, params[:name])
-  #   ]
-  #
-  #   queries.compact.each { |q| ActiveRecord::Base.connection.execute(q) }
-  #   nil
-  # rescue ActiveRecord::StatementInvalid => e
-  #   ActiveRecord::Base.connection.execute('ROLLBACK;')
-  #   e.message
-  # end
-  #
+  def modify_tbl(mod_columns)
+    LokiC::StagingTable.modify_columns(name, editable, mod_columns)
+  end
+
   # def execute_code(method, options)
   #   ex = LokiC::StoryType::Code.run(story_type, method, options)
   #   story_type.story_type_iterations.last.update!("#{method}_status": 1) unless ex

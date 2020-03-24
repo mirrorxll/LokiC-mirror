@@ -1,14 +1,15 @@
-=form_with(model: [@story_type, @staging_table], method: :put) do |form|
+=form_with(model: [@story_type, @staging_table], method: :put,  html: {id: 'staging_table_columns_form'}) do |form|
   #add-column
     +
   %div#columns-editable
     -@staging_table.editable.each do |hex, column|
       %div{ id: "col_#{hex}" }
-        %div.remove-column.d-inline-block{ id: "rm_col_#{hex}", onclick: 'removeColumnAndSaveEnum(this)' } -
+        %div.remove-column.d-inline-block{ id: "rm_col_#{hex}", onclick: 'removeColumn(this)' } -
         =form.text_field "#{hex}[name]",
                          { value: column[:name], placeholder: 'name', id: "staging_table_#{hex}_name", require: true }
         =form.select "#{hex}[type]",
                      options_for_select(data_types, column[:type]),
+                     {},
                      { id: "staging_table_#{hex}_type", onchange: 'optionsForColumnType(this)' }
         .d-inline-block
           -if column[:type].eql?('string')

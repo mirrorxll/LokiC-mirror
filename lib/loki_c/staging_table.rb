@@ -19,8 +19,8 @@ module LokiC
       ActiveRecord::Migration.add_column(t_name, :project_name, :string)
       ActiveRecord::Migration.add_column(t_name, :publish_on, :datetime)
 
-      columns.each do |c|
-        ActiveRecord::Migration.add_column(t_name, c[:name], c[:type], c[:opts])
+      columns.each do |_id, col|
+        ActiveRecord::Migration.add_column(t_name, col[:name], col[:type], col[:opts])
       end
     end
 
@@ -35,25 +35,27 @@ module LokiC
     def self.columns(t_name)
       query = Queries.column_list(t_name)
       columns = ActiveRecord::Base.connection.execute(query).to_a
-      Columns.transform_exist(columns)
+
+      Columns.backend_transform(columns)
     rescue ActiveRecord::StatementInvalid => e
       { error: e }
     end
 
-    def self.columns_by_hex(t_name)
-      cols = columns(t_name)
-      Columns.transform_by_hex(cols)
-    end
-
-    def self.alter(t_name, cur_col, mod_col)
-      q = ["ALTER TABLE `#{t_name}`"]
-      Columns.dropped(cur_col, mod_col).each { |c| q << "DROP COLUMN `#{c['name']}`," }
-      Columns.added(cur_col, mod_col).each { |c| q << "ADD COLUMN `#{c[:name]}` #{c[:type]}," }
-      Columns.changed(cur_col, mod_col).each do |c|
-        q << "CHANGE COLUMN `#{c[:old_name]}` `#{c[:new_name]}` #{c[:new_type]},"
+    def self.modify_columns(t_name, cur_col, mod_col)
+      Columns.dropped(cur_col, mod_col).each do |hex|
+        col = cur_col.delete(hex)
+        ActiveRecord::Migration.remove_column(t_name, col[:name])
       end
 
-      q.count > 1 ? q.join(' ')[0..-2] + ';' : nil
+      Columns.added(cur_col, mod_col).each do |hex|
+        col = mod_col.delete(hex)
+        ActiveRecord::Migration.add_column(t_name, col[:name], col[:type], col[:opts])
+      end
+
+      Columns.changed(cur_col, mod_col).each do |upd|
+        ActiveRecord::Migration.rename_column(t_name, upd[:old_name], upd[:new_name])
+        ActiveRecord::Migration.change_column(t_name, upd[:new_name], upd[:type], upd[:opts])
+      end
     end
   end
 end

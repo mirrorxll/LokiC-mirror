@@ -5,7 +5,7 @@
 
     $(editable_block).append(
         `<div id="col_${hex}">
-            <div id="rm_col_${hex}" class="d-inline-block" onclick="removeColumnAndSaveEnum(this)">-</div>
+            <div id="rm_col_${hex}" class="d-inline-block" onclick="removeColumn(this)">-</div>
             <input type="text" name="staging_table[${hex}[name]]" id="staging_table_${hex}_name" required>
             <select name="staging_table[${hex}[type]]" id="staging_table_${hex}_type" onchange="optionsForColumnType(this)">
                 <option value="smallint">smallint</option>
@@ -35,14 +35,13 @@
     return result;
   }
 
-  function removeColumnAndSaveEnum(elem) {
+  function removeColumn(elem) {
     $(elem.parentNode).remove();
   }
 
   function optionsForColumnType(elem) {
-    let count = elem.selectedIndex + 1;
-    let parent = elem.parentNode;
-    let hex = parent.id.split('_')[1]
+    var parent = elem.parentNode;
+    var hex = parent.id.split('_')[1]
     while (parent.childElementCount > 3)
       $(elem).next().remove();
 
@@ -62,11 +61,3 @@
         break;
     }
   }
-
-  $('div[id^="rm_col"]').each(function() {
-    $(this).click(removeColumnAndSaveEnum)
-  });
-
-  $('select[id$="type"]').each(function() {
-    $(this).click('optionsForColumnType(this)')
-  });
