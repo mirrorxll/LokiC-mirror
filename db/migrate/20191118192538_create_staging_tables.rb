@@ -3,10 +3,10 @@
 class CreateStagingTables < ActiveRecord::Migration[5.2] # :nodoc:
   def change
     create_table :staging_tables do |t|
-      t.string  :name
-      t.string  :editable, limit: 5000
       t.belongs_to :story_type
-
+      t.string :name
+      t.string :columns, limit: 6000
+      t.string :indices, limit: 6000
       t.timestamps
     end
   end

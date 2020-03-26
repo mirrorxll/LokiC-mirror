@@ -2,7 +2,8 @@
 
 class StagingTablesController < ApplicationController # :nodoc:
   before_action :attach_staging_table, only: %i[attach]
-  before_action :staging_table_columns, only: %i[create update]
+
+  def show; end
 
   def attach
     flash[:error] =
@@ -10,22 +11,25 @@ class StagingTablesController < ApplicationController # :nodoc:
         'Table for this story type already attached. Please update the page'
       elsif StagingTable.find_by(name: @staging_table_name)
         'This table already attached to another story type.'
-      elsif !StagingTable.tbl_exists?(@staging_table_name)
+      elsif !StagingTable.exists?(@staging_table_name)
         'Table not found'
       end
 
     if flash[:error].nil?
       @story_type.create_staging_table(name: @staging_table_name)
+      @story_type.staging_table.synchronization
     end
 
-    render 'attach_create_update'
+    render 'show'
   end
 
   def detach
     @story_type.staging_table.delete
 
-    render 'detach_delete'
+    render 'new'
   end
+
+  def new; end
 
   def create
     flash[:error] =
@@ -34,11 +38,10 @@ class StagingTablesController < ApplicationController # :nodoc:
       end
 
     if flash[:error].nil?
-      @staging_table = StagingTable.create(story_type: @story_type)
-      @staging_table.create_tbl(@staging_table_columns)
+      @story_type.create_staging_table(columns: staging_table_columns)
     end
 
-    render 'attach_create_update'
+    render 'show'
   end
 
   def edit
@@ -47,41 +50,34 @@ class StagingTablesController < ApplicationController # :nodoc:
     flash[:error] =
       if @staging_table.nil?
         'Table was attached or delete. Please update the page.'
-      elsif !StagingTable.tbl_exists?(@staging_table.name)
+      elsif !StagingTable.exists?(@staging_table.name)
         'Someone drop or rename table for this story type. Please check it.'
       end
-
-    if flash[:error].nil?
-      @staging_table.save_columns
-    end
-
-    render 'edit'
   end
 
   def update
     @staging_table = @story_type.staging_table
-    @staging_table.modify_tbl(@staging_table_columns)
+    @staging_table.modify_columns(staging_table_columns)
+    @staging_table.synchronization
 
-    render 'attach_create_update'
+    render 'show'
   end
 
   def truncate
-    @story_type.staging_table.truncate_tbl
+    @story_type.staging_table.truncate
   end
 
-  def drop
-    @story_type.staging_table.drop_tbl
-    @story_type.staging_table.delete
+  def destroy
+    @story_type.staging_table.destroy
 
-    render 'detach_delete'
+    render 'new'
   end
 
   private
 
   def staging_table_columns
     columns = params.require(:staging_table).permit!.to_hash
-    @staging_table_columns =
-      LokiC::StagingTable::Columns.frontend_transform(columns)
+    LokiC::StagingTable::Columns.frontend_transform(columns)
   end
 
   def attach_staging_table

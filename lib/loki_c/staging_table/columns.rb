@@ -22,7 +22,7 @@ module LokiC
       end
 
       def self.changed(curr_col, mod_col)
-        a = curr_col.keys.each_with_object([]) do |hex, obj|
+        curr_col.keys.each_with_object([]) do |hex, obj|
           current = curr_col[hex]
           modify = mod_col[hex]
           next if current.eql?(modify)
@@ -38,7 +38,7 @@ module LokiC
       end
 
       def self.frontend_transform(columns)
-        return [] if columns.empty?
+        return {} if columns.empty?
 
         columns.each_with_object({}) do |(id, column), hash|
           column['opts'] ||= {}
@@ -48,7 +48,7 @@ module LokiC
       end
 
       def self.backend_transform(columns)
-        return [] if columns.empty?
+        return {} if columns.empty?
 
         columns.each_with_object({}) do |col, hash|
           type_opts = sql_to_ar(col[1])

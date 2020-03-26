@@ -5,5 +5,5 @@ var st_table_block = $('#staging-table')
       <%= flash[:error].gsub('`', "'") %>
     </div>`)
 <% else %>
-  st_table_block.empty().html('<%=j render 'staging_tables/columns'%>')
+  st_table_block.empty().html('<%=j render 'staging_tables/columns_indexes'%>')
 <% end %>

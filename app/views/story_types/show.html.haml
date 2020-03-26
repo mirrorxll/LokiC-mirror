@@ -1,8 +1,8 @@
-%h6.border-bottom.border-dark
-  Edit Template
-%section#edit-template
-  = render 'story_types/edit_template'
-%hr/
+-#%h6.border-bottom.border-dark
+-#  Edit Template
+-#%section#edit-template
+-#  = render 'story_types/edit_template'
+-#%hr/
 
 %h6.border-bottom.border-dark
   Show Template
@@ -17,19 +17,22 @@
 %hr/
 
 %h6.border-bottom.border-dark
-  Story Type Table
+  Staging Table
 %section#staging-table
   -if @story_type.staging_table.nil?
-    =render 'staging_tables/new'
+    =link_to('Add staging table',
+             new_story_type_staging_table_path(@story_type),
+             remote: true,
+             class: 'btn btn-sm btn-success')
   -else
-    =render 'staging_tables/columns'
+    =render 'staging_tables/columns_indexes'
 %hr/
 
 %h6.border-bottom.border-dark
   Story Type Code Upload
 %section#code-file
   - if @story_type.code.attached?
-    = render 'codes/story_code'
+    = render 'codes/story_type_code'
   - else
     = render 'codes/form'
   %hr

@@ -1,0 +1,34 @@
+.row
+  #staging_table_columns.col-6.border-right
+    %p
+      Table Name:
+      =@story_type.staging_table.name
+
+    -if @story_type.staging_table.columns.count.positive?
+      -@story_type.staging_table.columns.each do |_id, col|
+        %p
+          ="#{col[:name]}: #{col[:type]} | #{col[:opts]}"
+    -else
+      No columns.
+    .btn-group
+      =link_to('edit columns',
+               edit_story_type_staging_table_path(@story_type),
+               class: 'btn btn-sm btn-success', remote: true)
+
+    .btn-group.ml-3
+      =link_to('detach',
+               detach_story_type_staging_table_path(@story_type),
+               class: 'btn btn-sm btn-warning', method: :delete, remote: true)
+      =link_to('truncate',
+               truncate_story_type_staging_table_path(@story_type),
+               class: 'btn btn-sm btn-danger', method: :put,  remote: true)
+      =link_to('drop',
+               story_type_staging_table_path(@story_type),
+               class: 'btn btn-sm btn-danger', method: :delete, remote: true)
+  #staging_table_indices.col-6.border-left
+    -if @story_type.staging_table.indices.count.positive?
+      -@story_type.staging_table.indices.each do |_id, ind|
+        ="#{ind[:name]}: (#{ind[:columns].join(', ')})"
+    -else
+      No Indices
+

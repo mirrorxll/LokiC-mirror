@@ -2,7 +2,7 @@
   #add-column
     +
   %div#columns-editable
-    -@staging_table.editable.each do |hex, column|
+    -@staging_table.columns.each do |hex, column|
       %div{ id: "col_#{hex}" }
         %div.remove-column.d-inline-block{ id: "rm_col_#{hex}", onclick: 'removeColumn(this)' } -
         =form.text_field "#{hex}[name]",

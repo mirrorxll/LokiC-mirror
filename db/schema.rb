@@ -48,6 +48,8 @@ ActiveRecord::Schema.define(version: 2020_03_13_144006) do
   end
 
   create_table "data_sets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "evaluator_id"
     t.string "source_name"
     t.string "data_set_location"
     t.string "data_set_evaluation_document"
@@ -61,8 +63,6 @@ ActiveRecord::Schema.define(version: 2020_03_13_144006) do
     t.string "scrape_developer_comments", limit: 1000
     t.string "source_key_explaining_data"
     t.string "gather_task"
-    t.bigint "user_id"
-    t.bigint "evaluator_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["evaluator_id"], name: "index_data_sets_on_evaluator_id"
@@ -92,9 +92,9 @@ ActiveRecord::Schema.define(version: 2020_03_13_144006) do
   end
 
   create_table "projects", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "client_id"
     t.integer "pipeline_index"
     t.string "name"
-    t.bigint "client_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["client_id"], name: "index_projects_on_client_id"
@@ -108,27 +108,29 @@ ActiveRecord::Schema.define(version: 2020_03_13_144006) do
   end
 
   create_table "staging_tables", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "name"
-    t.string "editable", limit: 5000
     t.bigint "story_type_id"
+    t.string "name"
+    t.string "columns", limit: 6000
+    t.string "indices", limit: 6000
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["story_type_id"], name: "index_staging_tables_on_story_type_id"
   end
 
   create_table "story_type_iterations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "story_type_id"
     t.boolean "populate_status", default: false
     t.boolean "create_status", default: false
-    t.bigint "story_type_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["story_type_id"], name: "index_story_type_iterations_on_story_type_id"
   end
 
   create_table "story_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "editor_id"
+    t.bigint "developer_id"
+    t.bigint "data_set_id"
     t.string "name"
-    t.string "headline"
-    t.string "teaser", limit: 500
     t.text "body", limit: 16777215
     t.string "description", limit: 1000
     t.date "desired_launch"
@@ -136,9 +138,6 @@ ActiveRecord::Schema.define(version: 2020_03_13_144006) do
     t.date "last_export"
     t.date "deadline"
     t.string "dev_status", default: "Not Started"
-    t.bigint "editor_id"
-    t.bigint "developer_id"
-    t.bigint "data_set_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["data_set_id"], name: "index_story_types_on_data_set_id"

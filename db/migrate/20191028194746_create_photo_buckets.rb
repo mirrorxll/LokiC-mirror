@@ -8,7 +8,6 @@ class CreatePhotoBuckets < ActiveRecord::Migration[5.2] # :nodoc:
       t.integer :minimum_height
       t.integer :minimum_width
       t.string  :aspect_ratio
-
       t.timestamps
     end
   end

@@ -5,40 +5,18 @@ module LokiC
   module StagingTable # :nodoc:
     require_relative 'staging_table/queries.rb'
     require_relative 'staging_table/columns.rb'
-
-    def self.exists?(t_name)
-      ActiveRecord::Base.connection.table_exists?(t_name)
-    end
-
-    def self.create(t_name, columns)
-      ActiveRecord::Migration.create_table(t_name, if_not_exists: true)
-      ActiveRecord::Migration.add_column(t_name, :story_created, :boolean)
-      ActiveRecord::Migration.add_column(t_name, :client_id, :integer)
-      ActiveRecord::Migration.add_column(t_name, :client_name, :string)
-      ActiveRecord::Migration.add_column(t_name, :project_id, :integer)
-      ActiveRecord::Migration.add_column(t_name, :project_name, :string)
-      ActiveRecord::Migration.add_column(t_name, :publish_on, :datetime)
-
-      columns.each do |_id, col|
-        ActiveRecord::Migration.add_column(t_name, col[:name], col[:type], col[:opts])
-      end
-    end
-
-    def self.drop(name)
-      ActiveRecord::Base.connection.drop_table(name)
-    end
-
-    def self.truncate(name)
-      ActiveRecord::Base.connection.truncate(name)
-    end
+    require_relative 'staging_table/indices.rb'
 
     def self.columns(t_name)
-      query = Queries.column_list(t_name)
+      query = Queries.table_columns(t_name)
       columns = ActiveRecord::Base.connection.execute(query).to_a
-
       Columns.backend_transform(columns)
-    rescue ActiveRecord::StatementInvalid => e
-      { error: e }
+    end
+
+    def self.indices(t_name)
+      query = Queries.table_indices(t_name)
+      indices = ActiveRecord::Base.connection.exec_query(query).to_a
+      Indices.transform(indices)
     end
 
     def self.modify_columns(t_name, cur_col, mod_col)

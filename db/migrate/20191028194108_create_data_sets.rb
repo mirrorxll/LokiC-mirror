@@ -3,6 +3,9 @@
 class CreateDataSets < ActiveRecord::Migration[5.2] # :nodoc:
   def change
     create_table :data_sets do |t|
+      t.belongs_to :user
+      t.belongs_to :evaluator
+
       t.string    :source_name
       t.string    :data_set_location
       t.string    :data_set_evaluation_document
@@ -16,10 +19,6 @@ class CreateDataSets < ActiveRecord::Migration[5.2] # :nodoc:
       t.string    :scrape_developer_comments, limit: 1000
       t.string    :source_key_explaining_data
       t.string    :gather_task
-
-      t.belongs_to :user
-      t.belongs_to :evaluator
-
       t.timestamps
     end
   end
