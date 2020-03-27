@@ -10,7 +10,7 @@ namespace :db do
     FirstObjects.data_set.each { |obj| DataSet.create!(obj) }
     FirstObjects.story_type.each { |obj| StoryType.create!(obj) }
     FirstObjects.client.each { |obj| Client.create!(obj) }
-    FirstObjects.project.each { |obj| Project.create!(obj) }
+    FirstObjects.publication.each { |obj| Publication.create!(obj) }
     FirstObjects.section.each { |obj| Section.create!(obj) }
     FirstObjects.tag.each { |obj| Tag.create!(obj) }
     FirstObjects.photo_bucket.each { |obj| PhotoBucket.create!(obj) }

@@ -17,19 +17,21 @@ class StagingTablesController < ApplicationController # :nodoc:
 
     if flash[:error].nil?
       @story_type.create_staging_table(name: @staging_table_name)
-      @story_type.staging_table.synchronization
+      @story_type.staging_table.sync
     end
 
     render 'show'
   end
 
   def detach
-    @story_type.staging_table.delete
+    @staging_table = @story_type.staging_table
 
-    render 'new'
+    @staging_table.columns&.delete
+    @staging_table.indices&.delete
+    @staging_table&.delete
+
+    render 'add_table'
   end
-
-  def new; end
 
   def create
     flash[:error] =
@@ -38,27 +40,14 @@ class StagingTablesController < ApplicationController # :nodoc:
       end
 
     if flash[:error].nil?
-      @story_type.create_staging_table(columns: staging_table_columns)
+      @story_type.create_staging_table
     end
 
     render 'show'
   end
 
-  def edit
-    @staging_table = @story_type.staging_table
-
-    flash[:error] =
-      if @staging_table.nil?
-        'Table was attached or delete. Please update the page.'
-      elsif !StagingTable.exists?(@staging_table.name)
-        'Someone drop or rename table for this story type. Please check it.'
-      end
-  end
-
-  def update
-    @staging_table = @story_type.staging_table
-    @staging_table.modify_columns(staging_table_columns)
-    @staging_table.synchronization
+  def sync
+    @story_type.staging_table.sync
 
     render 'show'
   end
@@ -70,15 +59,10 @@ class StagingTablesController < ApplicationController # :nodoc:
   def destroy
     @story_type.staging_table.destroy
 
-    render 'new'
+    render 'add_table'
   end
 
   private
-
-  def staging_table_columns
-    columns = params.require(:staging_table).permit!.to_hash
-    LokiC::StagingTable::Columns.frontend_transform(columns)
-  end
 
   def attach_staging_table
     @staging_table_name =

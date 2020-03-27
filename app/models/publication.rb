@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-class Project < ApplicationRecord # :nodoc:
+class Publication < ApplicationRecord # :nodoc:
   belongs_to :client
 end

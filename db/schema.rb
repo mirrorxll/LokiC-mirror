@@ -47,6 +47,14 @@ ActiveRecord::Schema.define(version: 2020_03_13_144006) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "columns", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "staging_table_id"
+    t.string "list", limit: 10000
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["staging_table_id"], name: "index_columns_on_staging_table_id"
+  end
+
   create_table "data_sets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "evaluator_id"
@@ -75,6 +83,14 @@ ActiveRecord::Schema.define(version: 2020_03_13_144006) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "indices", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "staging_table_id"
+    t.string "list", limit: 1000
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["staging_table_id"], name: "index_indices_on_staging_table_id"
+  end
+
   create_table "levels", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -91,13 +107,13 @@ ActiveRecord::Schema.define(version: 2020_03_13_144006) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "projects", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "publications", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "client_id"
     t.integer "pipeline_index"
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["client_id"], name: "index_projects_on_client_id"
+    t.index ["client_id"], name: "index_publications_on_client_id"
   end
 
   create_table "sections", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -110,8 +126,6 @@ ActiveRecord::Schema.define(version: 2020_03_13_144006) do
   create_table "staging_tables", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "story_type_id"
     t.string "name"
-    t.string "columns", limit: 6000
-    t.string "indices", limit: 6000
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["story_type_id"], name: "index_staging_tables_on_story_type_id"

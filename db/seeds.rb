@@ -201,7 +201,7 @@ class FirstObjects # :nodoc:
         last_name: 'Emelyanov',
         account_type: AccountType.first,
         email: 'evilx@loki.com',
-        password: '123456',
+        password: '123456'
       },
       {
         first_name: 'Dmitriy',
@@ -281,7 +281,7 @@ class FirstObjects # :nodoc:
     ]
   end
 
-  def self.project
+  def self.publication
     [
       {
         pipeline_index: 655,
@@ -357,7 +357,7 @@ FirstObjects.user.each { |obj| User.create!(obj) }
 FirstObjects.data_set.each { |obj| DataSet.create!(obj) }
 FirstObjects.story_type.each { |obj| StoryType.create!(obj) }
 FirstObjects.client.each { |obj| Client.create!(obj) }
-FirstObjects.project.each { |obj| Project.create!(obj) }
+FirstObjects.publication.each { |obj| Publication.create!(obj) }
 FirstObjects.section.each { |obj| Section.create!(obj) }
 FirstObjects.tag.each { |obj| Tag.create!(obj) }
 FirstObjects.photo_bucket.each { |obj| PhotoBucket.create!(obj) }

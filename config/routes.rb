@@ -3,7 +3,6 @@ require 'sidekiq/web'
 
 Rails.application.routes.draw do
   devise_for :users, controllers: { registrations: 'registrations', sessions: 'sessions' }
-
   mount Sidekiq::Web => '/sidekiq'
 
   root 'story_types#index'
@@ -48,10 +47,14 @@ Rails.application.routes.draw do
       delete  :exclude, on: :member
     end
 
-    resource :staging_table do
+    resource :staging_table, only: %i[show create destroy] do
       post    :attach
       delete  :detach
       put     :truncate
+      put     :sync
+
+      resource :columns, only: %i[edit update]
+      resource :indices, except: :show
     end
 
     resources :codes, path: 'upload_code', only: %i[create destroy]

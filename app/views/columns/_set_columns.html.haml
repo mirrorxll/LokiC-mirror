@@ -5,9 +5,9 @@
 
     $(editable_block).append(
         `<div id="col_${hex}">
-            <div id="rm_col_${hex}" class="d-inline-block" onclick="removeColumn(this)">-</div>
-            <input type="text" name="staging_table[${hex}[name]]" id="staging_table_${hex}_name" required>
-            <select name="staging_table[${hex}[type]]" id="staging_table_${hex}_type" onchange="optionsForColumnType(this)">
+            <div class="remove_column d-inline-block" id="rm_col_${hex}" onclick="removeColumn(this)">-</div>
+            <input placeholder="name" id="columns_${hex}_name" required="required" type="text" name="columns[${hex}[name]]">
+            <select id="columns_${hex}_type" onchange="optionsForColumnType(this)" name="columns[${hex}[type]]">
                 <option value="smallint">smallint</option>
                 <option value="integer">integer</option>
                 <option value="bigint">bigint</option>
@@ -27,7 +27,7 @@
   });
 
   function secureRandom(n){
-    var result = '';
+    let result = '';
     while (n--){
       result += Math.floor(Math.random()*16).toString(16);
     }
@@ -40,8 +40,8 @@
   }
 
   function optionsForColumnType(elem) {
-    var parent = elem.parentNode;
-    var hex = parent.id.split('_')[1]
+    let parent = elem.parentNode;
+    let hex = parent.id.split('_')[1]
     while (parent.childElementCount > 3)
       $(elem).next().remove();
 
@@ -49,14 +49,14 @@
       case 'decimal':
         $(parent).append(`
           <input placeholder="precision" type="text"
-            name="staging_table[${hex}[opts[precision]]]" id="staging_table_${hex}_opts_precision">
+            name="columns[${hex}[opts[precision]]]" id="columns_${hex}_opts_precision">
           <input placeholder="scale" type="text"
-            name="staging_table[${hex}[opts[scale]]]" id="staging_table_${hex}_opts_scale">`);
+            name="columns[${hex}[opts[scale]]]" id="columns_${hex}_opts_scale">`);
         break;
       case 'string':
         $(parent).append(`
           <input placeholder="limit" type="text"
-            name="staging_table[${hex}[opts[limit]]]" id="staging_table_${hex}_opts_limit">
+            name="columns[${hex}[opts[limit]]]" id="columns_${hex}_opts_limit">
         `);
         break;
     }

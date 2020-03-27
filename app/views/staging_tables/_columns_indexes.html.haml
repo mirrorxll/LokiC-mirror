@@ -1,34 +1,40 @@
+.d-inline-block
+  Table name:
+  =@story_type.staging_table.name
+.btn-group
+  =link_to('sync', sync_story_type_staging_table_path(@story_type),
+            class: 'btn btn-sm btn-outline-dark', method: :put, remote: true)
+  =link_to('detach', detach_story_type_staging_table_path(@story_type),
+            class: 'btn btn-sm btn-outline-dark', method: :delete, remote: true)
+  =link_to('truncate', truncate_story_type_staging_table_path(@story_type),
+            class: 'btn btn-sm btn-outline-danger', method: :put,  remote: true)
+  =link_to('drop', story_type_staging_table_path(@story_type),
+            class: 'btn btn-sm btn-outline-danger', method: :delete, remote: true)
+
+%hr/
 .row
   #staging_table_columns.col-6.border-right
-    %p
-      Table Name:
-      =@story_type.staging_table.name
-
-    -if @story_type.staging_table.columns.count.positive?
-      -@story_type.staging_table.columns.each do |_id, col|
+    -columns = @story_type.staging_table.columns
+    -if columns && columns.list.count.positive?
+      -columns.list.each do |_id, col|
         %p
           ="#{col[:name]}: #{col[:type]} | #{col[:opts]}"
     -else
       No columns.
+      %br/
     .btn-group
-      =link_to('edit columns',
-               edit_story_type_staging_table_path(@story_type),
-               class: 'btn btn-sm btn-success', remote: true)
-
-    .btn-group.ml-3
-      =link_to('detach',
-               detach_story_type_staging_table_path(@story_type),
-               class: 'btn btn-sm btn-warning', method: :delete, remote: true)
-      =link_to('truncate',
-               truncate_story_type_staging_table_path(@story_type),
-               class: 'btn btn-sm btn-danger', method: :put,  remote: true)
-      =link_to('drop',
-               story_type_staging_table_path(@story_type),
-               class: 'btn btn-sm btn-danger', method: :delete, remote: true)
+      =link_to('edit column list',
+               edit_story_type_staging_table_columns_path(@story_type),
+               class: 'btn btn-sm btn-outline-dark', remote: true)
   #staging_table_indices.col-6.border-left
-    -if @story_type.staging_table.indices.count.positive?
-      -@story_type.staging_table.indices.each do |_id, ind|
+    -indices = @story_type.staging_table.indices
+    -if indices && indices.list.count.positive?
+      -indices.list.each do |_id, ind|
         ="#{ind[:name]}: (#{ind[:columns].join(', ')})"
     -else
-      No Indices
-
+      No Indices.
+      %br/
+    .btn-group
+      =link_to("edit 'story per publication' list",
+               edit_story_type_staging_table_columns_path(@story_type),
+               class: 'btn btn-sm btn-outline-dark', remote: true)

@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
+require 'loki_c/staging_table/queries'
+require 'loki_c/staging_table/columns'
+require 'loki_c/staging_table/indices'
 
 module LokiC
   module StagingTable # :nodoc:
-    require_relative 'staging_table/queries.rb'
-    require_relative 'staging_table/columns.rb'
-    require_relative 'staging_table/indices.rb'
 
     def self.columns(t_name)
       query = Queries.table_columns(t_name)

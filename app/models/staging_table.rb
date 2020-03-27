@@ -1,58 +1,29 @@
 # frozen_string_literal: true
 
-require_relative '../../lib/loki_c/staging_table.rb'
-
 class StagingTable < ApplicationRecord # :nodoc:
-  serialize :columns, Hash
-  serialize :indices, Hash
-
   before_create   :generate_table_name, if: :noname?
   before_create   :create_table, if: :not_exists?
+  after_create    :sync
   before_destroy  :drop_table, if: :exists?
 
   belongs_to :story_type
 
-  def synchronization
+  has_one :columns, dependent: :delete
+  has_one :indices, dependent: :delete
+
+  def sync
     return if not_exists?
 
     columns = LokiC::StagingTable.columns(name)
     indices = LokiC::StagingTable.indices(name)
 
-    update!(columns: columns, indices: indices)
+    Columns.find_or_create_by(staging_table: self).update(list: columns)
+    Indices.find_or_create_by(staging_table: self).update(list: indices)
   end
 
   def truncate
     ActiveRecord::Base.connection.truncate(name)
   end
-
-  def modify_columns(mod_columns)
-    LokiC::StagingTable.modify_columns(name, columns, mod_columns)
-  end
-
-  # def execute_code(method, options)
-  #   ex = LokiC::StoryType::Code.run(story_type, method, options)
-  #   story_type.story_type_iterations.last.update!("#{method}_status": 1) unless ex
-  #
-  #   ex
-  # end
-  #
-  # def rows(number)
-  #   ActiveRecord::Base.connection.execute(
-  #     LokiC::Queries.select_iteration(name, number)
-  #   )
-  # end
-  #
-  # def purge_last_population
-  #   ActiveRecord::Base.connection.execute(
-  #     LokiC::Queries.delete_population(name, story.iterations.last)
-  #   )
-  # end
-  #
-  # def purge_last_creation
-  #   ActiveRecord::Base.connection.execute(
-  #     LokiC::Queries.delete_creation(name, story.iterations.last)
-  #   )
-  # end
 
   def self.exists?(name)
     ActiveRecord::Base.connection.table_exists?(name)
@@ -82,16 +53,12 @@ class StagingTable < ApplicationRecord # :nodoc:
 
   def create_table
     ActiveRecord::Migration.create_table(name)
-    ActiveRecord::Migration.add_column(name, :story_created, :boolean)
     ActiveRecord::Migration.add_column(name, :client_id, :integer)
     ActiveRecord::Migration.add_column(name, :client_name, :string)
-    ActiveRecord::Migration.add_column(name, :project_id, :integer)
-    ActiveRecord::Migration.add_column(name, :project_name, :string)
-    ActiveRecord::Migration.add_column(name, :publish_on, :datetime)
-
-    columns.each do |_id, col|
-      ActiveRecord::Migration.add_column(name, col[:name], col[:type], col[:opts])
-    end
+    ActiveRecord::Migration.add_column(name, :publication_id, :integer)
+    ActiveRecord::Migration.add_column(name, :publication_name, :string)
+    ActiveRecord::Migration.add_column(name, :publish_on, :date)
+    ActiveRecord::Migration.add_column(name, :story_created, :boolean)
   end
 
   def drop_table
