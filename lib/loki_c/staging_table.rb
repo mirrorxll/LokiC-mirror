@@ -13,10 +13,10 @@ module LokiC
       Columns.backend_transform(columns)
     end
 
-    def self.indices(t_name)
-      query = Queries.table_indices(t_name)
-      indices = ActiveRecord::Base.connection.exec_query(query).to_a
-      Indices.transform(indices)
+    def self.index(t_name)
+      query = Queries.table_index(t_name)
+      index = ActiveRecord::Base.connection.exec_query(query).to_a
+      Indices.transform(index)
     end
 
     def self.modify_columns(t_name, cur_col, mod_col)

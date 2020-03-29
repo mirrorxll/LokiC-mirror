@@ -11,13 +11,12 @@ class StagingTablesController < ApplicationController # :nodoc:
         'Table for this story type already attached. Please update the page'
       elsif StagingTable.find_by(name: @staging_table_name)
         'This table already attached to another story type.'
-      elsif !StagingTable.exists?(@staging_table_name)
+      elsif StagingTable.not_exists?(@staging_table_name)
         'Table not found'
       end
 
     if flash[:error].nil?
       @story_type.create_staging_table(name: @staging_table_name)
-      @story_type.staging_table.sync
     end
 
     render 'show'
@@ -27,7 +26,7 @@ class StagingTablesController < ApplicationController # :nodoc:
     @staging_table = @story_type.staging_table
 
     @staging_table.columns&.delete
-    @staging_table.indices&.delete
+    @staging_table.index&.delete
     @staging_table&.delete
 
     render 'add_table'
@@ -39,9 +38,7 @@ class StagingTablesController < ApplicationController # :nodoc:
         'Table for this story type already exist. Please update page'
       end
 
-    if flash[:error].nil?
-      @story_type.create_staging_table
-    end
+    @story_type.create_staging_table if flash[:error].nil?
 
     render 'show'
   end

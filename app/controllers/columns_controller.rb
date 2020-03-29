@@ -11,13 +11,13 @@ class ColumnsController < ApplicationController
         'Someone drop or rename table for this story type. Please check it.'
       end
 
-    @staging_table.sync
+    @staging_table.sync_columns
   end
 
   def update
     @staging_table = @story_type.staging_table
     @staging_table.columns.modify(columns_params)
-    @staging_table.sync
+    @staging_table.sync_columns
 
     redirect_to @story_type
   end

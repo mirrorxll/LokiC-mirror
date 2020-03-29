@@ -9,16 +9,23 @@ class StagingTable < ApplicationRecord # :nodoc:
   belongs_to :story_type
 
   has_one :columns, dependent: :delete
-  has_one :indices, dependent: :delete
+  has_one :index,   dependent: :delete
 
   def sync
     return if not_exists?
 
-    columns = LokiC::StagingTable.columns(name)
-    indices = LokiC::StagingTable.indices(name)
+    sync_columns
+    sync_index
+  end
 
+  def sync_columns
+    columns = LokiC::StagingTable.columns(name)
     Columns.find_or_create_by(staging_table: self).update(list: columns)
-    Indices.find_or_create_by(staging_table: self).update(list: indices)
+  end
+
+  def sync_index
+    index = LokiC::StagingTable.index(name)
+    Index.find_or_create_by(staging_table: self).update(list: index)
   end
 
   def truncate
@@ -52,13 +59,28 @@ class StagingTable < ApplicationRecord # :nodoc:
   end
 
   def create_table
-    ActiveRecord::Migration.create_table(name)
-    ActiveRecord::Migration.add_column(name, :client_id, :integer)
-    ActiveRecord::Migration.add_column(name, :client_name, :string)
-    ActiveRecord::Migration.add_column(name, :publication_id, :integer)
-    ActiveRecord::Migration.add_column(name, :publication_name, :string)
-    ActiveRecord::Migration.add_column(name, :publish_on, :date)
-    ActiveRecord::Migration.add_column(name, :story_created, :boolean)
+    ActiveRecord::Migration.create_table(name) do |t|
+      t.timestamps
+      t.integer :client_id
+      t.string  :client_name
+      t.integer :publication_id
+      t.string  :publication_name
+      t.string  :organization_id, limit: 1000
+      t.date    :publish_on
+      t.boolean :story_created
+    end
+
+    create_index
+  end
+
+  def create_index
+    puts '!' * 100
+    ActiveRecord::Migration.add_index(
+      name,
+      %i[client_id publication_id],
+      unique: true,
+      name: :story_per_publication
+    )
   end
 
   def drop_table
