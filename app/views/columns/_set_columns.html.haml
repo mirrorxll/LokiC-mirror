@@ -8,9 +8,7 @@
             <div class="remove_column d-inline-block" id="rm_col_${hex}" onclick="removeColumn(this)">-</div>
             <input placeholder="name" id="columns_${hex}_name" required="required" type="text" name="columns[${hex}[name]]">
             <select id="columns_${hex}_type" onchange="optionsForColumnType(this)" name="columns[${hex}[type]]">
-                <option value="smallint">smallint</option>
                 <option value="integer">integer</option>
-                <option value="bigint">bigint</option>
                 <option value="float">float</option>
                 <option value="decimal">decimal</option>
                 <option value="date">date</option>
@@ -18,8 +16,6 @@
                 <option value="datetime">datetime</option>
                 <option value="string">string</option>
                 <option value="text">text</option>
-                <option value="mediumtext">mediumtext</option>
-                <option value="longtext">longtext</option>
                 <option value="boolean">boolean</option>
             </select>
         </div>`

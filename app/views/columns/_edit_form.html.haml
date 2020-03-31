@@ -12,10 +12,10 @@
                      {},
                      { id: "columns_#{hex}_type", onchange: 'optionsForColumnType(this)' }
         .d-inline-block
-          -if column[:type].eql?('string')
+          -if column[:type].eql?(:string)
             =form.text_field "#{hex}[opts[limit]]",
                              { value: column[:opts][:limit], placeholder: 'limit', id: "columns_#{hex}_opts_limit", required: true }
-          -elsif column[:type].eql?('decimal')
+          -elsif column[:type].eql?(:decimal)
             =form.text_field "#{hex}[opts[precision]]",
                              { value: column[:opts][:precision], placeholder: 'precision', id: "columns_#{hex}_opts_precision", required: true}
             =form.text_field "#{hex}[opts[scale]]",

@@ -54,7 +54,7 @@ Rails.application.routes.draw do
       put     :sync
 
       resource :columns, only: %i[edit update]
-      resource :index, except: :show
+      resource :index, only: %i[new create destroy]
     end
 
     resources :codes, path: 'upload_code', only: %i[create destroy]

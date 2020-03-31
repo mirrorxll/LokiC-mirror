@@ -3,11 +3,15 @@
 module LokiC
   module StagingTable
     module Indices
-      def self.transform(index)
-        {
-          name: index.first['Key_name'],
-          columns: index.sort_by { |c| c['Seq_in_index'] }.map { |c| c['Column_name'] },
-        }
+      HIDDEN_COLUMNS = %w[
+        client_id client_name
+        publication_id publication_name
+      ].freeze
+
+      def self.transform(index_columns)
+        return [] if index_columns.nil?
+
+        index_columns.columns.reject! { |col| HIDDEN_COLUMNS.include?(col) }
       end
     end
   end

@@ -6,34 +6,45 @@ require 'loki_c/staging_table/indices'
 
 module LokiC
   module StagingTable # :nodoc:
+    ARM = ActiveRecord::Migration
 
     def self.columns(t_name)
-      query = Queries.table_columns(t_name)
-      columns = ActiveRecord::Base.connection.execute(query).to_a
+      columns = ARM.columns(t_name)
       Columns.backend_transform(columns)
     end
 
     def self.index(t_name)
-      query = Queries.table_index(t_name)
-      index = ActiveRecord::Base.connection.exec_query(query).to_a
-      Indices.transform(index)
+      indexes = ARM.indexes(t_name)
+      index_columns = indexes.find { |i| i.name.eql?('story_per_publication') }
+
+      Indices.transform(index_columns)
     end
 
     def self.modify_columns(t_name, cur_col, mod_col)
+      if ARM.index_name_exists?(t_name, :story_per_publication)
+        ARM.remove_index(t_name, name: :story_per_publication)
+      end
+
       Columns.dropped(cur_col, mod_col).each do |hex|
         col = cur_col.delete(hex)
-        ActiveRecord::Migration.remove_column(t_name, col[:name])
+        ARM.remove_column(t_name, col[:name])
       end
 
       Columns.added(cur_col, mod_col).each do |hex|
         col = mod_col.delete(hex)
-        ActiveRecord::Migration.add_column(t_name, col[:name], col[:type], col[:opts])
+        ARM.add_column(t_name, col[:name], col[:type], col[:opts])
       end
 
       Columns.changed(cur_col, mod_col).each do |upd|
-        ActiveRecord::Migration.rename_column(t_name, upd[:old_name], upd[:new_name])
-        ActiveRecord::Migration.change_column(t_name, upd[:new_name], upd[:type], upd[:opts])
+        ARM.rename_column(t_name, upd[:old_name], upd[:new_name])
+        ARM.change_column(t_name, upd[:new_name], upd[:type], upd[:opts])
       end
+    end
+
+    def self.add_index(t_name, columns)
+      columns = columns.map { |_id, c| c[:name] }
+      columns = ['client_id', 'publication_id', columns].flatten
+      ARM.add_index(t_name, columns, unique: true, name: :story_per_publication)
     end
   end
 end

@@ -14,17 +14,9 @@ class StagingTable < ApplicationRecord # :nodoc:
   def sync
     return if not_exists?
 
-    sync_columns
-    sync_index
-  end
-
-  def sync_columns
     columns = LokiC::StagingTable.columns(name)
+    puts index = LokiC::StagingTable.index(name)
     Columns.find_or_create_by(staging_table: self).update(list: columns)
-  end
-
-  def sync_index
-    index = LokiC::StagingTable.index(name)
     Index.find_or_create_by(staging_table: self).update(list: index)
   end
 
@@ -69,18 +61,6 @@ class StagingTable < ApplicationRecord # :nodoc:
       t.date    :publish_on
       t.boolean :story_created
     end
-
-    create_index
-  end
-
-  def create_index
-    puts '!' * 100
-    ActiveRecord::Migration.add_index(
-      name,
-      %i[client_id publication_id],
-      unique: true,
-      name: :story_per_publication
-    )
   end
 
   def drop_table

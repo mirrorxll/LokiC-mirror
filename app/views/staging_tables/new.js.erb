@@ -1,0 +1,10 @@
+var st_table_block = $('#staging-table')
+<% if flash[:error] %>
+  st_table_block.prepend(`
+      <div class="alert alert-danger">
+        <%= flash[:error].gsub('`', "'") %>
+      </div>`)
+<% else %>
+  st_table_block.empty()
+      .html('<%= create_staging_table_link %>  <%= j render 'staging_tables/attach_form'%>')
+<% end %>

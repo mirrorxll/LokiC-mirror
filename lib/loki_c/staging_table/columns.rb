@@ -3,6 +3,12 @@
 module LokiC
   module StagingTable
     class Columns # :nodoc:
+      HIDDEN_COLUMNS = %w[
+        id story_created client_id client_name
+        publication_id publication_name organization_id
+        publish_on created_at updated_at
+      ].freeze
+
       def self.dropped(curr_col, mod_col)
         current = curr_col.keys
         modify = mod_col.keys
@@ -48,31 +54,26 @@ module LokiC
       end
 
       def self.backend_transform(columns)
+        columns.reject! { |col| HIDDEN_COLUMNS.include?(col.name) }
         return {} if columns.empty?
 
         columns.each_with_object({}) do |col, hash|
-          type_opts = sql_to_ar(col[1])
+          column = ar_to_hash(col)
 
-          hash[SecureRandom.hex(3).to_sym] = { name: col[0] }.merge(type_opts)
+          hash[SecureRandom.hex(3).to_sym] = column
         end
       end
 
-      def self.sql_to_ar(type)
-        tp, opt = type.split(/[()]/)
-
-        case tp
-        when 'tinyint'
-          { type: 'boolean', opts: {} }
-        when 'int'
-          { type: 'integer', opts: {} }
-        when 'decimal'
-          pr, scl = opt.split(',')
-          { type: 'decimal', opts: { precision: pr, scale: scl } }
-        when 'varchar'
-          { type: 'string', opts: { limit: opt } }
-        else
-          { type: tp, opts: {} }
-        end
+      def self.ar_to_hash(column)
+        {
+          name: column.name,
+          type: column.type,
+          opts: {
+            limit: column.limit,
+            precision: column.precision,
+            scale: column.scale
+          }
+        }
       end
     end
   end
