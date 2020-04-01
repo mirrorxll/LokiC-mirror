@@ -1,17 +1,17 @@
 -#%h6.border-bottom.border-dark
 -#  Edit Template
 -#%section#edit-template
--#  = render 'story_types/edit_template'
+-#  =render 'story_types/edit_template'
 -#%hr/
 
 %h6.border-bottom.border-dark
   Show Template
 %section#show-template
-  = render 'story_types/show_template'
+  =render 'story_types/show_template'
 %hr/
 
 %h6.border-bottom.border-dark
-  Story Type Configuration
+  Configuration
 %section#story-type-configuration
   = render 'story_types/config_story_type'
 %hr/
@@ -27,7 +27,7 @@
 %hr/
 
 %h6.border-bottom.border-dark
-  Story Type Code Upload
+  Code Upload
 %section#code-file
   - if @story_type.code.attached?
     = render 'codes/story_type_code'

@@ -253,14 +253,12 @@ class FirstObjects # :nodoc:
       {
         name: 'Story Type 1',
         body: 'Some Body',
-        description: 'Some Description',
         editor: User.first,
         data_set: DataSet.first
       },
       {
         name: 'Story Type 2',
         body: 'Some Body',
-        description: 'Some Description',
         editor: User.first,
         developer: User.first,
         data_set: DataSet.last

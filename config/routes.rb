@@ -1,22 +1,18 @@
 # frozen_string_literal: true
+
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
+  root 'story_types#index'
+
   devise_for :users, controllers: { registrations: 'registrations', sessions: 'sessions' }
   mount Sidekiq::Web => '/sidekiq'
 
-  root 'story_types#index'
-  resources :data_sets
+  resources :data_sets do
+    resources :story_types, only: %i[new create]
+  end
 
-  resources :story_types do
-    put :dates, on: :member
-    put :dev_status, on: :member
-
-    resources :data_sets, only: %i[] do
-      post    :include, on: :collection
-      delete  :exclude, on: :member
-    end
-
+  resources :story_types, except: %i[new create] do
     resources :clients, only: %i[] do
       post    :include, on: :collection
       delete  :exclude, on: :member

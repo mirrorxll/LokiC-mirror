@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class StoryType < ApplicationRecord # :nodoc:
-  default_scope { order(created_at: :desc) }
-
   has_one_attached :code
 
   belongs_to :editor,     class_name: 'User'
@@ -18,6 +16,14 @@ class StoryType < ApplicationRecord # :nodoc:
   has_and_belongs_to_many :photo_buckets,   join_table: 'story_types__photo_buckets'
   has_and_belongs_to_many :levels,          join_table: 'story_types__levels'
   has_and_belongs_to_many :frequencies,     join_table: 'story_types__frequencies'
+
+  after_initialize :prepare_template_body
+
+  validates :name, uniqueness: true
+
+  def body_formatted
+    LokiC::StoryType.format_body(body)
+  end
 
   # filter
   def self.writer(id)
@@ -42,5 +48,15 @@ class StoryType < ApplicationRecord # :nodoc:
 
   def self.dev_status(dev_status)
     where(dev_status: dev_status)
+  end
+
+  private
+
+  def prepare_template_body
+    return unless new_record?
+
+    self.body =
+      '<p><b>HEADLINE:</b>&nbsp;</p><p><span style="font-size: 1rem;">'\
+      '<b>TEASER</b>:&nbsp;</span></p><p><b>BODY:</b>&nbsp;</p><p><b><br></b></p>'
   end
 end

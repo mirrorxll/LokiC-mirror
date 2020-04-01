@@ -1,19 +1,21 @@
 -url = controller_name.eql?('story_types') ? story_types_path : data_set_path(@data_set.id)
 
-=form_with(url: url, method: :get, local: true, html: { class: 'd-inline' }) do |form|
-  =form.label :editor
-  =form.collection_select :editor, User.where(account_type: 'editor'), :id, :username, prompt: true
-  =form.label :developer
-  =form.collection_select :developer, User.all, :id, :username, prompt: true
-  =form.label :client
-  =form.collection_select :client, Client.all, :id, :name, prompt: true
-  =form.label :level
-  =form.collection_select :level, Level.all, :id, :name, prompt: true
-  =form.label :frequency
-  =form.collection_select :frequency, Frequency.all, :id, :name, prompt: true
-  =form.label :dev_status
-  =form.select :dev_status, dev_statuses, prompt: true
-  =form.submit 'Find', class: 'btn btn-sm btn-success'
 
-#reset.d-inline
-  = link_to('Reset', story_types_path, class: 'btn btn-sm btn-success')
+=form_with(url: url, method: :get, local: true, html: { class: 'd-inline' }) do |form|
+  .row
+    .col-10
+      =form.label :editor
+      =form.collection_select :editor, User.where(account_type: 'editor'), :id, :username, prompt: true
+      =form.label :developer
+      =form.collection_select :developer, User.all, :id, :username, prompt: true
+      =form.label :client
+      =form.collection_select :client, Client.all, :id, :name, prompt: true
+      =form.label :level
+      =form.collection_select :level, Level.all, :id, :name, prompt: true
+      =form.label :frequency
+      =form.collection_select :frequency, Frequency.all, :id, :name, prompt: true
+      =form.label :dev_status
+      =form.select :dev_status, dev_statuses, prompt: true
+    .col-2
+      #reset.d-inline
+        =form.submit 'Find', class: 'btn btn-sm btn-success'

@@ -16,9 +16,6 @@
       %small.col-1
         =dl.data_set_evaluation_document.present? ? 'evaluated' : ''
       .col-1
-        =link_to(image_tag('d_loc_edit_icon.png'), edit_data_set_path(dl), class: 'd-loc-edit-icon img')
-        =link_to(image_tag('d_loc_show_icon.png'), data_set_path(dl), class: 'd-loc-show-icon img')
+        =link_to('show', data_set_path(dl), class: 'd-loc-show-icon img')
       .col-1
-        -if current_user.
-        =link_to('Delete')
     %hr/

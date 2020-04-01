@@ -21,6 +21,3 @@
 //= require summernote/summernote-bs4.min
 //= require summernote
 //= require_tree .
-
-
-

@@ -1,35 +1,31 @@
-#dates-and--dev-status
-  = render 'story_types/dates'
-  %br
-  = render 'story_types/dev_status'
 %br
 #frequency
-  - if @story_type.frequencies.present?
-    = render 'frequencies/story_frequency'
-  - else
-    = render 'frequencies/form'
+  -if @story_type.frequencies.present?
+    =render 'frequencies/story_frequency'
+  -else
+    =render 'frequencies/form'
 %br/
 #level
   - if @story_type.levels.present?
-    = render 'levels/story_type_level'
+    =render 'levels/story_type_level'
   - else
-    = render 'levels/form'
+    =render 'levels/form'
 %br/
 #clients
-  = render 'clients/form'
-  = render 'clients/story_type_clients'
+  =render 'clients/form'
+  =render 'clients/story_type_clients'
 %br/
 #sections
-  = render 'sections/form'
-  = render 'sections/story_type_sections'
+  =render 'sections/form'
+  =render 'sections/story_type_sections'
 %br/
 #tags
-  = render 'tags/form'
-  = render 'tags/story_type_tags'
+  =render 'tags/form'
+  =render 'tags/story_type_tags'
 %br/
 #photo-bucket
   - if @story_type.photo_buckets.present?
-    = render 'photo_buckets/story_type_photo_bucket'
+    =render 'photo_buckets/story_type_photo_bucket'
   - else
-    = render 'photo_buckets/form'
+    =render 'photo_buckets/form'
 %br/

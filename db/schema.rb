@@ -146,7 +146,6 @@ ActiveRecord::Schema.define(version: 2020_03_13_144006) do
     t.bigint "data_set_id"
     t.string "name"
     t.text "body", limit: 16777215
-    t.string "description", limit: 1000
     t.date "desired_launch"
     t.date "last_launch"
     t.date "last_export"

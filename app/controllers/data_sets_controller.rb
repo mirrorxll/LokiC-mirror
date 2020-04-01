@@ -2,7 +2,7 @@
 
 class DataSetsController < ApplicationController # :nodoc:
   before_action :find_data_set, except: %i[index new create]
-  skip_before_action :find_story_type
+  skip_before_action :find_parent_story_type
 
   def index
     @data_sets = DataSet.all

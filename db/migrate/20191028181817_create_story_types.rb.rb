@@ -9,13 +9,10 @@ class CreateStoryTypes < ActiveRecord::Migration[5.2] # :nodoc:
 
       t.string  :name
       t.text    :body, limit: 1_572_864
-      t.string  :description, limit: 1000
-      t.date    :desired_launch
-      t.date    :last_launch
-      t.date    :last_export
-      t.date    :deadline
       t.string  :dev_status, default: 'Not Started'
       t.timestamps
     end
+
+    add_index :story_types, :name, unique: true
   end
 end

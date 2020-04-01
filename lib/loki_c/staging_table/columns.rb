@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 module LokiC
-  module StagingTable
-    class Columns # :nodoc:
+  class StagingTable
+    module Columns # :nodoc:
       HIDDEN_COLUMNS = %w[
         id story_created client_id client_name
         publication_id publication_name organization_id
         publish_on created_at updated_at
       ].freeze
 
-      def self.dropped(curr_col, mod_col)
+      def dropped(curr_col, mod_col)
         current = curr_col.keys
         modify = mod_col.keys
 
@@ -18,7 +18,7 @@ module LokiC
         end
       end
 
-      def self.added(curr_col, mod_col)
+      def added(curr_col, mod_col)
         current = curr_col.keys
         modify = mod_col.keys
 
@@ -27,7 +27,7 @@ module LokiC
         end
       end
 
-      def self.changed(curr_col, mod_col)
+      def changed(curr_col, mod_col)
         curr_col.keys.each_with_object([]) do |hex, obj|
           current = curr_col[hex]
           modify = mod_col[hex]
@@ -43,17 +43,7 @@ module LokiC
         end
       end
 
-      def self.frontend_transform(columns)
-        return {} if columns.empty?
-
-        columns.each_with_object({}) do |(id, column), hash|
-          column['opts'] ||= {}
-
-          hash[id.to_sym] = column.deep_symbolize_keys
-        end
-      end
-
-      def self.backend_transform(columns)
+      def backend_transform(columns)
         columns.reject! { |col| HIDDEN_COLUMNS.include?(col.name) }
         return {} if columns.empty?
 
@@ -64,7 +54,7 @@ module LokiC
         end
       end
 
-      def self.ar_to_hash(column)
+      def ar_to_hash(column)
         {
           name: column.name,
           type: column.type,
@@ -74,6 +64,16 @@ module LokiC
             scale: column.scale
           }
         }
+      end
+
+      def self.frontend_transform(columns)
+        return {} if columns.empty?
+
+        columns.each_with_object({}) do |(id, column), hash|
+          column['opts'] ||= {}
+
+          hash[id.to_sym] = column.deep_symbolize_keys
+        end
       end
     end
   end
