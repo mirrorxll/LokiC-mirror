@@ -8,8 +8,6 @@ class CreateStoryTypes < ActiveRecord::Migration[5.2] # :nodoc:
       t.belongs_to :data_set
 
       t.string  :name
-      t.text    :body, limit: 1_572_864
-      t.string  :dev_status, default: 'Not Started'
       t.timestamps
     end
 

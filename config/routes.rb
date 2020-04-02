@@ -13,6 +13,9 @@ Rails.application.routes.draw do
   end
 
   resources :story_types, except: %i[new create] do
+    resource :template, only: %i[edit update]
+    resource :properties, only: %i[edit update]
+
     resources :clients, only: %i[] do
       post    :include, on: :collection
       delete  :exclude, on: :member

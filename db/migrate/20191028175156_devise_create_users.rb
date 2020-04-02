@@ -3,6 +3,8 @@
 class DeviseCreateUsers < ActiveRecord::Migration[5.2] # :nodoc:
   def change
     create_table :users do |t|
+      t.belongs_to :account_type
+
       t.string    :email,                     null: false
       t.string    :encrypted_password,        null: false
       t.string    :reset_password_token
@@ -10,9 +12,6 @@ class DeviseCreateUsers < ActiveRecord::Migration[5.2] # :nodoc:
       t.string    :first_name,                null: false
       t.string    :last_name,                 null: false
       t.datetime  :remember_created_at
-
-      t.belongs_to :account_type
-
       t.timestamps
     end
 

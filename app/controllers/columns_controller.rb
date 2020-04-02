@@ -26,6 +26,6 @@ class ColumnsController < ApplicationController
 
   def columns_params
     columns = params[:columns] ? params.require(:columns).permit!.to_hash : {}
-    LokiC::StagingTable::Columns.frontend_transform(columns)
+    LokiC::StagingTable.columns_transform(columns, :front)
   end
 end

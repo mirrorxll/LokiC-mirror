@@ -8,7 +8,7 @@ module LokiC
         publication_id publication_name
       ].freeze
 
-      def transform(index_columns)
+      def index_transform(index_columns)
         return [] if index_columns.nil?
 
         index_columns.columns.reject! { |col| HIDDEN_COLUMNS.include?(col) }

@@ -1,10 +1,12 @@
-%section#new-data-location
+%section#new_data_set
   =link_to('Add a new Data Set', new_data_set_path)
-  %br/
+%br/
+
+%section#evaluate_filter
   =render 'data_sets/filter'
 %hr/
 
-%section#data-location
+%section#data_sets
   - @data_sets.each do |dl|
     .row
       %small.col-3
@@ -14,7 +16,7 @@
       %small.col-3
         =dl.data_set_location
       %small.col-1
-        =dl.data_set_evaluation_document.present? ? 'evaluated' : ''
+        =dl.evaluated ? 'evaluated' : ''
       .col-1
         =link_to('show', data_set_path(dl), class: 'd-loc-show-icon img')
       .col-1

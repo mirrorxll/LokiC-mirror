@@ -25,7 +25,7 @@ class StoryTypesController < ApplicationController # :nodoc:
     @story_type.editor = current_user
 
     if @story_type.save
-      redirect_to story_type_path(@story_type)
+      redirect_to data_set_path(@data_set)
     else
       render :new
     end
@@ -52,12 +52,12 @@ class StoryTypesController < ApplicationController # :nodoc:
   end
 
   def story_type_params
-    params.require(:story_type).permit(:name, :body)
+    params.require(:story_type).permit(:name)
   end
 
   def filter_params
     params.slice(
-      :writer, :developer, :client, :level, :frequency, :dev_status
+      :editor, :developer, :data_tes, :client, :level, :frequency, :dev_status
     )
   end
 end

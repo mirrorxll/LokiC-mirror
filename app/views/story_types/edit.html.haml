@@ -4,6 +4,6 @@
   =form.text_field :name, placeholder: 'name', required: true
   %hr/
   %div{"data-controller" => "summernote"}
-    =form.text_area :body, 'data-provider': :summernote
+    =form.text_area :body, 'data-provider': :summernote, value: "<p>HEADLINE:</p><p><br></p><p>TEASER:</p><p><br></p><p>BODY:</p><p><br></p>"
   %hr/
   =form.submit @story_type.new_record? ? :create : :update

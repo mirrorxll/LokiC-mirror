@@ -12,13 +12,13 @@ module LokiC
 
     def self.columns(t_name)
       columns = ARM.columns(t_name)
-      backend_transform(columns)
+      columns_transform(columns, :back)
     end
 
     def self.index(t_name)
       indexes = ARM.indexes(t_name)
       index_columns = indexes.find { |i| i.name.eql?('story_per_publication') }
-      transform(index_columns)
+      index_transform(index_columns)
     end
 
     def self.modify_columns(t_name, cur_col, mod_col)

@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 class DataSetsController < ApplicationController # :nodoc:
-  before_action :find_data_set, except: %i[index new create]
   skip_before_action :find_parent_story_type
+
+  before_action :find_data_set, except: %i[index new create]
 
   def index
     @data_sets = DataSet.all
@@ -12,16 +13,15 @@ class DataSetsController < ApplicationController # :nodoc:
     end
   end
 
-  def show
-    @story_types = @data_set.story_types
-  end
+  def show; end
 
   def new
     @data_set = DataSet.new
   end
 
   def create
-    @data_set = DataSet.new(data_set_params)
+    @data_set =
+      current_user.data_sets.build(data_set_params)
 
     if @data_set.save
       redirect_to @data_set

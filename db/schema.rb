@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_13_144006) do
+ActiveRecord::Schema.define(version: 2020_04_02_145642) do
 
   create_table "account_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -107,6 +107,11 @@ ActiveRecord::Schema.define(version: 2020_03_13_144006) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "properties", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "publications", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "client_id"
     t.integer "pipeline_index"
@@ -145,17 +150,12 @@ ActiveRecord::Schema.define(version: 2020_03_13_144006) do
     t.bigint "developer_id"
     t.bigint "data_set_id"
     t.string "name"
-    t.text "body", limit: 16777215
-    t.date "desired_launch"
-    t.date "last_launch"
-    t.date "last_export"
-    t.date "deadline"
-    t.string "dev_status", default: "Not Started"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["data_set_id"], name: "index_story_types_on_data_set_id"
     t.index ["developer_id"], name: "index_story_types_on_developer_id"
     t.index ["editor_id"], name: "index_story_types_on_editor_id"
+    t.index ["name"], name: "index_story_types_on_name", unique: true
   end
 
   create_table "story_types__clients", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -203,7 +203,16 @@ ActiveRecord::Schema.define(version: 2020_03_13_144006) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "templates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "story_type_id"
+    t.string "body", limit: 15000
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["story_type_id"], name: "index_templates_on_story_type_id"
+  end
+
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "account_type_id"
     t.string "email", null: false
     t.string "encrypted_password", null: false
     t.string "reset_password_token"
@@ -211,7 +220,6 @@ ActiveRecord::Schema.define(version: 2020_03_13_144006) do
     t.string "first_name", null: false
     t.string "last_name", null: false
     t.datetime "remember_created_at"
-    t.bigint "account_type_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_type_id"], name: "index_users_on_account_type_id"

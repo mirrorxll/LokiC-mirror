@@ -43,6 +43,17 @@ module LokiC
         end
       end
 
+      def columns_transform(columns, place)
+        case place
+        when :front
+          frontend_transform(columns)
+        when :back
+          backend_transform(columns)
+        else
+          'Raise to do'
+        end
+      end
+
       def backend_transform(columns)
         columns.reject! { |col| HIDDEN_COLUMNS.include?(col.name) }
         return {} if columns.empty?
@@ -66,7 +77,7 @@ module LokiC
         }
       end
 
-      def self.frontend_transform(columns)
+      def frontend_transform(columns)
         return {} if columns.empty?
 
         columns.each_with_object({}) do |(id, column), hash|

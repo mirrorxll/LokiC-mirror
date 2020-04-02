@@ -1,4 +1,4 @@
-%section#data-location
+%section#data_set_info
   %a{ href: edit_data_set_path(@data_set),
       style: 'text-decoration: none; color: black;' }
     -data_set_keys.each do |key|
@@ -10,16 +10,32 @@
             =@data_set[key].eql?(1) ? true : false
           -else
             =@data_set[key]
+%hr/
 
-%section#filter
-  %hr/
+%section#story_types_filter
   =render 'story_types/filter'
-  %hr
-  =link_to('Add Story', new_data_set_story_type_path(@data_set), class: 'btn btn-success')
-%section#story_types
+%hr/
+
+%section#new_story_type
   .row
-    .col-1.text-center
-      ROW
-    .col-11
-      NAME
-  =render @story_types
+    .col-7.offset-1
+      =link_to('New Story Type',
+               new_data_set_story_type_path(@data_set),
+               class: 'btn btn-sm btn-outline-dark',
+               remote: true)
+%hr/
+
+%section#story_types
+  .row.text-center
+    .col-1
+      %small #
+    .col-7.text-left
+      %small name
+    .col-1
+      %small template
+    .col-1
+      %small properties
+    .col-2
+      %small developer
+  %br/
+  =render @data_set.story_types

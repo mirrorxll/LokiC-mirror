@@ -1,0 +1,6 @@
+=form_with(model: [@data_set, @data_set.story_types.build]) do |form|
+  .row
+    .col-7.offset-1
+      =form.text_field :name, placeholder: 'new story type name', class: 'w-100', required: true
+    .col-1.p-0
+      =form.submit :create, class: 'btn btn-sm btn-outline-dark w-100'
