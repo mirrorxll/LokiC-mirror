@@ -1,7 +1,7 @@
 .row.text-center.small{id: "story-#{story_type.id}"}
   .col-1
     =story_type.id
-  .col-7.text-left
+  .col-6.text-left
     =link_to(story_type.name, story_type_path(story_type))
   .col-1
     =link_to('edit', story_type_template_path(story_type))

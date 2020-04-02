@@ -26,16 +26,13 @@
 %hr/
 
 %section#story_types
-  .row.text-center
-    .col-1
-      %small #
-    .col-7.text-left
-      %small name
-    .col-1
-      %small template
-    .col-1
-      %small properties
-    .col-2
-      %small developer
-  %br/
+  .row.small.text-center
+    .col-1 #
+    .col-6.text-left name
+    .col-1 template
+    .col-1 properties
+    .col-1 last export
+    .col-2 developer
+  %hr/
+  %hr/
   =render @data_set.story_types

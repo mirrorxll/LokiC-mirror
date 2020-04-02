@@ -7,7 +7,8 @@ class CreateStoryTypes < ActiveRecord::Migration[5.2] # :nodoc:
       t.belongs_to :developer
       t.belongs_to :data_set
 
-      t.string  :name
+      t.string :name
+      t.datetime :last_export, default: nil
       t.timestamps
     end
 

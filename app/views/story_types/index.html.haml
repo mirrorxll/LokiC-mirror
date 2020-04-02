@@ -6,9 +6,16 @@
 %hr/
 
 %section#story_types
-  .row
-    .col-1.text-center
-      ROW
-    .col-11
-      NAME
+  .row.text-center
+    .col-1
+      %small #
+    .col-7.text-left
+      %small name
+    .col-1
+      %small clients
+    .col-1
+      %small last export
+    .col-2
+      %small status
+  %br/
   =render @story_types

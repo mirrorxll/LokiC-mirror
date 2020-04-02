@@ -12,16 +12,14 @@ class StoryType < ApplicationRecord # :nodoc:
   has_one :staging_table
   has_many :story_type_iterations, dependent: :destroy
 
-  has_and_belongs_to_many :clients,         join_table: 'story_types__clients'
-  has_and_belongs_to_many :sections,        join_table: 'story_types__sections'
   has_and_belongs_to_many :tags,            join_table: 'story_types__tags'
   has_and_belongs_to_many :photo_buckets,   join_table: 'story_types__photo_buckets'
   has_and_belongs_to_many :levels,          join_table: 'story_types__levels'
   has_and_belongs_to_many :frequencies,     join_table: 'story_types__frequencies'
 
-  validates :name, uniqueness: true
+  has_and_belongs_to_many :clients,         join_table: 'story_types__clients'
 
-  before_create :create_template
+  validates :name, uniqueness: true
 
   # filter
   def self.editor(id)
@@ -50,9 +48,5 @@ class StoryType < ApplicationRecord # :nodoc:
 
   def self.dev_status(dev_status)
     where(dev_status: dev_status)
-  end
-
-  def create_template_properties
-    template.create_template
   end
 end

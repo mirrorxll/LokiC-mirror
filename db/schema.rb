@@ -150,6 +150,7 @@ ActiveRecord::Schema.define(version: 2020_04_02_145642) do
     t.bigint "developer_id"
     t.bigint "data_set_id"
     t.string "name"
+    t.datetime "last_export"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["data_set_id"], name: "index_story_types_on_data_set_id"
