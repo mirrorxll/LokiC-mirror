@@ -41,11 +41,6 @@ Rails.application.routes.draw do
       delete  :exclude, on: :member
     end
 
-    resources :levels, path: 'level', only: %i[] do
-      post    :include, on: :collection
-      delete  :exclude, on: :member
-    end
-
     resource :staging_table, only: %i[show create destroy] do
       post    :attach
       delete  :detach

@@ -337,10 +337,6 @@ class FirstObjects # :nodoc:
     ]
   end
 
-  def self.level
-    %w[Zip City County State USA].map { |item| { name: item } }
-  end
-
   def self.frequency
     %w[Weekly Monthly Quarterly Semi-Annually Annually Biennial].map do |item|
       { name: item }
@@ -352,10 +348,9 @@ FirstObjects.account_type.each { |obj| AccountType.create!(obj)}
 FirstObjects.user.each { |obj| User.create!(obj) }
 FirstObjects.data_set.each { |obj| DataSet.create!(obj) }
 FirstObjects.story_type.each { |obj| StoryType.create!(obj) }
-# FirstObjects.client.each { |obj| Client.create!(obj) }
-# FirstObjects.publication.each { |obj| Publication.create!(obj) }
-# FirstObjects.section.each { |obj| Section.create!(obj) }
-# FirstObjects.tag.each { |obj| Tag.create!(obj) }
-# FirstObjects.photo_bucket.each { |obj| PhotoBucket.create!(obj) }
-# FirstObjects.level.each { |obj| Level.create!(obj) }
-# FirstObjects.frequency.each { |obj| Frequency.create!(obj) }
+FirstObjects.client.each { |obj| Client.create!(obj) }
+FirstObjects.publication.each { |obj| Publication.create!(obj) }
+FirstObjects.section.each { |obj| Section.create!(obj) }
+FirstObjects.tag.each { |obj| Tag.create!(obj) }
+FirstObjects.photo_bucket.each { |obj| PhotoBucket.create!(obj) }
+FirstObjects.frequency.each { |obj| Frequency.create!(obj) }

@@ -3,21 +3,18 @@
 class StoryType < ApplicationRecord # :nodoc:
   has_one_attached :code
 
-  belongs_to :editor,     class_name: 'User'
-  belongs_to :developer,  class_name: 'User', optional: true
+  belongs_to :editor,               class_name: 'User'
+  belongs_to :developer,            class_name: 'User', optional: true
   belongs_to :data_set
+  belongs_to :frequency,            optional: true
+  belongs_to :photo_bucket,         optional: true
+  belongs_to :tag,                  optional: true
 
-  has_one :template, dependent: :destroy
-  has_one :properties, dependent: :destroy
   has_one :staging_table
+  has_one :template, dependent: :destroy
+
   has_many :story_type_iterations, dependent: :destroy
-
-  has_and_belongs_to_many :tags,            join_table: 'story_types__tags'
-  has_and_belongs_to_many :photo_buckets,   join_table: 'story_types__photo_buckets'
-  has_and_belongs_to_many :levels,          join_table: 'story_types__levels'
-  has_and_belongs_to_many :frequencies,     join_table: 'story_types__frequencies'
-
-  has_and_belongs_to_many :clients,         join_table: 'story_types__clients'
+  has_and_belongs_to_many :clients
 
   validates :name, uniqueness: true
 
@@ -36,10 +33,6 @@ class StoryType < ApplicationRecord # :nodoc:
 
   def self.client(id)
     includes(:clients).where(clients: { id: id })
-  end
-
-  def self.level(id)
-    includes(:levels).where(levels: { id: id })
   end
 
   def self.frequency(id)

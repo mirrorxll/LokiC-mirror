@@ -10,8 +10,6 @@
       =form.collection_select :developer, User.all, :id, :username, prompt: true
       =form.label :client
       =form.collection_select :client, Client.all, :id, :name, prompt: true
-      =form.label :level
-      =form.collection_select :level, Level.all, :id, :name, prompt: true
       =form.label :frequency
       =form.collection_select :frequency, Frequency.all, :id, :name, prompt: true
       =form.label :dev_status

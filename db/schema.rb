@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_02_145642) do
+ActiveRecord::Schema.define(version: 2019_12_07_135916) do
 
   create_table "account_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -45,6 +45,18 @@ ActiveRecord::Schema.define(version: 2020_04_02_145642) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "clients_sections", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "client_id", null: false
+    t.bigint "section_id", null: false
+    t.index ["client_id", "section_id"], name: "index_clients_sections_on_client_id_and_section_id", unique: true
+  end
+
+  create_table "clients_story_types", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "story_type_id", null: false
+    t.bigint "client_id", null: false
+    t.index ["story_type_id", "client_id"], name: "index_clients_story_types_on_story_type_id_and_client_id", unique: true
   end
 
   create_table "columns", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -91,23 +103,12 @@ ActiveRecord::Schema.define(version: 2020_04_02_145642) do
     t.index ["staging_table_id"], name: "index_indices_on_staging_table_id"
   end
 
-  create_table "levels", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "photo_buckets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "pipeline_index"
     t.string "name"
     t.integer "minimum_height"
     t.integer "minimum_width"
     t.string "aspect_ratio"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "properties", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -122,10 +123,12 @@ ActiveRecord::Schema.define(version: 2020_04_02_145642) do
   end
 
   create_table "sections", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "client_id"
     t.integer "pipeline_index"
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["client_id"], name: "index_sections_on_client_id"
   end
 
   create_table "staging_tables", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -149,6 +152,9 @@ ActiveRecord::Schema.define(version: 2020_04_02_145642) do
     t.bigint "editor_id"
     t.bigint "developer_id"
     t.bigint "data_set_id"
+    t.bigint "frequency_id"
+    t.bigint "photo_bucket_id"
+    t.bigint "tag_id"
     t.string "name"
     t.datetime "last_export"
     t.datetime "created_at", null: false
@@ -156,45 +162,10 @@ ActiveRecord::Schema.define(version: 2020_04_02_145642) do
     t.index ["data_set_id"], name: "index_story_types_on_data_set_id"
     t.index ["developer_id"], name: "index_story_types_on_developer_id"
     t.index ["editor_id"], name: "index_story_types_on_editor_id"
+    t.index ["frequency_id"], name: "index_story_types_on_frequency_id"
     t.index ["name"], name: "index_story_types_on_name", unique: true
-  end
-
-  create_table "story_types__clients", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "story_type_id", null: false
-    t.bigint "client_id", null: false
-    t.index ["story_type_id", "client_id"], name: "index_story_types__clients_on_story_type_id_and_client_id", unique: true
-  end
-
-  create_table "story_types__frequencies", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "story_type_id", null: false
-    t.bigint "frequency_id", null: false
-    t.index ["frequency_id", "story_type_id"], name: "index_story_types__frequencies_on_frequency_id_and_story_type_id"
-    t.index ["story_type_id"], name: "index_story_types__frequencies_on_story_type_id", unique: true
-  end
-
-  create_table "story_types__levels", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "story_type_id", null: false
-    t.bigint "level_id", null: false
-    t.index ["level_id", "story_type_id"], name: "index_story_types__levels_on_level_id_and_story_type_id"
-    t.index ["story_type_id"], name: "index_story_types__levels_on_story_type_id", unique: true
-  end
-
-  create_table "story_types__photo_buckets", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "story_type_id", null: false
-    t.bigint "photo_bucket_id", null: false
-    t.index ["story_type_id", "photo_bucket_id"], name: "index_story_types__photo_buckets_story_type_id_photo_bucket_id", unique: true
-  end
-
-  create_table "story_types__sections", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "story_type_id", null: false
-    t.bigint "section_id", null: false
-    t.index ["story_type_id", "section_id"], name: "index_story_types__sections_on_story_type_id_and_section_id", unique: true
-  end
-
-  create_table "story_types__tags", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "story_type_id", null: false
-    t.bigint "tag_id", null: false
-    t.index ["story_type_id", "tag_id"], name: "index_story_types__tags_on_story_type_id_and_tag_id", unique: true
+    t.index ["photo_bucket_id"], name: "index_story_types_on_photo_bucket_id"
+    t.index ["tag_id"], name: "index_story_types_on_tag_id"
   end
 
   create_table "tags", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
