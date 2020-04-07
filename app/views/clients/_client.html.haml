@@ -1,0 +1,3 @@
+%div{id: "client_#{client.id}"}
+  = client.name
+  = link_to('X', exclude_story_type_client_path(@story_type.id, id: client.id), method: :delete, remote: true)

@@ -1,0 +1,3 @@
+=form_with(model: @story_type) do |form|
+  =form.text_field :name, placeholder: 'new name', required: true
+  =form.submit :Rename

@@ -1,9 +1,0 @@
--model = @story_type.new_record? ? [@data_set, @story_type] : @data_set
-=form_with(model: model) do |form|
-  %hr/
-  =form.text_field :name, placeholder: 'name', required: true
-  %hr/
-  %div{"data-controller" => "summernote"}
-    =form.text_area :body, 'data-provider': :summernote, value: "<p>HEADLINE:</p><p><br></p><p>TEASER:</p><p><br></p><p>BODY:</p><p><br></p>"
-  %hr/
-  =form.submit @story_type.new_record? ? :create : :update

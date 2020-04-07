@@ -14,11 +14,4 @@
 
 @import "bootstrap";
 @import "summernote-bs4";
-
-.note-editable {
-  line-height: 1.0;
-}
-
-table {
-  table-layout: fixed;
-}
+@import "summernote";

@@ -1,0 +1,29 @@
+#story_type_name
+  =render 'edit_form'
+%br/
+
+#clients
+  =render 'clients/form'
+  =render @story_type.clients
+%br/
+
+#frequency
+  -if @story_type.frequency
+    =render @story_type.frequency
+  -else
+    =render 'frequencies/form'
+%br/
+
+#tag
+  -if @story_type.tag
+    =render @story_type.tag
+  -else
+    =render 'tags/form'
+%br/
+
+-##photo-bucket
+-#  - if @story_type.photo_buckets.present?
+-#    =render 'photo_buckets/story_type_photo_bucket'
+-#  - else
+-#    =render 'photo_buckets/form'
+-#%br/

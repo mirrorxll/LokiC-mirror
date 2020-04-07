@@ -13,32 +13,28 @@ Rails.application.routes.draw do
   end
 
   resources :story_types, except: %i[new create] do
+    get :properties
+
     resource :template, only: %i[edit update]
-    resource :properties, only: %i[edit update]
 
     resources :clients, only: %i[] do
       post    :include, on: :collection
       delete  :exclude, on: :member
     end
 
-    resources :sections, only: %i[] do
-      post    :include, on: :collection
-      delete  :exclude, on: :member
+    resource :frequency, only: %i[] do
+      put :include, on: :collection
+      put :exclude, on: :member
     end
 
-    resources :tags, only: %i[] do
-      post    :include, on: :collection
-      delete  :exclude, on: :member
+    resource :tag, only: %i[] do
+      put :include, on: :collection
+      put :exclude, on: :member
     end
 
-    resources :photo_buckets, only: %i[] do
-      post    :include, on: :collection
-      delete  :exclude, on: :member
-    end
-
-    resources :frequencies, path: 'frequency', only: %i[] do
-      post    :include, on: :collection
-      delete  :exclude, on: :member
+    resource :photo_bucket, only: %i[] do
+      put :include, on: :collection
+      put :exclude, on: :member
     end
 
     resource :staging_table, only: %i[show create destroy] do
@@ -51,9 +47,9 @@ Rails.application.routes.draw do
       resource :index, only: %i[new create destroy]
     end
 
-    resources :codes, path: 'upload_code', only: %i[create destroy]
+    resource :code, path: 'upload_code', only: %i[create destroy]
 
-    resources :populations, path: 'populate', only: %i[] do
+    resource :population, path: 'populate', only: %i[] do
       post    :execute, on: :collection
       delete  :purge, on: :collection
     end

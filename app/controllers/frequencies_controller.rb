@@ -4,15 +4,15 @@ class FrequenciesController < ApplicationController # :nodoc:
   before_action :find_frequency
 
   def include
-    render_400 && return if @story_type.frequencies.count.positive?
+    render_400 && return if @story_type.frequency
 
-    @story_type.frequencies << @frequency
+    @story_type.update(frequency: @frequency)
   end
 
   def exclude
-    render_400 && return unless @story_type.frequencies.exists?(@frequency.id)
+    render_400 && return unless @story_type.frequency
 
-    @story_type.frequencies.clear
+    @story_type.update(frequency: nil)
   end
 
   private

@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 class StoryTypesController < ApplicationController # :nodoc:
-  skip_before_action :find_parent_story_type
-
   before_action :find_data_set, only: %i[new create]
-  before_action :find_story_type, except: %i[index new create]
+  before_action :find_story_type, except: %i[index new create properties]
+  skip_before_action :find_parent_story_type, except: :properties
 
   def index
     @story_types = StoryType.all
@@ -36,6 +35,8 @@ class StoryTypesController < ApplicationController # :nodoc:
   def update
     @story_type.update!(story_type_params)
   end
+
+  def properties; end
 
   def destroy
     @story_type.destroy

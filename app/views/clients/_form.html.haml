@@ -1,4 +1,3 @@
-= form_with(url: include_story_type_clients_path(@story_type)) do |form|
-  = form.label :clients
-  = form.collection_select :client_id, Client.all, :id, :name, { prompt: true }, { name: :id }
-  = form.submit 'Add', data: { disable_with: "..." }
+=form_with(url: include_story_type_clients_path(@story_type), html: { onchange: '$(this).submit()'}) do |form|
+  =form.label :clients
+  =form.collection_select :client_id, Client.all, :id, :name, { prompt: true }, { name: :id }

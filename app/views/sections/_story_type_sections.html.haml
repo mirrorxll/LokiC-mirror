@@ -1,4 +1,0 @@
-- @story_type.sections.each do |sc|
-  %div{id: "section-#{sc.id}"}
-    = sc.name
-    = link_to('X', exclude_story_section_path(story_type_id: @story_type.id, id: sc.id), method: :delete, remote: true)

@@ -7,8 +7,8 @@ class StoryType < ApplicationRecord # :nodoc:
   belongs_to :developer,            class_name: 'User', optional: true
   belongs_to :data_set
   belongs_to :frequency,            optional: true
-  belongs_to :photo_bucket,         optional: true
   belongs_to :tag,                  optional: true
+  belongs_to :photo_bucket,         optional: true
 
   has_one :staging_table
   has_one :template, dependent: :destroy
@@ -17,7 +17,9 @@ class StoryType < ApplicationRecord # :nodoc:
   has_and_belongs_to_many :clients
 
   validates :name, uniqueness: true
-
+  before_create do
+    build_template
+  end
   # filter
   def self.editor(id)
     where(writer_id: id)

@@ -1,4 +1,0 @@
-= form_with(url: include_story_type_sections_path(@story_type)) do |form|
-  = form.label :sections
-  = form.collection_select :section_id, Section.all, :id, :name, { prompt: true }, { name: :id }
-  = form.submit 'Add', data: { disable_with: "..." }
