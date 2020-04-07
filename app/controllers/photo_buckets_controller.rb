@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class PhotoBucketsController < ApplicationController # :nodoc:
-  before_action :find_photo_bucket
+  before_action :find_photo_bucket, only: :include
 
   def include
     render_400 && return if @story_type.photo_bucket

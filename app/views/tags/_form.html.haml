@@ -1,4 +1,4 @@
 =form_with(url: include_story_type_tag_path(@story_type),
            method: :put, html: { onchange: '$(this).submit();' }) do |form|
   =form.label :tag
-  =form.collection_select :tag_id, Tag.all, :id, :name, { prompt: true }, { name: :id }
+  =form.collection_select :tag_id, Tag.all, :id, :name, { prompt: '' }, { name: :id }

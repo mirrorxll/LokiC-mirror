@@ -1,7 +1,3 @@
-#story_type_name
-  =render 'edit_form'
-%br/
-
 #clients
   =render 'clients/form'
   =render @story_type.clients
@@ -21,9 +17,15 @@
     =render 'tags/form'
 %br/
 
--##photo-bucket
--#  - if @story_type.photo_buckets.present?
--#    =render 'photo_buckets/story_type_photo_bucket'
--#  - else
--#    =render 'photo_buckets/form'
--#%br/
+#photo_bucket
+  -if @story_type.photo_bucket
+    =render @story_type.photo_bucket
+  -else
+    =render 'photo_buckets/form'
+%br/
+
+.modal-footer
+  =link_to('Delete', story_type_path(@story_type),
+           class: 'btn btn-sm btn-outline-danger',
+           method: :delete, remote: true,
+           data: { confirm: 'Really delete?', dismiss: 'modal' })

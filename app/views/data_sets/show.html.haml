@@ -3,7 +3,7 @@
       style: 'text-decoration: none; color: black;' }
     -data_set_keys.each do |key|
       .row
-        .col-4
+        .col-3.text-right
           =key.to_s.humanize
         .col-8
           -if key.eql?(:cron_scraping)
@@ -18,7 +18,8 @@
 
 %section#new_story_type
   .row
-    .col-7.offset-1
+    .col-1
+    .col-5.pl-0
       =link_to('New Story Type',
                new_data_set_story_type_path(@data_set),
                class: 'btn btn-sm btn-outline-dark',
@@ -28,11 +29,12 @@
 %section#story_types
   .row.small.text-center
     .col-1 #
-    .col-6.text-left name
-    .col-1 template
-    .col-1 properties
-    .col-1 last export
-    .col-2 developer
+    .col-5.pl-0.text-left name
+    .col-1.p-0 template
+    .col-1.p-0 props
+    .col-2.p-0 developer
+    .col-1.p-0 status
+    .col-1.p-0 last export
   %hr/
   %hr/
   =render @data_set.story_types

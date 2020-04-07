@@ -5,17 +5,12 @@
 %hr/
 %hr/
 
-%section#story_types
+%section#story_types.small
   .row.text-center
-    .col-1
-      %small #
-    .col-7.text-left
-      %small name
-    .col-1
-      %small clients
-    .col-1
-      %small last export
-    .col-2
-      %small status
+    .col-1 #
+    .col-6.pl-0.text-left name
+    .col-1 clients
+    .col-2 status
+    .col-1 last export
   %br/
   =render @story_types

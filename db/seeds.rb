@@ -248,18 +248,30 @@ class FirstObjects # :nodoc:
     ]
   end
 
+  def self.status
+    [
+      { name: 'not started' },
+      { name: 'in progress' },
+      { name: 'exported' },
+      { name: 'on cron' },
+      { name: 'blocked' }
+    ]
+  end
+
   def self.story_type
     [
       {
         name: 'Story Type 1',
         editor: User.first,
-        data_set: DataSet.first
+        data_set: DataSet.first,
+        status: Status.first
       },
       {
         name: 'Story Type 2',
         editor: User.first,
         developer: User.first,
-        data_set: DataSet.last
+        data_set: DataSet.last,
+        status: Status.first
       }
     ]
   end
@@ -347,6 +359,7 @@ end
 FirstObjects.account_type.each { |obj| AccountType.create!(obj)}
 FirstObjects.user.each { |obj| User.create!(obj) }
 FirstObjects.data_set.each { |obj| DataSet.create!(obj) }
+FirstObjects.status.each { |obj| Status.create!(obj) }
 FirstObjects.story_type.each { |obj| StoryType.create!(obj) }
 FirstObjects.client.each { |obj| Client.create!(obj) }
 FirstObjects.publication.each { |obj| Publication.create!(obj) }

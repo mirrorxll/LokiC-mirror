@@ -4,15 +4,15 @@
   .row
     .col-10
       =form.label :editor
-      =form.collection_select 'filter[editor]', User.where(account_type: 'editor'), :id, :username, prompt: true
+      =form.collection_select 'filter[editor]', User.where(account_type: 'editor'), :id, :name, prompt: ''
       =form.label :developer
-      =form.collection_select 'filter[developer]', User.all, :id, :username, prompt: true
+      =form.collection_select 'filter[developer]', User.all, :id, :name, prompt: ''
       =form.label :client
-      =form.collection_select 'filter[client]', Client.all, :id, :name, prompt: true
+      =form.collection_select 'filter[client]', Client.all, :id, :name, prompt: ''
       =form.label :frequency
-      =form.collection_select 'filter[frequency]', Frequency.all, :id, :name, prompt: true
+      =form.collection_select 'filter[frequency]', Frequency.all, :id, :name, prompt: ''
       =form.label :dev_status
-      =form.select 'filter[dev_status]', dev_statuses, prompt: true
+      =form.select 'filter[dev_status]', dev_statuses, prompt: ''
     .col-2
       #reset.d-inline
         =form.submit 'Find', class: 'btn btn-sm btn-outline-success'

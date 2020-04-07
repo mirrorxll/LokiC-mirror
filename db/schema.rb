@@ -43,6 +43,7 @@ ActiveRecord::Schema.define(version: 2019_12_07_135916) do
   create_table "clients", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "pipeline_index"
     t.string "name"
+    t.string "section"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -139,6 +140,12 @@ ActiveRecord::Schema.define(version: 2019_12_07_135916) do
     t.index ["story_type_id"], name: "index_staging_tables_on_story_type_id"
   end
 
+  create_table "statuses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "story_type_iterations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "story_type_id"
     t.boolean "populate_status", default: false
@@ -152,6 +159,7 @@ ActiveRecord::Schema.define(version: 2019_12_07_135916) do
     t.bigint "editor_id"
     t.bigint "developer_id"
     t.bigint "data_set_id"
+    t.bigint "status_id"
     t.bigint "frequency_id"
     t.bigint "photo_bucket_id"
     t.bigint "tag_id"
@@ -165,6 +173,7 @@ ActiveRecord::Schema.define(version: 2019_12_07_135916) do
     t.index ["frequency_id"], name: "index_story_types_on_frequency_id"
     t.index ["name"], name: "index_story_types_on_name", unique: true
     t.index ["photo_bucket_id"], name: "index_story_types_on_photo_bucket_id"
+    t.index ["status_id"], name: "index_story_types_on_status_id"
     t.index ["tag_id"], name: "index_story_types_on_tag_id"
   end
 

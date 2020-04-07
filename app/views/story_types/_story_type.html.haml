@@ -1,12 +1,32 @@
-.row.text-center.small{id: "story-#{story_type.id}"}
-  .col-1
-    =story_type.id
-  .col-6.text-left
-    =link_to(story_type.name, story_type_path(story_type))
-  .col-1
-    =link_to('edit', edit_story_type_template_path(story_type), remote: true)
-    -# =link_to('edit', story_type_template_path(story_type))
-  .col-1
-    =link_to('edit', story_type_properties_path(story_type), remote: true)
-  .col-2
-%hr/
+-if controller_name.eql?('data_sets')
+  .text-center.small{id: "story_type_#{story_type.id}"}
+    .row
+      .col-1
+        =story_type.id
+      .col-5.pl-0.text-left{id: "story_type_#{story_type.id}_name"}
+        .row
+          .col-11.pr-0
+            =link_to(story_type.name, story_type_path(story_type))
+          .col-1.p-0.text-center
+            =link_to('rename', edit_story_type_path(story_type), remote: true)
+      .col-1.p-0{id: "story_type_#{story_type.id}_template"}
+        =link_to('edit', edit_story_type_template_path(story_type), remote: true)
+      .col-1.p-0{id: "story_type_#{story_type.id}_properties"}
+        =link_to('edit', story_type_properties_path(story_type), remote: true)
+      .col-2.p-0
+        -if story_type.developer
+          =render 'developers/developer', story_type: story_type
+        -else
+          =render 'developers/form', story_type: story_type
+      .col-1.p-0
+        =story_type.status.name
+      .col-1.p-0{id: "story_type_#{story_type.id}_last_export"}
+        -if story_type.last_export
+          =story_type.last_export.strftime('%D')
+        -else
+          :escaped
+            ---
+    %hr/
+-else
+  TODO
+  %br/

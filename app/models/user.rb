@@ -6,13 +6,13 @@ class User < ApplicationRecord # :nodoc:
          :recoverable, :rememberable, :validatable
 
   has_many :eval_data_sets,   foreign_key: :evaluator_id,  class_name: 'DataSet'
-  has_many :edit_story_type,  foreign_key: :editor_id,     class_name: 'StoryType'
+  has_many :edit_story_types, foreign_key: :editor_id,     class_name: 'StoryType'
   has_many :dev_story_types,  foreign_key: :developer_id,  class_name: 'StoryType'
   has_many :data_sets
 
   belongs_to :account_type
 
-  def username
+  def name
     "#{first_name} #{last_name}"
   end
 

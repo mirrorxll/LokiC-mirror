@@ -24,17 +24,22 @@ Rails.application.routes.draw do
 
     resource :frequency, only: %i[] do
       put :include, on: :collection
-      put :exclude, on: :member
+      put :exclude, on: :collection
     end
 
     resource :tag, only: %i[] do
       put :include, on: :collection
-      put :exclude, on: :member
+      put :exclude, on: :collection
     end
 
     resource :photo_bucket, only: %i[] do
       put :include, on: :collection
-      put :exclude, on: :member
+      put :exclude, on: :collection
+    end
+
+    resource :developer, only: %i[] do
+      put :include, on: :collection
+      put :exclude, on: :collection
     end
 
     resource :staging_table, only: %i[show create destroy] do

@@ -4,7 +4,9 @@ class ClientsController < ApplicationController # :nodoc:
   before_action :find_client
 
   def include
-    render_400 && return if @story_type.clients.exists?(@client.id)
+    if @client.nil? || @story_type.clients.exists?(@client.id)
+      render_400 && return
+    end
 
     @story_type.clients << @client
   end
@@ -18,6 +20,8 @@ class ClientsController < ApplicationController # :nodoc:
   private
 
   def find_client
+    return if params[:id].empty?
+
     @client = Client.find(params[:id])
   end
 end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class FrequenciesController < ApplicationController # :nodoc:
-  before_action :find_frequency
+  before_action :find_frequency, only: :include
 
   def include
     render_400 && return if @story_type.frequency

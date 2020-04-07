@@ -1,7 +1,7 @@
 =form_with(model: @data_set) do |form|
   -data_set_keys.each do |field|
     .row
-      .col-3
+      .col-3.text-right
         =form.label field
       .col-9
         -if %i[cron_scraping evaluated].include?(field)
