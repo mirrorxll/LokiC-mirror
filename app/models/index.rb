@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class Index < ApplicationRecord
-  serialize :list, Array
-
   belongs_to :staging_table
+
+  serialize :list, Array
 
   def add(column_ids)
     return if column_ids.empty?

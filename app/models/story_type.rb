@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
 class StoryType < ApplicationRecord # :nodoc:
-  has_one_attached :code
-
   belongs_to :editor,               class_name: 'Account'
   belongs_to :developer,            optional: true, class_name: 'Account'
   belongs_to :data_set
-  belongs_to :status
+  belongs_to :status,               optional: true
   belongs_to :frequency,            optional: true
   belongs_to :photo_bucket,         optional: true
   belongs_to :tag,                  optional: true
@@ -17,10 +15,13 @@ class StoryType < ApplicationRecord # :nodoc:
   has_many :story_type_iterations, dependent: :destroy
   has_and_belongs_to_many :clients
 
+  has_one_attached :code
+
   validates :name, uniqueness: true
-  before_create do
-    build_template
-  end
+
+  before_create { build_template }
+  before_create { self.status = Status.first }
+
   # filter
   def self.editor(id)
     where(writer_id: id)

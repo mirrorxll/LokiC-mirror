@@ -11,7 +11,6 @@ gem 'jquery-rails'
 gem 'sidekiq'
 gem 'sidekiq-cron'
 gem 'sidekiq-status'
-# gem 'simple_form'
 gem 'slack-ruby-client'
 gem 'summernote-rails', '~> 0.8.12.0'
 

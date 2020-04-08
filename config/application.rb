@@ -16,7 +16,12 @@ module LokiC
     # -- all .rb files in that directory are automatically loaded after loading
     # the framework and any gems in your application.
 
+    # ActiveJob adapter
+    config.active_job.queue_adapter = :sidekiq
+
     config.generators.system_tests = nil
     config.autoload_paths += %W[#{config.root}/lib/]
+
+    config.after_initialize { SlackAccountsJob.perform_later }
   end
 end

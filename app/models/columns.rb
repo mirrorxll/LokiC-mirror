@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class Columns < ApplicationRecord
-  serialize :list, Hash
-
   belongs_to :staging_table
+
+  serialize :list, Hash
 
   def names_ids
     list.map { |(id, column)| [column[:name], id.to_s] }

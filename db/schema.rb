@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_07_135916) do
+ActiveRecord::Schema.define(version: 2020_04_08_151412) do
 
   create_table "account_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -147,6 +147,17 @@ ActiveRecord::Schema.define(version: 2019_12_07_135916) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["client_id"], name: "index_sections_on_client_id"
+  end
+
+  create_table "slack_accounts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "account_id"
+    t.string "identifier"
+    t.string "user_name"
+    t.string "deleted"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_slack_accounts_on_account_id"
+    t.index ["identifier"], name: "index_slack_accounts_on_identifier", unique: true
   end
 
   create_table "staging_tables", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
