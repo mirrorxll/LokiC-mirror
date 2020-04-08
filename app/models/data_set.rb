@@ -3,6 +3,6 @@
 class DataSet < ApplicationRecord # :nodoc:
   has_many :story_types
 
-  belongs_to :user
-  belongs_to :evaluator, optional: true, class_name: 'User'
+  belongs_to :account
+  belongs_to :evaluator, optional: true, class_name: 'Account'
 end

@@ -18,6 +18,6 @@ class DevelopersController < ApplicationController
   private
 
   def find_developer
-    @developer = User.find(params[:id])
+    @developer = Account.find(params[:id])
   end
 end

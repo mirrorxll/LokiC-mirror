@@ -3,7 +3,7 @@
 class CreateDataSets < ActiveRecord::Migration[5.2] # :nodoc:
   def change
     create_table :data_sets do |t|
-      t.belongs_to :user
+      t.belongs_to :account
       t.belongs_to :evaluator
 
       t.string    :source_name

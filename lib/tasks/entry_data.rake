@@ -6,7 +6,7 @@ namespace :db do
   desc 'Push couple of the test story_types to db'
   task entry_data: :environment do
     FirstObjects.account_type.each { |obj| AccountType.create!(obj)}
-    FirstObjects.user.each { |obj| User.create!(obj) }
+    FirstObjects.account.each { |obj| Account.create!(obj) }
     FirstObjects.data_set.each { |obj| DataSet.create!(obj) }
     FirstObjects.story_type.each { |obj| StoryType.create!(obj) }
     FirstObjects.client.each { |obj| Client.create!(obj) }
@@ -20,15 +20,15 @@ namespace :db do
     puts 'Data was entry.'
   end
 
-  desc 'create user'
-  task :create_user, %i[name email pass] => :environment do |t, args|
-    User.create!(
+  desc 'create account'
+  task :create_account, %i[name email pass] => :environment do |t, args|
+    Account.create!(
       first_name: args['first_name'],
       last_name: args['last_name'],
       email: args['email'],
       password: args['pass']
     )
 
-    puts 'User was created.'
+    puts 'Account was created.'
   end
 end

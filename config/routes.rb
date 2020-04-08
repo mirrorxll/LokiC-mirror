@@ -3,10 +3,10 @@
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
-  root 'story_types#index'
-
-  devise_for :users, controllers: { registrations: 'registrations', sessions: 'sessions' }
   mount Sidekiq::Web => '/sidekiq'
+  devise_for :accounts, controllers: { registrations: 'registrations', sessions: 'sessions' }
+
+  root 'story_types#index'
 
   resources :data_sets do
     resources :story_types, only: %i[new create]

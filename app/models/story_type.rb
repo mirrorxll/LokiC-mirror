@@ -3,8 +3,8 @@
 class StoryType < ApplicationRecord # :nodoc:
   has_one_attached :code
 
-  belongs_to :editor,               class_name: 'User'
-  belongs_to :developer,            optional: true, class_name: 'User'
+  belongs_to :editor,               class_name: 'Account'
+  belongs_to :developer,            optional: true, class_name: 'Account'
   belongs_to :data_set
   belongs_to :status
   belongs_to :frequency,            optional: true

@@ -4,9 +4,9 @@
   .row
     .col-10
       =form.label :editor
-      =form.collection_select 'filter[editor]', User.where(account_type: 'editor'), :id, :name, prompt: ''
+      =form.collection_select 'filter[editor]', Account.where(account_type: 'editor'), :id, :name, prompt: ''
       =form.label :developer
-      =form.collection_select 'filter[developer]', User.all, :id, :name, prompt: ''
+      =form.collection_select 'filter[developer]', Account.all, :id, :name, prompt: ''
       =form.label :client
       =form.collection_select 'filter[client]', Client.all, :id, :name, prompt: ''
       =form.label :frequency

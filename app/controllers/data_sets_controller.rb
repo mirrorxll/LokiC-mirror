@@ -21,7 +21,7 @@ class DataSetsController < ApplicationController # :nodoc:
 
   def create
     @data_set =
-      current_user.data_sets.build(data_set_params)
+      current_account.data_sets.build(data_set_params)
 
     if @data_set.save
       redirect_to @data_set

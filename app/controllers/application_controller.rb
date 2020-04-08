@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base # :nodoc:
-  before_action :authenticate_user!
+  before_action :authenticate_account!
   before_action :find_parent_story_type
 
   private

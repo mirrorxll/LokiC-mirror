@@ -12,7 +12,7 @@ class FirstObjects # :nodoc:
       {
         name: 'super-user',
         permissions: {
-          other_user: {
+          other_account: {
             read: true,
             create: true,
             update: true,
@@ -69,7 +69,7 @@ class FirstObjects # :nodoc:
       {
         name: 'manager',
         permissions: {
-          other_user: {
+          other_account: {
             read: true,
             create: true
           },
@@ -122,7 +122,7 @@ class FirstObjects # :nodoc:
       {
         name: 'editor',
         permissions: {
-          other_user: {},
+          other_account: {},
           data_set: {
             read: true
           },
@@ -153,7 +153,7 @@ class FirstObjects # :nodoc:
       {
         name: 'developer',
         permissions: {
-          other_user: {},
+          other_account: {},
           data_set: {},
           story_type: {
             distribution: {},
@@ -194,7 +194,7 @@ class FirstObjects # :nodoc:
     ]
   end
 
-  def self.user
+  def self.account
     [
       {
         first_name: 'Sergey',
@@ -228,7 +228,7 @@ class FirstObjects # :nodoc:
         scrape_developer_comments: 'bla bla bla',
         source_key_explaining_data: 'https://..',
         gather_task: 'https://',
-        user: User.first
+        account: Account.first
       },
       {
         source_name: 'US Department of Agriculture',
@@ -243,7 +243,7 @@ class FirstObjects # :nodoc:
         scrape_developer_comments: 'bla bla bla',
         source_key_explaining_data: 'https://..',
         gather_task: 'https://',
-        user: User.first
+        account: Account.first
       }
     ]
   end
@@ -262,14 +262,14 @@ class FirstObjects # :nodoc:
     [
       {
         name: 'Story Type 1',
-        editor: User.first,
+        editor: Account.first,
         data_set: DataSet.first,
         status: Status.first
       },
       {
         name: 'Story Type 2',
-        editor: User.first,
-        developer: User.first,
+        editor: Account.first,
+        developer: Account.first,
         data_set: DataSet.last,
         status: Status.first
       }
@@ -357,7 +357,7 @@ class FirstObjects # :nodoc:
 end
 
 FirstObjects.account_type.each { |obj| AccountType.create!(obj)}
-FirstObjects.user.each { |obj| User.create!(obj) }
+FirstObjects.account.each { |obj| Account.create!(obj) }
 FirstObjects.data_set.each { |obj| DataSet.create!(obj) }
 FirstObjects.status.each { |obj| Status.create!(obj) }
 FirstObjects.story_type.each { |obj| StoryType.create!(obj) }

@@ -21,7 +21,7 @@ class StoryTypesController < ApplicationController # :nodoc:
 
   def create
     @story_type = @data_set.story_types.build(story_type_params)
-    @story_type.editor = current_user
+    @story_type.editor = current_account
 
     if @story_type.save
       redirect_to data_set_path(@data_set)

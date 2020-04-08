@@ -19,6 +19,23 @@ ActiveRecord::Schema.define(version: 2019_12_07_135916) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "accounts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "account_type_id"
+    t.string "email", null: false
+    t.string "encrypted_password", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.string "first_name", null: false
+    t.string "last_name", null: false
+    t.datetime "remember_created_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_type_id"], name: "index_accounts_on_account_type_id"
+    t.index ["email"], name: "index_accounts_on_email", unique: true
+    t.index ["first_name", "last_name"], name: "index_accounts_on_first_name_and_last_name"
+    t.index ["reset_password_token"], name: "index_accounts_on_reset_password_token", unique: true
+  end
+
   create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -69,7 +86,7 @@ ActiveRecord::Schema.define(version: 2019_12_07_135916) do
   end
 
   create_table "data_sets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "user_id"
+    t.bigint "account_id"
     t.bigint "evaluator_id"
     t.string "source_name"
     t.string "data_set_location"
@@ -86,8 +103,8 @@ ActiveRecord::Schema.define(version: 2019_12_07_135916) do
     t.string "gather_task"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_data_sets_on_account_id"
     t.index ["evaluator_id"], name: "index_data_sets_on_evaluator_id"
-    t.index ["user_id"], name: "index_data_sets_on_user_id"
   end
 
   create_table "frequencies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -190,23 +207,6 @@ ActiveRecord::Schema.define(version: 2019_12_07_135916) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["story_type_id"], name: "index_templates_on_story_type_id"
-  end
-
-  create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "account_type_id"
-    t.string "email", null: false
-    t.string "encrypted_password", null: false
-    t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.string "first_name", null: false
-    t.string "last_name", null: false
-    t.datetime "remember_created_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["account_type_id"], name: "index_users_on_account_type_id"
-    t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["first_name", "last_name"], name: "index_users_on_first_name_and_last_name"
-    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

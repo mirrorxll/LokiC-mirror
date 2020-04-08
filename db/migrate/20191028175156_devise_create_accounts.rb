@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-class DeviseCreateUsers < ActiveRecord::Migration[5.2] # :nodoc:
+class DeviseCreateAccounts < ActiveRecord::Migration[5.2] # :nodoc:
   def change
-    create_table :users do |t|
+    create_table :accounts do |t|
       t.belongs_to :account_type
 
       t.string    :email,                     null: false
@@ -15,8 +15,8 @@ class DeviseCreateUsers < ActiveRecord::Migration[5.2] # :nodoc:
       t.timestamps
     end
 
-    add_index :users, :email,                 unique: true
-    add_index :users, :reset_password_token,  unique: true
-    add_index :users, %i[first_name last_name]
+    add_index :accounts, :email,                 unique: true
+    add_index :accounts, :reset_password_token,  unique: true
+    add_index :accounts, %i[first_name last_name]
   end
 end
