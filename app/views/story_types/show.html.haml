@@ -22,15 +22,14 @@
 -#   -else
 -#     =render 'staging_tables/columns_indices'
 -# %hr/
--#
--# %h6.border-bottom.border-dark
--#   Code Upload
--# %section#code-file
--#   - if @story_type.code.attached?
--#     = render 'codes/story_type_code'
--#   - else
--#     = render 'codes/form'
--#   %hr
--#
--# - if @story_type.code.attached?
--#   = render 'codes/execute'
+
+%h6.border-bottom.border-dark
+  Code Upload
+%section#story_type_code
+  -if @story_type.code.attached?
+    =render 'codes/story_type_code'
+  -else
+    =render 'codes/form'
+  %hr
+  -if @story_type.code.attached?
+    =render 'codes/execute'

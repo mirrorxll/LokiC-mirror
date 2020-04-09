@@ -1,4 +1,4 @@
 ---
 :concurrency: 1
 :queues:
-  - slack_notifications
+  - slack_api

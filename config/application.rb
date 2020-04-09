@@ -21,7 +21,5 @@ module LokiC
 
     config.generators.system_tests = nil
     config.autoload_paths += %W[#{config.root}/lib/]
-
-    config.after_initialize { SlackAccountsJob.perform_later }
   end
 end

@@ -1,7 +1,6 @@
-%section#code-execute
-  %h6.border-bottom.border-dark
-    Story Code Execute
-  - if @story_type.code.attached?
-    = render 'populations/pop_execute_purge_links'
-    %hr.m-1
-    = render 'creations/cr_execute_purge_links'
+%h6.border-bottom.border-dark
+  Story Code Execute
+- if @story_type.code.attached?
+  = render 'populations/pop_execute_purge_links'
+  %hr.m-1
+  = render 'creations/cr_execute_purge_links'

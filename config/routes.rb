@@ -9,6 +9,10 @@ Rails.application.routes.draw do
 
   root 'story_types#index'
 
+  resources :slack_accounts, only: %i[] do
+    put :sync
+  end
+
   resources :data_sets do
     resources :story_types, only: %i[new create]
   end

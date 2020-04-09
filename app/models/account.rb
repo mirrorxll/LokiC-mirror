@@ -18,7 +18,15 @@ class Account < ApplicationRecord # :nodoc:
     "#{first_name} #{last_name}"
   end
 
-  def permissions
+  def type
+    account_type.name
+  end
+
+  def auth
     account_type.permissions
+  end
+
+  def slack
+    slack_account
   end
 end

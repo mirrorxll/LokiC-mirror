@@ -153,7 +153,7 @@ ActiveRecord::Schema.define(version: 2020_04_08_151412) do
     t.bigint "account_id"
     t.string "identifier"
     t.string "user_name"
-    t.string "deleted"
+    t.boolean "deleted"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_slack_accounts_on_account_id"

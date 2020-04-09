@@ -351,9 +351,8 @@ class FirstObjects # :nodoc:
     end
 
     def frequency
-      %w[Weekly Monthly Quarterly Semi-Annually Annually Biennial].map do |item|
-        { name: item }
-      end
+      %w[Weekly Monthly Quarterly Semi-Annually
+         Annually Biennial].map { |item| { name: item } }
     end
   end
 end

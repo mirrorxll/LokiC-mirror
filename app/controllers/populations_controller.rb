@@ -2,11 +2,9 @@
 
 class PopulationsController < ApplicationController # :nodoc:
   def execute
-    PopulationJob.perform_later(@story_type.id)
   end
 
   def purge
-    PurgeLastPopulationJob.perform_later(@story_type.id)
   end
 
   private
