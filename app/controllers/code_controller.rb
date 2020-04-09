@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CodesController < ApplicationController # :nodoc:
+class CodeController < ApplicationController # :nodoc:
   def create
     @story_type.code.attach(params[:code]) unless @story_type.code.attached?
   end

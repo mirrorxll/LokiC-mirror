@@ -1,4 +1,4 @@
--if controller_name.eql?('data_sets')
+-if %w[show update].include?(action_name)
   .text-center.small{id: "story_type_#{story_type.id}"}
     .row
       .col-1

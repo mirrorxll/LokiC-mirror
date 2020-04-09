@@ -2,7 +2,7 @@
 %section#story_type_title
   %b
     =@story_type.name
-%hr/
+
 -# %section#show-template
 -#   =render 'story_types/show_template'
 -# %hr/
@@ -27,9 +27,8 @@
   Code Upload
 %section#story_type_code
   -if @story_type.code.attached?
-    =render 'codes/story_type_code'
+    =render 'code/story_type_code'
   -else
-    =render 'codes/form'
-  %hr
+    =render 'code/form'
   -if @story_type.code.attached?
-    =render 'codes/execute'
+    =render 'code/execute'
