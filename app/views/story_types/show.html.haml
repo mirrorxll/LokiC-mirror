@@ -1,34 +1,43 @@
-%br/
-%section#story_type_title
-  %b
-    =@story_type.name
+#story_type_template.accordion
+  .card
+    .card-header
+      %div.text-center{"aria-controls" => "#template", "aria-expanded" => "true", "data-target" => "#template", "data-toggle" => "collapse", :type => "button"}
+        template
+    #template.collapse{"data-parent" => "#story_type_template"}
+      .card-body.small
+        =render 'story_types/show_template'
 
--# %section#show-template
--#   =render 'story_types/show_template'
--# %hr/
--#
--# %h6.border-bottom.border-dark
--#   Configuration
--# %section#story-type-configuration
--#   = render 'story_types/config_story_type'
--# %hr/
--#
--# %h6.border-bottom.border-dark
--#   Staging Table
--# %section#staging-table
--#   -if @story_type.staging_table.nil?
--#     =create_staging_table_link
--#     =render 'staging_tables/attach_form'
--#   -else
--#     =render 'staging_tables/columns_indices'
--# %hr/
+#story_type_properties.accordion
+  .card
+    .card-header
+      %div.text-center{"aria-controls" => "#properties", "aria-expanded" => "false", "data-target" => "#properties", "data-toggle" => "collapse", :type => "button"}
+        properties
+    #properties.collapse{"data-parent" => "#story_type_properties"}
+      .card-body
+        =render 'story_types/properties'
 
-%h6.border-bottom.border-dark
-  Code Upload
-%section#story_type_code
-  -if @story_type.code.attached?
-    =render 'code/story_type_code'
-  -else
-    =render 'code/form'
-  -if @story_type.code.attached?
-    =render 'code/execute'
+#story_type_staging_table.accordion
+  .card
+    .card-header
+      %div.text-center{"aria-controls" => "#staging_table", "aria-expanded" => "false", "data-target" => "#staging_table", "data-toggle" => "collapse", :type => "button"}
+        staging table
+    #staging_table.collapse{"data-parent" => "#story_type_staging_table"}
+      .card-body
+        -if @story_type.staging_table.nil?
+          =render 'staging_tables/form'
+        -else
+          =render @story_type.staging_table
+
+#story_type_code.accordion
+  .card
+    .card-header
+      %div.text-center{"aria-controls" => "#code", "aria-expanded" => "false", "data-target" => "#code", "data-toggle" => "collapse", :type => "button"}
+        code
+    #code.collapse{"data-parent" => "#story_type_code"}
+      .card-body
+        -if @story_type.code.attached?
+          =render 'code/story_type_code'
+        -else
+          =render 'code/form'
+        -if @story_type.code.attached?
+          =render 'code/execute'

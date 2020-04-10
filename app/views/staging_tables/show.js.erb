@@ -1,9 +1,9 @@
-var st_table_block = $('#staging-table')
+var st_table_block = $('#staging_table .card-body')
 <% if flash[:error]%>
   st_table_block.prepend(`
     <div class="alert alert-danger">
       <%= flash[:error].gsub('`', "'") %>
     </div>`)
 <% else %>
-  st_table_block.empty().html('<%=j render 'staging_tables/columns_indices'%>')
+  st_table_block.html('<%=j render 'staging_tables/staging_table'%>')
 <% end %>

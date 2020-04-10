@@ -3,11 +3,4 @@ module StagingTablesHelper
     %i[integer float decimal date
        time datetime string text boolean]
   end
-
-  def create_staging_table_link
-    link_to('Create staging table',
-            story_type_staging_table_path(@story_type),
-            method: :post, remote: true,
-            class: 'btn btn-sm btn-outline-success d-inline-block mb-3')
-  end
 end

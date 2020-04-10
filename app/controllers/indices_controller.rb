@@ -22,14 +22,14 @@ class IndicesController < ApplicationController
     @staging_table.index.add(index_params)
     @staging_table.sync
 
-    redirect_to @story_type
+    render 'staging_tables/show'
   end
 
   def destroy
     @staging_table.index.drop
     @staging_table.sync
 
-    redirect_to @story_type
+    render 'staging_tables/show'
   end
 
   private

@@ -1,0 +1,24 @@
+.row
+  .col-10.offset-1
+    .row
+      .col-2.p-0.text-right
+        client(s):
+      .col-10.ml-0
+        -@story_type.clients.each do |client|
+          =client.name
+          %br/
+    .row
+      .col-2.p-0.text-right
+        frequency:
+      .col-10.ml-0
+        =@story_type.frequency.name
+    .row
+      .col-2.p-0.text-right
+        tag:
+      .col-10.ml-0
+        =@story_type.tag.name
+    .row
+      .col-2.p-0.text-right
+        photo buckets:
+      .col-10.ml-0
+        =@story_type.photo_bucket.name

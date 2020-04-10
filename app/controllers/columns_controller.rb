@@ -19,7 +19,7 @@ class ColumnsController < ApplicationController
     @staging_table.columns.modify(columns_params)
     @staging_table.sync
 
-    redirect_to @story_type
+    render 'staging_tables/show'
   end
 
   private
