@@ -1,0 +1,12 @@
+// placeholder for a new data set frequency select
+// fields new data set frequency select fields placeholder
+.frequency {
+  position: relative;
+}
+
+.frequency .placeholder {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  background: #fff;
+}

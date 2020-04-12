@@ -88,7 +88,7 @@ ActiveRecord::Schema.define(version: 2020_04_08_151412) do
   create_table "data_sets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "account_id"
     t.bigint "evaluator_id"
-    t.string "source_name"
+    t.string "name"
     t.string "source_address"
     t.string "source_explaining_data"
     t.string "source_release_frequency"

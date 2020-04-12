@@ -10,9 +10,17 @@
         =form.label :source, 'source:', class: 'small'
         -source_keys.each do |field|
           =form.text_field field[0], placeholder: field[1], class: 'mb-1 form-control form-control-sm'
-          -if field[0].eql?(:source_scrape_frequency)
-            .small
-              on cron? #{form.check_box :cron_scraping}
+        .frequency
+          .placeholder.text-secondary.w-75.form-control.form-control-sm.border-right-0.text{ 'data-text' => 'release frequency: ' }
+          =form.text_field :source_release_frequency_manual, placeholder: 'release frequency...', class: 'd-none mb-1 form-control form-control-sm'
+          =form.collection_select :source_release_frequency, Frequency.all, :id, :name, {}, class: 'mb-1 form-control form-control-sm'
+        .frequency
+          .placeholder.text-secondary.w-75.form-control.form-control-sm.border-right-0{ 'data-text' => 'scrape frequency: ' }
+          =form.text_field :source_scrape_frequency_manual, placeholder: 'scrape frequency...', class: 'd-none mb-1 form-control form-control-sm'
+          =form.collection_select :source_scrape_frequency, Frequency.all, :id, :name, {}, class: 'mb-1 form-control form-control-sm'
+
+        .small
+          on cron? #{form.check_box :cron_scraping}
       .col-6
         =form.label :data_set, 'data set:', class: 'small'
         -data_set_keys.each do |field|
@@ -28,3 +36,5 @@
         =form.text_area :comment, placeholder: 'comment', class: 'mb-1 form-control form-control-sm'
     =form.submit @data_set.new_record? ? 'Add' : 'Update',
                  class: 'btn btn-sm btn-outline-dark mt-2', data: { disable_with: "..." }
+
+=render 'set_frequency'

@@ -10,8 +10,6 @@ module DataSetsHelper # :nodoc:
     [
       [:source_address, 'address'],
       [:source_explaining_data, 'explaining data'],
-      [:source_release_frequency, 'release frequency'],
-      [:source_scrape_frequency, 'scrape frequency']
     ]
   end
 

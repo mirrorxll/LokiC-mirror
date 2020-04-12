@@ -219,7 +219,7 @@ class FirstObjects # :nodoc:
         {
           account: Account.first,
 
-          source_name: 'Gas Buddy',
+          name: 'Gas Buddy',
           source_address: 'https://www.gasbuddy.com/',
           source_explaining_data: 'https://source.explaining.data',
           source_release_frequency: 'daily',
@@ -339,8 +339,8 @@ class FirstObjects # :nodoc:
     end
 
     def frequency
-      %w[Weekly Monthly Quarterly Semi-Annually
-         Annually Biennial].map { |item| { name: item } }
+      ['daily', 'weekly', 'monthly', 'quarterly',
+       'annually', 'manual input'].map { |item| { name: item } }
     end
   end
 end
