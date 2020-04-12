@@ -1,0 +1,12 @@
+function new_form() {
+  $('#show_new_data_set_form').html(
+      '<%=link_to('Add a new Data Set', '#new_data_set_form', 'aria-controls' => 'new_data_set_form',
+                  'aria-expanded' => false, data: { toggle: "collapse", target: "#new_data_set_form" },
+                  type: "button", class: 'btn btn-sm btn-outline-dark') %>')
+
+  let form_area = $('#new_data_set_form')
+  form_area.html('<%= j render 'form' %>');
+  form_area.collapse();
+}
+
+new_form();

@@ -89,17 +89,17 @@ ActiveRecord::Schema.define(version: 2020_04_08_151412) do
     t.bigint "account_id"
     t.bigint "evaluator_id"
     t.string "source_name"
-    t.string "data_set_location"
-    t.string "data_set_evaluation_document"
+    t.string "source_address"
+    t.string "source_explaining_data"
+    t.string "source_release_frequency"
+    t.string "source_scrape_frequency"
+    t.boolean "cron_scraping", default: false
+    t.string "location"
+    t.string "evaluation_document"
     t.boolean "evaluated", default: false
     t.datetime "evaluated_at"
-    t.string "scrape_developer_name"
-    t.string "scrape_source"
-    t.string "scrape_frequency"
-    t.string "data_release_frequency"
-    t.boolean "cron_scraping", default: false
-    t.string "scrape_developer_comments", limit: 1000
-    t.string "source_key_explaining_data"
+    t.string "scrape_developer"
+    t.string "comment", limit: 1000
     t.string "gather_task"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

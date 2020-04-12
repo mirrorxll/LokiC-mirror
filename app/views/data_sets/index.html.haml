@@ -3,22 +3,34 @@
 .row
   #evaluate_filter.col-9
     =render 'data_sets/filter'
-  #new_data_set.col-3
-    =link_to('Add a new Data Set', new_data_set_path, class: 'btn btn-sm btn-outline-dark')
+  #show_new_data_set_form.col-3
+    =link_to('Add a new Data Set', new_data_set_path, class: 'btn btn-sm btn-outline-dark', remote: true)
+
+#new_data_set_form.collapse
 %hr/
 
 #data_sets
   - @data_sets.each do |dl|
     .row
       %small.col-3
-        =dl.source_name
+        =dl.name
       %small.col-3
-        =domain_name(dl.scrape_source)
+        =domain_name(dl.source_address)
       %small.col-3
-        =dl.data_set_location
+        =dl.location
       %small.col-1
         =dl.evaluated ? 'evaluated' : ''
       .col-1
         =link_to('show', data_set_path(dl), class: 'd-loc-show-icon img')
       .col-1
     %hr/
+
+
+-#     =link_to('Add a new Data Set', '#new_data_set_form', 'aria-controls' => 'new_data_set_form',
+-#              'aria-expanded' => false, data: { toggle: "collapse", target: "#new_data_set_form" },
+-#              type: "button", class: 'btn btn-sm btn-outline-dark')
+-# #new_data_set_form.collapse
+-#   %hr/
+-#   .card.card-body
+-#     =render 'form'
+-# %hr/

@@ -1,0 +1,60 @@
+%b #{data_set.name}
+%hr/
+#data_set_info
+  .row
+    .col-6
+      .card.small
+        .card-header.p-2
+          source
+        .card-body
+          address: #{data_set.source_address}
+          %br/
+          explaining data: #{data_set.source_explaining_data}
+          %br/
+          release frequency: #{data_set.source_release_frequency}
+          %br/
+          scrape frequency: #{data_set.source_scrape_frequency}
+          %br/
+          on cron?:
+          -if data_set.cron_scraping
+            true
+            %br/
+          -else
+            false
+          %br/
+    .col-6
+      .card.small
+        .card-header.p-2
+          data set
+        .card-body
+          location: #{data_set.location}
+          %br/
+          evaluation document: #{data_set.evaluation_document}
+          %br/
+          evaluated?:
+          -if data_set.evaluated
+            true
+            %br/
+            evaluated at: #{data_set.evaluated_at}
+          -else
+            false
+          %br/
+    .col-6.mt-3
+      .card.small
+        .card-header.p-2
+          additional info:
+        .card-body
+          .row
+            .col-4.text-right
+              gather task:
+              %br/
+              scrape developer:
+              %br/
+              comment:
+            .col-8
+              #{data_set.gather_task}
+              %br/
+              #{data_set.scrape_developer}
+              %br/
+              #{data_set.comment}
+              %br/

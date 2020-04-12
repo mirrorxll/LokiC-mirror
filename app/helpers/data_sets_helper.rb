@@ -6,20 +6,19 @@ module DataSetsHelper # :nodoc:
     match ? link_to(match, link, options) : link
   end
 
+  def source_keys
+    [
+      [:source_address, 'address'],
+      [:source_explaining_data, 'explaining data'],
+      [:source_release_frequency, 'release frequency'],
+      [:source_scrape_frequency, 'scrape frequency']
+    ]
+  end
+
   def data_set_keys
-    %i[
-      source_name
-      data_set_location
-      data_set_evaluation_document
-      evaluated
-      scrape_developer_name
-      scrape_source
-      scrape_frequency
-      data_release_frequency
-      cron_scraping
-      scrape_developer_comments
-      source_key_explaining_data
-      gather_task
+    [
+      [:location, 'location'],
+      [:evaluation_document, 'evaluation document']
     ]
   end
 end

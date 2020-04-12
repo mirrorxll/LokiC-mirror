@@ -1,13 +1,30 @@
-=form_with(model: @data_set) do |form|
-  -data_set_keys.each do |field|
+%hr/
+.card.card-body
+  =form_with(model: @data_set) do |form|
     .row
-      .col-3.text-right
-        =form.label field
-      .col-9
-        -if %i[cron_scraping evaluated].include?(field)
-          =form.check_box field
-        -else
-          =form.text_field field
-  .row
-    .col-12
-      =form.submit  data: { disable_with: "..." }
+      .col-6
+        =form.text_field :name, placeholder: 'name', class: 'mb-1 form-control form-control-sm'
+        %hr/
+    .row
+      .col-6
+        =form.label :source, 'source:', class: 'small'
+        -source_keys.each do |field|
+          =form.text_field field[0], placeholder: field[1], class: 'mb-1 form-control form-control-sm'
+          -if field[0].eql?(:source_scrape_frequency)
+            .small
+              on cron? #{form.check_box :cron_scraping}
+      .col-6
+        =form.label :data_set, 'data set:', class: 'small'
+        -data_set_keys.each do |field|
+          =form.text_field field[0], placeholder: field[1], class: 'mb-1 form-control form-control-sm'
+          -if field[0].eql?(:evaluation_document)
+            .small
+              evaluate #{form.check_box :evaluated}
+    .row.mt-4
+      .col-6
+        =form.label :additional_information, 'additional info:', class: 'small'
+        =form.text_field :gather_task, placeholder: 'gather task', class: 'mb-1 form-control form-control-sm'
+        =form.text_field :scrape_developer, placeholder: 'scrape developer', class: 'mb-1 form-control form-control-sm'
+        =form.text_area :comment, placeholder: 'comment', class: 'mb-1 form-control form-control-sm'
+    =form.submit @data_set.new_record? ? 'Add' : 'Update',
+                 class: 'btn btn-sm btn-outline-dark mt-2', data: { disable_with: "..." }

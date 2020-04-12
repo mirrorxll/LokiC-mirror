@@ -217,34 +217,22 @@ class FirstObjects # :nodoc:
     def data_set
       [
         {
+          account: Account.first,
+
           source_name: 'Gas Buddy',
-          data_set_location: 'db12.usa_raw.gasbuddy_%',
-          data_set_evaluation_document: 'http://',
-          evaluated: true,
-          scrape_developer_name: 'Vlad Sviridov',
-          scrape_source: 'https://www.gasbuddy.com/',
-          scrape_frequency: 'daily',
-          data_release_frequency: 'daily',
+          source_address: 'https://www.gasbuddy.com/',
+          source_explaining_data: 'https://source.explaining.data',
+          source_release_frequency: 'daily',
+          source_scrape_frequency: 'daily',
           cron_scraping: true,
-          scrape_developer_comments: 'bla bla bla',
-          source_key_explaining_data: 'https://..',
-          gather_task: 'https://',
-          account: Account.first
-        },
-        {
-          source_name: 'US Department of Agriculture',
-          data_set_location: 'db12.usa_raw.usda_%',
-          data_set_evaluation_document: nil,
-          evaluated: false,
-          scrape_developer_name: 'Vlad Sviridov',
-          scrape_source: 'https://www.fns.usda.gov/pd/supplemental-nutrition-assistance-program-snap',
-          scrape_frequency: 'annually',
-          data_release_frequency: 'quarterly',
-          cron_scraping: false,
-          scrape_developer_comments: 'bla bla bla',
-          source_key_explaining_data: 'https://..',
-          gather_task: 'https://',
-          account: Account.first
+
+          location: 'db12.usa_raw.gasbuddy_%',
+          evaluation_document: 'http://evaluation.document',
+          evaluated: true,
+
+          scrape_developer: 'Vlad Sviridov',
+          comment: 'bla bla bla',
+          gather_task: 'https://gather.task'
         }
       ]
     end

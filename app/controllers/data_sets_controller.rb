@@ -8,9 +8,7 @@ class DataSetsController < ApplicationController # :nodoc:
   def index
     @data_sets = DataSet.all
 
-    if params[:filter]
-      @data_sets = @data_sets.where(data_set_filter_params)
-    end
+    @data_sets = @data_sets.where(data_set_filter_params) if params[:filter]
   end
 
   def show; end
