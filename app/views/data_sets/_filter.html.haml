@@ -2,4 +2,8 @@
            html: { onchange: 'this.submit();' }) do |form|
   =form.label 'filter[evaluated]', :evaluate
   =form.select 'filter[evaluated]', [['evaluated', 1], ['not evaluated', 0]], prompt: ''
-  =link_to('reset', data_sets_path)
+
+  -if params[:filter]
+    #filter_state.d-inline-block.pl-2
+      =params[:filter][:evaluated].eql?('1') ? 'evaluated' : 'not evaluated'
+      =link_to(icon('fas', 'times', class: 'text-dark'), data_sets_path)

@@ -1,12 +1,13 @@
-%section#new_data_set
-  =link_to('Add a new Data Set', new_data_set_path)
-%br/
-
-%section#evaluate_filter
-  =render 'data_sets/filter'
 %hr/
 
-%section#data_sets
+.row
+  #evaluate_filter.col-9
+    =render 'data_sets/filter'
+  #new_data_set.col-3
+    =link_to('Add a new Data Set', new_data_set_path, class: 'btn btn-sm btn-outline-dark')
+%hr/
+
+#data_sets
   - @data_sets.each do |dl|
     .row
       %small.col-3

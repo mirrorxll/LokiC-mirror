@@ -36,8 +36,8 @@ class IndicesController < ApplicationController
 
   def index_params
     if params[:index]
-      ids = params.require(:index).permit(column_ids: [])[:column_ids]
-      ids.map!(&:to_sym)
+      params.require(:index)
+            .permit(column_ids: [])[:column_ids].map!(&:to_sym)
     else
       []
     end

@@ -1,4 +1,3 @@
 =form_with(url: include_story_type_photo_bucket_path(@story_type),
             method: :put, html: { onchange: "$(this).submit();"}) do |form|
-  =form.label :photo_bucket
   =form.collection_select :photo_bucket_id, PhotoBucket.all, :id, :name, { prompt: '' }, { name: :id }

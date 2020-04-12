@@ -1,27 +1,40 @@
-#clients
-  =render 'clients/form'
-  =render @story_type.clients
+
+.row
+  .col-sm-3.col-lg-2.text-right.pr-0
+    client(s):
+  #clients.col-sm-9.col-lg-10
+    =render 'clients/form'
+    =render @story_type.clients
 %br/
 
-#frequency
-  -if @story_type.frequency
-    =render @story_type.frequency
-  -else
-    =render 'frequencies/form'
+.row
+  .col-sm-3.col-lg-2.text-right.pr-0
+    frequency:
+  #frequency.col-sm-9.col-lg-10
+    -if @story_type.frequency
+      =render @story_type.frequency
+    -else
+      =render 'frequencies/form'
 %br/
 
-#tag
-  -if @story_type.tag
-    =render @story_type.tag
-  -else
-    =render 'tags/form'
+.row
+  .col-sm-3.col-lg-2.text-right.pr-0
+    tag:
+  #tag.col-sm-9.col-lg-10
+    -if @story_type.tag
+      =render @story_type.tag
+    -else
+      =render 'tags/form'
 %br/
 
-#photo_bucket
-  -if @story_type.photo_bucket
-    =render @story_type.photo_bucket
-  -else
-    =render 'photo_buckets/form'
+.row
+  .col-sm-3.col-lg-2.text-right.pr-0
+    photo bucket:
+  #photo_bucket.col-sm-9.col-lg-10
+    -if @story_type.photo_bucket
+      =render @story_type.photo_bucket
+    -else
+      =render 'photo_buckets/form'
 %br/
 
 .modal-footer

@@ -1,4 +1,3 @@
 =form_with(url: include_story_type_frequency_path(@story_type),
            method: :put, html: { onchange: '$(this).submit();' }) do |form|
-  =form.label :frequency
   =form.collection_select :frequency_id, Frequency.all, :id, :name, { prompt: '' }, { name: :id }
