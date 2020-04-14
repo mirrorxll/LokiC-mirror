@@ -220,10 +220,10 @@ class FirstObjects # :nodoc:
           account: Account.first,
 
           name: 'Gas Buddy',
-          source_address: 'https://www.gasbuddy.com/',
-          source_explaining_data: 'https://source.explaining.data',
-          source_release_frequency: 'daily',
-          source_scrape_frequency: 'daily',
+          src_address: 'https://www.gasbuddy.com/',
+          src_explaining_data: 'https://source.explaining.data',
+          src_release_frequency: Frequency.first,
+          src_scrape_frequency_manual: 'daily',
           cron_scraping: true,
 
           location: 'db12.usa_raw.gasbuddy_%',

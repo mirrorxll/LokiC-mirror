@@ -17,6 +17,8 @@
     $(placeholder).toggleClass('d-none');
     $(select).toggleClass('d-none');
     $(input).toggleClass('d-none');
+    $(select).prop('disabled', function(i, v) { return !v; });
+    $(input).prop('disabled', function(i, v) { return !v; });
 
     if(elem.tagName === 'SPAN') {
       elem.remove();

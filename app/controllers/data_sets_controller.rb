@@ -18,13 +18,14 @@ class DataSetsController < ApplicationController # :nodoc:
   end
 
   def create
+    puts params
     @data_set =
       current_account.data_sets.build(data_set_params)
 
     if @data_set.save
-      redirect_to @data_set
+      # redirect_to @data_set
     else
-      render :new
+      # render :new
     end
   end
 
@@ -54,18 +55,21 @@ class DataSetsController < ApplicationController # :nodoc:
 
   def data_set_params
     params.require(:data_set).permit(
-      :source_name,
-      :data_set_location,
-      :data_set_evaluation_document,
-      :evaluated,
-      :scrape_developer_name,
-      :scrape_source,
-      :scrape_frequency,
-      :data_release_frequency,
+      :src_release_frequency_id,
+      :src_scrape_frequency_id,
+      :name,
+      :src_address,
+      :src_explaining_data,
+      :src_release_frequency_manual,
+      :src_scrape_frequency_manual,
       :cron_scraping,
-      :scrape_developer_comments,
-      :source_key_explaining_data,
-      :gather_task
+      :location,
+      :evaluation_document,
+      :evaluated,
+      :evaluated_at,
+      :gather_task,
+      :scrape_developer,
+      :comment
     )
   end
 end

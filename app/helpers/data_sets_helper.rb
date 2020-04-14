@@ -6,10 +6,10 @@ module DataSetsHelper # :nodoc:
     match ? link_to(match, link, options) : link
   end
 
-  def source_keys
+  def src_keys
     [
-      [:source_address, 'address'],
-      [:source_explaining_data, 'explaining data'],
+      [:src_address, 'address'],
+      [:src_explaining_data, 'explaining data'],
     ]
   end
 

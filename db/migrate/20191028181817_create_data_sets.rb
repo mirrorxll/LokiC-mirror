@@ -5,12 +5,14 @@ class CreateDataSets < ActiveRecord::Migration[5.2] # :nodoc:
     create_table :data_sets do |t|
       t.belongs_to :account
       t.belongs_to :evaluator
+      t.belongs_to :src_release_frequency
+      t.belongs_to :src_scrape_frequency
 
       t.string    :name
-      t.string    :source_address
-      t.string    :source_explaining_data
-      t.string    :source_release_frequency
-      t.string    :source_scrape_frequency
+      t.string    :src_address
+      t.string    :src_explaining_data
+      t.string    :src_release_frequency_manual
+      t.string    :src_scrape_frequency_manual
       t.boolean   :cron_scraping, default: false
 
       t.string    :location
@@ -18,9 +20,9 @@ class CreateDataSets < ActiveRecord::Migration[5.2] # :nodoc:
       t.boolean   :evaluated, default: false
       t.datetime  :evaluated_at
 
+      t.string    :gather_task
       t.string    :scrape_developer
       t.string    :comment, limit: 1000
-      t.string    :gather_task
       t.timestamps
     end
   end

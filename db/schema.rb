@@ -88,23 +88,27 @@ ActiveRecord::Schema.define(version: 2020_04_08_151412) do
   create_table "data_sets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "account_id"
     t.bigint "evaluator_id"
+    t.bigint "src_release_frequency_id"
+    t.bigint "src_scrape_frequency_id"
     t.string "name"
-    t.string "source_address"
-    t.string "source_explaining_data"
-    t.string "source_release_frequency"
-    t.string "source_scrape_frequency"
+    t.string "src_address"
+    t.string "src_explaining_data"
+    t.string "src_release_frequency_manual"
+    t.string "src_scrape_frequency_manual"
     t.boolean "cron_scraping", default: false
     t.string "location"
     t.string "evaluation_document"
     t.boolean "evaluated", default: false
     t.datetime "evaluated_at"
+    t.string "gather_task"
     t.string "scrape_developer"
     t.string "comment", limit: 1000
-    t.string "gather_task"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_data_sets_on_account_id"
     t.index ["evaluator_id"], name: "index_data_sets_on_evaluator_id"
+    t.index ["src_release_frequency_id"], name: "index_data_sets_on_src_release_frequency_id"
+    t.index ["src_scrape_frequency_id"], name: "index_data_sets_on_src_scrape_frequency_id"
   end
 
   create_table "frequencies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
