@@ -2,12 +2,10 @@
 
 class DataSetsController < ApplicationController # :nodoc:
   skip_before_action :find_parent_story_type
-
   before_action :find_data_set, except: %i[index new create]
 
   def index
     @data_sets = DataSet.all
-
     @data_sets = @data_sets.where(data_set_filter_params) if params[:filter]
   end
 
@@ -18,25 +16,28 @@ class DataSetsController < ApplicationController # :nodoc:
   end
 
   def create
-    puts params
     @data_set =
       current_account.data_sets.build(data_set_params)
 
     if @data_set.save
-      # redirect_to @data_set
+      new_data_set_notification
+      redirect_to @data_set
     else
-      # render :new
+      render :new
     end
   end
 
   def edit; end
 
   def update
-    if @data_set.update(data_set_params)
-      redirect_to @data_set
-    else
-      render :edit
-    end
+    render :edit unless @data_set.update(data_set_params)
+  end
+
+  def evaluate
+    render_400 && return if @data_set.evaluated?
+
+    @data_set.update(evaluated: true, evaluated_at: Time.now)
+    eval_data_set_notification
   end
 
   def destroy
@@ -71,5 +72,17 @@ class DataSetsController < ApplicationController # :nodoc:
       :scrape_developer,
       :comment
     )
+  end
+
+  def new_data_set_notification
+    message = "Added a new Data set. Details: #{data_set_url(@data_set)}"
+    SlackNotificationJob.perform_later('notifications_test', message)
+  end
+
+  def eval_data_set_notification
+    message = "The '#{@data_set.name}' data set was evaluated. We can start to "\
+              "create templates. Details: #{data_set_url(@data_set)}"
+
+    SlackNotificationJob.perform_later('notifications_test', message)
   end
 end

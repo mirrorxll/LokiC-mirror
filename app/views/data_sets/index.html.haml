@@ -1,9 +1,9 @@
 %hr/
 
 .row
-  #evaluate_filter.col-9
+  #evaluate_filter.col-8
     =render 'data_sets/filter'
-  #show_new_data_set_form.col-3
+  #show_new_data_set_form.col-4.text-right
     =link_to('Add a new Data Set', new_data_set_path, class: 'btn btn-sm btn-outline-dark', remote: true)
 
 #new_data_set_form.collapse

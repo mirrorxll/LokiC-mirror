@@ -14,6 +14,8 @@ Rails.application.routes.draw do
   end
 
   resources :data_sets do
+    put :evaluate, on: :member
+
     resources :story_types, only: %i[new create]
   end
 

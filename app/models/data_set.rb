@@ -7,4 +7,8 @@ class DataSet < ApplicationRecord # :nodoc:
   belongs_to :src_scrape_frequency, optional: true, class_name: 'Frequency'
 
   has_many :story_types
+
+  def evaluated?
+    evaluated
+  end
 end

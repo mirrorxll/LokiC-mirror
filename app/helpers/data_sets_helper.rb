@@ -19,4 +19,38 @@ module DataSetsHelper # :nodoc:
       [:evaluation_document, 'evaluation document']
     ]
   end
+
+  def release_frequency(dst)
+    if dst.src_release_frequency
+      dst.src_release_frequency.name
+    else
+      dst.src_release_frequency_manual
+    end
+  end
+
+  def scrape_frequency(dst)
+    if dst.src_scrape_frequency
+      dst.src_scrape_frequency.name
+    else
+      dst.src_scrape_frequency_manual
+    end
+  end
+
+  def allow_evaluate?(data_set)
+    data_set.evaluation_document.present? && !data_set.evaluated
+  end
+
+  def eval_doc(data_set)
+    data_set.evaluation_document.present? ? data_set.evaluation_document : '---'
+  end
+
+  def eval_indicate(data_set)
+    if data_set.evaluated?
+      '(evaluated)'
+    else
+      '(not evaluated'\
+      "#{data_set.evaluation_document.present? ? '' : ' - document is missing'}"\
+      ')'
+    end
+  end
 end

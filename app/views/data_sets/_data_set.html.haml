@@ -1,5 +1,3 @@
-%b #{data_set.name}
-%hr/
 #data_set_info
   .row
     .col-6
@@ -19,43 +17,40 @@
             .col-4.pr-0.text-right
               release frequency:
             .col-8
-              #{data_set.src_release_frequency}
+              #{release_frequency(data_set)}
             .col-4.pr-0.text-right
               scrape frequency:
             .col-8
-              #{data_set.src_scrape_frequency}
+              #{scrape_frequency(data_set)}
             .col-4.pr-0.text-right
               on cron?:
             .col-8
               -if data_set.cron_scraping
-                true
+                Yes
                 %br/
               -else
-                false
+                No
 
     .col-6
       .card.small
         .card-header.p-2
-          data set
+          data #{eval_indicate(data_set)}
         .card-body
           .row
             .col-4.pr-0.text-right
               location:
             .col-8
-              #{data_set.src_address}
+              #{data_set.location}
             .col-4.pr-0.text-right
               evaluation doc:
             .col-8
-              #{data_set.evaluation_document}
-            .col-4.pr-0.text-right
-              evaluated?:
-            .col-8
-              #{data_set.evaluated}
-            .col-4.pr-0.text-right
-              evaluated at:
-            .col-8
-              #{data_set.evaluated_at}
-            .col-4.pr-0.text-right
+              #{eval_doc(data_set)}
+
+            -if data_set.evaluated?
+              .col-4.pr-0.text-right
+                evaluated_at:
+              .col-8
+                #{data_set.evaluated_at.strftime('%F %R')}
 
     .col-6.mt-3
       .card.small
