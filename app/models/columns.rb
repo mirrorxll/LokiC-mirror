@@ -10,6 +10,6 @@ class Columns < ApplicationRecord
   end
 
   def modify(mod_columns)
-    LokiC::StagingTable.modify_columns(staging_table.name, list, mod_columns)
+    Table.modify_columns(staging_table.name, list, mod_columns)
   end
 end

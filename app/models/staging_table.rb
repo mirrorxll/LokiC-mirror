@@ -14,8 +14,8 @@ class StagingTable < ApplicationRecord # :nodoc:
   def sync
     return if not_exists?
 
-    columns = LokiC::StagingTable.columns(name)
-    puts index = LokiC::StagingTable.index(name)
+    columns = Table.columns(name)
+    puts index = Table.index(name)
     Columns.find_or_create_by(staging_table: self).update(list: columns)
     Index.find_or_create_by(staging_table: self).update(list: index)
   end

@@ -9,7 +9,7 @@ class Index < ApplicationRecord
     return if column_ids.empty?
 
     columns = staging_table.columns.list.select { |id, _col| column_ids.include?(id) }
-    LokiC::StagingTable.add_index(staging_table.name, columns)
+    Table.add_index(staging_table.name, columns)
   end
 
   def drop
