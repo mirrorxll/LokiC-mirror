@@ -218,7 +218,7 @@ ActiveRecord::Schema.define(version: 2020_04_08_151412) do
 
   create_table "templates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "story_type_id"
-    t.string "body", limit: 15000, default: "<p>HEADLINE:</p><p><br></p><p>TEASER:</p><p><br></p><p>BODY:</p><p><br></p>"
+    t.text "body"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["story_type_id"], name: "index_templates_on_story_type_id"

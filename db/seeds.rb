@@ -229,6 +229,7 @@ class FirstObjects # :nodoc:
           location: 'db12.usa_raw.gasbuddy_%',
           evaluation_document: 'http://evaluation.document',
           evaluated: true,
+          evaluated_at: DateTime.now,
 
           scrape_developer: 'Vlad Sviridov',
           comment: 'bla bla bla',
