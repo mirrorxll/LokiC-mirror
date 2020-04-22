@@ -1,15 +1,18 @@
 # frozen_string_literal: true
 
 require_relative 'table/columns'
-require_relative 'table/indices'
+require_relative 'table/index'
+require_relative 'table/query'
 
 module Table # :nodoc:
   module_function
 
   extend Columns
-  extend Indices
+  extend Index
+  extend Query
 
   ARM = ActiveRecord::Migration
+  ARB = ActiveRecord::Base
 
   def columns(t_name)
     columns = ARM.columns(t_name)
@@ -38,7 +41,10 @@ module Table # :nodoc:
     end
 
     changed(cur_col, mod_col).each do |upd|
-      ARM.rename_column(t_name, upd[:old_name], upd[:new_name])
+      if upd[:old_name] != upd[:new_name]
+        ARM.rename_column(t_name, upd[:old_name], upd[:new_name])
+      end
+
       ARM.change_column(t_name, upd[:new_name], upd[:type], upd[:opts])
     end
   end
@@ -46,6 +52,15 @@ module Table # :nodoc:
   def add_index(t_name, columns)
     columns = columns.map { |_id, c| c[:name] }
     columns = ['client_id', 'publication_id', columns].flatten
+
     ARM.add_index(t_name, columns, unique: true, name: :story_per_publication)
+  end
+
+  def clients_publications(t_name, limit = nil)
+    cl_pbs = ARB.connection.execute(clients_pubs_query(t_name, limit)).to_a
+
+    cl_pbs.map do |row|
+      { client_id: row.first, publication_ids: row.last.split(',') }
+    end
   end
 end

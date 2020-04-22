@@ -15,17 +15,25 @@ class StagingTable < ApplicationRecord # :nodoc:
     return if not_exists?
 
     columns = Table.columns(name)
-    puts index = Table.index(name)
+    index = Table.index(name)
     Columns.find_or_create_by(staging_table: self).update(list: columns)
     Index.find_or_create_by(staging_table: self).update(list: index)
   end
 
+  def clients_publications(limit = nil)
+    Table.clients_publications(name, limit)
+  end
+
+  def new_clients_publications?
+    clients_publications(1)
+  end
+
   def truncate
-    ActiveRecord::Base.connection.truncate(name)
+    self.class.connection.truncate(name)
   end
 
   def self.exists?(name)
-    ActiveRecord::Base.connection.table_exists?(name)
+    connection.table_exists?(name)
   end
 
   def self.not_exists?(name)
@@ -43,7 +51,7 @@ class StagingTable < ApplicationRecord # :nodoc:
   end
 
   def exists?
-    ActiveRecord::Base.connection.table_exists?(name)
+    self.class.connection.table_exists?(name)
   end
 
   def not_exists?
@@ -54,16 +62,14 @@ class StagingTable < ApplicationRecord # :nodoc:
     ActiveRecord::Migration.create_table(name) do |t|
       t.timestamps
       t.integer :client_id
-      t.string  :client_name
       t.integer :publication_id
-      t.string  :publication_name
-      t.string  :organization_id, limit: 1000
+      t.string  :organization_ids, limit: 1000
       t.date    :publish_on
       t.boolean :story_created
     end
   end
 
   def drop_table
-    ActiveRecord::Base.connection.drop_table(name)
+    self.class.connection.drop_table(name)
   end
 end

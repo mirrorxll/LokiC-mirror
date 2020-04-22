@@ -65,5 +65,9 @@ Rails.application.routes.draw do
       post    :execute, on: :collection
       delete  :purge, on: :collection
     end
+
+    resources :export_configurations, only: :create do
+      get :check, on: :collection
+    end
   end
 end

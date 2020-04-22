@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Table
-  module Indices
+  module Index
     HIDDEN_COLUMNS = %w[
       client_id client_name
       publication_id publication_name

@@ -21,7 +21,7 @@ module Pipeline
     def put(path, options = {})
       request(:put, path, options)
     end
-    alias path put
+    alias patch put
 
     # HTTP Delete request
     def delete(path, options = {})
@@ -29,13 +29,12 @@ module Pipeline
     end
 
     # common method for making HTTP requests
+    # @return Faraday::Response object
     def request(method, path, options)
-      response = connection.send(method) do |req|
+      connection.send(method) do |req|
         req.path = path
         req.body = options.to_json unless options.empty?
       end
-
-      response.body
     end
   end
 end

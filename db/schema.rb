@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_08_151412) do
+ActiveRecord::Schema.define(version: 2020_04_21_202030) do
 
   create_table "account_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -57,12 +57,19 @@ ActiveRecord::Schema.define(version: 2020_04_08_151412) do
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
-  create_table "clients", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "pipeline_index"
+  create_table "authors", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
-    t.string "section"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "clients", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "author_id"
+    t.integer "pl_identifier"
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["author_id"], name: "index_clients_on_author_id"
   end
 
   create_table "clients_sections", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -111,6 +118,17 @@ ActiveRecord::Schema.define(version: 2020_04_08_151412) do
     t.index ["src_scrape_frequency_id"], name: "index_data_sets_on_src_scrape_frequency_id"
   end
 
+  create_table "export_configurations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "story_type_id"
+    t.bigint "client_id"
+    t.bigint "publication_id"
+    t.integer "production_job_item"
+    t.integer "staging_job_item"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["story_type_id", "client_id", "publication_id"], name: "export_config_unique_index", unique: true
+  end
+
   create_table "frequencies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -126,7 +144,7 @@ ActiveRecord::Schema.define(version: 2020_04_08_151412) do
   end
 
   create_table "photo_buckets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "pipeline_index"
+    t.integer "pl_identifier"
     t.string "name"
     t.integer "minimum_height"
     t.integer "minimum_width"
@@ -137,7 +155,7 @@ ActiveRecord::Schema.define(version: 2020_04_08_151412) do
 
   create_table "publications", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "client_id"
-    t.integer "pipeline_index"
+    t.integer "pl_identifier"
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -146,7 +164,7 @@ ActiveRecord::Schema.define(version: 2020_04_08_151412) do
 
   create_table "sections", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "client_id"
-    t.integer "pipeline_index"
+    t.integer "pl_identifier"
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -210,7 +228,7 @@ ActiveRecord::Schema.define(version: 2020_04_08_151412) do
   end
 
   create_table "tags", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "pipeline_index"
+    t.integer "pl_identifier"
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

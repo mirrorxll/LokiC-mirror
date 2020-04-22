@@ -19,8 +19,8 @@
         %a#columns-tab.nav-link.active{"aria-controls" => "columns", "aria-selected" => "true", "data-toggle" => "tab", :href => "#columns", :role => "tab"}
           Columns
       %li.w-50.text-center.nav-item
-        %a#indices-tab.nav-link{"aria-controls" => "indices", "aria-selected" => "false", "data-toggle" => "tab", :href => "#indices", :role => "tab"}
-          Indices
+        %a#index-tab.nav-link{"aria-controls" => "index", "aria-selected" => "false", "data-toggle" => "tab", :href => "#index", :role => "tab"}
+          Index
     #staging_table_content.tab-content
       #columns.tab-pane.fade.show.active{"aria-labelledby" => "columns-tab", :role => "tabpanel"}
         %hr.mt-0/
@@ -39,7 +39,7 @@
               %tr
                 %td #{col[:name]}
                 %td #{col[:type]} #{col[:opts].values.all?(nil) ? '' : "(#{col[:opts].values.compact.join(',')})"}
-      #indices.tab-pane.fade{"aria-labelledby" => "indices-tab", :role => "tabpanel"}
+      #index.tab-pane.fade{"aria-labelledby" => "index-tab", :role => "tabpanel"}
         %hr.mt-0/
         .btn-group.mb-2
           -if @story_type.staging_table.index.list.empty?

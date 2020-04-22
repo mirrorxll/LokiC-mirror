@@ -5,7 +5,7 @@ class CreateSections < ActiveRecord::Migration[5.2] # :nodoc:
     create_table :sections do |t|
       t.belongs_to :client
 
-      t.integer :pipeline_index
+      t.integer :pl_identifier
       t.string  :name
       t.timestamps
     end

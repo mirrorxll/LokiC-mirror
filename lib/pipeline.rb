@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'pipeline/version.rb'
 require_relative 'pipeline/error.rb'
 require_relative 'pipeline/configuration.rb'
 require_relative 'pipeline/client.rb'
