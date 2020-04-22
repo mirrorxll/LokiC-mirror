@@ -8,6 +8,7 @@ class CreateStories < ActiveRecord::Migration[5.2]
 
       t.integer :pl_production_identifier
       t.integer :pl_staging_identifier
+      t.date    :published_at
       t.timestamps
     end
   end

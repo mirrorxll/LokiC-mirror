@@ -64,7 +64,6 @@ class StagingTable < ApplicationRecord # :nodoc:
       t.integer :client_id
       t.integer :publication_id
       t.string  :organization_ids, limit: 1000
-      t.date    :publish_on
       t.boolean :story_created
     end
   end

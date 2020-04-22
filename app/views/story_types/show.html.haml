@@ -30,8 +30,6 @@
                          class: 'btn btn-sm btn-outline-dark', remote: true)
         =render 'story_types/properties'
 
-
-
 #story_type_staging_table.accordion
   .card
     .card-header
@@ -57,3 +55,30 @@
           =render 'code/form'
         -if @story_type.code.attached?
           =render 'code/execute'
+
+#story_type_stories.accordion
+  .card
+    .card-header
+      %div.text-center{"aria-controls" => "#stories", "aria-expanded" => "false", "data-target" => "#stories", "data-toggle" => "collapse", :type => "button"}
+        stories
+    #stories.collapse{"data-parent" => "#story_type_stories"}
+      .card-body
+        >>>>>>>>>
+
+#story_type_scheduler.accordion
+  .card
+    .card-header
+      %div.text-center{"aria-controls" => "#scheduler", "aria-expanded" => "false", "data-target" => "#scheduler", "data-toggle" => "collapse", :type => "button"}
+        scheduler
+    #scheduler.collapse{"data-parent" => "#story_type_scheduler"}
+      .card-body
+        >>>>>>>>
+
+#story_type_export.accordion
+  .card
+    .card-header
+      %div.text-center{"aria-controls" => "#export", "aria-expanded" => "false", "data-target" => "#export", "data-toggle" => "collapse", :type => "button"}
+        export
+    #export.collapse{"data-parent" => "#story_type_export"}
+      .card-body
+        >>>>>>>>

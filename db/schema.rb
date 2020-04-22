@@ -216,6 +216,7 @@ ActiveRecord::Schema.define(version: 2020_04_22_141208) do
     t.bigint "output_id"
     t.integer "pl_production_identifier"
     t.integer "pl_staging_identifier"
+    t.date "published_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["iteration_id"], name: "index_stories_on_iteration_id"
