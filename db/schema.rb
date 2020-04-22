@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_21_202030) do
+ActiveRecord::Schema.define(version: 2020_04_22_141208) do
 
   create_table "account_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -143,6 +143,21 @@ ActiveRecord::Schema.define(version: 2020_04_21_202030) do
     t.index ["staging_table_id"], name: "index_indices_on_staging_table_id"
   end
 
+  create_table "iterations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "story_type_id"
+    t.boolean "populate_status", default: false
+    t.boolean "create_status", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["story_type_id"], name: "index_iterations_on_story_type_id"
+  end
+
+  create_table "outputs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "headline", limit: 300
+    t.string "teaser", limit: 500
+    t.text "body", limit: 16777215
+  end
+
   create_table "photo_buckets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "pl_identifier"
     t.string "name"
@@ -196,13 +211,15 @@ ActiveRecord::Schema.define(version: 2020_04_21_202030) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "story_type_iterations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "story_type_id"
-    t.boolean "populate_status", default: false
-    t.boolean "create_status", default: false
+  create_table "stories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "iteration_id"
+    t.bigint "output_id"
+    t.integer "pl_production_identifier"
+    t.integer "pl_staging_identifier"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["story_type_id"], name: "index_story_type_iterations_on_story_type_id"
+    t.index ["iteration_id"], name: "index_stories_on_iteration_id"
+    t.index ["output_id"], name: "index_stories_on_output_id"
   end
 
   create_table "story_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
