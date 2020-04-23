@@ -5,8 +5,6 @@ module MiniLokiC
     class Story
       def initialize(stage_table, stage_id, export, output)
         client = MiniLokiC::Connect::Mysql.on(DB05,'loki_storycreator')
-
-        puts "\noutput = #{output}\n\n"
         output = output.gsub(/[ \t]{2,}/, ' ')
 
         body = basic_html_substitutions_body(output.escaped)

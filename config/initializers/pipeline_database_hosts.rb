@@ -24,4 +24,4 @@ DB13 = 'db13.blockshopper.com'
 DB15 = 'db15.blockshopper.com'
 
 
-Mysql_user = { username: 'data_miner', password: 'data_miner' }
+MYSQL_USER = { name: 'data_miner', password: 'data_miner' }.freeze

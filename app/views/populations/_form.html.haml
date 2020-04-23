@@ -1,0 +1,3 @@
+=form_with(url: execute_story_type_population_path(@story_type), method: :post) do |form|
+  =form.text_field 'population[options]'
+  =form.submit 'Populate', class: 'mr-auto btn btn-sm btn-outline-dark'

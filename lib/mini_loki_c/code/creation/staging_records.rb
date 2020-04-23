@@ -2,7 +2,7 @@ module MiniLokiC
   module Creation
     class StagingRecords
       def self.[](table)
-        client = MiniLokiC::Connect::Mysql.on(DB05,'loki_storycreator')
+        client = MiniLokiC::Connect::Mysql.on(DB05, 'loki_storycreator')
         stage_selection = get_stage(table, client)
 
         stage_selection

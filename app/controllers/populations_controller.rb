@@ -11,6 +11,7 @@ class PopulationsController < ApplicationController # :nodoc:
   private
 
   def population_params
-    params.require(:population).permit
+    raw = params.require(:population).permit(:options)
+    raw[:options]
   end
 end
