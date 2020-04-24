@@ -1,11 +1,14 @@
 .row
   .col-10.offset-1
     .row
-      #staging_table_main.col-12
+      .col-12
         %p #{@story_type.reload.staging_table.name}
+    .row#staging_table_main_control
+      #sync.col-1
         .btn-group
           =link_to('sync', sync_story_type_staging_table_path(@story_type),
                     class: 'btn btn-sm btn-outline-dark', method: :put, remote: true)
+      #manipulate.col-5
         .btn-group.ml-2
           =link_to('truncate', truncate_story_type_staging_table_path(@story_type),
                     class: 'btn btn-sm btn-outline-danger', method: :put,  remote: true)
@@ -13,6 +16,10 @@
                     class: 'btn btn-sm btn-outline-danger', method: :delete, remote: true)
           =link_to('drop', story_type_staging_table_path(@story_type),
                     class: 'btn btn-sm btn-outline-danger', method: :delete, remote: true)
+      #exec_populate.col-6.text-right
+        -if @story_type.code.attached?
+          =render 'populations/form'
+
     %hr/
     %ul#staging_table_tabs.small.nav.nav-tabs{:role => "tablist"}
       %li.w-50.text-center.nav-item

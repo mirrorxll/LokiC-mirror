@@ -2,6 +2,7 @@
 
 class PopulationsController < ApplicationController # :nodoc:
   def execute
+    @story_type.update_iteration(population: false)
     PopulationJob.perform_later(@story_type, population_params)
   end
 

@@ -12,7 +12,7 @@ module Table # :nodoc:
   extend Query
 
   ARM = ActiveRecord::Migration
-  ARB = ActiveRecord::Base
+  ARB_CONN = ActiveRecord::Base.connection
 
   def columns(t_name)
     columns = ARM.columns(t_name)
@@ -57,7 +57,7 @@ module Table # :nodoc:
   end
 
   def clients_publications(t_name, limit = nil)
-    cl_pbs = ARB.connection.execute(clients_pubs_query(t_name, limit)).to_a
+    cl_pbs = ARB_CONN.execute(clients_pubs_query(t_name, limit)).to_a
 
     cl_pbs.map do |row|
       { client_id: row.first, publication_ids: row.last.split(',') }

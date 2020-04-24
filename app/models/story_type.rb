@@ -21,6 +21,30 @@ class StoryType < ApplicationRecord # :nodoc:
 
   before_create { build_template }
   before_create { self.status = Status.first }
+  before_create { iterations.build }
+
+  def developer_slack_id
+    developer&.slack&.identifier
+  end
+
+  def iteration
+    iterations.last
+  end
+
+  # method will update last iteration status
+  # possible keys:
+  # population, export_configuration,
+  # fcd_samples, creation, export
+  # -----------------
+  # possible values:
+  # nil - not started
+  # false - in progress
+  # true - success
+  def update_iteration(status = {})
+    return if status.empty?
+
+    iteration.update(status)
+  end
 
   # filter
   def self.editor(id)

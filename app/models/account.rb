@@ -7,7 +7,7 @@ class Account < ApplicationRecord # :nodoc:
 
   belongs_to :account_type
 
-  has_one :slack_account
+  has_one :slack, class_name: 'SlackAccount'
 
   has_many :eval_data_sets,   foreign_key: :evaluator_id, class_name: 'DataSet'
   has_many :edit_story_types, foreign_key: :editor_id,    class_name: 'StoryType'
@@ -24,9 +24,5 @@ class Account < ApplicationRecord # :nodoc:
 
   def auth
     account_type.permissions
-  end
-
-  def slack
-    slack_account
   end
 end

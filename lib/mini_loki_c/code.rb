@@ -23,8 +23,11 @@ module MiniLokiC
     def exec
       load file
 
-      Object.const_get("S#{@story_type.id}").send(@method, @options)
-      Object.send(:remove_const, "S#{@story_type.id}")
+      Object.const_get("S#{@story_type.id}").new.send(@method, @options)
+    ensure
+      if Object.const_defined?("S#{@story_type.id}")
+        Object.send(:remove_const, "S#{@story_type.id}")
+      end
     end
 
     def file

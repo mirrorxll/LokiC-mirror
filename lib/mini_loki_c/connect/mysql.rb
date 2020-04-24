@@ -5,10 +5,8 @@ module MiniLokiC
     # Mysql connection
     module Mysql
       def self.on(host, database, username = nil, password = nil)
-        if username.nil? && password.nil?
-          username = MYSQL_USER[:name]
-          password = MYSQL_USER[:password]
-        end
+        username ||= MiniLokiC.mysql_regular_user
+        password ||= MiniLokiC.mysql_regular_password
 
         Mysql2::Client.new(
           host: host, database: database,

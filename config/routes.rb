@@ -5,6 +5,8 @@ require 'sidekiq/cron/web'
 
 Rails.application.routes.draw do
   mount Sidekiq::Web => '/sidekiq'
+  mount ActionCable.server, at: '/cable'
+
   devise_for :accounts, controllers: { registrations: 'registrations', sessions: 'sessions' }
 
   root 'story_types#index'
