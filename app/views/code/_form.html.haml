@@ -1,3 +1,5 @@
-=form_with(url: story_type_code_path(@story_type)) do |form|
-  =form.file_field :code
-  =form.submit     :upload
+.row.small
+  .col-10.offset-1
+    =form_with(url: story_type_code_path(@story_type)) do |form|
+      =form.file_field :code
+      =form.submit     :upload

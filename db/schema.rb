@@ -145,8 +145,11 @@ ActiveRecord::Schema.define(version: 2020_04_22_141208) do
 
   create_table "iterations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "story_type_id"
-    t.boolean "populate_status", default: false
-    t.boolean "create_status", default: false
+    t.boolean "population", default: false
+    t.boolean "export_configurations", default: false
+    t.boolean "fcd_samples", default: false
+    t.boolean "creation", default: false
+    t.boolean "export", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["story_type_id"], name: "index_iterations_on_story_type_id"

@@ -1,5 +1,6 @@
 .row
-  #code-download.col-2
-    =link_to('download', url_for(@story_type.code))
-  #code-remove.col-2
-    =link_to('remove', story_type_code_path(story_type_id: @story_type.id, id: @story_type.id), method: :delete, remote: true)
+  .col-10.offset-1
+    .btn-group.mb-3
+      =link_to('download', url_for(@story_type.code), class: 'btn btn-sm btn-outline-dark')
+      =link_to('remove', story_type_code_path(@story_type),
+               class: 'btn btn-sm btn-outline-dark', method: :delete, remote: true)

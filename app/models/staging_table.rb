@@ -3,6 +3,7 @@
 class StagingTable < ApplicationRecord # :nodoc:
   before_create   :generate_table_name, if: :noname?
   before_create   :create_table, if: :not_exists?
+  before_create   :add_iteration, if: :iteration_missing?
   after_create    :sync
   before_destroy  :drop_table, if: :exists?
 
@@ -20,12 +21,8 @@ class StagingTable < ApplicationRecord # :nodoc:
     Index.find_or_create_by(staging_table: self).update(list: index)
   end
 
-  def clients_publications(limit = nil)
-    Table.clients_publications(name, limit)
-  end
-
-  def new_clients_publications?
-    clients_publications(1)
+  def clients_publications
+    Table.clients_publications(name)
   end
 
   def truncate
@@ -50,10 +47,6 @@ class StagingTable < ApplicationRecord # :nodoc:
     self.name = "#{story_type.id}_staging"
   end
 
-  def exists?
-    self.class.connection.table_exists?(name)
-  end
-
   def not_exists?
     !exists?
   end
@@ -66,6 +59,21 @@ class StagingTable < ApplicationRecord # :nodoc:
       t.string  :organization_ids, limit: 1000
       t.boolean :story_created
     end
+  end
+
+  def iteration_missing?
+    !self.class.connection.columns(name).find do |c|
+      c.name.eql?('iteration') && c.default.to_i.positive?
+    end
+  end
+
+  def add_iteration
+    ActiveRecord::Migration
+      .add_column name, :iteration, :integer, default: 1, index: true
+  end
+
+  def exists?
+    self.class.connection.table_exists?(name)
   end
 
   def drop_table
