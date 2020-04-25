@@ -20,7 +20,7 @@ class PopulationJob < ApplicationJob
   private
 
   def send_status(stp, message, status)
-    PopulationStatusChannel.broadcast_to(stp, story_type.iteration)
+    PopulationStatusChannel.broadcast_to(stp, stp.iteration)
     return unless stp.developer_slack_id
 
     message = "##{stp.id} #{stp.name} -- #{message}"

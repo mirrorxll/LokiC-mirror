@@ -1,1 +1,1 @@
-<% PopulationStatusChannel.broadcast_to(@story_type, population: true) %>
+<% PopulationStatusChannel.broadcast_to(@story_type, @story_type.iteration.population) %>
