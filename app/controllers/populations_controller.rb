@@ -2,8 +2,16 @@
 
 class PopulationsController < ApplicationController # :nodoc:
   def execute
-    @story_type.update_iteration(population: false)
-    PopulationJob.perform_later(@story_type, population_params)
+    render_400 && return unless @story_type.iteration.population.nil?
+
+    args = population_params
+    job = PopulationJob.set(wait: 1.second).perform_later(@story_type, args)
+
+    @story_type.update_iteration(
+      population: false,
+      population_jid: job&.provider_job_id,
+      population_args: args
+    )
   end
 
   def purge
@@ -12,7 +20,7 @@ class PopulationsController < ApplicationController # :nodoc:
   private
 
   def population_params
-    raw = params.require(:population).permit(:options)
-    raw[:options]
+    raw = params.require(:population).permit(:args)
+    raw[:args]
   end
 end

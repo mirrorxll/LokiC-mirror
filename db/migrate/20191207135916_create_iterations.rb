@@ -5,11 +5,18 @@ class CreateIterations < ActiveRecord::Migration[5.2] # :nodoc:
     create_table :iterations do |t|
       t.belongs_to :story_type
 
-      t.boolean :population,            default: nil
-      t.boolean :export_configurations, default: nil
-      t.boolean :fcd_samples,           default: nil
-      t.boolean :creation,              default: nil
-      t.boolean :export,                default: nil
+      t.boolean :population
+      t.string  :population_args
+      t.string  :population_jid
+
+      t.boolean :creation
+      t.string  :creation_jid
+
+      t.boolean :export
+      t.boolean :export_jid
+
+      t.boolean :fcd_samples
+      t.boolean :export_configurations
       t.timestamps
     end
   end

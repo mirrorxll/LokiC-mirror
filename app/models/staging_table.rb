@@ -69,7 +69,8 @@ class StagingTable < ApplicationRecord # :nodoc:
 
   def add_iteration
     ActiveRecord::Migration
-      .add_column name, :iteration, :integer, default: 1, index: true
+      .add_column name, :iteration_id, :integer, default: story_type.iteration.id,
+                                                 after: :id, index: true
   end
 
   def exists?

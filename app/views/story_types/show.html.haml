@@ -61,7 +61,7 @@
         stories
     #stories.collapse.show{"data-parent" => "#story_type_stories"}
       .card-body
-        >>>>>>>>>
+        =render @story_type.iterations.last.stories
 
 #story_type_scheduler.accordion
   .card
