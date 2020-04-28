@@ -22,7 +22,7 @@ default: &default
 
 # use for connect to localhost
   username: root
-  password: Qw12345678*
+  password: 123123
 
   socket: /var/run/mysqld/mysqld.sock
 
