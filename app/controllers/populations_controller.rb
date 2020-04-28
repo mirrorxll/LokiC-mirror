@@ -2,8 +2,11 @@
 
 class PopulationsController < ApplicationController # :nodoc:
   def execute
-    @story_type.update_iteration(population: false)
-    PopulationJob.perform_later(@story_type, population_params)
+    if @story_type.iteration.population.nil?
+      @story_type.update_iteration(population: false)
+      jid = PopulationJob.perform_later(@story_type, population_params)
+      @story_type.update_iteration(population_jid: jid)
+    end
   end
 
   def purge
