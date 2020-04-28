@@ -146,6 +146,7 @@ ActiveRecord::Schema.define(version: 2020_04_22_141208) do
   create_table "iterations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "story_type_id"
     t.boolean "population"
+    t.string "population_args"
     t.string "population_jid"
     t.boolean "creation"
     t.string "creation_jid"

@@ -14,12 +14,12 @@ class PopulationJob < ApplicationJob
     message = e
   ensure
     story_type.update_iteration(population: status)
-    send_status(story_type, message, status)
+    send_status(story_type, message)
   end
 
   private
 
-  def send_status(stp, message, status)
+  def send_status(stp, message)
     PopulationStatusChannel.broadcast_to(stp, stp.iteration)
     return unless stp.developer_slack_id
 
