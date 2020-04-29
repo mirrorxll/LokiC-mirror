@@ -11,17 +11,10 @@
   $('#population_form').on('submit', function() {
     $(this).hide();
 
-    // Disable manipulate buttons on-time work population
-    $('#sync :first-child').addClass('disabled');
-    $('#edit_columns :first-child').addClass('disabled');
-
-    let editIndexBtn = $('#edit_index :first-child')
-    if(!editIndexBtn.hasClass('disabled'))
-      editIndexBtn.addClass('populate disabled');
-    $('#manipulate').children().each(function() { $(this).addClass('disabled'); });
+    blockManipBtn();
 
     $('#exec_population').html(`
-      <div id="cancel_population" class="text-danger">
-        <a class="btn btn-sm btn-outline-danger" href="#{@story_type.id}">cancel population</a>
+      <div id="population_in_progress" class="text-danger">
+        population in progress...
       </div>`);
   });
