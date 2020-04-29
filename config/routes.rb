@@ -24,8 +24,6 @@ Rails.application.routes.draw do
   resources :story_types, except: %i[new create] do
     get :properties
 
-    resources :stories
-
     resource :template, only: %i[edit update]
 
     resources :clients, only: %i[] do
@@ -67,9 +65,10 @@ Rails.application.routes.draw do
 
     resource :population, path: 'populate', only: %i[] do
       post     :execute, on: :collection
-      put      :cancel, on: :collection
       delete   :purge, on: :collection
     end
+
+    resources :samples, except: :index
 
     resources :export_configurations, only: :create do
       get :check, on: :collection

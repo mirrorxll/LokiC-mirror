@@ -3,5 +3,5 @@
 class Iteration < ApplicationRecord # :nodoc:
   belongs_to :story_type
 
-  has_many :stories, dependent: :destroy
+  has_many :samples, dependent: :destroy
 end

@@ -1,6 +1,0 @@
-- @story_type.iterations.last.stories.each do |story|
-  .row
-    %small.col-6
-      =story.output.headline
-    %small.col-6
-      =link_to('show', story_type_story_path(story_type_id: @story_type.id, story: story.id), class: 'd-loc-show-icon img')

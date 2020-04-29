@@ -2,7 +2,7 @@
 
 class Client < ApplicationRecord # :nodoc:
   # The author depends on the client.
-  # For different clients, stories from
+  # For different clients, samples from
   # different authors are published.
   belongs_to :author
 
