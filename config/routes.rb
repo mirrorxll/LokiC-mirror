@@ -66,8 +66,9 @@ Rails.application.routes.draw do
     resource :code, path: 'upload_code', only: %i[create destroy]
 
     resource :population, path: 'populate', only: %i[] do
-      post    :execute, on: :collection
-      delete  :purge, on: :collection
+      post     :execute, on: :collection
+      put      :cancel, on: :collection
+      delete   :purge, on: :collection
     end
 
     resources :export_configurations, only: :create do

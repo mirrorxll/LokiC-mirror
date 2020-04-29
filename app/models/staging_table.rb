@@ -25,6 +25,10 @@ class StagingTable < ApplicationRecord # :nodoc:
     Table.clients_publications(name)
   end
 
+  def purge
+    Table.purge_last_iteration(name, story_type.iteration.id)
+  end
+
   def truncate
     self.class.connection.truncate(name)
   end
@@ -63,14 +67,17 @@ class StagingTable < ApplicationRecord # :nodoc:
 
   def iteration_missing?
     !self.class.connection.columns(name).find do |c|
-      c.name.eql?('iteration') && c.default.to_i.positive?
+      c.name.eql?('iteration_id') && c.default.to_i.positive?
     end
   end
 
   def add_iteration
     ActiveRecord::Migration
-      .add_column name, :iteration_id, :integer, default: story_type.iteration.id,
-                                                 after: :id, index: true
+      .add_column name, :iteration_id, :integer,
+                  default: story_type.iteration.id,
+                  after: :id
+
+    ActiveRecord::Migration.add_index name, :iteration_id, name: :iteration
   end
 
   def exists?

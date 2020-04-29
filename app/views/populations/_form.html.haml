@@ -1,12 +1,27 @@
-=form_with(url: execute_story_type_population_path(@story_type), id: 'population_form') do |form|
-  .row
-    .col-sm-8.col-lg-9.pr-1
-      =form.text_field 'population[args]', class: 'w-100 h-100'
-    .col-sm-4.col-lg-3.pl-0
-      =form.submit 'Populate', class: 'btn btn-outline-dark btn-sm w-100 border-dark',
-                   disabled: ([true, false].include?(@story_type.iteration.population) ? true : false)
+#population_form
+  =form_with(url: execute_story_type_population_path(@story_type)) do |form|
+    .row
+      .col-sm-8.col-lg-9.pr-1
+        =form.text_field 'population[args]', class: 'w-100 h-100', value: @story_type.iteration.population_args
+      .col-sm-4.col-lg-3.pl-0
+        =form.submit 'Populate', class: 'btn btn-outline-dark btn-sm w-100 border-dark',
+                     disabled: ([true, false].include?(@story_type.iteration.population) ? true : false)
 
 :javascript
-  $('#population_form').on('submit', function(event) {
-    $(this).remove();
+  $('#population_form').on('submit', function() {
+    $(this).hide();
+
+    // Disable manipulate buttons on-time work population
+    $('#sync :first-child').addClass('disabled');
+    $('#edit_columns :first-child').addClass('disabled');
+
+    let editIndexBtn = $('#edit_index :first-child')
+    if(!editIndexBtn.hasClass('disabled'))
+      editIndexBtn.addClass('populate disabled');
+    $('#manipulate').children().each(function() { $(this).addClass('disabled'); });
+
+    $('#exec_population').html(`
+      <div id="cancel_population" class="text-danger">
+        <a class="btn btn-sm btn-outline-danger" href="#{@story_type.id}">cancel population</a>
+      </div>`);
   });

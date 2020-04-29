@@ -1,0 +1,58 @@
+:javascript
+  (function() {
+    App.cable.subscriptions.create(
+      { channel: "StoryTypeChannel", story_type_id: #{@story_type.id} },
+      { connected: function() { console.log('connected'); },
+        disconnected: function() { console.log('disconnected'); },
+        received: function (data) { update_statuses(data); } }
+    )
+  }).call();
+
+  function update_statuses(data) {
+    if($(`#story_type_show_${data.id}`)) {
+      st_population(data);
+      st_creation(data);
+      st_export_configs(data);
+      st_scheduler(data);
+      st_export(data);
+    } else {
+      return false;
+    }
+  }
+  
+  function st_population(data) {
+    if(data['population_message']) {
+      $('#exec_population').html(`
+        <div id="population_status">
+          ${data['population_message']}
+        </div>`
+      )
+
+      $('#sync :first-child').removeClass('disabled');
+      $('#edit_columns :first-child').removeClass('disabled');
+
+      let addIndexBtn = $('#edit_index :first-child')
+      if(addIndexBtn.hasClass('populate'))
+        addIndexBtn.removeClass('populate disabled');
+
+      $('#manipulate').children().each(function() {
+        $(this).removeClass('disabled');
+      });
+
+    }
+  }
+  
+  function st_creation() {
+  }
+  
+  function st_export_configs() {
+  }
+  
+  function st_scheduler() {
+    
+  }
+
+  function st_export() {
+  
+  }
+  
