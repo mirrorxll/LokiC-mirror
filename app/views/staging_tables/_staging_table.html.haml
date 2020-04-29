@@ -4,22 +4,35 @@
       .col-12
         %p #{@story_type.reload.staging_table.name}
     .row#staging_table_main_control
-      #sync.col-1
-        .btn-group
+      .col-1
+        #sync.btn-group
           =link_to('sync', sync_story_type_staging_table_path(@story_type),
                     class: 'btn btn-sm btn-outline-dark', method: :put, remote: true)
-      #manipulate.col-5
-        .btn-group.ml-2
+      .col-6
+        #manipulate.btn-group.ml-2
+          =link_to('purge last population', purge_story_type_population_path(@story_type),
+                    class: 'btn btn-sm btn-outline-danger', method: :delete,  remote: true,
+                    data: { confirm: 'You sure?' })
           =link_to('truncate', truncate_story_type_staging_table_path(@story_type),
-                    class: 'btn btn-sm btn-outline-danger', method: :put,  remote: true)
+                    class: 'btn btn-sm btn-outline-danger', method: :put,  remote: true,
+                    data: { confirm: 'You sure?' })
           =link_to('detach', detach_story_type_staging_table_path(@story_type),
-                    class: 'btn btn-sm btn-outline-danger', method: :delete, remote: true)
+                    class: 'btn btn-sm btn-outline-danger', method: :delete, remote: true,
+                    data: { confirm: 'You sure?' })
           =link_to('drop', story_type_staging_table_path(@story_type),
-                    class: 'btn btn-sm btn-outline-danger', method: :delete, remote: true)
-      #exec_populate.col-6.text-right
-        -if @story_type.code.attached?
-          =render 'populations/form'
-
+                    class: 'btn btn-sm btn-outline-danger', method: :delete, remote: true,
+                    data: { confirm: 'You sure?' })
+      .col-5.text-right
+        #exec_population
+          -if @story_type.code.attached?
+            -if @story_type.iteration.population.nil?
+              =render 'populations/form'
+            -elsif @story_type.iteration.population.eql?(false)
+              #population_in_progress.text-danger
+                population in progress...
+            -else
+              #population_status
+                population success
     %hr/
     %ul#staging_table_tabs.small.nav.nav-tabs{:role => "tablist"}
       %li.w-50.text-center.nav-item
@@ -31,7 +44,7 @@
     #staging_table_content.tab-content
       #columns.tab-pane.fade.show.active{"aria-labelledby" => "columns-tab", :role => "tabpanel"}
         %hr.mt-0/
-        .btn-group.mb-2
+        #edit_columns.btn-group.mb-2
           =link_to('edit column list',
                    edit_story_type_staging_table_columns_path(@story_type),
                    class: 'btn btn-sm btn-outline-dark', remote: true)
@@ -48,7 +61,7 @@
                 %td #{col[:type]} #{col[:opts].values.all?(nil) ? '' : "(#{col[:opts].values.compact.join(',')})"}
       #index.tab-pane.fade{"aria-labelledby" => "index-tab", :role => "tabpanel"}
         %hr.mt-0/
-        .btn-group.mb-2
+        #edit_index.btn-group.mb-2
           -if @story_type.staging_table.index.list.empty?
             =link_to("add unique 'story per publication' index",
                      new_story_type_staging_table_index_path(@story_type),
@@ -58,3 +71,5 @@
                      story_type_staging_table_index_path(@story_type),
                      class: 'btn btn-sm btn-outline-dark', method: :delete, remote: true)
         %p #{@story_type.staging_table.index.list.join(', ')}
+
+=render 'populations/block_manipulate_buttons'

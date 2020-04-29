@@ -1,3 +1,6 @@
+=render 'channel'
+
+%div{ id: "story_type_show_#{@story_type.id}"}
 %hr
 #story_type_name
   %b #{@story_type.name}
@@ -18,16 +21,6 @@
         properties
     #properties.collapse.show{"data-parent" => "#story_type_properties"}
       .card-body
-        -if @story_type.staging_table
-          .row
-            .col-11.offset-1.mb-4.pl-5
-              .btn-group
-                =link_to('create export configurations',
-                         story_type_export_configurations_path(@story_type),
-                         class: 'btn btn-sm btn-outline-dark', method: :post, remote: true)
-                =link_to('check',
-                         check_story_type_export_configurations_path(@story_type),
-                         class: 'btn btn-sm btn-outline-dark', remote: true)
         =render 'story_types/properties'
 
 #story_type_staging_table.accordion
@@ -61,6 +54,16 @@
         stories
     #stories.collapse.show{"data-parent" => "#story_type_stories"}
       .card-body
+        -if @story_type.staging_table
+          .row
+            .col-11.offset-1.mb-4
+              .btn-group
+                =link_to('create export configurations',
+                           story_type_export_configurations_path(@story_type),
+                           class: 'btn btn-sm btn-outline-dark', method: :post, remote: true)
+                =link_to('check',
+                           check_story_type_export_configurations_path(@story_type),
+                           class: 'btn btn-sm btn-outline-dark', remote: true)
         =render @story_type.iterations.last.stories
 
 #story_type_scheduler.accordion

@@ -18,5 +18,9 @@ module Table
       'GROUP BY client_id '\
       "#{limit ? "LIMIT #{limit}" : ''};"
     end
+
+    def delete_query(t_name, where)
+      "DELETE FROM `#{t_name}` WHERE #{where || '1 = 1'}"
+    end
   end
 end

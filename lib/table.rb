@@ -63,4 +63,10 @@ module Table # :nodoc:
       { client_id: row.first, publication_ids: row.last.split(',') }
     end
   end
+
+  # purge rows that were insertedto staging table
+  def purge_last_iteration(t_name, iteration_id)
+    where = "iteration_id = #{iteration_id}"
+    ARB_CONN.execute(delete_query(t_name, where))
+  end
 end
