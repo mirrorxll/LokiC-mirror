@@ -147,11 +147,8 @@ ActiveRecord::Schema.define(version: 2020_04_22_141208) do
     t.bigint "story_type_id"
     t.boolean "population"
     t.string "population_args"
-    t.string "population_jid"
     t.boolean "creation"
-    t.string "creation_jid"
     t.boolean "export"
-    t.boolean "export_jid"
     t.boolean "fcd_samples"
     t.boolean "export_configurations"
     t.datetime "created_at", null: false
@@ -182,6 +179,19 @@ ActiveRecord::Schema.define(version: 2020_04_22_141208) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["client_id"], name: "index_publications_on_client_id"
+  end
+
+  create_table "samples", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "iteration_id"
+    t.bigint "output_id"
+    t.integer "pl_production_identifier"
+    t.integer "pl_staging_identifier"
+    t.date "published_at"
+    t.boolean "backdated", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["iteration_id"], name: "index_samples_on_iteration_id"
+    t.index ["output_id"], name: "index_samples_on_output_id"
   end
 
   create_table "sections", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -216,18 +226,6 @@ ActiveRecord::Schema.define(version: 2020_04_22_141208) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "stories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "iteration_id"
-    t.bigint "output_id"
-    t.integer "pl_production_identifier"
-    t.integer "pl_staging_identifier"
-    t.date "published_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["iteration_id"], name: "index_stories_on_iteration_id"
-    t.index ["output_id"], name: "index_stories_on_output_id"
   end
 
   create_table "story_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

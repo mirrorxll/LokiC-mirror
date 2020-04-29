@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-class CreateStories < ActiveRecord::Migration[5.2]
+class CreateSamples < ActiveRecord::Migration[5.2]
   def change
-    create_table :stories do |t|
+    create_table :samples do |t|
       t.belongs_to :iteration
       t.belongs_to :output
 

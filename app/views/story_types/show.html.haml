@@ -47,24 +47,22 @@
         -else
           =render 'code/form'
 
-#story_type_stories.accordion
+#story_type_samples.accordion
   .card
     .card-header
-      %div.text-center{"aria-controls" => "#stories", "aria-expanded" => "false", "data-target" => "#stories", "data-toggle" => "collapse", :type => "button"}
-        stories
-    #stories.collapse.show{"data-parent" => "#story_type_stories"}
+      %div.text-center{"aria-controls" => "#samles", "aria-expanded" => "false", "data-target" => "#samples", "data-toggle" => "collapse", :type => "button"}
+        samples
+    #samples.collapse.show{"data-parent" => "#story_type_samples"}
       .card-body
         -if @story_type.staging_table
           .row
-            .col-11.offset-1.mb-4
-              .btn-group
-                =link_to('create export configurations',
-                           story_type_export_configurations_path(@story_type),
-                           class: 'btn btn-sm btn-outline-dark', method: :post, remote: true)
-                =link_to('check',
-                           check_story_type_export_configurations_path(@story_type),
-                           class: 'btn btn-sm btn-outline-dark', remote: true)
-        =render @story_type.iterations.last.stories
+            .col-11.offset-1
+              -if @story_type.iteration.creation
+                =render @story_type.iteration.samples
+              -elsif @story_type.iteration.creation.eql?(false)
+                creation in progress...
+              -else
+                =render 'samples/form'
 
 #story_type_scheduler.accordion
   .card
@@ -82,4 +80,14 @@
         export
     #export.collapse.show{"data-parent" => "#story_type_export"}
       .card-body
-        >>>>>>>>
+        -if @story_type.staging_table
+          .row
+            .col-11.offset-1
+              .btn-group
+                =link_to('create export configurations',
+                          story_type_export_configurations_path(@story_type),
+                          class: 'btn btn-sm btn-outline-dark', method: :post, remote: true)
+                =link_to('check',
+                          check_story_type_export_configurations_path(@story_type),
+                          class: 'btn btn-sm btn-outline-dark', remote: true)
+

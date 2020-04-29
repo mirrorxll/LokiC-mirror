@@ -1,0 +1,10 @@
+=form_with(url: story_type_samples_path(@story_type), class: 'small') do |form|
+  .form-group
+    =form.label :columns, 'columns(for edge samples)'
+    -@story_type.staging_table.columns.list.each do |_id, column|
+      .form-check
+        =form.check_box column[:name]
+        =form.label column[:name], column[:name]
+
+  .form-group.col-6
+    =form.text_field :custom_input, placeholder: 'custom input', class: 'form-control'

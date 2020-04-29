@@ -252,13 +252,13 @@ module FirstObjects # :nodoc:
   def story_type
     [
       {
-        name: 'Story Type 1',
+        name: 'Sample Type 1',
         editor: Account.first,
         data_set: DataSet.first,
         status: Status.first
       },
       {
-        name: 'Story Type 2',
+        name: 'Sample Type 2',
         editor: Account.first,
         developer: Account.first,
         data_set: DataSet.last,

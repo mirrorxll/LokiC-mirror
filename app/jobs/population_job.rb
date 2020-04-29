@@ -13,7 +13,7 @@ class PopulationJob < ApplicationJob
     status = nil
     message = e
   ensure
-    story_type.update_iteration(population: status, population_jid: nil)
+    story_type.update_iteration(population: status)
     send_status(story_type, message)
   end
 

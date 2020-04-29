@@ -1,3 +1,3 @@
 class Output < ApplicationRecord
-  has_one :story
+  has_one :sample
 end
