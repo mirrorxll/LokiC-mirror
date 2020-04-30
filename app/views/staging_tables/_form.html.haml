@@ -3,6 +3,6 @@
     =link_to('Create staging table', story_type_staging_table_path(@story_type),
              method: :post, remote: true, class: 'btn btn-sm btn-outline-success d-inline-block mb-3')
 
-    =form_with(model: [@story_type, @story_type.build_staging_table], url: attach_story_type_staging_table_path(@story_type)) do |form|
-      =form.text_field :name, placeholder: 'existing staging table name'
+    =form_with(url: attach_story_type_staging_table_path(@story_type)) do |form|
+      =form.text_field 'staging_table[name]', placeholder: 'existing staging table name'
       =form.submit :attach

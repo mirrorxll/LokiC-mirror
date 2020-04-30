@@ -85,5 +85,10 @@ module Table
         hash[id.to_sym] = column.deep_symbolize_keys
       end
     end
+
+    def transform_for_samples(columns)
+      columns.select! { |_key, value| value.eql?('1') }
+      columns.keys.map(&:to_sym)
+    end
   end
 end

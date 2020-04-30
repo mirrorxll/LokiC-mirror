@@ -30,6 +30,8 @@ module Table # :nodoc:
     index_transform(index_columns)
   end
 
+
+
   def modify_columns(t_name, cur_col, mod_col)
     if arm.index_name_exists?(t_name, :story_per_publication)
       arm.remove_index(t_name, name: :story_per_publication)
