@@ -10,9 +10,7 @@ class SamplesController < ApplicationController # :nodoc:
   def show; end
 
   def create
-    params = samples_params
-    puts params
-    # CreateSamplesJob.set(wait: 1.second).perform_later(params[:rows], column_names)
+    CreateSamplesJob.perform_later(@story_type, samples_params)
   end
 
   private
@@ -22,10 +20,6 @@ class SamplesController < ApplicationController # :nodoc:
   end
 
   def samples_params
-    raw_params = params.require(:samples).permit(:rows, columns: {})
-    column_ids = Table.transform_for_samples(raw_params[:columns])
-    column_names = @story_type.staging_table.columns.ids_to_names(column_ids)
-
-    { column_names: column_names, rows: raw_params[:rows] }
+    params.require(:samples).permit(:row_ids, columns: {})
   end
 end

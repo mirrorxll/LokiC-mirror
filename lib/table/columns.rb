@@ -48,10 +48,14 @@ module Table
         frontend_transform(columns)
       when :back
         backend_transform(columns)
+      when :samples
+        transform_for_samples(columns)
       else
         'Raise to do'
       end
     end
+
+    private
 
     def backend_transform(columns)
       columns.reject! { |col| HIDDEN_COLUMNS.include?(col.name) }

@@ -17,7 +17,7 @@ module MiniLokiC
     def initialize(story_type, method, options)
       @story_type = story_type
       @method = method
-      @options = options_to_hash(options)
+      @options = options.eql?(:population) ? options_to_hash(options) : options
     end
 
     def exec

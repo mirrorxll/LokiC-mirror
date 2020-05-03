@@ -6,8 +6,8 @@
         =form.check_box "samples[columns[#{_id}]]"
         =form.label "samples[columns[#{_id}]]", column[:name]
 
-  =form.label :ids, 'staging table rows(eg: 1,2, 4,234)'
+  =form.label :ids, 'staging table row ids(eg: 1,2, 4,234)'
   .form-group.col-xl-3.col-sm-6
-    =form.text_field 'samples[rows]', class: 'form-control form-control-sm'
+    =form.text_field 'samples[row_ids]', class: 'form-control form-control-sm'
   .col-12
     =form.submit 'Create Samples', class: 'btn btn-sm btn-outline-dark'

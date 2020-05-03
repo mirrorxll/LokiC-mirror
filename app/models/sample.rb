@@ -2,4 +2,5 @@
 
 class Sample < ApplicationRecord
   belongs_to :output
+  belongs_to :publication
 end

@@ -30,8 +30,6 @@ module Table # :nodoc:
     index_transform(index_columns)
   end
 
-
-
   def modify_columns(t_name, cur_col, mod_col)
     if arm.index_name_exists?(t_name, :story_per_publication)
       arm.remove_index(t_name, name: :story_per_publication)
@@ -64,16 +62,27 @@ module Table # :nodoc:
   end
 
   def clients_publications(t_name, limit = nil)
-    cl_pbs = connection.execute(clients_pubs_query(t_name, limit)).to_a
+    cl_pbs = connection.exex_query(clients_pubs_query(t_name, limit)).to_a
 
     cl_pbs.map do |row|
       { client_id: row.first, publication_ids: row.last.split(',') }
     end
   end
 
-  # purge rows that were insertedto staging table
+  # purge rows that were inserted to staging table
   def purge_last_iteration(t_name, iteration_id)
-    where = "iteration_id = #{iteration_id}"
-    connection.execute(delete_query(t_name, where))
+    query = delete_query(t_name, iteration_id)
+    connection.exex_query(query)
+  end
+
+  # select edge staging table rows by columns
+  def select_edge_ids(t_name, iteration_id, column_names)
+    column_names.each_with_object([]) do |col_name, selected|
+      min_query = select_minmax_id_query(t_name, iteration_id, col_name, :MIN)
+      max_query = select_minmax_id_query(t_name, iteration_id, col_name, :MAX)
+
+      selected << connection.exex_query(min_query).first['id']
+      selected << connection.exex_query(max_query).first['id']
+    end
   end
 end

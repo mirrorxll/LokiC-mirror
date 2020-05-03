@@ -15,8 +15,10 @@ class Columns < ApplicationRecord
   # return an array of column names
   # found by the passed identifiers
   def ids_to_names(ids)
+    column_ids = Table.columns_transform(ids, :samples)
+
     list.each_with_object([]) do |(id, column), names|
-      names << column[:name] if ids.include?(id)
+      names << column[:name] if column_ids.include?(id)
     end
   end
 

@@ -5,6 +5,7 @@ class CreateSamples < ActiveRecord::Migration[5.2]
     create_table :samples do |t|
       t.belongs_to :iteration
       t.belongs_to :output
+      t.belongs_to :publication
 
       t.integer :pl_production_identifier
       t.integer :pl_staging_identifier
