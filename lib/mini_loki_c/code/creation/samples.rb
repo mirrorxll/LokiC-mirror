@@ -2,6 +2,7 @@
 
 module MiniLokiC
   module Creation
+    # insert created samples to samples table
     class Samples
       def initialize(staging_table)
         @staging_table = staging_table
@@ -15,6 +16,7 @@ module MiniLokiC
 
       private
 
+      # find story type
       def story_type
         StagingTable.find_by(name: @staging_table).story_type
       end
@@ -27,6 +29,7 @@ module MiniLokiC
         }
       end
 
+      # prepare output to inserting
       def output
         Output.create!(
           headline: @raw_sample[:headline],
@@ -35,6 +38,7 @@ module MiniLokiC
         )
       end
 
+      # wrap to HTML tags
       def basic_html_substitutions_body
         output = @raw_sample[:body].gsub(/(?:^|\n\n|\n\t)(.+)(?:\n\n*|\n\t|$)/, '<p>\1</p>')
         "<html><head><title></title><style></style></head><body>#{output}</body></html>"
