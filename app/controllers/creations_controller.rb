@@ -9,7 +9,7 @@ class CreationsController < ApplicationController # :nodoc:
   end
 
   def purge
-    @story_type.staging_table.purge
-    @story_type.update_iteration(population: nil)
+    # @story_type.iteration.purge
+    # @story_type.update_iteration(create: nil)
   end
 end
