@@ -34,7 +34,7 @@ class StoryType < ApplicationRecord # :nodoc:
   # method will update last iteration status
   # possible keys:
   # population, export_configuration,
-  # fcd_samples, creation, export
+  # samples, creation, export
   # -----------------
   # possible values:
   # nil - not started

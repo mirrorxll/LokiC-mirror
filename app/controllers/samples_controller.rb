@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SamplesController < ApplicationController # :nodoc:
-  before_action :find_sample, only: %i[show edit update destroy]
+  before_action :find_sample, only: %i[show edit update]
 
   def index
     @samples = @story_type.samples
@@ -10,7 +10,14 @@ class SamplesController < ApplicationController # :nodoc:
   def show; end
 
   def create
-    CreateSamplesJob.perform_later(@story_type, samples_params)
+    render_400 && return unless @story_type.iteration.samples.nil?
+
+    SamplesJob.set(wait: 1.second).perform_later(@story_type, samples_params)
+    @story_type.update_iteration(samples: false)
+  end
+
+  def destroy
+    @story_type.iteration.samples.delete_all
   end
 
   private

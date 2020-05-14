@@ -147,10 +147,11 @@ ActiveRecord::Schema.define(version: 2020_04_22_141208) do
     t.bigint "story_type_id"
     t.boolean "population"
     t.string "population_args"
+    t.boolean "samples"
+    t.string "sample_ids"
     t.boolean "creation"
-    t.boolean "export"
-    t.boolean "fcd_samples"
     t.boolean "export_configurations"
+    t.boolean "export"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["story_type_id"], name: "index_iterations_on_story_type_id"

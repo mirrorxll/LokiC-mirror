@@ -37,8 +37,11 @@ module Table
       'LIMIT 1;'
     end
 
-    def select_query(t_name, ids, limit)
-      "SELECT * FROM `#{t_name}` WHERE id IN (#{ids}) LIMIT #{limit || 7_000};"
+    def select_query(t_name, options = {})
+      max_iter_id = "select max(iteration_id) from `#{t_name}`"
+
+      "SELECT * FROM `#{t_name}` WHERE id IN (#{options[:ids]}) AND "\
+      "iteration_id = (#{max_iter_id}) LIMIT #{options[:limit] || 7_000};"
     end
   end
 end

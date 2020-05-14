@@ -26,7 +26,7 @@ module MiniLokiC
 
       def initialize(staging_table, options)
         @mysql = Connect::Mysql.on(DB05, 'loki_storycreator')
-        @query = Table.select_query(staging_table, options[:ids], options[:limit])
+        @query = Table.select_query(staging_table, options)
       end
 
       # selecting staging table rows.

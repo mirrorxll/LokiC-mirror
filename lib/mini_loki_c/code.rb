@@ -8,7 +8,7 @@ require_relative 'code/creation/samples'
 module MiniLokiC
   # Execute uploaded stage population/story creation code
   class Code
-    def self.execute(story_type, method, options)
+    def self.execute(story_type, method, options = {})
       new(story_type, method, options).send(:exec)
     end
 
