@@ -11,7 +11,7 @@ module Table # :nodoc:
   extend Index
   extend Query
 
-  def arm
+  def a_r_m
     ActiveRecord::Migration
   end
 
@@ -20,37 +20,37 @@ module Table # :nodoc:
   end
 
   def columns(t_name)
-    columns = arm.columns(t_name)
+    columns = a_r_m.columns(t_name)
     columns_transform(columns, :back)
   end
 
   def index(t_name)
-    indexes = arm.indexes(t_name)
+    indexes = a_r_m.indexes(t_name)
     index_columns = indexes.find { |i| i.name.eql?('story_per_publication') }
     index_transform(index_columns)
   end
 
   def modify_columns(t_name, cur_col, mod_col)
-    if arm.index_name_exists?(t_name, :story_per_publication)
-      arm.remove_index(t_name, name: :story_per_publication)
+    if a_r_m.index_name_exists?(t_name, :story_per_publication)
+      a_r_m.remove_index(t_name, name: :story_per_publication)
     end
 
     dropped(cur_col, mod_col).each do |hex|
       col = cur_col.delete(hex)
-      arm.remove_column(t_name, col[:name])
+      a_r_m.remove_column(t_name, col[:name])
     end
 
     added(cur_col, mod_col).each do |hex|
       col = mod_col.delete(hex)
-      arm.add_column(t_name, col[:name], col[:type], col[:opts])
+      a_r_m.add_column(t_name, col[:name], col[:type], col[:opts])
     end
 
     changed(cur_col, mod_col).each do |upd|
       if upd[:old_name] != upd[:new_name]
-        arm.rename_column(t_name, upd[:old_name], upd[:new_name])
+        a_r_m.rename_column(t_name, upd[:old_name], upd[:new_name])
       end
 
-      arm.change_column(t_name, upd[:new_name], upd[:type], upd[:opts])
+      a_r_m.change_column(t_name, upd[:new_name], upd[:type], upd[:opts])
     end
   end
 
@@ -58,7 +58,7 @@ module Table # :nodoc:
     columns = columns.map { |_id, c| c[:name] }
     columns = ['client_id', 'publication_id', columns].flatten
 
-    arm.add_index(t_name, columns, unique: true, name: :story_per_publication)
+    a_r_m.add_index(t_name, columns, unique: true, name: :story_per_publication)
   end
 
   def clients_publications(t_name, limit = nil)

@@ -3,7 +3,7 @@
 require_relative 'code/functions/functions'
 require_relative 'code/functions/numbers'
 require_relative 'code/creation/staging_records'
-require_relative 'code/creation/story'
+require_relative 'code/creation/samples'
 
 module MiniLokiC
   # Execute uploaded stage population/story creation code

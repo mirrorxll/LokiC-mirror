@@ -184,14 +184,17 @@ ActiveRecord::Schema.define(version: 2020_04_22_141208) do
   create_table "samples", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "iteration_id"
     t.bigint "output_id"
-    t.integer "pl_production_identifier"
-    t.integer "pl_staging_identifier"
+    t.bigint "publication_id"
+    t.integer "staging_row_id"
+    t.integer "pl_production_id"
+    t.integer "pl_staging_id"
     t.date "published_at"
     t.boolean "backdated", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["iteration_id"], name: "index_samples_on_iteration_id"
     t.index ["output_id"], name: "index_samples_on_output_id"
+    t.index ["publication_id"], name: "index_samples_on_publication_id"
   end
 
   create_table "sections", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
