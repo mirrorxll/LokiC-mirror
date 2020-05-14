@@ -64,7 +64,7 @@ class StoryType < ApplicationRecord # :nodoc:
   end
 
   def self.frequency(id)
-    includes(:frequencies).where(frequencies: { id: id })
+    includes(:frequency).where(frequency: { id: id })
   end
 
   def self.dev_status(dev_status)

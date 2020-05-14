@@ -37,8 +37,8 @@ module Table
       'LIMIT 1;'
     end
 
-    def select_rows(t_name, ids)
-      "SELECT * FROM `#{t_name}` WHERE id IN (#{ids});"
+    def select_query(t_name, ids, limit)
+      "SELECT * FROM `#{t_name}` WHERE id IN (#{ids}) LIMIT #{limit || 7_000};"
     end
   end
 end
