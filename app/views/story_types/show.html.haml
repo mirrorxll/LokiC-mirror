@@ -57,11 +57,11 @@
         -if @story_type.staging_table
           .row
             .col-11.offset-1
-              -if @story_type.iteration.creation
+              -if show_samples?(@story_type)
                 =render @story_type.iteration.samples
               -elsif @story_type.iteration.creation.eql?(false)
                 creation in progress...
-              -else
+              -elsif added_columns?(@story_type.staging_table)
                 =render 'samples/form'
 
 #story_type_scheduler.accordion
@@ -90,4 +90,3 @@
                 =link_to('check',
                           check_story_type_export_configurations_path(@story_type),
                           class: 'btn btn-sm btn-outline-dark', remote: true)
-

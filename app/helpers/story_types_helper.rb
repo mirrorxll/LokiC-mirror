@@ -16,4 +16,8 @@ module StoryTypesHelper # :nodoc:
   def photo_bucket_name
     @story_type.photo_bucket ? @story_type.photo_bucket.name : '---'
   end
+
+  def show_samples?(story_type)
+    story_type.iteration.creation && story_type.iteration.samples.present?
+  end
 end

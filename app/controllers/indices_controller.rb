@@ -19,7 +19,7 @@ class IndicesController < ApplicationController
   end
 
   def create
-    @staging_table.index.add(index_params)
+    @staging_table.index.add(uniq_index_params)
     @staging_table.sync
 
     render 'staging_tables/show'
@@ -34,10 +34,9 @@ class IndicesController < ApplicationController
 
   private
 
-  def index_params
+  def uniq_index_params
     if params[:index]
-      params.require(:index)
-            .permit(column_ids: [])[:column_ids].map!(&:to_sym)
+      params.require(:index).permit(column_ids: [])[:column_ids].map!(&:to_sym)
     else
       []
     end

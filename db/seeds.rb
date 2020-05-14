@@ -53,7 +53,7 @@ module FirstObjects # :nodoc:
               read: true,
               update: true
             },
-            sample: {
+            story: {
               read: true,
               update: true
             },
@@ -106,7 +106,7 @@ module FirstObjects # :nodoc:
               read: true,
               update: true
             },
-            sample: {
+            samples: {
               read: true,
               update: true
             },
@@ -146,7 +146,7 @@ module FirstObjects # :nodoc:
             },
             staging_table: {},
             code: {},
-            sample: {},
+            samples: {},
             schedule: {},
             export: {}
           }
@@ -178,7 +178,7 @@ module FirstObjects # :nodoc:
               read: true,
               update: true
             },
-            sample: {
+            samples: {
               read: true,
               update: true
             },
@@ -252,13 +252,13 @@ module FirstObjects # :nodoc:
   def story_type
     [
       {
-        name: 'Sample Type 1',
+        name: 'Story Type 1',
         editor: Account.first,
         data_set: DataSet.first,
         status: Status.first
       },
       {
-        name: 'Sample Type 2',
+        name: 'Story Type 2',
         editor: Account.first,
         developer: Account.first,
         data_set: DataSet.last,

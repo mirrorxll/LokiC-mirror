@@ -34,7 +34,7 @@ class StoryType < ApplicationRecord # :nodoc:
   # method will update last iteration status
   # possible keys:
   # population, export_configuration,
-  # fcd_samples, creation, export
+  # samples, creation, export
   # -----------------
   # possible values:
   # nil - not started
@@ -64,7 +64,7 @@ class StoryType < ApplicationRecord # :nodoc:
   end
 
   def self.frequency(id)
-    includes(:frequencies).where(frequencies: { id: id })
+    includes(:frequency).where(frequency: { id: id })
   end
 
   def self.dev_status(dev_status)

@@ -3,12 +3,12 @@
 require_relative 'code/functions/functions'
 require_relative 'code/functions/numbers'
 require_relative 'code/creation/staging_records'
-require_relative 'code/creation/story'
+require_relative 'code/creation/samples'
 
 module MiniLokiC
   # Execute uploaded stage population/story creation code
   class Code
-    def self.execute(story_type, method, options)
+    def self.execute(story_type, method, options = {})
       new(story_type, method, options).send(:exec)
     end
 
@@ -17,7 +17,7 @@ module MiniLokiC
     def initialize(story_type, method, options)
       @story_type = story_type
       @method = method
-      @options = options_to_hash(options)
+      @options = options.eql?(:population) ? options_to_hash(options) : options
     end
 
     def exec

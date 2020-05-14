@@ -48,10 +48,14 @@ module Table
         frontend_transform(columns)
       when :back
         backend_transform(columns)
+      when :samples
+        transform_for_samples(columns)
       else
         'Raise to do'
       end
     end
+
+    private
 
     def backend_transform(columns)
       columns.reject! { |col| HIDDEN_COLUMNS.include?(col.name) }
@@ -84,6 +88,11 @@ module Table
 
         hash[id.to_sym] = column.deep_symbolize_keys
       end
+    end
+
+    def transform_for_samples(columns)
+      columns.select! { |_key, value| value.eql?('1') }
+      columns.keys.map(&:to_sym)
     end
   end
 end

@@ -1,10 +1,13 @@
 =form_with(url: story_type_samples_path(@story_type), class: 'small') do |form|
+  =form.label :columns, 'columns(edge samples)'
   .form-group
-    =form.label :columns, 'columns(for edge samples)'
     -@story_type.staging_table.columns.list.each do |_id, column|
       .form-check
-        =form.check_box column[:name]
-        =form.label column[:name], column[:name]
+        =form.check_box "samples[columns[#{_id}]]"
+        =form.label "samples[columns[#{_id}]]", column[:name]
 
-  .form-group.col-6
-    =form.text_field :custom_input, placeholder: 'custom input', class: 'form-control'
+  =form.label :ids, 'staging table row ids(eg: 1,2, 4,234)'
+  .form-group.col-xl-3.col-sm-6
+    =form.text_field 'samples[row_ids]', class: 'form-control form-control-sm'
+  .col-12
+    =form.submit 'Create Samples', class: 'btn btn-sm btn-outline-dark'
