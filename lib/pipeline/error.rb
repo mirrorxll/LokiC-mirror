@@ -1,4 +1,4 @@
-# frozen_string_literal: truejob_item
+# frozen_string_literal: true
 
 module Pipeline
   # Custom error class for rescuing
