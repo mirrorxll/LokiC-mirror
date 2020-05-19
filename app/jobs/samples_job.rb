@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SamplesJob < ApplicationJob
-  queue_as :create_samples
+  queue_as :samples
 
   def perform(staging_table, params)
     column_names = staging_table.columns.ids_to_names(params[:columns])

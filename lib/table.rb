@@ -62,7 +62,7 @@ module Table # :nodoc:
   end
 
   def clients_publications(t_name, limit = nil)
-    cl_pbs = connection.exex_query(clients_pubs_query(t_name, limit)).to_a
+    cl_pbs = connection.exec_query(clients_pubs_query(t_name, limit)).to_a
 
     cl_pbs.map do |row|
       { client_id: row.first, publication_ids: row.last.split(',') }
