@@ -13,7 +13,7 @@ class CreateExportConfigurations < ActiveRecord::Migration[5.2]
     end
 
     add_index :export_configurations,
-              %i[story_type_id client_id publication_id],
+              %i[story_type_id publication_id],
               name: :export_config_unique_index,
               unique: true
   end

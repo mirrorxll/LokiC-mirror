@@ -15,7 +15,13 @@ module MiniLokiC
         raise ArgumentError, 'No block is given' unless block_given?
 
         loop do
-          select = staging_table_rows
+          select =
+            if @options[:ids]
+              Table.rows_by_ids(@staging_table, @options)
+            else
+              # Table.last_iteration_rows_query()
+            end
+
           break if select.empty?
 
           select.each { |row| yield(row) }
@@ -25,16 +31,8 @@ module MiniLokiC
       private
 
       def initialize(staging_table, options)
-        @mysql = Connect::Mysql.on(DB05, 'loki_storycreator')
-        @query = Table.select_query(staging_table, options)
-      end
-
-      # selecting staging table rows.
-      # if it wasn't passed limit in options
-      # it will be select 7_000 rows.
-      # it needs for optimization server's load
-      def staging_table_rows
-        @mysql.query(@query).to_a
+        @staging_table = staging_table
+        @options = options
       end
     end
   end

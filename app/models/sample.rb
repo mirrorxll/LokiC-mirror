@@ -2,5 +2,5 @@
 
 class Sample < ApplicationRecord
   belongs_to :output
-  belongs_to :publication
+  belongs_to :publication, optional: true
 end

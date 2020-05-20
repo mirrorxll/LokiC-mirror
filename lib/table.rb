@@ -57,32 +57,47 @@ module Table # :nodoc:
   def add_index(t_name, columns)
     columns = columns.map { |_id, c| c[:name] }
     columns = ['client_id', 'publication_id', columns].flatten
-
     a_r_m.add_index(t_name, columns, unique: true, name: :story_per_publication)
   end
 
-  def clients_publications(t_name, limit = nil)
-    cl_pbs = connection.exec_query(clients_pubs_query(t_name, limit)).to_a
+  def publication_ids(t_name)
+    p_ids_query = publication_ids_query(t_name)
+    p_ids = connection.exec_query(p_ids_query).first['p_ids']
+    p_ids&.split(',') || []
+  end
 
-    cl_pbs.map do |row|
-      { client_id: row.first, publication_ids: row.last.split(',') }
-    end
+  def last_iteration_id(t_name)
+    last_iter_query = last_iteration_id_query(t_name)
+    connection.exec_query(last_iter_query).first['iter_id']
   end
 
   # purge rows that were inserted to staging table
-  def purge_last_iteration(t_name, iteration_id)
-    query = delete_query(t_name, iteration_id)
-    connection.exex_query(query)
+  def purge_last_iteration(t_name)
+    last_iter = last_iteration_id(t_name)
+    del_query = delete_query(t_name, last_iter)
+    connection.exec_query(del_query)
   end
 
   # select edge staging table rows by columns
-  def select_edge_ids(t_name, iteration_id, column_names)
+  def select_edge_ids(t_name, column_names)
+    last_iter = last_iteration_id(t_name)
     column_names.each_with_object([]) do |col_name, selected|
-      min_query = select_minmax_id_query(t_name, iteration_id, col_name, :MIN)
-      max_query = select_minmax_id_query(t_name, iteration_id, col_name, :MAX)
+      min_query = select_minmax_id_query(t_name, last_iter, col_name, :MIN)
+      max_query = select_minmax_id_query(t_name, last_iter, col_name, :MAX)
 
-      selected << connection.exex_query(min_query).first['id']
-      selected << connection.exex_query(max_query).first['id']
+      selected << connection.exec_query(min_query).first['id']
+      selected << connection.exec_query(max_query).first['id']
     end
+  end
+
+  def rows_by_ids(t_name, ids)
+    last_iter = last_iteration_id(t_name)
+    rows_query = rows_by_ids_query(t_name, last_iter, ids)
+    connection.exec_query(rows_query).to_a
+  end
+
+  def sample_as_created(t_name, id)
+    upd_query = sample_created_update_query(t_name, id)
+    connection.exec_query(upd_query)
   end
 end

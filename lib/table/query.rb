@@ -5,14 +5,23 @@ module Table
   # from staging tables
   module Query
     # return publication ids, grouped by a client id.
-    def clients_pubs_query(t_name)
-      'SELECT stg.client_id, GROUP_CONCAT(distinct stg.publication_id) pub_ids '\
-      "FROM `#{t_name}`;"
+    def publication_ids_query(t_name)
+      "SELECT GROUP_CONCAT(distinct publication_id) p_ids FROM `#{t_name}`;"
+    end
+
+    # update rows from staging table
+    def sample_created_update_query(t_name, row_id)
+      "UPDATE `#{t_name}` SET story_created = 1 WHERE id = #{row_id};"
     end
 
     # delete rows from staging table
     def delete_query(t_name, iteration_id)
       "DELETE FROM `#{t_name}` WHERE iteration_id = #{iteration_id}"
+    end
+
+    # return last iteration number from staging query
+    def last_iteration_id_query(t_name)
+      "SELECT MAX(iteration_id) iter_id FROM `#{t_name}`;"
     end
 
     # return staging table row id equal
@@ -23,16 +32,22 @@ module Table
 
       'SELECT id '\
       "FROM `#{t_name}` "\
-      "WHERE iteration_id = #{iteration_id} AND"\
+      "WHERE iteration_id = #{iteration_id} AND "\
              "`#{column_name}` = (#{sub_query})"\
       'LIMIT 1;'
     end
 
-    def select_query(t_name, options = {})
-      max_iter_id = "select max(iteration_id) from `#{t_name}`"
+    def rows_by_ids_query(t_name, iteration_id, options)
+      "SELECT * FROM `#{t_name}` "\
+      "WHERE story_created = 0 AND id IN (#{options[:ids]}) AND "\
+      "iteration_id = #{iteration_id} "\
+      "LIMIT #{options[:limit] || 7_000};"
+    end
 
-      "SELECT * FROM `#{t_name}` WHERE id IN (#{options[:ids]}) AND "\
-      "iteration_id = (#{max_iter_id}) LIMIT #{options[:limit] || 7_000};"
+    def last_iteration_rows_query(t_name, iteration_id, options)
+      "SELECT * FROM `#{t_name}` "\
+      "WHERE story_created = 0 AND iteration_id = (#{iteration_id}) "\
+      "LIMIT #{options[:limit] || 7_000};"
     end
   end
 end

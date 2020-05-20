@@ -21,12 +21,12 @@ class StagingTable < ApplicationRecord # :nodoc:
     Index.find_or_create_by(staging_table: self).update(list: index)
   end
 
-  def clients_publications
-    Table.clients_publications(name)
+  def publications
+    Table.publication_ids(name)
   end
 
   def purge
-    Table.purge_last_iteration(name, story_type.iteration.id)
+    Table.purge_last_iteration(name)
   end
 
   def truncate
@@ -61,7 +61,7 @@ class StagingTable < ApplicationRecord # :nodoc:
       t.integer :client_id
       t.integer :publication_id
       t.string  :organization_ids, limit: 1000
-      t.boolean :story_created
+      t.boolean :story_created, default: false
     end
   end
 

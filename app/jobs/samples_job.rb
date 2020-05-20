@@ -3,21 +3,23 @@
 class SamplesJob < ApplicationJob
   queue_as :samples
 
-  def perform(staging_table, params)
+  def perform(story_type, params)
+    staging_table = story_type.staging_table
     column_names = staging_table.columns.ids_to_names(params[:columns])
     edge_ids = Table.select_edge_ids(staging_table.name, column_names)
     row_ids = params[:row_ids].delete(' ').split(',')
-    ids = edge_ids + row_ids
+    ids = (edge_ids + row_ids).join(',')
 
-    MiniLokiC::Code.execute(staging_table.story_type, :creation, ids: ids)
+    MiniLokiC::Code.execute(story_type, :creation, ids: ids)
     status = true
     message = 'samples created.'
   rescue StandardError => e
+    puts e
     status = nil
     message = e
     ids = nil
   ensure
-    story_type.update_iteration(samples: status, sample_ids: ids)
+    story_type.update_iteration(story_samples: status, story_sample_ids: ids)
     send_status(story_type, message)
   end
 end
