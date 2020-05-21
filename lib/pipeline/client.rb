@@ -12,17 +12,14 @@ module Pipeline
     include Request
     include Endpoint
 
-    INSTANCE_VARIABLES = %i[token endpoint].freeze
-
-    attr_accessor(*INSTANCE_VARIABLES)
+    attr_accessor :token, :endpoint
+    attr_reader :environment
 
     def initialize(environment)
       raise EnvironmentError unless %i[staging production].include?(environment)
 
-      options = Pipeline.options(environment)
-      INSTANCE_VARIABLES.each do |var|
-        send("#{var}=", options[var])
-      end
+      @environment = environment
+      Pipeline.options(environment).each { |name, value| send("#{name}=", value) }
     end
 
     private
