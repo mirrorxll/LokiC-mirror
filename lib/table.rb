@@ -96,6 +96,12 @@ module Table # :nodoc:
     connection.exec_query(rows_query).to_a
   end
 
+  def rows_by_last_iteration(t_name, options)
+    last_iter = last_iteration_id(t_name)
+    rows_query = rows_by_last_iteration_query(t_name, last_iter, options)
+    connection.exec_query(rows_query).to_a
+  end
+
   def sample_as_created(t_name, id)
     upd_query = sample_created_update_query(t_name, id)
     connection.exec_query(upd_query)

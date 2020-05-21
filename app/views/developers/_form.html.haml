@@ -1,4 +1,4 @@
 %div{id: "story_type_#{story_type.id}_developer"}
-  =form_with(url: include_story_type_developer_path(story_type),
+  =form_with(url: include_story_type_developers_path(story_type),
              method: :put, html: { onchange: '$(this).submit();' }) do |form|
     =form.collection_select :developer_id, Account.all, :id, :name, { prompt: '' }, { name: :id }

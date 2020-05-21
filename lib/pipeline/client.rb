@@ -28,9 +28,10 @@ module Pipeline
     private
 
     def method_missing(symbol, *args)
-      super unless symbol.to_s.end_with?('_safe')
+      method = symbol.to_s
+      super unless method.end_with?('_safe')
 
-      method = symbol.to_s.delete_suffix('_safe')
+      method.delete_suffix!('_safe')
       error_counter = 0
 
       begin

@@ -2,6 +2,6 @@
   population
 .row
   #populate.col-2
-    = link_to('populate', execute_story_type_population_path(@story_type), method: :post)
+    = link_to('populate', story_type_populations_path(@story_type), method: :post)
   #populate-purge.col-10
-    = link_to('purge last population iteration', purge_story_type_population_path(@story_type), method: :delete)
+    = link_to('purge last population iteration', story_type_populations_path(@story_type), method: :delete)

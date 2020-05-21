@@ -18,6 +18,6 @@ module StoryTypesHelper # :nodoc:
   end
 
   def show_samples?(story_type)
-    story_type.iteration.creation && story_type.iteration.samples.present?
+    story_type.iteration.story_samples && story_type.iteration.samples.present?
   end
 end

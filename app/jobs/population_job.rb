@@ -4,7 +4,7 @@
 class PopulationJob < ApplicationJob
   queue_as :population
 
-  def perform(story_type, options)
+  def perform(story_type, options = {})
     MiniLokiC::Code.execute(story_type, :population, options)
     story_type.update_iteration(population: true)
     status = true
@@ -14,6 +14,6 @@ class PopulationJob < ApplicationJob
     message = e
   ensure
     story_type.update_iteration(population: status)
-    send_status(story_type, message)
+    send_status(story_type, population_message: message)
   end
 end

@@ -20,6 +20,6 @@ class SamplesJob < ApplicationJob
     ids = nil
   ensure
     story_type.update_iteration(story_samples: status, story_sample_ids: ids)
-    send_status(story_type, message)
+    send_status(story_type, samples_message: message)
   end
 end

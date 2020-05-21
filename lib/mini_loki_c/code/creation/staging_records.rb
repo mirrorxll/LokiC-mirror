@@ -6,7 +6,7 @@ module MiniLokiC
     # for create story type samples
     class StagingRecords
       # modified constructor for
-      # improving code readable
+      # improving codes readable
       def self.[](staging_table, options = {})
         new(staging_table, options)
       end
@@ -19,7 +19,7 @@ module MiniLokiC
             if @options[:ids]
               Table.rows_by_ids(@staging_table, @options)
             else
-              # Table.last_iteration_rows_query()
+              Table.rows_by_last_iteration(@staging_table, @options)
             end
 
           break if select.empty?

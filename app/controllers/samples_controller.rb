@@ -10,9 +10,9 @@ class SamplesController < ApplicationController # :nodoc:
   def show; end
 
   def create
-    # render_400 && return unless @story_type.iteration.story_samples.nil?
+    render_400 && return unless @story_type.iteration.story_samples.nil?
 
-    SamplesJob.set(wait: 1.second).perform_later(@story_type, samples_params)
+    SamplesJob.set(wait: 5.second).perform_later(@story_type, samples_params)
     @story_type.update_iteration(story_samples: false)
   end
 

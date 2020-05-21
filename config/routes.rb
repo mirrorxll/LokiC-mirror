@@ -24,54 +24,56 @@ Rails.application.routes.draw do
   resources :story_types, except: %i[new create] do
     get :properties
 
-    resource :template, only: %i[edit update]
+    resources :templates, path: :template, only: %i[edit update]
 
     resources :clients, only: %i[] do
       post    :include, on: :collection
       delete  :exclude, on: :member
     end
 
-    resource :frequency, only: %i[] do
+    resources :frequencies, path: :frequency, only: %i[] do
       put :include, on: :collection
       put :exclude, on: :collection
     end
 
-    resource :tag, only: %i[] do
+    resources :tags, only: %i[] do
       put :include, on: :collection
       put :exclude, on: :collection
     end
 
-    resource :photo_bucket, only: %i[] do
+    resources :photo_buckets, path: :photo_bucket, only: %i[] do
       put :include, on: :collection
       put :exclude, on: :collection
     end
 
-    resource :developer, only: %i[] do
+    resources :developers, only: %i[] do
       put :include, on: :collection
       put :exclude, on: :collection
     end
 
-    resource :staging_table, only: %i[show create destroy] do
-      post    :attach
-      delete  :detach
-      put     :truncate
-      put     :sync
+    resources :staging_tables, only: %i[show create destroy] do
+      post    :attach,    on: :collection
+      delete  :detach,    on: :collection
+      put     :truncate,  on: :collection
+      put     :sync,      on: :collection
 
-      resource :columns, only: %i[edit update]
-      resource :index, only: %i[new create destroy]
+      resources :columns, only: %i[edit update]
+      resources :indices, only: %i[new create destroy]
     end
 
-    resource :code, path: 'upload_code', only: %i[create destroy]
+    resources :codes, path: 'upload_code', only: %i[create destroy]
 
-    resource :population, path: 'populate', only: %i[] do
-      post     :execute, on: :collection
-      delete   :purge, on: :collection
-    end
+    resources :populations, path: 'populate', only: %i[create destroy]
 
     resources :samples, except: :index
 
-    resources :export_configurations, only: :create do
-      get :check, on: :collection
+    resources :export_configurations, only: :create
+
+    resources :creations, path: 'create_stories', only: %i[create destroy]
+
+    resources :exports, only: %i[] do
+      post :staging,    on: :collection
+      post :production, on: :collection
     end
   end
 end

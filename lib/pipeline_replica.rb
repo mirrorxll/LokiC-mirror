@@ -8,6 +8,6 @@ module PipelineReplica
   include MiniLokiC::Connect
 
   def self.[](environment)
-    Client.new(environment.to_sym)
+    PipelineReplica::Client.new(environment.to_sym)
   end
 end

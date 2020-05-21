@@ -3,8 +3,8 @@
 class CreationJob < ApplicationJob
   queue_as :creation
 
-  def perform(staging_table, params)
-    MiniLokiC::Code.execute(staging_table.story_type, :creation)
+  def perform(story_type, options = {})
+    MiniLokiC::Code.execute(story_type, :creation, options)
     status = true
     message = 'all stories created.'
   rescue StandardError => e
@@ -12,6 +12,6 @@ class CreationJob < ApplicationJob
     message = e
   ensure
     story_type.update_iteration(creation: status)
-    send_status(story_type, message)
+    send_status(story_type, creation: message)
   end
 end

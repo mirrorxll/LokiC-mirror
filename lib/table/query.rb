@@ -44,7 +44,7 @@ module Table
       "LIMIT #{options[:limit] || 7_000};"
     end
 
-    def last_iteration_rows_query(t_name, iteration_id, options)
+    def rows_by_last_iteration_query(t_name, iteration_id, options)
       "SELECT * FROM `#{t_name}` "\
       "WHERE story_created = 0 AND iteration_id = (#{iteration_id}) "\
       "LIMIT #{options[:limit] || 7_000};"
