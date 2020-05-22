@@ -1,12 +1,15 @@
 # frozen_string_literal: true
 
-require_relative 'request/job.rb'
-require_relative 'request/job_item.rb'
+Dir["#{__dir__}/request/*.rb"].each { |file| require_relative file }
 
 module PipelineReplica
   # requests to PL
   module Request
     include Job
     include JobItem
+    include ClientPublication
+    include Section
+    include Tag
+    include PhotoBucket
   end
 end
