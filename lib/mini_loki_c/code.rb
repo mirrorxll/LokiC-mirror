@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
-require_relative 'code/functions/functions'
-require_relative 'code/functions/numbers'
-require_relative 'code/creation/staging_records'
-require_relative 'code/creation/samples'
+require_relative 'code/population.rb'
+require_relative 'code/creation.rb'
 
 module MiniLokiC
   # Execute uploaded stage population/story creation code

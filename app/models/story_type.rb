@@ -13,6 +13,8 @@ class StoryType < ApplicationRecord # :nodoc:
   has_one :template, dependent: :destroy
 
   has_many :iterations, dependent: :destroy
+  has_many :export_configurations, dependent: :destroy
+
   has_and_belongs_to_many :clients
 
   has_one_attached :code

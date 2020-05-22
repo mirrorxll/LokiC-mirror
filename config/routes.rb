@@ -61,7 +61,7 @@ Rails.application.routes.draw do
       resources :indices, only: %i[new create destroy]
     end
 
-    resources :codes, path: 'upload_code', only: %i[create destroy]
+    resources :codes, only: %i[create destroy]
 
     resources :populations, path: 'populate', only: %i[create destroy]
 

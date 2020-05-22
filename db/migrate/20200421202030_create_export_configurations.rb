@@ -3,9 +3,8 @@
 class CreateExportConfigurations < ActiveRecord::Migration[5.2]
   def change
     create_table :export_configurations do |t|
-      t.belongs_to :story_type,   index: false
-      t.belongs_to :client,       index: false
-      t.belongs_to :publication,  index: false
+      t.belongs_to :story_type
+      t.belongs_to :publication
 
       t.integer :production_job_item
       t.integer :staging_job_item

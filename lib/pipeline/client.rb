@@ -12,8 +12,8 @@ module Pipeline
     include Request
     include Endpoint
 
-    attr_accessor :token, :endpoint
     attr_reader :environment
+    attr_accessor :token, :endpoint
 
     def initialize(environment)
       raise EnvironmentError unless %i[staging production].include?(environment)

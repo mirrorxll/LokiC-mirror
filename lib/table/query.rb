@@ -6,7 +6,7 @@ module Table
   module Query
     # return publication ids, grouped by a client id.
     def publication_ids_query(t_name)
-      "SELECT GROUP_CONCAT(distinct publication_id) p_ids FROM `#{t_name}`;"
+      "SELECT distinct publication_id p_id FROM `#{t_name}`;"
     end
 
     # update rows from staging table

@@ -120,13 +120,14 @@ ActiveRecord::Schema.define(version: 2020_04_22_141208) do
 
   create_table "export_configurations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "story_type_id"
-    t.bigint "client_id"
     t.bigint "publication_id"
     t.integer "production_job_item"
     t.integer "staging_job_item"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["story_type_id", "client_id", "publication_id"], name: "export_config_unique_index", unique: true
+    t.index ["publication_id"], name: "index_export_configurations_on_publication_id"
+    t.index ["story_type_id", "publication_id"], name: "export_config_unique_index", unique: true
+    t.index ["story_type_id"], name: "index_export_configurations_on_story_type_id"
   end
 
   create_table "frequencies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -147,8 +148,8 @@ ActiveRecord::Schema.define(version: 2020_04_22_141208) do
     t.bigint "story_type_id"
     t.boolean "population"
     t.string "population_args"
-    t.boolean "samples"
-    t.string "sample_ids"
+    t.boolean "story_samples"
+    t.string "story_sample_ids"
     t.boolean "creation"
     t.boolean "export_configurations"
     t.boolean "export"
@@ -184,15 +185,18 @@ ActiveRecord::Schema.define(version: 2020_04_22_141208) do
 
   create_table "samples", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "iteration_id"
-    t.bigint "output_id"
+    t.bigint "export_configuration_id"
     t.bigint "publication_id"
+    t.bigint "output_id"
     t.integer "staging_row_id"
     t.integer "pl_production_id"
     t.integer "pl_staging_id"
+    t.date "exported_at"
     t.date "published_at"
     t.boolean "backdated", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["export_configuration_id"], name: "index_samples_on_export_configuration_id"
     t.index ["iteration_id"], name: "index_samples_on_iteration_id"
     t.index ["output_id"], name: "index_samples_on_output_id"
     t.index ["publication_id"], name: "index_samples_on_publication_id"

@@ -6,7 +6,10 @@ module MiniLokiC
     class Samples
       def initialize(staging_table)
         @staging_table = staging_table
-        @iteration = story_type.iteration
+
+        s_type = story_type
+        @iteration = s_type.iteration
+        @export_configs = s_type.export_configurations
       end
 
       def insert(sample)
@@ -17,20 +20,19 @@ module MiniLokiC
 
       private
 
-      # find story type
-      def story_type
-        StagingTable.find_by(name: @staging_table).story_type
-      end
-
+      # prepare output to inserting
       def sample_params
+        export_config =
+          @export_configs.find_by(publication_id: @raw_sample[:publication_id])
+
         {
           output: output,
           staging_row_id: @raw_sample[:staging_row_id],
-          publication_id: @raw_sample[:publication_id]
+          publication_id: @raw_sample[:publication_id],
+          export_configuration: export_config
         }
       end
 
-      # prepare output to inserting
       def output
         Output.create!(
           headline: @raw_sample[:headline],
@@ -43,6 +45,11 @@ module MiniLokiC
       def basic_html_substitutions_body
         output = @raw_sample[:body].gsub(/(?:^|\n\n|\n\t)(.+)(?:\n\n*|\n\t|$)/, '<p>\1</p>')
         "<html><head><title></title><style></style></head><body>#{output}</body></html>"
+      end
+
+      # find story type
+      def story_type
+        StagingTable.find_by(name: @staging_table).story_type
       end
     end
   end

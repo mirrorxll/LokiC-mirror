@@ -62,8 +62,8 @@ module Table # :nodoc:
 
   def publication_ids(t_name)
     p_ids_query = publication_ids_query(t_name)
-    p_ids = connection.exec_query(p_ids_query).first['p_ids']
-    p_ids&.split(',') || []
+    p_ids = connection.exec_query(p_ids_query).to_a
+    p_ids.map { |row| row['p_id'] }.compact
   end
 
   def last_iteration_id(t_name)

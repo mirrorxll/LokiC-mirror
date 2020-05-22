@@ -9,9 +9,25 @@ module Stories
     end
 
     def export!
-      @story_type.export_configurations.each do |config|
+      if @options[:ids]
+        @story_type.iteration.samples.where(id: @options[:ids]).each do |story|
 
+        end
+      else
+        @story_type.export_configurations.each do |config|
+
+        end
       end
+    end
+
+    private
+
+    def by_ids
+
+    end
+
+    def all
+
     end
   end
 end
