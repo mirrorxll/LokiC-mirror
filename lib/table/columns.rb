@@ -5,7 +5,7 @@ module Table
     HIDDEN_COLUMNS = %w[
       id story_created client_id client_name
       publication_id publication_name organization_ids
-      publish_on created_at updated_at iteration_id
+      publish_on created_at updated_at iter_id
     ].freeze
 
     def dropped(curr_col, mod_col)

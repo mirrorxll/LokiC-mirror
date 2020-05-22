@@ -13,11 +13,11 @@ module PipelineReplica
       user = MiniLokiC.mysql_pl_replica_user
       password = MiniLokiC.mysql_pl_replica_password
 
-      @replica = PipelineReplica::Mysql.on(host, database, user, password)
+      @pl_replica = PipelineReplica::Mysql.on(host, database, user, password)
     end
 
     def close
-      @replica.close
+      @pl_replica.close
     end
   end
 end

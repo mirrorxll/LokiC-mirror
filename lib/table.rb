@@ -66,21 +66,21 @@ module Table # :nodoc:
     p_ids.map { |row| row['p_id'] }.compact
   end
 
-  def last_iteration_id(t_name)
-    last_iter_query = last_iteration_id_query(t_name)
+  def last_iter_id(t_name)
+    last_iter_query = last_iter_id_query(t_name)
     connection.exec_query(last_iter_query).first['iter_id']
   end
 
   # purge rows that were inserted to staging table
   def purge_last_iteration(t_name)
-    last_iter = last_iteration_id(t_name)
+    last_iter = last_iter_id(t_name)
     del_query = delete_query(t_name, last_iter)
     connection.exec_query(del_query)
   end
 
   # select edge staging table rows by columns
   def select_edge_ids(t_name, column_names)
-    last_iter = last_iteration_id(t_name)
+    last_iter = last_iter_id(t_name)
     column_names.each_with_object([]) do |col_name, selected|
       min_query = select_minmax_id_query(t_name, last_iter, col_name, :MIN)
       max_query = select_minmax_id_query(t_name, last_iter, col_name, :MAX)
@@ -91,13 +91,13 @@ module Table # :nodoc:
   end
 
   def rows_by_ids(t_name, ids)
-    last_iter = last_iteration_id(t_name)
+    last_iter = last_iter_id(t_name)
     rows_query = rows_by_ids_query(t_name, last_iter, ids)
     connection.exec_query(rows_query).to_a
   end
 
   def rows_by_last_iteration(t_name, options)
-    last_iter = last_iteration_id(t_name)
+    last_iter = last_iter_id(t_name)
     rows_query = rows_by_last_iteration_query(t_name, last_iter, options)
     connection.exec_query(rows_query).to_a
   end

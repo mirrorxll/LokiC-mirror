@@ -4,9 +4,9 @@ class ExportConfigurationsJob < ApplicationJob
   queue_as :export_configurations
 
   def perform(story_type)
-    story_type.staging_table.publications.each do |pub_id|
-      create_export_config(story_type, pub_id)
-    end
+    publication_ids = story_type.staging_table.publication_ids
+    publication_ids.each { |p_id| create_export_config(story_type, p_id) }
+
     status = true
     message = 'export configurations created.'
   rescue StandardError => e
@@ -20,9 +20,11 @@ class ExportConfigurationsJob < ApplicationJob
   private
 
   def create_export_config(story_type, pub_id)
-    ExportConfiguration.create(
+    publication = Publication.find_by(pl_identifier: pub_id)
+
+    ExportConfiguration.create!(
       story_type: story_type,
-      publication_id: pub_id
+      publication: publication
     )
   end
 end

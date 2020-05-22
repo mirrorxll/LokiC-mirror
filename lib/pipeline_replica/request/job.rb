@@ -4,15 +4,15 @@ module PipelineReplica
   module Request
     # request return job or nil
     module Job
-      def job(pub_id)
-        job_q = job_query(pub_id)
-        @replica.query(job_q).to_a.last
+      def get_job(pub_id)
+        job_q = get_job_query(pub_id)
+        @pl_replica.query(job_q).to_a.last
       end
 
       private
 
-      def job_query(pub_id)
-        'SELECT name, id FROM jobs '\
+      def get_job_query(pub_id)
+        'SELECT id, name FROM jobs '\
         "WHERE project_id = #{pub_id} AND name LIKE '% HLE';"
       end
     end

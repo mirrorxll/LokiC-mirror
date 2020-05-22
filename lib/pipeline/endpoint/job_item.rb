@@ -5,7 +5,7 @@ module Pipeline
     # Job item endpoints
     module JobItem
       # https://pipeline-api-docs.locallabs.com/#create-a-job-item
-      def post_job_tem(options = {})
+      def post_job_item(options = {})
         post('job_items', options)
       end
     end
