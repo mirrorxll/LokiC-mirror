@@ -62,6 +62,7 @@ class StagingTable < ApplicationRecord # :nodoc:
       t.integer :publication_id
       t.string  :organization_ids, limit: 1000
       t.boolean :story_created, default: false
+      t.string  :time_frame
     end
   end
 

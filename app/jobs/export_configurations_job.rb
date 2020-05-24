@@ -14,7 +14,7 @@ class ExportConfigurationsJob < ApplicationJob
     message = e
   ensure
     story_type.update_iteration(export_configurations: status)
-    send_status(story_type, export_configurations: message)
+    send_status(story_type, export_configurations_message: message)
   end
 
   private
@@ -22,7 +22,7 @@ class ExportConfigurationsJob < ApplicationJob
   def create_export_config(story_type, pub_id)
     publication = Publication.find_by(pl_identifier: pub_id)
 
-    ExportConfiguration.create!(
+    ExportConfiguration.create(
       story_type: story_type,
       publication: publication
     )

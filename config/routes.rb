@@ -65,11 +65,17 @@ Rails.application.routes.draw do
 
     resources :populations, path: 'populate', only: %i[create destroy]
 
-    resources :samples, except: :index
+    resources :export_configurations, only: :create do
+      get :render_samples_form, on: :collection
+    end
 
-    resources :export_configurations, only: :create
+    resources :samples, except: %i[new edit update destroy] do
+      delete :purge_sampled, on: :collection
+    end
 
-    resources :creations, path: 'create_stories', only: %i[create destroy]
+    resources :creations, path: 'create_stories', only: %i[create destroy] do
+      delete :purge_all, on: :collection
+    end
 
     resources :exports, only: %i[] do
       post :staging,    on: :collection

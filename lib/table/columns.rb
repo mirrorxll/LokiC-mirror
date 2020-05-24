@@ -5,7 +5,7 @@ module Table
     HIDDEN_COLUMNS = %w[
       id story_created client_id client_name
       publication_id publication_name organization_ids
-      publish_on created_at updated_at iter_id
+      publish_on created_at updated_at iter_id time_frame
     ].freeze
 
     def dropped(curr_col, mod_col)
@@ -85,6 +85,9 @@ module Table
 
       columns.each_with_object({}) do |(id, column), hash|
         column['opts'] ||= {}
+        if column['opts'].key?('limit') && column['opts']['limit'].empty?
+          column['opts']['limit'] = '255'
+        end
 
         hash[id.to_sym] = column.deep_symbolize_keys
       end

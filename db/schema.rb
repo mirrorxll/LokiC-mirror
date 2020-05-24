@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_22_141208) do
+ActiveRecord::Schema.define(version: 2020_05_23_105723) do
 
   create_table "account_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -148,10 +148,10 @@ ActiveRecord::Schema.define(version: 2020_04_22_141208) do
     t.bigint "story_type_id"
     t.boolean "population"
     t.string "population_args"
+    t.boolean "export_configurations"
     t.boolean "story_samples"
     t.string "story_sample_ids"
     t.boolean "creation"
-    t.boolean "export_configurations"
     t.boolean "export"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -188,11 +188,13 @@ ActiveRecord::Schema.define(version: 2020_04_22_141208) do
     t.bigint "export_configuration_id"
     t.bigint "publication_id"
     t.bigint "output_id"
+    t.bigint "time_frame_id"
     t.integer "staging_row_id"
+    t.date "published_at"
+    t.string "organization_ids", limit: 1000
     t.integer "pl_production_id"
     t.integer "pl_staging_id"
     t.date "exported_at"
-    t.date "published_at"
     t.boolean "backdated", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -200,15 +202,14 @@ ActiveRecord::Schema.define(version: 2020_04_22_141208) do
     t.index ["iteration_id"], name: "index_samples_on_iteration_id"
     t.index ["output_id"], name: "index_samples_on_output_id"
     t.index ["publication_id"], name: "index_samples_on_publication_id"
+    t.index ["time_frame_id"], name: "index_samples_on_time_frame_id"
   end
 
   create_table "sections", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "client_id"
     t.integer "pl_identifier"
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["client_id"], name: "index_sections_on_client_id"
   end
 
   create_table "slack_accounts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -271,6 +272,12 @@ ActiveRecord::Schema.define(version: 2020_04_22_141208) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["story_type_id"], name: "index_templates_on_story_type_id"
+  end
+
+  create_table "time_frames", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "frame"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

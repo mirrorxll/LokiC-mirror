@@ -11,8 +11,9 @@
   function update_statuses(data) {
     if($(`#story_type_show_${data['status']['story_type_id']}`).length) {
       st_population(data);
-      st_creation(data);
       st_export_configs(data);
+      st_samples(data);
+      st_creation(data);
       st_scheduler(data);
       st_export(data);
     } else {
@@ -42,12 +43,21 @@
     }
   }
   
+  function st_export_configs(data) {
+    if(data['export_configurations_message']) {
+      $.ajax({url: `${data['status']['story_type_id']}/export_configurations/render_samples_form`})
+    }
+  }
+
+  function st_samples(data) {
+    if(data['samples_message']) {
+      $.ajax({url: `${data['status']['story_type_id']}/samples`})
+    }
+  }
+
   function st_creation() {
   }
-  
-  function st_export_configs() {
-  }
-  
+
   function st_scheduler() {
     
   }

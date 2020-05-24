@@ -30,10 +30,10 @@
         staging table
     #staging_table.collapse.show{"data-parent" => "#story_type_staging_table"}
       .card-body
-        -if @story_type.staging_table.nil?
-          =render 'staging_tables/form'
-        -else
+        -if @story_type.staging_table
           =render @story_type.staging_table
+        -else
+          =render 'staging_tables/form'
 
 #story_type_code.accordion
   .card
@@ -47,22 +47,15 @@
         -else
           =render 'codes/form'
 
-#story_type_samples.accordion
+#story_type_export_configs__samples.accordion
   .card
     .card-header
       %div.text-center{"aria-controls" => "#samles", "aria-expanded" => "false", "data-target" => "#samples", "data-toggle" => "collapse", :type => "button"}
-        samples
-    #samples.collapse.show{"data-parent" => "#story_type_samples"}
+        export configurations / samples
+    #samples.collapse.show{"data-parent" => "#story_type_export_configs__samples"}
       .card-body
-        -if @story_type.staging_table
-          .row
-            .col-11.offset-1
-              -# -if show_samples?(@story_type)
-              -#  =render @story_type.iteration.samples
-              -# -elsif @story_type.iteration.creation.eql?(false)
-              -#  creation samples in progress...
-              -# -elsif added_columns?(@story_type.staging_table)
-              -#  =render 'samples/form'
+        =render 'export_configurations/export_configs'
+        =render 'samples/samples'
 
 #story_type_scheduler.accordion
   .card
@@ -71,7 +64,6 @@
         scheduler
     #scheduler.collapse.show{"data-parent" => "#story_type_scheduler"}
       .card-body
-        >>>>>>>>
 
 #story_type_export.accordion
   .card
@@ -83,17 +75,6 @@
         -if @story_type.staging_table
           .row
             .col-11.offset-1
-              .btn-group.mr-5
-                =link_to('create export configurations',
-                          story_type_export_configurations_path(@story_type),
-                          class: 'btn btn-sm btn-outline-dark', method: :post, remote: true)
-                -# =link_to('check',
-                -#           check_story_type_export_configurations_path(@story_type),
-                -#           class: 'btn btn-sm btn-outline-dark', remote: true)
-              .btn-group.mr-5
-                =link_to('create stories from the last iteration',
-                          story_type_creations_path(@story_type),
-                          class: 'btn btn-sm btn-outline-dark', method: :post, remote: true)
               .btn-group.mr-5
                 =link_to('export!',
                           staging_story_type_exports_path(@story_type),

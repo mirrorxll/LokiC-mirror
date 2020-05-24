@@ -5,6 +5,7 @@ class CreateSlackAccounts < ActiveRecord::Migration[5.2]
 
       t.string  :identifier
       t.string  :user_name
+      t.string  :display_name
       t.boolean :deleted
       t.timestamps
     end

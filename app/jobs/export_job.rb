@@ -8,10 +8,10 @@ class ExportJob < ApplicationJob
 
     status = true
     message = 'exported.'
-  rescue StandardError => e
-    status = nil
-    message = e
-  ensure
+  # rescue StandardError => e
+  #   status = nil
+  #   message = e
+  # ensure
     story_type.update_iteration(export: status)
     send_status(story_type, export: message)
   end

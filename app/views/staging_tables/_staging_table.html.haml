@@ -68,7 +68,7 @@
                      class: "btn btn-sm btn-outline-dark #{columns.empty? ? 'disabled': ''}", remote: true)
           -else
             =link_to("drop unique 'story per publication' index",
-                     story_type_staging_tables_index_path(@story_type),
+                     story_type_staging_table_index_path(@story_type, @story_type.staging_table, @story_type.staging_table.index),
                      class: 'btn btn-sm btn-outline-dark', method: :delete, remote: true)
         %p #{@story_type.staging_table.index.list.join(', ')}
 

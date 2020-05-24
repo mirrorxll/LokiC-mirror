@@ -1,6 +1,6 @@
 .row
-  %small.col-
+  %small.col-6
     =sample.output.headline
   %small.col-6
-    =link_to('show', story_type_sample_path(story_type_id: @story_type.id, story: sample.id),
-             class: 'd-loc-show-icon img')
+    =link_to(nil, story_type_sample_url(@story_type.id, sample.id),
+             class: 'd-loc-show-icon img', target: '_blank')

@@ -1,16 +1,16 @@
 :schedule:
   clients_publications:
-    cron: '*/1 * * * *'   # At zero minutes every hour
+    cron: '0 0 */1 * *'
     class: ClientsPublicationsJob
-#  sections:
-#    cron: '2 0 */1 * *'
-#    class: SectionsJob
-#  tags:
-#    cron: '4 0 */1 * *'
-#    class: TagsJob
-#  photo_buckets:
-#    cron: '6 0 */1 * *'
-#    class: PhotoBucketsJob
-#  slack_accounts:
-#    cron: '8 0 */1 * *'
-#    class: SlackAccountsJob
+  sections:
+    cron: '2 0 */1 * *'
+    class: SectionsJob
+  tags:
+    cron: '4 0 */1 * *'
+    class: TagsJob
+  photo_buckets:
+    cron: '6 0 */1 * *'
+    class: PhotoBucketsJob
+  slack_accounts:
+    cron: '8 0 */1 * *'
+    class: SlackAccountsJob

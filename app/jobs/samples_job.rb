@@ -10,7 +10,7 @@ class SamplesJob < ApplicationJob
     row_ids = params[:row_ids].delete(' ').split(',')
     ids = (edge_ids + row_ids).join(',')
 
-    MiniLokiC::Code.execute(story_type, :creation, ids: ids)
+    MiniLokiC::Code.execute(story_type, :creation, sampled: true, ids: ids)
     status = true
     message = 'samples created.'
   rescue StandardError => e

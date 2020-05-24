@@ -372,3 +372,66 @@ FirstObjects.publication.each { |obj| Publication.create!(obj) }
 FirstObjects.section.each { |obj| Section.create!(obj) }
 FirstObjects.tag.each { |obj| Tag.create!(obj) }
 FirstObjects.photo_bucket.each { |obj| PhotoBucket.create!(obj) }
+
+# daily
+date = Date.new(2015, 1, 1)
+end_date = Date.new(2025, 1, 1)
+date_range = (date..end_date)
+date_range.each do |date|
+  frame = "#{date.yday},d,#{date.year}"
+  TimeFrame.create(frame: frame)
+end
+
+# weekly
+date = Date.new(2015, 1, 1)
+end_date = Date.new(2025, 1, 1)
+loop do
+  frame = "#{date.cweek},w,#{date.year}"
+  TimeFrame.create(frame: frame)
+  date += 7
+  break if date > end_date
+end
+
+# monthly
+date = Date.new(2015, 1, 1)
+end_date = Date.new(2025, 1, 1)
+loop do
+  frame = "#{date.month},m,#{date.year}"
+  TimeFrame.create(frame: frame)
+  date = date.next_month
+  break if date > end_date
+end
+
+# quarterly
+date = Date.new(2015, 1, 1)
+end_date = Date.new(2025, 1, 1)
+loop do
+  (1..4).each do |q|
+    frame = "#{q},q,#{date.year}"
+    TimeFrame.create(frame: frame)
+  end
+  date = date >> 3
+  break if date > end_date
+end
+
+# biannually
+date = Date.new(2015, 1, 1)
+end_date = Date.new(2025, 1, 1)
+loop do
+  (1..2).each do |b|
+    frame = "#{b},b,#{date.year}"
+    TimeFrame.create(frame: frame)
+  end
+  date = date >> 6
+  break if date > end_date
+end
+
+# annually
+date = Date.new(2015, 1, 1)
+end_date = Date.new(2025, 1, 1)
+loop do
+  frame = date.year
+  TimeFrame.create(frame: frame)
+  date = date.next_year
+  break if date > end_date
+end

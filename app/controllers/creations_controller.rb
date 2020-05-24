@@ -8,8 +8,8 @@ class CreationsController < ApplicationController # :nodoc:
     @story_type.update_iteration(creation: false)
   end
 
-  def destroy
-    @story_type.iteration.purge
-    @story_type.update_iteration(create: nil)
+  def purge_all
+    @story_type.iteration.destroy
+    @story_type.update_iteration(creation: nil)
   end
 end

@@ -8,7 +8,7 @@ class ClientsPublicationsJob < ApplicationJob
     clients_pubs.each do |real_cl_id, cl_pubs|
       client = update_client(real_cl_id, cl_pubs.first)
 
-      cl_pubs.each { |pub| update_publication(client, pub) }
+      cl_pubs.each { |pub| update_publication(client.publications, pub) }
     end
   end
 
@@ -34,10 +34,10 @@ class ClientsPublicationsJob < ApplicationJob
     client
   end
 
-  def update_publication(client, pub)
-    pub = client.publications.find_or_initialize_by(pl_identifier: pub['publication_id'])
-    pub.pl_identifier = pub['id']
-    pub.name = pub['publication_name']
-    pub.save!
+  def update_publication(relation, pub)
+    p = relation.find_or_initialize_by(pl_identifier: pub['publication_id'])
+    p.pl_identifier = pub['publication_id']
+    p.name = pub['publication_name']
+    p.save!
   end
 end

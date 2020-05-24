@@ -4,7 +4,8 @@ module MiniLokiC
   module Creation
     # insert created samples to samples table
     class Samples
-      def initialize(staging_table)
+      def initialize(staging_table, options)
+        @sampled = options[:sampled]
         @staging_table = staging_table
 
         s_type = story_type
@@ -20,25 +21,33 @@ module MiniLokiC
 
       private
 
-      # prepare output to inserting
+      # prepare sample to inserting
       def sample_params
-        export_config =
-          @export_configs.find_by(publication_id: @raw_sample[:publication_id])
+        time_frame = TimeFrame.find_by(frame: @raw_sample[:time_frame])
 
         {
           output: output,
           staging_row_id: @raw_sample[:staging_row_id],
           publication_id: @raw_sample[:publication_id],
-          export_configuration: export_config
+          organization_ids: @raw_sample[:organization_ids],
+          time_frame: time_frame,
+          export_configuration: export_config,
+          sampled: @sampled
         }
       end
 
       def output
-        Output.create!(
+        Output.new(
           headline: @raw_sample[:headline],
           teaser: @raw_sample[:teaser],
           body: basic_html_substitutions_body
         )
+      end
+
+      def export_config
+        @export_configs
+          .joins(:publication)
+          .find_by(publications: { pl_identifier: @raw_sample[:publication_id] })
       end
 
       # wrap to HTML tags

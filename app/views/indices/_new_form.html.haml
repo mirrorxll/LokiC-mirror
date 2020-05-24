@@ -1,4 +1,4 @@
-=form_with(url: story_type_staging_tables_index_path(@story_type)) do |form|
+=form_with(url: story_type_staging_table_indices_path(@story_type, @story_type.staging_table, @story_type.staging_table.index)) do |form|
   #add_column_to_index
     +
   %div#index_editable

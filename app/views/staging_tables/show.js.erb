@@ -6,4 +6,5 @@ var st_table_block = $('#staging_table .card-body')
     </div>`)
 <% else %>
   st_table_block.html('<%=j render 'staging_tables/staging_table'%>')
+  $('#samples .card-body').html('<%=j render 'export_configurations/export_configs'%>')
 <% end %>
