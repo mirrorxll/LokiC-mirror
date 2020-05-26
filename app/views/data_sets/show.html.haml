@@ -23,7 +23,7 @@
 %hr/
 
 #story_types_filter
-  =render 'story_types/filter'
+  =render 'data_sets/story_types_filter'
 %hr/
 
 #new_story_type
@@ -37,7 +37,7 @@
 %hr/
 
 #story_types
-  =render @data_set.story_types
+  =render @story_types
 
 #template.modal.fade.template-modal-lg{ "aria-hidden" => "true", "aria-labelledby" => "template",
                                         role: "dialog", tabindex: "-1", 'data-backdrop' => 'static' }

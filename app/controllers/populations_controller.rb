@@ -5,7 +5,7 @@ class PopulationsController < ApplicationController # :nodoc:
     render_400 && return unless @story_type.iteration.population.nil?
 
     args = population_params
-    PopulationJob.set(wait: 5.second).perform_later(@story_type, args)
+    PopulationJob.set(wait: 2.second).perform_later(@story_type, args)
     @story_type.update_iteration(population: false, population_args: args)
   end
 

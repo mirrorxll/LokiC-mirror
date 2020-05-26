@@ -9,7 +9,16 @@ class DataSetsController < ApplicationController # :nodoc:
     @data_sets = @data_sets.where(data_set_filter_params) if params[:filter]
   end
 
-  def show; end
+  def show
+    @story_types = @data_set.story_types
+    puts 'show'
+    filter_params.each do |key, value|
+      if value.present?
+        puts key, value
+        @story_types = @story_types.public_send(key, value)
+      end
+    end
+  end
 
   def new
     @data_set = DataSet.new
@@ -50,8 +59,10 @@ class DataSetsController < ApplicationController # :nodoc:
     @data_set = DataSet.find(params[:id])
   end
 
-  def data_set_filter_params
-    params.require(:filter).permit(:evaluated)
+  def filter_params
+    params.require(:filter).slice(
+      :editor, :developer, :client, :frequency, :dev_status
+    )
   end
 
   def data_set_params

@@ -10,10 +10,10 @@ class CreateSamples < ActiveRecord::Migration[5.2]
       t.belongs_to :time_frame
 
       t.integer     :staging_row_id
-      t.date        :published_at
       t.string      :organization_ids, limit: 1000
       t.integer     :pl_production_id
       t.integer     :pl_staging_id
+      t.date        :published_at
       t.date        :exported_at
       t.boolean     :backdated, default: false
       t.timestamps

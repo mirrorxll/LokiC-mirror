@@ -10,8 +10,6 @@ class ExportConfigurationsController < ApplicationController
     @story_type.update_iteration(export_configurations: false)
   end
 
-  def render_samples_form; end
-
   private
 
   def new_clients_publications?

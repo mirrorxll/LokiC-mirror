@@ -5,7 +5,7 @@ module PipelineReplica
     # request return job item or nil
     module JobItem
       def get_job_item(job_id, story_type_name, pub_name)
-        job_item_q = get_job_item_query(pub_name, story_type_name, job_id)
+        job_item_q = get_job_item_query(job_id, story_type_name, pub_name)
         @pl_replica.query(job_item_q).to_a.last
       end
 

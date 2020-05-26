@@ -11,6 +11,9 @@ class CreateIterations < ActiveRecord::Migration[5.2] # :nodoc:
       t.boolean :story_samples
       t.string  :story_sample_ids
       t.boolean :creation
+      t.boolean :purge_all_samples
+      t.boolean :schedule
+      t.string  :schedule_args
       t.boolean :export
       t.timestamps
     end

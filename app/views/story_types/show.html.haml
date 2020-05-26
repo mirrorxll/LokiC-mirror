@@ -72,7 +72,7 @@
         export
     #export.collapse.show{"data-parent" => "#story_type_export"}
       .card-body
-        -if @story_type.staging_table
+        -if @story_type.staging_table && @story_type.iteration.creation
           .row
             .col-11.offset-1
               .btn-group.mr-5

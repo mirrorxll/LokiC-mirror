@@ -9,19 +9,25 @@ module Table
       "SELECT distinct publication_id p_id FROM `#{t_name}`;"
     end
 
-    # update rows from staging table
+    # return last iteration number from staging query
+    def last_iter_id_query(t_name)
+      "SELECT MAX(iter_id) iter_id FROM `#{t_name}`;"
+    end
+
+    # mark staging table's row as sample/story as created
     def sample_created_update_query(t_name, row_id)
-      "UPDATE `#{t_name}` SET story_created = 1 WHERE id = #{row_id};"
+      "UPDATE `#{t_name}` SET story_created = TRUE WHERE id = #{row_id};"
+    end
+
+    # mark staging table's row as sample/story as not creates
+    def sample_destroyed_update_query(t_name, iter_id)
+      "UPDATE `#{t_name}` SET story_created = FALSE "\
+      "WHERE iter_id = #{iter_id};"
     end
 
     # delete rows from staging table
     def delete_query(t_name, iter_id)
       "DELETE FROM `#{t_name}` WHERE iter_id = #{iter_id}"
-    end
-
-    # return last iteration number from staging query
-    def last_iter_id_query(t_name)
-      "SELECT MAX(iter_id) iter_id FROM `#{t_name}`;"
     end
 
     # return staging table row id equal

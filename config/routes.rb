@@ -65,11 +65,10 @@ Rails.application.routes.draw do
 
     resources :populations, path: 'populate', only: %i[create destroy]
 
-    resources :export_configurations, only: :create do
-      get :render_samples_form, on: :collection
-    end
+    resources :export_configurations, only: :create
 
     resources :samples, except: %i[new edit update destroy] do
+      get :render_samples_section, on: :collection
       delete :purge_sampled, on: :collection
     end
 

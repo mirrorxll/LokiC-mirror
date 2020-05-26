@@ -102,8 +102,14 @@ module Table # :nodoc:
     connection.exec_query(rows_query).to_a
   end
 
-  def sample_as_created(t_name, id)
+  def sample_set_as_created(t_name, id)
     upd_query = sample_created_update_query(t_name, id)
+    connection.exec_query(upd_query)
+  end
+
+  def samples_set_as_not_created(t_name)
+    last_iter = last_iter_id(t_name)
+    upd_query = sample_destroyed_update_query(t_name, last_iter)
     connection.exec_query(upd_query)
   end
 end

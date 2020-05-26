@@ -33,6 +33,10 @@ class StagingTable < ApplicationRecord # :nodoc:
     self.class.connection.truncate(name)
   end
 
+  def samples_set_not_created
+    Table.samples_set_as_not_created(name)
+  end
+
   def self.exists?(name)
     connection.table_exists?(name)
   end

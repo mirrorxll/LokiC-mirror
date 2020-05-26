@@ -16,7 +16,7 @@ module MiniLokiC
       def insert(sample)
         @raw_sample = sample
         @iteration.samples.create!(sample_params)
-        Table.sample_as_created(@staging_table, sample[:staging_row_id])
+        Table.sample_set_as_created(@staging_table, sample[:staging_row_id])
       end
 
       private
@@ -24,14 +24,15 @@ module MiniLokiC
       # prepare sample to inserting
       def sample_params
         time_frame = TimeFrame.find_by(frame: @raw_sample[:time_frame])
+        config = export_config
 
         {
           output: output,
           staging_row_id: @raw_sample[:staging_row_id],
-          publication_id: @raw_sample[:publication_id],
+          publication: config.publication,
           organization_ids: @raw_sample[:organization_ids],
           time_frame: time_frame,
-          export_configuration: export_config,
+          export_configuration: config,
           sampled: @sampled
         }
       end

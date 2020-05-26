@@ -19,15 +19,21 @@ module Stories
       output = story.output
 
       params = lead_params(story, publication, output.headline)
-      lead_response = @pl_client.post_lead_safe(params).body.to_hash
+      lead_response = @pl_client.post_lead_safe(params).body
+      lead_response = JSON.parse(lead_response)
 
       params = story_params(lead_response, story, publication, output)
-      @pl_client.post_story_safe(params).body.to_hash
+      story_response = @pl_client.post_story_safe(params).body
+      story_response = JSON.parse(story_response)
+
+      organization_ids = story.organization_ids.delete('[ ]').split(',')
+      @pl_client.update_story(story_response['id'], organization_ids: organization_ids )
+      story.update("pl_#{@pl_client.environment}_id" => story_response['id'])
     end
 
     def lead_params(story, publication, headline)
       exp_config = story.export_configuration
-      job_item_id = job_item(exp_config, publication)
+      job_item_id = job_item_id(exp_config, publication)
       timestamp = "#{Date.today}.#{Time.now.to_i}"
 
       {
@@ -41,19 +47,19 @@ module Stories
     def story_params(lead_response, story, publication, output)
       published_at = published_at(story.published_at)
       story_tag_ids = @story_type.tag.pl_identifier
-      story_section_ids = story.client.sections.map { |section| section[:pl_identifier] }
+      story_section_ids = publication.client.sections.map { |section| section[:pl_identifier] }
       bucket_id = @story_type.photo_bucket.pl_identifier
       published = true
-      author = publication.client.author
+      author = publication.client.author.name
 
       {
         community_id: publication.pl_identifier,
         lead_id: lead_response['id'],
+        organization_ids: [],
         headline: output.headline,
         teaser: output.teaser,
         body: output.body,
         published_at: published_at,
-        organization_ids: [],
         author: author,
         story_section_ids: story_section_ids,
         story_tag_ids: [story_tag_ids],
@@ -82,7 +88,8 @@ module Stories
         project_id: publication.pl_identifier
       )
 
-      response.body.to_hash['id']
+      response = JSON.parse(response.body)
+      response['id'] || (raise StandardError, 'Job was not created.')
     end
 
     def create_job_item(job_id, publication)
@@ -95,7 +102,8 @@ module Stories
         org_required: false
       )
 
-      response.body.to_hash['id']
+      response = JSON.parse(response.body)
+      response['id'] || (raise StandardError, 'Job Item was not created.')
     end
 
     def photo_bucket
@@ -108,7 +116,7 @@ module Stories
       datetime_end =
         Time.parse("#{date} #{TIMES_BY_WEEKDAY[date.wday].split('-')[1]} EST")
       datetime =
-        (datetime_end.to_f - datetime_start.to_f) * rand + datetime_start
+        (datetime_end.to_f - datetime_start.to_f) * rand + datetime_start.to_f
 
       Time.at(datetime).strftime('%Y-%m-%dT%H:%M:%S%:z')
     end
