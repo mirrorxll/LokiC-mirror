@@ -1,0 +1,8 @@
+=form_with(url: backdate_story_type_schedules_path(@story_type), method: :post) do |form|
+  .row
+    #add-date
+      +
+    %div#dates-editable
+
+    #backdate_extra_args.btn-group.mb-2
+  =form.submit 'Backdate', class: 'mr-auto btn btn-sm btn-outline-success'

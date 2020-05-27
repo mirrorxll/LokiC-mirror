@@ -76,6 +76,13 @@ Rails.application.routes.draw do
       delete :purge_all, on: :collection
     end
 
+    resources :schedules, path: 'schedule', only: %i[] do
+      post     :manual, on: :collection
+      post     :backdate, on: :collection
+      post     :auto, on: :collection
+      delete   :purge, on: :collection
+    end
+
     resources :exports, only: %i[] do
       post :staging,    on: :collection
       post :production, on: :collection

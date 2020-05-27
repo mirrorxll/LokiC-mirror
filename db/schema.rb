@@ -12,6 +12,28 @@
 
 ActiveRecord::Schema.define(version: 2020_05_23_105723) do
 
+  create_table "1_staging", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "id"
+    t.integer "iter_id", default: 1
+    t.integer "story_created"
+    t.integer "publication_id"
+    t.text "publication_name"
+    t.integer "client_id"
+    t.text "client_name"
+    t.string "organization_ids", limit: 1000
+    t.integer "cycle"
+    t.string "state"
+    t.string "candidate_name"
+    t.string "candidate_party"
+    t.string "committee_name"
+    t.string "committee_type"
+    t.text "story_table"
+    t.text "publish_on"
+    t.string "time_frame"
+    t.index ["client_id", "publication_id", "cycle", "state", "candidate_name", "candidate_party", "committee_name"], name: "story_per_publication", unique: true
+    t.index ["iter_id"], name: "iter"
+  end
+
   create_table "account_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.string "permissions", limit: 5000
@@ -152,6 +174,7 @@ ActiveRecord::Schema.define(version: 2020_05_23_105723) do
     t.boolean "story_samples"
     t.string "story_sample_ids"
     t.boolean "creation"
+    t.boolean "purge_last_creation", default: false
     t.boolean "export"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -198,6 +221,7 @@ ActiveRecord::Schema.define(version: 2020_05_23_105723) do
     t.boolean "backdated", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "sampled"
     t.index ["export_configuration_id"], name: "index_samples_on_export_configuration_id"
     t.index ["iteration_id"], name: "index_samples_on_iteration_id"
     t.index ["output_id"], name: "index_samples_on_output_id"
@@ -216,6 +240,7 @@ ActiveRecord::Schema.define(version: 2020_05_23_105723) do
     t.bigint "account_id"
     t.string "identifier"
     t.string "user_name"
+    t.string "display_name"
     t.boolean "deleted"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

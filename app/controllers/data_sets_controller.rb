@@ -11,7 +11,7 @@ class DataSetsController < ApplicationController # :nodoc:
 
   def show
     @story_types = @data_set.story_types
-    puts 'show'
+
     filter_params.each do |key, value|
       if value.present?
         puts key, value
@@ -60,6 +60,8 @@ class DataSetsController < ApplicationController # :nodoc:
   end
 
   def filter_params
+    return {} unless params[:filter]
+
     params.require(:filter).slice(
       :editor, :developer, :client, :frequency, :dev_status
     )

@@ -13,7 +13,7 @@ class CreateIterations < ActiveRecord::Migration[5.2] # :nodoc:
       t.boolean :creation
       t.boolean :purge_all_samples
       t.boolean :schedule
-      t.string  :schedule_args
+      t.string  :schedule_args, limit: 2_000
       t.boolean :export
       t.timestamps
     end
