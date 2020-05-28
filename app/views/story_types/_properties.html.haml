@@ -2,16 +2,21 @@
   .col-10.offset-1
     .row
       .col-2.p-0.text-right
-        client(s):
+        data set:
       .col-10.ml-0
-        -@story_type.clients.each do |client|
-          =client.name
-          %br/
+        =@story_type.data_set.name
     .row
       .col-2.p-0.text-right
         frequency:
       .col-10.ml-0
         =frequency_name
+    .row
+      .col-2.p-0.text-right
+        client(s):
+      .col-10.ml-0
+        -@story_type.clients.each do |client|
+          =client.name
+          %br/
     .row
       .col-2.p-0.text-right
         tag:

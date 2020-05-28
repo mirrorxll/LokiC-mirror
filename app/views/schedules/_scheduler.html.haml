@@ -1,0 +1,21 @@
+-if @story_type.iterations.last.schedule
+  .row
+    .col-12
+      #results_scheduling
+        =render 'schedules/results_scheduling'
+-else
+  .row
+    .col-6
+      #manual_scheduler
+        =render 'schedules/form_manual'
+    .col-6
+      #auto_scheduler
+        =render 'schedules/form_auto'
+  -unless @story_type.iterations.last.samples.where.not(published_at: nil).empty?
+    .row
+      .col-6
+        #backdate_scheduler
+          =render 'schedules/form_backdate'
+          =render 'schedules/set_dates'
+      .col-6
+        =render 'schedules/results_scheduling'

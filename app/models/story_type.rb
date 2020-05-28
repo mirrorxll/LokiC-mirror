@@ -50,7 +50,7 @@ class StoryType < ApplicationRecord # :nodoc:
 
   # filter
   def self.editor(id)
-    where(writer_id: id)
+    where(editor_id: id)
   end
 
   def self.developer(id)

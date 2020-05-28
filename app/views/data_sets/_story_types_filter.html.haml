@@ -4,7 +4,8 @@
       =form.label :editor
       =form.collection_select 'filter[editor]', @data_set.story_types.map(&:editor).uniq, :id, :name, prompt: ''
       =form.label :developer
-      =form.collection_select 'filter[developer]', @data_set.story_types.map(&:developer).uniq, :id, :name, prompt: ''
+      =form.collection_select 'filter[developer]',
+                              @data_set.story_types.where.not(developer: nil).map(&:developer).uniq, :id, :name, prompt: ''
       =form.label :client
       =form.collection_select 'filter[client]', @data_set.story_types.map(&:clients).flatten.uniq, :id, :name, prompt: ''
       =form.label :frequency

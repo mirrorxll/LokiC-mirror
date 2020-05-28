@@ -85,12 +85,25 @@ module Table
 
       columns.each_with_object({}) do |(id, column), hash|
         column['opts'] ||= {}
-        if column['opts'].key?('limit') && column['opts']['limit'].empty?
-          column['opts']['limit'] = '255'
-        end
-
+        column['opts'] = default_if_empty(column['opts'])
         hash[id.to_sym] = column.deep_symbolize_keys
       end
+    end
+
+    def default_if_empty(options)
+      return options if options.empty?
+
+      if options.key?('limit') && options['limit'].empty?
+        options['limit'] = '255'
+      end
+      if options.key?('scale') && options['scale'].empty?
+        options['scale'] = '0'
+      end
+      if options.key?('precision') && options['precision'].empty?
+        options['precision'] = '10'
+      end
+
+      options
     end
 
     def transform_for_samples(columns)

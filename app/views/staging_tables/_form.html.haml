@@ -1,7 +1,7 @@
 .row
   .col-10.offset-1
     =link_to('Create staging table', story_type_staging_tables_path(@story_type),
-             method: :post, remote: true, class: 'btn btn-sm btn-outline-success d-inline-block mb-3')
+             method: :post, remote: true, class: 'btn btn-sm btn-outline-dark d-inline-block mb-3')
 
     =form_with(url: attach_story_type_staging_tables_path(@story_type)) do |form|
       =form.text_field 'staging_table[name]', placeholder: 'existing staging table name'
