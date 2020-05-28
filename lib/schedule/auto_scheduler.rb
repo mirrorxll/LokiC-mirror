@@ -12,9 +12,9 @@ module Schedule
       when 'daily'
         schedule_daily(samples)
       when 'weekly'
-        schedule_other_frequencies(samples, 5, 2, Date.today)
+        schedule_other_frequencies(samples, 75, 7, Date.today)
       when 'monthly'
-        schedule_other_frequencies(samples, 2, 2, Date.today + 3)
+        schedule_other_frequencies(samples, 50, 30, Date.today + 3)
       when 'quarterly'
         schedule_other_frequencies(samples, 70, 90, Date.today + 3)
       when 'biannually'
@@ -70,7 +70,7 @@ module Schedule
 
           backdated_date = (date_story_is_about - 2).strftime('%Y-%m-%d')
 
-          BackdateScheduler.backdate_scheduler(samples_time_frame, [backdated_date])
+          BackdateScheduler.backdate_scheduler(samples_time_frame, { backdated_date => '' })
         end
       end
     end
@@ -81,7 +81,7 @@ module Schedule
       time_frame_ids.each do |frame|
         year_from_frame = TimeFrame.find_by(id: frame[:time_frame_id]).frame.to_i
         start_publish_date = (Date.today + 3).strftime('%Y-%m-%d')
-        limit = 2
+        limit = 50
         samples_time_frame = samples.where(time_frame: frame[:time_frame_id])
         total_days_till_end = (Date.parse(start_publish_date)..Date.parse("#{Time.now.year}-12-31")).count
         backdated_date = (Date.parse("#{Time.now.year}-01-01")..(Date.today - 1)).to_a.sample.strftime('%Y-%m-%d')
@@ -100,7 +100,7 @@ module Schedule
       return unless samples_time_frame.where(published_at: nil).empty?
 
       BackdateScheduler.backdate_scheduler(
-        samples_time_frame, [backdated_date]
+        samples_time_frame, { backdated_date => '' }
       )
     end
   end

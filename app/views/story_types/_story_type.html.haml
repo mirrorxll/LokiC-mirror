@@ -28,5 +28,26 @@
             ---
     %hr/
 -else
-  TODO
+  .text-center.small{id: "story_type_#{story_type.id}"}
+  .row
+    .col-sm-1.col-lg-1
+      =story_type.id
+    .col-sm-4.col-lg-5.pl-0.text-left{id: "story_type_#{story_type.id}_name"}
+      .row
+        .col-12.pr-0
+          =link_to(story_type.name, story_type_path(story_type))
+    .col-sm-2.col-lg-2.p-0
+      -if story_type.developer
+        =render 'developers/developer', story_type: story_type
+      -else
+        =render 'developers/form', story_type: story_type
+    .col-sm-2.col-lg-1.p-0
+      =story_type.status.name
+    .col-sm-1.col-lg-1.p-0{id: "story_type_#{story_type.id}_last_export"}
+      -if story_type.last_export
+        =story_type.last_export.strftime('%D')
+      -else
+        :escaped
+            ---
+  %hr/
   %br/
