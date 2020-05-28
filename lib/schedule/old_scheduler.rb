@@ -35,8 +35,8 @@ module Schedule
       if extra_args == '' || extra_args.nil?
         samples = samples.where(published_at: nil)
       else
-        stage_ids = ExtraArgs.get_stage_ids(samples.first.iteration.story_type.staging_table.name, extra_args)
-        samples = samples.where(id: stage_ids)
+        stage_ids = ExtraArgs.stage_ids(samples.first.iteration.story_type.staging_table.name, extra_args)
+        samples = samples.where(staging_row_id: stage_ids)
       end
       samples
     end
@@ -45,6 +45,7 @@ module Schedule
       options = check_and_define_args(options)
       iteration = samples.first.iteration
       samples = get_samples(samples, options[:extra_args])
+
 
       publications = samples.group(:publication_id).count
 
