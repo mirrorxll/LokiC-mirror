@@ -5,9 +5,13 @@ set :stage, :production
 
 set :puma_workers,    8
 set :puma_threads,    [8, 16]
-set :user, 'app'
-server 'loki01.locallabs.com', port: 22, roles: %i[web app db], primary: true
+# set :user, 'app'
+server 'app@loki01.locallabs.com', port: 22, roles: %i[web app db], primary: true
 set :use_sudo, false
+
+set :rvm_type, :user
+set :rvm_ruby_version, '2.6.3'
+set :rvm_custom_path, '/usr/local/rvm/'
 
 set :pty, true
 set :application, 'LokiC'
