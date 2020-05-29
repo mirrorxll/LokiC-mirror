@@ -16,6 +16,7 @@ class StoryType < ApplicationRecord # :nodoc:
   has_many :export_configurations, dependent: :destroy
 
   has_and_belongs_to_many :clients
+  has_and_belongs_to_many :statuses
 
   has_one_attached :code
 

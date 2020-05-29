@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_23_105723) do
+ActiveRecord::Schema.define(version: 2020_05_28_150255) do
 
   create_table "1_staging", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "id"
@@ -30,7 +30,21 @@ ActiveRecord::Schema.define(version: 2020_05_23_105723) do
     t.text "story_table"
     t.text "publish_on"
     t.string "time_frame"
-    t.index ["client_id", "publication_id", "cycle", "state", "candidate_name", "candidate_party", "committee_name"], name: "story_per_publication", unique: true
+    t.index ["iter_id"], name: "iter"
+  end
+
+  create_table "4_staging", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "iter_id", default: 6
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "client_id"
+    t.integer "publication_id"
+    t.string "organization_ids", limit: 1000
+    t.boolean "story_created", default: false
+    t.string "time_frame"
+    t.date "q"
+    t.decimal "qq", precision: 10, scale: 1
+    t.integer "qqq"
     t.index ["iter_id"], name: "iter"
   end
 
@@ -178,6 +192,8 @@ ActiveRecord::Schema.define(version: 2020_05_23_105723) do
     t.boolean "export"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "schedule"
+    t.string "schedule_args", limit: 2000
     t.index ["story_type_id"], name: "index_iterations_on_story_type_id"
   end
 
@@ -260,6 +276,12 @@ ActiveRecord::Schema.define(version: 2020_05_23_105723) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "statuses_story_types", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "story_type_id", null: false
+    t.bigint "status_id", null: false
+    t.index ["story_type_id", "status_id"], name: "index_statuses_story_types_on_story_type_id_and_status_id", unique: true
   end
 
   create_table "story_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

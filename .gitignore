@@ -38,8 +38,5 @@
 yarn-debug.log*
 .yarn-integrity
 
-# Ignore Gemfile.lock
-Gemfile.lock
-
 # Ignore Uploaded Code
 /lib/story_type/code/*

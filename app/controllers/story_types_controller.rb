@@ -57,8 +57,8 @@ class StoryTypesController < ApplicationController # :nodoc:
   end
 
   def filter_params
-    params.slice(
-      :editor, :developer, :data_tes, :client, :frequency, :dev_status
-    )
+    return {} unless params[:filter]
+
+    params.require(:filter).slice(:data_set, :developer, :frequency, :dev_status)
   end
 end

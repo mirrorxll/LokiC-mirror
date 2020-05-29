@@ -6,13 +6,13 @@ class DataSetsController < ApplicationController # :nodoc:
 
   def index
     @data_sets = DataSet.all
-    @data_sets = @data_sets.where(data_set_filter_params) if params[:filter]
+    @data_sets = @data_sets.where(data_set_filter_params)
   end
 
   def show
     @story_types = @data_set.story_types
 
-    filter_params.each do |key, value|
+    story_type_filter_params.each do |key, value|
       if value.present?
         puts key, value
         @story_types = @story_types.public_send(key, value)
@@ -59,7 +59,13 @@ class DataSetsController < ApplicationController # :nodoc:
     @data_set = DataSet.find(params[:id])
   end
 
-  def filter_params
+  def data_set_filter_params
+    return {} unless params[:filter]
+
+    params.require(:filter).permit(:evaluated)
+  end
+
+  def story_type_filter_params
     return {} unless params[:filter]
 
     params.require(:filter).slice(

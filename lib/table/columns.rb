@@ -86,6 +86,7 @@ module Table
       columns.each_with_object({}) do |(id, column), hash|
         column['opts'] ||= {}
         column['opts'] = default_if_empty(column['opts'])
+
         hash[id.to_sym] = column.deep_symbolize_keys
       end
     end
@@ -96,9 +97,11 @@ module Table
       if options.key?('limit') && options['limit'].empty?
         options['limit'] = '255'
       end
+
       if options.key?('scale') && options['scale'].empty?
         options['scale'] = '0'
       end
+
       if options.key?('precision') && options['precision'].empty?
         options['precision'] = '10'
       end

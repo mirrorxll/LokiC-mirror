@@ -15,14 +15,14 @@ default: &default
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   reconnect: true
 # use for the connect to db05
-#  username: data_miner
-#  password: data_miner
-#  host: db05.blockshopper.com
-#  port: 3306
+  username: data_miner
+  password: data_miner
+  host: db01.blockshopper.com
+  port: 3306
 
 # use for connect to localhost
-  username: root
-  password: Qw12345678*
+#  username: root
+#  password: Qw12345678*
 
   socket: /var/run/mysqld/mysqld.sock
 
@@ -58,6 +58,4 @@ test:
 #
 production:
   <<: *default
-  database: LokiC_production
-  username: LokiC
-  password: <%= ENV['LOKIC_DATABASE_PASSWORD'] %>
+  database: lokic
