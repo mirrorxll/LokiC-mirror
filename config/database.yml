@@ -54,7 +54,7 @@ test:
 #
 production:
   <<: *default
-  username: <%= Rails.application.credentials.mysql[:regular][:user] %> %>
+  username: <%= Rails.application.credentials.mysql[:regular][:user] %>
   password: <%= Rails.application.credentials.mysql[:regular][:password] %>
   host: <%= DB01 %>
   port: 3306
