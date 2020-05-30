@@ -3,9 +3,6 @@ lock '~> 3.14.0'
 
 set :stage, :production
 
-set :puma_workers,    8
-set :puma_threads,    [8, 16]
-# set :user, 'app'
 server 'app@loki01.locallabs.com', port: 22, roles: %i[web app db], primary: true
 set :use_sudo, false
 
@@ -20,6 +17,8 @@ ask :branch, 'deploy'
 
 set :deploy_via,              :remote_cache
 set :deploy_to,               '/home/app/LokiC'
+set :puma_workers,            8
+set :puma_threads,            [8, 16]
 set :puma_bind,               "unix://#{shared_path}/tmp/sockets/puma.sock"
 set :puma_state,              "#{shared_path}/tmp/pids/puma.state"
 set :puma_pid,                "#{shared_path}/tmp/pids/puma.pid"
@@ -28,6 +27,34 @@ set :puma_error_log,          "#{release_path}/log/puma.access.log"
 set :puma_preload_app,        true
 set :puma_worker_timeout,     nil
 set :puma_init_active_record, true
+
+append :linked_dirs, 'log'
+append :linked_files, 'config/database.yml', 'config/master.key'
+
+namespace :sidekiq do
+  task :restart do
+    invoke 'sidekiq:stop'
+    invoke 'sidekiq:start'
+  end
+
+  before 'deploy:finished', 'sidekiq:restart'
+
+  task :stop do
+    on roles(:app) do
+      within current_path do
+        execute'tmux send-keys -t sidekiq-tmux.0 ^C ENTER'
+      end
+    end
+  end
+
+  task :start do
+    on roles(:app) do
+      within current_path do
+        execute "tmux send-keys -t sidekiq-tmux.0 'bundle exec sidekiq -e #{fetch(:stage)} -C config/sidekiq.yml' ENTER"
+      end
+    end
+  end
+end
 
 namespace :puma do
   desc 'Create Directories for Puma Pids and Socket'

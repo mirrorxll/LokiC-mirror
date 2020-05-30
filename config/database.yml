@@ -9,33 +9,29 @@
 # And be sure to use new-style password hashing:
 #   https://dev.mysql.com/doc/refman/5.7/en/password-hashing.html
 #
+
 default: &default
   adapter: mysql2
   encoding: utf8
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   reconnect: true
-# use for the connect to db05
-  username: data_miner
-  password: data_miner
-  host: db01.blockshopper.com
-  port: 3306
 
-# use for connect to localhost
-#  username: root
-#  password: Qw12345678*
-
-  socket: /var/run/mysqld/mysqld.sock
+dev_user: &dev_user
+  username: root
+  password: Qw12345678*
 
 development:
   <<: *default
-  database: LokiC_development
+  <<: *dev_user
+  database: lokic_dev
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: LokiC_test
+  <<: *dev_user
+  database: lokic_test
 
 # As with config/secrets.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -58,4 +54,9 @@ test:
 #
 production:
   <<: *default
+  username: <%= Rails.application.credentials.mysql[:regular][:user] %> %>
+  password: <%= Rails.application.credentials.mysql[:regular][:password] %>
+  host: <%= DB01 %>
+  port: 3306
+  socket: /var/run/mysqld/mysqld.sock
   database: lokic
