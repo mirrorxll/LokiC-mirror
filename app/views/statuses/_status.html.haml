@@ -1,0 +1,3 @@
+%div.d-inline{ id: "status_#{status.id}"}
+  =status.name
+  =link_to(icon('fas', 'times', class: 'text-dark'), exclude_story_type_status_path(@story_type, status), method: :delete, remote: true)

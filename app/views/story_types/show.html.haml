@@ -5,6 +5,12 @@
 #story_type_name
   %b #{@story_type.name}
 %hr
+
+#story_type_statuses
+  =render 'statuses/form'
+  =render @story_type.statuses
+%hr/
+
 #story_type_template.accordion
   .card
     .card-header

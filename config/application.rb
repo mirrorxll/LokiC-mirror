@@ -20,6 +20,8 @@ module LokiC
     config.active_job.queue_adapter = :sidekiq
 
     config.generators.system_tests = nil
+
+    config.enable_dependency_loading = true
     config.autoload_paths += %W[#{config.root}/lib/]
   end
 end

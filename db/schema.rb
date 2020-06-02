@@ -10,29 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_23_105723) do
-
-  create_table "1_staging", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "id"
-    t.integer "iter_id", default: 1
-    t.integer "story_created"
-    t.integer "publication_id"
-    t.text "publication_name"
-    t.integer "client_id"
-    t.text "client_name"
-    t.string "organization_ids", limit: 1000
-    t.integer "cycle"
-    t.string "state"
-    t.string "candidate_name"
-    t.string "candidate_party"
-    t.string "committee_name"
-    t.string "committee_type"
-    t.text "story_table"
-    t.text "publish_on"
-    t.string "time_frame"
-    t.index ["client_id", "publication_id", "cycle", "state", "candidate_name", "candidate_party", "committee_name"], name: "story_per_publication", unique: true
-    t.index ["iter_id"], name: "iter"
-  end
+ActiveRecord::Schema.define(version: 2020_05_28_150255) do
 
   create_table "account_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -174,7 +152,9 @@ ActiveRecord::Schema.define(version: 2020_05_23_105723) do
     t.boolean "story_samples"
     t.string "story_sample_ids"
     t.boolean "creation"
-    t.boolean "purge_last_creation", default: false
+    t.boolean "purge_all_samples"
+    t.boolean "schedule"
+    t.string "schedule_args", limit: 2000
     t.boolean "export"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -213,10 +193,10 @@ ActiveRecord::Schema.define(version: 2020_05_23_105723) do
     t.bigint "output_id"
     t.bigint "time_frame_id"
     t.integer "staging_row_id"
-    t.date "published_at"
     t.string "organization_ids", limit: 1000
     t.integer "pl_production_id"
     t.integer "pl_staging_id"
+    t.date "published_at"
     t.date "exported_at"
     t.boolean "backdated", default: false
     t.datetime "created_at", null: false
@@ -260,6 +240,12 @@ ActiveRecord::Schema.define(version: 2020_05_23_105723) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "statuses_story_types", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "story_type_id", null: false
+    t.bigint "status_id", null: false
+    t.index ["story_type_id", "status_id"], name: "index_statuses_story_types_on_story_type_id_and_status_id", unique: true
   end
 
   create_table "story_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

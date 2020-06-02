@@ -67,8 +67,9 @@ module Table # :nodoc:
   end
 
   def last_iter_id(t_name)
-    last_iter_query = last_iter_id_query(t_name)
-    connection.exec_query(last_iter_query).first['iter_id']
+    last_iter_query = iter_id_value_query(t_name)
+    last_iter_id = connection.exec_query(last_iter_query).first['Column_Default']
+    last_iter_id || 1
   end
 
   # purge rows that were inserted to staging table
@@ -111,5 +112,11 @@ module Table # :nodoc:
     last_iter = last_iter_id(t_name)
     upd_query = sample_destroyed_update_query(t_name, last_iter)
     connection.exec_query(upd_query)
+  end
+
+  def increment_iter_id(t_name)
+    iter_id = last_iter_id(t_name)
+    alter_query = alter_increment_iter_id_query(t_name, iter_id)
+    connection.exec_query(alter_query)
   end
 end

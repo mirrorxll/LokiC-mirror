@@ -9,9 +9,11 @@ module Table
       "SELECT distinct publication_id p_id FROM `#{t_name}`;"
     end
 
-    # return last iteration number from staging query
-    def last_iter_id_query(t_name)
-      "SELECT MAX(iter_id) iter_id FROM `#{t_name}`;"
+    # return default iteration number from staging table
+    def iter_id_value_query(t_name)
+      'SELECT Column_Default FROM Information_Schema.Columns '\
+      "WHERE Table_Schema = 'LokiC_#{ENV['RAILS_ENV']}' AND "\
+      "Table_Name = '#{t_name}' AND Column_Name = 'iter_id';"
     end
 
     # mark staging table's row as sample/story as created
@@ -54,6 +56,11 @@ module Table
       "SELECT * FROM `#{t_name}` "\
       "WHERE story_created = 0 AND iter_id = (#{iter_id}) "\
       "LIMIT #{options[:limit] || 7_000};"
+    end
+
+    def alter_increment_iter_id_query(t_name, value)
+      "ALTER TABLE `#{t_name}` "\
+      "MODIFY COLUMN iter_id int NOT NULL DEFAULT #{value + 1};"
     end
   end
 end
