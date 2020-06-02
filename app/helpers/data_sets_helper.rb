@@ -2,6 +2,8 @@
 
 module DataSetsHelper # :nodoc:
   def domain_name(link, options = {})
+    options.merge!({ target: '_blank' })
+
     match = link[%r{https?:\/\/([^\/]+)}, 1]
     match ? link_to(match, link, options) : link
   end
@@ -52,5 +54,9 @@ module DataSetsHelper # :nodoc:
       "#{data_set.evaluation_document.present? ? '' : ' - document is missing'}"\
       ')'
     end
+  end
+
+  def developers_filter(data_set)
+    data_set.story_types.where.not(developer: nil).map(&:developer).uniq
   end
 end

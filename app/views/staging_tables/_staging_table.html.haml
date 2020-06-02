@@ -6,20 +6,20 @@
     .row#staging_table_main_control
       .col-1
         #sync.btn-group
-          =link_to('sync', sync_story_type_staging_tables_path(@story_type),
+          =link_to('sync', sync_story_type_staging_table_path(@story_type, @story_type.staging_table),
                     class: 'btn btn-sm btn-outline-dark', method: :put, remote: true)
       .col-6
         #manipulate.btn-group.ml-2
-          =link_to('purge last population', story_type_populations_path(@story_type),
+          =link_to('purge last population', story_type_population_path(@story_type, @story_type.staging_table),
                     class: 'btn btn-sm btn-outline-danger', method: :delete,  remote: true,
                     data: { confirm: 'You sure?' })
-          =link_to('truncate', truncate_story_type_staging_tables_path(@story_type),
-                    class: 'btn btn-sm btn-outline-danger', method: :put,  remote: true,
+          =link_to('truncate', truncate_story_type_staging_table_path(@story_type, @story_type.staging_table),
+                    class: 'btn btn-sm btn-outline-danger', method: :delete,  remote: true,
                     data: { confirm: 'You sure?' })
-          =link_to('detach', detach_story_type_staging_tables_path(@story_type),
+          =link_to('detach', detach_story_type_staging_table_path(@story_type, @story_type.staging_table),
                     class: 'btn btn-sm btn-outline-danger', method: :delete, remote: true,
                     data: { confirm: 'You sure?' })
-          =link_to('drop', story_type_staging_tables_path(@story_type),
+          =link_to('drop', story_type_staging_table_path(@story_type, @story_type.staging_table),
                     class: 'btn btn-sm btn-outline-danger', method: :delete, remote: true,
                     data: { confirm: 'You sure?' })
       .col-5.text-right

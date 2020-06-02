@@ -11,12 +11,9 @@ class DataSetsController < ApplicationController # :nodoc:
 
   def show
     @story_types = @data_set.story_types
-
+    ``
     story_type_filter_params.each do |key, value|
-      if value.present?
-        puts key, value
-        @story_types = @story_types.public_send(key, value)
-      end
+      @story_types = @story_types.public_send(key, value) if value.present?
     end
   end
 

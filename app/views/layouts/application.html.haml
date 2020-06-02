@@ -11,8 +11,8 @@
     %nav.navbar.navbar-expand-lg.navbar-light.bg-light
       = link_to('LokiC', root_path, class: 'navbar-brand')
       %button.navbar-toggler{"aria-controls" => "navbarNavDropdown", "aria-expanded" => "false",
-                               "aria-label" => "Toggle navigation", "data-target" => "#navbarNavDropdown",
-                                "data-toggle" => "collapse", :type => "button"}
+                             "aria-label" => "Toggle navigation", "data-target" => "#navbarNavDropdown",
+                             "data-toggle" => "collapse", :type => "button"}
         %span.navbar-toggler-icon
       #navbarNavDropdown.collapse.navbar-collapse
         %ul.navbar-nav.w-100
@@ -20,8 +20,6 @@
             -if !current_account.type.eql?('developer')
               %li.nav-item.active
                 =link_to('Data Sets', data_sets_path, class: 'nav-link')
-              %li.nav-item.active
-                =link_to('Accounts', '#', class: 'nav-link')
             %li.nav-item.nav-link.disabled.ml-auto
               =current_account.name
             %li.nav-item

@@ -11,8 +11,20 @@ module Table
 
     # return default iteration number from staging table
     def iter_id_value_query(t_name)
+      schema =
+        case ENV['RAILS_ENV']
+        when 'production'
+          'lokic'
+        when 'development'
+          'lokic_dev'
+        when 'test'
+          'lokic_test'
+        else
+          raise StandardError, 'Wrong Rails ENV'
+        end
+
       'SELECT Column_Default FROM Information_Schema.Columns '\
-      "WHERE Table_Schema = 'LokiC_#{ENV['RAILS_ENV']}' AND "\
+      "WHERE Table_Schema = '#{schema}' AND "\
       "Table_Name = '#{t_name}' AND Column_Name = 'iter_id';"
     end
 

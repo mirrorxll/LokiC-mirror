@@ -10,7 +10,7 @@
 %hr/
 
 #data_sets
-  - @data_sets.each do |dl|
+  -@data_sets.each do |dl|
     .row
       %small.col-3
         =dl.name
@@ -20,17 +20,7 @@
         =dl.location
       %small.col-1
         =dl.evaluated ? 'evaluated' : ''
-      .col-1
-        =link_to('show', data_set_path(dl), class: 'd-loc-show-icon img')
+      %small.col-1.text-right
+        =link_to('show', data_set_path(dl))
       .col-1
     %hr/
-
-
--#     =link_to('Add a new Data Set', '#new_data_set_form', 'aria-controls' => 'new_data_set_form',
--#              'aria-expanded' => false, data: { toggle: "collapse", target: "#new_data_set_form" },
--#              type: "button", class: 'btn btn-sm btn-outline-dark')
--# #new_data_set_form.collapse
--#   %hr/
--#   .card.card-body
--#     =render 'form'
--# %hr/
