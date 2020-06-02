@@ -3,6 +3,7 @@ lock '~> 3.14.0'
 
 set :stage, :production
 
+set :user, 'app'
 server 'app@loki01.locallabs.com', port: 22, roles: %i[web app db], primary: true
 set :use_sudo, false
 
@@ -69,8 +70,8 @@ namespace :deploy do
   desc 'Make sure local git is in sync with remote.'
   task :check_revision do
     on roles(:app) do
-      unless `git rev-parse HEAD` == `git rev-parse origin/deploy`
-        puts 'WARNING: HEAD is not the same as origin/deploy'
+      unless `git rev-parse HEAD` == `git rev-parse mirror/deploy`
+        puts 'WARNING: HEAD is not the same as mirror/deploy'
         puts 'Run `git push` to sync changes.'
         exit
       end
