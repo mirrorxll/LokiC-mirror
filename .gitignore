@@ -40,3 +40,7 @@ yarn-debug.log*
 
 # Ignore Uploaded Code
 /lib/story_type/code/*
+
+
+# Gemfile.lock
+Gemfile.lock
