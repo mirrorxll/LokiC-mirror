@@ -15,7 +15,7 @@ module MiniLokiC
     def initialize(story_type, method, options)
       @story_type = story_type
       @method = method
-      @options = options.eql?(:population) ? options_to_hash(options) : options
+      @options = method.eql?(:population) ? options_to_hash(options) : options
     end
 
     def exec
@@ -23,9 +23,7 @@ module MiniLokiC
 
       Object.const_get("S#{@story_type.id}").new.send(@method, @options)
     ensure
-      if Object.const_defined?("S#{@story_type.id}")
-        Object.send(:remove_const, "S#{@story_type.id}")
-      end
+      Object.send(:remove_const, "S#{@story_type.id}") if Object.const_defined?("S#{@story_type.id}")
     end
 
     def file
@@ -36,6 +34,8 @@ module MiniLokiC
     end
 
     def options_to_hash(options)
+      return {} if options.empty?
+
       options = options.split(',')
       options = options.map { |opt| opt.gsub(/[\s+,'"]/, '') }
 

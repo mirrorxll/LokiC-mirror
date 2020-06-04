@@ -2,27 +2,18 @@
 
 class StatusesController < ApplicationController
   before_action :find_status
-  before_action :find_statuses
 
   def include
-    render_400 && return if @statuses.nil? || @statuses.exists?(@status.id)
-
-    @statuses << @status
+    @story_type.update(status: @status)
   end
 
   def exclude
-    render_400 && return unless @statuses.exists?(@status.id)
-
-    @statuses.destroy(@status)
+    @story_type.update(status: Status.first)
   end
 
   private
 
   def find_status
     @status = Status.find(params[:id])
-  end
-
-  def find_statuses
-    @statuses = @story_type.statuses
   end
 end

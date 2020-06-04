@@ -6,9 +6,11 @@
   %b #{@story_type.name}
 %hr
 
-#story_type_statuses
+#story_type_status
+  status:
   =render 'statuses/form'
-  =render @story_type.statuses
+  -if @story_type.status
+    =render @story_type.status
 %hr/
 
 #story_type_template.accordion

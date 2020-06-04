@@ -6,7 +6,7 @@ class StoryTypesController < ApplicationController # :nodoc:
   skip_before_action :find_parent_story_type, except: :properties
 
   def index
-    @story_types = StoryType.all
+    @story_types = StoryType.order(id: :asc).where.not(developer: nil)
 
     filter_params.each do |key, value|
       @story_types = @story_types.public_send(key, value) if value.present?
@@ -59,6 +59,6 @@ class StoryTypesController < ApplicationController # :nodoc:
   def filter_params
     return {} unless params[:filter]
 
-    params.require(:filter).slice(:data_set, :developer, :frequency, :dev_status)
+    params.require(:filter).slice(:data_set, :developer, :frequency, :status)
   end
 end

@@ -1,5 +1,4 @@
 .row.small
   .col-10.offset-1
     =form_with(url: story_type_codes_path(@story_type)) do |form|
-      =form.file_field :code
-      =form.submit     :upload
+      =form.submit 'attach code from DB', class: 'btn btn-sm btn-outline-dark', data: { disable_with: '...'}

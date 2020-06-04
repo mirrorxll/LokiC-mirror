@@ -12,11 +12,10 @@ class StoryType < ApplicationRecord # :nodoc:
   has_one :staging_table
   has_one :template, dependent: :destroy
 
-  has_many :iterations, dependent: :destroy
-  has_many :export_configurations, dependent: :destroy
+  has_many :iterations,             dependent: :destroy
+  has_many :export_configurations,  dependent: :destroy
 
   has_and_belongs_to_many :clients
-  has_and_belongs_to_many :statuses
 
   has_one_attached :code
 
@@ -49,6 +48,15 @@ class StoryType < ApplicationRecord # :nodoc:
     iteration.update(status)
   end
 
+  def download_code_from_db
+    db05 = MiniLokiC::Connect::Mysql.on(DB05, 'loki_storycreator')
+    query = "SELECT file_blob b FROM hle_file_blobs WHERE story_type_id = #{id};"
+    blob = db05.query(query).first
+    db05.close
+
+    blob && blob['b']
+  end
+
   # filter
   def self.editor(id)
     where(editor_id: id)
@@ -70,7 +78,7 @@ class StoryType < ApplicationRecord # :nodoc:
     where(frequency: id)
   end
 
-  def self.dev_status(dev_status)
-    includes(:statuses).where(statuses: { name: dev_status })
+  def self.status(id)
+    where(status: id)
   end
 end

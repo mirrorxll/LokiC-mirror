@@ -2,7 +2,12 @@
 
 class CodesController < ApplicationController # :nodoc:
   def create
-    @story_type.code.attach(params[:code]) unless @story_type.code.attached?
+    render_400 && return if @story_type.code.attached?
+
+    code = @story_type.download_code_from_db
+    render_400 && return if code.nil?
+
+    @story_type.code.attach(io: StringIO.new(code), filename: "S#{@story_type.id}.rb")
   end
 
   def destroy
