@@ -14,7 +14,7 @@ set :rvm_custom_path, '/usr/local/rvm/'
 set :pty, true
 set :application, 'LokiC'
 set :repo_url, 'git@github.com:mirrorxll/LokiC-mirror.git'
-ask :branch, 'deploy'
+set :branch, 'deploy'
 
 set :deploy_via,              :remote_cache
 set :deploy_to,               '/home/app/LokiC'
@@ -28,6 +28,8 @@ set :puma_error_log,          "#{release_path}/log/puma.access.log"
 set :puma_preload_app,        true
 set :puma_worker_timeout,     nil
 set :puma_init_active_record, true
+
+append :linked_dirs, 'storage', 'public/ruby_code', 'logs'
 
 namespace :sidekiq do
   task :restart do

@@ -39,7 +39,7 @@ yarn-debug.log*
 .yarn-integrity
 
 # Ignore Uploaded Code
-/lib/story_type/code/*
+public/ruby_code/*
 
 
 # Gemfile.lock
