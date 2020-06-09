@@ -1,10 +1,13 @@
 
 .row
   .col-sm-3.col-lg-2.text-right.pr-0
-    client(s):
-  #clients.col-sm-9.col-lg-10
+    client(s)-tag(s):
+  #clients__tags.col-sm-9.col-lg-10
     =render 'clients/form'
-    =render @story_type.clients
+    -if @story_type.clients.present?
+      %table.table.table-sm.table-borderless.small
+        %tbody{id: 'clients_tags_table_body'}
+          =render @story_type.clients
 %br/
 
 .row

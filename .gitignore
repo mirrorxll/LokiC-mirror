@@ -23,8 +23,7 @@
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 
-# Ignore git's files
-/.git
+# Ignore git's fil
 
 # Ignore RubyMine's files
 /.idea

@@ -3,7 +3,7 @@
 module PipelineReplica
   module Request
     # request return job or nil
-    module Section
+    module Sections
       def get_sections
         @pl_replica.query(get_sections_query).to_a
       end

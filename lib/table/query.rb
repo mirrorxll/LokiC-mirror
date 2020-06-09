@@ -12,7 +12,7 @@ module Table
     # return default iteration number from staging table
     def iter_id_value_query(t_name)
       schema =
-        case ENV['RAILS_ENV']
+        case Rails.env
         when 'production'
           'lokic'
         when 'development'
@@ -25,7 +25,7 @@ module Table
 
       'SELECT Column_Default FROM Information_Schema.Columns '\
       "WHERE Table_Schema = '#{schema}' AND "\
-      "Table_Name = '#{t_name}' AND Column_Name = 'iter_id';"
+            "Table_Name = '#{t_name}' AND Column_Name = 'iter_id';"
     end
 
     # mark staging table's row as sample/story as created

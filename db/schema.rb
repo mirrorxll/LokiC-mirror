@@ -10,7 +10,34 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_28_150255) do
+ActiveRecord::Schema.define(version: 2020_06_09_071552) do
+
+  create_table "1_staging", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "iter_id", default: 1
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "client_id"
+    t.integer "publication_id"
+    t.string "organization_ids", limit: 1000
+    t.boolean "story_created", default: false
+    t.string "time_frame"
+    t.integer "123"
+    t.integer "456"
+    t.index ["client_id", "publication_id", "123", "456"], name: "story_per_publication", unique: true
+    t.index ["iter_id"], name: "iter"
+  end
+
+  create_table "3_staging", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "iter_id", default: 3
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "client_id"
+    t.integer "publication_id"
+    t.string "organization_ids", limit: 1000
+    t.boolean "story_created", default: false
+    t.string "time_frame"
+    t.index ["iter_id"], name: "iter"
+  end
 
   create_table "account_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -63,6 +90,11 @@ ActiveRecord::Schema.define(version: 2020_05_28_150255) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "blobs", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "story_type_id"
+    t.binary "file_blob", limit: 16777215
+  end
+
   create_table "clients", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "author_id"
     t.integer "pl_identifier"
@@ -82,6 +114,12 @@ ActiveRecord::Schema.define(version: 2020_05_28_150255) do
     t.bigint "story_type_id", null: false
     t.bigint "client_id", null: false
     t.index ["story_type_id", "client_id"], name: "index_clients_story_types_on_story_type_id_and_client_id", unique: true
+  end
+
+  create_table "clients_tags", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "client_id", null: false
+    t.bigint "tag_id", null: false
+    t.index ["client_id", "tag_id"], name: "index_clients_tags_on_client_id_and_tag_id", unique: true
   end
 
   create_table "columns", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -184,6 +222,12 @@ ActiveRecord::Schema.define(version: 2020_05_28_150255) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["client_id"], name: "index_publications_on_client_id"
+  end
+
+  create_table "publications_tags", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "publication_id", null: false
+    t.bigint "tag_id", null: false
+    t.index ["publication_id", "tag_id"], name: "index_publications_tags_on_publication_id_and_tag_id", unique: true
   end
 
   create_table "samples", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

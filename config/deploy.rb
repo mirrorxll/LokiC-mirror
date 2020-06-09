@@ -13,8 +13,8 @@ set :rvm_custom_path, '/usr/local/rvm/'
 
 set :pty, true
 set :application, 'LokiC'
-set :repo_url, 'git@github.com:mirrorxll/LokiC-mirror.git'
-set :branch, 'deploy'
+set :repo_url,    'git@github.com:mirrorxll/LokiC-mirror.git'
+set :branch,      'deploy'
 
 set :deploy_via,              :remote_cache
 set :deploy_to,               '/home/app/LokiC'
@@ -29,7 +29,7 @@ set :puma_preload_app,        true
 set :puma_worker_timeout,     nil
 set :puma_init_active_record, true
 
-append :linked_dirs, 'storage', 'public/ruby_code', 'logs'
+append :linked_dirs, 'storage', 'public/ruby_code', 'log'
 
 namespace :sidekiq do
   task :restart do
@@ -43,6 +43,7 @@ namespace :sidekiq do
     on roles(:app) do
       within current_path do
         execute'tmux send-keys -t sidekiq-tmux.0 ^C ENTER'
+        sleep(10)
       end
     end
   end
@@ -50,6 +51,8 @@ namespace :sidekiq do
   task :start do
     on roles(:app) do
       within current_path do
+        execute "tmux send-keys -t sidekiq-tmux.0 'cd' ENTER"
+        execute "tmux send-keys -t sidekiq-tmux.0 'cd LokiC/current' ENTER"
         execute "tmux send-keys -t sidekiq-tmux.0 'bundle exec sidekiq -e #{fetch(:stage)} -C config/sidekiq.yml' ENTER"
       end
     end

@@ -1,13 +1,10 @@
 :schedule:
   clients_publications:
     cron: '0 0 */1 * *'
-    class: ClientsPublicationsJob
+    class: ClientsPublicationsTagsJob
   sections:
-    cron: '2 0 */1 * *'
-    class: SectionsJob
-  tags:
     cron: '4 0 */1 * *'
-    class: TagsJob
+    class: SectionsJob
   photo_buckets:
     cron: '6 0 */1 * *'
     class: PhotoBucketsJob

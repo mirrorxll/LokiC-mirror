@@ -3,7 +3,7 @@
 module PipelineReplica
   module Request
     # request return job or nil
-    module PhotoBucket
+    module PhotoBuckets
       def get_photo_buckets
         @pl_replica.query(get_photo_buckets_query).to_a
       end
