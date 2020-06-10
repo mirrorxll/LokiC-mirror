@@ -4,6 +4,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '2.6.3'
 
 gem 'activeadmin'
+
 # front-end
 gem 'bootstrap', '~> 4.4.1'
 gem 'devise-bootstrap-views', '~> 1.0'

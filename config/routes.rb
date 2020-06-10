@@ -4,8 +4,13 @@ require 'sidekiq/web'
 require 'sidekiq-scheduler/web'
 
 Rails.application.routes.draw do
+  ActiveAdmin.routes(self)
   mount Sidekiq::Web => '/sidekiq'
   mount ActionCable.server, at: '/cable'
+
+  scope "/admin" do
+    resources :accounts
+  end
 
   devise_for :accounts, controllers: { registrations: 'registrations', sessions: 'sessions' }
 
