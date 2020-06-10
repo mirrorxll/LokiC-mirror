@@ -37,14 +37,14 @@ Rails.application.routes.draw do
     resources :clients, only: %i[] do
       post    :include, on: :collection
       delete  :exclude, on: :member
+
+      resources :tags, only: %i[] do
+        post   :include, on: :collection
+        delete :exclude, on: :member
+      end
     end
 
     resources :frequencies, path: :frequency, only: %i[] do
-      post   :include, on: :collection
-      delete :exclude, on: :member
-    end
-
-    resources :tags, only: %i[] do
       post   :include, on: :collection
       delete :exclude, on: :member
     end

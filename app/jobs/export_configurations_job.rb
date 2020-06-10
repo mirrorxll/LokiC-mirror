@@ -27,12 +27,10 @@ class ExportConfigurationsJob < ApplicationJob
   private
 
   def create_export_config(story_type, publication, tag)
-    publication.tags.to_a.include?(tag)
-
     ExportConfiguration.create(
       story_type: story_type,
       publication: publication,
-      tag: tag
+      tag: (publication.tag?(tag) ? tag : nil)
     )
   end
 end

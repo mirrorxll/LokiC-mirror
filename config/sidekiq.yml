@@ -3,10 +3,10 @@
     cron: '0 0 */1 * *'
     class: ClientsPublicationsTagsJob
   sections:
-    cron: '4 0 */1 * *'
+    cron: '0 1 */1 * *'
     class: SectionsJob
   photo_buckets:
-    cron: '6 0 */1 * *'
+    cron: '6 1 */1 * *'
     class: PhotoBucketsJob
   slack_accounts:
     cron: '8 0 */1 * *'
