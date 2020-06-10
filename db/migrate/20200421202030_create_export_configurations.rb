@@ -5,9 +5,11 @@ class CreateExportConfigurations < ActiveRecord::Migration[5.2]
     create_table :export_configurations do |t|
       t.belongs_to :story_type
       t.belongs_to :publication
+      t.belongs_to :tag
 
       t.integer :production_job_item
       t.integer :staging_job_item
+      t.boolean :skip, default: false
       t.timestamps
     end
 

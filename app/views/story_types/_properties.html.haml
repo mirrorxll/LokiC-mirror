@@ -1,29 +1,53 @@
-.row
+.row.small
   .col-10.offset-1
-    .row
-      .col-2.p-0.text-right
-        data set:
+    .row.mb-2
       .col-10.ml-0
-        =@story_type.data_set.name
-    .row
-      .col-2.p-0.text-right
-        frequency:
+        %table.table.table-borderless.table-sm
+          %thead
+            %tr
+              %th{ scope: 'col' }
+                data set
+              %th{ scope: 'col' }
+                date location
+          %tbody
+            %tr
+              %td
+                =@story_type.data_set.name
+              %td
+                =@story_type.data_set.location
+    %hr/
+
+    .row.mb-2
       .col-10.ml-0
-        =frequency_name
-    .row
-      .col-2.p-0.text-right
-        client(s):
+        %table.table.table-borderless.table-sm
+          %thead
+            %tr
+              %th{scope: 'col'}
+                client
+              %th{scope: 'col'}
+                tag
+          %tbody
+            -@story_type.client_tags.each do |cl_t|
+              %tr
+                %td
+                  =cl_t.client.name
+                %td
+                  =cl_t.tag ? cl_t.tag.name : 'tag not set'
+    %hr/
+
+    .row.mb-2
       .col-10.ml-0
-        -@story_type.clients.each do |client|
-          =client.name
-          %br/
-    .row
-      .col-2.p-0.text-right
-        tag:
-      .col-10.ml-0
-        =tag_name
-    .row
-      .col-2.p-0.text-right
-        photo buckets:
-      .col-10.ml-0
-        =photo_bucket_name
+        %table.table.table-borderless.table-sm
+          %thead
+            %tr
+              %th{scope: 'col'}
+                frequency
+              %th{scope: 'col'}
+                photo bucket
+          %tbody
+            %tr
+              %td
+                =@story_type.frequency.name
+              %td
+                =@story_type.photo_bucket.name
+    %hr/

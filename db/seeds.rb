@@ -373,6 +373,12 @@ FirstObjects.section.each { |obj| Section.create!(obj) }
 FirstObjects.tag.each { |obj| Tag.create!(obj) }
 FirstObjects.photo_bucket.each { |obj| PhotoBucket.create!(obj) }
 
+ClientsPublicationsTagsJob.perform_now
+ClientsTagsJob.perform_now
+SectionsJob.perform_now
+PhotoBucketsJob.perform_now
+SlackAccountsJob.perform_now
+
 # daily
 date = Date.new(2015, 1, 1)
 end_date = Date.new(2025, 1, 1)

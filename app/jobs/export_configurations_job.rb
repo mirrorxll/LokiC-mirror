@@ -4,8 +4,15 @@ class ExportConfigurationsJob < ApplicationJob
   queue_as :export_configurations
 
   def perform(story_type)
-    publication_ids = story_type.staging_table.publication_ids
-    publication_ids.each { |p_id| create_export_config(story_type, p_id) }
+    st_cl_tgs = story_type.client_tags
+
+    story_type.staging_table.publication_ids.each do |p_id|
+      publication = Publication.find_by(pl_identifier: p_id)
+      cl_t = st_cl_tgs.find_by(client: publication.client)
+      next if publication.nil? || cl_t.nil?
+
+      create_export_config(story_type, publication, cl_t.tag)
+    end
 
     status = true
     message = 'export configurations created.'
@@ -19,12 +26,13 @@ class ExportConfigurationsJob < ApplicationJob
 
   private
 
-  def create_export_config(story_type, pub_id)
-    publication = Publication.find_by(pl_identifier: pub_id)
+  def create_export_config(story_type, publication, tag)
+    publication.tags.to_a.include?(tag)
 
     ExportConfiguration.create(
       story_type: story_type,
-      publication: publication
+      publication: publication,
+      tag: tag
     )
   end
 end

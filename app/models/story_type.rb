@@ -7,7 +7,6 @@ class StoryType < ApplicationRecord # :nodoc:
   belongs_to :status,       optional: true
   belongs_to :frequency,    optional: true
   belongs_to :photo_bucket, optional: true
-  belongs_to :tag,          optional: true
 
   has_one :staging_table
   has_one :template, dependent: :destroy
@@ -15,7 +14,8 @@ class StoryType < ApplicationRecord # :nodoc:
   has_many :iterations,             dependent: :destroy
   has_many :export_configurations,  dependent: :destroy
 
-  has_and_belongs_to_many :clients
+  has_many :client_tags, class_name: 'StoryTypeClientTag'
+  has_many :clients, through: :client_tags
 
   has_one_attached :code
 

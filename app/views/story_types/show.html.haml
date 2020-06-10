@@ -55,14 +55,22 @@
         -else
           =render 'codes/form'
 
-#story_type_export_configs__samples.accordion
+#story_type_export_configs.accordion
+  .card
+    .card-header
+      %div.text-center{"aria-controls" => "#export_configs", "aria-expanded" => "false", "data-target" => "#samples", "data-toggle" => "collapse", :type => "button"}
+        export configurations
+    #export_configs.collapse.show{"data-parent" => "#story_type_export_configs"}
+      .card-body
+        =render 'export_configurations/export_configs'
+
+#story_type_samples.accordion
   .card
     .card-header
       %div.text-center{"aria-controls" => "#samles", "aria-expanded" => "false", "data-target" => "#samples", "data-toggle" => "collapse", :type => "button"}
-        export configurations / samples
-    #samples.collapse.show{"data-parent" => "#story_type_export_configs__samples"}
+        samples
+    #samples.collapse.show{"data-parent" => "#story_type_samples"}
       .card-body
-        =render 'export_configurations/export_configs'
         =render 'samples/samples'
 
 #story_type_scheduler.accordion

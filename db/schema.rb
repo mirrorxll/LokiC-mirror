@@ -12,33 +12,6 @@
 
 ActiveRecord::Schema.define(version: 2020_06_09_071552) do
 
-  create_table "1_staging", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "iter_id", default: 1
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "client_id"
-    t.integer "publication_id"
-    t.string "organization_ids", limit: 1000
-    t.boolean "story_created", default: false
-    t.string "time_frame"
-    t.integer "123"
-    t.integer "456"
-    t.index ["client_id", "publication_id", "123", "456"], name: "story_per_publication", unique: true
-    t.index ["iter_id"], name: "iter"
-  end
-
-  create_table "3_staging", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "iter_id", default: 3
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "client_id"
-    t.integer "publication_id"
-    t.string "organization_ids", limit: 1000
-    t.boolean "story_created", default: false
-    t.string "time_frame"
-    t.index ["iter_id"], name: "iter"
-  end
-
   create_table "account_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.string "permissions", limit: 5000
@@ -90,11 +63,6 @@ ActiveRecord::Schema.define(version: 2020_06_09_071552) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "blobs", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "story_type_id"
-    t.binary "file_blob", limit: 16777215
-  end
-
   create_table "clients", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "author_id"
     t.integer "pl_identifier"
@@ -108,12 +76,6 @@ ActiveRecord::Schema.define(version: 2020_06_09_071552) do
     t.bigint "client_id", null: false
     t.bigint "section_id", null: false
     t.index ["client_id", "section_id"], name: "index_clients_sections_on_client_id_and_section_id", unique: true
-  end
-
-  create_table "clients_story_types", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "story_type_id", null: false
-    t.bigint "client_id", null: false
-    t.index ["story_type_id", "client_id"], name: "index_clients_story_types_on_story_type_id_and_client_id", unique: true
   end
 
   create_table "clients_tags", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -312,6 +274,16 @@ ActiveRecord::Schema.define(version: 2020_06_09_071552) do
     t.index ["photo_bucket_id"], name: "index_story_types_on_photo_bucket_id"
     t.index ["status_id"], name: "index_story_types_on_status_id"
     t.index ["tag_id"], name: "index_story_types_on_tag_id"
+  end
+
+  create_table "story_types_clients_tags", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "story_type_id"
+    t.bigint "client_id"
+    t.bigint "tag_id"
+    t.index ["client_id"], name: "index_story_types_clients_tags_on_client_id"
+    t.index ["story_type_id", "client_id", "tag_id"], name: "story_types_clients_tags_unique_index", unique: true
+    t.index ["story_type_id"], name: "index_story_types_clients_tags_on_story_type_id"
+    t.index ["tag_id"], name: "index_story_types_clients_tags_on_tag_id"
   end
 
   create_table "tags", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

@@ -1,7 +1,2 @@
-%tr{id: "client_#{client.id}_tag"}
-  %td
-    =client.name
-    =link_to('x', exclude_story_type_client_path(@story_type.id, id: client.id), method: :delete, remote: true)
-  %td
-    -client.tags.each do |t|
-      =t.name
+=client.name
+=link_to('x', exclude_story_type_client_path(@story_type.id, id: client.id), method: :delete, remote: true)
