@@ -13,6 +13,7 @@ class StoryType < ApplicationRecord # :nodoc:
 
   has_many :iterations,             dependent: :destroy
   has_many :export_configurations,  dependent: :destroy
+  has_many :no_tags_exp_configs, -> { where(tag: nil) }, class_name: 'ExportConfiguration'
 
   has_many :client_tags, class_name: 'StoryTypeClientTag'
   has_many :clients, through: :client_tags
