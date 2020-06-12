@@ -1,0 +1,29 @@
+.row
+  .col-10.offset-1
+    =form_with(url: update_tags_story_type_export_configurations_path(@story_type), method: :patch) do |f|
+      %table.table.table-borderless.table-sm.small
+        %thead
+          %tr
+            %th.text-center{scope: 'col', style: 'width: 5%;'}
+              skip?
+            %th{ scope: 'col', style: 'width: 30%;' }
+              client -- publication
+            %th{ scope: 'col', style: 'width: 60%;' }
+              tags
+        %tbody
+          -configs.each do |n_t|
+            %tr
+              %td.text-center{scope: 'col'}
+                =f.check_box "export_configuration[#{n_t.id}[skip]]"
+              %td
+                ="#{n_t.publication.client.name} -- #{n_t.publication.name}"
+              %td
+                .row.mb-3
+                  -n_t.publication.tags.order(name: :asc).each do |t|
+                    .col-6
+                      =f.radio_button "export_configuration[#{n_t.id}[#{t.id}]]", t.name
+                      =f.label "export_configuration[#{n_t.id}[#{t.id}]]_#{t.name.underscore.split * '_'}", t.name
+
+      .row
+        .col-12
+          =f.submit 'update export configurations', class: 'btn btn-sm btn-outline-dark'

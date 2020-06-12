@@ -9,8 +9,6 @@ class ExportConfigurationsJob < ApplicationJob
     story_type.staging_table.publication_ids.each do |p_id|
       publication = Publication.find_by(pl_identifier: p_id)
       cl_tg = st_client_tag(st_cl_tgs, publication)
-      puts publication.name
-      puts cl_tg.client.name
       next if publication.nil? || cl_tg.nil?
 
       create_export_config(story_type, publication, cl_tg.tag)
@@ -36,7 +34,7 @@ class ExportConfigurationsJob < ApplicationJob
   end
 
   def create_export_config(story_type, publication, tag)
-    ExportConfiguration.create!(
+    ExportConfiguration.create(
       story_type: story_type,
       publication: publication,
       tag: (tag && publication.tag?(tag) ? tag : nil)

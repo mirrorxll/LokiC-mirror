@@ -10,12 +10,25 @@ module MiniLokiC
       new(story_type, method, options).send(:exec)
     end
 
+    def self.download(story_type)
+      new(story_type).send(:download)
+    end
+
     private
 
-    def initialize(story_type, method, options)
+    def initialize(story_type, method = nil, options = {})
       @story_type = story_type
       @method = method
-      @options = method.eql?(:population) ? options_to_hash(options) : options
+      @options = options_to_hash(options)
+    end
+
+    def download
+      query = "SELECT file_blob b FROM hle_file_blobs WHERE story_type_id = #{@story_type.id};"
+      db05 = Connect::Mysql.on(DB05, 'loki_storycreator')
+      blob = db05.query(query).first
+      db05.close
+
+      blob && blob['b']
     end
 
     def exec

@@ -12,7 +12,7 @@ Rails.application.routes.draw do
     mount Sidekiq::Web => '/sidekiq'
 
     resources :data_sets do
-      put :evaluate, on: :member
+      patch :evaluate, on: :member
 
       resources :story_types, only: %i[new create]
     end
@@ -27,34 +27,34 @@ Rails.application.routes.draw do
   resources :story_types, except: %i[new create] do
     get :properties
 
-    resources :statuses, only: %i[] do
+    resources :statuses, only: [] do
       post    :include, on: :collection
       delete  :exclude, on: :member
     end
 
     resources :templates, path: :template, only: %i[edit update]
 
-    resources :clients, only: %i[] do
+    resources :clients, only: [] do
       post    :include, on: :collection
       delete  :exclude, on: :member
 
-      resources :tags, only: %i[] do
+      resources :tags, only: [] do
         post   :include, on: :collection
         delete :exclude, on: :member
       end
     end
 
-    resources :frequencies, path: :frequency, only: %i[] do
+    resources :frequencies, path: :frequency, only: [] do
       post   :include, on: :collection
       delete :exclude, on: :member
     end
 
-    resources :photo_buckets, path: :photo_bucket, only: %i[] do
+    resources :photo_buckets, path: :photo_bucket, only: [] do
       post   :include, on: :collection
       delete :exclude, on: :member
     end
 
-    resources :developers, only: %i[] do
+    resources :developers, only: [] do
       put :include, on: :collection
       delete :exclude, on: :member
     end
@@ -63,7 +63,7 @@ Rails.application.routes.draw do
       post    :attach,    on: :collection
       delete  :detach,    on: :member
       delete  :truncate,  on: :member
-      put     :sync,      on: :member
+      patch   :sync,      on: :member
 
       resources :columns, only: %i[edit update]
       resources :indices, only: %i[new create destroy]
@@ -73,7 +73,9 @@ Rails.application.routes.draw do
 
     resources :populations, path: 'populate', only: %i[create destroy]
 
-    resources :export_configurations, only: :create
+    resources :export_configurations, only: :create do
+      patch :update_tags, on: :collection
+    end
 
     resources :samples, except: %i[new edit update destroy] do
       get :render_samples_section, on: :collection
@@ -84,14 +86,14 @@ Rails.application.routes.draw do
       delete :purge_all, on: :collection
     end
 
-    resources :schedules, path: 'schedule', only: %i[] do
+    resources :schedules, path: 'schedule', only: [] do
       post  :manual,    on: :collection
       post  :backdate,  on: :collection
       post  :auto,      on: :collection
-      put   :purge,     on: :collection
+      patch :purge,     on: :collection
     end
 
-    resources :exports, only: %i[] do
+    resources :exports, only: [] do
       post :staging,    on: :collection
       post :production, on: :collection
     end

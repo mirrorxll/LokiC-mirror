@@ -13,7 +13,7 @@ class StoryType < ApplicationRecord # :nodoc:
 
   has_many :iterations,             dependent: :destroy
   has_many :export_configurations,  dependent: :destroy
-  has_many :no_tags_exp_configs, -> { where(tag: nil) }, class_name: 'ExportConfiguration'
+  has_many :configurations_no_tags, -> { where(tag: nil) }, class_name: 'ExportConfiguration'
 
   has_many :client_tags, class_name: 'StoryTypeClientTag'
   has_many :clients, through: :client_tags
@@ -50,12 +50,7 @@ class StoryType < ApplicationRecord # :nodoc:
   end
 
   def download_code_from_db
-    db05 = MiniLokiC::Connect::Mysql.on(DB05, 'loki_storycreator')
-    query = "SELECT file_blob b FROM hle_file_blobs WHERE story_type_id = #{id};"
-    blob = db05.query(query).first
-    db05.close
-
-    blob && blob['b']
+    MiniLokiC::Code.download(self)
   end
 
   # filter

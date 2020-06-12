@@ -10,6 +10,10 @@ class ExportConfigurationsController < ApplicationController
     @story_type.update_iteration(export_configurations: false)
   end
 
+  def update_tags
+
+  end
+
   private
 
   def new_clients_publications?
