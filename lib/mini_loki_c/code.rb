@@ -19,7 +19,7 @@ module MiniLokiC
     def initialize(story_type, method = nil, options = {})
       @story_type = story_type
       @method = method
-      @options = options_to_hash(options)
+      @options = method.eql?(:population) ? options_to_hash(options) : options
     end
 
     def download
@@ -47,8 +47,6 @@ module MiniLokiC
     end
 
     def options_to_hash(options)
-      return {} if options.empty?
-
       options = options.split(',')
       options = options.map { |opt| opt.gsub(/[\s+,'"]/, '') }
 

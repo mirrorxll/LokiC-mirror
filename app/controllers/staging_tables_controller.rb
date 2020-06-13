@@ -16,26 +16,14 @@ class StagingTablesController < ApplicationController # :nodoc:
         'Table not found'
       end
 
-    if flash[:error].nil?
-      @story_type.create_staging_table(name: @staging_table_name)
-    end
+    @story_type.create_staging_table(name: @staging_table_name) if flash[:error].nil?
 
     render 'show'
   end
 
-  def detach
-    @staging_table.columns.delete
-    @staging_table.index.delete
-    @staging_table.delete
-
-    render 'new'
-  end
-
   def create
     flash[:error] =
-      if @staging_table.present?
-        'Table for this story type already exist. Please update page'
-      end
+      ('Table for this story type already exist. Please update page' if @staging_table.present?)
 
     @story_type.create_staging_table if flash[:error].nil?
 
@@ -48,14 +36,17 @@ class StagingTablesController < ApplicationController # :nodoc:
     render 'show'
   end
 
-  def truncate
-    @staging_table.truncate
-  end
-
   def destroy
     @staging_table.destroy
 
     render 'new'
+  end
+
+  def truncate
+    @staging_table.truncate
+    @story_type.update_iteration(population: nil)
+
+    render 'populations/destroy'
   end
 
   private

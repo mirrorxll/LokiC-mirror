@@ -61,7 +61,6 @@ Rails.application.routes.draw do
 
     resources :staging_tables, only: %i[show create destroy] do
       post    :attach,    on: :collection
-      delete  :detach,    on: :member
       delete  :truncate,  on: :member
       patch   :sync,      on: :member
 
@@ -74,12 +73,13 @@ Rails.application.routes.draw do
     resources :populations, path: 'populate', only: %i[create destroy]
 
     resources :export_configurations, only: :create do
+      get :section, on: :collection
       patch :update_tags, on: :collection
     end
 
     resources :samples, except: %i[new edit update destroy] do
-      get :render_samples_section, on: :collection
-      delete :purge_sampled, on: :member
+      get :section, on: :collection
+      delete :purge_sampled, on: :collection
     end
 
     resources :creations, path: 'create_stories', only: %i[create destroy] do

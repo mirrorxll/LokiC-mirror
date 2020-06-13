@@ -16,9 +16,6 @@
           =link_to('truncate', truncate_story_type_staging_table_path(@story_type, @story_type.staging_table),
                     class: 'btn btn-sm btn-outline-danger', method: :delete,  remote: true,
                     data: { confirm: 'You sure?' })
-          =link_to('detach', detach_story_type_staging_table_path(@story_type, @story_type.staging_table),
-                    class: 'btn btn-sm btn-outline-danger', method: :delete, remote: true,
-                    data: { confirm: 'You sure?' })
           =link_to('drop', story_type_staging_table_path(@story_type, @story_type.staging_table),
                     class: 'btn btn-sm btn-outline-danger', method: :delete, remote: true,
                     data: { confirm: 'You sure?' })

@@ -2,16 +2,16 @@
 
 class CreationsController < ApplicationController # :nodoc:
   def create
-    # render_400 && return unless @story_type.iteration.creation.nil?
-
     CreationJob.set(wait: 2.second).perform_later(@story_type)
     @story_type.update_iteration(creation: false)
+
+    render 'processing'
   end
 
   def purge_all
-    # render_400 && return unless @story_type.iteration.creation.nil?
-
     PurgeSamplesByLastIterationJob.set(wait: 2.second).perform_later(@story_type)
-    @story_type.update_iteration(purge_last_creation: false)
+    @story_type.update_iteration(purge_last_samples: false)
+
+    render 'processing'
   end
 end

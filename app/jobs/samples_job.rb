@@ -14,12 +14,12 @@ class SamplesJob < ApplicationJob
     status = true
     message = 'samples created.'
   rescue StandardError => e
-    puts e
     status = nil
-    message = e
+    message = e.full_message
     ids = nil
   ensure
     story_type.update_iteration(story_samples: status, story_sample_ids: ids)
-    send_status(story_type, samples_message: message)
+    send_to_action_cable(story_type, samples_message: status)
+    send_to_slack(story_type, message)
   end
 end

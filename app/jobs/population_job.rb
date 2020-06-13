@@ -14,6 +14,7 @@ class PopulationJob < ApplicationJob
     message = e
   ensure
     story_type.update_iteration(population: status)
-    send_status(story_type, population_message: message)
+    send_to_action_cable(story_type, population_message: message)
+    send_to_slack(story_type, message)
   end
 end

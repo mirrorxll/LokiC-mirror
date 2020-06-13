@@ -7,16 +7,17 @@ class ApplicationJob < ActiveJob::Base
 
   private
 
-  def send_status(stp, message = {})
+  def send_to_action_cable(stp, message = {})
     action_cable_send = { status: stp.iteration }.merge(message)
     StoryTypeChannel.broadcast_to(stp, action_cable_send)
-    return unless stp.developer_slack_id
+  end
 
-    job = "##{stp.id} #{stp.name} -- #{message.values.first}"
+  def send_to_slack(stp, message)
+    return unless stp.developer_slack_id
 
     SlackNotificationJob.perform_later(
       stp.developer.slack.identifier,
-      job
+      "##{stp.id} #{stp.name} -- #{message}"
     )
   end
 end

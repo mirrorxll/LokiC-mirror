@@ -46,7 +46,7 @@
 #story_type_code.accordion
   .card
     .card-header
-      %div.text-center{"aria-controls" => "#codes", "aria-expanded" => "false", "data-target" => "#codes", "data-toggle" => "collapse", :type => "button"}
+      %div.text-center{"aria-controls" => "#codes", "aria-expanded" => "false", "data-target" => "#code", "data-toggle" => "collapse", :type => "button"}
         code
     #code.collapse.show{"data-parent" => "#story_type_code"}
       .card-body
@@ -58,7 +58,7 @@
 #story_type_export_configs.accordion
   .card
     .card-header
-      %div.text-center{"aria-controls" => "#export_configs", "aria-expanded" => "false", "data-target" => "#samples", "data-toggle" => "collapse", :type => "button"}
+      %div.text-center{"aria-controls" => "#export_configs", "aria-expanded" => "false", "data-target" => "#export_configs", "data-toggle" => "collapse", :type => "button"}
         export configurations
     #export_configs.collapse.show{"data-parent" => "#story_type_export_configs"}
       .card-body
@@ -82,6 +82,7 @@
       .card-body
         -if @story_type.staging_table && @story_type.iteration.creation
           =render 'schedules/scheduler'
+
 #story_type_export.accordion
   .card
     .card-header

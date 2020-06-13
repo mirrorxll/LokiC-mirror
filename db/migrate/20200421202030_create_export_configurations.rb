@@ -9,7 +9,7 @@ class CreateExportConfigurations < ActiveRecord::Migration[5.2]
 
       t.integer :production_job_item
       t.integer :staging_job_item
-      t.boolean :skip, default: false
+      t.boolean :skipped, default: false
       t.timestamps
     end
 

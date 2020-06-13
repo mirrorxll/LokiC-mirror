@@ -8,4 +8,15 @@ class ExportConfiguration < ApplicationRecord # :nodoc:
   has_many :samples
 
   validates_uniqueness_of :publication_id, scope: [:story_type_id]
+
+  def self.update_tags(params = {})
+    return if params.empty?
+
+    params.each do |exp_cfg_id, tag|
+      find(exp_cfg_id).update(
+        skipped: tag[:skip],
+        tag_id: tag[:tag_id]
+      )
+    end
+  end
 end

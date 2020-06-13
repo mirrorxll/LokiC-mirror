@@ -4,19 +4,25 @@ class ExportConfigurationsController < ApplicationController
   def check; end
 
   def create
-    # render_400 && return unless @story_type.iteration.export_configurations.nil?
-
     ExportConfigurationsJob.set(wait: 2.seconds).perform_later(@story_type)
     @story_type.update_iteration(export_configurations: false)
   end
 
-  def update_tags
+  def section; end
 
+  def update_tags
+    ExportConfiguration.update_tags(update_tags_params)
+
+    render 'section'
   end
 
   private
 
   def new_clients_publications?
     @story_type.staging_table.new_clients_publications?
+  end
+
+  def update_tags_params
+    params.require(:export_configurations).permit!
   end
 end

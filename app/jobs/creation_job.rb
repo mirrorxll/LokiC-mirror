@@ -12,6 +12,7 @@ class CreationJob < ApplicationJob
     message = e
   ensure
     story_type.update_iteration(creation: status)
-    send_status(story_type, creation_message: message)
+    send_to_action_cable(story_type, creation_message: status)
+    send_to_slack(story_type, message)
   end
 end

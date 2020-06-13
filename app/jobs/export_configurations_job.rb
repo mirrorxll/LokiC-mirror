@@ -11,18 +11,18 @@ class ExportConfigurationsJob < ApplicationJob
       cl_tg = st_client_tag(st_cl_tgs, publication)
       next if publication.nil? || cl_tg.nil?
 
-      create_export_config(story_type, publication, cl_tg.tag)
+      create_update_export_config(story_type, publication, cl_tg.tag)
     end
 
     status = true
     message = 'export configurations created.'
   rescue StandardError => e
     status = nil
-    puts e
     message = e
   ensure
     story_type.update_iteration(export_configurations: status)
-    send_status(story_type, export_configurations_message: message)
+    send_to_action_cable(story_type, export_configurations_message: status)
+    send_to_slack(story_type, message)
   end
 
   private
@@ -33,11 +33,13 @@ class ExportConfigurationsJob < ApplicationJob
     end
   end
 
-  def create_export_config(story_type, publication, tag)
-    ExportConfiguration.create(
+  def create_update_export_config(story_type, publication, tag)
+    exp_c = ExportConfiguration.find_or_create_by(
       story_type: story_type,
-      publication: publication,
-      tag: (tag && publication.tag?(tag) ? tag : nil)
+      publication: publication
     )
+
+    exp_c.tag = (tag && publication.tag?(tag) ? tag : nil)
+    exp_c.save!
   end
 end

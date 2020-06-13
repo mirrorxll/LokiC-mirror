@@ -11,6 +11,7 @@
   function update_statuses(data) {
     if($(`#story_type_show_${data['status']['story_type_id']}`).length) {
       st_population(data);
+      st_exp_configurations_section(data);
       st_samples_section(data);
       st_scheduler(data);
       st_export(data);
@@ -40,11 +41,15 @@
 
     }
   }
-  
+
+  function st_exp_configurations_section(data) {
+    if(data['export_configurations_message'])
+      $.ajax({url: `${data['status']['story_type_id']}/export_configurations/section`})
+  }
+
   function st_samples_section(data) {
-    if(data['export_configurations_message'] || data['samples_message'] ||
-     data['creation_message'] || data['purge_last_creation_message'])
-      $.ajax({url: `${data['status']['story_type_id']}/samples/render_samples_section`})
+    if(data['samples_message'] || data['creation_message'] || data['purge_last_creation_message'])
+      $.ajax({url: `${data['status']['story_type_id']}/samples/section`})
   }
 
   function st_scheduler() {

@@ -68,7 +68,6 @@ module Table # :nodoc:
 
   def last_iter_id(t_name)
     last_iter_query = iter_id_value_query(t_name)
-    puts last_iter_query
     last_iter_id = connection.exec_query(last_iter_query).first['Column_Default']
     last_iter_id || 1
   end
