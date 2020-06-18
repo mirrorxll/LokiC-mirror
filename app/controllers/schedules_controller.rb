@@ -2,22 +2,16 @@
 
 class SchedulesController < ApplicationController # :nodoc:
   def manual
-    # render_400 && return unless @story_type.iteration.schedule.nil?
-
     SchedulerJob.set(wait: 2.seconds).perform_later(@story_type, 'manual', manual_params)
     @story_type.update_iteration(schedule: false)
   end
 
   def backdate
-    # render_400 && return unless @story_type.iteration.schedule.nil?
-
     SchedulerJob.set(wait: 2.seconds).perform_later(@story_type, 'backdate', backdated_params)
     @story_type.update_iteration(schedule: false)
   end
 
   def auto
-    # render_400 && return unless @story_type.iteration.schedule.nil?
-
     SchedulerJob.set(wait: 2.seconds).perform_later(@story_type, 'auto')
     @story_type.update_iteration(schedule: false)
   end

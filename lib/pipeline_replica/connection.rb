@@ -2,6 +2,8 @@
 
 module PipelineReplica
   class Connection
+    attr_reader :pl_replica
+
     def initialize(environment)
       host, database =
         if environment.eql?(:production)

@@ -7,7 +7,9 @@ Rails.application.routes.draw do
   devise_for :accounts, controllers: { registrations: 'registrations', sessions: 'sessions' }
   mount ActionCable.server, at: '/cable'
 
-  acc_access = ->(u) { %w[super-user manager].include?(u.account_type.name) }
+  acc_access =
+    ->(u) { %w[super-user manager editor].include?(u.account_type.name) }
+
   authenticate :account, acc_access do
     mount Sidekiq::Web => '/sidekiq'
 
@@ -21,7 +23,7 @@ Rails.application.routes.draw do
   root 'story_types#index'
 
   resources :slack_accounts, only: %i[] do
-    put :sync
+    patch :sync
   end
 
   resources :story_types, except: %i[new create] do

@@ -13,7 +13,7 @@
                evaluate_data_set_path,
                id: 'eval_data_set_btn',
                class: "btn btn-sm btn-outline-dark #{allow_evaluate?(@data_set) ? '' : 'disabled'}",
-               method: :put,
+               method: :patch,
                remote: true)
 
 %hr/

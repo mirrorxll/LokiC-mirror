@@ -4,7 +4,5 @@ require_relative 'creation/samples.rb'
 require_relative 'creation/staging_records.rb'
 
 module MiniLokiC
-  module Creation
-
-  end
+  module Creation; end
 end

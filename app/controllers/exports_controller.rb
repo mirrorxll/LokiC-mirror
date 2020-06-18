@@ -13,8 +13,6 @@ class ExportsController < ApplicationController
   private
 
   def export_to(environment)
-    # render_400 && return unless @story_type.iteration.export.nil?
-
     ExportJob.set(wait: 2.second).perform_later(environment, @story_type)
     @story_type.update_iteration(export: false)
   end
