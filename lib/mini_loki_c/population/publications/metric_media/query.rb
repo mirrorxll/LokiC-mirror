@@ -17,7 +17,9 @@ module MiniLokiC
         def pubs_query
           %|select o.name org_name,
                    c.id,
-                   cc.id client_id
+                   c.name,
+                   cc.id client_id,
+                   cc.name client_name
             from organizations o
               left join organization_communities oc
                 on oc.organization_id = o.id
@@ -33,7 +35,9 @@ module MiniLokiC
         def pubs_excluding_states_query
           %|select o.name org_name,
                    c.id,
-                   cc.id client_id
+                   c.name,
+                   cc.id client_id,
+                   cc.name client_name
             from organizations o
                 left join organization_communities oc
                     on oc.organization_id = o.id
@@ -59,7 +63,9 @@ module MiniLokiC
         def pubs_only_states_query
           %|select o.name org_name,
                    c.id,
-                   cc.id client_id
+                   c.name,
+                   cc.id client_id,
+                   cc.name client_name
             from organizations o
                 left join organization_communities oc
                     on oc.organization_id = o.id
