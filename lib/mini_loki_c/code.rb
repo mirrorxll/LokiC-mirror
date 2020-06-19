@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative 'extended_ruby_classes.rb'
 require_relative 'population.rb'
 require_relative 'creation.rb'
 
