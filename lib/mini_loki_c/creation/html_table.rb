@@ -15,7 +15,7 @@ module MiniLokiC
       end
 
       def assemble
-        '<div style="display:table; border-style: solid; border-width: 1px;">'\
+        '<div style="display: table; border-style: solid; border-width: 1px;">'\
           "#{header}"\
           "#{body}"\
         '</div>'
@@ -36,9 +36,11 @@ module MiniLokiC
       end
 
       def to_table_cell(value, header = false)
-        cell = "<div style=\"padding:10px;text-align: center;\">#{value}</div>"
+        cell = '<div style="padding: 10px; text-align: center;">'\
+                 "#{value}"\
+               '</div>'
 
-        '<div style="display:table-cell; border-style: solid; border-width: 1px;">'\
+        '<div style="display: table-cell; border-style: solid; border-width: 1px;">'\
           "#{header ? "<b>#{cell}</b>" : cell}"\
         '</div>'
       end
