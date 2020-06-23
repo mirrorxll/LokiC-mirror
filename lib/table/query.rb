@@ -23,7 +23,7 @@ module Table
           raise StandardError, 'Wrong Rails ENV'
         end
 
-      'SELECT Column_Default FROM Information_Schema.Columns '\
+      p 'SELECT Column_Default FROM Information_Schema.Columns '\
       "WHERE Table_Schema = '#{schema}' AND "\
             "Table_Name = '#{t_name}' AND Column_Name = 'iter_id';"
     end
@@ -58,7 +58,7 @@ module Table
     end
 
     def rows_by_ids_query(t_name, iter_id, options)
-      "SELECT * FROM `#{t_name}` "\
+      p "SELECT * FROM `#{t_name}` "\
       "WHERE story_created = 0 AND id IN (#{options[:ids]}) AND "\
       "iter_id = #{iter_id} "\
       "LIMIT #{options[:limit] || 7_000};"

@@ -44,19 +44,19 @@
 
   function st_exp_configurations_section(data) {
     if(data['export_configurations_message'])
-      $.ajax({url: `${data['status']['story_type_id']}/export_configurations/section`})
+      $.ajax({ url: `${data['status']['story_type_id']}/export_configurations/section` })
   }
 
   function st_samples_section(data) {
     if(data['samples_message'] || data['creation_message'] || data['purge_last_creation_message'])
-      $.ajax({url: `${data['status']['story_type_id']}/samples/section`})
+      $.ajax({ url: `${data['status']['story_type_id']}/samples/section` })
   }
 
-  function st_scheduler() {
-    
+  function st_scheduler(data) {
+    if(data['creation_message'] || data['scheduler_message'] || data['scheduler_message'] === false)
+      $.ajax({ url: `${data['status']['story_type_id']}/schedule/section` })
   }
 
-  function st_export() {
-  
+  function st_export(date) {
+
   }
-  

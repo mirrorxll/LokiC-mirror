@@ -84,7 +84,7 @@ Rails.application.routes.draw do
       delete :purge_sampled, on: :collection
     end
 
-    resources :creations, path: 'create_stories', only: %i[create destroy] do
+    resources :creations, path: 'create_stories', only: :create do
       delete :purge_all, on: :collection
     end
 
@@ -93,6 +93,7 @@ Rails.application.routes.draw do
       post  :backdate,  on: :collection
       post  :auto,      on: :collection
       patch :purge,     on: :collection
+      get :section, on: :collection
     end
 
     resources :exports, only: [] do

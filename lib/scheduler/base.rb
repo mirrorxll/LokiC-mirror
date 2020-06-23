@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
-require_relative '../mini_loki_c/connect/mysql'
-
-module Schedule
-  module OldScheduler # :nodoc:
+module Scheduler
+  module Base # :nodoc:
     FOUR_WEEKS_IN_DAYS = 4 * 7
     POSSIBLE_FREQUENCY = %w[weekly monthly quarterly].freeze
 
@@ -42,10 +40,11 @@ module Schedule
     end
 
     def self.old_scheduler(samples, options)
+      puts options
       options = check_and_define_args(options)
+      puts options
       iteration = samples.first.iteration
       samples = get_samples(samples, options[:extra_args])
-
 
       publications = samples.group(:publication_id).count
 
@@ -101,35 +100,21 @@ module Schedule
 
       samples_for_iteration = Sample.where(iteration: iteration).where(published_at: nil)
       iteration.update_attribute(:schedule, true) if samples_for_iteration.where(published_at: nil).empty?
-      options_for_schedule_args = options.select { |k,v| [:start_date, :limit, :total_days_till_end_date, :extra_args].include?(k) }
+      options_for_schedule_args = options.select { |k,v| [:start_date, :limit, :total_days_till_end, :extra_args].include?(k) }
       iteration.update_attribute(:schedule_args, iteration.schedule_args.nil? ? "shedule: #{options_for_schedule_args};" : iteration.schedule_args += "#{options_for_schedule_args};")
     end
 
     # Set default values if args have not been passed
     def self.check_and_define_args(args)
 
-      unless args[:limit] || args[:end_date] || args[:total_days_till_end_date]
+      unless args[:limit] || args[:end_date] || args[:total_days_till_end]
         raise ArgumentError, 'you need to provide limit and/or end_date/total days till end date args!'
       end
 
-      # begin
-      #   args[:start_date] = Date.parse(args[:start_date]) if args[:start_date]
-      # rescue ArgumentError, 'invalid start_date! (correct format: yyyy-mm-dd)'
-      #   puts
-      #   exit(0)
-      # end
-
       args[:start_date] = Date.parse(args[:start_date]) if args[:start_date]
-
       args[:end_date] = Date.parse(args[:end_date]) if args[:end_date]
-
-      # begin
-      #   args[:end_date] = Date.parse(args[:end_date]) if args[:end_date]
-      # rescue ArgumentError, 'invalid end_date! (correct format: yyyy-mm-dd)'
-      #
-      # end
-
       args[:start_date] = Date.today unless args[:start_date]
+
       if args[:start_date] < Date.today
         raise ArgumentError, 'invalid start_date - should be >= today! (correct format: yyyy-mm-dd)'
       end
@@ -140,16 +125,16 @@ module Schedule
         raise ArgumentError, 'invalid limit (needs to be an int value, > 0)'
       end
 
-      if args[:total_days_till_end_date]
+      if !args[:total_days_till_end].empty?
         if args[:end_date]
           raise ArgumentError, "invalid options - total_days_till_end_date can't be used with end_date - choose one"
-        elsif args[:total_days_till_end_date].to_i < 1
+        elsif args[:total_days_till_end].to_i < 1
           raise ArgumentError, 'invalid total_days_till_end_date - should be integer > 0'
         end
       end
 
-      args[:end_date] = args[:start_date] + args[:total_days_till_end_date].to_i - 1 if args[:total_days_till_end_date].to_i > 0
-
+      args[:end_date] = args[:start_date] + args[:total_days_till_end].to_i - 1 if args[:total_days_till_end].to_i > 0
+      puts "!!!!!!!!!!!!!!!!", args[:end_date], args[:total_days_till_end]
       if args[:weekdays]
         if /[ ,]+/.match (args[:weekdays])
           weekdays = args[:weekdays].split(/[ ,]+/)
@@ -185,31 +170,32 @@ module Schedule
       if args[:end_date] && args[:end_date] < args[:start_date]
         raise ArgumentError, 'invalid end_date - should be >= start_date! (correct format: yyyy-mm-dd)'
       end
-      return args
+
+      args
     end
 
     # Returns array with all days that match args [Dates]
     def self.all_publication_dates(weekdays, frequency, start_date, end_date)
       if frequency == 'weekly'
-        return all_days_weekly_till_end_date(weekdays, start_date, end_date)
+        all_days_weekly_till_end_date(weekdays, start_date, end_date)
       else
-        return all_days_monthly_or_quarterly_till_end_date(weekdays, frequency, start_date, end_date)
+        all_days_monthly_or_quarterly_till_end_date(weekdays, frequency, start_date, end_date)
       end
     end
 
     # Returns approximate end_date considering args
     def self.calculate_end_date(weekdays, frequency, limit, start_date, count)
-      export_days = (count.to_f / limit.to_f).ceil
-      weeks = (export_days.to_f / weekdays.length.to_f).ceil
-      days_till_end_of_week =  6 - start_date.wday
+      export_days = (count.to_f / limit).ceil
+      weeks = (export_days.to_f / weekdays.length).ceil
+      days_till_end_of_week = 6 - start_date.wday
       start_date += days_till_end_of_week
       case frequency
       when 'weekly'
-        return start_date + (weeks * 7)
+        start_date + (weeks * 7)
       when 'monthly'
-        return (start_date >> weeks)
+        (start_date >> weeks)
       when 'quarterly'
-        return (start_date >> (weeks * 3))
+        (start_date >> (weeks * 3))
       end
     end
 
@@ -225,7 +211,7 @@ module Schedule
         date + delta
         return date
       end
-      return false
+      false
     end
 
     # Returns next day in a period of months with same weekday of date in param
@@ -233,15 +219,15 @@ module Schedule
       date_next_month = date + period_in_months * FOUR_WEEKS_IN_DAYS
 
       if date_next_month.mon == (date >> period_in_months).mon
-        return date_next_month
+        date_next_month
       else
-        return date_next_month + 7
+        date_next_month + 7
       end
     end
 
     # Returns next day in a quarter with same weekday of date in param
     def self.future_quarter_same_weekday(date)
-      return future_month_same_weekday(date, 3)
+      future_month_same_weekday(date, 3)
     end
 
     # Returns all days of weekdays in param from start_date till end_date
@@ -249,7 +235,7 @@ module Schedule
     def self.all_days_weekly_till_end_date(weekdays, start_date=Date.today, end_date)
       wk_days = []
       weekdays.each { |k| wk_days << HASH_WEEKDAYS[k] }
-      days = (start_date..end_date).to_a.select {|k| wk_days.include?(k.wday)}
+      (start_date..end_date).to_a.select { |k| wk_days.include?(k.wday) }
     end
 
     # Returns days of weekdays in param from start_date till end_date by each month or quarter
@@ -260,7 +246,7 @@ module Schedule
       wk_days = []
       weekdays.each { |k| wk_days << HASH_WEEKDAYS[k] }
 
-      verified_days = (start_date..start_date + 6).to_a.select {|k| wk_days.include?(k.wday)}
+      verified_days = (start_date..start_date + 6).to_a.select { |k| wk_days.include?(k.wday) }
 
       days = verified_days
 
@@ -271,7 +257,7 @@ module Schedule
         days += verified_days
       end
 
-      return days.sort
+      days.sort
     end
   end
 end

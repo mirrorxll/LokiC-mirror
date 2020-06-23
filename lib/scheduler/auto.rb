@@ -1,11 +1,7 @@
 # frozen_string_literal: true
 
-require_relative '../mini_loki_c/connect/mysql'
-require_relative 'old_scheduler'
-require_relative 'backdate_scheduler'
-
-module Schedule
-  module AutoScheduler # :nodoc:
+module Scheduler
+  module Auto # :nodoc:
     def self.auto_scheduler(samples)
       frequency = samples.first.iteration.story_type.frequency.name
       case frequency
@@ -33,16 +29,16 @@ module Schedule
     def self.schedule_other_frequencies(samples, limit, total_days_till_end, start_publish_date)
       time_frame_ids = get_time_frame_ids(samples)
       time_frame_ids.each_with_index do |frame, index|
-        if index == 0
-          backdated_date = Date.today
-        else
-          backdated_date = samples.where(time_frame: time_frame_ids[index - 1][:time_frame_id]).sort_by { |sample| sample[:published_at] }.reverse.first[:published_at]
-        end
+        backdated_date =
+          if index.zero?
+            Date.today
+          else
+            smpls = samples.where(time_frame: time_frame_ids[index - 1][:time_frame_id])
+            smpls.sort_by { |sample| sample[:published_at] }.reverse.first[:published_at]
+          end
 
         samples_time_frame = samples.where(time_frame: frame[:time_frame_id])
-
-        start_publish_date = index == 0 ? start_publish_date.strftime('%Y-%m-%d') : (backdated_date + 1).strftime('%Y-%m-%d')
-
+        start_publish_date = index.zero? ? start_publish_date.strftime('%Y-%m-%d') : (backdated_date + 1).strftime('%Y-%m-%d')
         run(start_publish_date, limit, total_days_till_end, backdated_date, samples_time_frame)
       end
     end
@@ -58,9 +54,9 @@ module Schedule
           params = {
             start_date: start_publish_date,
             limit: limit,
-            total_days_till_end_date: total_days_till_end
+            total_days_till_end: total_days_till_end
           }
-          OldScheduler.old_scheduler(samples_time_frame, params)
+          Base.old_scheduler(samples_time_frame, params)
         else
           frame = TimeFrame.find_by(id: frame[:time_frame_id]).frame
           day_from_frame = frame.split(',').first.to_i
@@ -70,7 +66,7 @@ module Schedule
 
           backdated_date = (date_story_is_about - 2).strftime('%Y-%m-%d')
 
-          BackdateScheduler.backdate_scheduler(samples_time_frame, { backdated_date => '' })
+          Backdate.backdate_scheduler(samples_time_frame, { backdated_date => '' })
         end
       end
     end
@@ -85,7 +81,9 @@ module Schedule
         samples_time_frame = samples.where(time_frame: frame[:time_frame_id])
         total_days_till_end = (Date.parse(start_publish_date)..Date.parse("#{Time.now.year}-12-31")).count
         backdated_date = (Date.parse("#{Time.now.year}-01-01")..(Date.today - 1)).to_a.sample.strftime('%Y-%m-%d')
-        total_days_till_end = total_days_till_end >= 200 ? 200 : total_days_till_end unless year_from_frame == previous_year
+        unless year_from_frame == previous_year
+          total_days_till_end = total_days_till_end >= 200 ? 200 : total_days_till_end
+        end
         run(start_publish_date, limit, total_days_till_end, backdated_date, samples_time_frame)
       end
     end
@@ -94,12 +92,12 @@ module Schedule
       params = {
         start_date: start_publish_date,
         limit: limit,
-        total_days_till_end_date: total_days_till_end
+        total_days_till_end: total_days_till_end
       }
-      OldScheduler.old_scheduler(samples_time_frame, params)
+      Base.old_scheduler(samples_time_frame, params)
       return unless samples_time_frame.where(published_at: nil).empty?
 
-      BackdateScheduler.backdate_scheduler(
+      Backdate.backdate_scheduler(
         samples_time_frame, { backdated_date => '' }
       )
     end

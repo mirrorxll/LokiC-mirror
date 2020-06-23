@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
-require_relative '../mini_loki_c/connect/mysql'
-
-module Schedule
-  module BackdateScheduler # :nodoc:
+module Scheduler
+  module Backdate # :nodoc:
     def self.backdate_scheduler(samples, backdated_data)
       schedule_args = 'backdated: '
       backdated_data = backdated_data.sort_by { |_date, arg| arg }.reverse
