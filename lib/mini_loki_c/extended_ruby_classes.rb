@@ -50,7 +50,8 @@ class Array
   # @return {Integer} the percentile of index
   def percentile(index)
     raise "The index is #{index} -- it cannot be more than #{size}" if index > size
-    99 - ((index) / (count.to_f - 1) * 98).round
+
+    99 - (index / (count.to_f - 1) * 98).round
   end
 
   # Gets an array of hashes and convert it to json contains a tables with headers

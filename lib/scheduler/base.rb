@@ -40,9 +40,7 @@ module Scheduler
     end
 
     def self.old_scheduler(samples, options)
-      puts options
       options = check_and_define_args(options)
-      puts options
       iteration = samples.first.iteration
       samples = get_samples(samples, options[:extra_args])
 
@@ -54,18 +52,18 @@ module Scheduler
         end
         publication_dates = all_publication_dates(options[:weekdays], options[:frequency], options[:start_date], tmp_end_date ? tmp_end_date : options[:end_date])
 
-        number_of_stories_per_date = (count.to_f / publication_dates.length.to_f).ceil
+        number_of_stories_per_date = (count.to_f / publication_dates.length).ceil
 
         if options[:limit] && (options[:limit] < number_of_stories_per_date || options[:end_date] === false)
           number_of_stories_per_date = options[:limit]
-          limit_repeats_counter = (count.to_f / options[:limit].to_f).ceil
+          limit_repeats_counter = (count.to_f / options[:limit]).ceil
         end
 
         max_repeats = limit_repeats_counter && (publication_dates.length > limit_repeats_counter || options[:end_date] === false) ? limit_repeats_counter : publication_dates.length
 
         stories = samples.select(:id).where(publication_id: publication_id )
 
-        if (stories.count.to_f / max_repeats.to_f).ceil >= 1 && (stories.count.to_f / max_repeats.to_f).ceil <= number_of_stories_per_date
+        if (stories.count.to_f / max_repeats).ceil >= 1 && (stories.count.to_f / max_repeats).ceil <= number_of_stories_per_date
           number_of_days_with_more_stories = stories.count % max_repeats
         end
 
@@ -119,13 +117,13 @@ module Scheduler
         raise ArgumentError, 'invalid start_date - should be >= today! (correct format: yyyy-mm-dd)'
       end
 
-      if args[:limit] && args[:limit].to_i && args[:limit].to_i > 0
+      if args[:limit]&.to_i && args[:limit].to_i > 0
         args[:limit] = args[:limit].to_i
       elsif args[:limit]
         raise ArgumentError, 'invalid limit (needs to be an int value, > 0)'
       end
 
-      if !args[:total_days_till_end].empty?
+      unless args[:total_days_till_end].empty?
         if args[:end_date]
           raise ArgumentError, "invalid options - total_days_till_end_date can't be used with end_date - choose one"
         elsif args[:total_days_till_end].to_i < 1
@@ -134,12 +132,11 @@ module Scheduler
       end
 
       args[:end_date] = args[:start_date] + args[:total_days_till_end].to_i - 1 if args[:total_days_till_end].to_i > 0
-      puts "!!!!!!!!!!!!!!!!", args[:end_date], args[:total_days_till_end]
       if args[:weekdays]
-        if /[ ,]+/.match (args[:weekdays])
+        if /[ ,]+/.match(args[:weekdays])
           weekdays = args[:weekdays].split(/[ ,]+/)
         end
-        if weekdays && weekdays.is_a?(Array) && (weekdays & ALL_WEEKDAYS).length > 0
+        if weekdays&.is_a?(Array) && (weekdays & ALL_WEEKDAYS).length > 0
           args[:weekdays] = weekdays
         else
           raise ArgumentError, 'invalid weekdays (needs to be comma and/or space separated; possible values are: m tu w th f sa su)'

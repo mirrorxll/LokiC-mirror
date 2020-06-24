@@ -1,20 +1,19 @@
-.row.small
-  -if @story_type.iterations.last.schedule
+-if @story_type.iterations.last.schedule
+  .row.small
     .col-10.offset-1
       #results_scheduling
         =render 'schedules/results_scheduling'
-  -else
-    .col-5.offset-1
-      #manual_scheduler
-        =render 'schedules/form_manual'
+-else
+  .row.small
+    .col-6.offset-1
+      =render 'schedules/form'
     .col-5
-      #auto_scheduler
-        =render 'schedules/form_auto'
-    -if @story_type.iterations.last.samples.where.not(published_at: nil).any?
-      .row
-        .col-5.offset-1
-          #backdate_scheduler
-            =render 'schedules/form_backdate'
-            =render 'schedules/set_dates'
-        .col-5
-          =render 'schedules/results_scheduling'
+      =render 'schedules/results_scheduling'
+
+  -if @story_type.iterations.last.samples.where.not(published_at: nil).any?
+    %hr/
+    .row.small
+      .col-5.offset-1
+        #backdate_scheduler
+          =render 'schedules/form_backdate'
+          =render 'schedules/set_dates'

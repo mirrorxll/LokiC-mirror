@@ -54,7 +54,7 @@ module Scheduler
           params = {
             start_date: start_publish_date,
             limit: limit,
-            total_days_till_end: total_days_till_end
+            total_days_till_end: total_days_till_end.to_s
           }
           Base.old_scheduler(samples_time_frame, params)
         else
@@ -92,7 +92,7 @@ module Scheduler
       params = {
         start_date: start_publish_date,
         limit: limit,
-        total_days_till_end: total_days_till_end
+        total_days_till_end: total_days_till_end.to_s
       }
       Base.old_scheduler(samples_time_frame, params)
       return unless samples_time_frame.where(published_at: nil).empty?
