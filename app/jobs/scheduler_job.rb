@@ -17,8 +17,8 @@ class SchedulerJob < ApplicationJob
         Scheduler::Auto.auto_scheduler(samples)
         'auto scheduling success'
       end
-
     status = false if story_type.iterations.last.samples.where(published_at: nil).any?
+
   rescue StandardError => e
     status = nil
     message = e

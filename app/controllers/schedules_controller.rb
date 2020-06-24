@@ -5,16 +5,19 @@ class SchedulesController < ApplicationController # :nodoc:
 
   def manual
     SchedulerJob.set(wait: 2.seconds).perform_later(@story_type, 'manual', manual_params)
+    @story_type.update_iteration(schedule: false)
     render 'hide_section'
   end
 
   def backdate
     SchedulerJob.set(wait: 2.seconds).perform_later(@story_type, 'backdate', backdated_params)
+    @story_type.update_iteration(schedule: false)
     render 'hide_section'
   end
 
   def auto
     SchedulerJob.set(wait: 2.seconds).perform_later(@story_type, 'auto')
+    @story_type.update_iteration(schedule: false)
     render 'hide_section'
   end
 
@@ -29,7 +32,7 @@ class SchedulesController < ApplicationController # :nodoc:
   private
 
   def iteration_update
-    @story_type.update_iteration(schedule: false)
+
   end
 
   def manual_params
