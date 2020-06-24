@@ -23,7 +23,7 @@ module Table
           raise StandardError, 'Wrong Rails ENV'
         end
 
-      p 'SELECT Column_Default FROM Information_Schema.Columns '\
+      'SELECT Column_Default default_value FROM Information_Schema.Columns '\
       "WHERE Table_Schema = '#{schema}' AND "\
             "Table_Name = '#{t_name}' AND Column_Name = 'iter_id';"
     end

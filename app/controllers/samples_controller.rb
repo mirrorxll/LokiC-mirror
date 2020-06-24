@@ -11,7 +11,7 @@ class SamplesController < ApplicationController # :nodoc:
     SamplesJob.set(wait: 2.second).perform_later(@story_type, samples_params)
     @story_type.update_iteration(story_samples: false)
 
-    render 'creations/processing'
+    render 'creations/create'
   end
 
   def section; end
