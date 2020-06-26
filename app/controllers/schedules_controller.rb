@@ -24,7 +24,6 @@ class SchedulesController < ApplicationController # :nodoc:
   def purge
     @story_type.iteration.samples.update_all(published_at: nil, backdated: 0)
     @story_type.update_iteration(schedule: nil, schedule_args: nil)
-    render 'section'
   end
 
   def section; end

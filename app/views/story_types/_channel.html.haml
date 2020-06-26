@@ -53,10 +53,11 @@
   }
 
   function st_scheduler(data) {
-    if(data['creation_message'] || data['scheduler_message'] || data['scheduler_message'] === false)
+    if([true, false].includes(data['scheduler_message']) || data['creation_message'])
       $.ajax({ url: `${data['status']['story_type_id']}/schedule/section` })
   }
 
-  function st_export(date) {
-
+  function st_export(data) {
+    if(data['scheduler_message'] || data['export_message'])
+      $.ajax({ url: `${data['status']['story_type_id']}/export/section` })
   }

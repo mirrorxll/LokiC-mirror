@@ -5,10 +5,10 @@ class ExportJob < ApplicationJob
 
   def perform(environment, story_type, options = {})
     Samples[environment].export(story_type, options)
+    Table.increment_iter_id(story_type.staging_table.name)
 
     status = true
     message = 'exported.'
-    Table.increment_iter_id(story_type.staging_table.name)
   rescue StandardError => e
     status = nil
     message = e

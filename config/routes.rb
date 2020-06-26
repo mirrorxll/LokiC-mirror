@@ -57,7 +57,7 @@ Rails.application.routes.draw do
     end
 
     resources :developers, only: [] do
-      put :include, on: :collection
+      put    :include, on: :collection
       delete :exclude, on: :member
     end
 
@@ -75,16 +75,16 @@ Rails.application.routes.draw do
     resources :populations, path: 'populate', only: %i[create destroy]
 
     resources :export_configurations, only: :create do
-      get :section, on: :collection
+      get   :section,     on: :collection
       patch :update_tags, on: :collection
     end
 
     resources :samples, except: %i[new edit update destroy] do
-      get :section, on: :collection
+      get    :section,       on: :collection
       delete :purge_sampled, on: :collection
     end
 
-    resources :creations, path: 'create_stories', only: :create do
+    resources :creations, path: 'create_samples', only: :create do
       delete :purge_all, on: :collection
     end
 
@@ -93,12 +93,12 @@ Rails.application.routes.draw do
       post  :backdate,  on: :collection
       post  :auto,      on: :collection
       patch :purge,     on: :collection
-      get :section, on: :collection
+      get   :section,   on: :collection
     end
 
-    resources :exports, only: [] do
-      post :staging,    on: :collection
+    resources :exports, path: 'export', only: [] do
       post :production, on: :collection
+      get  :section,    on: :collection
     end
   end
 end
