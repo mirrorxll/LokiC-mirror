@@ -3,10 +3,9 @@
 class ExportJob < ApplicationJob
   queue_as :export
 
-  def perform(environment, story_type, options = {})
+  def perform(story_type, environment, options = {})
     Samples[environment].export(story_type, options)
     Table.increment_iter_id(story_type.staging_table.name)
-
     status = true
     message = 'exported.'
   rescue StandardError => e
