@@ -4,7 +4,7 @@ class ExportJob < ApplicationJob
   queue_as :export
 
   def perform(environment, story_type, options = {})
-    Stories[environment].export(story_type, options)
+    Samples[environment].export(story_type, options)
 
     status = true
     message = 'exported.'

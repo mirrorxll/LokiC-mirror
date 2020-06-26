@@ -2,10 +2,10 @@
 
 require_relative 'pipeline.rb'
 require_relative 'pipeline_replica.rb'
-require_relative 'stories/base.rb'
+require_relative 'samples/base.rb'
 
-module Stories
+module Samples
   def self.[](environment)
-    Stories::Base.new(environment)
+    Samples::Base.new(environment)
   end
 end

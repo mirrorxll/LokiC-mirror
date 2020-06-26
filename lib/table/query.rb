@@ -72,7 +72,7 @@ module Table
 
     def alter_increment_iter_id_query(t_name, value)
       "ALTER TABLE `#{t_name}` "\
-      "MODIFY COLUMN iter_id int NOT NULL DEFAULT #{value + 1};"
+      "MODIFY COLUMN iter_id int NOT NULL DEFAULT #{value.to_i + 1};"
     end
   end
 end
