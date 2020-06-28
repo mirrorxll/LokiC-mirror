@@ -68,8 +68,7 @@ module Table # :nodoc:
 
   def last_iter_id(t_name)
     last_iter_query = iter_id_value_query(t_name)
-    last_iter_id = connection.exec_query(last_iter_query).first['Column_Default']
-    last_iter_id || 1
+    connection.exec_query(last_iter_query).first['default_value']
   end
 
   # purge rows that were inserted to staging table

@@ -14,9 +14,8 @@ class SamplesJob < ApplicationJob
     status = true
     message = 'samples created.'
   rescue StandardError => e
-    status = nil
-    message = e.full_message
-    ids = nil
+    ids = status = nil
+    message = e
   ensure
     story_type.update_iteration(story_samples: status, story_sample_ids: ids)
     send_to_action_cable(story_type, samples_message: status)

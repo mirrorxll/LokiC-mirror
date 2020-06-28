@@ -1,3 +1,18 @@
-%h1
-  =@sample.output.headline
-=sanitize @sample.output.body
+.row
+  .col-1.text-right
+    Headline:
+  .col-11
+    %h6
+      =@sample.output.headline
+.row
+  .col-1.text-right
+    Teaser:
+  .col-11
+    %h6
+      =@sample.output.teaser
+
+.row.small
+  .col-1.text-right
+    Body:
+  .col-11
+    =@sample.output.body.html_safe

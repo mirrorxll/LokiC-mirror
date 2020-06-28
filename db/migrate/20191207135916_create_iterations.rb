@@ -5,6 +5,7 @@ class CreateIterations < ActiveRecord::Migration[5.2] # :nodoc:
     create_table :iterations do |t|
       t.belongs_to :story_type
 
+      t.string  :name
       t.boolean :population
       t.string  :population_args
       t.boolean :export_configurations

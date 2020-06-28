@@ -7,7 +7,7 @@
       .col-1
         #sync.btn-group
           =link_to('sync', sync_story_type_staging_table_path(@story_type, @story_type.staging_table),
-                    class: 'btn btn-sm btn-outline-dark', method: :put, remote: true)
+                    class: 'btn btn-sm btn-outline-dark', method: :patch, remote: true)
       .col-6
         #manipulate.btn-group.ml-2
           =link_to('purge last population', story_type_population_path(@story_type, @story_type.staging_table),

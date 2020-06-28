@@ -16,10 +16,10 @@
           -if iteration.creation.eql?(false)
             creation samples in progress...
           -elsif iteration.creation.eql?(nil)
-            =link_to('create all from the last iteration',
+            =link_to('create samples from the last iteration',
                       story_type_creations_path(@story_type),
                       class: 'btn btn-sm btn-outline-dark', method: :post, remote: true)
           -else
-            =link_to('purge all samples from the last iteration',
+            =link_to('purge samples from the last iteration',
                       purge_all_story_type_creations_path(@story_type),
                       class: 'btn btn-sm btn-outline-dark', method: :delete, remote: true)

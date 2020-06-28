@@ -1,21 +1,12 @@
 # frozen_string_literal: true
 
 class ExportsController < ApplicationController
-  def staging
-    export_to('staging')
-  end
-
   def production
-    export_to('production')
+    ExportJob.set(wait: 2.second).perform_later(@story_type)
+    @story_type.update_iteration(export: false)
+
     render 'export'
   end
 
-  private
-
-  def export_to(environment)
-    # render_400 && return unless @story_type.iteration.export.nil?
-
-    ExportJob.set(wait: 2.second).perform_later(environment, @story_type)
-    @story_type.update_iteration(export: false)
-  end
+  def section; end
 end

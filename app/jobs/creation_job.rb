@@ -6,7 +6,7 @@ class CreationJob < ApplicationJob
   def perform(story_type, options = {})
     MiniLokiC::Code.execute(story_type, :creation, options)
     status = true
-    message = 'all stories created.'
+    message = 'all samples created.'
   rescue StandardError => e
     status = nil
     message = e

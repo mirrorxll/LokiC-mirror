@@ -255,14 +255,12 @@ module FirstObjects # :nodoc:
         name: 'Story Type 1',
         editor: Account.first,
         data_set: DataSet.first,
-        status: Status.first
       },
       {
         name: 'Story Type 2',
         editor: Account.first,
         developer: Account.first,
         data_set: DataSet.last,
-        status: Status.first
       }
     ]
   end

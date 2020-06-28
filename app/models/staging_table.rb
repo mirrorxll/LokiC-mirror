@@ -61,13 +61,25 @@ class StagingTable < ApplicationRecord # :nodoc:
 
   def create_table
     ActiveRecord::Migration.create_table(name) do |t|
-      t.timestamps
-      t.integer :client_id
-      t.integer :publication_id
-      t.string  :organization_ids, limit: 1000
-      t.boolean :story_created, default: false
-      t.string  :time_frame
+      t.datetime :created_at
+      t.datetime :updated_at
+      t.integer  :client_id
+      t.string   :client_name
+      t.integer  :publication_id
+      t.string   :publication_name
+      t.string   :organization_ids, limit: 2000
+      t.boolean  :story_created, default: false
+      t.string   :time_frame
     end
+
+    self.class.connection.exec_query(
+      "ALTER TABLE `#{name}` CHANGE COLUMN created_at created_at "\
+      'TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;'
+    )
+    self.class.connection.exec_query(
+      "ALTER TABLE `#{name}` CHANGE COLUMN updated_at updated_at "\
+      'TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;'
+    )
   end
 
   def iteration_missing?

@@ -1,25 +1,24 @@
 # frozen_string_literal: true
 
 class SchedulesController < ApplicationController # :nodoc:
-  def manual
-    # render_400 && return unless @story_type.iteration.schedule.nil?
+  after_action :iteration_update, except: :purge
 
+  def manual
     SchedulerJob.set(wait: 2.seconds).perform_later(@story_type, 'manual', manual_params)
     @story_type.update_iteration(schedule: false)
+    render 'hide_section'
   end
 
   def backdate
-    # render_400 && return unless @story_type.iteration.schedule.nil?
-
     SchedulerJob.set(wait: 2.seconds).perform_later(@story_type, 'backdate', backdated_params)
     @story_type.update_iteration(schedule: false)
+    render 'hide_section'
   end
 
   def auto
-    # render_400 && return unless @story_type.iteration.schedule.nil?
-
     SchedulerJob.set(wait: 2.seconds).perform_later(@story_type, 'auto')
     @story_type.update_iteration(schedule: false)
+    render 'hide_section'
   end
 
   def purge
@@ -27,7 +26,13 @@ class SchedulesController < ApplicationController # :nodoc:
     @story_type.update_iteration(schedule: nil, schedule_args: nil)
   end
 
+  def section; end
+
   private
+
+  def iteration_update
+
+  end
 
   def manual_params
     params.permit(

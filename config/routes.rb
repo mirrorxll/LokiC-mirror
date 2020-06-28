@@ -7,7 +7,9 @@ Rails.application.routes.draw do
   devise_for :accounts, controllers: { registrations: 'registrations', sessions: 'sessions' }
   mount ActionCable.server, at: '/cable'
 
-  acc_access = ->(u) { %w[super-user manager].include?(u.account_type.name) }
+  acc_access =
+    ->(u) { %w[super-user manager editor].include?(u.account_type.name) }
+
   authenticate :account, acc_access do
     mount Sidekiq::Web => '/sidekiq'
 
@@ -21,7 +23,7 @@ Rails.application.routes.draw do
   root 'story_types#index'
 
   resources :slack_accounts, only: %i[] do
-    put :sync
+    patch :sync
   end
 
   resources :story_types, except: %i[new create] do
@@ -55,9 +57,11 @@ Rails.application.routes.draw do
     end
 
     resources :developers, only: [] do
-      put :include, on: :collection
+      put    :include, on: :collection
       delete :exclude, on: :member
     end
+
+    resources :iterations
 
     resources :staging_tables, only: %i[show create destroy] do
       post    :attach,    on: :collection
@@ -73,16 +77,16 @@ Rails.application.routes.draw do
     resources :populations, path: 'populate', only: %i[create destroy]
 
     resources :export_configurations, only: :create do
-      get :section, on: :collection
+      get   :section,     on: :collection
       patch :update_tags, on: :collection
     end
 
     resources :samples, except: %i[new edit update destroy] do
-      get :section, on: :collection
+      get    :section,       on: :collection
       delete :purge_sampled, on: :collection
     end
 
-    resources :creations, path: 'create_stories', only: %i[create destroy] do
+    resources :creations, path: 'create_samples', only: :create do
       delete :purge_all, on: :collection
     end
 
@@ -91,11 +95,12 @@ Rails.application.routes.draw do
       post  :backdate,  on: :collection
       post  :auto,      on: :collection
       patch :purge,     on: :collection
+      get   :section,   on: :collection
     end
 
-    resources :exports, only: [] do
-      post :staging,    on: :collection
+    resources :exports, path: 'export', only: [] do
       post :production, on: :collection
+      get  :section,    on: :collection
     end
   end
 end
