@@ -1,10 +1,18 @@
 =render 'channel'
 
 %div{ id: "story_type_show_#{@story_type.id}"}
+
 %hr
 #story_type_name
   %b #{@story_type.name}
 %hr
+
+#story_type_iteration
+  =render @story_type.iterations
+  #new_iteration.d-inline-block
+    =link_to('new iteration', new_story_type_iteration_path(@story_type),
+             class: 'badge badge-pill badge-light')
+%hr/
 
 #story_type_status
   status:

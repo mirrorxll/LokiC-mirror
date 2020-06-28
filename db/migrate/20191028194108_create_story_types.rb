@@ -8,6 +8,7 @@ class CreateStoryTypes < ActiveRecord::Migration[5.2] # :nodoc:
       t.belongs_to :data_set
       t.belongs_to :frequency
       t.belongs_to :photo_bucket
+      t.belongs_to :current_iteration
 
       t.string :name
       t.datetime :last_export

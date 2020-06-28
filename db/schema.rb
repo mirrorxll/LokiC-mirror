@@ -149,6 +149,7 @@ ActiveRecord::Schema.define(version: 2020_06_09_071552) do
 
   create_table "iterations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "story_type_id"
+    t.string "name"
     t.boolean "population"
     t.string "population_args"
     t.boolean "export_configurations"
@@ -273,10 +274,12 @@ ActiveRecord::Schema.define(version: 2020_06_09_071552) do
     t.bigint "data_set_id"
     t.bigint "frequency_id"
     t.bigint "photo_bucket_id"
+    t.bigint "current_iteration_id"
     t.string "name"
     t.datetime "last_export"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["current_iteration_id"], name: "index_story_types_on_current_iteration_id"
     t.index ["data_set_id"], name: "index_story_types_on_data_set_id"
     t.index ["developer_id"], name: "index_story_types_on_developer_id"
     t.index ["editor_id"], name: "index_story_types_on_editor_id"

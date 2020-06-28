@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
 class StoryType < ApplicationRecord # :nodoc:
-  belongs_to :editor,       class_name: 'Account'
-  belongs_to :developer,    optional: true, class_name: 'Account'
+  belongs_to :editor,            class_name: 'Account'
+  belongs_to :developer,         optional: true, class_name: 'Account'
   belongs_to :data_set
-  belongs_to :frequency,    optional: true
-  belongs_to :photo_bucket, optional: true
+  belongs_to :frequency,         optional: true
+  belongs_to :photo_bucket,      optional: true
+  belongs_to :current_iteration, optional: true, class_name: 'Iteration'
 
   has_one :staging_table
   has_one :template, dependent: :destroy
@@ -22,7 +23,8 @@ class StoryType < ApplicationRecord # :nodoc:
   validates :name, uniqueness: true
 
   before_create { build_template }
-  before_create { iterations.build }
+  before_create { iterations.build(name: 'Initial') }
+  after_create  { update(current_iteration: iterations.first) }
 
   def developer_slack_id
     developer&.slack&.identifier

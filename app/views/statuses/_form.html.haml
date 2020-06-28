@@ -1,2 +1,2 @@
-=form_with(url: include_story_type_statuses_path(@story_type), html: { class: 'd-inline', onchange: '$(this).submit();' }) do |form|
+=form_with(url: include_story_type_iteration_statuses_path(@story_type, @story_type.iteration), html: { class: 'd-inline', onchange: '$(this).submit();' }) do |form|
   =form.collection_select :status_id, Status.all, :id, :name, { prompt: '' }, { name: :id }
