@@ -4,7 +4,6 @@ class StoryType < ApplicationRecord # :nodoc:
   belongs_to :editor,       class_name: 'Account'
   belongs_to :developer,    optional: true, class_name: 'Account'
   belongs_to :data_set
-  belongs_to :status,       optional: true
   belongs_to :frequency,    optional: true
   belongs_to :photo_bucket, optional: true
 
@@ -23,7 +22,6 @@ class StoryType < ApplicationRecord # :nodoc:
   validates :name, uniqueness: true
 
   before_create { build_template }
-  before_create { self.status = Status.first }
   before_create { iterations.build }
 
   def developer_slack_id
@@ -75,6 +73,6 @@ class StoryType < ApplicationRecord # :nodoc:
   end
 
   def self.status(id)
-    where(status: id)
+    iteration.statuses.find_by(id: id)
   end
 end

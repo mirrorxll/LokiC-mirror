@@ -9,8 +9,8 @@
 #story_type_status
   status:
   =render 'statuses/form'
-  -if @story_type.status
-    =render @story_type.status
+  -if @story_type.iteration.statuses
+    =render @story_type.iteration.statuses
 %hr/
 
 #story_type_template.accordion

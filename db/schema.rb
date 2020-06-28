@@ -121,13 +121,16 @@ ActiveRecord::Schema.define(version: 2020_06_09_071552) do
   create_table "export_configurations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "story_type_id"
     t.bigint "publication_id"
+    t.bigint "tag_id"
     t.integer "production_job_item"
     t.integer "staging_job_item"
+    t.boolean "skipped", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["publication_id"], name: "index_export_configurations_on_publication_id"
     t.index ["story_type_id", "publication_id"], name: "export_config_unique_index", unique: true
     t.index ["story_type_id"], name: "index_export_configurations_on_story_type_id"
+    t.index ["tag_id"], name: "index_export_configurations_on_tag_id"
   end
 
   create_table "frequencies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -159,6 +162,12 @@ ActiveRecord::Schema.define(version: 2020_06_09_071552) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["story_type_id"], name: "index_iterations_on_story_type_id"
+  end
+
+  create_table "iterations_statuses", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "iteration_id", null: false
+    t.bigint "status_id", null: false
+    t.index ["iteration_id", "status_id"], name: "index_iterations_statuses_on_iteration_id_and_status_id", unique: true
   end
 
   create_table "outputs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -248,20 +257,22 @@ ActiveRecord::Schema.define(version: 2020_06_09_071552) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "statuses_story_types", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "story_type_id", null: false
-    t.bigint "status_id", null: false
-    t.index ["story_type_id", "status_id"], name: "index_statuses_story_types_on_story_type_id_and_status_id", unique: true
+  create_table "story_type_client_tags", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "story_type_id"
+    t.bigint "client_id"
+    t.bigint "tag_id"
+    t.index ["client_id"], name: "index_story_type_client_tags_on_client_id"
+    t.index ["story_type_id", "client_id", "tag_id"], name: "story_types_clients_tags_unique_index", unique: true
+    t.index ["story_type_id"], name: "index_story_type_client_tags_on_story_type_id"
+    t.index ["tag_id"], name: "index_story_type_client_tags_on_tag_id"
   end
 
   create_table "story_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "editor_id"
     t.bigint "developer_id"
     t.bigint "data_set_id"
-    t.bigint "status_id"
     t.bigint "frequency_id"
     t.bigint "photo_bucket_id"
-    t.bigint "tag_id"
     t.string "name"
     t.datetime "last_export"
     t.datetime "created_at", null: false
@@ -272,18 +283,6 @@ ActiveRecord::Schema.define(version: 2020_06_09_071552) do
     t.index ["frequency_id"], name: "index_story_types_on_frequency_id"
     t.index ["name"], name: "index_story_types_on_name", unique: true
     t.index ["photo_bucket_id"], name: "index_story_types_on_photo_bucket_id"
-    t.index ["status_id"], name: "index_story_types_on_status_id"
-    t.index ["tag_id"], name: "index_story_types_on_tag_id"
-  end
-
-  create_table "story_types_clients_tags", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "story_type_id"
-    t.bigint "client_id"
-    t.bigint "tag_id"
-    t.index ["client_id"], name: "index_story_types_clients_tags_on_client_id"
-    t.index ["story_type_id", "client_id", "tag_id"], name: "story_types_clients_tags_unique_index", unique: true
-    t.index ["story_type_id"], name: "index_story_types_clients_tags_on_story_type_id"
-    t.index ["tag_id"], name: "index_story_types_clients_tags_on_tag_id"
   end
 
   create_table "tags", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

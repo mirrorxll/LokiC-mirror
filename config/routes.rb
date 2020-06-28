@@ -61,6 +61,8 @@ Rails.application.routes.draw do
       delete :exclude, on: :member
     end
 
+    resources :iterations
+
     resources :staging_tables, only: %i[show create destroy] do
       post    :attach,    on: :collection
       delete  :truncate,  on: :member
