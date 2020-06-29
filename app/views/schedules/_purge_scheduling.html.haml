@@ -1,2 +1,2 @@
-=form_with(url: purge_story_type_iteration_schedules_path(@story_type), method: :patch) do |form|
+=form_with(url: purge_story_type_iteration_schedules_path(@story_type, @story_type.iteration), method: :patch) do |form|
   =form.submit 'purge schedule', class: 'btn btn-sm btn-outline-dark'

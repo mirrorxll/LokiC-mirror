@@ -12,7 +12,7 @@
     -else
       .row
         .col-1.offset-1
-          =link_to('export!', production_story_type_iteration_exports_path(@story_type),
+          =link_to('export!', production_story_type_iteration_exports_path(@story_type, @story_type.iteration),
                               class: 'btn btn-sm btn-outline-dark',
                               method: :post, remote: true)
         .col-9.small
