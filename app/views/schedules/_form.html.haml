@@ -1,4 +1,4 @@
-=form_with(url: manual_story_type_iteration_schedules_path(@story_type)) do |form|
+=form_with(url: manual_story_type_iteration_schedules_path(@story_type, @story_type.iteration)) do |form|
   .row
     .col-3
       =form.label :start_date, 'start date:'
@@ -22,7 +22,7 @@
   .row.mt-3
     .col-3.small.p-0
       =link_to('auto schedule',
-               auto_story_type_iteration_schedules_path(@story_type),
+               auto_story_type_iteration_schedules_path(@story_type, @story_type.iteration),
                class: 'btn btn-sm btn-outline-dark',
                method: :post, remote: true)
     .col-9

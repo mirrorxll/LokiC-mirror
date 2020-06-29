@@ -13,5 +13,5 @@
   .row
     .col-12
       =form.submit 'Create Samples', class: 'btn btn-sm btn-outline-dark'
-      =link_to('Delete Samples', purge_sampled_story_type_iteration_samples_path(@story_type),
+      =link_to('Delete Samples', purge_sampled_story_type_iteration_samples_path(@story_type, @story_type.iteration),
                class: 'btn btn-sm btn-outline-dark ml-5', method: :delete, remote: true)
