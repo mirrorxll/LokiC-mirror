@@ -31,7 +31,7 @@ class StoryType < ApplicationRecord # :nodoc:
   end
 
   def iteration
-    iterations.last
+    current_iteration
   end
 
   # method will update last iteration status

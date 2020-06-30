@@ -1,4 +1,4 @@
-function new_form() {
+function new_data_set_form() {
   $('#show_new_data_set_form').html(
       '<%=link_to('Add a new Data Set', '#new_data_set_form', 'aria-controls' => 'new_data_set_form',
                   'aria-expanded' => false, data: { toggle: "collapse", target: "#new_data_set_form" },
@@ -9,4 +9,4 @@ function new_form() {
   form_area.collapse();
 }
 
-new_form();
+new_data_set_form();

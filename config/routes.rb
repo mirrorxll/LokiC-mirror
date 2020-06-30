@@ -74,8 +74,8 @@ Rails.application.routes.draw do
 
     resources :iterations do
       resources :statuses, only: [] do
-        post    :include, on: :collection
-        delete  :exclude, on: :member
+        get   :form,    on: :collection
+        patch :change,  on: :collection
       end
 
       resources :populations, path: 'populate', only: %i[create destroy]

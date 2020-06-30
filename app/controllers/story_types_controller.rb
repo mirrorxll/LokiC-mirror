@@ -3,6 +3,7 @@
 class StoryTypesController < ApplicationController # :nodoc:
   before_action :find_data_set, only: %i[new create]
   before_action :find_story_type, except: %i[index new create properties]
+  before_action :set_iteration, only: :show
   skip_before_action :find_parent_story_type, except: :properties
 
   def index
@@ -13,7 +14,8 @@ class StoryTypesController < ApplicationController # :nodoc:
     end
   end
 
-  def show; end
+  def show
+  end
 
   def new
     @story_type = @data_set.story_types.build
@@ -54,6 +56,17 @@ class StoryTypesController < ApplicationController # :nodoc:
 
   def story_type_params
     params.require(:story_type).permit(:name)
+  end
+
+  def set_iteration
+    @iteration =
+      if params[:iteration]
+        Iteration.find(params[:iteration])
+      else
+        @story_type.current_iteration
+      end
+
+    @story_type.update(current_iteration: @iteration)
   end
 
   def filter_params

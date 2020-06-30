@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 module IterationsHelper
-  def color(story_type, iteration)
-    return 'info' if story_type.current_iteration.eql?(iteration)
-
+  def iteration_color(story_type, iteration)
     case iteration.statuses.first.name
     when 'not started'
       'secondary'

@@ -1,23 +1,13 @@
 # frozen_string_literal: true
 
 class IterationsController < ApplicationController
-  before_action :find_iteration, only: %i[edit update destroy]
-
-  def show; end
-
-  def new
-    @iteration = @story_type.iterations.build_iteration
-  end
+  before_action :find_iteration, only: %i[show edit update destroy]
 
   def create
-    @iteration =
-      @story_type.iterations.build_iteration(iteration_params)
+    @iteration = @story_type.iterations.build(iteration_params)
+    @story_type.update(current_iteration: @iteration) if @iteration.save
 
-    if @iteration.save
-      redirect_to @story_type
-    else
-      render :new
-    end
+    redirect_to @story_type
   end
 
   def edit; end
@@ -37,6 +27,6 @@ class IterationsController < ApplicationController
   end
 
   def iteration_params
-
+    params.require(:iteration).permit(:name)
   end
 end

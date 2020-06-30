@@ -1,19 +1,14 @@
 # frozen_string_literal: true
 
 class StatusesController < ApplicationController
-  before_action :find_status
+  before_action :find_iteration,  only: :change
+  before_action :find_status,     only: :change
 
-  def include
-    render_400 && return if @story_type.iteration.statuses.exists?(@status.id)
+  def form; end
 
-    # @story_type.clients << @client
-    # @client_tag = @story_type.client_tags.reload.find_by(client: @client)
-    #
-    # @story_type.iteration.statuses << update(status: @status)
-  end
-
-  def exclude
-    # @story_type.update(status: Status.first)
+  def change
+    @iteration.statuses.destroy_all
+    @iteration.statuses << @status
   end
 
   private
