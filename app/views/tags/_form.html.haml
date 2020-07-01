@@ -1,2 +1,0 @@
-=form_with(url: include_story_type_client_tags_path(@story_type, client), html: { onchange: '$(this).submit();' }) do |form|
-  =form.collection_select :tag_id, client.tags, :id, :name, { prompt: '' }, { name: :id }

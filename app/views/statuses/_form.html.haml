@@ -1,3 +1,0 @@
-=form_with(url: change_story_type_iteration_statuses_path(@story_type, @story_type.iteration),
-           method: :patch, html: { class: 'd-inline', onchange: '$(this).submit();' }) do |form|
-  =form.collection_select :status_id, Status.all, :id, :name, { prompt: '' }, { name: :id }

@@ -13,6 +13,11 @@
 !/log/.keep
 !/tmp/.keep
 
+# Ignore pidfiles, but keep the directory.
+/tmp/pids/*
+!/tmp/pids/
+!/tmp/pids/.keep
+
 # Ignore uploaded files in development.
 /storage/*
 !/storage/.keep
@@ -22,24 +27,3 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
-
-# Ignore git's fil
-
-# Ignore RubyMine's files
-/.idea
-
-# Ignore Generators
-/.generators
-/public/packs
-/public/packs-test
-/node_modules
-/yarn-error.log
-yarn-debug.log*
-.yarn-integrity
-
-# Ignore Uploaded Code
-public/ruby_code/*
-
-
-# Gemfile.lock
-Gemfile.lock
