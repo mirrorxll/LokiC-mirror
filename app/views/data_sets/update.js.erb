@@ -1,0 +1,12 @@
+(function() {
+    $('#data_set_name').html('<b><%= @data_set.name %></b>')
+    $('#data_set_info').html('<%= j render @data_set %>')
+    $('#upd_data_set_btn').removeClass('disabled')
+
+    let evalBtn = $('#eval_data_set_btn')
+    <% if allow_evaluate?(@data_set) %>
+      evalBtn.removeClass('disabled')
+    <% else %>
+      evalBtn.addClass('disabled')
+    <% end %>
+})();

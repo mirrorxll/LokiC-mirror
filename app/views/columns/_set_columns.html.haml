@@ -1,0 +1,59 @@
+:javascript
+  var editable_block = $('#columns-editable');
+  $('#add-column').click(function () {
+    let hex = secureRandom(6);
+
+    $(editable_block).append(
+        `<div id="col_${hex}">
+            <div class="remove_column d-inline-block" id="rm_col_${hex}" onclick="removeColumn(this)">-</div>
+            <input placeholder="name" id="columns_${hex}_name" required="required" type="text" name="columns[${hex}[name]]">
+            <select id="columns_${hex}_type" onchange="optionsForColumnType(this)" name="columns[${hex}[type]]">
+                <option value="integer">integer</option>
+                <option value="float">float</option>
+                <option value="decimal">decimal</option>
+                <option value="date">date</option>
+                <option value="time">time</option>
+                <option value="datetime">datetime</option>
+                <option value="string">string</option>
+                <option value="text">text</option>
+                <option value="boolean">boolean</option>
+            </select>
+        </div>`
+    );
+  });
+
+  function secureRandom(n){
+    let result = '';
+    while (n--){
+      result += Math.floor(Math.random()*16).toString(16);
+    }
+
+    return result;
+  }
+
+  function removeColumn(elem) {
+    $(elem.parentNode).remove();
+  }
+
+  function optionsForColumnType(elem) {
+    let parent = elem.parentNode;
+    let hex = parent.id.split('_')[1]
+    while (parent.childElementCount > 3)
+      $(elem).next().remove();
+
+    switch (elem.options[elem.selectedIndex].value) {
+      case 'decimal':
+        $(parent).append(`
+          <input placeholder="precision" type="text"
+            name="columns[${hex}[opts[precision]]]" id="columns_${hex}_opts_precision">
+          <input placeholder="scale" type="text"
+            name="columns[${hex}[opts[scale]]]" id="columns_${hex}_opts_scale">`);
+        break;
+      case 'string':
+        $(parent).append(`
+          <input placeholder="limit" type="text"
+            name="columns[${hex}[opts[limit]]]" id="columns_${hex}_opts_limit">
+        `);
+        break;
+    }
+  }

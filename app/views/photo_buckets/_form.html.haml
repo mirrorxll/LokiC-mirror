@@ -1,0 +1,2 @@
+=form_with(url: include_story_type_photo_buckets_path(@story_type), html: { onchange: "$(this).submit();"}) do |form|
+  =form.collection_select :photo_bucket_id, PhotoBucket.all, :id, :name, { prompt: '' }, { name: :id }

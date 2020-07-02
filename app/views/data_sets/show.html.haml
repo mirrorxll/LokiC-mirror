@@ -1,0 +1,59 @@
+%hr/
+.row
+  #data_set_name.col-8
+    %b #{@data_set.name}
+  .col-4.text-right
+    .btn-group
+      =link_to('Update a Data set',
+               edit_data_set_path,
+               id: 'upd_data_set_btn',
+               class: 'btn btn-sm btn-outline-dark',
+               remote: true)
+      =link_to('Evaluate',
+               evaluate_data_set_path,
+               id: 'eval_data_set_btn',
+               class: "btn btn-sm btn-outline-dark #{allow_evaluate?(@data_set) ? '' : 'disabled'}",
+               method: :patch,
+               remote: true)
+
+%hr/
+
+=render @data_set
+
+%hr/
+
+#story_types_filter
+  =render 'data_sets/story_types_filter'
+%hr/
+
+#new_story_type
+  .row
+    .col-1
+    .col-5.pl-0
+      =link_to('New Story Type',
+               new_data_set_story_type_path(@data_set),
+               class: 'btn btn-sm btn-outline-dark',
+               remote: true)
+%hr/
+
+#story_types
+  =render @story_types
+
+#template.modal.fade.template-modal-lg{ "aria-hidden" => "true", "aria-labelledby" => "template",
+                                        role: "dialog", tabindex: "-1", 'data-backdrop' => 'static' }
+  .modal-dialog.modal-dialog-centered.modal-lg
+    .modal-content
+      .modal-header
+        %h5.modal-title
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+          %span{"aria-hidden" => "true"} ×
+      .modal-body
+
+#properties.modal.fade.properties-modal-lg{"aria-hidden" => "true", "aria-labelledby" => "properties", :role => "dialog", :tabindex => "-1"}
+  .modal-dialog.modal-dialog-centered.modal-lg
+    .modal-content
+      .modal-header
+        %h5.modal-title
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+          %span{"aria-hidden" => "true"} ×
+      .modal-body

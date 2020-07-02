@@ -1,0 +1,24 @@
+:schedule:
+  clients_publications:
+    cron: '0 0 */1 * *'
+    class: ClientsPublicationsTagsJob
+  sections:
+    cron: '0 1 */1 * *'
+    class: SectionsJob
+  photo_buckets:
+    cron: '6 1 */1 * *'
+    class: PhotoBucketsJob
+  slack_accounts:
+    cron: '8 0 */1 * *'
+    class: SlackAccountsJob
+
+:concurrency: 30
+:queues:
+  - default
+  - slack_api
+  - population
+  - export_configurations
+  - samples
+  - creation
+  - scheduler
+  - export

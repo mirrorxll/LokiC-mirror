@@ -1,0 +1,41 @@
+:javascript
+  function selPlaceholder(block) {
+      let placeholder = block.find('.placeholder');
+      let select = block.find('select');
+
+      placeholder.html(
+        placeholder.attr('data-text') + `<span class='text-dark'>${select.find('option:selected').text()}</span>`
+      );
+  }
+
+  function manualFrequencyToggle(elem) {
+    let parent = $(elem).parent();
+    let placeholder = parent.find('.placeholder')[0];
+    let select = parent.find('select')[0];
+    let input = parent.find('input')[0];
+
+    $(placeholder).toggleClass('d-none');
+    $(select).toggleClass('d-none');
+    $(input).toggleClass('d-none');
+    $(select).prop('disabled', function(i, v) { return !v; });
+    $(input).prop('disabled', function(i, v) { return !v; });
+
+    if(elem.tagName === 'SPAN') {
+      elem.remove();
+      input.value = "";
+    }
+  }
+
+  $('.frequency').each(function() {
+      selPlaceholder($(this));
+  });
+
+  $('.frequency select').on('change', function() {
+      if(this.options[this.selectedIndex].text === 'manual input') {
+        manualFrequencyToggle(this);
+        $(this).parent().append('<span onclick="manualFrequencyToggle(this);" class=" position-absolute" style="z-index: 2; right: 4px; top: 3px;">x</span>')
+        $(this).prop('selectedIndex', 0)
+      }
+
+      selPlaceholder($(this).parent());
+  });

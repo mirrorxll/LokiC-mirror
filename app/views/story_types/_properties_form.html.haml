@@ -1,0 +1,48 @@
+
+.row
+  .col-1.text-right.pr-0
+  #clients__tags.col-10
+    %table.table.table-sm.table-borderless.small.mb-0
+      %thead
+        %tr
+          %th{scope: 'col'}
+            client
+          %th{scope: 'col'}
+            tag
+      %tbody{id: 'clients_tags_table_body'}
+        -if @story_type.clients.present?
+          =render partial: 'clients/client_tag', collection: @story_type.client_tags
+    .p-1
+      =render 'clients/form'
+%hr/
+
+.row
+  .col-1.text-right.pr-0
+  #frequency__photo_bucket.col-10
+    %table.table.table-sm.table-borderless.small.mb-0
+      %thead
+        %tr
+          %th{scope: 'col'}
+            frequency
+          %th{scope: 'col'}
+            photo bucket
+
+      %tbody{id: 'frequency_photo_bucket_table_body'}
+        %tr
+          %td.frequency
+            -if @story_type.frequency
+              =render @story_type.frequency
+            -else
+              =render 'frequencies/form'
+          %td.photo_bucket
+            -if @story_type.photo_bucket
+              =render @story_type.photo_bucket
+            -else
+              =render 'photo_buckets/form'
+%br/
+
+.modal-footer
+  =link_to('Delete', story_type_path(@story_type),
+           class: 'btn btn-sm btn-outline-danger',
+           method: :delete, remote: true,
+           data: { confirm: 'Really delete?', dismiss: 'modal' })

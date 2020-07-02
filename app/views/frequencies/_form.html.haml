@@ -1,0 +1,2 @@
+=form_with(url: include_story_type_frequencies_path(@story_type), html: { onchange: '$(this).submit();' }) do |form|
+  =form.collection_select :frequency_id, Frequency.where.not(name: 'manual input'), :id, :name, { prompt: '' }, { name: :id }

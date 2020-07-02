@@ -1,0 +1,72 @@
+#data_set_info
+  .row
+    .col-6
+      .card.small
+        .card-header.p-2
+          source
+        .card-body
+          .row
+            .col-4.pr-0.text-right
+              address:
+            .col-8
+              #{data_set.src_address}
+            .col-4.pr-0.text-right
+              explaining data:
+            .col-8
+              #{data_set.src_explaining_data}
+            .col-4.pr-0.text-right
+              release frequency:
+            .col-8
+              #{release_frequency(data_set)}
+            .col-4.pr-0.text-right
+              scrape frequency:
+            .col-8
+              #{scrape_frequency(data_set)}
+            .col-4.pr-0.text-right
+              on cron?:
+            .col-8
+              -if data_set.cron_scraping
+                Yes
+                %br/
+              -else
+                No
+
+    .col-6
+      .card.small
+        .card-header.p-2
+          data #{eval_indicate(data_set)}
+        .card-body
+          .row
+            .col-4.pr-0.text-right
+              location:
+            .col-8
+              #{data_set.location}
+            .col-4.pr-0.text-right
+              evaluation doc:
+            .col-8
+              #{eval_doc(data_set)}
+
+            -if data_set.evaluated?
+              .col-4.pr-0.text-right
+                evaluated_at:
+              .col-8
+                #{data_set.evaluated_at.strftime('%F %R')}
+
+    .col-6.mt-3
+      .card.small
+        .card-header.p-2
+          additional info:
+        .card-body
+          .row
+            .col-4.pr-0.text-right
+              gather task:
+            .col-8
+              #{data_set.gather_task}
+            .col-4.pr-0.text-right
+              scrape dev:
+            .col-8
+              #{data_set.scrape_developer}
+            .col-4.pr-0.text-right
+              comment:
+            .col-8
+              #{data_set.comment}

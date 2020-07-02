@@ -1,0 +1,26 @@
+:javascript
+  var editable_block = $('#dates-editable');
+  $('#add-date').click(function () {
+    let hex = secureRandom(6);
+
+    $(editable_block).append(
+        `<div id="date_${hex}">
+            <div class="remove_date d-inline-block" id="rm_date_${hex}" onclick="removeDate(this)">-</div>
+            <input placeholder="date" id="dates_${hex}_name" required="required" type="date" name="backdate[${hex}[date]]">
+            <input placeholder="arg" id="arg_${hex}_name" type="name" name="backdate[${hex}[args]]">
+        </div>`
+    );
+  });
+
+  function secureRandom(n){
+    let result = '';
+    while (n--){
+      result += Math.floor(Math.random() * 16).toString(16);
+    }
+
+    return result;
+  }
+
+  function removeDate(elem) {
+    $(elem.parentNode).remove();
+  }

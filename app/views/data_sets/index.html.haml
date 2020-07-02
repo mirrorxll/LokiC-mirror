@@ -1,0 +1,26 @@
+%hr/
+
+.row
+  #evaluate_filter.col-8
+    =render 'data_sets/filter'
+  #show_new_data_set_form.col-4.text-right
+    =link_to('Add a new Data Set', new_data_set_path, class: 'btn btn-sm btn-outline-dark', remote: true)
+
+#new_data_set_form.collapse
+%hr/
+
+#data_sets
+  -@data_sets.each do |dl|
+    .row
+      %small.col-3
+        =dl.name
+      %small.col-3
+        =domain_name(dl.src_address)
+      %small.col-3
+        =dl.location
+      %small.col-1
+        =dl.evaluated ? 'evaluated' : ''
+      %small.col-1.text-right
+        =link_to('show', data_set_path(dl))
+      .col-1
+    %hr/

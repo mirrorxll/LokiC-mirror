@@ -1,0 +1,10 @@
+%p.mt-4
+  all count of stories:
+  =@story_type.iterations.last.samples.count
+%p
+  stories sheduled:
+  =@story_type.iterations.last.samples.where.not(published_at: nil).where(backdated: 0).count
+%p
+  stories backdated:
+  =@story_type.iterations.last.samples.where(backdated: 1).count
+=render 'schedules/purge_scheduling'

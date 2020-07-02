@@ -29,7 +29,13 @@ module Lokic
     # -- all .rb files in that directory are automatically loaded after loading
     # the framework and any gems in your application.
 
+    # ActiveJob adapter
+    config.active_job.queue_adapter = :sidekiq
+
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    config.enable_dependency_loading = true
+    config.autoload_paths += %W[#{config.root}/lib/]
   end
 end

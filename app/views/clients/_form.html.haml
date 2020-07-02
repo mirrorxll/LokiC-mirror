@@ -1,0 +1,2 @@
+=form_with(url: include_story_type_clients_path(@story_type), html: { onchange: '$(this).submit()'}) do |form|
+  =form.collection_select :client_id, Client.all, :id, :name, { prompt: '' }, { name: :id }

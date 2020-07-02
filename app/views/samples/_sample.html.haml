@@ -1,0 +1,6 @@
+.row
+  %small.col-6
+    =sample.staging_row_id
+    \-
+    =link_to(nil, story_type_iteration_sample_url(@story_type, @story_type.iteration, sample),
+             class: 'd-loc-show-icon img', target: '_blank')
