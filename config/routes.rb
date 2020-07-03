@@ -56,7 +56,7 @@ Rails.application.routes.draw do
     end
 
     resources :developers, only: [] do
-      put    :include, on: :collection
+      patch    :include, on: :collection
       delete :exclude, on: :member
     end
 

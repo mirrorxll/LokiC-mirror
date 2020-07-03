@@ -60,48 +60,62 @@ class StagingTable < ApplicationRecord # :nodoc:
   end
 
   def create_table
-    ActiveRecord::Migration.create_table(name) do |t|
-      t.datetime :created_at
-      t.datetime :updated_at
-      t.integer  :client_id
-      t.string   :client_name
-      t.integer  :publication_id
-      t.string   :publication_name
-      t.string   :organization_ids, limit: 2000
-      t.boolean  :story_created, default: false
-      t.string   :time_frame
-    end
+    self.class.hle_db_action(name) do |name|
+      ActiveRecord::Migration.create_table(name) do |t|
+        t.datetime :created_at
+        t.datetime :updated_at
+        t.integer  :client_id
+        t.string   :client_name
+        t.integer  :publication_id
+        t.string   :publication_name
+        t.string   :organization_ids, limit: 2000
+        t.boolean  :story_created, default: false
+        t.string   :time_frame
+      end
 
-    self.class.connection.exec_query(
-      "ALTER TABLE `#{name}` CHANGE COLUMN created_at created_at "\
-      'TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;'
-    )
-    self.class.connection.exec_query(
-      "ALTER TABLE `#{name}` CHANGE COLUMN updated_at updated_at "\
-      'TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;'
-    )
+      ActiveRecord::Base.connection.exec_query(
+        "ALTER TABLE `#{name}` CHANGE COLUMN created_at created_at "\
+        'TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;'
+      )
+      ActiveRecord::Base.connection.exec_query(
+        "ALTER TABLE `#{name}` CHANGE COLUMN updated_at updated_at "\
+        'TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;'
+      )
+    end
   end
 
   def iteration_missing?
-    !self.class.connection.columns(name).find do |c|
-      c.name.eql?('iter_id') && c.default.to_i.positive?
+    self.class.hle_db_action(name) do |name|
+      ActiveRecord::Base.connection.columns(name).find do |c|
+        c.name.eql?('iter_id') && c.default.to_i.positive?
+      end
     end
   end
 
   def add_iteration
-    ActiveRecord::Migration
-      .add_column name, :iter_id, :integer,
-                  default: story_type.iteration.id,
-                  after: :id
-
-    ActiveRecord::Migration.add_index name, :iter_id, name: :iter
+    self.class.hle_db_action(name, story_type.iteration.id) do |name, iter_id|
+      ActiveRecord::Migration.add_column(name, :iter_id, :integer, default: iter_id, after: :id)
+      ActiveRecord::Migration.add_index(name, :iter_id, name: :iter)
+    end
   end
 
   def exists?
-    self.class.connection.table_exists?(name)
+    self.class.hle_db_action(name) do |name|
+      ActiveRecord::Base.connection.table_exists?(name)
+    end
   end
 
   def drop_table
-    self.class.connection.drop_table(name)
+    self.class.hle_db_action(name) do |name|
+      ActiveRecord::Base.connection.drop_table(name)
+    end
+  end
+
+  def self.hle_db_action(table_name = nil, curr_iter_id = nil)
+    raise ArgumentError, 'No block given' unless block_given?
+
+    ActiveRecord::Base.connected_to(database: { slow: :loki_story_creator }) do
+      yield(table_name, curr_iter_id)
+    end
   end
 end

@@ -21,18 +21,30 @@ dev_user: &dev_user
   password: Qw12345678*
 
 development:
-  <<: *default
-  <<: *dev_user
-  database: lokic_dev
-
+  primary:
+    <<: *default
+    <<: *dev_user
+    database: lokic_dev
+    migrations_paths: db/primary_migrate
+  loki_story_creator:
+    <<: *default
+    <<: *dev_user
+    database: loki_story_creator_dev
+    migration_path: db/loki_story_creatior_migrate
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
-  <<: *default
-  <<: *dev_user
-  database: lokic_test
-
+  primary:
+    <<: *default
+    <<: *dev_user
+    database: lokic_test
+    migrations_paths: db/primary_migrate
+  loki_story_creator:
+    <<: *default
+    <<: *dev_user
+    database: loki_story_creator_test
+    migration_path: db/loki_story_creatior_migrate
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
 # ever seen by anyone, they now have access to your database.
@@ -53,10 +65,21 @@ test:
 #     url: <%= ENV['DATABASE_URL'] %>
 #
 production:
-  <<: *default
-  username: <%= Rails.application.credentials.mysql[:regular][:user] %>
-  password: <%= Rails.application.credentials.mysql[:regular][:password] %>
-  host: <%= DB01 %>
-  port: 3306
-  socket: /var/run/mysqld/mysqld.sock
-  database: lokic
+  primary:
+    <<: *default
+    socket: /var/run/mysqld/mysqld.sock
+    port: 3306
+    host: <%= DB01 %>
+    database: lokic
+    username: <%= Rails.application.credentials.mysql[:regular][:user] %>
+    password: <%= Rails.application.credentials.mysql[:regular][:password] %>
+    migrations_paths: db/primary_migrate
+  loki_story_creator:
+    <<: *default
+    socket: /var/run/mysqld/mysqld.sock
+    port: 3306
+    host: <%= DB05 %>
+    database: loki_storycreator
+    username: <%= Rails.application.credentials.mysql[:regular][:user] %>
+    password: <%= Rails.application.credentials.mysql[:regular][:password] %>
+    migration_path: db/loki_story_creatior_migrate
