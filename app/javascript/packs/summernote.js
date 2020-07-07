@@ -25,7 +25,7 @@ export default class extends Controller {
     $('[data-editor="summernote"]').summernote({
       height: 300,
       focus: true,
-      lang: 'ko-KR',
+      lang: 'en-EN',
       prettifyHtml: true,
       placeholder: 'type starting with : and any alphabet',
       hint: {

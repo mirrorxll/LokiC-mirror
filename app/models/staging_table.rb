@@ -30,7 +30,9 @@ class StagingTable < ApplicationRecord # :nodoc:
   end
 
   def truncate
-    self.class.connection.truncate(name)
+    ActiveRecord::Base.connected_to(database: { slow: :loki_story_creator }) do
+      ActiveRecord::Migration.truncate(name)
+    end
   end
 
   def samples_set_not_created
@@ -38,11 +40,13 @@ class StagingTable < ApplicationRecord # :nodoc:
   end
 
   def self.exists?(name)
-    connection.table_exists?(name)
+    ActiveRecord::Base.connected_to(database: { slow: :loki_story_creator }) do
+      ActiveRecord::Migration.table_exists?(name)
+    end
   end
 
-  def self.not_exists?(name)
-    !exists?(name)
+  def self.not_exists?(table_name)
+    !exists?(table_name)
   end
 
   private
@@ -52,7 +56,7 @@ class StagingTable < ApplicationRecord # :nodoc:
   end
 
   def generate_table_name
-    self.name = "#{story_type.id}_staging"
+    self.name = "s#{story_type.id}_staging"
   end
 
   def not_exists?
@@ -60,7 +64,7 @@ class StagingTable < ApplicationRecord # :nodoc:
   end
 
   def create_table
-    self.class.hle_db_action(name) do |name|
+    ActiveRecord::Base.connected_to(database: { slow: :loki_story_creator }) do
       ActiveRecord::Migration.create_table(name) do |t|
         t.datetime :created_at
         t.datetime :updated_at
@@ -85,37 +89,27 @@ class StagingTable < ApplicationRecord # :nodoc:
   end
 
   def iteration_missing?
-    self.class.hle_db_action(name) do |name|
-      ActiveRecord::Base.connection.columns(name).find do |c|
-        c.name.eql?('iter_id') && c.default.to_i.positive?
-      end
+    ActiveRecord::Base.connected_to(database: { slow: :loki_story_creator }) do
+      ActiveRecord::Migration.columns(name).find { |c| c.name.eql?('iter_id') && c.default.to_i.positive? }
     end
   end
 
   def add_iteration
-    self.class.hle_db_action(name, story_type.iteration.id) do |name, iter_id|
-      ActiveRecord::Migration.add_column(name, :iter_id, :integer, default: iter_id, after: :id)
+    ActiveRecord::Base.connected_to(database: { slow: :loki_story_creator }) do
+      ActiveRecord::Migration.add_column(name, :iter_id, :integer, default: story_type.iteration.id, after: :id)
       ActiveRecord::Migration.add_index(name, :iter_id, name: :iter)
     end
   end
 
   def exists?
-    self.class.hle_db_action(name) do |name|
+    ActiveRecord::Base.connected_to(database: { slow: :loki_story_creator }) do
       ActiveRecord::Base.connection.table_exists?(name)
     end
   end
 
   def drop_table
-    self.class.hle_db_action(name) do |name|
-      ActiveRecord::Base.connection.drop_table(name)
-    end
-  end
-
-  def self.hle_db_action(table_name = nil, curr_iter_id = nil)
-    raise ArgumentError, 'No block given' unless block_given?
-
     ActiveRecord::Base.connected_to(database: { slow: :loki_story_creator }) do
-      yield(table_name, curr_iter_id)
+      self.class.connection.drop_table(name)
     end
   end
 end

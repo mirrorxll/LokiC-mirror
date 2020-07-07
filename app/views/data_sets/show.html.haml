@@ -4,18 +4,11 @@
     %b #{@data_set.name}
   .col-4.text-right
     .btn-group
-      =link_to('Update a Data set',
-               edit_data_set_path,
-               id: 'upd_data_set_btn',
-               class: 'btn btn-sm btn-outline-dark',
-               remote: true)
-      =link_to('Evaluate',
-               evaluate_data_set_path,
-               id: 'eval_data_set_btn',
+      =link_to('Update a Data set', edit_data_set_path,
+               id: 'upd_data_set_btn', class: 'btn btn-sm btn-outline-dark', remote: true)
+      =link_to('Evaluate', evaluate_data_set_path, id: 'eval_data_set_btn',
                class: "btn btn-sm btn-outline-dark #{allow_evaluate?(@data_set) ? '' : 'disabled'}",
-               method: :patch,
-               remote: true)
-
+               method: :patch, remote: true)
 %hr/
 
 =render @data_set
