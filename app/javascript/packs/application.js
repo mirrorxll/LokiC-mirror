@@ -10,6 +10,7 @@ require("channels")
 
 import 'bootstrap'
 import '../stylesheets/application'
+import './summernote'
 import Rails from "@rails/ujs";
 
 document.addEventListener('turbolinks:load', () => {

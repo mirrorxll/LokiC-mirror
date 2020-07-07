@@ -23,8 +23,7 @@ Rails.application.routes.draw do
   root 'story_types#index'
 
   # summernote image upload/destroy points
-  get 'uploads/create'
-  get 'uploads/destroy'
+  resources :uploads, only: [:create, :destroy]
 
   resources :slack_accounts, only: %i[] do
     patch :sync

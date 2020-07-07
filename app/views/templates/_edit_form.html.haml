@@ -1,6 +1,10 @@
-=form_with(model: [@story_type, @story_type.template]) do |form|
+-# =form_with(model: [@story_type, @story_type.template]) do |form|
   %div{"data-controller" => "summernote"}
     =form.text_area :body, 'data-provider': :summernote
   .modal-footer
     =button_tag('Close', class: 'ml-auto btn btn-sm btn-outline-secondary', "data-dismiss" => "modal")
     =form.submit 'Save changes', class: 'mr-auto btn btn-sm btn-outline-dark'
+
+=form_with(model: [@story_type, @story_type.template]) do |form|
+  .field.small{ "data-controller" => "summernote" }
+    =form.text_area :body, data: { editor: 'summernote' }
