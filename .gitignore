@@ -40,3 +40,7 @@ yarn-debug.log*
 
 # Ignore Uploaded Code
 public/ruby_code/*
+
+# lock files
+/Gemfile.lock
+/package.json

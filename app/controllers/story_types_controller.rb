@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 class StoryTypesController < ApplicationController # :nodoc:
+  skip_before_action :find_parent_story_type, except: :properties
+
   before_action :find_data_set, only: %i[new create]
   before_action :find_story_type, except: %i[index new create properties]
   before_action :set_iteration, only: :show
-  skip_before_action :find_parent_story_type, except: :properties
 
   def index
     @story_types = StoryType.order(id: :asc).where.not(developer: nil)
@@ -14,8 +15,7 @@ class StoryTypesController < ApplicationController # :nodoc:
     end
   end
 
-  def show
-  end
+  def show; end
 
   def new
     @story_type = @data_set.story_types.build
@@ -67,6 +67,7 @@ class StoryTypesController < ApplicationController # :nodoc:
       end
 
     @story_type.update(current_iteration: @iteration)
+    @story_type.staging_table&.iter_id_column
   end
 
   def filter_params

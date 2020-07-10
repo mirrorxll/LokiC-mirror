@@ -42,13 +42,6 @@ class StagingTablesController < ApplicationController # :nodoc:
     render 'new'
   end
 
-  def truncate
-    @staging_table.truncate
-    @story_type.update_iteration(population: nil)
-
-    render 'populations/destroy'
-  end
-
   private
 
   def attach_staging_table

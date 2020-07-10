@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
-require_relative 'table/columns'
-require_relative 'table/index'
-require_relative 'table/query'
+require_relative 'table/columns.rb'
+require_relative 'table/index.rb'
+require_relative 'table/query.rb'
+require_relative 'table/create.rb'
+require_relative 'table/destroy.rb'
 
 module Table # :nodoc:
   module_function
@@ -10,9 +12,11 @@ module Table # :nodoc:
   extend Columns
   extend Index
   extend Query
+  extend Create
+  extend Destroy
 
-  def connection
-    ActiveRecord::Base.connected_to(database: {slow: :loki_story_creator}) { yield }
+  def loki_story_creator
+    ActiveRecord::Base.connected_to(database: { slow: :loki_story_creator }) { yield }
   end
 
   def a_r_m
@@ -23,65 +27,26 @@ module Table # :nodoc:
     ActiveRecord::Base.connection
   end
 
-  def columns(t_name)
-    columns = connection { a_r_m.columns(t_name) }
-    columns_transform(columns, :back)
-  end
-
-  def index(t_name)
-    indexes = connection { a_r_m.indexes(t_name) }
-    index_columns = indexes.find { |i| i.name.eql?('story_per_publication') }
-    index_transform(index_columns)
-  end
-
-  def modify_columns(t_name, cur_col, mod_col)
-    connection do
-      if a_r_m.index_name_exists?(t_name, :story_per_publication)
-        a_r_m.remove_index(t_name, name: :story_per_publication)
-      end
-
-      dropped(cur_col, mod_col).each do |hex|
-        col = cur_col.delete(hex)
-        a_r_m.remove_column(t_name, col[:name])
-      end
-
-      added(cur_col, mod_col).each do |hex|
-        col = mod_col.delete(hex)
-        a_r_m.add_column(t_name, col[:name], col[:type], col[:opts])
-      end
-
-      changed(cur_col, mod_col).each do |upd|
-        if upd[:old_name] != upd[:new_name]
-          a_r_m.rename_column(t_name, upd[:old_name], upd[:new_name])
-        end
-
-        a_r_m.change_column(t_name, upd[:new_name], upd[:type], upd[:opts])
-      end
-    end
-  end
-
-  def add_index(t_name, columns)
-    columns = columns.map { |_id, c| c[:name] }
-    columns = ['client_id', 'publication_id', columns].flatten
-    connection { a_r_m.add_index(t_name, columns, unique: true, name: :story_per_publication) }
+  def exists?(t_name)
+    loki_story_creator { a_r_m.table_exists?(t_name) }
   end
 
   def publication_ids(t_name)
     p_ids_query = publication_ids_query(t_name)
-    p_ids = connection { a_r_b_conn.exec_query(p_ids_query).to_a }
+    p_ids = loki_story_creator { a_r_b_conn.exec_query(p_ids_query).to_a }
     p_ids.map { |row| row['p_id'] }.compact
   end
 
   def last_iter_id(t_name)
     last_iter_query = iter_id_value_query(t_name)
-    connection { a_r_b_conn.exec_query(last_iter_query).first['default_value'] }
+    loki_story_creator { a_r_b_conn.exec_query(last_iter_query).first['default_value'] }
   end
 
   # purge rows that were inserted to staging table
   def purge_last_iteration(t_name)
     last_iter = last_iter_id(t_name)
     del_query = delete_query(t_name, last_iter)
-    connection { a_r_b_conn.exec_query(del_query) }
+    loki_story_creator { a_r_b_conn.exec_query(del_query) }
   end
 
   # select edge staging table rows by columns
@@ -91,7 +56,7 @@ module Table # :nodoc:
       min_query = select_minmax_id_query(t_name, last_iter, col_name, :MIN)
       max_query = select_minmax_id_query(t_name, last_iter, col_name, :MAX)
 
-      connection do
+      loki_story_creator do
         selected << a_r_b_conn.exec_query(min_query).first['id']
         selected << a_r_b_conn.exec_query(max_query).first['id']
       end
@@ -101,29 +66,28 @@ module Table # :nodoc:
   def rows_by_ids(t_name, ids)
     last_iter = last_iter_id(t_name)
     rows_query = rows_by_ids_query(t_name, last_iter, ids)
-    connection { a_r_b_conn.exec_query(rows_query).to_a }
+    loki_story_creator { a_r_b_conn.exec_query(rows_query).to_a }
   end
 
   def rows_by_last_iteration(t_name, options)
     last_iter = last_iter_id(t_name)
     rows_query = rows_by_last_iteration_query(t_name, last_iter, options)
-    connection { a_r_b_conn.exec_query(rows_query).to_a }
+    loki_story_creator { a_r_b_conn.exec_query(rows_query).to_a }
   end
 
   def sample_set_as_created(t_name, id)
     upd_query = sample_created_update_query(t_name, id)
-    connection { a_r_b_conn.exec_query(upd_query) }
+    loki_story_creator { a_r_b_conn.exec_query(upd_query) }
   end
 
   def samples_set_as_not_created(t_name)
     last_iter = last_iter_id(t_name)
     upd_query = sample_destroyed_update_query(t_name, last_iter)
-    connection { a_r_b_conn.exec_query(upd_query) }
+    loki_story_creator { a_r_b_conn.exec_query(upd_query) }
   end
 
-  def increment_iter_id(t_name)
-    iter_id = last_iter_id(t_name)
-    alter_query = alter_increment_iter_id_query(t_name, iter_id)
-    connection { a_r_b_conn.exec_query(alter_query) }
+  def change_iter_id(t_name, iter_id)
+    alter_query = alter_change_iter_id_query(t_name, iter_id)
+    loki_story_creator { a_r_b_conn.exec_query(alter_query) }
   end
 end

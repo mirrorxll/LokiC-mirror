@@ -14,11 +14,11 @@ module Table
       schema =
         case Rails.env
         when 'production'
-          'lokic'
+          'loki_storycreator'
         when 'development'
-          'lokic_dev'
+          'loki_story_creator_dev'
         when 'test'
-          'lokic_test'
+          'loki_story_creator_test'
         else
           raise StandardError, 'Wrong Rails ENV'
         end
@@ -70,9 +70,19 @@ module Table
       "LIMIT #{options[:limit] || 7_000};"
     end
 
-    def alter_increment_iter_id_query(t_name, value)
+    def created_at_default_value_query(name)
+      "ALTER TABLE `#{name}` CHANGE COLUMN created_at created_at "\
+      'TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;'
+    end
+
+    def updated_at_default_value_query(name)
+      "ALTER TABLE `#{name}` CHANGE COLUMN updated_at updated_at "\
+        'TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;'
+    end
+
+    def alter_change_iter_id_query(t_name, iter_id)
       "ALTER TABLE `#{t_name}` "\
-      "MODIFY COLUMN iter_id int NOT NULL DEFAULT #{value.to_i + 1};"
+      "MODIFY COLUMN iter_id int NOT NULL DEFAULT #{iter_id};"
     end
   end
 end

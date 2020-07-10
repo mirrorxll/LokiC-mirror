@@ -8,6 +8,37 @@ module Table
       publish_on created_at updated_at iter_id time_frame
     ].freeze
 
+    def columns(t_name)
+      columns = loki_story_creator { a_r_m.columns(t_name) }
+      columns_transform(columns, :back)
+    end
+
+    def modify_columns(t_name, cur_col, mod_col)
+      loki_story_creator do
+        if a_r_m.index_name_exists?(t_name, :story_per_publication)
+          a_r_m.remove_index(t_name, name: :story_per_publication)
+        end
+
+        dropped(cur_col, mod_col).each do |hex|
+          col = cur_col.delete(hex)
+          a_r_m.remove_column(t_name, col[:name])
+        end
+
+        added(cur_col, mod_col).each do |hex|
+          col = mod_col.delete(hex)
+          a_r_m.add_column(t_name, col[:name], col[:type], col[:opts])
+        end
+
+        changed(cur_col, mod_col).each do |upd|
+          if upd[:old_name] != upd[:new_name]
+            a_r_m.rename_column(t_name, upd[:old_name], upd[:new_name])
+          end
+
+          a_r_m.change_column(t_name, upd[:new_name], upd[:type], upd[:opts])
+        end
+      end
+    end
+
     def dropped(curr_col, mod_col)
       current = curr_col.keys
       modify = mod_col.keys

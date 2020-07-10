@@ -61,7 +61,6 @@ Rails.application.routes.draw do
 
     resources :staging_tables, only: %i[show create destroy] do
       post    :attach,    on: :collection
-      delete  :truncate,  on: :member
       patch   :sync,      on: :member
 
       resources :columns, only: %i[edit update]

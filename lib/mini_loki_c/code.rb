@@ -31,13 +31,13 @@ module MiniLokiC
     def exec
       load file
 
-      Object.const_get("S#{@story_type.id}").new.send(@method, @options)
+      Object.const_get("s#{@story_type.id}").new.send(@method, @options)
     ensure
-      Object.send(:remove_const, "S#{@story_type.id}") if Object.const_defined?("S#{@story_type.id}")
+      Object.send(:remove_const, "s#{@story_type.id}") if Object.const_defined?("S#{@story_type.id}")
     end
 
     def file
-      file = "#{Rails.root}/public/ruby_code/S#{@story_type.id}.rb"
+      file = "#{Rails.root}/public/ruby_code/s#{@story_type.id}.rb"
       File.open(file, 'wb') { |f| f.write(@story_type.code.download) }
 
       file
