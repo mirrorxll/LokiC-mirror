@@ -68,7 +68,7 @@ Rails.application.routes.draw do
       resources :indices, only: %i[new create destroy]
     end
 
-    resources :codes, only: %i[create destroy]
+    resources :codes, only: %i[create destroy show]
 
     resources :export_configurations, only: :create do
       get   :section,     on: :collection

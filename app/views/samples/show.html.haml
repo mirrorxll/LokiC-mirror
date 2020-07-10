@@ -1,4 +1,8 @@
 .row
+  .col.text-right
+    =link_to('show ruby code', story_type_code_path(@story_type, @story_type.code), class: 'btn btn-sm btn-outline-dark',
+                method: :get, remote: true)
+.row
   .col-1.text-right
     Headline:
   .col-11
@@ -16,3 +20,5 @@
     Body:
   .col-11
     =@sample.output.body.html_safe
+
+=render 'codes/modal_ruby_code'
