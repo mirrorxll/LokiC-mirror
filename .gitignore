@@ -39,7 +39,6 @@ yarn-debug.log*
 .yarn-integrity
 /yarn.lock
 
-shared
 
 # Ignore Uploaded Code
 public/ruby_code/*
