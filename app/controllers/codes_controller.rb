@@ -13,4 +13,8 @@ class CodesController < ApplicationController # :nodoc:
   def destroy
     @story_type.code.purge if @story_type.code.attached?
   end
+
+  def show
+    @ruby_code = CodeRay.scan(@story_type.download_code_from_db, :ruby).div(:line_numbers => :table)
+  end
 end
