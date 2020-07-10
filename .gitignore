@@ -37,11 +37,6 @@
 /yarn-error.log
 yarn-debug.log*
 .yarn-integrity
-/yarn.lock
-
 
 # Ignore Uploaded Code
 public/ruby_code/*
-
-# Gemfile.lock
-Gemfile.lock
