@@ -1,6 +1,4 @@
-=render 'channel'
-
-%div{ id: "story_type_show_#{@story_type.id}"}
+%div{ id: "story_type", story_type_id: @story_type.id, iteration_id: @iteration.id }
 
 %hr
 .row
@@ -75,26 +73,26 @@
       .card-body
         =render 'export_configurations/export_configurations'
 
-#story_type_samples.accordion
+%div.accordion{id: "story_type_samples_#{@iteration.id}"}
   .card
     .card-header
       %div.text-center{"aria-controls" => "#samles", "aria-expanded" => "false", "data-target" => "#samples", "data-toggle" => "collapse", :type => "button"}
         samples
-    #samples.collapse.show{"data-parent" => "#story_type_samples"}
+    #samples.collapse.show{"data-parent" => "#story_type_samples_#{@iteration.id}"}
       .card-body
         =render 'samples/samples'
 
-#story_type_scheduler.accordion
+%div.accordion{id: "story_type_scheduler_#{@iteration.id}"}
   .card
     .card-header
       %div.text-center{"aria-controls" => "#scheduler", "aria-expanded" => "false", "data-target" => "#scheduler", "data-toggle" => "collapse", :type => "button"}
         scheduler
-    #scheduler.collapse.show{"data-parent" => "#story_type_scheduler"}
+    #scheduler.collapse.show{"data-parent" => "#story_type_scheduler_#{@iteration.id}"}
       .card-body
         -if @story_type.staging_table && @story_type.iteration.creation
           =render 'schedules/scheduler'
 
-#story_type_export.accordion
+%div.accordion{id: "story_type_export_#{@iteration.id}"}
   .card
     .card-header
       %div.text-center{"aria-controls" => "#export", "aria-expanded" => "false", "data-target" => "#export", "data-toggle" => "collapse", :type => "button"}

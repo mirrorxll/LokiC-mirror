@@ -31,9 +31,9 @@ module MiniLokiC
     def exec
       load file
 
-      Object.const_get("s#{@story_type.id}").new.send(@method, @options)
+      Object.const_get("S#{@story_type.id}").new.send(@method, @options)
     ensure
-      Object.send(:remove_const, "s#{@story_type.id}") if Object.const_defined?("S#{@story_type.id}")
+      Object.send(:remove_const, "S#{@story_type.id}") if Object.const_defined?("S#{@story_type.id}")
     end
 
     def file
@@ -44,11 +44,11 @@ module MiniLokiC
     end
 
     def options_to_hash(options)
-      options = options.split(',')
-      options = options.map { |opt| opt.gsub(/[\s+,'"]/, '') }
+      options.split(' :: ').each_with_object({}) do |option, hash|
+        next unless option.match?(/=>/)
 
-      options.each_with_object({}) do |opt, hash|
-        hash[opt.split(/[=>,:]/).first.to_s] = opt.split(/[=>,:]/).last
+        key, value = option.split('=>')
+        hash[key] = value
       end
     end
   end

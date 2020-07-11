@@ -1,10 +1,14 @@
+redis_url: &redis_url
+  url: <%= ENV.fetch("REDIS_URL") { "redis://localhost:6379/1" } %>
+
 development:
-  adapter: async
+  adapter: redis
+  <<: *redis_url
 
 test:
   adapter: test
 
 production:
   adapter: redis
-  url: <%= ENV.fetch("REDIS_URL") { "redis://localhost:6379/1" } %>
+  <<: *redis_url
   channel_prefix: lokic_production

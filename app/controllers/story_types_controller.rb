@@ -59,13 +59,9 @@ class StoryTypesController < ApplicationController # :nodoc:
   end
 
   def set_iteration
-    @iteration =
-      if params[:iteration]
-        Iteration.find(params[:iteration])
-      else
-        @story_type.current_iteration
-      end
+    return unless params[:iteration]
 
+    @iteration = @story_type.current_iteration
     @story_type.update(current_iteration: @iteration)
     @story_type.staging_table&.iter_id_column
   end

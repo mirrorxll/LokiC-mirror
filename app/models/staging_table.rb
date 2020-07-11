@@ -30,7 +30,7 @@ class StagingTable < ApplicationRecord # :nodoc:
     Index.find_or_create_by(staging_table: self).update(list: index)
   end
 
-  def iter_id_column
+  def default_iter_id
     Table.iter_id_column(name, story_type.iteration.id)
   end
 

@@ -15,7 +15,7 @@ class ApplicationJob < ActiveJob::Base
 
     SlackNotificationJob.perform_later(
       stp.developer.slack.identifier,
-      "##{stp.id} #{stp.name} -- #{message}"
+      "##{stp.id} #{stp.name} (iteration: #{stp.iteration.name}) -- #{message}"
     )
   end
 end

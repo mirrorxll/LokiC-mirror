@@ -24,7 +24,7 @@ class SchedulerJob < ApplicationJob
     message = e
   ensure
     story_type.update_iteration(schedule: status)
-    send_to_action_cable(story_type, scheduler_message: status)
+    send_to_action_cable(story_type, scheduler_msg: status)
     send_to_slack(story_type, message)
   end
 

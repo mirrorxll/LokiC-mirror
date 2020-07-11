@@ -1,1 +1,2 @@
-$('#samples .card-body').html('<%= j render 'samples/samples' %>')
+$(`#story_type_samples_<%= @story_type.iteration.id %> .card-body`)
+    .html('<%= j render 'samples/samples' %>')
