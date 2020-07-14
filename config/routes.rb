@@ -13,6 +13,8 @@ Rails.application.routes.draw do
   authenticate :account, acc_access do
     mount Sidekiq::Web => '/sidekiq'
 
+    ActiveAdmin.routes(self)
+
     resources :data_sets do
       patch :evaluate, on: :member
 
