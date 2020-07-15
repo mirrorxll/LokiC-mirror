@@ -8,5 +8,9 @@ class ExportsController < ApplicationController
     render 'export'
   end
 
+  def exported_stories
+    @exported = @story_type.iteration.samples.where(pl_production_id: nil).limit(2000)
+  end
+
   def section; end
 end

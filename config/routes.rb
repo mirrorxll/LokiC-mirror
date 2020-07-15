@@ -74,6 +74,10 @@ Rails.application.routes.draw do
       patch :update_tags, on: :collection
     end
 
+    resources :fact_checking_docs do
+      get :template
+    end
+
     resources :iterations do
       resources :statuses, only: [] do
         get   :form,    on: :collection
@@ -86,8 +90,6 @@ Rails.application.routes.draw do
         get    :section,       on: :collection
         delete :purge_sampled, on: :collection
       end
-
-      resources :fact_checking_docs
 
       resources :creations, path: 'create_samples', only: :create do
         delete :purge_all, on: :collection
@@ -102,8 +104,9 @@ Rails.application.routes.draw do
       end
 
       resources :exports, path: 'export', only: [] do
-        post :production, on: :collection
-        get  :section,    on: :collection
+        post :production,       on: :collection
+        get  :exported_stories, on: :collection
+        get  :section,          on: :collection
       end
     end
   end
