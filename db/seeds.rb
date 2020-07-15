@@ -95,6 +95,42 @@ module FirstObjects # :nodoc:
     frequencies = ['daily', 'weekly', 'monthly', 'quarterly', 'annually', 'manual input']
     frequencies.map { |frequency| { name: frequency } }
   end
+
+  def review
+    table_raw_source = []
+    table_mm = {}
+    published_by_month = {}
+    exported_by_month = {}
+    arr_mm = []
+    (1..12).each do |i|
+      rand_num = rand(10000).to_s
+      arr_mm << { month: Date::MONTHNAMES[i],
+                  total_exported: rand_num,
+                  total_published: rand_num }
+      rand_raw = rand(100)
+      published_by_month["raw_source#{rand_raw}"] = rand_num
+      exported_by_month["raw_source#{rand_raw}"] = rand_num
+      table_raw_source << {
+        month: Date::MONTHNAMES[i],
+        published: published_by_month,
+        exported: exported_by_month
+      }
+    end
+    table_mm["#{Date.today.strftime("%Y-%m-%d")}"] = arr_mm
+    puts table_mm
+    puts '///'
+    puts table_raw_source
+    [
+      {
+        report_type: 'report_for_mm',
+        table: table_mm.to_json
+      },
+      {
+        report_type: 'report_by_raw_source',
+        table: table_raw_source.to_json
+      }
+    ]
+  end
 end
 
 FirstObjects.account_type.each { |obj| AccountType.create!(obj)}
@@ -103,12 +139,15 @@ FirstObjects.frequency.each { |obj| Frequency.create!(obj) }
 FirstObjects.data_set.each { |obj| DataSet.create!(obj) }
 FirstObjects.status.each { |obj| Status.create!(obj) }
 FirstObjects.story_type.each { |obj| StoryType.create!(obj) }
+FirstObjects.review.each { |obj| Review.create!(obj) }
 
 ClientsPublicationsTagsJob.perform_now
 ClientsTagsJob.perform_now
 SectionsJob.perform_now
 PhotoBucketsJob.perform_now
 SlackAccountsJob.perform_now
+# ReportForMmJob.perform_now
+# ReportByRawSourceJob.perform_now
 
 # daily
 date = Date.new(2015, 1, 1)
@@ -116,47 +155,47 @@ end_date = Date.new(2025, 1, 1)
 date_range = (date..end_date)
 date_range.each { |dt| TimeFrame.create!(frame: "d:#{dt.yday}:#{dt.year}") }
 
-# weekly
-date = Date.new(2015, 1, 1)
-end_date = Date.new(2025, 1, 1)
-loop do
-  TimeFrame.create!(frame: "w:#{date.cweek}:#{date.year}")
-  date += 7
-  break if date > end_date
-end
-
-# monthly
-date = Date.new(2015, 1, 1)
-end_date = Date.new(2025, 1, 1)
-loop do
-  TimeFrame.create!(frame: "m:#{date.month}:#{date.year}")
-  date = date.next_month
-  break if date > end_date
-end
-
-# quarterly
-date = Date.new(2015, 1, 1)
-end_date = Date.new(2025, 1, 1)
-loop do
-  (1..4).each { |q| TimeFrame.create!(frame: "q:#{q}:#{date.year}") }
-  date = date >> 3
-  break if date > end_date
-end
-
-# biannually
-date = Date.new(2015, 1, 1)
-end_date = Date.new(2025, 1, 1)
-loop do
-  (1..2).each { |b| TimeFrame.create!(frame: "b:#{b}:#{date.year}") }
-  date = date >> 6
-  break if date > end_date
-end
-
-# annually
-date = Date.new(2015, 1, 1)
-end_date = Date.new(2025, 1, 1)
-loop do
-  TimeFrame.create!(frame: date.year)
-  date = date.next_year
-  break if date > end_date
-end
+# # weekly
+# date = Date.new(2015, 1, 1)
+# end_date = Date.new(2025, 1, 1)
+# loop do
+#   TimeFrame.create!(frame: "w:#{date.cweek}:#{date.year}")
+#   date += 7
+#   break if date > end_date
+# end
+#
+# # monthly
+# date = Date.new(2015, 1, 1)
+# end_date = Date.new(2025, 1, 1)
+# loop do
+#   TimeFrame.create!(frame: "m:#{date.month}:#{date.year}")
+#   date = date.next_month
+#   break if date > end_date
+# end
+#
+# # quarterly
+# date = Date.new(2015, 1, 1)
+# end_date = Date.new(2025, 1, 1)
+# loop do
+#   (1..4).each { |q| TimeFrame.create!(frame: "q:#{q}:#{date.year}") }
+#   date = date >> 3
+#   break if date > end_date
+# end
+#
+# # biannually
+# date = Date.new(2015, 1, 1)
+# end_date = Date.new(2025, 1, 1)
+# loop do
+#   (1..2).each { |b| TimeFrame.create!(frame: "b:#{b}:#{date.year}") }
+#   date = date >> 6
+#   break if date > end_date
+# end
+#
+# # annually
+# date = Date.new(2015, 1, 1)
+# end_date = Date.new(2025, 1, 1)
+# loop do
+#   TimeFrame.create!(frame: date.year)
+#   date = date.next_year
+#   break if date > end_date
+# end
