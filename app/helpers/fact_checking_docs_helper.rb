@@ -1,0 +1,2 @@
+module FactCheckingDocsHelper
+end
