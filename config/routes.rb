@@ -57,8 +57,8 @@ Rails.application.routes.draw do
     end
 
     resources :developers, only: [] do
-      patch    :include, on: :collection
-      delete :exclude, on: :member
+      patch   :include, on: :collection
+      delete  :exclude, on: :member
     end
 
     resources :staging_tables, only: %i[show create destroy] do
@@ -88,6 +88,8 @@ Rails.application.routes.draw do
         get    :section,       on: :collection
         delete :purge_sampled, on: :collection
       end
+
+      resources :fact_checking_docs
 
       resources :creations, path: 'create_samples', only: :create do
         delete :purge_all, on: :collection

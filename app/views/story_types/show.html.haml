@@ -73,6 +73,15 @@
       .card-body
         =render 'export_configurations/export_configurations'
 
+#story_type_fcd.accordion
+  .card
+    .card-header
+      %div.text-center{"aria-controls" => "#story_type_fcd", "aria-expanded" => "false", "data-target" => "#export_configs", "data-toggle" => "collapse", :type => "button"}
+        FCD
+    #fcd.collapse.show{"data-parent" => "#story_type_fcd"}
+      .card-body
+        =render 'samples/samples'
+
 %div.accordion{id: "story_type_samples_#{@iteration.id}"}
   .card
     .card-header
@@ -80,7 +89,6 @@
         samples
     #samples.collapse.show{"data-parent" => "#story_type_samples_#{@iteration.id}"}
       .card-body
-        =render 'samples/samples'
 
 %div.accordion{id: "story_type_scheduler_#{@iteration.id}"}
   .card

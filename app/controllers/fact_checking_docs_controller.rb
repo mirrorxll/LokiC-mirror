@@ -1,0 +1,2 @@
+class FactCheckingDocsController < ApplicationController
+end
