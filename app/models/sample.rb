@@ -6,4 +6,29 @@ class Sample < ApplicationRecord
   belongs_to :publication, optional: true
   belongs_to :output, dependent: :delete
   belongs_to :time_frame, optional: true
+
+  def headline
+    output.headline
+  end
+
+  def teaser
+    output.teaser
+  end
+
+  def body
+    output.body
+  end
+
+  def client_name
+    publication.client.name
+  end
+
+  def publication_name
+    publication.name
+  end
+
+  def link
+    'https://pipeline.locallabs.com/stories/'
+    # pl_production_id ? "https://pipeline.locallabs.com/stories/#{pl_production_id}" : nil
+  end
 end

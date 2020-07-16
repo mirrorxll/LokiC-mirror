@@ -63,6 +63,7 @@
           =render 'codes/story_type_code'
         -else
           =render 'codes/form'
+  =render 'codes/modal_ruby_code'
 
 #story_type_export_configs.accordion
   .card
@@ -73,31 +74,23 @@
       .card-body
         =render 'export_configurations/export_configurations'
 
-#story_type_fcd.accordion
-  .card
-    .card-header
-      %div.text-center{"aria-controls" => "#story_type_fcd", "aria-expanded" => "false", "data-target" => "#export_configs", "data-toggle" => "collapse", :type => "button"}
-        FCD
-    #fcd.collapse.show{"data-parent" => "#story_type_fcd"}
-      .card-body
-        =render 'samples/samples'
-
 %div.accordion{id: "story_type_samples_#{@iteration.id}"}
   .card
     .card-header
       %div.text-center{"aria-controls" => "#samles", "aria-expanded" => "false", "data-target" => "#samples", "data-toggle" => "collapse", :type => "button"}
         samples
-    #samples.collapse.show{"data-parent" => "#story_type_samples_#{@iteration.id}"}
+    #samples.collapse.show{"data-parent" => "#story_type_samples"}
       .card-body
+        =render 'samples/samples'
 
 %div.accordion{id: "story_type_scheduler_#{@iteration.id}"}
   .card
     .card-header
       %div.text-center{"aria-controls" => "#scheduler", "aria-expanded" => "false", "data-target" => "#scheduler", "data-toggle" => "collapse", :type => "button"}
         scheduler
-    #scheduler.collapse.show{"data-parent" => "#story_type_scheduler_#{@iteration.id}"}
+    #scheduler.collapse.show{"data-parent" => "#story_type_scheduler"}
       .card-body
-        -if @story_type.staging_table && @story_type.iteration.creation
+        -if @story_type.staging_table && @iteration.creation
           =render 'schedules/scheduler'
 
 %div.accordion{id: "story_type_export_#{@iteration.id}"}
@@ -109,4 +102,3 @@
       .card-body
         =render 'exports/export_section'
 
-=render 'codes/modal_ruby_code'

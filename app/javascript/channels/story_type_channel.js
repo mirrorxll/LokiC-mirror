@@ -31,9 +31,9 @@ $(document).on("turbolinks:load", function() {
     function st_population(data) {
         if (data['population_msg']) {
             $('#exec_population').html(`
-        <div id="population_status">
-          ${data['population']}
-        </div>`
+                <div id="population_status">
+                  ${data['population']}
+                </div>`
             )
 
             $('#sync :first-child').removeClass('disabled');

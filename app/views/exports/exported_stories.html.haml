@@ -1,0 +1,13 @@
+-@exported.each do |story|
+  .row.small
+    .col-4
+      =story.headline
+    .col-3
+      =story.link
+    .col-1
+      =story.client_name
+    .col-2
+      =story.publication_name
+    .col-2
+      =story.published_at.strftime("%F")
+  %br
