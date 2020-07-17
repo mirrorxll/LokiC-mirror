@@ -12,7 +12,8 @@
           %tbody
             %tr
               %td
-                =@story_type&.data_set&.name
+                =link_to @story_type&.data_set&.name, data_set_path(@story_type.data_set), class: 'no-link', method: :get
+                =link_to icon('fa', 'fa fa-info-circle'), data_set_path(@story_type.data_set), method: :get, remote: true
               %td
                 =@story_type&.data_set&.location
     %hr/
@@ -51,3 +52,5 @@
               %td
                 =@story_type&.photo_bucket&.name
     %hr/
+
+=render 'data_sets/modal_data_set'

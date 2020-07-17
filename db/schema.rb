@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_01_181111) do
+ActiveRecord::Schema.define(version: 2020_07_15_125046) do
 
   create_table "account_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -145,6 +145,14 @@ ActiveRecord::Schema.define(version: 2020_07_01_181111) do
     t.index ["story_type_id", "publication_id"], name: "export_config_unique_index", unique: true
     t.index ["story_type_id"], name: "index_export_configurations_on_story_type_id"
     t.index ["tag_id"], name: "index_export_configurations_on_tag_id"
+  end
+
+  create_table "fact_checking_docs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "story_type_id"
+    t.text "body", size: :medium
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["story_type_id"], name: "index_fact_checking_docs_on_story_type_id"
   end
 
   create_table "frequencies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

@@ -116,10 +116,8 @@ module FirstObjects # :nodoc:
         exported: exported_by_month
       }
     end
+
     table_mm["#{Date.today.strftime("%Y-%m-%d")}"] = arr_mm
-    puts table_mm
-    puts '///'
-    puts table_raw_source
     [
       {
         report_type: 'report_for_mm',
@@ -150,11 +148,11 @@ SlackAccountsJob.perform_now
 # ReportByRawSourceJob.perform_now
 
 # daily
-date = Date.new(2015, 1, 1)
-end_date = Date.new(2025, 1, 1)
-date_range = (date..end_date)
-date_range.each { |dt| TimeFrame.create!(frame: "d:#{dt.yday}:#{dt.year}") }
-
+# date = Date.new(2015, 1, 1)
+# end_date = Date.new(2025, 1, 1)
+# date_range = (date..end_date)
+# date_range.each { |dt| TimeFrame.create!(frame: "d:#{dt.yday}:#{dt.year}") }
+#
 # # weekly
 # date = Date.new(2015, 1, 1)
 # end_date = Date.new(2025, 1, 1)

@@ -18,7 +18,9 @@
       =fcd_link
       .btn-group
         -if iteration.creation.eql?(false)
-          creation samples in progress...
+          .spinner-border.text-dark{:role => "status"}
+          .p-2
+            creation...
         -elsif iteration.creation.eql?(nil)
           =link_to('create samples from the last iteration',
                     story_type_iteration_creations_path(@story_type, iteration),

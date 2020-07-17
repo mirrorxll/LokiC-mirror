@@ -3,7 +3,7 @@
 class StagingTable < ApplicationRecord # :nodoc:
   before_create   :generate_table_name
   before_create   :create_table
-  before_create   :iter_id_column
+  before_create   :default_iter_id
   after_create    :sync
   before_destroy  :drop_table
 

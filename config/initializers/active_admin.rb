@@ -1,5 +1,6 @@
 ActiveAdmin.setup do |config|
-  # config.skip_before_action :find_parent_story_type
+  config.skip_before_action :find_parent_story_type
+
   # == Site Title
   #
   # Set the title that is displayed on the main layout

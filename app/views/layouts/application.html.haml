@@ -24,20 +24,14 @@
                 =link_to('Data Sets', data_sets_path, class: 'nav-link')
               %li.nav-item.active
                 =link_to('Admin panel', admin_root_path, class: 'nav-link')
-
-            %li.nav-item.dropdown
+            %li.nav-item.dropdown.ml-auto.mr-3
+              #navbarDropdown.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :role => "button"}
+                =current_account.name
               .dropdown-menu{"aria-labelledby" => "navbarDropdown"}
-                %a.dropdown-item{:href => "#"} Action
-                %a.dropdown-item{:href => "#"} Another action
-                .dropdown-divider
-                %a.dropdown-item{:href => "#"} Something else here
-
-            -#%li.nav-item.nav-link.disabled.ml-auto
-            -#  =current_account.name
-            -#%li.nav-item
-            -#  =link_to('Edit Profile', edit_account_registration_path, class: 'nav-link')
-            -#%li.nav-item
-            -#  =link_to('Log Out', destroy_account_session_path, class: 'nav-link', method: :delete)
+                .dropdown-item
+                  =link_to('Edit Profile', edit_account_registration_path, class: 'nav-link')
+                .dropdown-item
+                  =link_to('Log Out', destroy_account_session_path, class: 'nav-link', method: :delete)
 
     - if notice
       %p.alert.alert-success.text-center
