@@ -1,3 +1,12 @@
+#info.small
+  .row
+    .col-12.pl-5.pt-3.pb-3
+      iteration:      #{@story_type.iteration.name}
+      %br/
+      total exported: #{@exported.count}
+      %br/
+      developer: #{@story_type.developer.name}
+
 %table.table.table-striped.table-sm.small
   %thead
     %tr
