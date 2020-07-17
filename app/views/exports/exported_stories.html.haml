@@ -1,13 +1,68 @@
--@exported.each do |story|
-  .row.small
-    .col-4
-      =story.headline
-    .col-3
-      =story.link
-    .col-1
-      =story.client_name
-    .col-2
-      =story.publication_name
-    .col-2
-      =story.published_at.strftime("%F")
-  %br
+%table.table.table-striped.table-sm.small
+  %thead
+    %tr
+      %th.hovered_item#headline{:scope => "col", onclick: 'sortHtmlTable(this.id);'}
+        headline
+      %th.hovered_item#link{:scope => "col", onclick: 'sortHtmlTable(this.id);'}
+        link
+      %th.hovered_item#client{:scope => "col", onclick: 'sortHtmlTable(this.id);'}
+        client
+      %th.hovered_item#publication{:scope => "col", onclick: 'sortHtmlTable(this.id);'}
+        publication
+      %th.hovered_item#published_at{:scope => "col", onclick: 'sortHtmlTable(this.id);'}
+        published_at
+  %tbody#exported_stories
+    -@exported.each do |story|
+      %tr
+        %td
+          =story.headline
+        %td
+          =link_to(nil, story.production_link, target:'_blank')
+        %td
+          =story.client_name
+        %td
+          =story.publication_name
+        %td
+          =story.published_at.strftime('%F')
+
+:javascript
+  document.addEventListener('DOMContentLoaded', () => {
+    sessionStorage.clear();
+  });
+
+  function sortHtmlTable(column) {
+    let header = Array.from(document.querySelectorAll('th'));
+    let columnIndex = header.findIndex((e) => e.innerText.match(column));
+    let body = document.getElementById('exported_stories');
+    let toSort = Array.from(body.children);
+
+    if(sessionStorage[column]) {
+      sessionStorage[column] = (sessionStorage[column] === 'asc' ? 'desc' : 'asc');
+    } else {
+      sessionStorage.clear();
+      sessionStorage[column] = 'asc';
+    }
+
+    const comparator = (first, second) => {
+      if(first.children[columnIndex].innerText > second.children[columnIndex].innerText) return 1;
+      if(first.children[columnIndex].innerText === second.children[columnIndex].innerText) return 0;
+      if(first.children[columnIndex].innerText < second.children[columnIndex].innerText) return -1;
+    }
+    toSort.sort(comparator);
+
+    if(sessionStorage[column] === 'desc') toSort.reverse();
+
+    body.innerHtml = "";
+    for(let i = 0; i < toSort.length; i++)
+      body.appendChild(toSort[i]);
+
+    header.forEach((e) => {
+      if(e.innerText.match(column)) {
+        e.innerText = `${column} (${sessionStorage[column]})`
+        e.style.backgroundColor = '#F0F8FF';
+      } else {
+        e.style.backgroundColor = 'white';
+        e.innerText = e.innerText.replace(/\((asc|desc)\)/, '')
+      }
+    });
+  }
