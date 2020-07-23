@@ -7,7 +7,8 @@ class CreateStoryTypesClientsTags < ActiveRecord::Migration[6.0] # :nodoc:
       t.belongs_to :client
       t.belongs_to :tag
 
-      t.index %i[story_type_id client_id tag_id], unique: true, name: 'story_types_clients_tags_unique_index'
+      t.index %i[story_type_id client_id tag_id],
+              unique: true, name: 'story_types_clients_tags_unique_index'
     end
   end
 end

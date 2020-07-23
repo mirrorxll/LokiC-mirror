@@ -4,7 +4,6 @@ require_relative 'table/columns.rb'
 require_relative 'table/index.rb'
 require_relative 'table/query.rb'
 require_relative 'table/create.rb'
-require_relative 'table/destroy.rb'
 
 module Table # :nodoc:
   module_function
@@ -13,7 +12,6 @@ module Table # :nodoc:
   extend Index
   extend Query
   extend Create
-  extend Destroy
 
   def loki_story_creator
     ActiveRecord::Base.connected_to(database: { slow: :loki_story_creator }) { yield }

@@ -30,8 +30,4 @@ class Sample < ApplicationRecord
   def production_link
     "https://pipeline.locallabs.com/stories/#{pl_production_id}"
   end
-
-  def staging_link
-    "https://pipeline-staging.locallabs.com/stories/#{pl_production_id}"
-  end
 end

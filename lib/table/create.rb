@@ -16,9 +16,6 @@ module Table
           t.string   :time_frame
         end
 
-        a_r_m.add_column(t_name, :iter_id, :integer, default: iter_id, after: :id)
-        a_r_m.add_index(t_name, :iter_id, name: :iter)
-
         cr_at_query = created_at_default_value_query(t_name)
         a_r_b_conn.exec_query(cr_at_query)
 
@@ -37,8 +34,6 @@ module Table
         end
       end
     end
-
-    private
 
     def iter_id_present?(t_name)
       a_r_m.columns(t_name).find { |c| c.name.eql?('iter_id') }

@@ -29,6 +29,7 @@ Rails.application.routes.draw do
     patch :sync
   end
 
+
   resources :story_types, except: %i[new create] do
     get :properties
 
@@ -61,6 +62,7 @@ Rails.application.routes.draw do
 
     resources :staging_tables, only: %i[show create destroy] do
       post    :attach,    on: :collection
+      delete  :detach,    on: :member
       patch   :sync,      on: :member
 
       resources :columns, only: %i[edit update]
@@ -72,6 +74,10 @@ Rails.application.routes.draw do
     resources :export_configurations, only: :create do
       get   :section,     on: :collection
       patch :update_tags, on: :collection
+    end
+
+    resources :feedback_confirmations, only: [] do
+      patch :confirm, on: :member
     end
 
     resources :fact_checking_docs do
@@ -86,9 +92,10 @@ Rails.application.routes.draw do
 
       resources :populations, path: 'populate', only: %i[create destroy]
 
-      resources :samples, except: %i[new edit update destroy] do
-        get    :section,       on: :collection
-        delete :purge_sampled, on: :collection
+      resources :samples, only: :show do
+        post   :create_and_generate_feedback, on: :collection
+        delete :purge_sampled,                on: :collection
+        get    :section,                      on: :collection
       end
 
       resources :creations, path: 'create_samples', only: :create do

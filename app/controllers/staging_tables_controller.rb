@@ -6,6 +6,15 @@ class StagingTablesController < ApplicationController # :nodoc:
 
   def show; end
 
+  def create
+    flash[:error] =
+      ('Table for this story type already exist. Please update page' if @staging_table.present?)
+
+    @story_type.create_staging_table if flash[:error].nil?
+
+    render 'show'
+  end
+
   def attach
     flash[:error] =
       if @staging_table.present?
@@ -21,25 +30,16 @@ class StagingTablesController < ApplicationController # :nodoc:
     render 'show'
   end
 
-  def create
-    flash[:error] =
-      ('Table for this story type already exist. Please update page' if @staging_table.present?)
+  def detach
+    @staging_table.destroy
 
-    @story_type.create_staging_table if flash[:error].nil?
-
-    render 'show'
+    render 'new'
   end
 
   def sync
     @staging_table.sync
 
     render 'show'
-  end
-
-  def destroy
-    @staging_table.destroy
-
-    render 'new'
   end
 
   private

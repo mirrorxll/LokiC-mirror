@@ -47,8 +47,7 @@ module MiniLokiC
 
       def export_config
         @export_configs
-          .joins(:publication)
-          .find_by(publications: { pl_identifier: @raw_sample[:publication_id] })
+          .joins(:publication).find_by(publications: { pl_identifier: @raw_sample[:publication_id] })
       end
 
       # wrap to HTML tags

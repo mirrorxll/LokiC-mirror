@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_01_181111) do
+ActiveRecord::Schema.define(version: 2020_07_18_093452) do
 
   create_table "account_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -133,6 +133,34 @@ ActiveRecord::Schema.define(version: 2020_07_01_181111) do
     t.index ["tag_id"], name: "index_export_configurations_on_tag_id"
   end
 
+  create_table "fact_checking_docs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "story_type_id"
+    t.text "body", size: :medium
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["story_type_id"], name: "index_fact_checking_docs_on_story_type_id"
+  end
+
+  create_table "feedback_confirmations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "iteration_id"
+    t.bigint "feedback_id"
+    t.string "body_part"
+    t.boolean "confirmation"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["feedback_id"], name: "index_feedback_confirmations_on_feedback_id"
+    t.index ["iteration_id", "feedback_id"], name: "index_feedback_confirmations_on_iteration_id_and_feedback_id", unique: true
+    t.index ["iteration_id"], name: "index_feedback_confirmations_on_iteration_id"
+  end
+
+  create_table "feedbacks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "rule"
+    t.text "output"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["rule"], name: "index_feedbacks_on_rule", unique: true
+  end
+
   create_table "frequencies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
@@ -173,7 +201,7 @@ ActiveRecord::Schema.define(version: 2020_07_01_181111) do
 
   create_table "outputs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "headline", limit: 300
-    t.string "teaser", limit: 500
+    t.string "teaser", limit: 1500
     t.text "body", size: :medium
   end
 
@@ -297,7 +325,7 @@ ActiveRecord::Schema.define(version: 2020_07_01_181111) do
 
   create_table "templates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "story_type_id"
-    t.text "body"
+    t.text "body", size: :medium
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["story_type_id"], name: "index_templates_on_story_type_id"

@@ -243,7 +243,6 @@ module Numbers
     else
       output = input.to_s
     end
-    puts output
   end
 
   def Numbers.to_ap_style(input)
@@ -252,7 +251,6 @@ module Numbers
     else
       output = input.to_s
     end
-    puts output
     return output
   end
 
@@ -277,7 +275,6 @@ module Numbers
     end
 
     zeros = zeros.to_s.count "0"
-    #puts zeros
 
     number_str = Numbers.digit_to_string(number)
 

@@ -1,33 +1,31 @@
 -iteration = @story_type.iteration
--fcd_link = link_to('fact checking', story_type_fact_checking_doc_path(@story_type, @story_type.fact_checking_doc),
-                    class: 'btn btn-sm btn-outline-dark', target: '_blank')
+-samples = iteration.samples.where(sampled: true)
 
 -if @story_type.staging_table && iteration.export_configurations
   #samples_form.row
     .col-11.offset-1
       =render 'samples/form'
   %hr
-  -if show_samples?(@story_type)
-    #created_samples.row
-      .col-11.offset-1
-        =render iteration.samples.where(sampled: true)
-  %hr
-
-  #fcd__create_destroy_all_samples.row.mt-4
-    .col-11.offset-1
-      =fcd_link
-      .btn-group
-        -if iteration.creation.eql?(false)
-          creation samples in progress...
-        -elsif iteration.creation.eql?(nil)
-          =link_to('create samples from the last iteration',
-                    story_type_iteration_creations_path(@story_type, iteration),
-                    class: 'btn btn-sm btn-outline-dark', method: :post, remote: true)
+  -# -if show_samples?(@story_type)
+  #created_samples
+    .row
+      .col-10.offset-1
+        -if samples.count.positive?
+          =render samples
         -else
-          =link_to('purge samples from the last iteration',
-                    purge_all_story_type_iteration_creations_path(@story_type, iteration),
-                    class: 'btn btn-sm btn-outline-dark', method: :delete, remote: true)
--else
-  #fcd.row
-    .col-10.offset-1
-      =fcd_link
+          .small
+            Samples were not created.
+        -if iteration.feedback_confirmations.any?
+          %hr/
+          .mt-4
+            =render 'feedback/form', feedback: iteration.feedback_confirmations
+    .row.small
+      .col-10.offset-1
+        %hr/
+        -if iteration.feedback_confirmations.any?
+          ***Please confirm all feedback. After that you can go to FCD and create all the samples.
+        -else
+          No generated feedback.
+  %hr
+  #fcd__create_destroy_all_samples
+    =render 'samples/fcd__create_all_samples_buttons', iteration: iteration

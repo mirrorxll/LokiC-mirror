@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class SamplesJob < ApplicationJob
+class SamplesAndFeedbackJob < ApplicationJob
   queue_as :samples
 
   def perform(story_type, params)
@@ -11,6 +11,7 @@ class SamplesJob < ApplicationJob
     ids = (edge_ids + row_ids).join(',')
 
     MiniLokiC::Code.execute(story_type, :creation, sampled: true, ids: ids)
+    Samples.feedback(story_type)
     status = true
     message = 'samples created.'
   rescue StandardError => e
