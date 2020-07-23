@@ -11,6 +11,12 @@
   slack_accounts:
     cron: '8 0 */1 * *'
     class: SlackAccountsJob
+  report_for_mm:
+    cron: '40 14 * * *'
+    class: ReportForMmJob
+  report_by_raw_source:
+    cron: '44 15 * * *'
+    class: ReportByRawSourceJob
 
 :concurrency: 30
 :queues:
@@ -22,3 +28,6 @@
   - creation
   - scheduler
   - export
+
+
+

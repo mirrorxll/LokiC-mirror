@@ -4,8 +4,10 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '2.7.1'
 
 gem 'activeadmin'
+
 # ActiveRecord pretty output in Rails console
 gem 'hirb'
+
 # front-end
 gem 'devise'
 gem 'devise-bootstrap-views', '~> 1.0'

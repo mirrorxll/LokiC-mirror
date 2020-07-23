@@ -1,120 +1,153 @@
 # # frozen_string_literal: true
-#
-#
-# def account_type
-#   %w[manager editor developer].map { |type| { name: type } }
-# end
-#
-# def account
-#   [
-#     {
-#       first_name: 'Sergey',
-#       last_name: 'Emelyanov',
-#       account_type: AccountType.first,
-#       email: 'evilx@loki.com',
-#       password: '123456'
-#     },
-#     {
-#       first_name: 'Dmitriy',
-#       last_name: 'Buzina',
-#       account_type: AccountType.first,
-#       email: 'dmitriy.b@loki.com',
-#       password: '123456'
-#     },
-#     {
-#       first_name: 'Sergey',
-#       last_name: 'Burenkov',
-#       account_type: AccountType.first,
-#       email: 'serg.burenkov@lokic.com',
-#       password: '123456'
-#     },
-#     {
-#       first_name: 'John',
-#       last_name: 'Putz',
-#       account_type: AccountType.first,
-#       email: 'john.putz@lokic.com',
-#       password: '123456'
-#     }
-#   ]
-# end
-#
-# def status
-#   statuses = ['not started', 'in progress', 'exported', 'on cron', 'blocked']
-#   statuses.map { |st| { name: st } }
-# end
-#
-# def frequency
-#   frequencies = ['daily', 'weekly', 'monthly', 'quarterly', 'annually', 'manual input']
-#   frequencies.map { |fr| { name: fr } }
-# end
-#
-# def dates(range: false)
-#   start = Date.new(2015, 1, 1)
-#   finish = Date.new(2025, 1, 1)
-#
-#   range ? start..finish : [start, finish]
-# end
-#
-#
-# # ============ Initial filling DB ============
-# account_type.each { |obj| AccountType.create!(obj) }
-# account.each { |obj| Account.create!(obj) }
-# frequency.each { |obj| Frequency.create!(obj) }
-# status.each { |obj| Status.create!(obj) }
-#
-# ClientsPublicationsTagsJob.perform_now
-# ClientsTagsJob.perform_now
-# SectionsJob.perform_now
-# PhotoBucketsJob.perform_now
-# SlackAccountsJob.perform_now
-#
-#
-# # ============ Time Frames for staging tables ============
-#
-# # daily
-# dates(range: true).each do |dt|
-#   TimeFrame.create!(frame: "d:#{dt.yday}:#{dt.year}")
-# end
-#
-# # weekly
-# date, end_date = dates
-# loop do
-#   TimeFrame.create!(frame: "w:#{date.cweek}:#{date.year}")
-#   date += 7
-#   break if date > end_date
-# end
-#
-# # monthly
-# date, end_date = dates
-# loop do
-#   TimeFrame.create!(frame: "m:#{date.month}:#{date.year}")
-#   date = date.next_month
-#   break if date > end_date
-# end
-#
-# # quarterly
-# date, end_date = dates
-# loop do
-#   (1..4).each { |q| TimeFrame.create!(frame: "q:#{q}:#{date.year}") }
-#   date = date >> 3
-#   break if date > end_date
-# end
-#
-# # biannually
-# date, end_date = dates
-# loop do
-#   (1..2).each { |b| TimeFrame.create!(frame: "b:#{b}:#{date.year}") }
-#   date = date >> 6
-#   break if date > end_date
-# end
-#
-# # annually
-# date, end_date = dates
-# loop do
-#   TimeFrame.create!(frame: date.year)
-#   date = date.next_year
-#   break if date > end_date
-# end
+
+def account_type
+  %w[manager editor developer].map { |type| { name: type } }
+end
+
+def account
+  [
+    {
+      first_name: 'Sergey',
+      last_name: 'Emelyanov',
+      account_type: AccountType.first,
+      email: 'evilx@loki.com',
+      password: '123456'
+    },
+    {
+      first_name: 'Dmitriy',
+      last_name: 'Buzina',
+      account_type: AccountType.first,
+      email: 'dmitriy.b@loki.com',
+      password: '123456'
+    },
+    {
+      first_name: 'Sergey',
+      last_name: 'Burenkov',
+      account_type: AccountType.first,
+      email: 'serg.burenkov@lokic.com',
+      password: '123456'
+    },
+    {
+      first_name: 'John',
+      last_name: 'Putz',
+      account_type: AccountType.first,
+      email: 'john.putz@lokic.com',
+      password: '123456'
+    }
+  ]
+end
+
+def status
+  statuses = ['not started', 'in progress', 'exported', 'on cron', 'blocked']
+  statuses.map { |st| { name: st } }
+end
+
+def frequency
+  frequencies = ['daily', 'weekly', 'monthly', 'quarterly', 'annually', 'manual input']
+  frequencies.map { |fr| { name: fr } }
+end
+
+def dates(range: false)
+  start = Date.new(2015, 1, 1)
+  finish = Date.new(2025, 1, 1)
+
+  range ? start..finish : [start, finish]
+end
+
+def review
+  table_raw_source = []
+  table_mm = {}
+  published_by_month = {}
+  exported_by_month = {}
+  arr_mm = []
+  (1..12).each do |i|
+    rand_num = rand(10000).to_s
+    arr_mm << { month: Date::MONTHNAMES[i],
+                total_exported: rand_num,
+                total_published: rand_num }
+    rand_raw = rand(100)
+    published_by_month["raw_source#{rand_raw}"] = rand_num
+    exported_by_month["raw_source#{rand_raw}"] = rand_num
+    table_raw_source << {
+      month: Date::MONTHNAMES[i],
+      published: published_by_month,
+      exported: exported_by_month
+    }
+  end
+
+  table_mm["#{Date.today.strftime("%Y-%m-%d")}"] = arr_mm
+  [
+    {
+      report_type: 'report_for_mm',
+      table: table_mm.to_json
+    },
+    {
+      report_type: 'report_by_raw_source',
+      table: table_raw_source.to_json
+    }
+  ]
+end
+
+# ============ Initial filling DB ============
+account_type.each { |obj| AccountType.create!(obj) }
+account.each { |obj| Account.create!(obj) }
+frequency.each { |obj| Frequency.create!(obj) }
+status.each { |obj| Status.create!(obj) }
+review.each { |obj| Review.create!(obj) }
+
+ClientsPublicationsTagsJob.perform_now
+ClientsTagsJob.perform_now
+SectionsJob.perform_now
+PhotoBucketsJob.perform_now
+SlackAccountsJob.perform_now
+
+
+# ============ Time Frames for staging tables ============
+
+# daily
+dates(range: true).each do |dt|
+  TimeFrame.create!(frame: "d:#{dt.yday}:#{dt.year}")
+end
+
+# weekly
+date, end_date = dates
+loop do
+  TimeFrame.create!(frame: "w:#{date.cweek}:#{date.year}")
+  date += 7
+  break if date > end_date
+end
+
+# monthly
+date, end_date = dates
+loop do
+  TimeFrame.create!(frame: "m:#{date.month}:#{date.year}")
+  date = date.next_month
+  break if date > end_date
+end
+
+# quarterly
+date, end_date = dates
+loop do
+  (1..4).each { |q| TimeFrame.create!(frame: "q:#{q}:#{date.year}") }
+  date = date >> 3
+  break if date > end_date
+end
+
+# biannually
+date, end_date = dates
+loop do
+  (1..2).each { |b| TimeFrame.create!(frame: "b:#{b}:#{date.year}") }
+  date = date >> 6
+  break if date > end_date
+end
+
+# annually
+date, end_date = dates
+loop do
+  TimeFrame.create!(frame: date.year)
+  date = date.next_year
+  break if date > end_date
+end
 
 
 # ============ FeedBack rules for samples ============

@@ -6,12 +6,32 @@
     .col-11.offset-1
       =render 'samples/form'
   %hr
+#<<<<<<< rails-6-admin
+  -if show_samples?(@story_type)
+    #created_samples.row
+      .col-11.offset-1
+        =render iteration.samples.where(sampled: true)
+  %hr
+
+  #fcd__create_destroy_all_samples.row.mt-4
+    .col-11.offset-1
+      =fcd_link
+      .btn-group
+        -if iteration.creation.eql?(false)
+          :javascript
+            $('#samples .card-body').html("#{escape_javascript(render 'samples/spinner', description: 'Creation in progress')}");
+        -elsif iteration.creation.eql?(nil)
+          =link_to('create samples from the last iteration',
+                    story_type_iteration_creations_path(@story_type, iteration),
+                    class: 'btn btn-sm btn-outline-dark', method: :post, remote: true)
+#=======
   -# -if show_samples?(@story_type)
   #created_samples
     .row
       .col-10.offset-1
         -if samples.count.positive?
           =render samples
+#>>>>>>> rails-6
         -else
           .small
             Samples were not created.

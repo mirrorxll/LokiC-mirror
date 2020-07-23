@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_18_093452) do
-
+ActiveRecord::Schema.define(version: 2020_07_15_125046) do
   create_table "account_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.string "permissions", limit: 5000
@@ -21,6 +20,7 @@ ActiveRecord::Schema.define(version: 2020_07_18_093452) do
 
   create_table "accounts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "account_type_id"
+    t.bigint "slack_account_id"
     t.string "email", null: false
     t.string "encrypted_password", null: false
     t.string "reset_password_token"
@@ -34,6 +34,21 @@ ActiveRecord::Schema.define(version: 2020_07_18_093452) do
     t.index ["email"], name: "index_accounts_on_email", unique: true
     t.index ["first_name", "last_name"], name: "index_accounts_on_first_name_and_last_name"
     t.index ["reset_password_token"], name: "index_accounts_on_reset_password_token", unique: true
+    t.index ["slack_account_id"], name: "index_accounts_on_slack_account_id"
+  end
+
+  create_table "active_admin_comments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "namespace"
+    t.text "body"
+    t.string "resource_type"
+    t.bigint "resource_id"
+    t.string "author_type"
+    t.bigint "author_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id"
+    t.index ["namespace"], name: "index_active_admin_comments_on_namespace"
+    t.index ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id"
   end
 
   create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -141,26 +156,6 @@ ActiveRecord::Schema.define(version: 2020_07_18_093452) do
     t.index ["story_type_id"], name: "index_fact_checking_docs_on_story_type_id"
   end
 
-  create_table "feedback_confirmations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "iteration_id"
-    t.bigint "feedback_id"
-    t.string "body_part"
-    t.boolean "confirmation"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["feedback_id"], name: "index_feedback_confirmations_on_feedback_id"
-    t.index ["iteration_id", "feedback_id"], name: "index_feedback_confirmations_on_iteration_id_and_feedback_id", unique: true
-    t.index ["iteration_id"], name: "index_feedback_confirmations_on_iteration_id"
-  end
-
-  create_table "feedbacks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "rule"
-    t.text "output"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["rule"], name: "index_feedbacks_on_rule", unique: true
-  end
-
   create_table "frequencies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
@@ -228,6 +223,13 @@ ActiveRecord::Schema.define(version: 2020_07_18_093452) do
     t.bigint "publication_id", null: false
     t.bigint "tag_id", null: false
     t.index ["publication_id", "tag_id"], name: "index_publications_tags_on_publication_id_and_tag_id", unique: true
+  end
+
+  create_table "reviews", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "report_type"
+    t.text "table"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "samples", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

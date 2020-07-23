@@ -1,4 +1,4 @@
-// placeholder for a new data set frequency select
+// placeholder for a new data set frequency selectto scss
 // fields new data set frequency select fields placeholder
 .frequency {
   position: relative;
@@ -9,4 +9,9 @@
   z-index: 1;
   pointer-events: none;
   background: #fff;
+}
+
+.no-link {
+  text-decoration: none;
+  color: #000000;
 }

@@ -1,0 +1,49 @@
+#carouselMM.carousel.slide{"data-ride" => "carousel", "data-interval" => "false"}
+  .carousel-inner
+    -sheets.each_with_index do |(date, table), index|
+      - if index == 0
+        .carousel-item.active{id: date }
+          =date
+          %table.table
+            %thead
+              %tr
+                %th{:scope => "col"} Month
+                %th{:scope => "col"} Total published
+                %th{:scope => "col"} Total exported
+            %tbody
+              -table.each do |row|
+                %tr
+                  %td
+                    =row['month']
+                  %td
+                    =row['total_published']
+                  %td
+                    =row['total_exported']
+      - if index != 0
+        .carousel-item{id: date}
+          =date
+          %table.table
+            %thead
+              %tr
+                %th{:scope => "col"} Month
+                %th{:scope => "col"} Total published
+                %th{:scope => "col"} Total exported
+            %tbody
+              -table.each do |row|
+                %tr
+                  %td
+                    =row['month']
+                  %td
+                    =row['total_published']
+                  %td
+                    =row['total_exported']
+  %a.carousel-control-prev{"data-slide" => "prev", :href => "#carouselMM", :role => "button"}
+    %span.carousel-control-prev-icon{"aria-hidden" => "true"}
+    %span.sr-only Previous
+  %a.carousel-control-next{"data-slide" => "next", :href => "#carouselMM", :role => "button"}
+    %span.carousel-control-next-icon{"aria-hidden" => "true"}
+  %span.sr-only Next
+
+
+
+

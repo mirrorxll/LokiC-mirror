@@ -11,9 +11,5 @@
 :javascript
   $('#population_form').on('submit', function() {
     $(this).hide();
-
-    $('#exec_population').html(`
-      <div id="population_in_progress" class="text-danger">
-        population in progress...
-      </div>`);
+    $('#exec_population').html("#{escape_javascript(render 'samples/spinner', description: 'Population in progress')}");
   });
