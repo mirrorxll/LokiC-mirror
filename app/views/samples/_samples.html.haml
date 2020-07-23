@@ -18,9 +18,8 @@
       =fcd_link
       .btn-group
         -if iteration.creation.eql?(false)
-          .spinner-border.text-dark{:role => "status"}
-          .p-2
-            creation...
+          :javascript
+            $('#samples .card-body').html("#{escape_javascript(render 'samples/spinner', description: 'Creation in progress')}");
         -elsif iteration.creation.eql?(nil)
           =link_to('create samples from the last iteration',
                     story_type_iteration_creations_path(@story_type, iteration),

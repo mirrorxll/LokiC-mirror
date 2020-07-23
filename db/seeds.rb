@@ -139,10 +139,10 @@ FirstObjects.status.each { |obj| Status.create!(obj) }
 FirstObjects.story_type.each { |obj| StoryType.create!(obj) }
 FirstObjects.review.each { |obj| Review.create!(obj) }
 
-ClientsPublicationsTagsJob.perform_now
-ClientsTagsJob.perform_now
-SectionsJob.perform_now
-PhotoBucketsJob.perform_now
+# ClientsPublicationsTagsJob.perform_now
+# ClientsTagsJob.perform_now
+# SectionsJob.perform_now
+# PhotoBucketsJob.perform_now
 SlackAccountsJob.perform_now
 # ReportForMmJob.perform_now
 # ReportByRawSourceJob.perform_now

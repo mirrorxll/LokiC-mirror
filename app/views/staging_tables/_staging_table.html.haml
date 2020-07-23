@@ -22,8 +22,8 @@
             -if @story_type.iteration.population.nil?
               =render 'populations/form'
             -elsif @story_type.iteration.population.eql?(false)
-              #population_in_progress.text-danger
-                population in progress...
+              #population_in_progress
+                =render 'samples/spinner', description: 'Population in progress'
             -else
               #population_status
                 population success

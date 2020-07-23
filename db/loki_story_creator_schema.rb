@@ -12,36 +12,4 @@
 
 ActiveRecord::Schema.define(version: 0) do
 
-  create_table "s1_staging", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "iter_id", default: 1
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer "client_id"
-    t.string "client_name"
-    t.integer "publication_id"
-    t.string "publication_name"
-    t.string "organization_ids", limit: 2000
-    t.boolean "story_created", default: false
-    t.string "time_frame"
-    t.index ["iter_id"], name: "iter"
-  end
-
-  create_table "s4_staging", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "iter_id", default: 4
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer "client_id"
-    t.string "client_name"
-    t.integer "publication_id"
-    t.string "publication_name"
-    t.string "organization_ids", limit: 2000
-    t.boolean "story_created", default: false
-    t.string "time_frame"
-    t.text "story_table"
-    t.integer "year"
-    t.string "month", limit: 20
-    t.index ["client_id", "publication_id", "year", "month"], name: "story_per_publication", unique: true
-    t.index ["iter_id"], name: "iter"
-  end
-
 end

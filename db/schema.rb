@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 2020_07_15_125046) do
 
   create_table "accounts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "account_type_id"
+    t.bigint "slack_account_id"
     t.string "email", null: false
     t.string "encrypted_password", null: false
     t.string "reset_password_token"
@@ -34,6 +35,7 @@ ActiveRecord::Schema.define(version: 2020_07_15_125046) do
     t.index ["email"], name: "index_accounts_on_email", unique: true
     t.index ["first_name", "last_name"], name: "index_accounts_on_first_name_and_last_name"
     t.index ["reset_password_token"], name: "index_accounts_on_reset_password_token", unique: true
+    t.index ["slack_account_id"], name: "index_accounts_on_slack_account_id"
   end
 
   create_table "active_admin_comments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -326,7 +328,7 @@ ActiveRecord::Schema.define(version: 2020_07_15_125046) do
 
   create_table "templates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "story_type_id"
-    t.text "body"
+    t.text "body", size: :medium
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["story_type_id"], name: "index_templates_on_story_type_id"
