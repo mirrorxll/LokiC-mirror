@@ -1,4 +1,4 @@
--if @story_type.iterations.last.schedule == true
+-if @story_type.iteration.schedule == true
   .row.small
     .col-10.offset-1
       #results_scheduling
@@ -10,7 +10,7 @@
     .col-5
       =render 'schedules/results_scheduling'
 
-  -if @story_type.iterations.last.samples.where.not(published_at: nil).any?
+  -if @story_type.iteration.samples.where.not(published_at: nil).any?
     %hr/
     .row.small
       .col-5.offset-1

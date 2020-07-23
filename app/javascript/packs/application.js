@@ -13,6 +13,7 @@ import '../stylesheets/application'
 import './summernote'
 import Rails from "@rails/ujs";
 
+
 document.addEventListener('turbolinks:load', () => {
   $('[data-toggle="tooltip"]').tooltip()
   $('[data-toggle="popover"]').popover()

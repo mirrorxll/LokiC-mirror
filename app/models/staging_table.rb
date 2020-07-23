@@ -5,7 +5,6 @@ class StagingTable < ApplicationRecord # :nodoc:
   before_create   :create_table
   before_create   :default_iter_id
   after_create    :sync
-  before_destroy  :drop_table
 
   belongs_to :story_type
 

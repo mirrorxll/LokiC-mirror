@@ -144,7 +144,6 @@ module MiniLokiC
           neighborhood_qu = "#{/select/i.match(query) ? "UNION DISTINCT" : ''} " + " (#{qu}) " if pl_shapes_by_type['neighborhood']
           query = query + neighborhood_qu if pl_shapes_by_type['neighborhood']
 
-          puts query
           project_results = []
           project_results = query_pl(query) if /select/.match(query)
           projects_array = []

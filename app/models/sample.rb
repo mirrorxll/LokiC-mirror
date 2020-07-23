@@ -27,8 +27,7 @@ class Sample < ApplicationRecord
     publication.name
   end
 
-  def link
-    'https://pipeline.locallabs.com/stories/'
-    # pl_production_id ? "https://pipeline.locallabs.com/stories/#{pl_production_id}" : nil
+  def production_link
+    "https://pipeline.locallabs.com/stories/#{pl_production_id}"
   end
 end
