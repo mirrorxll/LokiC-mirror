@@ -12,12 +12,11 @@ module Report
       hash_raw_sources = {}
 
       stage_tables.each do |stage_table|
-        begin
-          hash_raw_sources["#{stage_table}"] = db05.query("select raw.* from #{stage_table} st inner join raw_sources raw on st.source_table_id = raw.id limit 1").first
-        rescue => e
-          p e.message
-          next
-        end
+
+        hash_raw_sources[stage_table.to_s] = db05.query("select raw.* from #{stage_table} st inner join raw_sources raw on st.source_table_id = raw.id limit 1").first
+      rescue => e
+        e.message
+        next
       end
 
       sheets = []

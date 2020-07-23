@@ -5,7 +5,7 @@
 
     $(editable_block).append(
         `<div id="col_${hex}">
-            <div class="remove_column d-inline-block" id="rm_col_${hex}" onclick="removeColumn(this)">-</div>
+            <div class="remove_column d-inline-block " id="rm_col_${hex}" onclick="removeColumn(this)">-</div>
             <input placeholder="name" id="columns_${hex}_name" required="required" type="text" name="columns[${hex}[name]]">
             <select id="columns_${hex}_type" onchange="optionsForColumnType(this)" name="columns[${hex}[type]]">
                 <option value="integer">integer</option>

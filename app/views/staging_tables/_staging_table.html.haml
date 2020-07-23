@@ -1,7 +1,7 @@
 -iteration = @story_type.iteration
 -staging_table = @story_type.staging_table
 
-.row
+.row.small
   .col-10.offset-1
     .row
       .col-12
@@ -46,16 +46,17 @@
                    edit_story_type_staging_table_columns_path(@story_type, staging_table, staging_table.columns),
                    class: 'btn btn-sm btn-outline-dark', remote: true)
         %br
-        .row
-          .col-6.small name
-          .col-6.small{ style: 'padding-left: 5px;'} type
+        .row.font-weight-bold
+          .col-6 name
+          .col-6 type
+        %hr.mb-1.mt-1/
         -columns = staging_table.columns.list
-        %table.mt-2.table.table-sm
-          %tbody
-            -columns.each do |_id, col|
-              %tr
-                %td #{col[:name]}
-                %td #{col[:type]} #{col[:opts].values.all?(nil) ? '' : "(#{col[:opts].values.compact.join(',')})"}
+        -columns.each do |_id, col|
+          .row
+            .col-6
+              #{col[:name]}
+            .col-6
+              #{col[:type]} #{col[:opts].values.all?(nil) ? '' : "(#{col[:opts].values.compact.join(',')})"}
       #index.tab-pane.fade{"aria-labelledby" => "index-tab", :role => "tabpanel"}
         %hr.mt-0/
         #edit_index.btn-group.mb-2

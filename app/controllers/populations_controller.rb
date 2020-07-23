@@ -10,7 +10,7 @@ class PopulationsController < ApplicationController # :nodoc:
   end
 
   def destroy
-    @story_type.staging_table.purge
+    # @story_type.staging_table.purge
     @story_type.update_iteration(population: nil)
   end
 

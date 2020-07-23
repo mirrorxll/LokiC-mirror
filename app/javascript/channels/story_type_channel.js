@@ -32,7 +32,7 @@ $(document).on("turbolinks:load", function() {
         if (data['population_msg']) {
             $('#exec_population').html(`
                 <div id="population_status">
-                  ${data['population']}
+                  ${data['population_msg']}
                 </div>`
             )
 

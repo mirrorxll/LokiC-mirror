@@ -31,7 +31,6 @@ Rails.application.routes.draw do
     patch :sync
   end
 
-
   resources :story_types, except: %i[new create] do
     get :properties
 
