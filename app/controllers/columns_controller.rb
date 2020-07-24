@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ColumnsController < ApplicationController
+  before_action :render_400, if: :editor?
+
   def edit
     @staging_table = @story_type.staging_table
 

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class SchedulesController < ApplicationController # :nodoc:
+  before_action :render_400, if: :editor?
   after_action :iteration_update, except: :purge
 
   def manual

@@ -4,7 +4,6 @@ class DeviseCreateAccounts < ActiveRecord::Migration[6.0] # :nodoc:
   def change
     create_table :accounts do |t|
       t.belongs_to :account_type
-      t.belongs_to :slack_account
 
       t.string    :email,                     null: false
       t.string    :encrypted_password,        null: false

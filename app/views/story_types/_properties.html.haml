@@ -7,10 +7,13 @@
         date location
     .row
       .col-6
-        =link_to @story_type&.data_set&.name, data_set_path(@story_type.data_set), class: 'no-link', method: :get
-        =link_to icon('fa', 'fa fa-info-circle'), data_set_path(@story_type.data_set), method: :get, remote: true
+        -if current_account.type.eql?('manager')
+          =link_to @story_type.data_set.name, data_set_path(@story_type.data_set), class: 'no-link'
+        -else
+          =@story_type.data_set.name
+        =link_to icon('fa', 'fa fa-info-circle'), properties_data_set_path(@story_type.data_set), remote: true
       .col-6
-        =@story_type&.data_set&.location
+        =@story_type.data_set.location
     %hr/
 
     .row.mb-2.font-weight-bold

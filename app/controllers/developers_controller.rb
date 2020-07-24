@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class DevelopersController < ApplicationController
+  before_action :render_400, if: :developer?
   before_action :find_developer, only: :include
   after_action :send_notification, only: :include
 

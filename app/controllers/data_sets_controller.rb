@@ -2,6 +2,8 @@
 
 class DataSetsController < ApplicationController # :nodoc:
   skip_before_action :find_parent_story_type
+
+  before_action :render_400, except: :properties, if: :developer?
   before_action :find_data_set, except: %i[index new create]
 
   def index
@@ -22,8 +24,7 @@ class DataSetsController < ApplicationController # :nodoc:
   end
 
   def create
-    @data_set =
-      current_account.data_sets.build(data_set_params)
+    @data_set = current_account.data_sets.build(data_set_params)
 
     if @data_set.save
       new_data_set_notification
@@ -49,6 +50,8 @@ class DataSetsController < ApplicationController # :nodoc:
   def destroy
     @data_set&.destroy
   end
+
+  def properties; end
 
   private
 

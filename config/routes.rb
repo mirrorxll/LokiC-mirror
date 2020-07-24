@@ -5,33 +5,24 @@ require 'sidekiq-scheduler/web'
 
 Rails.application.routes.draw do
   devise_for :accounts, controllers: { registrations: 'registrations', sessions: 'sessions' }
-  mount ActionCable.server, at: '/cable'
-
-  acc_access =
-    ->(u) { %w[super-user manager editor].include?(u.account_type.name) }
-
-  authenticate :account, acc_access do
-    mount Sidekiq::Web => '/sidekiq'
-
+  authenticate :account, ->(u) { u.account_type.name.eql?('manager') } do
     ActiveAdmin.routes(self)
-
-    resources :data_sets do
-      patch :evaluate, on: :member
-
-      resources :story_types, only: %i[new create]
-    end
+    mount Sidekiq::Web => '/sidekiq'
   end
+
+  mount ActionCable.server, at: '/cable'
 
   root 'story_types#index'
 
-  # summernote image upload/destroy points
-  resources :uploads, only: [:create, :destroy]
+  resources :data_sets do
+    patch :evaluate, on: :member
+    get   :properties, on: :member
 
-  resources :slack_accounts, only: %i[] do
-    patch :sync
+    resources :story_types, only: %i[new create]
   end
 
   resources :story_types, except: %i[new create] do
+    get :distributed, on: :collection
     get :properties
 
     resources :templates, path: :template, only: %i[edit update]
@@ -117,5 +108,12 @@ Rails.application.routes.draw do
         get  :section,          on: :collection
       end
     end
+  end
+
+  # summernote image upload/destroy points
+  resources :uploads, only: %i[create destroy]
+
+  resources :slack_accounts, only: %i[] do
+    patch :sync
   end
 end

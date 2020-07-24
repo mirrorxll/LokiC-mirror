@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class IndicesController < ApplicationController
+  before_action :render_400, if: :editor?
   before_action :staging_table
 
   def new

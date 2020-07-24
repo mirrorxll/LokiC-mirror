@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class TagsController < ApplicationController # :nodoc:
+  before_action :render_400, if: :developer?
   before_action :find_story_type_client
   before_action :find_tag, only: :include
 

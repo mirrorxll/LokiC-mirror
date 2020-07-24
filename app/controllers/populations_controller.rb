@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class PopulationsController < ApplicationController # :nodoc:
+  before_action :render_400, if: :editor?
+
   def create
     render_400 && return unless @story_type.iteration.population.nil?
 

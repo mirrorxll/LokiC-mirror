@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class CodesController < ApplicationController # :nodoc:
+  before_action :render_400, if: :editor?
+
   def create
     render_400 && return if @story_type.code.attached?
 
@@ -15,6 +17,6 @@ class CodesController < ApplicationController # :nodoc:
   end
 
   def show
-    @ruby_code = CodeRay.scan(@story_type.download_code_from_db, :ruby).div(:line_numbers => :table)
+    @ruby_code = CodeRay.scan(@story_type.download_code_from_db, :ruby).div(line_numbers: :table)
   end
 end

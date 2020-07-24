@@ -1,10 +1,11 @@
-%hr/
-%section#filter
-  =render 'filter'
+-if action_name.eql?('index')
+  %hr/
+  %section#filter
+    =render 'filter'
+
+  %hr/
 
 %hr/
-%hr/
-
 %section#story_types.small
   .row.text-center
     .col-1 #

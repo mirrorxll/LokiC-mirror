@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class FrequenciesController < ApplicationController # :nodoc:
+  before_action :render_400, if: :developer?
   before_action :find_frequency, only: :include
 
   def include

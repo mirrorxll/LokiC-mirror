@@ -3,16 +3,24 @@
 class StoryTypesController < ApplicationController # :nodoc:
   skip_before_action :find_parent_story_type, except: :properties
 
-  before_action :find_data_set, only: %i[new create]
-  before_action :find_story_type, except: %i[index new create properties]
-  before_action :set_iteration, only: :show
+  before_action :redirect_to_separate_root, only: :index
+  before_action :render_400,                only: %i[distributed show], if: :editor?
+  before_action :render_400,                only: %i[new create edit update properties destroy], if: :developer?
+  before_action :find_data_set,             only: %i[new create]
+  before_action :find_story_type,           except: %i[index distributed new create properties]
+  before_action :set_iteration,             only: :show
 
   def index
-    @story_types = StoryType.order(id: :asc).where.not(developer: nil)
+    @story_types = StoryType.all
 
     filter_params.each do |key, value|
       @story_types = @story_types.public_send(key, value) if value.present?
     end
+  end
+
+  def distributed
+    @story_types = StoryType.order(id: :desc).where(developer: current_account)
+    render 'index'
   end
 
   def show; end
@@ -45,6 +53,17 @@ class StoryTypesController < ApplicationController # :nodoc:
   end
 
   private
+
+  def redirect_to_separate_root
+    return if manager?
+
+    redirect_to data_sets_path if editor?
+    redirect_to distributed_story_types_path if developer?
+  end
+
+  def check_access
+    redirect_to root_path
+  end
 
   def find_data_set
     @data_set = DataSet.find(params[:data_set_id])

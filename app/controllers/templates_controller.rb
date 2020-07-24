@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class TemplatesController < ApplicationController
+  before_action :render_400, if: :developer?
+
   def edit; end
 
   def update

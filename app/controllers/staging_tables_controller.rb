@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class StagingTablesController < ApplicationController # :nodoc:
+  before_action :render_400, if: :editor?
   before_action :attach_staging_table, only: %i[attach]
   before_action :staging_table
 

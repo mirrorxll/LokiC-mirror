@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class FeedbackConfirmationsController < ApplicationController
+  before_action :render_400, if: :editor?
   before_action :find_feedback
 
   def confirm

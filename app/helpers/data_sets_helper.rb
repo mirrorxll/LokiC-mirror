@@ -43,7 +43,11 @@ module DataSetsHelper # :nodoc:
   end
 
   def eval_doc(data_set)
-    data_set.evaluation_document.present? ? data_set.evaluation_document : '---'
+    if data_set.evaluation_document.present?
+      link_to(URI.parse(data_set.evaluation_document).host, data_set.evaluation_document, target: '_blank')
+    else
+      '---'
+    end
   end
 
   def eval_indicate(data_set)

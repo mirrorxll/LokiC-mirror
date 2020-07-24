@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class CreationsController < ApplicationController # :nodoc:
+  before_action :render_400, if: :editor?
+
   def create
     CreationJob.set(wait: 2.second).perform_later(@story_type)
     @story_type.update_iteration(creation: false)
