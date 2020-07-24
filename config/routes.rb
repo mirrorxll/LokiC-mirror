@@ -116,4 +116,8 @@ Rails.application.routes.draw do
   resources :slack_accounts, only: %i[] do
     patch :sync
   end
+
+  resources :feedback_confirmations, only: [] do
+    patch :confirm, on: :member
+  end
 end

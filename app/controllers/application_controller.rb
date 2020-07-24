@@ -20,22 +20,6 @@ class ApplicationController < ActionController::Base
   end
 
   def editor?
-    puts 'НЕУДАЧНИК'
-    puts 'НЕУДАЧНИК'
-    puts 'НЕУДАЧНИК'
-    puts 'НЕУДАЧНИК'
-    puts 'НЕУДАЧНИК'
-    puts 'НЕУДАЧНИК'
-    puts 'НЕУДАЧНИК'
-    puts 'НЕУДАЧНИК'
-    puts 'НЕУДАЧНИК'
-    puts 'НЕУДАЧНИК'
-    puts 'НЕУДАЧНИК'
-    puts 'НЕУДАЧНИК'
-    puts 'НЕУДАЧНИК'
-    puts 'НЕУДАЧНИК'
-    puts 'НЕУДАЧНИК'
-
     current_account.type.eql?('editor')
   end
 
@@ -46,4 +30,6 @@ class ApplicationController < ActionController::Base
   def render_400
     render json: { error: 'Bad Request' }, status: 400
   end
+  alias render_400_developer render_400
+  alias render_400_editor    render_400
 end

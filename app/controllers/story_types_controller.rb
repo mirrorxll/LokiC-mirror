@@ -4,8 +4,8 @@ class StoryTypesController < ApplicationController # :nodoc:
   skip_before_action :find_parent_story_type, except: :properties
 
   before_action :redirect_to_separate_root, only: :index
-  before_action :render_400,                only: %i[distributed show], if: :editor?
-  before_action :render_400,                only: %i[new create edit update properties destroy], if: :developer?
+  before_action :render_400_editor,         only: %i[distributed show], if: :editor?
+  before_action :render_400_developer,      only: %i[new create edit update properties destroy], if: :developer?
   before_action :find_data_set,             only: %i[new create]
   before_action :find_story_type,           except: %i[index distributed new create properties]
   before_action :set_iteration,             only: :show

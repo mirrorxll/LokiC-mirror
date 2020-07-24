@@ -19,14 +19,15 @@
   function confirmFeedback(elem) {
     let storyTypeId = $('#story_type').attr('story_type_id');
     let feedback = document.getElementsByClassName(elem)[0];
-    let feedbackConfirmId = elem.split('_')[1]
+    let feedbackConfirmId = elem.split(' ').find((className) => className.match(/confirm/) ).split('_')[1]
+
 
     let changeFeedbackStatus = (elem) => {
       elem.innerHTML = `<i class="fas fa-check"></i>`;
     }
 
     $.ajax({
-      url: `${storyTypeId}/feedback_confirmations/${feedbackConfirmId}/confirm`,
+      url: `feedback_confirmations/${feedbackConfirmId}/confirm`,
       success: changeFeedbackStatus(feedback),
       method: 'patch'
     })
