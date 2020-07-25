@@ -1,8 +1,8 @@
 var st_table_block = $('#staging_table .card-body')
-<% if flash[:error] %>
+<% if flash.now[:error] %>
   st_table_block.prepend(`
       <div class="alert alert-danger">
-        <%= flash[:error].gsub('`', "'") %>
+        <%= flash.now[:error].gsub('`', "'") %>
       </div>`)
 <% else %>
   st_table_block.empty()

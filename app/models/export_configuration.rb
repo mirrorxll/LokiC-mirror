@@ -9,6 +9,10 @@ class ExportConfiguration < ApplicationRecord # :nodoc:
 
   validates_uniqueness_of :publication_id, scope: [:story_type_id]
 
+  def skipped?
+    skipped
+  end
+
   def self.update_tags(params = {})
     return if params.empty?
 

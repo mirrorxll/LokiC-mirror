@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 class StagingTable < ApplicationRecord # :nodoc:
-  before_create   :generate_table_name
-  before_create   :create_table
+  before_create   :generate_table_name, if: :noname?
+  before_create   :create_table,        if: :not_exists?
   before_create   :default_iter_id
+  before_create   :timestamps
   after_create    :sync
 
   belongs_to :story_type
@@ -24,7 +25,6 @@ class StagingTable < ApplicationRecord # :nodoc:
 
     columns = Table.columns(name)
     Columns.find_or_create_by(staging_table: self).update(list: columns)
-
     index = Table.index(name)
     Index.find_or_create_by(staging_table: self).update(list: index)
   end
@@ -47,21 +47,27 @@ class StagingTable < ApplicationRecord # :nodoc:
 
   private
 
-  def generate_table_name
-    return unless name.nil?
+  def noname?
+    name.nil?
+  end
 
+  def not_exists?
+    !self.class.exists?(name)
+  end
+
+  def generate_table_name
     self.name = "s#{story_type.id}_staging"
   end
 
   def create_table
-    return if self.class.exists?(name)
-
     Table.create(name)
   end
 
-  def drop_table
-    return unless self.class.exists?(name)
+  def timestamps
+    Table.timestamps(name)
+  end
 
+  def drop_table
     Table.drop(name)
   end
 end

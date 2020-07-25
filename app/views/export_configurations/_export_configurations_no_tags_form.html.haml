@@ -14,7 +14,7 @@
           -configs.each do |n_t|
             %tr
               %td.text-center{scope: 'col'}
-                =f.check_box "export_configurations[#{n_t.id}[skip]]"
+                =f.check_box "export_configurations[#{n_t.id}[skip]]", checked: (n_t.skipped)
               %td
                 =f.label "export_configurations[#{n_t.id}[skip]]", "#{n_t.publication.client.name} -- #{n_t.publication.name}"
               %td

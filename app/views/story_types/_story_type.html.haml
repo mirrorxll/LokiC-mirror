@@ -6,7 +6,10 @@
       .col-sm-4.col-lg-5.pl-0.text-left{id: "story_type_#{story_type.id}_name"}
         .row
           .col-11.pr-0
-            =link_to(story_type.name, story_type_path(story_type))
+            -if current_account.type.eql?('editor')
+              =story_type.name
+            -else
+              =link_to(story_type.name, story_type_path(story_type))
           .col-1.p-0.text-right
             =link_to(icon('fas', 'pen', class: ' fa-xs text-dark'), edit_story_type_path(story_type), remote: true)
       .col-sm-1.col-lg-1.p-0{id: "story_type_#{story_type.id}_template"}

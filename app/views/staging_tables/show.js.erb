@@ -1,11 +1,10 @@
-var st_table_block = $('#staging_table .card-body')
-<% if flash[:error]%>
-  st_table_block.prepend(`
-    <div class="alert alert-danger">
-      <%= flash[:error].gsub('`', "'") %>
+<% if flash.now[:error]%>
+  $('#staging_table .card-body .flash').html(`
+    <div class="alert alert-danger text-center">
+      <%= flash.now[:error].gsub('`', "'") %>
     </div>`)
 <% else %>
-  st_table_block.html('<%=j render 'staging_tables/staging_table'%>')
+  $('#staging_table .card-body').html('<%= j render 'staging_tables/staging_table'%>')
   $('#export_configs .card-body').html('<%= j render 'export_configurations/export_configurations' %>')
   $('#samples .card-body').html('<%= j render 'samples/samples' %>')
 <% end %>

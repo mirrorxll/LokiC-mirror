@@ -3,8 +3,8 @@
 module Table
   module Columns # :nodoc:
     HIDDEN_COLUMNS = %w[
-      id story_created client_id client_name
-      publication_id publication_name organization_ids
+      id source_table_id source_id story_created client_id
+      client_name publication_id publication_name organization_ids
       publish_on created_at updated_at iter_id time_frame
     ].freeze
 
@@ -37,6 +37,8 @@ module Table
           a_r_m.change_column(t_name, upd[:new_name], upd[:type], upd[:opts])
         end
       end
+
+      nil
     end
 
     def dropped(curr_col, mod_col)
@@ -81,8 +83,6 @@ module Table
         backend_transform(columns)
       when :samples
         transform_for_samples(columns)
-      else
-        'Raise to do'
       end
     end
 

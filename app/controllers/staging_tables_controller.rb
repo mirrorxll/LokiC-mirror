@@ -8,38 +8,38 @@ class StagingTablesController < ApplicationController # :nodoc:
   def show; end
 
   def create
-    flash[:error] =
-      ('Table for this story type already exist. Please update page' if @staging_table.present?)
+    flash.now[:error] =
+      if @staging_table.present?
+        'Table for this story type already exist. Please update page'
+      elsif StagingTable.find_by(name: "s#{@story_type.id}_staging")
+        "Table with name 's#{@story_type.id}_staging' already attached to another story type."
+      end
 
-    @story_type.create_staging_table if flash[:error].nil?
-
+    @story_type.create_staging_table if flash.now[:error].nil?
     render 'show'
   end
 
   def attach
-    flash[:error] =
+    flash.now[:error] =
       if @staging_table.present?
-        'Table for this story type already attached. Please update the page'
+        'Table for this story type already attached. Please update the page.'
       elsif StagingTable.find_by(name: @staging_table_name)
-        'This table already attached to another story type.'
+        "This table already attached to another story type. Please pass another staging table's name."
       elsif StagingTable.not_exists?(@staging_table_name)
         'Table not found'
       end
 
-    @story_type.create_staging_table(name: @staging_table_name) if flash[:error].nil?
-
+    @story_type.create_staging_table(name: @staging_table_name) if flash.now[:error].nil?
     render 'show'
   end
 
   def detach
     @staging_table.destroy
-
     render 'new'
   end
 
   def sync
     @staging_table.sync
-
     render 'show'
   end
 

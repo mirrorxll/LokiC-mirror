@@ -11,7 +11,7 @@ class StoryTypesController < ApplicationController # :nodoc:
   before_action :set_iteration,             only: :show
 
   def index
-    @story_types = StoryType.all
+    @story_types = StoryType.order(id: :desc)
 
     filter_params.each do |key, value|
       @story_types = @story_types.public_send(key, value) if value.present?

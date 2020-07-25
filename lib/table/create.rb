@@ -5,9 +5,7 @@ module Table
     def create(t_name)
       loki_story_creator do
         a_r_m.create_table(t_name) do |t|
-          t.datetime :created_at
-          t.datetime :updated_at
-          t.integer  :client_id
+          t.integer  :client_ids903_staging
           t.string   :client_name
           t.integer  :publication_id
           t.string   :publication_name
@@ -15,10 +13,18 @@ module Table
           t.boolean  :story_created, default: false
           t.string   :time_frame
         end
+      end
+
+      timestamps(t_name)
+    end
+
+    def timestamps(t_name)
+      loki_story_creator do
+        a_r_m.add_column t_name, :created_at, :datetime unless a_r_m.column_exists?(t_name, :created_at)
+        a_r_m.add_column t_name, :updated_at, :datetime unless a_r_m.column_exists?(t_name, :updated_at)
 
         cr_at_query = created_at_default_value_query(t_name)
         a_r_b_conn.exec_query(cr_at_query)
-
         upd_at_query = updated_at_default_value_query(t_name)
         a_r_b_conn.exec_query(upd_at_query)
       end

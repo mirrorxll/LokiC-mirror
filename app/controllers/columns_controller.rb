@@ -6,7 +6,7 @@ class ColumnsController < ApplicationController
   def edit
     @staging_table = @story_type.staging_table
 
-    flash[:error] =
+    flash.now[:error] =
       if @staging_table.nil?
         'Table was attached or delete. Please update the page.'
       elsif !StagingTable.exists?(@staging_table.name)
@@ -18,7 +18,7 @@ class ColumnsController < ApplicationController
 
   def update
     @staging_table = @story_type.staging_table
-    @staging_table.columns.modify(columns_params)
+    flash.now[:error] = @staging_table.columns.modify(columns_params)
     @staging_table.sync
 
     render 'staging_tables/show'

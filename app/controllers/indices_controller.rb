@@ -5,14 +5,14 @@ class IndicesController < ApplicationController
   before_action :staging_table
 
   def new
-    flash[:error] =
+    flash.now[:error] =
       if @staging_table.nil?
         'Table was attached or delete. Please update the page.'
       elsif StagingTable.not_exists?(@staging_table.name)
         'Someone drop or rename table for this story type. Please check it.'
       end
 
-    if flash[:error].nil?
+    if flash.now[:error].nil?
       @staging_table.index.drop
       @staging_table.sync
       @columns = @staging_table.columns.names_ids

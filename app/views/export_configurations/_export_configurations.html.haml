@@ -9,8 +9,7 @@
   -if @story_type.configurations_no_tags.any?
     -configs = @story_type.configurations_no_tags
     -if configs.count.positive?
-      =render 'export_configurations/export_configurations_no_tags_form',
-              configs: configs
+      =render 'export_configurations/export_configurations_no_tags_form', configs: configs
   -else
     .row
       .col-10.offset-1
