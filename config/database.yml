@@ -69,7 +69,7 @@ production:
     <<: *default
     socket: /var/run/mysqld/mysqld.sock
     port: 3306
-    host: <%= DB01 %>
+    host: <%= DB02 %>
     database: lokic
     username: <%= Rails.application.credentials.mysql[:regular][:user] %>
     password: <%= Rails.application.credentials.mysql[:regular][:password] %>
@@ -78,7 +78,7 @@ production:
     <<: *default
     socket: /var/run/mysqld/mysqld.sock
     port: 3306
-    host: <%= DB05 %>
+    host: <%= DB02 %>
     database: loki_storycreator
     username: <%= Rails.application.credentials.mysql[:regular][:user] %>
     password: <%= Rails.application.credentials.mysql[:regular][:password] %>

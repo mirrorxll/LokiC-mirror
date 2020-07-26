@@ -66,8 +66,4 @@ class StagingTable < ApplicationRecord # :nodoc:
   def timestamps
     Table.timestamps(name)
   end
-
-  def drop_table
-    Table.drop(name)
-  end
 end

@@ -21,6 +21,8 @@ module Table
       columns = columns.map { |_id, c| c[:name] }
       columns = ['client_id', 'publication_id', columns].flatten
       loki_story_creator { a_r_m.add_index(t_name, columns, unique: true, name: :story_per_publication) }
+
+      nil
     end
 
     def drop_uniq_index(t_name)

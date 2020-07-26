@@ -10,6 +10,8 @@ class Index < ApplicationRecord
 
     columns = staging_table.columns.list.select { |id, _col| column_ids.include?(id) }
     Table.add_uniq_index(staging_table.name, columns)
+  rescue ActiveRecord::ActiveRecordError => e
+    e.message
   end
 
   def drop

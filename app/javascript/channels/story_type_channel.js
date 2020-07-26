@@ -29,24 +29,8 @@ $(document).on("turbolinks:load", function() {
     }
 
     function st_population(data) {
-        if (data['population_msg']) {
-            $('#exec_population').html(`
-                <div id="population_status">
-                  ${data['population_msg']}
-                </div>`
-            )
-
-            $('#sync :first-child').removeClass('disabled');
-            $('#edit_columns :first-child').removeClass('disabled');
-
-            let addIndexBtn = $('#edit_index :first-child')
-            if (addIndexBtn.hasClass('populate'))
-                addIndexBtn.removeClass('populate disabled');
-
-            $('#manipulate').children().each(function () {
-                $(this).removeClass('disabled');
-            });
-        }
+        if (data['population_msg'])
+            $.ajax({url: `${storyTypeId}/staging_tables/section`})
     }
 
     function st_exp_configurations_section(data) {

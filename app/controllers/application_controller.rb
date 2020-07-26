@@ -32,4 +32,8 @@ class ApplicationController < ActionController::Base
   end
   alias render_400_developer render_400
   alias render_400_editor    render_400
+
+  def detached_or_delete
+    'Table for this story type already detached or drop. Please update the page.'
+  end
 end

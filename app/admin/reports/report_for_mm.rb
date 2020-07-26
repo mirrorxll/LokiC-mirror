@@ -3,7 +3,7 @@ require_relative '../../../lib/pipeline_replica'
 module Report
   module ReportForMM
     def self.report
-      db05 = MiniLokiC::Connect::Mysql.on(DB05, 'loki_storycreator')
+      db05 = MiniLokiC::Connect::Mysql.on(DB02, 'loki_storycreator')
 
       pl_replica = MiniLokiC::Connect::Mysql.on(PL_PROD_DB_HOST, 'jnswire_prod', MiniLokiC.mysql_pl_replica_user, MiniLokiC.mysql_pl_replica_password)
 

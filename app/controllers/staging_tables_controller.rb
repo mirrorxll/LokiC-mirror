@@ -5,12 +5,10 @@ class StagingTablesController < ApplicationController # :nodoc:
   before_action :attach_staging_table, only: %i[attach]
   before_action :staging_table
 
-  def show; end
-
   def create
     flash.now[:error] =
       if @staging_table.present?
-        'Table for this story type already exist. Please update page'
+        'Table for this story type already exist. Please update the page.'
       elsif StagingTable.find_by(name: "s#{@story_type.id}_staging")
         "Table with name 's#{@story_type.id}_staging' already attached to another story type."
       end
@@ -34,12 +32,27 @@ class StagingTablesController < ApplicationController # :nodoc:
   end
 
   def detach
-    @staging_table.destroy
+    if @staging_table.nil?
+      flash.now[:error] = detached_or_delete
+    else
+      @staging_table.destroy
+    end
+
     render 'new'
   end
 
   def sync
-    @staging_table.sync
+    if @staging_table.nil?
+      flash.now[:error] = detached_or_delete
+    else
+      @staging_table.sync
+    end
+
+    render 'show'
+  end
+
+  def section
+    flash.now[:error] = detached_or_delete if @staging_table.nil?
     render 'show'
   end
 

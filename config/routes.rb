@@ -56,6 +56,7 @@ Rails.application.routes.draw do
       post    :attach,    on: :collection
       delete  :detach,    on: :member
       patch   :sync,      on: :member
+      get     :section,   on: :collection
 
       resources :columns, only: %i[edit update]
       resources :indices, only: %i[new create destroy]

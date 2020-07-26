@@ -58,7 +58,7 @@ module Table
     end
 
     def rows_by_ids_query(t_name, iter_id, options)
-      p "SELECT * FROM `#{t_name}` "\
+      "SELECT * FROM `#{t_name}` "\
       "WHERE story_created = 0 AND id IN (#{options[:ids]}) AND "\
       "iter_id = #{iter_id} "\
       "LIMIT #{options[:limit] || 7_000};"

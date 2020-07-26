@@ -3,7 +3,7 @@ require_relative '../../../lib/pipeline_replica'
 module Report
   module ReportByRawSource
     def self.report(*args)
-      db05 = MiniLokiC::Connect::Mysql.on(DB05, 'loki_storycreator')
+      db05 = MiniLokiC::Connect::Mysql.on(DB02, 'loki_storycreator')
 
       publications = db05.query("select community_id from clients_communities_replica where client_name rlike 'MM - '").to_a.map { |r| r['community_id']}.join(',')
 
@@ -26,7 +26,7 @@ module Report
         exported_by_month = {}
 
         hash_raw_sources.each do |key, value|
-          p 'stage_table: ' + key
+          'stage_table: ' + key
           begin
             data = db05.query("select count(if(month(cast(publish_on as date)) = #{i} and year(cast(publish_on as date)) = 2020, 1, null)) count_publish,
                                      count(if(month(cast(exported_at_prod as date)) = #{i} and year(cast(exported_at_prod as date)) = 2020, 1, null)) count_exported
@@ -47,7 +47,7 @@ module Report
               end
             end
           rescue => e
-            p e.message
+            e.message
             next
           end
         end

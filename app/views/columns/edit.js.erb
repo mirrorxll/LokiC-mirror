@@ -1,1 +1,9 @@
-$("#columns").html('<%= j render 'edit_form'%>')
+<% if flash.now[:error]%>
+  $('#staging_table .card-body .flash').html(`
+    <div class="alert alert-danger text-center">
+      <%= flash.now[:error].gsub('`', "'") %>
+    </div>`
+  )
+<% else %>
+  $("#columns__index").html('<%= j render 'edit_form'%>')
+<% end %>
