@@ -19,7 +19,7 @@ module Table
 
     def add_uniq_index(t_name, columns)
       columns = columns.map { |_id, c| c[:name] }
-      columns = ['client_id', 'publication_id', columns].flatten
+      columns = ['client_id', 'publication_id', 'time_frame', columns].flatten
       loki_story_creator { a_r_m.add_index(t_name, columns, unique: true, name: :story_per_publication) }
 
       nil
