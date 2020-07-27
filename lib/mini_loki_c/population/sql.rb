@@ -19,12 +19,12 @@ module MiniLokiC
             if boolean
               v ? 1 : 0
             else
-              v.nil? ? 'NULL' : v.to_json
+              v ? v.to_json : 'NULL'
             end
 
           keys << key
           values << value
-          updates << "#{key} = #{value}"
+          updates << "#{key} = #{boolean ? value : value.dump}"
         end
 
         "INSERT INTO `#{table}` (#{keys.join(', ')}) "\
