@@ -4,7 +4,7 @@ module Table
   module Index
     HIDDEN_COLUMNS = %w[
       client_id client_name
-      publication_id publication_name
+      publication_id publication_name time_frame
     ].freeze
 
     def index(t_name)
