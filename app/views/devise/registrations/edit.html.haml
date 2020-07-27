@@ -10,9 +10,9 @@
     .form-group.col-6
       = f.label :last_name
       = f.text_field :last_name, autofocus: true, autocomplete: 'last_name', class: 'form-control'
-  .form-group
-    = f.label :slack_user
-    = f.collection_select :slack_account_id, SlackAccount.all.order(:user_name), :id, :user_name, { prompt: '' }
+  -#.form-group
+    -# = f.label :slack_user
+    -# = f.collection_select :slack_account_id, SlackAccount.all.order(:user_name), :id, :user_name, { prompt: '' }
   .form-group
     = f.label :password
     = f.password_field :password, autocomplete: 'new-password', class: 'form-control'
