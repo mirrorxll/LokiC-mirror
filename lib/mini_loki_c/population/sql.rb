@@ -19,7 +19,7 @@ module MiniLokiC
             if boolean
               v ? 1 : 0
             else
-              v.nil? ? 'NULL' : v.to_s.to_json
+              v.nil? ? 'NULL' : v.to_json
             end
 
           keys << key
