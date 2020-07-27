@@ -13,13 +13,4 @@ class Client < ApplicationRecord # :nodoc:
 
   has_and_belongs_to_many :sections
   has_and_belongs_to_many :tags
-
-  def publications
-    if name.eql?('Metric Media')
-      mm_ids = Client.where('name LIKE :query', query: 'MM -%').pluck(:id)
-      Publication.where(client_id: mm_ids)
-    else
-      Publication.where(client: self)
-    end
-  end
 end

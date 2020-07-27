@@ -66,7 +66,9 @@ SectionsJob.perform_now
 PhotoBucketsJob.perform_now
 SlackAccountsJob.perform_now
 
-
+hidden = Client.where('name LIKE :like OR name IN (:mm, :mb)',
+                      like: 'MM -%', mm: 'Metric Media', mb: 'Metro Business Network')
+hidden.update_all(hidden: false)
 # ============ Time Frames for staging tables ============
 
 # daily
