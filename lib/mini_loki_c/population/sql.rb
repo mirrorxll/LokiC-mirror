@@ -14,11 +14,15 @@ module MiniLokiC
         options.map do |(k, val)|
           key = "`#{k}`"
           value =
-            case val.class
-            when TrueClass, FalseClass
-              val ? 1 : 0
+            case val
             when String
               val.dump
+            when TrueClass
+              1
+            when FalseClass
+              0
+            when NilClass
+              'NULL'
             else
               val.to_json.dump
             end
