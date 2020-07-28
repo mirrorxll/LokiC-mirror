@@ -54,46 +54,11 @@ def dates(range: false)
   range ? start..finish : [start, finish]
 end
 
-def review
-  table_raw_source = []
-  table_mm = {}
-  published_by_month = {}
-  exported_by_month = {}
-  arr_mm = []
-  (1..12).each do |i|
-    rand_num = rand(10000).to_s
-    arr_mm << { month: Date::MONTHNAMES[i],
-                total_exported: rand_num,
-                total_published: rand_num }
-    rand_raw = rand(100)
-    published_by_month["raw_source#{rand_raw}"] = rand_num
-    exported_by_month["raw_source#{rand_raw}"] = rand_num
-    table_raw_source << {
-      month: Date::MONTHNAMES[i],
-      published: published_by_month,
-      exported: exported_by_month
-    }
-  end
-
-  table_mm["#{Date.today.strftime("%Y-%m-%d")}"] = arr_mm
-  [
-    {
-      report_type: 'report_for_mm',
-      table: table_mm.to_json
-    },
-    {
-      report_type: 'report_by_raw_source',
-      table: table_raw_source.to_json
-    }
-  ]
-end
-
 # ============ Initial filling DB ============
 account_type.each { |obj| AccountType.create!(obj) }
 account.each { |obj| Account.create!(obj) }
 frequency.each { |obj| Frequency.create!(obj) }
 status.each { |obj| Status.create!(obj) }
-review.each { |obj| Review.create!(obj) }
 
 ClientsPublicationsTagsJob.perform_now
 ClientsTagsJob.perform_now
@@ -101,7 +66,9 @@ SectionsJob.perform_now
 PhotoBucketsJob.perform_now
 SlackAccountsJob.perform_now
 
-
+hidden = Client.where('name LIKE :like OR name IN (:mm, :mb)',
+                      like: 'MM -%', mm: 'Metric Media', mb: 'Metro Business Network')
+hidden.update_all(hidden: false)
 # ============ Time Frames for staging tables ============
 
 # daily

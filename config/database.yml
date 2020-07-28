@@ -12,7 +12,6 @@
 
 default: &default
   adapter: mysql2
-  encoding: utf8
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   reconnect: true
 
@@ -24,11 +23,13 @@ development:
   primary:
     <<: *default
     <<: *dev_user
+    encoding: utf8
     database: lokic_dev
     migrations_paths: db/primary_migrate
   loki_story_creator:
     <<: *default
     <<: *dev_user
+    encoding: utf8
     database: loki_story_creator_dev
     migration_path: db/loki_story_creatior_migrate
 # Warning: The database defined as "test" will be erased and
@@ -38,11 +39,13 @@ test:
   primary:
     <<: *default
     <<: *dev_user
+    encoding: utf8
     database: lokic_test
     migrations_paths: db/primary_migrate
   loki_story_creator:
     <<: *default
     <<: *dev_user
+    encoding: utf8
     database: loki_story_creator_test
     migration_path: db/loki_story_creatior_migrate
 # As with config/credentials.yml, you never want to store sensitive information,
@@ -67,6 +70,7 @@ test:
 production:
   primary:
     <<: *default
+    encoding: latin1
     socket: /var/run/mysqld/mysqld.sock
     port: 3306
     host: <%= DB02 %>
@@ -76,6 +80,7 @@ production:
     migrations_paths: db/primary_migrate
   loki_story_creator:
     <<: *default
+    encoding: latin1
     socket: /var/run/mysqld/mysqld.sock
     port: 3306
     host: <%= DB02 %>

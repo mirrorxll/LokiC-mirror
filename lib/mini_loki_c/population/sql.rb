@@ -11,15 +11,20 @@ module MiniLokiC
         values = []
         updates = []
 
-        options.map do |(k, v)|
-          boolean = [TrueClass, FalseClass].any? { |klass| v.is_a?(klass) }
-
+        options.map do |(k, val)|
           key = "`#{k}`"
           value =
-            if boolean
-              v ? 1 : 0
+            case val
+            when String
+              val.dump
+            when TrueClass
+              1
+            when FalseClass
+              0
+            when NilClass
+              'NULL'
             else
-              v.nil? ? 'NULL' : v.to_s.to_json
+              val.to_json.dump
             end
 
           keys << key

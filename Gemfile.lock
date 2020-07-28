@@ -71,16 +71,10 @@ GEM
       sshkit (>= 1.6.1, != 1.7.0)
     arbre (1.2.1)
       activesupport (>= 3.0.0)
-    autoprefixer-rails (9.8.4)
-      execjs
     bcrypt (3.1.13)
     bindex (0.8.1)
     bootsnap (1.4.6)
       msgpack (~> 1.0)
-    bootstrap (4.4.1)
-      autoprefixer-rails (>= 9.1.0)
-      popper_js (>= 1.14.3, < 2)
-      sassc-rails (>= 2.0.0)
     builder (3.2.4)
     byebug (11.1.3)
     capistrano (3.14.1)
@@ -96,6 +90,8 @@ GEM
     capistrano-rvm (0.1.2)
       capistrano (~> 3.0)
       sshkit (~> 1.2)
+    capistrano-yarn (2.0.2)
+      capistrano (~> 3.0)
     capistrano3-puma (4.0.0)
       capistrano (~> 3.7)
       capistrano-bundler
@@ -116,7 +112,6 @@ GEM
     erubis (2.7.0)
     et-orbi (1.2.4)
       tzinfo
-    execjs (2.7.0)
     faraday (1.0.1)
       multipart-post (>= 1.2, < 3)
     faraday_middleware (1.0.0)
@@ -208,7 +203,6 @@ GEM
     orm_adapter (0.5.0)
     polyamorous (2.3.2)
       activerecord (>= 5.2.1)
-    popper_js (1.16.0)
     puma (4.3.5)
       nio4r (~> 2.0)
     raabro (1.3.1)
@@ -311,9 +305,6 @@ GEM
     thread_safe (0.3.6)
     thwait (0.1.0)
     tilt (2.0.10)
-    turbolinks (5.2.1)
-      turbolinks-source (~> 5.2)
-    turbolinks-source (5.2.0)
     tzinfo (1.2.7)
       thread_safe (~> 0.1)
     warden (1.2.8)
@@ -339,12 +330,12 @@ PLATFORMS
 DEPENDENCIES
   activeadmin
   bootsnap (>= 1.4.2)
-  bootstrap (~> 4.4.1)
   byebug
   capistrano (~> 3.14)
   capistrano-bundler
   capistrano-rails (~> 1.3)
   capistrano-rvm
+  capistrano-yarn
   capistrano3-puma
   coderay
   devise
@@ -354,7 +345,6 @@ DEPENDENCIES
   hirb
   image_processing (~> 1.2)
   jbuilder (~> 2.7)
-  jquery-rails
   listen (~> 3.2)
   mysql2 (>= 0.4.4)
   puma (~> 4.1)
@@ -366,7 +356,6 @@ DEPENDENCIES
   slack-ruby-client
   spring
   spring-watcher-listen (~> 2.0.0)
-  turbolinks (~> 5)
   web-console (>= 3.3.0)
   webpacker (~> 5.0.0)
 

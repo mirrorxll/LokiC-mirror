@@ -7,6 +7,7 @@ class CreateClients < ActiveRecord::Migration[6.0] # :nodoc:
 
       t.integer :pl_identifier
       t.string  :name
+      t.boolean :hidden, default: true
       t.timestamps
     end
   end

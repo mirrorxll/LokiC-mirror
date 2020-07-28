@@ -12,24 +12,4 @@
 
 ActiveRecord::Schema.define(version: 0) do
 
-  create_table "s903_staging", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "id"
-    t.integer "iter_id", default: 1
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.integer "client_id"
-    t.text "client_name", size: :tiny
-    t.integer "publication_id"
-    t.text "publication_name", size: :tiny
-    t.integer "story_created", limit: 1
-    t.text "time_frame", size: :tiny
-    t.string "district"
-    t.integer "curr_sal_elem_princ"
-    t.integer "curr_sal_high_princ"
-    t.integer "prev_sal_elem_princ"
-    t.text "publish_on", size: :tiny
-    t.decimal "column_16", precision: 10, scale: 2
-    t.index ["iter_id"], name: "iter"
-  end
-
 end

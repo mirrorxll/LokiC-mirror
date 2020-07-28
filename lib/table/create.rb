@@ -5,7 +5,7 @@ module Table
     def create(t_name)
       loki_story_creator do
         a_r_m.create_table(t_name) do |t|
-          t.integer  :client_ids903_staging
+          t.integer  :client_id
           t.string   :client_name
           t.integer  :publication_id
           t.string   :publication_name
