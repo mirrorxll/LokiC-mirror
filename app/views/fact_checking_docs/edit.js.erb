@@ -1,5 +1,3 @@
 $('#fcd_edit').html(`<%= link_to('show result', story_type_fact_checking_doc_path(@story_type, @fcd), class: 'btn btn-sm btn-outline-dark') %>`)
 $('#fcd_body .col-10').html(`<%= j render 'form' %>`)
-$('[data-editor="summernote"]').summernote({
-    height: 700
-});
+$('[data-editor="summernote"]').summernote(JSON.parse(localStorage['summernoteSettings']));
