@@ -2,7 +2,8 @@
   %hr/
   .row
     .col-10.offset-1
-      %b #{@story_type.name}
+      %b
+        FCD ##{@story_type.id} #{@story_type.name} -- #{@story_type.developer.name}
   %hr/
   =render 'buttons'
   %hr/
