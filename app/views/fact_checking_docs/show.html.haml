@@ -1,5 +1,9 @@
 -if @story_type.iteration.feedback_confirmations.all?(&:confirmed)
   %hr/
+  .row
+    .col-10.offset-1
+      %b #{@story_type.name}
+  %hr/
   =render 'buttons'
   %hr/
   .row.mt-4
