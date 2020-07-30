@@ -1,4 +1,9 @@
 =form_with(model: [@story_type, @fcd]) do |form|
+  .btn-group
+    =form.submit 'Save', class: 'mr-auto btn btn-sm btn-outline-dark'
+    =link_to('result', story_type_fact_checking_doc_path(@story_type, @fcd), class: 'mr-auto btn btn-sm btn-outline-dark')
+  =link_to('template', story_type_fact_checking_doc_template_path(@story_type, @fcd),
+           class: 'btn btn-sm btn-outline-dark ml-3', remote: true)
+  %hr/
   .field{ "data-controller" => "summernote" }
     =form.text_area :body, data: { editor: 'summernote' }
-    =form.submit 'Save changes', class: 'mr-auto btn btn-sm btn-outline-success'
