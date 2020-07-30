@@ -1,4 +1,4 @@
 =form_with(model: [@story_type, @fcd]) do |form|
-  .field.small{ "data-controller" => "summernote" }
+  .field{ "data-controller" => "summernote" }
     =form.text_area :body, data: { editor: 'summernote' }
     =form.submit 'Save changes', class: 'mr-auto btn btn-sm btn-outline-success'
