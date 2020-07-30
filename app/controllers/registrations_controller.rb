@@ -7,4 +7,9 @@ class RegistrationsController < Devise::RegistrationsController # :nodoc:
     flash[:alert] = 'Registration disabled'
     redirect_to new_account_session_path
   end
+
+  def update
+    super
+    # current_account.update(slack: SlackAccount.find(params[:account][:slack]))
+  end
 end
