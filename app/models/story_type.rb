@@ -31,6 +31,10 @@ class StoryType < ApplicationRecord # :nodoc:
 
   after_create { update(current_iteration: iterations.first) }
 
+  def number_name
+    "##{id} #{name}"
+  end
+
   def developer_slack_id
     developer&.slack&.identifier
   end

@@ -1,7 +1,21 @@
-.row
-  .col.text-right
-    =link_to('show ruby code', story_type_code_path(@story_type, @story_type.code), class: 'btn btn-sm btn-outline-dark',
-                method: :get, remote: true)
+%hr/
+%b
+  =@story_type.number_name
+%hr/
+-if @story_type.code.attached?
+  .row
+    .col-10.offset-1
+      =link_to("story type's code", story_type_code_path(@story_type, @story_type.code),
+               class: 'btn btn-sm btn-outline-dark', remote: true)
+      =link_to("feedback", "#feedbackCollapse", "aria-controls" => "collapseExample", "aria-expanded" => "false",
+               "data-toggle" => "collapse", :role => "button", class: 'btn btn-sm btn-outline-dark')
+%hr/
+#feedbackCollapse.collapse
+  .card.card-body
+    =render 'feedback/form', feedback: @story_type.iteration.feedback_confirmations
+%hr/
+
+
 .row
   .col-1.text-right
     Headline:
@@ -21,4 +35,11 @@
   .col-11
     =@sample.output.body.html_safe
 
-=render 'codes/modal_ruby_code'
+#ruby_code.modal.fade.ruby_code-modal-lg{ "aria-hidden" => "true", "aria-labelledby" => "ruby_code", role: "dialog", tabindex: "-1" }
+  .modal-dialog.modal-dialog-centered.modal-xl.modal-dialog-scrollable
+    .modal-content
+      .modal-header
+        %h5.modal-title
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+          %span{"aria-hidden" => "true"} ×
+      .modal-body

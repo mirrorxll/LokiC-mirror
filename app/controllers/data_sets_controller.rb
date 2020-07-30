@@ -69,7 +69,7 @@ class DataSetsController < ApplicationController # :nodoc:
     return {} unless params[:filter]
 
     params.require(:filter).slice(
-      :editor, :developer, :client, :frequency, :dev_status
+      :editor, :developer, :client, :frequency, :status
     )
   end
 
