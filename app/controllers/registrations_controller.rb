@@ -10,6 +10,16 @@ class RegistrationsController < Devise::RegistrationsController # :nodoc:
 
   def update
     super
-    # current_account.update(slack: SlackAccount.find(params[:account][:slack]))
+    slack_account = SlackAccount.find_by(slack_account_params)
+    if slack_account
+      current_account.slack&.update(account: nil)
+      slack_account.update(account: current_account)
+    else
+      flash[:alert] = 'Slack Account not found.'
+    end
+  end
+
+  def slack_account_params
+    params.require(:slack_account).permit(:identifier)
   end
 end

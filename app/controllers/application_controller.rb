@@ -1,17 +1,15 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
-  before_action :authenticate_account!
   before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :authenticate_account!
   before_action :find_parent_story_type
 
   private
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit :sign_in, keys: %i[email password remember_me]
-    devise_parameter_sanitizer.permit(:account_update) do |user|
-      user.permit(:email, :first_name, :last_name, :slack_id, :password, :password_confirmation, :current_password)
-    end
+    devise_parameter_sanitizer.permit :account_update, keys: %i[email first_name last_name password password_confirmation current_password]
   end
 
   def find_parent_story_type

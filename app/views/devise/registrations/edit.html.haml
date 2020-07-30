@@ -21,16 +21,21 @@
           .col-12
             =f.label :slack_account
             %br/
-            =select_tag 'account[slack_id]',
-                        options_from_collection_for_select(SlackAccount.order(:user_name).where(account: nil, deleted: false), :identifier, :user_name, SlackAccount.where(account: current_account).first),
+            =select_tag 'slack_account[identifier]',
+                        options_from_collection_for_select(SlackAccount.order(:user_name).where(account: nil, deleted: false), :identifier, :user_name),
                         { class: 'form-control form-control-sm' }
+            -if current_account.slack
+              %small.form-text.text-muted
+                attached: #{current_account.slack.user_name} - #{current_account.slack.identifier}
+
 
       .form-group
         .row
           .col-12
             =f.label :password
             =f.password_field :password, autocomplete: 'new-password', class: 'form-control form-control-sm'
-            %small.form-text.text-muted= t('.leave_blank_if_you_don_t_want_to_change_it')
+            %small.form-text.text-muted
+              =t('.leave_blank_if_you_don_t_want_to_change_it')
       .form-group
         .row
           .col-12
@@ -41,7 +46,8 @@
           .col-12
             =f.label :current_password
             =f.password_field :current_password, autocomplete: 'current-password', class: 'form-control form-control-sm'
-            %small.form-text.text-muted= t('.we_need_your_current_password_to_confirm_your_changes')
+            %small.form-text.text-muted
+              =t('.we_need_your_current_password_to_confirm_your_changes')
       .form-group
         .row
           .col-12
