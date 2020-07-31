@@ -24,6 +24,7 @@ Rails.application.routes.draw do
   resources :story_types, except: %i[new create] do
     get :distributed, on: :collection
     get :properties
+    get :canceling_edit, on: :member
 
     resources :templates, path: :template, only: %i[edit update]
 
