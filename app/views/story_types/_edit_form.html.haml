@@ -1,20 +1,3 @@
--#=form_with(model: @story_type) do |form|
--#  .row
--#    .col-11.d-flex
--#      =form.text_field :name, placeholder: 'new name', required: true, class: 'w-75'
--#      =form.submit :rename, class: 'w-25'
--#    .col-1.p-1.ml-auto
--#      =link_to icon('fa', 'fa fa-times text-dark'), :back
-
-
--#=form_with(model: @story_type) do |form|
--#  .row
--#    .col-10.pr-0
--#      =form.text_field :name, placeholder: 'new name', required: true, class: 'w-100'
--#    .col-2.d-flex.p-0
--#      =form.submit :rename, class: 'w-75'
--#      =link_to icon('fa', 'fa fa-times text-dark'), canceling_edit_story_type_path(@story_type), remote: true, class: 'w-25 p-1'
-
 =form_with(model: @story_type) do |form|
   .row
     .col-11.d-flex.p-0
@@ -22,28 +5,4 @@
       =form.submit :rename
     .col-1.p-1
       =link_to icon('fa', 'fa fa-times text-dark'), canceling_edit_story_type_path(@story_type), remote: true
-
--#=form_with(model: @story_type) do |form|
--#  .row
--#    .col-11
--#      .row
--#        .col-10.pr-0
--#          =form.text_field :name, placeholder: 'new name', required: true, class: 'w-100'
--#        .col-2.p-0
--#          =form.submit :rename, class: 'w-100'
--#    .col-1.p-1
--#      =link_to icon('fa', 'fa fa-times text-dark'), canceling_edit_story_type_path(@story_type), remote: true
-      -#=link_to icon('fa', 'fa fa-times text-dark'), canceling_edit_story_type_path(@story_type), remote: true
-    -#.col-1.p-1
-    -#  =link_to icon('fa', 'fa fa-times text-dark'), canceling_edit_story_type_path(@story_type), remote: true
-
-
--#=form_with(model: @story_type) do |form|
--#  .row
--#    .col-10.pr-0
--#      =form.text_field :name, placeholder: 'new name', required: true, class: 'w-100'
--#    .col-2.p-0
--#      =form.submit :rename, class: 'w-100'
-      -#=link_to icon('fa', 'fa fa-times text-dark'), canceling_edit_story_type_path(@story_type), remote: true
-    -#.col-1.p-1
-    -#  =link_to icon('fa', 'fa fa-times text-dark'), canceling_edit_story_type_path(@story_type), remote: true
+        
