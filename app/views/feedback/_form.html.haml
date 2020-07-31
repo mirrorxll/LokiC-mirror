@@ -17,17 +17,19 @@
 
 :javascript
   function confirmFeedback(elem) {
-    let storyTypeId = $('#story_type').attr('story_type_id');
+    let storyType = $('#story_type')
+    let storyTypeId = storyType.attr('story_type_id');
+    let storyTypeIterId = storyType.attr('iteration_id')
+
     let feedback = document.getElementsByClassName(elem)[0];
     let feedbackConfirmId = elem.split(' ').find((className) => className.match(/confirm/) ).split('_')[1]
-
 
     let changeFeedbackStatus = (elem) => {
       elem.innerHTML = `<i class="fas fa-check"></i>`;
     }
 
     $.ajax({
-      url: `feedback_confirmations/${feedbackConfirmId}/confirm`,
+      url: `${storyTypeId}/iterations/${storyTypeIterId}/feedback_confirmations/${feedbackConfirmId}/confirm`,
       success: changeFeedbackStatus(feedback),
       method: 'patch'
     })

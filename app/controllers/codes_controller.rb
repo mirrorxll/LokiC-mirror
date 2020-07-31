@@ -4,7 +4,8 @@ class CodesController < ApplicationController # :nodoc:
   before_action :render_400, if: :editor?
 
   def show
-    @ruby_code = CodeRay.scan(@story_type.code.download, :ruby).div(line_numbers: :table)
+    code = @story_type.code.download
+    @ruby_code = CodeRay.scan(code, :ruby).div(line_numbers: :table)
   end
 
   def create

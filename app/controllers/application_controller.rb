@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
+  before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :authenticate_account!
   before_action :find_parent_story_type
 
@@ -8,7 +9,7 @@ class ApplicationController < ActionController::Base
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit :sign_in, keys: %i[email password remember_me]
-    devise_parameter_sanitizer.permit :account_update, keys: %i[first_name last_name slack_account_id email password password_confirmation]
+    devise_parameter_sanitizer.permit :account_update, keys: %i[email first_name last_name password password_confirmation current_password]
   end
 
   def find_parent_story_type

@@ -14,10 +14,6 @@ class FeedbackConfirmationsController < ApplicationController
 
   def find_feedback
     @confirmations = @story_type.iteration.feedback_confirmations
-    @feedback_to_confirm = @confirmations.find_by(feedback_params)
-  end
-
-  def feedback_params
-    params.permit(:id)
+    @feedback_to_confirm = @confirmations.find(params[:id])
   end
 end

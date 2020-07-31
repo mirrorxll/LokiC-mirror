@@ -69,10 +69,6 @@ Rails.application.routes.draw do
       patch :update_tags, on: :collection
     end
 
-    resources :feedback_confirmations, only: [] do
-      patch :confirm, on: :member
-    end
-
     resources :fact_checking_docs do
       get :template
     end
@@ -89,6 +85,10 @@ Rails.application.routes.draw do
         post   :create_and_generate_feedback, on: :collection
         delete :purge_sampled,                on: :collection
         get    :section,                      on: :collection
+      end
+
+      resources :feedback_confirmations, only: [] do
+        patch :confirm, on: :member
       end
 
       resources :creations, path: 'create_samples', only: :create do
@@ -116,9 +116,5 @@ Rails.application.routes.draw do
 
   resources :slack_accounts, only: %i[] do
     patch :sync
-  end
-
-  resources :feedback_confirmations, only: [] do
-    patch :confirm, on: :member
   end
 end
