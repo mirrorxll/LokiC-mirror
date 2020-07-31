@@ -1,9 +1,13 @@
 # frozen_string_literal: true
 
 class SamplesController < ApplicationController # :nodoc:
-  before_action :find_sample, only: %i[show edit update]
+  before_action :find_sample, only: %i[show edit update destroy]
 
   def show; end
+
+  def destroy
+    @sample.destroy
+  end
 
   def create_and_generate_feedback
     SamplesAndFeedbackJob.set(wait: 2.second).perform_later(@story_type, samples_params)
