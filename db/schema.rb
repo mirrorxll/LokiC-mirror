@@ -77,6 +77,25 @@ ActiveRecord::Schema.define(version: 2020_07_18_093452) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "auto_feedback", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "rule"
+    t.text "output"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["rule"], name: "index_auto_feedback_on_rule", unique: true
+  end
+
+  create_table "auto_feedback_confirmations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "iteration_id"
+    t.bigint "auto_feedback_id"
+    t.boolean "confirmed", default: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["auto_feedback_id"], name: "index_auto_feedback_confirmations_on_auto_feedback_id"
+    t.index ["iteration_id", "auto_feedback_id"], name: "uniq_index_feedback_confirmations", unique: true
+    t.index ["iteration_id"], name: "index_auto_feedback_confirmations_on_iteration_id"
+  end
+
   create_table "clients", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "author_id"
     t.integer "pl_identifier"
@@ -154,25 +173,6 @@ ActiveRecord::Schema.define(version: 2020_07_18_093452) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["story_type_id"], name: "index_fact_checking_docs_on_story_type_id"
-  end
-
-  create_table "feedback", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "rule"
-    t.text "output"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["rule"], name: "index_feedback_on_rule", unique: true
-  end
-
-  create_table "feedback_confirmations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "iteration_id"
-    t.bigint "feedback_id"
-    t.boolean "confirmed", default: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["feedback_id"], name: "index_feedback_confirmations_on_feedback_id"
-    t.index ["iteration_id", "feedback_id"], name: "index_feedback_confirmations_on_iteration_id_and_feedback_id", unique: true
-    t.index ["iteration_id"], name: "index_feedback_confirmations_on_iteration_id"
   end
 
   create_table "frequencies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

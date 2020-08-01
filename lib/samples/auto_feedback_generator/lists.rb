@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Samples
-  module FeedbackGenerator
+  module AutoFeedbackGenerator
     module Lists
       private
 

@@ -1,15 +1,21 @@
--if @story_type.iteration.feedback_confirmations.all?(&:confirmed)
+-if @story_type.iteration.auto_feedback_confirmations.all?(&:confirmed)
   %hr/
   .row
     .col-10.offset-1
       %b
         FCD ##{@story_type.id} #{@story_type.name} -- #{@story_type.developer.name}
   %hr/
-  =render 'buttons'
-  %hr/
-  .row.mt-4
+  .row
     .col-10.offset-1
-      =render 'feedback/form', feedback: @story_type.iteration.feedback_confirmations
+      =render 'buttons'
+  %hr/
+  #autoFeedbackCollapse.collapse.show.row
+    .col-10.offset-1
+      =render 'auto_feedback/form', auto_feedback: @story_type.iteration.auto_feedback_confirmations
+  %hr/
+  .row
+    .col-10.offset-1
+      =link_to("editor's feedback", '#', class: 'btn btn-sm btn-outline-dark')
   %hr/
   #fcd_body
     .row.small
@@ -29,4 +35,4 @@
   %hr/
   .row
     .col-12.text-center.alert.alert-danger
-      First...confirm all feedback.
+      First...confirm all auto-feedback.

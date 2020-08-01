@@ -55,22 +55,33 @@ def dates(range: false)
 end
 
 # ============ Initial filling DB ============
+puts 'Account Types'
 account_type.each { |obj| AccountType.create!(obj) }
+puts 'Accounts'
 account.each { |obj| Account.create!(obj) }
+puts 'Frequencies'
 frequency.each { |obj| Frequency.create!(obj) }
+puts 'Statuses'
 status.each { |obj| Status.create!(obj) }
 
+puts 'Clients Publications Tags'
 ClientsPublicationsTagsJob.perform_now
+puts 'Clients Tags'
 ClientsTagsJob.perform_now
+puts 'Sections'
 SectionsJob.perform_now
+puts 'PhotoBuckets'
 PhotoBucketsJob.perform_now
+puts 'SlackAccounts'
 SlackAccountsJob.perform_now
 
 hidden = Client.where('name LIKE :like OR name IN (:mm, :mb)',
                       like: 'MM -%', mm: 'Metric Media', mb: 'Metro Business Network')
 hidden.update_all(hidden: false)
-# ============ Time Frames for staging tables ============
 
+
+# ============ Time Frames for staging tables ============
+puts 'Time Frames'
 # daily
 dates(range: true).each do |dt|
   TimeFrame.create!(frame: "d:#{dt.yday}:#{dt.year}")
@@ -118,7 +129,6 @@ end
 
 
 # ============ FeedBack rules for samples ============
-
 rules = {
   'capital_letters' => {
     'Four or more capital letters in row' => 'Show the capitalized sequence of characters and recommend a discussion with John about whether normalization of the words or phrases in that variable spot should be performed.'
@@ -212,4 +222,5 @@ rules = {
   }
 }
 
-rules.each { |rule, output| Feedback.create!(rule: rule, output: output) }
+puts 'Auto-feedback'
+rules.each { |rule, output| AutoFeedback.create!(rule: rule, output: output) }

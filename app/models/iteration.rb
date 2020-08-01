@@ -6,8 +6,8 @@ class Iteration < ApplicationRecord # :nodoc:
   has_and_belongs_to_many :statuses
 
   has_many :samples, dependent: :destroy
-  has_many :feedback_confirmations
-  has_many :feedback, through: :feedback_confirmations
+  has_many :auto_feedback_confirmations
+  has_many :auto_feedback, through: :auto_feedback_confirmations
 
   before_create { statuses << Status.first }
 end

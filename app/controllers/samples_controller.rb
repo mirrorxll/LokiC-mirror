@@ -5,8 +5,8 @@ class SamplesController < ApplicationController # :nodoc:
 
   def show; end
 
-  def create_and_generate_feedback
-    SamplesAndFeedbackJob.set(wait: 2.second).perform_later(@story_type, samples_params)
+  def create_and_generate_auto_feedback
+    SamplesAndAutoFeedbackJob.set(wait: 2.second).perform_later(@story_type, samples_params)
     @story_type.update_iteration(story_samples: false)
 
     render 'creations/create'
@@ -16,7 +16,7 @@ class SamplesController < ApplicationController # :nodoc:
 
   def purge_sampled
     @story_type.iteration.samples.where(sampled: true).destroy_all
-    @story_type.iteration.feedback_confirmations.destroy_all
+    @story_type.iteration.auto_feedback_confirmations.destroy_all
     @story_type.staging_table.samples_set_not_created
     @story_type.update_iteration(story_samples: nil, story_sample_ids: nil)
   end

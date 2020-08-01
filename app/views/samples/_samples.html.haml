@@ -15,17 +15,17 @@
       -else
         .small
           Samples were not created.
-      -if iteration.feedback_confirmations.any?
+      -if iteration.auto_feedback_confirmations.any?
         %hr/
         .mt-4
-          =render 'feedback/form', feedback: iteration.feedback_confirmations
+          =render 'feedback/form', auto_feedback: iteration.auto_feedback_confirmations
   .row.small
     .col-10.offset-1
       %hr/
-      -if iteration.feedback_confirmations.any?
-        ***Please confirm all feedback. After that you can go to FCD and create all the samples.
+      -if iteration.auto_feedback_confirmations.any?
+        ***Please confirm all auto-feedback. After that you can go to FCD and create all the samples.
       -else
-        No generated feedback.
+        No generated auto-feedback.
 %hr
 #fcd__create_destroy_all_samples
   =render 'samples/fcd__create_all_samples_buttons', iteration: iteration

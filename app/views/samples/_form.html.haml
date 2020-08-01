@@ -1,5 +1,5 @@
 .small
-  =form_with(url: create_and_generate_feedback_story_type_iteration_samples_path(@story_type, @story_type.iteration),
+  =form_with(url: create_and_generate_auto_feedback_story_type_iteration_samples_path(@story_type, @story_type.iteration),
              id: 'create_samples_form', html: { oninput: 'allowCreateSamples();' }) do |form|
     =form.label :columns, 'columns(edge samples)'
     .form-group
