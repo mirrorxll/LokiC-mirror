@@ -14,25 +14,34 @@
   .card.card-body
     =render 'auto_feedback/form', auto_feedback: @story_type.iteration.auto_feedback_confirmations
 %hr/
+#story_sample.d-none
+  .row
+    .col-1.text-right
+      Headline:
+    .col-11
+      %h6
+        =@sample.output.headline
+  .row
+    .col-1.text-right
+      Teaser:
+    .col-11
+      %h6
+        =@sample.output.teaser
 
-
-.row
-  .col-1.text-right
-    Headline:
-  .col-11
-    %h6
-      =@sample.output.headline
-.row
-  .col-1.text-right
-    Teaser:
-  .col-11
-    %h6
-      =@sample.output.teaser
-
-.row.small
-  .col-1.text-right
-    Body:
-  .col-11
-    =@sample.output.body.html_safe
+  .row.small
+    .col-1.text-right
+      Body:
+    .col-11
+      =@sample.output.body.html_safe
 
 =render 'codes/modal_ruby_code'
+
+:javascript
+  (function(){
+    let tables = document.getElementsByTagName('table')
+    Array.from(tables).forEach((table) => {
+      table.classList.add('table','table-sm', 'table-striped')
+    })
+
+    document.getElementById('story_sample').classList.remove('d-none');
+  }).call();

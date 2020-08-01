@@ -10,7 +10,9 @@
         .col-2.p-0
           =rule
         .col-9
-          =output
+          %div{ 'data-container'=>"body", 'data-toggle'=>"popover", 'data-placement'=>"top",
+                'title'=> fb.sample.id, 'data-content'=> fb.sample_txt_part}
+            =output
     .row
       .col-6.offset-3
         %hr

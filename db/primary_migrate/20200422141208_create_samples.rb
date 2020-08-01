@@ -10,7 +10,7 @@ class CreateSamples < ActiveRecord::Migration[6.0]
       t.belongs_to :time_frame
 
       t.integer     :staging_row_id
-      t.string      :organization_ids, limit: 1000
+      t.string      :organization_ids, limit: 2000
       t.integer     :pl_production_id
       t.integer     :pl_staging_id
       t.date        :published_at

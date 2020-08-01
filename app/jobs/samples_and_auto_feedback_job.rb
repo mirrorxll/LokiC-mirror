@@ -16,7 +16,7 @@ class SamplesAndAutoFeedbackJob < ApplicationJob
     message = 'samples created.'
   rescue StandardError => e
     ids = status = nil
-    message = e
+    message = e.full_message
   ensure
     story_type.update_iteration(story_samples: status, story_sample_ids: ids)
     send_to_action_cable(story_type, samples_msg: message)

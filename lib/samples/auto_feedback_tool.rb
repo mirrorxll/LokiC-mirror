@@ -29,9 +29,14 @@ module Samples
         sample_obj = prepare(sample)
 
         confirmed_rules = @feedback_rules.each_with_object([]) do |fb, confirmed|
-          next unless send(fb[:rule], sample_obj)
+          sample_txt_part = send(fb[:rule], sample_obj)
+          next unless sample_txt_part
 
-          @iteration.auto_feedback << fb unless @iteration.auto_feedback.exists?(fb.id)
+          unless @iteration.auto_feedback.exists?(fb.id)
+            @iteration.auto_feedback << fb
+            @iteration.auto_feedback_confirmations.last.update(sample: sample, sample_txt_part: sample_txt_part)
+          end
+
           confirmed << fb
         end
 
