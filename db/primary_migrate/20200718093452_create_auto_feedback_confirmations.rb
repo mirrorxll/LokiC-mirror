@@ -11,6 +11,6 @@ class CreateAutoFeedbackConfirmations < ActiveRecord::Migration[6.0]
     end
 
     add_index :auto_feedback_confirmations, %i[iteration_id auto_feedback_id],
-              name: 'uniq_index_feedback_confirmations', unique: true
+              name: 'uniq_index_auto_feedback_confirmations', unique: true
   end
 end
