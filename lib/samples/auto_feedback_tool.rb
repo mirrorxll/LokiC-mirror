@@ -31,7 +31,7 @@ module Samples
         confirmed_rules = @feedback_rules.each_with_object([]) do |fb, confirmed|
           next unless send(fb[:rule], sample_obj)
 
-          @iteration.auto_feedback << fb unless @iteration.feedback.exists?(fb.id)
+          @iteration.auto_feedback << fb unless @iteration.auto_feedback.exists?(fb.id)
           confirmed << fb
         end
 
