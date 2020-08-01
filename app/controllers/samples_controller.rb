@@ -12,7 +12,9 @@ class SamplesController < ApplicationController # :nodoc:
     render 'creations/create'
   end
 
-  def section; end
+  def section
+    flash.now[:message] = update_section_params[:message]
+  end
 
   def purge_sampled
     @story_type.iteration.samples.where(sampled: true).destroy_all
@@ -25,6 +27,10 @@ class SamplesController < ApplicationController # :nodoc:
 
   def find_sample
     @sample = Sample.find(params[:id])
+  end
+
+  def update_section_params
+    params.require(:section_update).permit(:message)
   end
 
   def samples_params

@@ -19,7 +19,7 @@ class SamplesAndAutoFeedbackJob < ApplicationJob
     message = e
   ensure
     story_type.update_iteration(story_samples: status, story_sample_ids: ids)
-    send_to_action_cable(story_type, samples_msg: status)
+    send_to_action_cable(story_type, samples_msg: message)
     send_to_slack(story_type, message)
   end
 end
