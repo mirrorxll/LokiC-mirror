@@ -7,12 +7,12 @@
     .col-10.offset-1
       =link_to("story type's code", story_type_code_path(@story_type, @story_type.code),
                class: 'btn btn-sm btn-outline-dark', remote: true)
-      =link_to("auto-feedback", "#feedbackCollapse", "aria-controls" => "collapseExample", "aria-expanded" => "false",
+      =link_to("auto-feedback", "#autoFeedbackCollapse", "aria-controls" => "autoFeedbackCollapse", "aria-expanded" => "false",
                "data-toggle" => "collapse", :role => "button", class: 'btn btn-sm btn-outline-dark')
 %hr/
 #autoFeedbackCollapse.collapse
   .card.card-body
-    =render 'feedback/form', auto_feedback: @story_type.iteration.auto_feedback_confirmations
+    =render 'auto_feedback/form', auto_feedback: @story_type.iteration.auto_feedback_confirmations
 %hr/
 
 
