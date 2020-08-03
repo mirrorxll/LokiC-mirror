@@ -1,3 +1,5 @@
+%div{ id: "story_sample", story_type_id: @story_type.id, iteration_id: @story_type.iteration.id }
+
 %hr/
 %b
   =@story_type.number_name
@@ -8,7 +10,7 @@
       =link_to("story type's code", story_type_code_path(@story_type, @story_type.code),
                class: 'btn btn-sm btn-outline-dark', remote: true)
       =link_to("auto-feedback", "#autoFeedbackCollapse", "aria-controls" => "autoFeedbackCollapse", "aria-expanded" => "false",
-               "data-toggle" => "collapse", :role => "button", class: 'btn btn-sm btn-outline-dark')
+               "data-toggle" => "collapse", :role => "button", class: 'btn btn-sm btn-outline-dark', onclick: 'hideAllPopovers();')
 %hr/
 #autoFeedbackCollapse.collapse
   .card.card-body
@@ -35,3 +37,12 @@
       =@sample.output.body.html_safe
 
 =render 'codes/modal_ruby_code'
+
+:javascript
+  function hideAllPopovers() {
+    let fbOutputs = document.querySelectorAll('[id^="feedback_output_"]');
+
+    Array.from(fbOutputs).forEach((output)=> {
+      $(output).popover('hide')
+    });
+  }

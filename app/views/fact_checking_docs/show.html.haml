@@ -1,3 +1,5 @@
+%div{ id: "fact_checking_document", story_type_id: @story_type.id, iteration_id: @story_type.iteration.id }
+
 -if @story_type.iteration.auto_feedback_confirmations.all?(&:confirmed)
   %hr/
   .row

@@ -23,7 +23,7 @@
   })
 
   function confirmAutoFeedback(elem) {
-    let storyType = $('#story_type');
+    let storyType = $('#story_type,#fact_checking_document,#story_sample');
     let storyTypeId = storyType.attr('story_type_id');
     let storyTypeIterId = storyType.attr('iteration_id');
 
@@ -35,7 +35,7 @@
     }
 
     $.ajax({
-      url: `${storyTypeId}/iterations/${storyTypeIterId}/auto_feedback_confirmations/${feedbackConfirmId}/confirm`,
+      url: `#{root_url}/story_types/${storyTypeId}/iterations/${storyTypeIterId}/auto_feedback_confirmations/${feedbackConfirmId}/confirm`,
       success: changeAutoFeedbackStatus(feedback),
       method: 'patch'
     });
