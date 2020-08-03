@@ -19,9 +19,9 @@
     .col-10.offset-1
       =link_to("editor's feedback", '#', class: 'btn btn-sm btn-outline-dark')
   %hr/
-  #fcd_body
-    .row.small
-      .col-10.offset-1
+  .row.small
+    .col-10.offset-1
+      #fcd_body
         =@fcd.body&.html_safe
 
   #template_modal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "template_modal",
