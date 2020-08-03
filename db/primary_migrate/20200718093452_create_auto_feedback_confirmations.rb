@@ -8,6 +8,7 @@ class CreateAutoFeedbackConfirmations < ActiveRecord::Migration[6.0]
       t.belongs_to :sample
 
       t.boolean    :confirmed, default: false
+      t.string     :sample_part
       t.string     :sample_txt_part, limit: 2_000
       t.timestamps
     end

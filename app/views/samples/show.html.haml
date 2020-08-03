@@ -14,7 +14,7 @@
   .card.card-body
     =render 'auto_feedback/form', auto_feedback: @story_type.iteration.auto_feedback_confirmations
 %hr/
-#story_sample.d-none
+#story_sample
   .row
     .col-1.text-right
       Headline:
@@ -35,13 +35,3 @@
       =@sample.output.body.html_safe
 
 =render 'codes/modal_ruby_code'
-
-:javascript
-  (function(){
-    let tables = document.getElementsByTagName('table')
-    Array.from(tables).forEach((table) => {
-      table.classList.add('table','table-sm', 'table-striped')
-    })
-
-    document.getElementById('story_sample').classList.remove('d-none');
-  }).call();

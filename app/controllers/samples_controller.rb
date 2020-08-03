@@ -21,6 +21,7 @@ class SamplesController < ApplicationController # :nodoc:
     @story_type.iteration.auto_feedback_confirmations.destroy_all
     @story_type.staging_table.samples_set_not_created
     @story_type.update_iteration(story_samples: nil, story_sample_ids: nil)
+    flash.now[:message] = 'Samples deleted.'
   end
 
   private
