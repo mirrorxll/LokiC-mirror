@@ -9,30 +9,44 @@
       -fb.auto_feedback.output.each do |rule, output|
         .col-2.p-0
           =rule
-        .col-9
-          %div{ 'data-container'=>"body", 'data-toggle'=>"popover", 'data-placement'=>"top",
-                'title'=> fb.sample.id, 'data-content'=> fb.sample_txt_part}
-            =output
+        .col-9{ id: "feedback_output_#{fb.id}", onclick: 'hideOtherPopovers(this);',
+                'data-container' => 'body', 'data-toggle' => 'popover', 'data-placement' => 'top',
+                'title'=> "#{fb.sample.id} - #{fb.sample_part}", 'data-content'=> fb.sample_txt_part }
+          =output
     .row
       .col-6.offset-3
         %hr
 
 :javascript
+  $(function () {
+    $('[data-toggle="popover"]').popover()
+  })
+
   function confirmAutoFeedback(elem) {
-    let storyType = $('#story_type')
+    let storyType = $('#story_type,#fact_checking_document,#story_sample');
     let storyTypeId = storyType.attr('story_type_id');
-    let storyTypeIterId = storyType.attr('iteration_id')
+    let storyTypeIterId = storyType.attr('iteration_id');
 
     let feedback = document.getElementsByClassName(elem)[0];
-    let feedbackConfirmId = elem.split(' ').find((className) => className.match(/confirm/) ).split('_')[1]
+    let feedbackConfirmId = elem.split(' ').find((className) => className.match(/confirm/) ).split('_')[1];
 
     let changeAutoFeedbackStatus = (elem) => {
       elem.innerHTML = `<i class="fas fa-check"></i>`;
     }
 
     $.ajax({
-      url: `${storyTypeId}/iterations/${storyTypeIterId}/auto_feedback_confirmations/${feedbackConfirmId}/confirm`,
+      url: `#{root_url}/story_types/${storyTypeId}/iterations/${storyTypeIterId}/auto_feedback_confirmations/${feedbackConfirmId}/confirm`,
       success: changeAutoFeedbackStatus(feedback),
       method: 'patch'
-    })
+    });
+  }
+
+  function hideOtherPopovers(elem) {
+    let fbOutputs = document.querySelectorAll('[id^="feedback_output_"]');
+
+    Array.from(fbOutputs).forEach((output)=> {
+      if(elem !== output) {
+        $(output).popover('hide')
+      }
+    });
   }
