@@ -1,5 +1,10 @@
-$('#fcd_control').empty()
-$('#fcd_body .col-10').html(`<%= j render 'form' %>`)
-$('[data-editor="summernote"]').summernote({
-    height: 700
-});
+(() => {
+    let body = document.getElementById('fcd_body');
+    let fcd = body.innerHTML;
+
+    body.innerHTML = `<%= j render 'form' %>`
+
+    let fcdEditor = $('#fcd_editable [data-editor="summernote"]')
+    fcdEditor.summernote({height: 700});
+    fcdEditor.summernote('code', fcd);
+}).call();
