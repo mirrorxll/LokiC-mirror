@@ -1,0 +1,9 @@
+%hr/
+.row
+  .col-10.offset-1
+    =form_with(url: story_type_fact_checking_doc_editor_feedback_path(@story_type, @story_type.fact_checking_doc, @editor_feedback), method: :put, remote: true) do |form|
+      =form.submit 'Save', class: 'mb-2 btn btn-sm btn-outline-dark'
+      =link_to('cancel', story_type_fact_checking_doc_path(@story_type, @story_type.fact_checking_doc),
+                 class: 'mb-2 btn btn-sm btn-outline-link')
+      .field{ id: 'editor_feedback_editable', "data-controller" => "summernote" }
+        =form.text_area 'editor_feedback[body]', data: { editor: 'summernote' }

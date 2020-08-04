@@ -21,8 +21,4 @@ class Account < ApplicationRecord # :nodoc:
   def type
     account_type.name
   end
-
-  def auth
-    account_type.permissions
-  end
 end

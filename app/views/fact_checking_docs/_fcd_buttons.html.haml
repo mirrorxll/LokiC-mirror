@@ -1,0 +1,29 @@
+#fcd_control
+  #fcd_edit.d-inline-block
+    =link_to('edit', edit_story_type_fact_checking_doc_path(@story_type, @fcd),
+             class: 'btn btn-sm btn-outline-dark', remote: true)
+  #auto_feedback_show.d-inline-block
+    =link_to('hide auto-feedback', '#autoFeedbackCollapse', "aria-controls" => "feedbackCollapse", "aria-expanded" => "false",
+             "data-target" => "#autoFeedbackCollapse", "data-toggle" => "collapse", :type => "button",
+             class: 'btn btn-sm btn-outline-dark', onclick: 'toggleAutoFeedback(this); hideAllPopovers();')
+  #template_show.d-inline-block
+    =link_to('template', story_type_fact_checking_doc_template_path(@story_type, @fcd),
+             class: 'btn btn-sm btn-outline-dark', remote: true)
+
+:javascript
+  function toggleAutoFeedback(button) {
+    let autoFeedback = document.getElementById('autoFeedbackCollapse')
+
+    if(autoFeedback.className.match(/show/))
+      button.innerText = 'show auto-feedback'
+    else
+      button.innerText = 'hide auto-feedback'
+  }
+
+  function hideAllPopovers() {
+    let fbOutputs = document.querySelectorAll('[id^="feedback_output_"]');
+
+    Array.from(fbOutputs).forEach((output)=> {
+      $(output).popover('hide')
+    });
+  }

@@ -71,6 +71,8 @@ Rails.application.routes.draw do
 
     resources :fact_checking_docs do
       get :template
+
+      resources :editor_feedback, only: %i[edit update]
     end
 
     resources :iterations do

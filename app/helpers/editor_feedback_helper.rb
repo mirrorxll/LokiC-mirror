@@ -1,0 +1,2 @@
+module EditorFeedbackHelper
+end

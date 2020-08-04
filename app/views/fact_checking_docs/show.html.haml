@@ -9,15 +9,28 @@
   %hr/
   .row
     .col-10.offset-1
-      =render 'buttons'
+      =render 'fcd_buttons'
   %hr/
   #autoFeedbackCollapse.collapse.show.row
     .col-10.offset-1
       =render 'auto_feedback/form', auto_feedback: @story_type.iteration.auto_feedback_confirmations
-  %hr/
-  .row
-    .col-10.offset-1
-      =link_to("editor's feedback", '#', class: 'btn btn-sm btn-outline-dark')
+
+  -fact_checking_doc = @story_type.fact_checking_doc
+  -editor_feedback = fact_checking_doc.editor_feedback
+  -if current_account.type.eql?('developer')
+    #editor_feedback_button
+      %hr/
+      .row
+        .col-10.offset-1
+          =link_to("#{editor_feedback.body.present? ? "edit editor's feedback" : "add editor's feedback"}",
+                   edit_story_type_fact_checking_doc_editor_feedback_path(@story_type, fact_checking_doc, editor_feedback),
+                   class: 'btn btn-sm btn-outline-dark', remote: true)
+  #editor_feedback_body
+    -if editor_feedback.body.present?
+      %hr/
+    .row
+      .col-10.offset-1
+        =editor_feedback.body&.html_safe
   %hr/
   .row.small
     .col-10.offset-1

@@ -1,9 +1,8 @@
 =form_with(url: story_type_fact_checking_doc_path(@story_type, @fcd), method: :put, local: true) do |form|
-  .btn-group
-    =form.submit 'Save', class: 'mr-auto btn btn-sm btn-outline-dark'
-    =link_to('result', story_type_fact_checking_doc_path(@story_type, @fcd), class: 'mr-auto btn btn-sm btn-outline-dark')
+  =form.submit 'Save', class: 'mb-2 btn btn-sm btn-outline-dark'
+  =link_to('cancel', story_type_fact_checking_doc_path(@story_type, @story_type.fact_checking_doc),
+           class: 'mb-2 btn btn-sm btn-outline-link')
   =link_to('template', story_type_fact_checking_doc_template_path(@story_type, @fcd),
-           class: 'btn btn-sm btn-outline-dark ml-3', remote: true)
-  %hr/
+           class: 'mb-2 btn btn-sm btn-outline-dark ml-3', remote: true)
   .field{ id: 'fcd_editable', "data-controller" => "summernote" }
     =form.text_area 'fact_checking_doc[body]', data: { editor: 'summernote' }
