@@ -71,6 +71,8 @@ Rails.application.routes.draw do
 
     resources :fact_checking_docs do
       get :template
+
+      resources :editor_feedback, only: %i[edit update]
     end
 
     resources :iterations do
@@ -81,13 +83,13 @@ Rails.application.routes.draw do
 
       resources :populations, path: 'populate', only: %i[create destroy]
 
-      resources :samples, only: %i[show destroy] do
-        post   :create_and_generate_feedback, on: :collection
+      resources :samples, only: :show do
+        post   :create_and_generate_auto_feedback, on: :collection
         delete :purge_sampled,                on: :collection
         get    :section,                      on: :collection
       end
 
-      resources :feedback_confirmations, only: [] do
+      resources :auto_feedback_confirmations, only: [] do
         patch :confirm, on: :member
       end
 

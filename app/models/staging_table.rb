@@ -13,6 +13,8 @@ class StagingTable < ApplicationRecord # :nodoc:
   has_one :index,   dependent: :delete
 
   def self.exists?(name)
+    return unless name
+
     Table.exists?(name)
   end
 

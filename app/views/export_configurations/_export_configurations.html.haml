@@ -5,11 +5,10 @@
                 story_type_export_configurations_path(@story_type),
                 class: 'btn btn-sm btn-outline-dark', method: :post, remote: true)
 %hr/
--if @story_type.configurations_no_tags.any?
-  -configs = @story_type.configurations_no_tags
-  -if configs.count.positive?
-    =render 'export_configurations/export_configurations_no_tags_form', configs: configs
+-configs_no_tags = @story_type.configurations_no_tags
+-if configs_no_tags.any?
+  =render 'export_configurations/export_configurations_no_tags_form', configs: configs_no_tags
 -else
-  .row
+  .row.small
     .col-10.offset-1
       no configs without tags.

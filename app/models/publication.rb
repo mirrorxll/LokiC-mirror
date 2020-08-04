@@ -3,6 +3,8 @@
 class Publication < ApplicationRecord # :nodoc:
   belongs_to :client
 
+  has_many :samples
+
   has_and_belongs_to_many :tags
 
   def tag?(tag)

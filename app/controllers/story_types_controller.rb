@@ -87,7 +87,7 @@ class StoryTypesController < ApplicationController # :nodoc:
         @story_type.current_iteration
       end
 
-    @story_type.staging_table&.default_iter_id
+    @story_type.staging_table&.default_iter_id if StagingTable.exists?(@story_type.staging_table&.name)
   end
 
   def filter_params

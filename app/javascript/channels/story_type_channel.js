@@ -39,8 +39,13 @@ $(document).on("turbolinks:load", function() {
     }
 
     function st_samples_section(data) {
-        if (data['samples_msg'] || data['creation_msg'] || data['purge_last_creation_msg'])
-            $.ajax({url: `${storyTypeId}/iterations/${storyTypeIter}/samples/section`})
+        let message = data['samples_msg'] || data['creation_msg'] || data['purge_last_creation_msg']
+        if (message) {
+            $.ajax({
+                url: `${storyTypeId}/iterations/${storyTypeIter}/samples/section`,
+                data: { section_update: { message: message } }
+            })
+        }
     }
 
     function st_scheduler(data) {

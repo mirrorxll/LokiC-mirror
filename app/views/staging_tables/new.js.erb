@@ -1,5 +1,5 @@
 <% if flash.now[:error] %>
-  $('#staging_table .card-body .flash').html(`
+  $('#staging_table .flash').html(`
       <div class="alert alert-danger text-center">
         <%= flash.now[:error].gsub('`', "'") %>
       </div>`

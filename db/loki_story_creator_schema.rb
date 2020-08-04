@@ -12,4 +12,26 @@
 
 ActiveRecord::Schema.define(version: 0) do
 
+  create_table "s1_staging", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "id"
+    t.integer "iter_id", default: 1
+    t.integer "client_id"
+    t.string "client_name"
+    t.integer "publication_id"
+    t.string "publication_name"
+    t.string "organization_ids", limit: 2000
+    t.integer "story_created", limit: 1
+    t.string "time_frame"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.string "district"
+    t.integer "superintendent_salary"
+    t.integer "elementary_salary"
+    t.string "high_district"
+    t.integer "high_superintendent_salary"
+    t.integer "high_elementary_salary"
+    t.text "district_table", size: :medium
+    t.text "story_table", size: :medium
+  end
+
 end

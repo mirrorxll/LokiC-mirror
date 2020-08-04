@@ -1,0 +1,11 @@
+(()=>{
+    document.querySelector('#editor_feedback_button').classList.add('d-none')
+    let editorFeedback = document.querySelector('#editor_feedback_body .col-10').innerHTML;
+
+    document.getElementById('editor_feedback_body').innerHTML = `<%= j render 'form' %>`
+    let feedbackEditor = $('#editor_feedback_editable [data-editor="summernote"]')
+    feedbackEditor.summernote({height: 300});
+
+    if(editorFeedback)
+        feedbackEditor.summernote('code', editorFeedback);
+}).call();

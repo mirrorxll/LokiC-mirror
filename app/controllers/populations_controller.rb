@@ -28,7 +28,7 @@ class PopulationsController < ApplicationController # :nodoc:
     else
       @staging_table.purge
       @story_type.iteration.samples.destroy_all
-      @story_type.iteration.feedback.destroy_all
+      @story_type.iteration.auto_feedback.destroy_all
       @story_type.update_iteration(
         population: nil, export_configurations: nil,
         story_samples: nil, creation: nil, schedule: nil, export: nil
