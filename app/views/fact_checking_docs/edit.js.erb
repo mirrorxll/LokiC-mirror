@@ -9,7 +9,7 @@
     fcdEditor.summernote({height: 700});
     fcdEditor.summernote('code', fcd);
 
-    sessionStorage['fcdSaverId'] = setInterval(fcdSaver, 1000);
+    sessionStorage['fcdSaverId'] = setInterval(fcdSaver, 30000);
 }).call();
 
 function fcdSaver() {

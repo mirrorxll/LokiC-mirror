@@ -9,7 +9,7 @@
     if(editorFeedback)
         feedbackEditor.summernote('code', editorFeedback);
 
-    sessionStorage['editorFeedbackSaverId'] = setInterval(editorsFeedbackSaver, 1000);
+    sessionStorage['editorFeedbackSaverId'] = setInterval(editorsFeedbackSaver, 30000);
 }).call();
 
 function editorsFeedbackSaver() {
