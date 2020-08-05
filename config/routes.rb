@@ -89,7 +89,7 @@ Rails.application.routes.draw do
 
       resources :populations, path: 'populate', only: %i[create destroy]
 
-      resources :samples, only: :show do
+      resources :samples, only: %i[show destroy] do
         post   :create_and_generate_auto_feedback, on: :collection
         delete :purge_sampled,                on: :collection
         get    :section,                      on: :collection
