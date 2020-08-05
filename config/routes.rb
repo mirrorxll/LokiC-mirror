@@ -1,35 +1,34 @@
-# frozen_string_literal: true
+# fronzen_string_literal: true
 
 require 'sidekiq/web'
 require 'sidekiq-scheduler/web'
 
 Rails.application.routes.draw do
   devise_for :accounts, controllers: { registrations: 'registrations', sessions: 'sessions' }
-  mount ActionCable.server, at: '/cable'
-
-  acc_access =
-    ->(u) { %w[super-user manager editor].include?(u.account_type.name) }
-
-  authenticate :account, acc_access do
+  authenticate :account, ->(u) { u.account_type.name.eql?('manager') } do
+    ActiveAdmin.routes(self)
     mount Sidekiq::Web => '/sidekiq'
-
-    resources :data_sets do
-      patch :evaluate, on: :member
-
-      resources :story_types, only: %i[new create]
-    end
   end
+
+  mount ActionCable.server, at: '/cable'
 
   root 'story_types#index'
 
-  resources :slack_accounts, only: %i[] do
-    patch :sync
+  resources :data_sets do
+    patch :evaluate, on: :member
+    get   :properties, on: :member
+
+    resources :story_types, only: %i[new create]
   end
 
   resources :story_types, except: %i[new create] do
+    get :distributed, on: :collection
     get :properties
+    get :canceling_edit, on: :member
 
-    resources :templates, path: :template, only: %i[edit update]
+    resources :templates, path: :template, only: %i[edit update] do
+      patch :save, on: :member
+    end
 
     resources :clients, only: [] do
       post    :include, on: :collection
@@ -52,24 +51,34 @@ Rails.application.routes.draw do
     end
 
     resources :developers, only: [] do
-      put    :include, on: :collection
-      delete :exclude, on: :member
+      patch   :include, on: :collection
+      delete  :exclude, on: :member
     end
 
     resources :staging_tables, only: %i[show create destroy] do
       post    :attach,    on: :collection
-      delete  :truncate,  on: :member
+      delete  :detach,    on: :member
       patch   :sync,      on: :member
+      get     :section,   on: :collection
 
       resources :columns, only: %i[edit update]
       resources :indices, only: %i[new create destroy]
     end
 
-    resources :codes, only: %i[create destroy]
+    resources :codes, only: %i[create destroy show]
 
     resources :export_configurations, only: :create do
       get   :section,     on: :collection
       patch :update_tags, on: :collection
+    end
+
+    resources :fact_checking_docs do
+      get :template
+      patch :save, on: :member
+
+      resources :editor_feedback, only: %i[edit update] do
+        patch :save, on: :member
+      end
     end
 
     resources :iterations do
@@ -80,9 +89,14 @@ Rails.application.routes.draw do
 
       resources :populations, path: 'populate', only: %i[create destroy]
 
-      resources :samples, except: %i[new edit update destroy] do
-        get    :section,       on: :collection
-        delete :purge_sampled, on: :collection
+      resources :samples, only: %i[show destroy] do
+        post   :create_and_generate_auto_feedback, on: :collection
+        delete :purge_sampled,                on: :collection
+        get    :section,                      on: :collection
+      end
+
+      resources :auto_feedback_confirmations, only: [] do
+        patch :confirm, on: :member
       end
 
       resources :creations, path: 'create_samples', only: :create do
@@ -98,9 +112,17 @@ Rails.application.routes.draw do
       end
 
       resources :exports, path: 'export', only: [] do
-        post :production, on: :collection
-        get  :section,    on: :collection
+        post :production,       on: :collection
+        get  :exported_stories, on: :collection
+        get  :section,          on: :collection
       end
     end
+  end
+
+  # summernote image upload/destroy points
+  resources :uploads, only: %i[create destroy]
+
+  resources :slack_accounts, only: %i[] do
+    patch :sync
   end
 end

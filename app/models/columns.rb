@@ -24,5 +24,7 @@ class Columns < ApplicationRecord
 
   def modify(mod_columns)
     Table.modify_columns(staging_table.name, list, mod_columns)
+  rescue ActiveRecord::ActiveRecordError => e
+    e.message
   end
 end

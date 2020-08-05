@@ -1,53 +1,44 @@
 .row.small
   .col-10.offset-1
-    .row.mb-2
-      .col-10.ml-0
-        %table.table.table-borderless.table-sm
-          %thead
-            %tr
-              %th{ scope: 'col' }
-                data set
-              %th{ scope: 'col' }
-                date location
-          %tbody
-            %tr
-              %td
-                =@story_type&.data_set&.name
-              %td
-                =@story_type&.data_set&.location
+    .row.mb-2.font-weight-bold
+      .col-6
+        data set
+      .col-6
+        date location
+    .row
+      .col-6
+        -if current_account.type.eql?('manager')
+          =link_to @story_type.data_set.name, data_set_path(@story_type.data_set), class: 'no-link'
+        -else
+          =@story_type.data_set.name
+        =link_to icon('fa', 'fa fa-info-circle'), properties_data_set_path(@story_type.data_set), remote: true
+      .col-6
+        =@story_type.data_set.location
     %hr/
 
-    .row.mb-2
-      .col-10.ml-0
-        %table.table.table-borderless.table-sm
-          %thead
-            %tr
-              %th{scope: 'col'}
-                client
-              %th{scope: 'col'}
-                tag
-          %tbody
-            -@story_type.client_tags.each do |cl_t|
-              %tr
-                %td
-                  =cl_t.client.name
-                %td
-                  =cl_t.tag ? cl_t.tag.name : 'tag not set'
+    .row.mb-2.font-weight-bold
+      .col-6
+        client
+      .col-6
+        tag
+    -@story_type.client_tags.each do |cl_t|
+      .row
+        .col-6
+          =cl_t.client.name
+        .col-6
+          =cl_t.tag ? cl_t.tag.name : 'tag not set'
     %hr/
 
-    .row.mb-2
-      .col-10.ml-0
-        %table.table.table-borderless.table-sm
-          %thead
-            %tr
-              %th{scope: 'col'}
-                frequency
-              %th{scope: 'col'}
-                photo bucket
-          %tbody
-            %tr
-              %td
-                =@story_type&.frequency&.name
-              %td
-                =@story_type&.photo_bucket&.name
+    .row.mb-2.font-weight-bold
+      .col-6
+        frequency
+      .col-6
+        photo bucket
+    .row
+      .col-6
+        =@story_type&.frequency&.name
+      .col-6
+        =@story_type&.photo_bucket&.name
     %hr/
+
+=render 'data_sets/modal_data_set'

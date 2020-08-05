@@ -1,0 +1,20 @@
+-confirms = iteration.auto_feedback_confirmations
+-stories = iteration.samples
+-samples = stories.where(sampled: true)
+
+-if (confirms.count.positive? && confirms.all?(&:confirmed)) || (samples.count.positive? && confirms.count.zero?) || iteration.creation
+  .row.mt-4
+    .col-11.offset-1
+      =link_to('fact checking', story_type_fact_checking_doc_path(@story_type, @story_type.fact_checking_doc),
+               class: 'btn btn-sm btn-outline-dark', target: '_blank')
+      .btn-group
+        -if iteration.creation.eql?(false)
+          creation samples in progress...
+        -elsif iteration.creation.eql?(nil)
+          =link_to('create samples from the last iteration',
+                    story_type_iteration_creations_path(@story_type, iteration),
+                    class: 'btn btn-sm btn-outline-dark', method: :post, remote: true)
+        -else
+          =link_to('purge samples from the last iteration',
+                    purge_all_story_type_iteration_creations_path(@story_type, iteration),
+                    class: 'btn btn-sm btn-outline-dark', method: :delete, remote: true)

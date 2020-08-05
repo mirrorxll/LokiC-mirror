@@ -1,1 +1,9 @@
-$('#exec_population').html('<%= j render 'populations/form' %>')
+<% if flash.now[:error]%>
+  $('#staging_table .flash').html(`
+    <div class="alert alert-danger text-center">
+      <%= flash.now[:error].gsub('`', "'") %>
+    </div>`
+  )
+<% else %>
+  $('#exec_population').html('<%= j render 'populations/form' %>')
+<% end %>

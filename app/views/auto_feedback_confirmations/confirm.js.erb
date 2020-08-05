@@ -1,0 +1,3 @@
+<% if @confirmations.count.positive? && @confirmations.all?(&:confirmed) %>
+  $("#fcd__create_destroy_all_samples").html('<%= j render 'samples/fcd__create_all_samples_buttons', iteration: @story_type.iteration %>')
+<% end %>

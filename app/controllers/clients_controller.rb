@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class ClientsController < ApplicationController # :nodoc:
+  before_action :render_400, if: :developer?
   before_action :find_client
 
   def include

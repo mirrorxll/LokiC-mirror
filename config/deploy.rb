@@ -8,7 +8,7 @@ server 'app@loki01.locallabs.com', port: 22, roles: %i[web app db], primary: tru
 set :use_sudo, false
 
 set :rvm_type, :user
-set :rvm_ruby_version, '2.6.3'
+set :rvm_ruby_version, '2.7.1'
 set :rvm_custom_path, '/usr/local/rvm/'
 
 set :pty, true

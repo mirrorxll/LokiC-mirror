@@ -21,7 +21,7 @@ module MiniLokiC
 
     def download
       query = "SELECT file_blob b FROM hle_file_blobs WHERE story_type_id = #{@story_type.id};"
-      db05 = Connect::Mysql.on(DB05, 'loki_storycreator')
+      db05 = Connect::Mysql.on(DB02, 'loki_storycreator')
       blob = db05.query(query).first
       db05.close
 
@@ -37,18 +37,18 @@ module MiniLokiC
     end
 
     def file
-      file = "#{Rails.root}/public/ruby_code/S#{@story_type.id}.rb"
+      file = "#{Rails.root}/public/ruby_code/s#{@story_type.id}.rb"
       File.open(file, 'wb') { |f| f.write(@story_type.code.download) }
 
       file
     end
 
     def options_to_hash(options)
-      options = options.split(',')
-      options = options.map { |opt| opt.gsub(/[\s+,'"]/, '') }
+      options.split(' :: ').each_with_object({}) do |option, hash|
+        next unless option.match?(/=>/)
 
-      options.each_with_object({}) do |opt, hash|
-        hash[opt.split(/[=>,:]/).first.to_s] = opt.split(/[=>,:]/).last
+        key, value = option.split('=>')
+        hash[key] = value
       end
     end
   end

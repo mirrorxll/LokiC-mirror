@@ -1,18 +1,46 @@
-.row
-  .col-1.text-right
-    Headline:
-  .col-11
-    %h6
-      =@sample.output.headline
-.row
-  .col-1.text-right
-    Teaser:
-  .col-11
-    %h6
-      =@sample.output.teaser
+%hr/
+%b
+  =@story_type.number_name
+%hr/
+-if @story_type.code.attached?
+  .row
+    .col-10.offset-1
+      =link_to("story type's code", story_type_code_path(@story_type, @story_type.code),
+               class: 'btn btn-sm btn-outline-dark', remote: true)
+      =link_to("auto-feedback", "#autoFeedbackCollapse", "aria-controls" => "autoFeedbackCollapse", "aria-expanded" => "false",
+               "data-toggle" => "collapse", :role => "button", class: 'btn btn-sm btn-outline-dark', onclick: 'hideAllPopovers();')
+%hr/
+#autoFeedbackCollapse.collapse
+  .card.card-body
+    =render 'auto_feedback/form', auto_feedback: @story_type.iteration.auto_feedback_confirmations
+%hr/
+#story_sample
+  .row
+    .col-1.text-right
+      Headline:
+    .col-11
+      %h6
+        =@sample.output.headline
+  .row
+    .col-1.text-right
+      Teaser:
+    .col-11
+      %h6
+        =@sample.output.teaser
 
-.row.small
-  .col-1.text-right
-    Body:
-  .col-11
-    =@sample.output.body.html_safe
+  .row.small
+    .col-1.text-right
+      Body:
+    .col-11
+      =@sample.output.body.html_safe
+
+=render 'codes/modal_ruby_code'
+
+:javascript
+  function hideAllPopovers() {
+    let fbOutputs = document.querySelectorAll('[id^="feedback_output_"]');
+
+    Array.from(fbOutputs).forEach((output)=> {
+      $(output).popover('hide')
+    });
+  }

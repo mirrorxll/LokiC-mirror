@@ -24,6 +24,7 @@
 /config/master.key
 
 # Ignore git's fil
+/.git
 
 # Ignore RubyMine's files
 /.idea
@@ -40,6 +41,6 @@ yarn-debug.log*
 # Ignore Uploaded Code
 public/ruby_code/*
 
-
-# Gemfile.lock
-Gemfile.lock
+# lock files
+/Gemfile.lock
+/package.json

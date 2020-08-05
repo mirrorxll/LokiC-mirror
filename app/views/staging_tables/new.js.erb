@@ -1,13 +1,13 @@
-var st_table_block = $('#staging_table .card-body')
-<% if flash[:error] %>
-  st_table_block.prepend(`
-      <div class="alert alert-danger">
-        <%= flash[:error].gsub('`', "'") %>
-      </div>`)
+<% if flash.now[:error] %>
+  $('#staging_table .flash').html(`
+      <div class="alert alert-danger text-center">
+        <%= flash.now[:error].gsub('`', "'") %>
+      </div>`
+  );
 <% else %>
-  st_table_block.empty()
-      .html('<%= j render 'staging_tables/form'%>')
-  $('#samples .card-body').empty()
-  $('#scheduler .card-body').empty()
-  $('#export .card-body').empty()
+  $('#staging_table .card-body').html('<%= j render 'staging_tables/form'  %>');
+  $('#story_type_code .card-body').empty();
+  $('#samples .card-body').empty();
+  $('#scheduler .card-body').empty();
+  $('#export .card-body').empty();
 <% end %>

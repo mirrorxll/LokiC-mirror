@@ -1,1 +1,8 @@
+<% if flash.now[:message] %>
+  $(`#story_type_samples_<%= @story_type.iteration.id %> .flash`).html(
+    `<div class="alert alert-<%= samples_alert(flash.now[:message]) %> text-center">
+        <%= flash.now[:message].gsub('`', "'") %>
+      </div>`
+  )
+<% end %>
 $('#samples .card-body').html('<%= j render 'samples/samples' %>')

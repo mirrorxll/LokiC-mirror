@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-class ApplicationController < ActionController::Base # :nodoc:
+class ApplicationController < ActionController::Base
+  before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :authenticate_account!
   before_action :find_parent_story_type
 
@@ -8,14 +9,32 @@ class ApplicationController < ActionController::Base # :nodoc:
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit :sign_in, keys: %i[email password remember_me]
-    devise_parameter_sanitizer.permit :account_update, keys: %i[name email password password_confirmation]
+    devise_parameter_sanitizer.permit :account_update, keys: %i[email first_name last_name password password_confirmation current_password]
+  end
+
+  def find_parent_story_type
+    @story_type = StoryType.find(params[:story_type_id])
+  end
+
+  def manager?
+    current_account.type.eql?('manager')
+  end
+
+  def editor?
+    current_account.type.eql?('editor')
+  end
+
+  def developer?
+    current_account.type.eql?('developer')
   end
 
   def render_400
     render json: { error: 'Bad Request' }, status: 400
   end
+  alias render_400_developer render_400
+  alias render_400_editor    render_400
 
-  def find_parent_story_type
-    @story_type = StoryType.find(params[:story_type_id])
+  def detached_or_delete
+    'Table for this story type already detached or drop. Please update the page.'
   end
 end

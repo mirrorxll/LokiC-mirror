@@ -7,6 +7,7 @@ require 'capistrano/rails/assets'
 require 'capistrano/rails/migrations'
 require 'capistrano/puma'
 require 'capistrano/scm/git'
+require 'capistrano/yarn'
 
 install_plugin Capistrano::SCM::Git
 install_plugin Capistrano::Puma

@@ -21,7 +21,7 @@ class ExportConfigurationsJob < ApplicationJob
     message = e
   ensure
     story_type.update_iteration(export_configurations: status)
-    send_to_action_cable(story_type, export_configurations_message: status)
+    send_to_action_cable(story_type, export_configurations_msg: status)
     send_to_slack(story_type, message)
   end
 

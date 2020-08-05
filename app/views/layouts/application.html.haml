@@ -6,8 +6,8 @@
     =action_cable_meta_tag
     =csrf_meta_tags
     =csp_meta_tag
-    =stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
-    =javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
+    =stylesheet_pack_tag  'application', media: 'all', 'data-turbolinks-track': 'reload'
+    =javascript_pack_tag  'application', 'data-turbolinks-track': 'reload'
   %body
     %nav.navbar.navbar-expand-lg.navbar-light.bg-light
       =link_to('LokiC', root_path, class: 'navbar-brand')
@@ -21,18 +21,23 @@
             -if !current_account.type.eql?('developer')
               %li.nav-item.active
                 =link_to('Data Sets', data_sets_path, class: 'nav-link')
-            %li.nav-item.nav-link.disabled.ml-auto
-              =current_account.name
-            %li.nav-item
-              =link_to('Edit Profile', edit_account_registration_path, class: 'nav-link')
-            %li.nav-item
-              =link_to('Log Out', destroy_account_session_path, class: 'nav-link', method: :delete)
+              -if !current_account.type.eql?('editor')
+                %li.nav-item.active
+                  =link_to('Admin panel', admin_root_path, class: 'nav-link')
+            %li.nav-item.dropdown.ml-auto.mr-3
+              #navbarDropdown.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :role => "button"}
+                =current_account.name
+              .dropdown-menu{"aria-labelledby" => "navbarDropdown"}
+                .dropdown-item
+                  =link_to('Edit Profile', edit_account_registration_path, class: 'nav-link')
+                .dropdown-item
+                  =link_to('Log Out', destroy_account_session_path, class: 'nav-link', method: :delete)
 
-    - if notice
+    -if notice
       %p.alert.alert-success.text-center
         =notice
-    - if alert
+    -if alert
       %p.alert.alert-danger.text-center
         =alert
-    .container-xl
+    %div{ class: action_name.eql?('exported_stories') ? "container-fluid" : "container-xl" }
       = yield

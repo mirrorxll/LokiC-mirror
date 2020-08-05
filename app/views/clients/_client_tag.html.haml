@@ -1,7 +1,7 @@
-%tr{id: "client_#{client_tag.client.id}_tag"}
-  %td.client
+.row.mb-1{ id: "client_#{client_tag.client.id}_tag" }
+  .col-6.client
     =render client_tag.client
-  %td.client_tag
+  .col-6.client_tag
     -if client_tag.tag
       =render client_tag.tag, client: client_tag.client
     -else

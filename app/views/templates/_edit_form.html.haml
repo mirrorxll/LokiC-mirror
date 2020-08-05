@@ -1,6 +1,31 @@
 =form_with(model: [@story_type, @story_type.template]) do |form|
-  %div{"data-controller" => "summernote"}
-    =form.text_area :body, 'data-provider': :summernote
+  .field.small{ "data-controller" => "summernote" }
+    =form.text_area :body, data: { editor: 'summernote' }
   .modal-footer
-    =button_tag('Close', class: 'ml-auto btn btn-sm btn-outline-secondary', "data-dismiss" => "modal")
-    =form.submit 'Save changes', class: 'mr-auto btn btn-sm btn-outline-dark'
+    =button_tag('close', class: 'ml-auto btn btn-sm btn-outline-secondary',
+                'data-dismiss' => 'modal', onclick: 'stopTemplateSaver();')
+    =form.submit 'save changes', class: 'mr-auto btn btn-sm btn-outline-success',
+                 onclick: 'stopTemplateSaver();'
+
+:javascript
+  (function startTemplateSaver() {
+     sessionStorage['templateSaverId'] = setInterval(templateSaver, 30000);
+  }).call();
+
+  function templateSaver() {
+    let templateHTML = document.getElementsByClassName('note-editable')[0].children;
+    let reducer = (acc, curr)=>{ return acc + curr.outerHTML};
+    let templateStr = Array.from(templateHTML).reduce(reducer, '');
+
+    $.ajax({
+      url: '#{save_story_type_template_url(@story_type, @story_type.template)}',
+      data: { template: { body: templateStr } },
+      method: 'patch',
+      dataType: 'script'
+    });
+  }
+
+  function stopTemplateSaver() {
+    clearInterval(sessionStorage['templateSaverId'])
+    sessionStorage.removeItem('templateSaverId')
+  }

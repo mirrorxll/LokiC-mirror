@@ -10,10 +10,11 @@ class StoryType < ApplicationRecord # :nodoc:
 
   has_one :staging_table
   has_one :template, dependent: :destroy
+  has_one :fact_checking_doc
 
   has_many :iterations,             dependent: :destroy
   has_many :export_configurations,  dependent: :destroy
-  has_many :configurations_no_tags, -> { where(tag: nil, skipped: [false, nil]) }, class_name: 'ExportConfiguration'
+  has_many :configurations_no_tags, -> { where(tag: nil).or(where(skipped: true)) }, class_name: 'ExportConfiguration'
 
   has_many :client_tags, class_name: 'StoryTypeClientTag'
   has_many :clients, through: :client_tags
@@ -22,9 +23,17 @@ class StoryType < ApplicationRecord # :nodoc:
 
   validates :name, uniqueness: true
 
-  before_create { build_template }
-  before_create { iterations.build(name: 'Initial') }
-  after_create  { update(current_iteration: iterations.first) }
+  before_create do
+    build_template
+    build_fact_checking_doc
+    iterations.build(name: 'Initial')
+  end
+
+  after_create { update(current_iteration: iterations.first) }
+
+  def number_name
+    "##{id} #{name}"
+  end
 
   def developer_slack_id
     developer&.slack&.identifier

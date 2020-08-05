@@ -2,6 +2,8 @@
 
 class DataSetsController < ApplicationController # :nodoc:
   skip_before_action :find_parent_story_type
+
+  before_action :render_400, except: :properties, if: :developer?
   before_action :find_data_set, except: %i[index new create]
 
   def index
@@ -11,7 +13,7 @@ class DataSetsController < ApplicationController # :nodoc:
 
   def show
     @story_types = @data_set.story_types
-    ``
+
     story_type_filter_params.each do |key, value|
       @story_types = @story_types.public_send(key, value) if value.present?
     end
@@ -22,8 +24,7 @@ class DataSetsController < ApplicationController # :nodoc:
   end
 
   def create
-    @data_set =
-      current_account.data_sets.build(data_set_params)
+    @data_set = current_account.data_sets.build(data_set_params)
 
     if @data_set.save
       new_data_set_notification
@@ -50,6 +51,8 @@ class DataSetsController < ApplicationController # :nodoc:
     @data_set&.destroy
   end
 
+  def properties; end
+
   private
 
   def find_data_set
@@ -66,7 +69,7 @@ class DataSetsController < ApplicationController # :nodoc:
     return {} unless params[:filter]
 
     params.require(:filter).slice(
-      :editor, :developer, :client, :frequency, :dev_status
+      :editor, :developer, :client, :frequency, :status
     )
   end
 

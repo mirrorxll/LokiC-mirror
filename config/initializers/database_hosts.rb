@@ -13,8 +13,9 @@ PL_GIS_HOST = 'pl-shapes-staging.rds.locallabs.com'
 
 # db hosts
 DB01 = 'db01.blockshopper.com'
+DB02 = 'db02.blockshopper.com'
 DB04 = 'db04.blockshopper.com'
-DB05 = 'db05.blockshopper.com'
+# DB05 = 'db05.blockshopper.com'
 DB06 = 'db06.blockshopper.com'
 DB07 = 'db07.blockshopper.com'
 DB08 = 'db08.rds.blockshopper.com'

@@ -17,14 +17,14 @@ class SchedulerJob < ApplicationJob
         Scheduler::Auto.auto_scheduler(samples)
         'auto scheduling success'
       end
-    status = false if story_type.iterations.last.samples.where(published_at: nil).any?
+    status = false if story_type.iteration.samples.where(published_at: nil).any?
 
   rescue StandardError => e
     status = nil
     message = e
   ensure
     story_type.update_iteration(schedule: status)
-    send_to_action_cable(story_type, scheduler_message: status)
+    send_to_action_cable(story_type, scheduler_msg: status)
     send_to_slack(story_type, message)
   end
 

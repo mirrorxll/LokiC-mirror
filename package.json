@@ -1,5 +1,23 @@
 {
-  "name": "LokiC",
+  "name": "lokic",
   "private": true,
-  "dependencies": {}
+  "dependencies": {
+    "@activeadmin/activeadmin": "^2.7.0",
+    "@fortawesome/fontawesome-free": "^5.14.0",
+    "@rails/actioncable": "^6.0.0",
+    "@rails/activestorage": "^6.0.0",
+    "@rails/ujs": "^6.0.0",
+    "@rails/webpacker": "5.0.1",
+    "bootstrap": "^4.5.0",
+    "codemirror": "^5.55.0",
+    "jquery": "^3.5.1",
+    "popper.js": "^1.16.1",
+    "stimulus": "^1.1.1",
+    "summernote": "^0.8.18",
+    "turbolinks": "^5.2.0"
+  },
+  "version": "0.1.0",
+  "devDependencies": {
+    "webpack-dev-server": "^3.11.0"
+  }
 }

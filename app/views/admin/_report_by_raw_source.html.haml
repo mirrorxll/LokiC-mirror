@@ -1,0 +1,45 @@
+#carouselRawSource.carousel.slide{"data-ride" => "carousel", "data-interval" => "false"}
+  .carousel-inner
+    -sheets.each_with_index do |raw, index|
+      - if index == 0
+        .carousel-item.active
+          =raw['month']
+          %table.table
+            %thead
+              %tr
+                %th{:scope => "col"} Raw_source
+                %th{:scope => "col"} Total Stories Published
+                %th{:scope => "col"} Total Stories Exported
+            %tbody
+              -raw['published'].sort_by { |k,v| v }.reverse.each do |k,v|
+                %tr
+                  %td
+                    =k.to_s.gsub(/.*?(?="host")/im, "")
+                  %td
+                    =v
+                  %td
+                    =raw['exported']["#{k.to_s}"]
+      - if index != 0
+        .carousel-item
+          =raw['month']
+          %table.table
+            %thead
+              %tr
+                %th{:scope => "col"} Raw_source
+                %th{:scope => "col"} Total Stories Published
+                %th{:scope => "col"} Total Stories Exported
+            %tbody
+              -raw['published'].sort_by { |k,v| v }.reverse.each do |k,v|
+                %tr
+                  %td
+                    =k.to_s.gsub(/.*?(?="host")/im, "")
+                  %td
+                    =v
+                  %td
+                    =raw['exported']["#{k.to_s}"]
+  %a.carousel-control-prev{"data-slide" => "prev", :href => "#carouselRawSource", :role => "button"}
+    %span.carousel-control-prev-icon{"aria-hidden" => "true"}
+    %span.sr-only Previous
+  %a.carousel-control-next{"data-slide" => "next", :href => "#carouselRawSource", :role => "button"}
+    %span.carousel-control-next-icon{"aria-hidden" => "true"}
+    %span.sr-only Next

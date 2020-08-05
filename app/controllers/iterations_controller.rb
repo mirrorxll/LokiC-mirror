@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class IterationsController < ApplicationController
+  before_action :render_400, if: :editor?
   before_action :find_iteration, only: %i[show edit update destroy]
 
   def create

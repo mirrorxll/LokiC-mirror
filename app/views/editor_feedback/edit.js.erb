@@ -1,0 +1,31 @@
+(()=>{
+    document.querySelector('#editor_feedback_button').classList.add('d-none')
+    let editorFeedback = document.querySelector('#editor_feedback_body .col-10').innerHTML;
+
+    document.getElementById('editor_feedback_body').innerHTML = `<%= j render 'form' %>`
+    let feedbackEditor = $('#editor_feedback_editable [data-editor="summernote"]')
+    feedbackEditor.summernote({height: 300});
+
+    if(editorFeedback)
+        feedbackEditor.summernote('code', editorFeedback);
+
+    sessionStorage['editorFeedbackSaverId'] = setInterval(editorsFeedbackSaver, 30000);
+}).call();
+
+function editorsFeedbackSaver() {
+    let editorFeedbackHTML = document.querySelector('#editor_feedback_editable .note-editable').children;
+    let reducer = (acc, curr)=>{ return acc + curr.outerHTML};
+    let editorFeedbackStr = Array.from(editorFeedbackHTML).reduce(reducer, '');
+
+    $.ajax({
+        url: '<%= save_story_type_fact_checking_doc_editor_feedback_url(@story_type, @fcd, @editor_feedback) %>',
+        data: { editor_feedback: { body: editorFeedbackStr } },
+        method: 'patch',
+        dataType: 'script'
+    });
+}
+
+function stopEditorsFeedbackSaver() {
+    clearInterval(sessionStorage['editorFeedbackSaverId'])
+    sessionStorage.removeItem('editorFeedbackSaverId')
+}

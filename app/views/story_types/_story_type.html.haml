@@ -1,4 +1,4 @@
--if %w[show update].include?(action_name)
+-if %w[show update canceling_edit].include?(action_name)
   .text-center.small{id: "story_type_#{story_type.id}"}
     .row
       .col-sm-1.col-lg-1
@@ -6,8 +6,11 @@
       .col-sm-4.col-lg-5.pl-0.text-left{id: "story_type_#{story_type.id}_name"}
         .row
           .col-11.pr-0
-            =link_to(story_type.name, story_type_path(story_type))
-          .col-1.p-0.text-right
+            -if current_account.type.eql?('editor')
+              =story_type.name
+            -else
+              =link_to(story_type.name, story_type_path(story_type))
+          .col-1.p-0.text-center
             =link_to(icon('fas', 'pen', class: ' fa-xs text-dark'), edit_story_type_path(story_type), remote: true)
       .col-sm-1.col-lg-1.p-0{id: "story_type_#{story_type.id}_template"}
         =link_to(icon('far', 'file', class: 'fa-lg text-dark'), edit_story_type_template_path(story_type), remote: true)
@@ -19,7 +22,7 @@
         -else
           =render 'developers/form', story_type: story_type
       .col-sm-2.col-lg-1.p-0
-        -# =story_type.status.name
+        =story_type.iteration.statuses.first.name
       .col-sm-1.col-lg-1.p-0{id: "story_type_#{story_type.id}_last_export"}
         -if story_type.last_export
           =story_type.last_export.strftime('%D')
@@ -37,9 +40,9 @@
           .col-12.pr-0
             =link_to(story_type.name, story_type_path(story_type))
       .col-3.p-0
-        =story_type.developer&.name || '---'
+        =story_type.developer ? story_type.developer.name : '---'
       .col-1.p-0
-        -# =story_type.status.name
+        =story_type.iteration.statuses.first.name
       .col-1.p-0{id: "story_type_#{story_type.id}_last_export"}
         -if story_type.last_export
           =story_type.last_export.strftime('%D')

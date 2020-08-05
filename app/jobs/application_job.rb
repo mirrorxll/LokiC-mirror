@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 class ApplicationJob < ActiveJob::Base
-  rescue_from(StandardError) do |exception|
-    Rails.logger.error "[#{self.class.name}] Something was wrong with you job #{exception}"
-  end
+  sidekiq_options retry: false
 
   private
 
@@ -17,7 +15,7 @@ class ApplicationJob < ActiveJob::Base
 
     SlackNotificationJob.perform_later(
       stp.developer.slack.identifier,
-      "##{stp.id} #{stp.name} -- #{message}"
+      "##{stp.id} #{stp.name} (iteration: #{stp.iteration.name}) -- #{message}"
     )
   end
 end

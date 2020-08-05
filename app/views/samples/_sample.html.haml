@@ -1,5 +1,8 @@
 .row
   %small.col-6
+    =link_to(icon('fa', 'fa fa-times text-dark'),
+             story_type_iteration_sample_path(@story_type, @story_type.iteration, sample),
+             method: :delete, remote: true)
     =sample.staging_row_id
     \-
     =link_to(nil, story_type_iteration_sample_url(@story_type, @story_type.iteration, sample),

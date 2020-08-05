@@ -1,1 +1,9 @@
 $('#export_configs .card-body').html('<%= j render 'export_configurations' %>')
+
+<% if @story_type.configurations_no_tags.none? %>
+  $('#samples .card-body').html('<%= j render 'samples/samples' %>')
+<% else %>
+  $('#samples .card-body').empty()
+  $('#scheduler .card-body').empty();
+  $('#export .card-body').empty();
+<% end %>

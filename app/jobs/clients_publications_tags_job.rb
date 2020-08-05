@@ -2,12 +2,12 @@ class ClientsPublicationsTagsJob < ApplicationJob
   queue_as :default
 
   def perform
-    clients_pubs_tags = PipelineReplica[:production].get_clients_publications_tags
+    clients_pubs_tags = PipelineReplica[:production]
+                        .get_clients_publications_tags.reject { |row| row['client_name'] == 'Metric Media' }
 
-    clients_pubs_tags.each do |cl_pub_tags|
+    clients_pubs_tags.flatten.each do |cl_pub_tags|
       client = update_client(cl_pub_tags)
       publication = update_publication(client, cl_pub_tags)
-
       update_tags(publication, cl_pub_tags)
     end
 
@@ -24,7 +24,7 @@ class ClientsPublicationsTagsJob < ApplicationJob
         'Metric Media News Service'
       end
 
-    Author.find_or_initialize_by(name: author)
+    Author.find_or_create_by!(name: author)
   end
 
   def update_client(cl_pub_tags)
