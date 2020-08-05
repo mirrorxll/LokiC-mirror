@@ -8,4 +8,24 @@
 
     if(editorFeedback)
         feedbackEditor.summernote('code', editorFeedback);
+
+    sessionStorage['editorFeedbackSaverId'] = setInterval(editorsFeedbackSaver, 1000);
 }).call();
+
+function editorsFeedbackSaver() {
+    let editorFeedbackHTML = document.querySelector('#editor_feedback_editable .note-editable').children;
+    let reducer = (acc, curr)=>{ return acc + curr.outerHTML};
+    let editorFeedbackStr = Array.from(editorFeedbackHTML).reduce(reducer, '');
+
+    $.ajax({
+        url: '<%= save_story_type_fact_checking_doc_editor_feedback_url(@story_type, @fcd, @editor_feedback) %>',
+        data: { editor_feedback: { body: editorFeedbackStr } },
+        method: 'patch',
+        dataType: 'script'
+    });
+}
+
+function stopEditorsFeedbackSaver() {
+    clearInterval(sessionStorage['editorFeedbackSaverId'])
+    sessionStorage.removeItem('editorFeedbackSaverId')
+}

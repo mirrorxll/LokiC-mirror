@@ -7,6 +7,8 @@ class Sample < ApplicationRecord
   belongs_to :output, dependent: :delete
   belongs_to :time_frame, optional: true
 
+  has_many   :auto_feedback_confirmations, dependent: :destroy
+
   def headline
     output.headline
   end

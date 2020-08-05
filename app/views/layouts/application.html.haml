@@ -33,10 +33,10 @@
                 .dropdown-item
                   =link_to('Log Out', destroy_account_session_path, class: 'nav-link', method: :delete)
 
-    - if notice
+    -if notice
       %p.alert.alert-success.text-center
         =notice
-    - if alert
+    -if alert
       %p.alert.alert-danger.text-center
         =alert
     %div{ class: action_name.eql?('exported_stories') ? "container-fluid" : "container-xl" }

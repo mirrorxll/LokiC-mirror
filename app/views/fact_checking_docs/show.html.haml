@@ -1,5 +1,3 @@
-%div{ id: "fact_checking_document", story_type_id: @story_type.id, iteration_id: @story_type.iteration.id }
-
 -if @story_type.iteration.auto_feedback_confirmations.all?(&:confirmed)
   %hr/
   .row
@@ -17,7 +15,7 @@
 
   -fact_checking_doc = @story_type.fact_checking_doc
   -editor_feedback = fact_checking_doc.editor_feedback
-  -if current_account.type.eql?('developer')
+  -if !current_account.type.eql?('developer')
     #editor_feedback_button
       %hr/
       .row

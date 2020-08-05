@@ -1,7 +1,5 @@
 =form_with(url: story_type_fact_checking_doc_path(@story_type, @fcd), method: :put, local: true) do |form|
-  =form.submit 'Save', class: 'mb-2 btn btn-sm btn-outline-dark'
-  =link_to('cancel', story_type_fact_checking_doc_path(@story_type, @story_type.fact_checking_doc),
-           class: 'mb-2 btn btn-sm btn-outline-link')
+  =form.submit 'save', class: 'mb-2 btn btn-sm btn-outline-dark', onclick: 'stopFcdSaver();'
   =link_to('template', story_type_fact_checking_doc_template_path(@story_type, @fcd),
            class: 'mb-2 btn btn-sm btn-outline-dark ml-3', remote: true)
   .field{ id: 'fcd_editable', "data-controller" => "summernote" }

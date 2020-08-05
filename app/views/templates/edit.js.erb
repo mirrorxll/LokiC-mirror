@@ -1,6 +1,7 @@
 $('#template .modal-title').html('<%= @story_type.name %>')
+$('#template .modal-body').empty()
 $('#template .modal-body').html('<%= j render 'edit_form' %>')
 $('[data-editor="summernote"]').summernote({
     height: 700
 });
-$('#template').modal('show')
+$('#template').modal('show');

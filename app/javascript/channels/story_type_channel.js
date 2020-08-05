@@ -29,13 +29,21 @@ $(document).on("turbolinks:load", function() {
     }
 
     function st_population(data) {
-        if (data['population_msg'])
-            $.ajax({url: `${storyTypeId}/staging_tables/section`})
+        if (data['population_msg']) {
+            $.ajax({
+                url: `${storyTypeId}/staging_tables/section`,
+                dataType: 'script'
+            })
+        }
     }
 
     function st_exp_configurations_section(data) {
-        if (data['export_configurations_msg'])
-            $.ajax({url: `${storyTypeId}/export_configurations/section`})
+        if (data['export_configurations_msg']) {
+            $.ajax({
+                url: `${storyTypeId}/export_configurations/section`,
+                dataType: 'script'
+            })
+        }
     }
 
     function st_samples_section(data) {
@@ -43,18 +51,27 @@ $(document).on("turbolinks:load", function() {
         if (message) {
             $.ajax({
                 url: `${storyTypeId}/iterations/${storyTypeIter}/samples/section`,
-                data: { section_update: { message: message } }
+                data: { section_update: { message: message } },
+                dataType: 'script'
             })
         }
     }
 
     function st_scheduler(data) {
-        if ([true, false].includes(data['scheduler_msg']) || data['creation_msg'])
-            $.ajax({url: `${storyTypeId}/iterations/${storyTypeIter}/schedule/section`})
+        if ([true, false].includes(data['scheduler_msg']) || data['creation_msg']) {
+            $.ajax({
+                url: `${storyTypeId}/iterations/${storyTypeIter}/schedule/section`,
+                dataType: 'script'
+            })
+        }
     }
 
     function st_export(data) {
-        if (data['scheduler_msg'] || data['export_msg'])
-            $.ajax({url: `${storyTypeId}/iterations/${storyTypeIter}/export/section`})
+        if (data['scheduler_msg'] || data['export_msg']) {
+            $.ajax({
+                url: `${storyTypeId}/iterations/${storyTypeIter}/export/section`,
+                dataType: 'script'
+            })
+        }
     }
 });

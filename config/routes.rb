@@ -25,7 +25,9 @@ Rails.application.routes.draw do
     get :distributed, on: :collection
     get :properties
 
-    resources :templates, path: :template, only: %i[edit update]
+    resources :templates, path: :template, only: %i[edit update] do
+      patch :save, on: :member
+    end
 
     resources :clients, only: [] do
       post    :include, on: :collection
@@ -71,8 +73,11 @@ Rails.application.routes.draw do
 
     resources :fact_checking_docs do
       get :template
+      patch :save, on: :member
 
-      resources :editor_feedback, only: %i[edit update]
+      resources :editor_feedback, only: %i[edit update] do
+        patch :save, on: :member
+      end
     end
 
     resources :iterations do

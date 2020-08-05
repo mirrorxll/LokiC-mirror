@@ -3,15 +3,16 @@
 class EditorFeedbackController < ApplicationController
   before_action :render_400, if: :developer?
   before_action :find_editor_feedback
+  before_action :update_editor_feedback, only: %i[update save]
 
   def edit; end
 
   def update
-    if @editor_feedback.update(editor_feedback_params)
-      send_notification_to_developer
-      redirect_to story_type_fact_checking_doc_path(@story_type, @story_type.fact_checking_doc)
-    end
+    send_notification_to_developer
+    redirect_to story_type_fact_checking_doc_path(@story_type, @story_type.fact_checking_doc)
   end
+
+  def save; end
 
   private
 
@@ -22,6 +23,10 @@ class EditorFeedbackController < ApplicationController
 
   def editor_feedback_params
     params.require(:editor_feedback).permit(:body)
+  end
+
+  def update_editor_feedback
+    @editor_feedback.update(editor_feedback_params)
   end
 
   def send_notification_to_developer
