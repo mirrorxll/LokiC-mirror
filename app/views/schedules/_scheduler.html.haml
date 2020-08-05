@@ -8,7 +8,9 @@
     .col-6.offset-1
       =render 'schedules/form'
     .col-5
-      =render 'schedules/results_scheduling'
+      .card-group
+        =render 'schedules/results_scheduling'
+        =render 'schedules/counts_scheduling'
   -if @story_type.iteration.samples.where.not(published_at: nil).any?
     %hr/
     .row.small
