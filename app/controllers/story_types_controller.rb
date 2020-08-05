@@ -25,6 +25,8 @@ class StoryTypesController < ApplicationController # :nodoc:
 
   def show; end
 
+  def canceling_edit; end
+
   def new
     @story_type = @data_set.story_types.build
   end
