@@ -10,7 +10,7 @@ class CreateIterations < ActiveRecord::Migration[6.0] # :nodoc:
       t.string  :population_args
       t.boolean :export_configurations
       t.boolean :story_samples
-      t.string  :story_sample_ids
+      t.string  :story_sample_args, limit: 1_000
       t.boolean :creation
       t.boolean :purge_all_samples
       t.boolean :schedule

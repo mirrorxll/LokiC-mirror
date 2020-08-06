@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SamplesController < ApplicationController # :nodoc:
-  before_action :find_sample, only: %i[show edit update destroy]
+  before_action :find_sample, only: %i[show edit update]
 
   def show; end
 
@@ -22,10 +22,6 @@ class SamplesController < ApplicationController # :nodoc:
     @story_type.staging_table.samples_set_not_created
     @story_type.update_iteration(story_samples: nil, story_sample_ids: nil)
     flash.now[:message] = 'Samples deleted.'
-  end
-
-  def destroy
-    @sample.destroy
   end
 
   private
