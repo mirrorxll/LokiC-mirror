@@ -1,5 +1,19 @@
 # frozen_string_literal: true
 
+# NATIVE_DATABASE_TYPES = {
+#   primary_key: "bigint auto_increment PRIMARY KEY",
+#   string:      { name: "varchar", limit: 255 },
+#   text:        { name: "text" },
+#   integer:     { name: "int", limit: 4 },
+#   float:       { name: "float", limit: 24 },
+#   decimal:     { name: "decimal" },
+#   datetime:    { name: "datetime" },
+#   timestamp:   { name: "timestamp" },
+#   time:        { name: "time" },
+#   date:        { name: "date" },
+#   boolean:     { name: "tinyint", limit: 1 }
+# }
+
 module Table
   module Columns # :nodoc:
     HIDDEN_COLUMNS = %w[
@@ -26,15 +40,12 @@ module Table
 
         added(cur_col, mod_col).each do |hex|
           col = mod_col.delete(hex)
-          a_r_m.add_column(t_name, col[:name], col[:type], col[:opts])
+          a_r_m.add_column(t_name, col[:name], col[:type], **col[:options])
         end
 
         changed(cur_col, mod_col).each do |upd|
-          if upd[:old_name] != upd[:new_name]
-            a_r_m.rename_column(t_name, upd[:old_name], upd[:new_name])
-          end
-
-          a_r_m.change_column(t_name, upd[:new_name], upd[:type], upd[:opts])
+          a_r_m.rename_column(t_name, upd[:old_name], upd[:new_name]) if upd[:old_name] != upd[:new_name]
+          a_r_m.change_column(t_name, upd[:new_name], upd[:type], **upd[:options])
         end
       end
 
@@ -69,7 +80,7 @@ module Table
         upd[:old_name] = current[:name]
         upd[:new_name] = modify[:name]
         upd[:type] = modify[:type]
-        upd[:opts] = modify[:opts]
+        upd[:options] = modify[:options]
 
         obj << upd
       end
@@ -93,9 +104,7 @@ module Table
       return {} if columns.empty?
 
       columns.each_with_object({}) do |col, hash|
-        column = ar_to_hash(col)
-
-        hash[SecureRandom.hex(3).to_sym] = column
+        hash[SecureRandom.hex(3).to_sym] = ar_to_hash(col)
       end
     end
 
@@ -103,10 +112,10 @@ module Table
       {
         name: column.name,
         type: column.type,
-        opts: {
+        options: {
           limit: column.limit,
-          precision: column.precision,
-          scale: column.scale
+          scale: column.scale,
+          precision: column.precision
         }
       }
     end
@@ -114,30 +123,26 @@ module Table
     def frontend_transform(columns)
       return {} if columns.empty?
 
-      columns.each_with_object({}) do |(id, column), hash|
-        column['opts'] ||= {}
-        column['opts'] = default_if_empty(column['opts'])
-
-        hash[id.to_sym] = column.deep_symbolize_keys
+      params_to_hash = {}
+      columns.each do |id, column|
+        id_sym = id.to_sym
+        params_to_hash[id_sym] = {}
+        params_to_hash[id_sym][:name] = column[:name]
+        params_to_hash[id_sym][:type] = column[:type].to_sym
+        params_to_hash[id_sym][:options] = nilable_if_empty(column[:options])
       end
+
+      params_to_hash
     end
 
-    def default_if_empty(options)
-      return options if options.empty?
+    def nilable_if_empty(options)
+      return { limit: nil, scale: nil, precision: nil } if options.nil?
 
-      if options.key?('limit') && options['limit'].empty?
-        options['limit'] = '255'
-      end
-
-      if options.key?('scale') && options['scale'].empty?
-        options['scale'] = '0'
-      end
-
-      if options.key?('precision') && options['precision'].empty?
-        options['precision'] = '10'
-      end
-
-      options
+      options_to_hash = {}
+      options_to_hash[:limit] = options[:limit].present? ? options[:limit] : nil
+      options_to_hash[:precision] = options[:precision].present? ? options[:precision] : nil
+      options_to_hash[:scale] = options[:scale].present? ? options[:scale] : nil
+      options_to_hash
     end
 
     def transform_for_samples(columns)

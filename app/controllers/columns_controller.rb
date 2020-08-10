@@ -16,12 +16,7 @@ class ColumnsController < ApplicationController
   end
 
   def update
-    flash.now[:error] =
-      if @staging_table.nil?
-        detached_or_delete
-      else
-        @staging_table.columns.modify(columns_params)
-      end
+    flash.now[:error] = @staging_table ? @staging_table.columns.modify(columns_front_params) : detached_or_delete
 
     @staging_table.sync if flash.now[:error].nil?
     render 'staging_tables/show'
@@ -29,8 +24,14 @@ class ColumnsController < ApplicationController
 
   private
 
-  def columns_params
-    columns = params[:columns] ? params.require(:columns).permit!.to_hash : {}
+  def columns_front_params
+    columns =
+      if params[:columns]
+        params.require(:columns).permit!
+      else
+        {}
+      end
+
     Table.columns_transform(columns, :front)
   end
 

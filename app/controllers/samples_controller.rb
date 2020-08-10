@@ -6,10 +6,11 @@ class SamplesController < ApplicationController # :nodoc:
   def show; end
 
   def create_and_generate_auto_feedback
-    SamplesAndAutoFeedbackJob.set(wait: 2.second).perform_later(@story_type, samples_params)
-    @story_type.update_iteration(story_samples: false)
-
-    render 'creations/create'
+    p samples_params[:columns]
+    # SamplesAndAutoFeedbackJob.set(wait: 2.second).perform_later(@story_type, samples_params)
+    # @story_type.update_iteration(story_samples: false)
+    #
+    # render 'creations/create'
   end
 
   def section

@@ -1,7 +1,7 @@
 module StagingTablesHelper
   def data_types
-    %i[integer float decimal date
-       time datetime string text boolean]
+    %i[string text integer float decimal datetime
+       timestamp time date boolean]
   end
 
   def added_columns?(st_table)

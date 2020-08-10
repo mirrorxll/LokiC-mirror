@@ -59,7 +59,7 @@
               .col-6
                 #{col[:name]}
               .col-6
-                #{col[:type]} #{col[:opts].values.all?(nil) ? '' : "(#{col[:opts].values.compact.join(',')})"}
+                #{col[:type]} #{col[:options].values.all?(nil) ? '' : "(#{col[:options].values.compact.join(',')})"}
 
           %hr.mt-0/
           .row
