@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Iteration < ApplicationRecord # :nodoc:
+  serialize :story_sample_args, Hash
   serialize :schedule_counts, Hash
 
   belongs_to :story_type

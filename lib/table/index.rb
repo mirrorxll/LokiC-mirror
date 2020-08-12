@@ -27,6 +27,8 @@ module Table
 
     def drop_uniq_index(t_name)
       loki_story_creator { a_r_m.remove_index(t_name, name: :story_per_publication) }
+
+      nil
     end
 
     def index_transform(index_columns)

@@ -6,7 +6,7 @@ class PurgeSamplesByLastIterationJob < ApplicationJob
   def perform(story_type)
     story_type.iteration.samples.destroy_all
     story_type.staging_table.samples_set_not_created
-    story_type.update_iteration(story_samples: nil, story_sample_ids: nil, creation: nil)
+    story_type.update_iteration(story_samples: nil, creation: nil)
 
     status = true
     message = 'last iteration purged.'

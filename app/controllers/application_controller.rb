@@ -34,6 +34,17 @@ class ApplicationController < ActionController::Base
   alias render_400_developer render_400
   alias render_400_editor    render_400
 
+  def staging_table_action(&block)
+    flash.now[:error] =
+      if @staging_table.nil? || StagingTable.not_exists?(@staging_table.name)
+        detached_or_delete
+      else
+        block.call
+      end
+  rescue ActiveRecord::ActiveRecordError => e
+    flash.now[:error] = e.message
+  end
+
   def detached_or_delete
     'Table for this story type already detached or drop. Please update the page.'
   end

@@ -8,7 +8,7 @@ class PopulationsController < ApplicationController # :nodoc:
     render_400 && return unless @story_type.iteration.population.nil?
 
     flash.now[:error] =
-      if @staging_table.nil?
+      if @staging_table.nil? || StagingTable.not_exists?(@staging_table.name)
         detached_or_delete
       elsif @staging_table.index.list.empty?
         'First...create unique index'
@@ -19,14 +19,14 @@ class PopulationsController < ApplicationController # :nodoc:
       PopulationJob.set(wait: 2.second).perform_later(@story_type, args)
       @story_type.update_iteration(population: false, population_args: args)
     end
+
     render 'staging_tables/show'
   end
 
   def destroy
-    if @staging_table.nil?
-      flash.now[:error] = detached_or_delete
-    else
-      @staging_table.purge
+    staging_table_action { @staging_table.purge }
+
+    if flash.now[:error].nil?
       @story_type.iteration.samples.destroy_all
       @story_type.iteration.auto_feedback.destroy_all
       @story_type.update_iteration(

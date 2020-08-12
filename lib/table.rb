@@ -45,6 +45,8 @@ module Table # :nodoc:
     last_iter = last_iter_id(t_name)
     del_query = delete_query(t_name, last_iter)
     loki_story_creator { a_r_b_conn.exec_query(del_query) }
+
+    nil
   end
 
   # select edge staging table rows by columns
@@ -76,16 +78,22 @@ module Table # :nodoc:
   def sample_set_as_created(t_name, id)
     upd_query = sample_created_update_query(t_name, id)
     loki_story_creator { a_r_b_conn.exec_query(upd_query) }
+
+    nil
   end
 
   def samples_set_as_not_created(t_name)
     last_iter = last_iter_id(t_name)
     upd_query = sample_destroyed_update_query(t_name, last_iter)
     loki_story_creator { a_r_b_conn.exec_query(upd_query) }
+
+    nil
   end
 
   def change_iter_id(t_name, iter_id)
     alter_query = alter_change_iter_id_query(t_name, iter_id)
     loki_story_creator { a_r_b_conn.exec_query(alter_query) }
+
+    nil
   end
 end

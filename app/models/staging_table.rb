@@ -23,12 +23,12 @@ class StagingTable < ApplicationRecord # :nodoc:
   end
 
   def sync
-    return if self.class.not_exists?(name)
-
     columns = Table.columns(name)
     Columns.find_or_create_by(staging_table: self).update(list: columns)
     index = Table.index(name)
     Index.find_or_create_by(staging_table: self).update(list: index)
+
+    nil
   end
 
   def default_iter_id

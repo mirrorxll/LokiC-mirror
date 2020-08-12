@@ -5,6 +5,7 @@
       </div>`
   );
 <% else %>
+  $('#staging_table .flash').empty();
   $('#staging_table .card-body').html('<%= j render 'staging_tables/form'  %>');
   $('#story_type_code .card-body').empty();
   $('#samples .card-body').empty();

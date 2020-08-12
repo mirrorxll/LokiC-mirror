@@ -1,3 +1,4 @@
+-sample_args = @story_type.iteration.story_sample_args
 .small
   =form_with(url: create_and_generate_auto_feedback_story_type_iteration_samples_path(@story_type, @story_type.iteration),
              id: 'create_samples_form', html: { oninput: 'allowCreateSamples();' }) do |form|
@@ -5,15 +6,16 @@
     .form-group
       -@story_type.staging_table.columns.list.each do |_id, column|
         .form-check
-          =form.check_box "samples[columns[#{_id}]]"
+          =form.check_box "samples[columns[#{_id}]]", checked: (sample_args[:columns].include?(column[:name]))
           =form.label "samples[columns[#{_id}]]", column[:name]
 
     =form.label :ids, 'staging table row ids(eg: 1,2, 4,234)'
     .form-group.col-xl-3.col-sm-6
-      =form.text_field 'samples[row_ids]', class: 'form-control form-control-sm'
+      =form.text_field 'samples[row_ids]', class: 'form-control form-control-sm', value: sample_args[:ids]
     .row
       .col-12
-        =form.submit 'create samples and generate feedback', id: 'submit_create_samples', class: 'btn btn-sm btn-outline-dark', disabled: true
+        =form.submit 'create samples and generate feedback', id: 'submit_create_samples',
+                     class: 'btn btn-sm btn-outline-dark', disabled: true
         -if @story_type.iteration.samples.any?
           =link_to('delete samples', purge_sampled_story_type_iteration_samples_path(@story_type, @story_type.iteration),
                    class: 'btn btn-sm btn-outline-dark', onclick: 'removePopovers();', method: :delete, remote: true)
@@ -35,6 +37,8 @@
     else
       submitBtn.disabled = true
   }
+
+  allowCreateSamples();
 
   function removePopovers() {
     $('.popover').remove();

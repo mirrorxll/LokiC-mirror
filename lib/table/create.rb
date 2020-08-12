@@ -13,6 +13,8 @@ module Table
           t.boolean  :story_created, default: false
         end
       end
+
+      nil
     end
 
     def iter_id_present?(t_name)
@@ -28,6 +30,7 @@ module Table
           a_r_m.add_index(t_name, :iter_id, name: :iter)
         end
       end
+
     end
 
     def timestamps(t_name)

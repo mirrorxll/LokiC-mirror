@@ -5,20 +5,13 @@ class ColumnsController < ApplicationController
   before_action :staging_table
 
   def edit
-    flash.now[:error] =
-      if @staging_table.nil?
-        detached_or_delete
-      elsif !StagingTable.exists?(@staging_table.name)
-        'Someone drop or rename table for this story type. Please check it.'
-      end
-
-    @staging_table.sync if flash.now[:error].nil?
+    staging_table_action { @staging_table.sync }
   end
 
   def update
-    flash.now[:error] = @staging_table ? @staging_table.columns.modify(columns_front_params) : detached_or_delete
-
+    staging_table_action { @staging_table.columns.modify(columns_front_params) }
     @staging_table.sync if flash.now[:error].nil?
+
     render 'staging_tables/show'
   end
 

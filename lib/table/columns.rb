@@ -114,8 +114,8 @@ module Table
         type: column.type,
         options: {
           limit: column.limit,
-          scale: column.scale,
-          precision: column.precision
+          precision: column.precision,
+          scale: column.scale
         }
       }
     end
@@ -139,9 +139,9 @@ module Table
       return { limit: nil, scale: nil, precision: nil } if options.nil?
 
       options_to_hash = {}
-      options_to_hash[:limit] = options[:limit].present? ? options[:limit] : nil
-      options_to_hash[:precision] = options[:precision].present? ? options[:precision] : nil
-      options_to_hash[:scale] = options[:scale].present? ? options[:scale] : nil
+      options_to_hash[:limit] = (options[:limit].present? ? options[:limit].to_i : nil)
+      options_to_hash[:precision] = (options[:precision].present? ? options[:precision].to_i : nil)
+      options_to_hash[:scale] = (options[:scale].present? ? options[:scale].to_i : nil)
       options_to_hash
     end
 

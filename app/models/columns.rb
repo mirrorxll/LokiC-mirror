@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class Columns < ApplicationRecord
-  belongs_to :staging_table
-
   serialize :list, Hash
+
+  belongs_to :staging_table
 
   # return an array of columns in the format:
   #   [[column_name, column_ids]...]
@@ -24,7 +24,5 @@ class Columns < ApplicationRecord
 
   def modify(mod_columns)
     Table.modify_columns(staging_table.name, list, mod_columns)
-  rescue ActiveRecord::ActiveRecordError => e
-    e.message
   end
 end

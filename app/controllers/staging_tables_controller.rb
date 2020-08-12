@@ -14,6 +14,7 @@ class StagingTablesController < ApplicationController # :nodoc:
       end
 
     @story_type.create_staging_table if flash.now[:error].nil?
+
     render 'show'
   end
 
@@ -24,35 +25,32 @@ class StagingTablesController < ApplicationController # :nodoc:
       elsif StagingTable.find_by(name: @staging_table_name)
         "This table already attached to another story type. Please pass another staging table's name."
       elsif StagingTable.not_exists?(@staging_table_name)
-        'Table not found'
+        'Table not found.'
       end
 
     @story_type.create_staging_table(name: @staging_table_name) if flash.now[:error].nil?
+
     render 'show'
   end
 
   def detach
-    if @staging_table.nil?
-      flash.now[:error] = detached_or_delete
-    else
-      @staging_table.destroy
+    staging_table_action do
+      messages = @staging_table.destroy.errors.full_messages
+      messages.any? ? messages.join(' | ') : nil
     end
 
     render 'new'
   end
 
   def sync
-    if @staging_table.nil?
-      flash.now[:error] = detached_or_delete
-    else
-      @staging_table.sync
-    end
+    staging_table_action { @staging_table.sync }
 
     render 'show'
   end
 
   def section
     flash.now[:error] = detached_or_delete if @staging_table.nil?
+
     render 'show'
   end
 
