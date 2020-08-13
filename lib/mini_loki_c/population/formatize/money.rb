@@ -15,6 +15,14 @@ module MiniLokiC
           end
         end
 
+        def add_commas_with_decimals(value)
+          if value.positive?
+            "$#{Formatize::Numbers.add_commas_with_decimals(value)}"
+          else
+            "-$#{Formatize::Numbers.add_commas_with_decimals(value.abs)}"
+          end
+        end
+
         def huge_money_to_text(value)
           if value.positive?
             "$#{Formatize::Numbers.huge_number_to_text(value)}"

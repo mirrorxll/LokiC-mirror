@@ -74,6 +74,7 @@ Rails.application.routes.draw do
 
     resources :fact_checking_docs do
       get :template
+      get :send_to_fc_channel
       patch :save, on: :member
 
       resources :editor_feedback, only: %i[edit update] do

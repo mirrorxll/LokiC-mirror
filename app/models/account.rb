@@ -8,6 +8,7 @@ class Account < ApplicationRecord # :nodoc:
   belongs_to :account_type
 
   has_one :slack, class_name: 'SlackAccount'
+  has_one :fc_channel
 
   has_many :eval_data_sets,   foreign_key: :evaluator_id, class_name: 'DataSet'
   has_many :edit_story_types, foreign_key: :editor_id,    class_name: 'StoryType'

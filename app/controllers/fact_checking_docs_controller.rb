@@ -3,6 +3,7 @@
 class FactCheckingDocsController < ApplicationController
   before_action :find_fcd, except: :template
   before_action :update_fcd, only: %i[update save]
+  before_action :message, only: :send_to_fc_channel
 
   def show; end
 
@@ -16,10 +17,14 @@ class FactCheckingDocsController < ApplicationController
     end
   end
 
-  def save; end
-
   def template
     @template = @story_type.template
+  end
+
+  def save; end
+
+  def send_to_fc_channel
+    SlackNotificationJob.perform_later('notifications_test', message)
   end
 
   private
@@ -34,5 +39,9 @@ class FactCheckingDocsController < ApplicationController
 
   def fcd_params
     params.require(:fact_checking_doc).permit(:body)
+  end
+
+  def message
+    "FCD ##{@story_type.id} <#{story_type_fact_checking_doc_url(@story_type, @fcd)}|#{@story_type.name}>."
   end
 end

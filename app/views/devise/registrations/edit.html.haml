@@ -23,11 +23,21 @@
             %br/
             =select_tag 'slack_account[identifier]',
                         options_from_collection_for_select(SlackAccount.order(:user_name).where(account: nil, deleted: false), :identifier, :user_name),
-                        { class: 'form-control form-control-sm' }
+                        { include_blank: true, class: 'form-control form-control-sm' }
             -if current_account.slack
               %small.form-text.text-muted
                 attached: #{current_account.slack.user_name} - #{current_account.slack.identifier}
-
+      .form-group
+        .row
+          .col-12
+            =f.label :fack_checking_channel, 'Fact Checking channel'
+            %br/
+            =select_tag 'fcd_channel[id]',
+                        options_from_collection_for_select(FcChannel.order(:name).where(account: nil), :id, :name),
+                        {  include_blank: true, class: 'form-control form-control-sm' }
+            -if current_account.fc_channel
+              %small.form-text.text-muted
+                attached: #{current_account.fc_channel.name}
 
       .form-group
         .row
@@ -52,4 +62,3 @@
         .row
           .col-12
             =f.submit t('.update'), class: 'btn btn-sm btn-outline-dark'
-            =link_to t('.back'), :back, class: 'btn btn-sm btn-outline-dark ml-3'

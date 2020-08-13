@@ -43,7 +43,13 @@ module MiniLokiC
         def add_commas(value)
           parts = value.to_s.split('.')
           parts.first.gsub!(/(\d)(?=(\d\d\d)+(?!\d))/, '\\1,')
-          parts.join('.')
+          parts.first
+        end
+
+        def add_commas_with_decimals(value)
+          parts = value.to_f.round(2).to_s.split('.')
+          parts.first.gsub!(/(\d)(?=(\d\d\d)+(?!\d))/, '\\1,')
+          parts.last.eql?('0') ? parts.first : parts.join('.')
         end
 
         # converts int numbers to readable words
