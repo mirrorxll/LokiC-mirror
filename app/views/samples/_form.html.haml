@@ -6,7 +6,7 @@
     .form-group
       -@story_type.staging_table.columns.list.each do |_id, column|
         .form-check
-          =form.check_box "samples[columns[#{_id}]]", checked: (sample_args[:columns].include?(column[:name]))
+          =form.check_box "samples[columns[#{_id}]]", checked: (sample_args.empty? ? false : sample_args[:columns].include?(column[:name]))
           =form.label "samples[columns[#{_id}]]", column[:name]
 
     =form.label :ids, 'staging table row ids(eg: 1,2, 4,234)'

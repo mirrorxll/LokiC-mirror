@@ -43,4 +43,4 @@ public/ruby_code/*
 
 # lock files
 /Gemfile.lock
-/package.json
+/yarn.lock
