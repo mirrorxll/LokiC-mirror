@@ -2,29 +2,28 @@
   .row
     .col-3
       =form.label :start_date, 'start date:'
-    .col-9
-      =form.date_field :start_date
+    .col-5
+      =form.date_field :start_date, class: 'w-100'
   .row
     .col-3
       =form.label :limit, 'stories per day:'
-    .col-9
-      =form.text_field :limit
+    .col-5
+      =form.text_field :limit, class: 'w-100'
   .row
     .col-3
       =form.label :total_days_till_end, 'days to end:'
-    .col-9
-      =form.text_field :total_days_till_end
+    .col-5
+      =form.text_field :total_days_till_end, class: 'w-100'
   .row
     .col-3
       =form.label :extra_args, 'where:'
-    .col-9
-      =form.text_field :extra_args
+    .col-5
+      =form.text_field :extra_args, class: 'w-100'
   .row.mt-3
-    .col-3.small.p-0
+    .col-3
       =link_to('auto schedule',
                auto_story_type_iteration_schedules_path(@story_type, @story_type.iteration),
                class: 'btn btn-sm btn-outline-dark',
                method: :post, remote: true)
     .col-9
-      =form.submit 'schedule',
-                    class: 'btn btn-sm btn-outline-dark'
+      =form.submit 'schedule', class: 'btn btn-sm btn-outline-dark'

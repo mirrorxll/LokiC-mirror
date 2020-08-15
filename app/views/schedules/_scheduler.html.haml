@@ -1,20 +1,19 @@
+-iteration = @story_type.iteration
 -if @story_type.iteration.schedule.eql?(true)
   .row.small
     .col-10.offset-1
       #results_scheduling
-        =render 'schedules/results_scheduling'
+        =render 'schedules/results_scheduling', iteration: iteration, scheduled: true
 -else
   .row.small
     .col-6.offset-1
       =render 'schedules/form'
-    .col-5
-      .card-group
-        =render 'schedules/results_scheduling'
-        =render 'schedules/counts_scheduling'
-  -if @story_type.iteration.samples.where.not(published_at: nil).any?
+    .col-4
+      =render 'schedules/results_scheduling', iteration: iteration, scheduled: false
+
+  -if iteration.samples.where.not(published_at: nil).any?
     %hr/
     .row.small
       .col-5.offset-1
         #backdate_scheduler
-          =render 'schedules/form_backdate'
-          =render 'schedules/set_dates'
+          =render 'schedules/form_backdate', iteration: iteration

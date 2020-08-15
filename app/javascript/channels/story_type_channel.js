@@ -58,9 +58,10 @@ $(document).on("turbolinks:load", function() {
     }
 
     function st_scheduler(data) {
-        if ([true, false].includes(data['scheduler_msg']) || data['creation_msg']) {
+        if (data['scheduler_msg'] || data['creation_msg']) {
             $.ajax({
                 url: `${storyTypeId}/iterations/${storyTypeIter}/schedule/section`,
+                data: data['scheduler_msg'] ? { section_update: { message: data['scheduler_msg'] } } : {},
                 dataType: 'script'
             })
         }

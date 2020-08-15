@@ -6,14 +6,14 @@ class SchedulerJob < ApplicationJob
     status = true
 
     message =
-      case type.to_sym
-      when :manual
+      case type
+      when 'manual'
         Scheduler::Base.old_scheduler(samples, options)
         'manual scheduling success'
-      when :backdate
+      when 'backdate'
         Scheduler::Backdate.backdate_scheduler(samples, backdate_params(options))
         'backdate scheduling success'
-      when :auto
+      when 'auto'
         Scheduler::Auto.auto_scheduler(samples)
         'auto scheduling success'
       end
@@ -24,18 +24,16 @@ class SchedulerJob < ApplicationJob
     message = e
   ensure
     story_type.update_iteration(schedule: status)
-    send_to_action_cable(story_type, scheduler_msg: status)
+    send_to_action_cable(story_type, scheduler_msg: message)
     send_to_slack(story_type, message)
   end
 
   private
 
   def backdate_params(options)
-    params = {}
-    options.each do |_key, schedule|
-      date = schedule['date']
-      params[date] = schedule['args']
+    options.each_with_object({}) do |(_key, schedule), hash|
+      date = schedule[:date]
+      hash[date] = schedule[:where]
     end
-    params
   end
 end

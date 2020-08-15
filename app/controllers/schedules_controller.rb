@@ -2,7 +2,6 @@
 
 class SchedulesController < ApplicationController # :nodoc:
   before_action :render_400, if: :editor?
-  after_action :iteration_update, except: :purge
 
   def manual
     SchedulerJob.set(wait: 2.seconds).perform_later(@story_type, 'manual', manual_params)
@@ -25,15 +24,14 @@ class SchedulesController < ApplicationController # :nodoc:
   def purge
     @story_type.iteration.samples.update_all(published_at: nil, backdated: 0)
     @story_type.update_iteration(schedule: nil, schedule_args: nil)
+    flash.now[:message] = 'scheduling purged'
   end
 
-  def section; end
+  def section
+    flash.now[:message] = update_section_params[:message]
+  end
 
   private
-
-  def iteration_update
-
-  end
 
   def manual_params
     params.permit(
@@ -45,6 +43,10 @@ class SchedulesController < ApplicationController # :nodoc:
   end
 
   def backdated_params
-    params.require(:backdate).permit!.to_hash
+    params.require(:backdate).permit!
+  end
+
+  def update_section_params
+    params.require(:section_update).permit(:message)
   end
 end

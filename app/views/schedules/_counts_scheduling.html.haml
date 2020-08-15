@@ -1,7 +1,0 @@
-.card
-  .card-body
-    -@story_type.iteration.schedule_counts.except(:total).each do |client, count|
-      %p
-        =client
-        =':'
-        =count

@@ -1,9 +1,32 @@
-=form_with(url: backdate_story_type_iteration_schedules_path(@story_type), method: :post) do |form|
-  .row
-    .col-12#add-date
-      +
-  .row
-    %div#dates-editable
+=form_with(url: backdate_story_type_iteration_schedules_path(@story_type, iteration), method: :post) do |form|
+  #add_date.mb-2
+    =icon('fas', 'plus')
+  #dates_editable
+  =form.submit 'backdate', class: 'mt-4 btn btn-sm btn-outline-dark'
 
-    #backdate_extra_args.btn-group.mb-2
-  =form.submit 'Backdate', class: 'mt-4 btn btn-sm btn-outline-dark'
+:javascript
+  var editable_block = $('#dates_editable');
+  $('#add_date').click(function () {
+    let hex = secureRandom(6);
+
+    $(editable_block).append(
+        `<div id="date_${hex}" class="mb-1">
+            <div class="remove_date d-inline-block" id="rm_date_${hex}" onclick="removeDate(this)"><i class="fas fa-minus"></i></div>
+            <input id="dates_${hex}_name" required="required" type="date" name="backdate[${hex}[date]]">
+            <input placeholder="staging table where:" id="arg_${hex}_name" type="name" name="backdate[${hex}[where]]">
+        </div>`
+    );
+  });
+
+  function secureRandom(n){
+    let result = '';
+    while (n--){
+      result += Math.floor(Math.random() * 16).toString(16);
+    }
+
+    return result;
+  }
+
+  function removeDate(elem) {
+    $(elem.parentNode).remove();
+  }

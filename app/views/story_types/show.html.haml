@@ -92,6 +92,7 @@
       %div.text-center{"aria-controls" => "#scheduler", "aria-expanded" => "false", "data-target" => "#scheduler", "data-toggle" => "collapse", :type => "button"}
         scheduler
     #scheduler.collapse.show{"data-parent" => "#story_type_scheduler_#{@iteration.id}"}
+      .flash
       .card-body
         -if @story_type.iteration.creation
           =render 'schedules/scheduler'

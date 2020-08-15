@@ -11,10 +11,11 @@ module Scheduler
         next if samples.empty?
 
         if arg.empty?
-          samples_backdated.each { |smpl| smpl.update_attributes(published_at: date, backdated: true)}
+          samples_backdated.each { |smpl| smpl.update_attributes(published_at: date, backdated: true) }
           schedule_args += date.to_s
         else
-          stage_ids = ExtraArgs.stage_ids(samples_backdated.first.iteration.story_type.staging_table.name, arg)
+          staging_table_name = samples_backdated.first.iteration.story_type.staging_table.name
+          stage_ids = ExtraArgs.stage_ids(staging_table_name, arg)
 
           samples_backdated.where(staging_row_id: stage_ids).each do |smpl|
             smpl.update_attributes(published_at: date, backdated: true)

@@ -3,9 +3,9 @@
     ***if you update columns list, will drop 'story per publication' index and you will need to recreate it.
   .ml-3
     =form_with(model: [@story_type, @staging_table, @staging_table.columns], method: :put) do |form|
-      #add-column.mb-2
+      #add_column.mb-2
         =icon('fas', 'plus')
-      %div#columns-editable
+      #columns_editable
         -@staging_table.columns.list.each do |hex, column|
           %div{ id: "col_#{hex}", class: 'mb-1' }
             %div.remove_column.d-inline-block.mr-1{ id: "rm_col_#{hex}", onclick: 'removeColumn(this)' }
@@ -25,8 +25,8 @@
       =link_to('cancel', section_story_type_staging_tables_path(@story_type), class: 'ml-3', remote: true)
 
 :javascript
-  var editable_block = $('#columns-editable');
-  $('#add-column').click(function () {
+  var editable_block = $('#columns_editable');
+  $('#add_column').click(function () {
     let hex = secureRandom(6);
 
     $(editable_block).append(
