@@ -3,10 +3,11 @@
 class SamplesController < ApplicationController # :nodoc:
   before_action :find_sample, only: %i[show edit update]
 
-  def show; end
+  def show
+    @tab_title = @sample.headline
+  end
 
   def create_and_generate_auto_feedback
-    p samples_params
     SamplesAndAutoFeedbackJob.set(wait: 2.second).perform_later(@story_type, samples_params)
     @story_type.update_iteration(story_samples: false)
 

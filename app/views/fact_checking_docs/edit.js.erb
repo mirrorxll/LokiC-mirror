@@ -6,7 +6,19 @@
     body.innerHTML = `<%= j render 'form' %>`
 
     let fcdEditor = $('#fcd_editable [data-editor="summernote"]')
-    fcdEditor.summernote({height: 700});
+    fcdEditor.summernote({
+        height: 700,
+        toolbar: [
+            ['style', ['style']],
+            ['font', ['clear', 'bold', 'italic', 'underline', 'strikethrough']],
+            ['fontname', ['fontname', 'fontsize']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['table', ['table']],
+            ['insert', ['link', 'picture', 'video']],
+            ['view', ['fullscreen', 'codeview', 'help']],
+        ]
+    });
     fcdEditor.summernote('code', fcd);
 
     sessionStorage['fcdSaverId'] = setInterval(fcdSaver, 30000);

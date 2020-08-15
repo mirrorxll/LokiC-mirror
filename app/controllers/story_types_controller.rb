@@ -23,7 +23,9 @@ class StoryTypesController < ApplicationController # :nodoc:
     render 'index'
   end
 
-  def show; end
+  def show
+    @tab_title = "##{@story_type.id} #{@story_type.name}"
+  end
 
   def canceling_edit; end
 

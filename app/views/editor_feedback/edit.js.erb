@@ -4,7 +4,19 @@
 
     document.getElementById('editor_feedback_body').innerHTML = `<%= j render 'form' %>`
     let feedbackEditor = $('#editor_feedback_editable [data-editor="summernote"]')
-    feedbackEditor.summernote({height: 300});
+    feedbackEditor.summernote({
+        height: 300,
+        toolbar: [
+            ['style', ['style']],
+            ['font', ['clear', 'bold', 'italic', 'underline', 'strikethrough']],
+            ['fontname', ['fontname', 'fontsize']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['table', ['table']],
+            ['insert', ['link', 'picture', 'video']],
+            ['view', ['fullscreen', 'codeview', 'help']],
+        ]
+    });
 
     if(editorFeedback)
         feedbackEditor.summernote('code', editorFeedback);

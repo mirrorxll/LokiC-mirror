@@ -7,11 +7,13 @@ class DataSetsController < ApplicationController # :nodoc:
   before_action :find_data_set, except: %i[index new create]
 
   def index
+    @tab_title = 'Data Sets'
     @data_sets = DataSet.all
     @data_sets = @data_sets.where(data_set_filter_params)
   end
 
   def show
+    @tab_title = @data_set.name
     @story_types = @data_set.story_types
 
     story_type_filter_params.each do |key, value|
@@ -101,7 +103,6 @@ class DataSetsController < ApplicationController # :nodoc:
   def eval_data_set_notification
     message = "The '#{@data_set.name}' data set was evaluated. We can start to "\
               "create templates. Details: #{data_set_url(@data_set)}"
-
     SlackNotificationJob.perform_later('notifications_test', message)
   end
 end

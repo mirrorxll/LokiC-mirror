@@ -5,7 +5,9 @@ class FactCheckingDocsController < ApplicationController
   before_action :update_fcd, only: %i[update save]
   before_action :message, only: :send_to_fc_channel
 
-  def show; end
+  def show
+    @tab_title = "FCD ##{@story_type.id} #{@story_type.name}"
+  end
 
   def edit; end
 
