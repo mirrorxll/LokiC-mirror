@@ -24,6 +24,8 @@ class StoryTypesController < ApplicationController # :nodoc:
   end
 
   def show
+    render_400 and return if developer? && @story_type.developer != current_account
+
     @tab_title = "##{@story_type.id} #{@story_type.name}"
   end
 

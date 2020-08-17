@@ -27,17 +27,18 @@
             -if current_account.slack
               %small.form-text.text-muted
                 attached: #{current_account.slack.user_name} - #{current_account.slack.identifier}
-      .form-group
-        .row
-          .col-12
-            =f.label :fack_checking_channel, 'Fact Checking channel'
-            %br/
-            =select_tag 'fcd_channel[id]',
-                        options_from_collection_for_select(FcChannel.order(:name).where(account: nil), :id, :name),
-                        {  include_blank: true, class: 'form-control form-control-sm' }
-            -if current_account.fc_channel
-              %small.form-text.text-muted
-                attached: #{current_account.fc_channel.name}
+      -if !current_account.type.eql?('editor')
+        .form-group
+          .row
+            .col-12
+              =f.label :fack_checking_channel, 'Fact Checking channel'
+              %br/
+              =select_tag 'fcd_channel[id]',
+                          options_from_collection_for_select(FcChannel.order(:name).where(account: nil), :id, :name),
+                          {  include_blank: true, class: 'form-control form-control-sm' }
+              -if current_account.fc_channel
+                %small.form-text.text-muted
+                  attached: #{current_account.fc_channel.name}
 
       .form-group
         .row

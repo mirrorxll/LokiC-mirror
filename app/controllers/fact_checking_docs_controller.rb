@@ -26,11 +26,11 @@ class FactCheckingDocsController < ApplicationController
   def save; end
 
   def send_to_review_channel
-    SlackNotificationJob.perform_later('notifications_test', message)
+    SlackNotificationJob.perform_later('hle_reviews_queue', message)
   end
 
   def send_to_fc_channel
-    SlackNotificationJob.perform_later('notifications_test', message)
+    SlackNotificationJob.perform_later(current_account.fc_channel.name, message)
   end
 
   private
