@@ -8,9 +8,11 @@
       =link_to('auto-feedback', '#autoFeedbackCollapse', "aria-controls" => "feedbackCollapse", "aria-expanded" => "false",
                "data-target" => "#autoFeedbackCollapse", "data-toggle" => "collapse", :type => "button",
                class: 'btn btn-sm btn-outline-dark', onclick: 'hideAllPopovers();')
-  -if current_account.type.eql?('developer') && current_account.fc_channel
-    =link_to('send FCD to editors', story_type_fact_checking_doc_send_to_fc_channel_path(@story_type, @fcd),
-             class: 'btn btn-sm btn-outline-dark', remote: true)
+    .btn-group.ml-3.mr-3
+      =link_to('send FCD to reviewers', story_type_fact_checking_doc_send_to_review_channel_path(@story_type, @fcd),
+               class: 'btn btn-sm btn-outline-dark', remote: true)
+      =link_to('send FCD to editors', story_type_fact_checking_doc_send_to_fc_channel_path(@story_type, @fcd),
+               class: 'btn btn-sm btn-outline-dark', remote: true)
 
 :javascript
   function hideAllPopovers() {
