@@ -21,12 +21,13 @@ class EditorsFeedbackController < ApplicationController
     @editors_feedback = @fcd.editors_feedback
   end
 
-  def editors_feedback_params
-    params.require(:editors_feedback).permit(:body)
+  def update_editors_feedback
+    puts editors_feedback_params
+    @editors_feedback.update(editors_feedback_params)
   end
 
-  def update_editors_feedback
-    @editors_feedback.update(editors_feedback_params)
+  def editors_feedback_params
+    params.require(:editors_feedback).permit(:body)
   end
 
   def send_notification_to_developer

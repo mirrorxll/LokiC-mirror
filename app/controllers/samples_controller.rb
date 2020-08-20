@@ -5,12 +5,16 @@ class SamplesController < ApplicationController # :nodoc:
 
   def show
     @tab_title = @sample.headline
+
+    respond_to do |format|
+      format.html { render 'show' }
+      format.js { render 'to_tab' }
+    end
   end
 
   def create_and_generate_auto_feedback
     SamplesAndAutoFeedbackJob.set(wait: 2.second).perform_later(@story_type, samples_params)
     @story_type.update_iteration(story_samples: false)
-
     render 'creations/create'
   end
 

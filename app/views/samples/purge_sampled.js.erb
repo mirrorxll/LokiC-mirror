@@ -2,7 +2,10 @@
   $(`#story_type_samples_<%= @story_type.iteration.id %> .flash`).html(
     `<div class="alert alert-<%= samples_alert(flash.now[:message]) %> text-center">
         <%= flash.now[:message].gsub('`', "'") %>
-      </div>`
+    </div>`
   )
 <% end %>
-$('#samples .card-body').html('<%= j render 'samples/samples' %>')
+$(`#story_type_samples_<%= @story_type.iteration.id %> .card-body`).empty();
+$(`#story_type_samples_<%= @story_type.iteration.id %> .card-body`).html('<%= j render 'samples/samples' %>')
+
+

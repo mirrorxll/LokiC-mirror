@@ -2,7 +2,7 @@ class SchedulerJob < ApplicationJob
   queue_as :scheduler
 
   def perform(story_type, type, options = {})
-    samples = story_type.iteration.samples
+    # samples = story_type.iteration.samples
     status = true
 
     message =

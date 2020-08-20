@@ -1,11 +1,11 @@
 (()=>{
     let human_feedback_modal = $('#human_feedback_modal')
     human_feedback_modal.modal('show')
-    human_feedback_modal.on('hidden.bs.modal', function (e) { stopEditorsFeedbackSaver(); })
+    human_feedback_modal.on('hidden.bs.modal', function (e) { stopReviewersFeedbackSaver(); })
 
     let fcd_body = document.getElementById('fcd_body').innerHTML;
 
-    document.getElementById('human_feedback_modal_label').innerText = `<%= "FCD ##{@story_type.id} #{@story_type.name} -- #{@story_type.developer.name} -- editors feedback".html_safe %>`
+    document.getElementById('human_feedback_modal_label').innerText = `<%= "FCD ##{@story_type.id} #{@story_type.name} -- #{@story_type.developer.name} -- reviewers feedback".html_safe %>`
     document.querySelector('#human_feedback_modal #fcd').innerHTML = fcd_body;
     document.querySelector('#human_feedback_modal .w-39').innerHTML = `<%= j render 'form' %>`
 
@@ -21,7 +21,7 @@
        a.setAttribute('data-remote', 'true')
     });
 
-    let feedbackEditor = $('#editors_feedback_editable [data-editor="summernote"]')
+    let feedbackEditor = $('#reviewers_feedback_editable [data-editor="summernote"]')
     feedbackEditor.summernote({
         height: 300,
         toolbar: [
@@ -36,26 +36,26 @@
         ]
     });
 
-    let editorFeedback = document.getElementById('editors_feedback_body').innerHTML;
+    let editorFeedback = document.getElementById('reviewers_feedback_body').innerHTML;
 
     if(editorFeedback)
         feedbackEditor.summernote('code', editorFeedback);
 
-    sessionStorage['editorFeedbackSaverId'] = setInterval(editorsFeedbackSaver, 30000);
+    sessionStorage['editorFeedbackSaverId'] = setInterval(reviewersFeedbackSaver, 30000);
 }).call();
 
-function editorsFeedbackSaver() {
-    let editorFeedbackStr = document.querySelector('#editors_feedback_editable .note-editable').innerHTML;
+function reviewersFeedbackSaver() {
+    let editorFeedbackStr = document.querySelector('#reviewers_feedback_editable .note-editable').innerHTML;
 
     $.ajax({
-        url: '<%= save_story_type_fact_checking_doc_editors_feedback_url(@story_type, @fcd, @editors_feedback) %>',
-        data: { editors_feedback: { body: editorFeedbackStr } },
+        url: '<%= save_story_type_fact_checking_doc_reviewers_feedback_url(@story_type, @fcd, @reviewers_feedback) %>',
+        data: { reviewers_feedback: { body: editorFeedbackStr } },
         method: 'patch',
         dataType: 'script'
     });
 }
 
-function stopEditorsFeedbackSaver() {
+function stopReviewersFeedbackSaver() {
     clearInterval(sessionStorage['editorFeedbackSaverId'])
     sessionStorage.removeItem('editorFeedbackSaverId')
 }

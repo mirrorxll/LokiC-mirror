@@ -21,7 +21,7 @@
     .col-10.offset-1
       .card
         .card-header
-          reviewer feedback
+          reviewers feedback
         .card-body
           #reviewers_feedback_body
             =@fcd.reviewers_feedback.body&.html_safe
@@ -30,7 +30,7 @@
     .col-10.offset-1
       .card
         .card-header
-          editor feedback
+          editors feedback
         .card-body
           #editors_feedback_body
             =@fcd.editors_feedback.body&.html_safe
@@ -46,21 +46,27 @@
       .modal-content
         .modal-header
           %h5.modal-title.small#template_modal_label
-          %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+          %button.close{"aria-label" => "Close", "data-dismiss" => "modal", type: "button"}
             %span{"aria-hidden" => "true"} ×
         .modal-body
 
-  #human_feedback_modal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "human_feedback_modal_label",
-                                    role: "dialog", tabindex: "-1" }
+  #human_feedback_modal.modal.fade.pr-0{ "aria-hidden" => "true", "aria-labelledby" => "human_feedback_modal_label",
+                                    role: "dialog", tabindex: "-1"}
     .modal-dialog.modal-dialog-centered.modal-full.modal-dialog-scrollable
       .modal-content
         .modal-header
           .modal-title#human_feedback_modal_label
-          %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+          %button.close{"aria-label" => "Close", "data-dismiss" => "modal", type: "button"}
             %span{"aria-hidden" => "true"} ×
-        .modal-body.small
-          .d-inline-block.fc_scrollable.w-55
-          .d-inline-block.align-top.w-44
+        .modal-body.pl-4.small
+          %ul#editors_feedback_tabs.nav.nav-tabs.w-60{role: "tablist"}
+            %li.nav-item{role: "presentation"}
+              %a#fcd-tab.nav-link.active{"aria-controls" => "fcd", "aria-selected" => "true", "data-toggle" => "tab", href: "#fcd", role: "tab"} FCD
+          .d-inline-block.fc_scrollable.w-60
+            #editors_feedback_tabs_content.tab-content
+              #fcd.tab-pane.fade.w-98.show.active{"aria-labelledby" => "fcd-tab", role: "tabpanel"}
+
+          .d-inline-block.align-top.w-39
 
 -else
   %hr/

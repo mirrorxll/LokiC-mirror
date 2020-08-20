@@ -10,11 +10,15 @@
   overflow: auto;
 }
 
-.w-55 {
+.w-60 {
   width: 55%;
 }
 
-.w-44 {
+.w-98 {
+  width: 98%;
+}
+
+.w-39 {
   width: 44%;
 }
 
@@ -22,4 +26,8 @@
   .modal-full {
     max-width: 97%;
   }
+}
+
+#human_feedback_modal .modal-content {
+  height: 97%;
 }

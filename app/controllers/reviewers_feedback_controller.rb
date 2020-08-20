@@ -18,7 +18,7 @@ class ReviewersFeedbackController < ApplicationController
 
   def find_reviewers_feedback
     @fcd = @story_type.fact_checking_doc
-    @editors_feedback = @fcd.reviewers_feedback
+    @reviewers_feedback = @fcd.reviewers_feedback
   end
 
   def reviewers_feedback_params
