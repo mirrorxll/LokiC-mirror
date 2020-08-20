@@ -1,49 +1,67 @@
 -if @story_type.iteration.auto_feedback_confirmations.all?(&:confirmed)
+  -reviewers_feedback = @fcd.editors_feedback
+  -editors_feedback = @fcd.editors_feedback
+  %hr/
+  .row
+    .col-12.text-center
+      %b FCD ##{@story_type.id} #{@story_type.name} -- #{@story_type.developer.name}
+  %hr/
   %hr/
   .row
     .col-10.offset-1
-      %b
-        FCD ##{@story_type.id} #{@story_type.name} -- #{@story_type.developer.name}
+      #fcd_control.small
+        =render 'fcd_buttons', reviewers_feedback: reviewers_feedback, editors_feedback: editors_feedback
   %hr/
   .row
     .col-10.offset-1
-      =render 'fcd_buttons'
+      #autoFeedbackCollapse.collapse.show
+        =render 'auto_feedback/form', auto_feedback: @story_type.iteration.auto_feedback_confirmations
   %hr/
-  #autoFeedbackCollapse.collapse.show.row
+  .row.small
     .col-10.offset-1
-      =render 'auto_feedback/form', auto_feedback: @story_type.iteration.auto_feedback_confirmations
-
-  -# -fact_checking_doc = @story_type.fact_checking_doc
-  -editor_feedback = @fcd.editor_feedback
-  -if !current_account.type.eql?('developer')
-    #editor_feedback_button
-      %hr/
-      .row
-        .col-10.offset-1
-          =link_to("#{editor_feedback.body.present? ? "edit editor's feedback" : "add editor's feedback"}",
-                   edit_story_type_fact_checking_doc_editor_feedback_path(@story_type, @fcd, editor_feedback),
-                   class: 'btn btn-sm btn-outline-dark', remote: true)
-  #editor_feedback_body
-    -if editor_feedback.body.present?
-      %hr/
-    .row
-      .col-10.offset-1
-        =editor_feedback.body&.html_safe
+      .card
+        .card-header
+          reviewer feedback
+        .card-body
+          #reviewers_feedback_body
+            =@fcd.reviewers_feedback.body&.html_safe
+  %hr/
+  .row.small
+    .col-10.offset-1
+      .card
+        .card-header
+          editor feedback
+        .card-body
+          #editors_feedback_body
+            =@fcd.editors_feedback.body&.html_safe
   %hr/
   .row.small
     .col-10.offset-1
       #fcd_body
         =@fcd.body&.html_safe
 
-  #template_modal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "template_modal",
+  #template_modal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "template_modal_label",
                               role: "dialog", tabindex: "-1" }
     .modal-dialog.modal-dialog-centered.modal-lg.modal-dialog-scrollable
       .modal-content
         .modal-header
-          %h5.modal-title
+          %h5.modal-title.small#template_modal_label
           %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
             %span{"aria-hidden" => "true"} ×
         .modal-body
+
+  #human_feedback_modal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "human_feedback_modal_label",
+                                    role: "dialog", tabindex: "-1" }
+    .modal-dialog.modal-dialog-centered.modal-full.modal-dialog-scrollable
+      .modal-content
+        .modal-header
+          .modal-title#human_feedback_modal_label
+          %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+            %span{"aria-hidden" => "true"} ×
+        .modal-body.small
+          .d-inline-block.fc_scrollable.w-55
+          .d-inline-block.align-top.w-44
+
 -else
   %hr/
   .row

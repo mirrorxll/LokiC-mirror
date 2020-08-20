@@ -1,13 +1,15 @@
 -iteration = @story_type.iteration
 -samples = iteration.samples.where(sampled: true)
 
-#samples_form.row
+.row
   .col-11.offset-1
-    =render 'samples/form'
+    #samples_form
+      =render 'samples/form'
 %hr
-#created_samples
-  .row
-    .col-10.offset-1
+
+.row
+  .col-10.offset-1
+    #created_samples
       -if samples.count.positive?
         =render samples
       -elsif iteration.story_samples.eql?(false)
@@ -15,17 +17,16 @@
       -else
         .small
           Samples were not created.
-      -if iteration.auto_feedback_confirmations.any?
-        %hr/
-        .mt-4
-          =render 'auto_feedback/form', auto_feedback: iteration.auto_feedback_confirmations
-  .row.small
-    .col-10.offset-1
       %hr/
       -if iteration.auto_feedback_confirmations.any?
-        ***Please confirm all auto-feedback. After that you can go to FCD and create all the samples.
+        .mt-4
+          =render 'auto_feedback/form', auto_feedback: iteration.auto_feedback_confirmations
+        .small.mt-3
+          ***Please confirm all auto-feedback. After that you can go to FCD and create all the samples.
       -else
-        No generated auto-feedback.
-%hr
+        .small
+          No generated auto-feedback.
+      %hr/
+
 #fcd__create_destroy_all_samples
   =render 'samples/fcd__create_all_samples_buttons', iteration: iteration

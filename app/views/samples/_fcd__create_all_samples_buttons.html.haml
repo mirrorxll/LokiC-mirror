@@ -3,7 +3,7 @@
 -samples = stories.where(sampled: true)
 
 -if (confirms.count.positive? && confirms.all?(&:confirmed)) || (samples.count.positive? && confirms.count.zero?) || iteration.creation
-  .row.mt-4
+  .row
     .col-11.offset-1
       =link_to('fact checking', story_type_fact_checking_doc_path(@story_type, @story_type.fact_checking_doc),
                class: 'btn btn-sm btn-outline-dark', target: '_blank')

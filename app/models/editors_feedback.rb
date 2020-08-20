@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-class EditorFeedback < ApplicationRecord
+class EditorsFeedback < ApplicationRecord
   belongs_to :fact_checking_doc
 end

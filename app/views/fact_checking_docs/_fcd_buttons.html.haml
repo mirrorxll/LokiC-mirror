@@ -1,19 +1,16 @@
-#fcd_control
-  -if !current_account.type.eql?('editor')
-    =link_to('edit', edit_story_type_fact_checking_doc_path(@story_type, @fcd),
-             class: 'btn btn-sm btn-outline-dark', remote: true)
-    .btn-group.ml-3.mr-3
-      =link_to('template', story_type_fact_checking_doc_template_path(@story_type, @fcd),
-               class: 'btn btn-sm btn-outline-dark', remote: true)
-      =link_to('auto-feedback', '#autoFeedbackCollapse', "aria-controls" => "feedbackCollapse", "aria-expanded" => "false",
-               "data-target" => "#autoFeedbackCollapse", "data-toggle" => "collapse", :type => "button",
-               class: 'btn btn-sm btn-outline-dark', onclick: 'hideAllPopovers();')
-    .btn-group.ml-3.mr-3
-      =link_to('send FCD to reviewers', story_type_fact_checking_doc_send_to_review_channel_path(@story_type, @fcd),
-               class: 'btn btn-sm btn-outline-dark', remote: true)
-      -if current_account.fc_channel
-        =link_to('send FCD to editors', story_type_fact_checking_doc_send_to_fc_channel_path(@story_type, @fcd),
-                 class: 'btn btn-sm btn-outline-dark', remote: true)
+-if !current_account.type.eql?('editor')
+  .btn-group.w-100
+    =link_to('edit', edit_story_type_fact_checking_doc_path(@story_type, @fcd), class: 'btn btn-sm btn-light border-0 text-dark', remote: true)
+    =link_to('template', story_type_fact_checking_doc_template_path(@story_type, @fcd), class: 'btn btn-sm btn-light border-0 text-dark', remote: true)
+    =link_to('auto-feedback', '#autoFeedbackCollapse', "aria-controls" => "feedbackCollapse", "aria-expanded" => "false",
+             "data-target" => "#autoFeedbackCollapse", "data-toggle" => "collapse", :type => "button", onclick: 'hideAllPopovers();', class: 'btn btn-sm btn-light border-0 text-dark')
+    =link_to("reviewer feedback", edit_story_type_fact_checking_doc_reviewers_feedback_path(@story_type, @fcd, reviewers_feedback), class: 'btn btn-sm btn-light border-0 text-dark', remote: true)
+    =link_to("editor feedback", edit_story_type_fact_checking_doc_editors_feedback_path(@story_type, @fcd, editors_feedback), class: 'btn btn-sm btn-light border-0 text-dark', remote: true)
+    -# =link_to('send FCD to reviewers', story_type_fact_checking_doc_send_to_review_channel_path(@story_type, @fcd), class: 'btn btn-sm btn-light border-0 text-dark', remote: true)
+    =link_to('send FCD to reviewers', '#', class: 'btn btn-sm btn-light border-0 text-dark', remote: true)
+    -if current_account.fc_channel
+      -# =link_to('send FCD to editors', story_type_fact_checking_doc_send_to_fc_channel_path(@story_type, @fcd), class: 'btn btn-sm btn-light border-0 text-dark', remote: true)
+      =link_to('send FCD to editors', '#', class: 'btn btn-sm btn-light border-0 text-dark', remote: true)
 
 :javascript
   function hideAllPopovers() {

@@ -1,21 +1,25 @@
 .small
-  -auto_feedback.each do |fb|
-    .row
-      .col-1{class: "confirm_#{fb.id} text-center", onchange: 'confirmAutoFeedback(this.className);'}
-        -if fb.confirmed
-          =icon('fas','check')
-        -else
-          =check_box_tag :auto_feedback_confirm, fb.confirmed
-      -fb.auto_feedback.output.each do |rule, output|
-        .col-2.p-0
-          =rule
-        .col-9{ id: "feedback_output_#{fb.id}", onclick: 'hideOtherPopovers(this);',
-                'data-container' => 'body', 'data-toggle' => 'popover', 'data-placement' => 'top',
-                'title'=> "#{fb.sample.id} - #{fb.sample_part}", 'data-content'=> fb.sample_txt_part }
-          =output
-    .row
-      .col-6.offset-3
-        %hr
+  .accordion
+    .card
+      .card-header{}
+        auto-feedback
+      .card-body
+        -auto_feedback.each_with_index do |fb, index|
+          .row
+            .col-1{class: "confirm_#{fb.id} text-center", onchange: 'confirmAutoFeedback(this.className);'}
+              -if fb.confirmed
+                =icon('fas','check')
+              -else
+                =check_box_tag :auto_feedback_confirm, fb.confirmed
+            -fb.auto_feedback.output.each do |rule, output|
+              .col-2.p-0
+                =rule
+              .col-9{ id: "feedback_output_#{fb.id}", onclick: 'hideOtherPopovers(this);',
+                      'data-container' => 'body', 'data-toggle' => 'popover', 'data-placement' => 'top',
+                      'title'=> "#{fb.sample.id} - #{fb.sample_part}", 'data-content'=> fb.sample_txt_part }
+                =output
+          -if (auto_feedback.count - 1) > index
+            %hr
 
 :javascript
   $(function () {

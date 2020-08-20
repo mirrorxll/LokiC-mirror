@@ -76,10 +76,13 @@ Rails.application.routes.draw do
       get :template
       get :send_to_review_channel
       get :send_to_fc_channel
-
       patch :save, on: :member
 
-      resources :editor_feedback, only: %i[edit update] do
+      resources :reviewers_feedback, only: %i[show edit update] do
+        patch :save, on: :member
+      end
+
+      resources :editors_feedback, only: %i[edit update] do
         patch :save, on: :member
       end
     end

@@ -155,12 +155,12 @@ ActiveRecord::Schema.define(version: 2020_08_13_092352) do
     t.index ["src_scrape_frequency_id"], name: "index_data_sets_on_src_scrape_frequency_id"
   end
 
-  create_table "editor_feedback", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "editors_feedback", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "fact_checking_doc_id"
     t.text "body", size: :medium
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["fact_checking_doc_id"], name: "index_editor_feedback_on_fact_checking_doc_id"
+    t.index ["fact_checking_doc_id"], name: "index_editors_feedback_on_fact_checking_doc_id"
   end
 
   create_table "export_configurations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

@@ -1,0 +1,47 @@
+(()=>{
+    $('#human_feedback_modal').modal('show')
+    let fcd_body = document.getElementById('fcd_body').innerHTML;
+    let editorFeedback = document.getElementById('editors_feedback_body').innerHTML;
+
+    document.getElementById('human_feedback_modal_label').innerText = `<%= "FCD ##{@story_type.id} #{@story_type.name} -- #{@story_type.developer.name} -- editor feedback".html_safe %>`
+    document.querySelector('#human_feedback_modal .w-55').innerHTML = fcd_body;
+    document.querySelector('#human_feedback_modal .w-44').innerHTML = `<%= j render 'form' %>`
+
+    let feedbackEditor = $('#editors_feedback_editable [data-editor="summernote"]')
+    feedbackEditor.summernote({
+        height: 300,
+        toolbar: [
+            ['style', ['style']],
+            ['font', ['clear' , 'bold', 'italic', 'underline', 'strikethrough']],
+            ['fontname', ['fontname', 'fontsize']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['table', ['table']],
+            ['insert', ['link', 'picture', 'video']],
+            ['view', ['fullscreen', 'codeview', 'help']],
+        ]
+    });
+
+    if(editorFeedback)
+        feedbackEditor.summernote('code', editorFeedback);
+
+    sessionStorage['editorFeedbackSaverId'] = setInterval(editorsFeedbackSaver, 30000);
+}).call();
+
+function editorsFeedbackSaver() {
+    let editorFeedbackHTML = document.querySelector('#editors_feedback_editable .note-editable').children;
+    let reducer = (acc, curr)=>{ return acc + curr.outerHTML};
+    let editorFeedbackStr = Array.from(editorFeedbackHTML).reduce(reducer, '');
+
+    $.ajax({
+        url: '<%= save_story_type_fact_checking_doc_editors_feedback_url(@story_type, @fcd, @editors_feedback) %>',
+        data: { editors_feedback: { body: editorFeedbackStr } },
+        method: 'patch',
+        dataType: 'script'
+    });
+}
+
+function stopEditorsFeedbackSaver() {
+    clearInterval(sessionStorage['editorFeedbackSaverId'])
+    sessionStorage.removeItem('editorFeedbackSaverId')
+}

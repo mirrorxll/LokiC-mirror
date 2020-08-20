@@ -2,23 +2,25 @@
 
 %hr
 .row
-  #story_type_name.col-10
-    %b #{@story_type.name}
-  #story_type_status.col-2.text-right
-    =render @iteration.statuses.first
+  .col-12.text-center
+    #story_type_name
+      %b ##{@story_type.id} #{@story_type.name}
 %hr
 
 .row
-  .col-8
+  .col-10
     #story_type_iterations
       =render @story_type.iterations
       =link_to('new iteration', '#iteration_form',
                "aria-controls" => "#iteration_form", "aria-expanded" => "false", "data-toggle" => "collapse",
                :role => "button",class: 'badge badge-pill badge-light')
+  .col-2.text-right
+    #story_type_status
+      =render @iteration.statuses.first
 
-#iteration_form.row.collapse
-  .col-12
-    =render 'iterations/form'
+#iteration_form.collapse
+  %hr/
+  =render 'iterations/form'
 
 %hr/
 

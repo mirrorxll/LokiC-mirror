@@ -1,2 +1,2 @@
-class Review < ApplicationRecord
+class Review < SecondaryRecord
 end

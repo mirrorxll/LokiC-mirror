@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-class EditorFeedbackController < ApplicationController
+class ReviewersFeedbackController < ApplicationController
   before_action :render_400, if: :developer?
-  before_action :find_editor_feedback
-  before_action :update_editor_feedback, only: %i[update save]
+  before_action :find_reviewers_feedback
+  before_action :update_reviewers_feedback, only: %i[update save]
 
   def edit; end
 
@@ -16,17 +16,17 @@ class EditorFeedbackController < ApplicationController
 
   private
 
-  def find_editor_feedback
+  def find_reviewers_feedback
     @fcd = @story_type.fact_checking_doc
-    @editor_feedback = @fcd.editor_feedback
+    @editors_feedback = @fcd.reviewers_feedback
   end
 
-  def editor_feedback_params
-    params.require(:editor_feedback).permit(:body)
+  def reviewers_feedback_params
+    params.require(:reviewers_feedback).permit(:body)
   end
 
-  def update_editor_feedback
-    @editor_feedback.update(editor_feedback_params)
+  def update_reviewers_feedback
+    @reviewers_feedback.update(reviewers_feedback_params)
   end
 
   def send_notification_to_developer
@@ -34,7 +34,7 @@ class EditorFeedbackController < ApplicationController
     return if target.nil? || target.identifier.nil?
 
     message = "##{@story_type.id} #{@story_type.name} -- "\
-              "You received the editors' feedback by #{current_account.name}. "\
+              "You received the reviewers' feedback by #{current_account.name}. "\
               "<#{story_type_fact_checking_doc_url(@story_type, @story_type.fact_checking_doc)}|Check it>."
 
     SlackNotificationJob.perform_later(target.identifier, message)
