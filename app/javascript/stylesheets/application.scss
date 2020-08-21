@@ -6,20 +6,20 @@
 @import "story_type_tables";
 
 .fc_scrollable {
-  height: 99%;
-  overflow: auto;
+  height: 90%;
+  overflow: scroll;
+}
+
+.w-97 {
+  width: 97%;
 }
 
 .w-60 {
-  width: 55%;
-}
-
-.w-98 {
-  width: 98%;
+  width: 60%;
 }
 
 .w-39 {
-  width: 44%;
+  width: 39%;
 }
 
 @media (min-width: 100px) {

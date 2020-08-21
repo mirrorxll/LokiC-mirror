@@ -21,12 +21,12 @@ class ReviewersFeedbackController < ApplicationController
     @reviewers_feedback = @fcd.reviewers_feedback
   end
 
-  def reviewers_feedback_params
-    params.require(:reviewers_feedback).permit(:body)
-  end
-
   def update_reviewers_feedback
     @reviewers_feedback.update(reviewers_feedback_params)
+  end
+
+  def reviewers_feedback_params
+    params.require(:reviewers_feedback).permit(:body)
   end
 
   def send_notification_to_developer
