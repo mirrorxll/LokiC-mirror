@@ -22,7 +22,6 @@ class EditorsFeedbackController < ApplicationController
   end
 
   def update_editors_feedback
-    puts editors_feedback_params
     @editors_feedback.update(editors_feedback_params)
   end
 

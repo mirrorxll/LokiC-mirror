@@ -16,7 +16,7 @@
     tab_a.innerText = 'Sample'
 
     let tab_content = document.createElement('div')
-    tab_content.classList.add('tab-pane', 'fade', 'w-98')
+    tab_content.classList.add('tab-pane', 'fade', 'w-97')
     tab_content.setAttribute('id', `t${hex}`)
     tab_content.setAttribute('aria-labelledby', `tab_${hex}`)
     tab_content.setAttribute('role', 'tabpanel')
@@ -26,7 +26,6 @@
     document.getElementById('editors_feedback_tabs_content').appendChild(tab_content)
 }).call();
 
-
 function secureRandom(n){
     let result = '';
     while (n--){
@@ -35,11 +34,3 @@ function secureRandom(n){
 
     return result;
 }
-
-/*
-%ul#editors_feedback_tabs.nav.nav-tabs{role: "tablist"}
-  %li.nav-item{role: "presentation"}
-    %a#fcd-tab.nav-link.active{"aria-controls" => "fcd", "aria-selected" => "true", "data-toggle" => "tab", href: "#fcd", role: "tab"} FCD
-#editors_feedback_tabs_content.tab-content
-  #fcd.tab-pane.fade.show.active{"aria-labelledby" => "fcd-tab", role: "tabpanel"}
-*/
