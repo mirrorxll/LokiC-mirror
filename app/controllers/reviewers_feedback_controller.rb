@@ -2,27 +2,27 @@
 
 class ReviewersFeedbackController < ApplicationController
   before_action :render_400, if: :developer?
-  before_action :find_reviewers_feedback
-  before_action :update_reviewers_feedback, only: %i[update save]
+  before_action :find_fcd_feedback
 
-  def edit; end
+  def new; end
 
-  def update
-    send_notification_to_developer
-    redirect_to story_type_fact_checking_doc_path(@story_type, @story_type.fact_checking_doc)
+  def create
+    @reviewers_feedback = @fcd.reviewers_feedback.build(reviewers_feedback_params)
+    @reviewers_feedback.reviewer = current_account
+
+    if @reviewers_feedback.save
+      send_notification_to_developer
+      redirect_to "#{story_type_fact_checking_doc_path(@story_type, @story_type.fact_checking_doc)}#reviewers_feedback"
+    else
+      flash.now[:message] = ''
+    end
   end
-
-  def save; end
 
   private
 
-  def find_reviewers_feedback
+  def find_fcd_feedback
     @fcd = @story_type.fact_checking_doc
     @reviewers_feedback = @fcd.reviewers_feedback
-  end
-
-  def update_reviewers_feedback
-    @reviewers_feedback.update(reviewers_feedback_params)
   end
 
   def reviewers_feedback_params
@@ -35,7 +35,7 @@ class ReviewersFeedbackController < ApplicationController
 
     message = "##{@story_type.id} #{@story_type.name} -- "\
               "You received the reviewers' feedback by #{current_account.name}. "\
-              "<#{story_type_fact_checking_doc_url(@story_type, @story_type.fact_checking_doc)}|Check it>."
+              "<#{story_type_fact_checking_doc_url(@story_type, @story_type.fact_checking_doc)}#reviewers_feedback|Check it>."
 
     SlackNotificationJob.perform_later(target.identifier, message)
   end

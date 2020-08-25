@@ -1,8 +1,14 @@
-=form_with(url: story_type_fact_checking_doc_editors_feedback_path(@story_type, @story_type.fact_checking_doc, @editors_feedback),
-           method: :put, local: true, html: { class: 'ml-3' }) do |form|
-  .field{ id: 'editors_feedback_editable', "data-controller" => "summernote" }
-    =form.text_area 'editors_feedback[body]', data: { editor: 'summernote' }
-  %small.d-block.mb-2.mt-2
-    *** Feedback will be automatically saved every 30 seconds.
-  =form.submit "save and notify developer about a new/updated editors feedback",
-        class: 'btn btn-sm btn-outline-dark', onclick: 'stopEditorsFeedbackSaver();'
+#editors_feedback_editor_modal.ml-3
+  =form_with(url: story_type_fact_checking_doc_editors_feedback_index_path(@story_type, @story_type.fact_checking_doc),
+             local: true) do |form|
+    .field{ id: 'editors_feedback_editable', "data-controller" => "summernote" }
+      =form.text_area 'editors_feedback[body]', data: { editor: 'summernote' }
+    =form.submit "add editors feedback", class: 'mt-3 mb-2 btn btn-sm btn-outline-dark',
+                 onclick: "sessionStorage.removeItem('editorsFeedback');"
+  .position-relative
+    %hr/
+    .label_to_line_modal
+      recent feedback
+
+#editors_feedback_body_modal
+

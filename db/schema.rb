@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_13_092352) do
+ActiveRecord::Schema.define(version: 2020_08_17_175402) do
 
   create_table "account_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -88,15 +88,16 @@ ActiveRecord::Schema.define(version: 2020_08_13_092352) do
   create_table "auto_feedback_confirmations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "iteration_id"
     t.bigint "auto_feedback_id"
-    t.integer "sample_id"
+    t.bigint "sample_id"
     t.boolean "confirmed", default: false
     t.string "sample_part"
     t.string "sample_txt_part", limit: 2000
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["auto_feedback_id"], name: "index_auto_feedback_confirmations_on_auto_feedback_id"
-    t.index ["iteration_id", "auto_feedback_id"], name: "uniq_index_feedback_confirmations", unique: true
+    t.index ["iteration_id", "auto_feedback_id"], name: "uniq_index_auto_feedback_confirmations", unique: true
     t.index ["iteration_id"], name: "index_auto_feedback_confirmations_on_iteration_id"
+    t.index ["sample_id"], name: "index_auto_feedback_confirmations_on_sample_id"
   end
 
   create_table "clients", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -157,9 +158,11 @@ ActiveRecord::Schema.define(version: 2020_08_13_092352) do
 
   create_table "editors_feedback", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "fact_checking_doc_id"
+    t.bigint "editor_id"
     t.text "body", size: :medium
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["editor_id"], name: "index_editors_feedback_on_editor_id"
     t.index ["fact_checking_doc_id"], name: "index_editors_feedback_on_fact_checking_doc_id"
   end
 
@@ -264,11 +267,14 @@ ActiveRecord::Schema.define(version: 2020_08_13_092352) do
     t.index ["publication_id", "tag_id"], name: "index_publications_tags_on_publication_id_and_tag_id", unique: true
   end
 
-  create_table "reviews", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "report_type"
-    t.text "table"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+  create_table "reviewers_feedback", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "fact_checking_doc_id"
+    t.bigint "reviewer_id"
+    t.text "body", size: :medium
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["fact_checking_doc_id"], name: "index_reviewers_feedback_on_fact_checking_doc_id"
+    t.index ["reviewer_id"], name: "index_reviewers_feedback_on_reviewer_id"
   end
 
   create_table "samples", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

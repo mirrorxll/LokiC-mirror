@@ -1,5 +1,6 @@
 -if @story_type.iteration.auto_feedback_confirmations.all?(&:confirmed)
-  -reviewers_feedback = @fcd.editors_feedback
+  -account_type = current_account.type
+  -reviewers_feedback = @fcd.reviewers_feedback
   -editors_feedback = @fcd.editors_feedback
   %hr/
   .row
@@ -10,30 +11,57 @@
   .row
     .col-10.offset-1
       #fcd_control.small
-        =render 'fcd_buttons', reviewers_feedback: reviewers_feedback, editors_feedback: editors_feedback
+        =render 'fcd_buttons', account_type: account_type
   %hr/
   .row
     .col-10.offset-1
       #autoFeedbackCollapse.collapse.show
         =render 'auto_feedback/form', auto_feedback: @story_type.iteration.auto_feedback_confirmations
-  %hr/
+  %hr#reviewers_feedback/
   .row.small
     .col-10.offset-1
       .card
-        .card-header
+        .card-header.d-flex.justify-content-between.align-items-center
           reviewers feedback
+          -if account_type.eql?('manager')
+            =link_to("add", new_story_type_fact_checking_doc_reviewers_feedback_path(@story_type, @fcd),
+                     'data-toggle'=>'modal', 'data-target'=>'#manual_feedback_modal',
+                     class: "btn btn-sm btn-light text-dark", remote: true)
         .card-body
           #reviewers_feedback_body
-            =@fcd.reviewers_feedback.body&.html_safe
-  %hr/
+            -reviewers_feedback.each_with_index do |r_fb, index|
+              %div{ id: "r_fb_#{r_fb.id}" }
+                .manual_feedback.border
+                  .reviewer_name
+                    =r_fb.reviewer.name
+                    &nbsp
+                    =r_fb.created_at.strftime('%F %R %Z')
+                  =r_fb.body&.html_safe
+                -if index != (reviewers_feedback.count - 1)
+                  %hr.mt-4.mb-4/
+
+  %hr#editors_feedback/
   .row.small
     .col-10.offset-1
       .card
-        .card-header
+        .card-header.d-flex.justify-content-between.align-items-center
           editors feedback
+          -if !account_type.eql?('developer')
+            =link_to("add", new_story_type_fact_checking_doc_editors_feedback_path(@story_type, @fcd),
+                     'data-toggle'=>'modal', 'data-target'=>'#manual_feedback_modal',
+                     class: 'btn btn-sm btn-light text-dark', remote: true)
         .card-body
           #editors_feedback_body
-            =@fcd.editors_feedback.body&.html_safe
+            -editors_feedback.each_with_index do |e_fb, index|
+              .manual_feedback.border
+                .editor_name
+                  =e_fb.editor.name
+                  &nbsp
+                  =e_fb.created_at.strftime('%F %R %Z')
+                =e_fb.body&.html_safe
+              -if index != (editors_feedback.count - 1)
+                %hr.mt-4.mb-4/
+
   %hr/
   .row.small
     .col-10.offset-1
@@ -42,7 +70,7 @@
 
   #template_modal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "template_modal_label",
                               role: "dialog", tabindex: "-1" }
-    .modal-dialog.modal-dialog-centered.modal-lg.modal-dialog-scrollable
+    .modal-dialog.modal-dialog-centered.modal-xl.modal-dialog-scrollable
       .modal-content
         .modal-header
           %h5.modal-title.small#template_modal_label
@@ -50,25 +78,24 @@
             %span{"aria-hidden" => "true"} ×
         .modal-body
 
-  #human_feedback_modal.modal.fade.pr-0{ "aria-hidden" => "true", "aria-labelledby" => "human_feedback_modal_label",
-                                    role: "dialog", tabindex: "-1"}
+  #manual_feedback_modal.modal.fade.pr-0{ "aria-hidden" => "true", "aria-labelledby" => "manual_feedback_modal_label",
+                                          role: "dialog", tabindex: "-1" }
     .modal-dialog.modal-dialog-centered.modal-full.modal-dialog-scrollable
       .modal-content
         .modal-header
-          .modal-title#human_feedback_modal_label
-          %button.close{"aria-label" => "Close", "data-dismiss" => "modal", type: "button"}
-            %span{"aria-hidden" => "true"} ×
+          .modal-title#manual_feedback_modal_label
+          %button.close{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+            %span{ "aria-hidden" => "true" } ×
         .modal-body.pl-4.small
-          %ul#editors_feedback_tabs.nav.nav-tabs.w-60{role: "tablist"}
+          %ul#manual_feedback_tabs.nav.nav-tabs.w-60{role: "tablist"}
             %li.nav-item{role: "presentation"}
               %a#fcd-tab.nav-link.active{"aria-controls" => "fcd", "aria-selected" => "true", "data-toggle" => "tab", href: "#fcd", role: "tab"} FCD
 
           .d-inline-block.fc_scrollable.w-60
-            #editors_feedback_tabs_content.tab-content
+            #manual_feedback_tabs_content.tab-content
               #fcd.tab-pane.fade.show.active{"aria-labelledby" => "fcd-tab", role: "tabpanel"}
 
-          .d-inline-block.align-top.w-39
-
+          .d-inline-flex.flex-column.align-top.w-39.h-90
 -else
   %hr/
   .row
