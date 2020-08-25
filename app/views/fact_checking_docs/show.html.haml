@@ -23,10 +23,12 @@
       .card
         .card-header.d-flex.justify-content-between.align-items-center
           reviewers feedback
-          -if account_type.eql?('manager')
-            =link_to("add", new_story_type_fact_checking_doc_reviewers_feedback_path(@story_type, @fcd),
-                     'data-toggle'=>'modal', 'data-target'=>'#manual_feedback_modal',
-                     class: "btn btn-sm btn-light text-dark", remote: true)
+          .btn-group
+            -if account_type.eql?('manager')
+              =link_to("add feedback", new_story_type_fact_checking_doc_reviewers_feedback_path(@story_type, @fcd),
+                       'data-toggle'=>'modal', 'data-target'=>'#manual_feedback_modal',
+                       class: "btn btn-sm btn-light text-dark", remote: true)
+
         .card-body
           #reviewers_feedback_body
             -reviewers_feedback.each_with_index do |r_fb, index|
@@ -46,10 +48,13 @@
       .card
         .card-header.d-flex.justify-content-between.align-items-center
           editors feedback
-          -if !account_type.eql?('developer')
-            =link_to("add", new_story_type_fact_checking_doc_editors_feedback_path(@story_type, @fcd),
-                     'data-toggle'=>'modal', 'data-target'=>'#manual_feedback_modal',
-                     class: 'btn btn-sm btn-light text-dark', remote: true)
+
+          .btn-group
+            -if !account_type.eql?('developer')
+              =link_to("add feedback", new_story_type_fact_checking_doc_editors_feedback_path(@story_type, @fcd),
+                       'data-toggle'=>'modal', 'data-target'=>'#manual_feedback_modal',
+                       class: "btn btn-sm btn-light text-dark", remote: true)
+
         .card-body
           #editors_feedback_body
             -editors_feedback.each_with_index do |e_fb, index|

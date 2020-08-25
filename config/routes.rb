@@ -78,8 +78,12 @@ Rails.application.routes.draw do
       get :send_to_fc_channel
       patch :save, on: :member
 
-      resources :reviewers_feedback, only: %i[new create]
-      resources :editors_feedback, only: %i[new create]
+      resources :reviewers_feedback, only: %i[new create] do
+        post :approve, on: :collection
+      end
+      resources :editors_feedback, only: %i[new create] do
+        post :approve, on: :collection
+      end
     end
 
     resources :iterations do

@@ -3,8 +3,11 @@
              local: true) do |form|
     .field{ id: 'editors_feedback_editable', "data-controller" => "summernote" }
       =form.text_area 'editors_feedback[body]', data: { editor: 'summernote' }
-    =form.submit "add editors feedback", class: 'mt-3 mb-2 btn btn-sm btn-outline-dark',
-                 onclick: "sessionStorage.removeItem('editorsFeedback');"
+    .mt-3.mb-2
+      =form.submit "create feedback", class: 'btn btn-sm btn-outline-dark',
+                   onclick: "sessionStorage.removeItem('editorsFeedback');"
+      =link_to("approve!", approve_story_type_fact_checking_doc_editors_feedback_index_path(@story_type, @story_type.fact_checking_doc),
+               class: "ml-2 btn btn-sm btn-outline-dark", method: :post)
   .position-relative
     %hr/
     .label_to_line_modal

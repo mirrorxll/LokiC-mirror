@@ -26,11 +26,14 @@ class FactCheckingDocsController < ApplicationController
   def save; end
 
   def send_to_review_channel
-    SlackNotificationJob.perform_later('hle_reviews_queue', message)
+    msg = message + "*Developer:* #{@story_type.developer.name}."
+    SlackNotificationJob.perform_later('notifications_test', msg)
+    # SlackNotificationJob.perform_later('hle_reviews_queue', message)
   end
 
   def send_to_fc_channel
-    SlackNotificationJob.perform_later(current_account.fc_channel.name, message)
+    SlackNotificationJob.perform_later('notifications_test', message)
+    # SlackNotificationJob.perform_later(current_account.fc_channel.name, message)
   end
 
   private
@@ -48,7 +51,6 @@ class FactCheckingDocsController < ApplicationController
   end
 
   def message
-    "FCD ##{@story_type.id} <#{story_type_fact_checking_doc_url(@story_type, @fcd)}|"\
-    "#{@story_type.name}> -- #{current_account.name}"
+    "*FCD* ##{@story_type.id} <#{story_type_fact_checking_doc_url(@story_type, @fcd)}|#{@story_type.name}>.\n"
   end
 end

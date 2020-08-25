@@ -7,7 +7,7 @@ class CreateReviewersFeedback < ActiveRecord::Migration[6.0]
       t.belongs_to :reviewer
 
       t.text :body, limit: 1.megabyte
-      t.boolean :approval, default: false
+      t.boolean :approvable, default: false
       t.timestamps
     end
   end
