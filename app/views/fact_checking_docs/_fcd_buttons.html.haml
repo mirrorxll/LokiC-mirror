@@ -1,4 +1,4 @@
--disabled = account_type.eql?('editor') ? 'disabled' : ''
+-disabled = current_account.type.eql?('editor') ? 'disabled' : ''
 
 .btn-group.w-100
   =link_to('edit FCD', edit_story_type_fact_checking_doc_path(@story_type, @fcd),
@@ -8,13 +8,42 @@
   =link_to('auto-feedback', '#autoFeedbackCollapse', "aria-controls" => "feedbackCollapse", "aria-expanded" => "false",
            "data-target" => "#autoFeedbackCollapse", "data-toggle" => "collapse", type: "button", onclick: 'hideAllPopovers();',
            class: 'btn btn-sm btn-light text-dark')
-  =link_to('send FCD to reviewers', story_type_fact_checking_doc_send_to_review_channel_path(@story_type, @fcd), class: 'btn btn-sm btn-light text-dark', remote: true)
-  -# =link_to('send FCD to reviewers', '#', class: "btn btn-sm btn-light text-dark #{disabled}", remote: true)
+
+  -if current_account.slack
+    =button_tag('send FCD to reviewers', 'data-toggle'=>'modal', 'data-target'=>'#sendFCD',
+                'data-whatever'=>'hle_reviews_queue', class: "btn btn-sm btn-light text-dark #{disabled}")
   -if current_account.fc_channel
-    =link_to('send FCD to editors', story_type_fact_checking_doc_send_to_fc_channel_path(@story_type, @fcd), class: 'btn btn-sm btn-light text-dark', remote: true)
-    -# =link_to('send FCD to editors', '#', class: "btn btn-sm btn-light text-dark #{disabled}", remote: true)
+    =button_tag('send FCD to editors', 'data-toggle'=>'modal', 'data-target'=>'#sendFCD',
+                'data-whatever'=>"#{current_account.fc_channel.name}", class: "btn btn-sm btn-light text-dark #{disabled}")
+
+
+
+#sendFCD.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "sendFCDLabel", :role => "dialog", :tabindex => "-1"}
+  .modal-dialog.modal-dialog-centered{:role => "document"}
+    .modal-content
+      .modal-header
+        #sendFCDLabel.modal-title
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+          %span{"aria-hidden" => "true"} ×
+      =form_with(url: story_type_fact_checking_doc_send_to_slack_channel_path(@story_type, @fcd)) do |f|
+        .modal-body
+          .channel
+          =f.hidden_field 'slack_message[channel]'
+          =f.label :note, 'note:'
+          =f.text_area 'slack_message[note]', class: 'form-control'
+        .modal-footer
+          %button.btn.btn-sm.btn-link{"data-dismiss" => "modal", :type => "button"} close
+          =f.submit 'send', class: 'btn btn-sm btn-outline-dark'
 
 :javascript
+  $('#sendFCD').on('show.bs.modal', function (event) {
+    let link = $(event.relatedTarget)
+    let recipient = link.data('whatever')
+    let modal = $(this)
+    modal.find('.modal-title').html('send FCD to ' + `<b>${recipient}</b>`)
+    modal.find('input[id="slack_message[channel]"]').val(recipient)
+  })
+
   function hideAllPopovers() {
     let fbOutputs = document.querySelectorAll('[id^="feedback_output_"]');
 

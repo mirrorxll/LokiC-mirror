@@ -74,9 +74,7 @@ Rails.application.routes.draw do
 
     resources :fact_checking_docs do
       get :template
-      get :send_to_review_channel
-      get :send_to_fc_channel
-      patch :save, on: :member
+      post :send_to_slack_channel
 
       resources :reviewers_feedback, only: %i[new create] do
         post :approve, on: :collection
