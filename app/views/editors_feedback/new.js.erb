@@ -8,6 +8,11 @@
     document.querySelector('#manual_feedback_modal .w-39').innerHTML = `<%= j render 'form' %>`
     document.querySelector('#editors_feedback_body_modal').innerHTML = editorsFeedback;
 
+    let allFcdLinks = document.querySelectorAll('#manual_feedback_modal #fcd a')
+    allFcdLinks.forEach(function(a) {
+        a.setAttribute('target', '_blank')
+    });
+
     let samples =
         <% if Rails.env.production? %>
           document.querySelectorAll('#manual_feedback_modal #fcd a[href^="https://lokic.locallabs.com/story_types/"][href*="/iterations/"][href*="/samples/"]')
