@@ -9,6 +9,8 @@ class FactCheckingDocsController < ApplicationController
 
   def edit; end
 
+  def save; end
+
   def update
     @fcd.update(fcd_params)
 
@@ -24,13 +26,13 @@ class FactCheckingDocsController < ApplicationController
   end
 
   def send_to_slack_channel
-    @to_slack_info = send_to_slack_params
+    target = @story_type.developer&.slack
+    render_400 and return if target.nil? || target.identifier.nil?
 
-    msg = "*FCD* ##{@story_type.id} <#{story_type_fact_checking_doc_url(@story_type, @fcd)}|#{@story_type.name}>.\n"
-    msg += @to_slack_info[:channel].eql?('hle_reviews_queue') ? "*Developer:* #{@story_type.developer.name}.\n" : ''
-    msg += @to_slack_info[:note].present? ? "*Note*: #{@to_slack_info[:note]}" : ''
+    @info = send_to_slack_params
+    message = message_to_slack(@info)
 
-    SlackNotificationJob.perform_later('notifications_test', msg)
+    SlackNotificationJob.perform_later('notifications_test', message)
   end
 
   private
@@ -47,7 +49,9 @@ class FactCheckingDocsController < ApplicationController
     params.require(:slack_message).permit(:channel, :note)
   end
 
-  def message
-    "*FCD* ##{@story_type.id} <#{story_type_fact_checking_doc_url(@story_type, @fcd)}|#{@story_type.name}>.\n"
+  def message_to_slack(info)
+    "*FCD* ##{@story_type.id} <#{story_type_fact_checking_doc_url(@story_type, @fcd)}|#{@story_type.name}>.\n"\
+    "*Developer:* #{@story_type.developer.name}.\n"\
+    "#{info[:note].present? ? "*Note*: #{info[:note]}" : ''}"
   end
 end

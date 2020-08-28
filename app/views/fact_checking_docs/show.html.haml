@@ -17,6 +17,7 @@
     .col-10.offset-1
       #autoFeedbackCollapse.collapse.show
         =render 'auto_feedback/form', auto_feedback: @story_type.iteration.auto_feedback_confirmations
+
   %hr#reviewers_feedback/
   .row.small
     .col-10.offset-1
@@ -38,6 +39,9 @@
                     =r_fb.reviewer.name
                     &nbsp
                     =r_fb.created_at.strftime('%F %R %Z')
+                  -if r_fb.approvable
+                    %p.font-weight-bold
+                      Approved!
                   =r_fb.body&.html_safe
                 -if index != (reviewers_feedback.count - 1)
                   %hr.mt-4.mb-4/
@@ -57,16 +61,28 @@
 
         .card-body
           #editors_feedback_body
+
             -editors_feedback.each_with_index do |e_fb, index|
               .manual_feedback.border
-                .editor_name
+                .editor_fb_info
                   =e_fb.editor.name
                   &nbsp
                   =e_fb.created_at.strftime('%F %R %Z')
+                  &nbsp
+                  -if e_fb.approvable
+                    .font-weight-bold.d-inline
+                      Approved!
+                  -else
+                    .d-inline-block{ onchange: "confirmEditorsFeedback(this, #{e_fb.id});" }
+                      -puts e_fb.confirmed
+                      -if e_fb.confirmed
+                        =icon('fa', 'check')
+                      -else
+                        %input{ type: :checkbox }
                 =e_fb.body&.html_safe
               -if index != (editors_feedback.count - 1)
                 %hr.mt-4.mb-4/
-
+            =render 'editors_feedback/confirm_editors_fb'
   %hr/
   .row.small
     .col-10.offset-1
@@ -78,7 +94,9 @@
     .modal-dialog.modal-dialog-centered.modal-xl.modal-dialog-scrollable
       .modal-content
         .modal-header
-          %h5.modal-title.small#template_modal_label
+          #template_modal_label.modal-title.small
+            %b
+              =@story_type.name
           %button.close{"aria-label" => "Close", "data-dismiss" => "modal", type: "button"}
             %span{"aria-hidden" => "true"} ×
         .modal-body
