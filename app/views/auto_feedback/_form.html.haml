@@ -38,7 +38,7 @@
 
   function confirmAutoFeedback(elem) {
     let feedback = document.getElementsByClassName(elem)[0];
-    let feedbackConfirmId = elem.split(' ').find((className) => { className.match(/auto-fb-confirm/) }).split('_')[1];
+    let feedbackConfirmId = elem.split(' ').find((className) => className.match(/auto-fb-confirm/)).split('_')[1];
     let changeAutoFeedbackStatus = (elem) => { elem.innerHTML = `<i class="fas fa-check"></i>`; }
 
     $.ajax({
