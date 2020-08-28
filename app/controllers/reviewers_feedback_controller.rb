@@ -48,7 +48,7 @@ class ReviewersFeedbackController < ApplicationController
       message = "*FCD ##{@story_type.id}* "\
                 "<#{story_type_fact_checking_doc_url(@story_type, @fcd)}|#{@story_type.name}>.\n"\
                 "#{@feedback.body.present? ? "*Reviewer's Note*: #{note}" : ''}"
-      SlackNotificationJob.perform_later('notifications_test', message)
+      SlackNotificationJob.perform_later(fcd_channel, message)
 
       message = "*##{@story_type.id} #{@story_type.name}* -- FCD was approved by #{current_account.name} "\
                 "and sent to *#{fcd_channel}* channel."

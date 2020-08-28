@@ -70,6 +70,6 @@ class EditorsFeedbackController < ApplicationController
     message = "*Updated FCD* ##{@story_type.id} "\
               "<#{story_type_fact_checking_doc_url(@story_type, @fcd)}|#{@story_type.name}>."
 
-    SlackNotificationJob.perform_later('notifications_test', message)
+    SlackNotificationJob.perform_later(fc_channel, message)
   end
 end

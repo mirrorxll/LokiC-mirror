@@ -32,7 +32,7 @@ class FactCheckingDocsController < ApplicationController
     @info = send_to_slack_params
     message = message_to_slack(@info)
 
-    SlackNotificationJob.perform_later('notifications_test', message)
+    SlackNotificationJob.perform_later(target, message)
   end
 
   private
