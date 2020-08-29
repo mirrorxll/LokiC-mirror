@@ -28,20 +28,27 @@
             -if account_type.eql?('manager')
               =link_to("add feedback", new_story_type_fact_checking_doc_reviewers_feedback_path(@story_type, @fcd),
                        'data-toggle'=>'modal', 'data-target'=>'#manual_feedback_modal',
-                       class: "btn btn-sm btn-light text-dark", remote: true)
+                       class: "btn btn-sm btn-light text-dark", onclick: 'hideAllPopovers();', remote: true)
 
         .card-body
           #reviewers_feedback_body
             -reviewers_feedback.each_with_index do |r_fb, index|
               %div{ id: "r_fb_#{r_fb.id}" }
                 .manual_feedback.border
-                  .reviewer_name
+                  .reviewer_fb_info
                     =r_fb.reviewer.name
                     &nbsp
                     =r_fb.created_at.strftime('%F %R %Z')
-                  -if r_fb.approvable
-                    %p.font-weight-bold
-                      Approved!
+                    &nbsp
+                    -if r_fb.approvable
+                      .font-weight-bold.d-inline
+                        Approved!
+                    -else
+                      .d-inline-block{ onchange: "confirmFeedback(this, 'reviewers', #{r_fb.id});" }
+                        -if r_fb.confirmed
+                          =icon('fa', 'check')
+                        -else
+                          %input{ type: :checkbox }
                   =r_fb.body&.html_safe
                 -if index != (reviewers_feedback.count - 1)
                   %hr.mt-4.mb-4/
@@ -57,7 +64,7 @@
             -if !account_type.eql?('developer')
               =link_to("add feedback", new_story_type_fact_checking_doc_editors_feedback_path(@story_type, @fcd),
                        'data-toggle'=>'modal', 'data-target'=>'#manual_feedback_modal',
-                       class: "btn btn-sm btn-light text-dark", remote: true)
+                       class: "btn btn-sm btn-light text-dark", onclick: 'hideAllPopovers();', remote: true)
 
         .card-body
           #editors_feedback_body
@@ -73,8 +80,7 @@
                     .font-weight-bold.d-inline
                       Approved!
                   -else
-                    .d-inline-block{ onchange: "confirmEditorsFeedback(this, #{e_fb.id});" }
-                      -puts e_fb.confirmed
+                    .d-inline-block{ onchange: "confirmFeedback(this, 'editors', #{e_fb.id});" }
                       -if e_fb.confirmed
                         =icon('fa', 'check')
                       -else
@@ -82,7 +88,7 @@
                 =e_fb.body&.html_safe
               -if index != (editors_feedback.count - 1)
                 %hr.mt-4.mb-4/
-            =render 'editors_feedback/confirm_editors_fb'
+  =render 'fact_checking_docs/confirm_feedback'
   %hr/
   .row.small
     .col-10.offset-1

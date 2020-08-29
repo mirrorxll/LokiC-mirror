@@ -74,7 +74,7 @@ Rails.application.routes.draw do
 
     resources :fact_checking_docs do
       get   :template
-      post  :send_to_slack_channel
+      post  :send_to_reviewers_channel
       patch :save, on: :member
 
       resources :reviewers_feedback, only: %i[new create] do

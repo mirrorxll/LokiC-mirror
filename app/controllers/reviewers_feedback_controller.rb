@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 class ReviewersFeedbackController < ApplicationController
-  before_action :render_400,          unless: :manager?
-  before_action :find_fcd,            only: %i[create confirm]
-  before_action :find_feedback,       only: %i[create confirm]
-  after_action  :send_notifications,  only: :create
+  before_action :render_400,                     unless: :manager?
+  before_action :find_fcd,                       only: %i[create confirm]
+  before_action :find_feedback,                  only: %i[create confirm]
+  after_action  :send_notifications,             only: :create
+  after_action  :send_confirm_to_review_channel, only: :confirm
 
   def new; end
 
@@ -21,7 +22,10 @@ class ReviewersFeedbackController < ApplicationController
   end
 
   def confirm
+    @feedback = @feedback_collection.find(params[:id])
+    render_400 and return if @feedback.confirmed
 
+    @feedback.update(confirmed: true)
   end
 
   private
@@ -59,5 +63,20 @@ class ReviewersFeedbackController < ApplicationController
     end
 
     SlackNotificationJob.perform_later(developer_pm, message)
+  end
+
+  def send_confirm_to_review_channel
+    reviewer =
+      if @feedback.reviewer.slack
+        "<@#{@feedback.reviewer.slack.identifier}>"
+      else
+        @feedback.reviewer.name
+      end
+
+    message = "#{reviewer} -- the developer confirms your feedback. "\
+              "<#{story_type_fact_checking_doc_url(@story_type, @story_type.fact_checking_doc)}"\
+              '#reviewers_feedback|Check it>.'
+
+    SlackNotificationJob.perform_later('hle_reviews_queue', message, @fcd.slack_message_ts)
   end
 end

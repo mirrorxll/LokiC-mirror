@@ -9,7 +9,7 @@
            'data-target' => '#autoFeedbackCollapse', 'data-toggle' => 'collapse', onclick: 'hideAllPopovers();',
            class: 'btn btn-sm btn-light text-dark')
   =button_tag('send FCD to reviewers', 'data-toggle'=>'modal', 'data-target'=>'#sendFCD',
-              disabled: disabled, class: 'btn btn-sm btn-light text-dark')
+              disabled: disabled, class: 'btn btn-sm btn-light text-dark', onclick: 'hideAllPopovers();')
 
 
 #sendFCD.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "sendFCDLabel", :role => "dialog", :tabindex => "-1"}
@@ -20,7 +20,7 @@
           %b send FCD to hle_reviews_queue channel
         %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
           %span{"aria-hidden" => "true"} ×
-      =form_with(url: story_type_fact_checking_doc_send_to_slack_channel_path(@story_type, @fcd)) do |f|
+      =form_with(url: story_type_fact_checking_doc_send_to_reviewers_channel_path(@story_type, @fcd)) do |f|
         .modal-body
           .channel
           =f.hidden_field 'slack_message[channel]'
