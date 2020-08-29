@@ -1,20 +1,31 @@
 # frozen_string_literal: true
 
 class ReviewersFeedbackController < ApplicationController
-  before_action :render_400, if: :developer?
-  before_action :find_fcd, only: %i[create approve]
-  before_action :find_feedback, only: %i[create approve]
+  before_action :render_400,                     unless: :manager?
+  before_action :find_fcd,                       only: %i[create confirm]
+  before_action :find_feedback,                  only: %i[create confirm]
+  after_action  :send_notifications,             only: :create
+  after_action  :send_confirm_to_review_channel, only: :confirm
 
   def new; end
 
   def create
     @feedback = @feedback_collection.build(reviewers_feedback_params)
-    save_and_notify
+    @feedback.reviewer = current_account
+    @feedback.approvable = true if params[:commit].eql?('approve!')
+
+    if @feedback.save
+      redirect_to "#{story_type_fact_checking_doc_path(@story_type, @fcd)}#reviewers_feedback"
+    else
+      flash.now[:message] = ''
+    end
   end
 
-  def approve
-    @feedback = @feedback_collection.build(body: '<p><b>Approved!</b></p>', approvable: true)
-    save_and_notify
+  def confirm
+    @feedback = @feedback_collection.find(params[:id])
+    render_400 and return if @feedback.confirmed
+
+    @feedback.update(confirmed: true)
   end
 
   private
@@ -31,32 +42,41 @@ class ReviewersFeedbackController < ApplicationController
     params.require(:reviewers_feedback).permit(:body)
   end
 
-  def save_and_notify
-    @feedback.reviewer = current_account
+  def send_notifications
+    fcd_channel = @story_type.developer&.fc_channel&.name
+    developer_pm = @story_type.developer&.slack&.identifier
+    return if developer_pm.nil? || fcd_channel.nil?
 
-    if @feedback.save
-      send_notification_to_developer
-      redirect_to "#{story_type_fact_checking_doc_path(@story_type, @fcd)}#reviewers_feedback"
+    if params[:commit].eql?('approve!')
+      note = ActionView::Base.full_sanitizer.sanitize(@feedback.body)
+      message = "*FCD ##{@story_type.id}* "\
+                "<#{story_type_fact_checking_doc_url(@story_type, @fcd)}|#{@story_type.name}>.\n"\
+                "#{@feedback.body.present? ? "*Reviewer's Note*: #{note}" : ''}"
+      SlackNotificationJob.perform_later(fcd_channel, message)
+
+      message = "*##{@story_type.id} #{@story_type.name}* -- FCD was approved by #{current_account.name} "\
+                "and sent to *#{fcd_channel}* channel."
     else
-      flash.now[:message] = ''
+      message = "*##{@story_type.id} #{@story_type.name}* -- You received the *reviewers' feedback* by #{current_account.name}. "\
+                "<#{story_type_fact_checking_doc_url(@story_type, @story_type.fact_checking_doc)}"\
+                '#reviewers_feedback|Check it>.'
     end
+
+    SlackNotificationJob.perform_later(developer_pm, message)
   end
 
-  def send_notification_to_developer
-    target = @story_type.developer&.slack
-    return if target.nil? || target.identifier.nil?
-
-    message = "*##{@story_type.id}* #{@story_type.name} -- "
-    message +=
-      if action_name.eql?('create')
-        "You received the *reviewers' feedback* by #{current_account.name}. "\
-        "<#{story_type_fact_checking_doc_url(@story_type, @story_type.fact_checking_doc)}"\
-        '#reviewers_feedback|Check it>.'
+  def send_confirm_to_review_channel
+    reviewer =
+      if @feedback.reviewer.slack
+        "<@#{@feedback.reviewer.slack.identifier}>"
       else
-        "*FCD* was approved by #{current_account.name}. You can send it to editors. "\
-        "<#{story_type_fact_checking_doc_url(@story_type, @story_type.fact_checking_doc)}|FCD>."
+        @feedback.reviewer.name
       end
 
-    SlackNotificationJob.perform_later(target.identifier, message)
+    message = "#{reviewer} -- the developer confirms your feedback. "\
+              "<#{story_type_fact_checking_doc_url(@story_type, @story_type.fact_checking_doc)}"\
+              '#reviewers_feedback|Check it>.'
+
+    SlackNotificationJob.perform_later('hle_reviews_queue', message, @fcd.slack_message_ts)
   end
 end

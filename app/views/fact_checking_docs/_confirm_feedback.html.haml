@@ -1,0 +1,11 @@
+:javascript
+  function confirmFeedback(elem, fb_type, fb_id) {
+    let changeFeedbackStatus = (elem) => { elem.innerHTML = `<i class="fas fa-check"></i>`; }
+
+    $.ajax({
+      url: `#{root_url}story_types/#{@story_type.id}/fact_checking_docs/#{@fcd.id}/${fb_type}_feedback/${fb_id}/confirm`,
+      success: changeFeedbackStatus(elem),
+      method: 'patch',
+      dataType: 'script'
+    });
+  }

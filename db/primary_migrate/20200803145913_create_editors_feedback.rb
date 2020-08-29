@@ -8,6 +8,7 @@ class CreateEditorsFeedback < ActiveRecord::Migration[6.0]
 
       t.text :body, limit: 1.megabyte
       t.boolean :approvable, default: false
+      t.boolean :confirmed, default: false
       t.timestamps
     end
   end
