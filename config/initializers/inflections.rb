@@ -16,5 +16,5 @@
 # end
 
 ActiveSupport::Inflector.inflections(:en) do |inflect|
-  inflect.uncountable 'columns', 'properties', 'code', 'auto_feedback', 'editors_feedback', 'reviewers_feedback'
+  inflect.uncountable 'columns', 'properties', 'code', 'auto_feedback', 'manual_feedback'
 end

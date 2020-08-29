@@ -69,3 +69,28 @@
               comment:
             .col-8
               #{data_set.comment}
+    -if data_set.default_property
+      .col-6.mt-3
+        .card.small
+          .card-header.p-2
+            default properties:
+          .card-body
+            .row.pb-2
+              .col-6.font-weight-bold
+                photobucket:
+              .col-6
+                #photobucket
+                  -if data_set.default_property.photo_bucket
+                    =render 'default_properties/photo_bucket', photo_bucket: data_set.default_property.photo_bucket
+                  -else
+                    =render 'default_properties/photo_bucket_form'
+            .row.font-weight-bold
+              .col-6
+                client:
+              .col-6
+                tag:
+            #default_properties
+              -unless data_set.default_property.client_tag.nil?
+                =render 'default_properties/client_tag', client_tag: data_set.default_property.client_tag
+            .p
+              =render 'default_properties/client_form'

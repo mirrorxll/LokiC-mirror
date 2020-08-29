@@ -6,6 +6,8 @@ class DataSet < ApplicationRecord # :nodoc:
   belongs_to :src_release_frequency, optional: true, class_name: 'Frequency'
   belongs_to :src_scrape_frequency, optional: true, class_name: 'Frequency'
 
+  has_one :default_property
+
   has_many :story_types
 
   def evaluated?

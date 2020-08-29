@@ -1,0 +1,5 @@
+=tag.name
+-if client_id.nil?
+  =link_to('x', exclude_tag_data_set_default_property_path(@data_set, tag), method: :delete, remote: true)
+-else
+  =link_to('x', exclude_tag_data_set_default_property_path(@data_set, tag, client_id: client_id), method: :delete, remote: true)

@@ -29,6 +29,7 @@ class DataSetsController < ApplicationController # :nodoc:
     @data_set = current_account.data_sets.build(data_set_params)
 
     if @data_set.save
+      DefaultProperty.new(data_set: @data_set).save
       new_data_set_notification
       redirect_to @data_set
     else
@@ -54,6 +55,8 @@ class DataSetsController < ApplicationController # :nodoc:
   end
 
   def properties; end
+
+  def set_default_properties; end
 
   private
 

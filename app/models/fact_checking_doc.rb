@@ -3,11 +3,6 @@
 class FactCheckingDoc < ApplicationRecord
   belongs_to :story_type
 
-  has_one :reviewers_feedback
-  has_one :editors_feedback
-
-  before_create do
-    build_reviewers_feedback
-    build_editors_feedback
-  end
+  has_many :reviewers_feedback
+  has_many :editors_feedback
 end
