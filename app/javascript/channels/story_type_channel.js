@@ -59,9 +59,11 @@ $(document).on("turbolinks:load", function() {
 
     function st_scheduler(data) {
         if (data['scheduler_msg'] || data['creation_msg']) {
+            let params = data['scheduler_msg'] ? { section_update: { message: data['scheduler_msg'] } } : { section_update: { message: null } }
+            console.log(params)
             $.ajax({
                 url: `${storyTypeId}/iterations/${storyTypeIter}/schedule/section`,
-                data: data['scheduler_msg'] ? { section_update: { message: data['scheduler_msg'] } } : {},
+                data: params,
                 dataType: 'script'
             })
         }

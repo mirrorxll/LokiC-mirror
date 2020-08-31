@@ -26,10 +26,7 @@ class FactCheckingDocsController < ApplicationController
   end
 
   def send_to_reviewers_channel
-    target = 'hle_reviews_queue'
-    render_400 and return if target.nil?
-
-    response = SlackNotificationJob.perform_now(target, message_to_slack)
+    response = SlackNotificationJob.perform_now('hle_reviews_queue_test', message_to_slack)
     @fcd.update(slack_message_ts: response[:ts])
   end
 

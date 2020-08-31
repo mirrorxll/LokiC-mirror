@@ -1,5 +1,10 @@
 -iteration = @story_type.iteration
--if @story_type.iteration.schedule.eql?(true)
+
+-if @story_type.fact_checking_doc.approval_editors.count < 2
+  .row.small
+    .col-10.offset-1
+      First...let's wait when two editors will approve your FCD.
+-elsif @story_type.iteration.schedule.eql?(true)
   .row.small
     .col-10.offset-1
       #results_scheduling

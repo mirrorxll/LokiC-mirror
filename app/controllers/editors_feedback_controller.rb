@@ -52,7 +52,12 @@ class EditorsFeedbackController < ApplicationController
     if params[:commit].eql?('approve!')
       approvable = @fcd.approval_editors
       editors = approvable.map(&:name).join(', ')
-      scheduling = approvable.count > 1 ? 'You can go to scheduling' : 'You need one more approval from editors'
+      scheduling =
+        if approvable.count > 1
+          'You can go to create all stories and scheduling'
+        else
+          'You need one more approval from editors'
+        end
       message += "FCD was approved by #{editors}. #{scheduling}."
     else
       message += "You received the *editors' feedback* by #{current_account.name}. "\
