@@ -61,13 +61,13 @@ module Table
       "SELECT * FROM `#{t_name}` "\
       "WHERE story_created = 0 AND id IN (#{options[:ids]}) AND "\
       "iter_id = #{iter_id} "\
-      "LIMIT #{options[:limit] || 7_000};"
+      "LIMIT #{options[:limit] || 10_000};"
     end
 
     def rows_by_last_iteration_query(t_name, iter_id, options)
       "SELECT * FROM `#{t_name}` "\
       "WHERE story_created = 0 AND iter_id = (#{iter_id}) "\
-      "LIMIT #{options[:limit] || 7_000};"
+      "LIMIT #{options[:limit] || 10_000};"
     end
 
     def created_at_default_value_query(name)
