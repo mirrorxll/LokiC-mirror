@@ -7,11 +7,12 @@ module Samples
 
       def lead_story_post(sample, client_tags)
         output = sample.output
+        client = sample.client
         publication = sample.publication
-        tag = client_tags.find_by(client: publication.client).tag
+        tag = client_tags.find_by(client: client).tag
 
         lead_id = lead_post(sample, output.headline, publication)
-        story_post(lead_id, output, publication, tag, sample.published_at)
+        story_post(lead_id, output, client, publication, tag, sample.published_at)
       end
 
       def lead_post(sample, headline, publication)
@@ -32,13 +33,13 @@ module Samples
         JSON.parse(response.body)['id']
       end
 
-      def story_post(lead_id, output, publication, tag, publication_date)
+      def story_post(lead_id, output, client, publication, tag, publication_date)
         published = true
         story_tag_ids = tag.pl_identifier
-        author = publication.client.author.name
+        author = client.author.name
         published_at = published_at(publication_date)
         bucket_id = @story_type.photo_bucket.pl_identifier
-        story_section_ids = publication.client.sections.map { |section| section[:pl_identifier] }
+        story_section_ids = client.sections.map { |section| section[:pl_identifier] }
 
         params = {
           community_id: publication.pl_identifier,
