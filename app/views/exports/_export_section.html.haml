@@ -9,6 +9,9 @@
       .row
         .col-11.offset-1
           total exported: #{total}
+      =link_to('exported stories', exported_stories_story_type_iteration_exports_path(@story_type, iteration),
+          class: 'ml-5 btn btn-sm btn-outline-dark', target: '_blank')
+
     -else
       .row.mb-2
         .col-10.offset-1
@@ -19,6 +22,3 @@
           =link_to('export!', production_story_type_iteration_exports_path(@story_type, iteration),
                               class: 'btn btn-sm btn-outline-dark',
                               method: :post, remote: true)
-          -if exported
-            =link_to('exported stories', exported_stories_story_type_iteration_exports_path(@story_type, iteration),
-                      class: 'ml-5 btn btn-sm btn-outline-dark', target: '_blank')

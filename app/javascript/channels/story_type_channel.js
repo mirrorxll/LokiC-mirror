@@ -31,7 +31,7 @@ $(document).on("turbolinks:load", function() {
     function st_population(data) {
         if (data['population_msg']) {
             $.ajax({
-                url: `${storyTypeId}/staging_tables/section`,
+                url: `${window.location.origin}/story_types/${storyTypeId}/staging_tables/section`,
                 dataType: 'script'
             })
         }
@@ -40,7 +40,7 @@ $(document).on("turbolinks:load", function() {
     function st_exp_configurations_section(data) {
         if (data['export_configurations_msg']) {
             $.ajax({
-                url: `${storyTypeId}/export_configurations/section`,
+                url: `${window.location.origin}/story_types/${storyTypeId}/export_configurations/section`,
                 dataType: 'script'
             })
         }
@@ -50,7 +50,7 @@ $(document).on("turbolinks:load", function() {
         let message = data['samples_msg'] || data['creation_msg'] || data['purge_last_creation_msg']
         if (message) {
             $.ajax({
-                url: `${storyTypeId}/iterations/${storyTypeIter}/samples/section`,
+                url: `${window.location.origin}/story_types/${storyTypeId}/iterations/${storyTypeIter}/samples/section`,
                 data: { section_update: { message: message } },
                 dataType: 'script'
             })
@@ -60,9 +60,8 @@ $(document).on("turbolinks:load", function() {
     function st_scheduler(data) {
         if (data['scheduler_msg'] || data['creation_msg']) {
             let params = data['scheduler_msg'] ? { section_update: { message: data['scheduler_msg'] } } : { section_update: { message: null } }
-            console.log(params)
             $.ajax({
-                url: `${storyTypeId}/iterations/${storyTypeIter}/schedule/section`,
+                url: `${window.location.origin}/story_types/${storyTypeId}/iterations/${storyTypeIter}/schedule/section`,
                 data: params,
                 dataType: 'script'
             })
@@ -72,7 +71,7 @@ $(document).on("turbolinks:load", function() {
     function st_export(data) {
         if (data['scheduler_msg'] || data['export_msg']) {
             $.ajax({
-                url: `${storyTypeId}/iterations/${storyTypeIter}/export/section`,
+                url: `${window.location.origin}/story_types/${storyTypeId}/iterations/${storyTypeIter}/export/section`,
                 dataType: 'script'
             })
         }

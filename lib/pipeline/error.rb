@@ -12,7 +12,4 @@ module Pipeline
       'You can pass only :staging or :production'
     end
   end
-
-  # raised when _safe mode catch three exceptions
-  class SafeMethodError < PipelineError; end
 end
