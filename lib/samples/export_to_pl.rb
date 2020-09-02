@@ -23,7 +23,7 @@ module Samples
       @story_type = story_type
       client_tags = story_type.client_tags
 
-      samples(story_type).find_in_batches do |samples|
+      samples(story_type).find_in_batches(batch_size: 10_000) do |samples|
         samples_to_export = samples.to_a
         semaphore = Mutex.new
 

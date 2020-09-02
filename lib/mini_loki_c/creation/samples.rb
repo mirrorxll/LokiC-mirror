@@ -10,7 +10,7 @@ module MiniLokiC
 
         s_type = story_type
         @iteration = s_type.iteration
-        @export_configs = s_type.export_configurations
+        @export_configs = s_type.export_configurations.joins(:publication)
       end
 
       def insert(sample)
@@ -49,7 +49,7 @@ module MiniLokiC
       end
 
       def export_config
-        @export_configs.find_by(publication_id: @raw_sample[:publication_id])
+        @export_configs.find_by(publications: { pl_identifier: @raw_sample[:publication_id] })
       end
 
       # wrap to HTML tags
