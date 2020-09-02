@@ -25,11 +25,14 @@ module MiniLokiC
       def sample_params
         time_frame = TimeFrame.find_by(frame: @raw_sample[:time_frame])
         config = export_config
+        publication = config.publication
+        client = publication.client
 
         {
           output: output,
           staging_row_id: @raw_sample[:staging_row_id],
-          publication: config.publication,
+          client: client,
+          publication: publication,
           organization_ids: @raw_sample[:organization_ids],
           time_frame: time_frame,
           export_configuration: config,
@@ -46,8 +49,7 @@ module MiniLokiC
       end
 
       def export_config
-        @export_configs
-          .joins(:publication).find_by(publications: { pl_identifier: @raw_sample[:publication_id] })
+        @export_configs.find_by(publication_id: @raw_sample[:publication_id])
       end
 
       # wrap to HTML tags

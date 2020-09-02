@@ -12,7 +12,7 @@ class ExportsController < ApplicationController
 
   def exported_stories
     @exported =
-      @story_type.iteration.samples.where.not(pl_staging_id: nil).limit(2000)
+      @story_type.iteration.samples.includes(:output, :publication).where.not(pl_staging_id: nil).limit(2000)
   end
 
   def section; end

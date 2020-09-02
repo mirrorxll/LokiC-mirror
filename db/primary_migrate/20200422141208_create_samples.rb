@@ -5,6 +5,7 @@ class CreateSamples < ActiveRecord::Migration[6.0]
     create_table :samples do |t|
       t.belongs_to :iteration
       t.belongs_to :export_configuration
+      t.belongs_to :client
       t.belongs_to :publication
       t.belongs_to :output
       t.belongs_to :time_frame
