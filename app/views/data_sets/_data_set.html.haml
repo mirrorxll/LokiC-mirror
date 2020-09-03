@@ -31,6 +31,24 @@
               -else
                 No
 
+      .card.small.mt-3
+        .card-header.p-2
+          additional info:
+        .card-body
+          .row
+            .col-4.pr-0.text-right
+              gather task:
+            .col-8
+              #{link_to(URI.parse(data_set.gather_task).host, data_set.gather_task, target: '_blank') }
+            .col-4.pr-0.text-right
+              scrape dev:
+            .col-8
+              #{data_set.scrape_developer}
+            .col-4.pr-0.text-right
+              comment:
+            .col-8
+              #{data_set.comment}
+
     .col-6
       .card.small
         .card-header.p-2
@@ -51,21 +69,27 @@
               .col-8
                 #{data_set.evaluated_at.strftime('%F %R')}
 
-    .col-6.mt-3
-      .card.small
+      .card.small.mt-3
         .card-header.p-2
-          additional info:
+          default properties:
         .card-body
-          .row
-            .col-4.pr-0.text-right
-              gather task:
-            .col-8
-              #{link_to(URI.parse(data_set.gather_task).host, data_set.gather_task, target: '_blank') }
-            .col-4.pr-0.text-right
-              scrape dev:
-            .col-8
-              #{data_set.scrape_developer}
-            .col-4.pr-0.text-right
-              comment:
-            .col-8
-              #{data_set.comment}
+          .row.pb-2
+            .col-6.font-weight-bold
+              photobucket:
+            .col-6
+              #photobucket
+                -if data_set.photo_bucket
+                  =render 'default_properties/photo_bucket', photo_bucket: data_set.photo_bucket
+                -else
+                  =render 'default_properties/photo_bucket_form'
+          .row.font-weight-bold
+            .col-6
+              client:
+            .col-6
+              tag:
+          #default_properties
+            -unless data_set.client_tags.nil?
+              -data_set.client_tags.each do |client_tag|
+                =render 'default_properties/client_tags', client_tag: client_tag
+          .p
+            =render 'default_properties/client_form'

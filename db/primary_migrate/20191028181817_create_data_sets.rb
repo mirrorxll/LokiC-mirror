@@ -23,6 +23,7 @@ class CreateDataSets < ActiveRecord::Migration[6.0] # :nodoc:
       t.string    :gather_task
       t.string    :scrape_developer
       t.string    :comment, limit: 1000
+
       t.timestamps
     end
   end

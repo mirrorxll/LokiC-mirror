@@ -130,6 +130,22 @@ ActiveRecord::Schema.define(version: 2020_08_17_175402) do
     t.index ["staging_table_id"], name: "index_columns_on_staging_table_id"
   end
 
+  create_table "data_set_client_tags", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "data_set_id"
+    t.bigint "client_id"
+    t.bigint "tag_id"
+    t.index ["client_id"], name: "index_data_set_client_tags_on_client_id"
+    t.index ["data_set_id"], name: "index_data_set_client_tags_on_data_set_id"
+    t.index ["tag_id"], name: "index_data_set_client_tags_on_tag_id"
+  end
+
+  create_table "data_set_photo_buckets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "data_set_id"
+    t.bigint "photo_bucket_id"
+    t.index ["data_set_id"], name: "index_data_set_photo_buckets_on_data_set_id"
+    t.index ["photo_bucket_id"], name: "index_data_set_photo_buckets_on_photo_bucket_id"
+  end
+
   create_table "data_sets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "account_id"
     t.bigint "evaluator_id"
@@ -148,12 +164,20 @@ ActiveRecord::Schema.define(version: 2020_08_17_175402) do
     t.string "gather_task"
     t.string "scrape_developer"
     t.string "comment", limit: 1000
+    t.string "properties_for_story_types", limit: 4000
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["account_id"], name: "index_data_sets_on_account_id"
     t.index ["evaluator_id"], name: "index_data_sets_on_evaluator_id"
     t.index ["src_release_frequency_id"], name: "index_data_sets_on_src_release_frequency_id"
     t.index ["src_scrape_frequency_id"], name: "index_data_sets_on_src_scrape_frequency_id"
+  end
+
+  create_table "data_sets_photo_buckets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "data_set_id"
+    t.bigint "photo_bucket_id"
+    t.index ["data_set_id"], name: "index_data_sets_photo_buckets_on_data_set_id"
+    t.index ["photo_bucket_id"], name: "index_data_sets_photo_buckets_on_photo_bucket_id"
   end
 
   create_table "editors_feedback", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

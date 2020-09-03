@@ -1,0 +1,2 @@
+=form_with(url: include_photo_bucket_data_set_default_properties_path(@data_set), html: { onchange: "Rails.fire(this, 'submit')" }) do |form|
+  =form.collection_select :photo_bucket_id, PhotoBucket.order(name: :asc), :id, :name, { prompt: '' }, { name: :id }

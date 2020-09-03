@@ -1,0 +1,9 @@
+=puts client_tag
+.row.mb-1{ id: "client_#{client_tag.client.id}_tag" }
+  .col-6.client
+    =render 'default_properties/client', client: client_tag.client
+  .col-6.client_tag
+    -if client_tag.tag.nil?
+      =render 'default_properties/tag_form', client: client_tag.client
+    -else
+      =render 'default_properties/tag', tag: client_tag.tag, client: client_tag.client
