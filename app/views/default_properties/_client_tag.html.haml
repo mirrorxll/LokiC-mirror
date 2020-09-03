@@ -1,9 +1,0 @@
--client_tag.each do |client_id, tag_id|
-  .row.mb-1{ id: "client_#{client_id}_tag" }
-    .col-6.client
-      =render 'default_properties/client', client: Client.find(client_id)
-    .col-6.client_tag
-      -if tag_id.nil?
-        =render 'default_properties/tag_form', client_id: client_id
-      -else
-        =render 'default_properties/tag', tag: Tag.find(tag_id), client_id: client_id

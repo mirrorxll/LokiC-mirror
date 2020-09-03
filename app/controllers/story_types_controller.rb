@@ -38,8 +38,13 @@ class StoryTypesController < ApplicationController # :nodoc:
   def create
     @story_type = @data_set.story_types.build(story_type_params)
     @story_type.editor = current_account
+    @story_type.photo_bucket = @data_set.photo_bucket
 
     if @story_type.save!
+      @data_set.client_tags.each do |client_tag|
+        @story_type.client_tags.build(client: client_tag.client, tag: client_tag.tag).save!
+      end
+
       redirect_to data_set_path(@data_set)
     else
       render :new

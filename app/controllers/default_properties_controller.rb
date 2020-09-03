@@ -3,61 +3,55 @@
 class DefaultPropertiesController < ApplicationController # :nodoc:
   skip_before_action :find_parent_story_type
   before_action :find_data_set
+  before_action :find_photo_bucket, only: %i[include_photo_bucket exclude_photo_bucket]
+  before_action :find_client_tags, except: %i[include_photo_bucket exclude_photo_bucket]
   before_action :find_client, only: %i[include_client exclude_client]
-  before_action :find_tag, only: %i[include_tag exclude_tag]
-  before_action :default_property
 
   def include_client
-    render_400 && return if @default_property.client_tag.key?(@client.id)
+    render_400 && return if @client_tags.find_by(client: @client)
 
-    @default_property.client_tag[@client.id] = nil
-    @default_property.save
-    @tags = @client.tags
+    @data_set.clients << @client
+    @client_tag = @client_tags.reload.find_by(client: @client)
   end
 
   def exclude_client
-    @default_property.client_tag.delete(@client.id)
-    @default_property.save
+    @client_tags.reload.find_by(client: @client).delete
   end
 
   def include_tag
     @tag = Tag.find(params[:id])
     @client = Client.find(params[:client_id])
-    @default_property.client_tag[params[:client_id].to_i] = @tag.id
-    @default_property.save
+    @client_tags.reload.find_by(client: @client).update(tag: @tag)
   end
 
   def exclude_tag
-    @tag = Tag.find(params[:id])
     @client = Client.find(params[:client_id])
-    @default_property.client_tag[params[:client_id].to_i] = nil
-    @default_property.save
+    @client_tags.reload.find_by(client: @client).update(tag: nil)
   end
 
   def include_photo_bucket
-    @photo_bucket = PhotoBucket.find(params[:id])
-    @default_property.update(photo_bucket: @photo_bucket)
+    @data_set.build_data_set_photo_bucket(photo_bucket: @photo_bucket).save!
   end
 
   def exclude_photo_bucket
-    @default_property.update(photo_bucket: nil)
+    @data_set.data_set_photo_bucket.delete
   end
 
   private
 
-  def default_property
-    @default_property = @data_set.default_property
+  def find_client_tags
+    @client_tags = @data_set.client_tags
   end
 
   def find_data_set
     @data_set = DataSet.find(params[:data_set_id])
   end
 
-  def find_client
-    @client = Client.find(params[:id])
+  def find_photo_bucket
+    @photo_bucket = PhotoBucket.find(params[:id])
   end
 
-  def find_tag
-    @tag = Tag.find(params[:id])
+  def find_client
+    @client = Client.find(params[:id])
   end
 end

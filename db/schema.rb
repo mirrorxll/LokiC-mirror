@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_27_172113) do
+ActiveRecord::Schema.define(version: 2020_08_31_124459) do
 
   create_table "account_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -130,6 +130,22 @@ ActiveRecord::Schema.define(version: 2020_08_27_172113) do
     t.index ["staging_table_id"], name: "index_columns_on_staging_table_id"
   end
 
+  create_table "data_set_client_tags", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "data_set_id"
+    t.bigint "client_id"
+    t.bigint "tag_id"
+    t.index ["client_id"], name: "index_data_set_client_tags_on_client_id"
+    t.index ["data_set_id"], name: "index_data_set_client_tags_on_data_set_id"
+    t.index ["tag_id"], name: "index_data_set_client_tags_on_tag_id"
+  end
+
+  create_table "data_set_photo_buckets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "data_set_id"
+    t.bigint "photo_bucket_id"
+    t.index ["data_set_id"], name: "index_data_set_photo_buckets_on_data_set_id"
+    t.index ["photo_bucket_id"], name: "index_data_set_photo_buckets_on_photo_bucket_id"
+  end
+
   create_table "data_sets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "account_id"
     t.bigint "evaluator_id"
@@ -157,12 +173,11 @@ ActiveRecord::Schema.define(version: 2020_08_27_172113) do
     t.index ["src_scrape_frequency_id"], name: "index_data_sets_on_src_scrape_frequency_id"
   end
 
-  create_table "default_properties", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "data_set_id", null: false
+  create_table "data_sets_photo_buckets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "data_set_id"
     t.bigint "photo_bucket_id"
-    t.string "client_tag"
-    t.index ["data_set_id"], name: "index_default_properties_on_data_set_id"
-    t.index ["photo_bucket_id"], name: "index_default_properties_on_photo_bucket_id"
+    t.index ["data_set_id"], name: "index_data_sets_photo_buckets_on_data_set_id"
+    t.index ["photo_bucket_id"], name: "index_data_sets_photo_buckets_on_photo_bucket_id"
   end
 
   create_table "editors_feedback", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -395,5 +410,4 @@ ActiveRecord::Schema.define(version: 2020_08_27_172113) do
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "default_properties", "data_sets"
 end
