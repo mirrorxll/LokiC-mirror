@@ -55,8 +55,6 @@ class DataSetsController < ApplicationController # :nodoc:
 
   def properties; end
 
-  def set_default_properties; end
-
   private
 
   def find_data_set

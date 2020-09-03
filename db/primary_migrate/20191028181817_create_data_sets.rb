@@ -24,8 +24,6 @@ class CreateDataSets < ActiveRecord::Migration[6.0] # :nodoc:
       t.string    :scrape_developer
       t.string    :comment, limit: 1000
 
-      t.string  :properties_for_story_types, limit: 4_000
-
       t.timestamps
     end
   end

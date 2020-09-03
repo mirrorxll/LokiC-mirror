@@ -1,4 +1,4 @@
-# frozen_string_literal: true    @defaut_properties = DefaultProperty.find_by(data_set: @data_set).properties
+# frozen_string_literal: true
 
 class ClientsController < ApplicationController # :nodoc:
   before_action :render_400, if: :developer?
