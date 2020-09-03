@@ -1,0 +1,54 @@
+(()=>{
+    let manual_feedback_modal = $('#manual_feedback_modal')
+    let fcd_body = document.getElementById('fcd_body').innerHTML;
+    let editorsFeedback = document.getElementById('editors_feedback_body').innerHTML
+
+    document.getElementById('manual_feedback_modal_label').innerText = `<%= "FCD ##{@story_type.id} #{@story_type.name} -- #{@story_type.developer.name} -- editors feedback".html_safe %>`
+    document.querySelector('#manual_feedback_modal #fcd').innerHTML = fcd_body;
+    document.querySelector('#manual_feedback_modal .w-39').innerHTML = `<%= j render 'form' %>`
+    document.querySelector('#editors_feedback_body_modal').innerHTML = editorsFeedback;
+
+    let allFcdLinks = document.querySelectorAll('#manual_feedback_modal #fcd a')
+    allFcdLinks.forEach(function(a) {
+        a.setAttribute('target', '_blank')
+    });
+
+    let samples =
+        <% if Rails.env.production? %>
+          document.querySelectorAll('#manual_feedback_modal #fcd a[href^="https://lokic.locallabs.com/story_types/"][href*="/iterations/"][href*="/samples/"]')
+        <% else %>
+          document.querySelectorAll('#manual_feedback_modal #fcd a[href^="http://localhost:3000/story_types/"][href*="/iterations/"][href*="/samples/"]')
+        <% end %>
+
+    samples.forEach(function(a) {
+       a.removeAttribute('target');
+       a.setAttribute('data-remote', 'true')
+    });
+
+    let feedbackEditor = $('#editors_feedback_editable [data-editor="summernote"]')
+    feedbackEditor.summernote({
+        height: 200,
+        disableResizeEditor: true,
+        toolbar: [
+            ['style', ['style']],
+            ['font', ['clear' , 'bold', 'italic', 'underline', 'strikethrough']],
+            ['fontname', ['fontname', 'fontsize']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['table', ['table']],
+            ['insert', ['link', 'picture', 'video']],
+            ['view', ['fullscreen', 'codeview', 'help']],
+        ]
+    });
+
+    if(sessionStorage['editorsFeedback']) {
+        feedbackEditor.summernote('code', sessionStorage['editorsFeedback']);
+    }
+
+    $(manual_feedback_modal).off('hidden.bs.modal')
+    manual_feedback_modal.on('hidden.bs.modal', editorsFeedbackSaver)
+}).call();
+
+function editorsFeedbackSaver() {
+    sessionStorage['editorsFeedback'] = document.querySelector('#editors_feedback_editable .note-editable').innerHTML;
+}

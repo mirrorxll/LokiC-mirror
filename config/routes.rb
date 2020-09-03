@@ -84,17 +84,16 @@ Rails.application.routes.draw do
     end
 
     resources :fact_checking_docs do
-      get :template
-      get :send_to_review_channel
-      get :send_to_fc_channel
+      get   :template
+      post  :send_to_reviewers_channel
       patch :save, on: :member
 
-      resources :reviewers_feedback, only: %i[show edit update] do
-        patch :save, on: :member
+      resources :reviewers_feedback, only: %i[new create] do
+        patch :confirm, on: :member
       end
 
-      resources :editors_feedback, only: %i[edit update] do
-        patch :save, on: :member
+      resources :editors_feedback, only: %i[new create] do
+        patch :confirm, on: :member
       end
     end
 

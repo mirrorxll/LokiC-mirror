@@ -2,15 +2,14 @@
 
 module PipelineReplica
   module Request
-    # request return job or nil
-    module ClientsPublicationsTags
+    module ClientsPublicationsTag
       def get_clients_publications_tags
-        @pl_replica.query(get_clients_pubs_tags_query).to_a
+        @pl_replica.query(clients_publications_tags_query).to_a
       end
 
       private
 
-      def get_clients_pubs_tags_query
+      def clients_publications_tags_query
         'SELECT cc.id client_id, cc.name client_name, p.id publication_id, p.name publication_name, '\
         "group_concat(concat(t.id, '::', t.name) separator ':::') tags FROM client_companies cc "\
         'JOIN communities p ON p.client_company_id = cc.id LEFT JOIN communities_story_tags p_t '\

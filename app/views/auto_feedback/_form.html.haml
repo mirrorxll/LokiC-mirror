@@ -6,7 +6,7 @@
       .card-body
         -auto_feedback.each_with_index do |fb, index|
           .row
-            .col-1{class: "confirm_#{fb.id} text-center", onchange: 'confirmAutoFeedback(this.className);'}
+            .col-1{class: "auto-fb-confirm_#{fb.id} text-center", onchange: 'confirmAutoFeedback(this.className);'}
               -if fb.confirmed
                 =icon('fas','check')
               -else
@@ -24,20 +24,7 @@
 :javascript
   $(function () {
     $('[data-toggle="popover"]').popover()
-  })
-
-  function confirmAutoFeedback(elem) {
-    let feedback = document.getElementsByClassName(elem)[0];
-    let feedbackConfirmId = elem.split(' ').find((className) => className.match(/confirm/) ).split('_')[1];
-    let changeAutoFeedbackStatus = (elem) => { elem.innerHTML = `<i class="fas fa-check"></i>`; }
-
-    $.ajax({
-      url: `#{root_url}story_types/#{@story_type.id}/iterations/#{@story_type.iteration.id}/auto_feedback_confirmations/${feedbackConfirmId}/confirm`,
-      success: changeAutoFeedbackStatus(feedback),
-      method: 'patch',
-      dataType: 'script'
-    });
-  }
+  });
 
   function hideOtherPopovers(elem) {
     let fbOutputs = document.querySelectorAll('[id^="feedback_output_"]');
@@ -48,3 +35,17 @@
       }
     });
   }
+
+  function confirmAutoFeedback(elem) {
+    let feedback = document.getElementsByClassName(elem)[0];
+    let feedbackConfirmId = elem.split(' ').find((className) => className.match(/auto-fb-confirm/)).split('_')[1];
+    let changeAutoFeedbackStatus = (elem) => { elem.innerHTML = `<i class="fas fa-check"></i>`; }
+
+    $.ajax({
+      url: `#{root_url}story_types/#{@story_type.id}/iterations/#{@story_type.iteration.id}/auto_feedback_confirmations/${feedbackConfirmId}/confirm`,
+      success: changeAutoFeedbackStatus(feedback),
+      method: 'patch',
+      dataType: 'script'
+    });
+  }
+

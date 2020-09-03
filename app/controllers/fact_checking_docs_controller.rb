@@ -2,8 +2,6 @@
 
 class FactCheckingDocsController < ApplicationController
   before_action :find_fcd, except: :template
-  before_action :update_fcd, only: %i[update save]
-  before_action :message, only: :send_to_fc_channel
 
   def show
     @tab_title = "FCD ##{@story_type.id} #{@story_type.name}"
@@ -11,7 +9,11 @@ class FactCheckingDocsController < ApplicationController
 
   def edit; end
 
+  def save; end
+
   def update
+    @fcd.update(fcd_params)
+
     if @fcd.errors.any?
       render :edit
     else
@@ -23,14 +25,9 @@ class FactCheckingDocsController < ApplicationController
     @template = @story_type.template
   end
 
-  def save; end
-
-  def send_to_review_channel
-    SlackNotificationJob.perform_later('hle_reviews_queue', message)
-  end
-
-  def send_to_fc_channel
-    SlackNotificationJob.perform_later(current_account.fc_channel.name, message)
+  def send_to_reviewers_channel
+    response = SlackNotificationJob.perform_now('hle_reviews_queue_test', message_to_slack)
+    @fcd.update(slack_message_ts: response[:ts])
   end
 
   private
@@ -39,16 +36,19 @@ class FactCheckingDocsController < ApplicationController
     @fcd = @story_type.fact_checking_doc
   end
 
-  def update_fcd
-    @fcd.update(fcd_params)
-  end
-
   def fcd_params
     params.require(:fact_checking_doc).permit(:body)
   end
 
-  def message
-    "FCD ##{@story_type.id} <#{story_type_fact_checking_doc_url(@story_type, @fcd)}|"\
-    "#{@story_type.name}> -- #{current_account.name}"
+  def send_to_reviewers_params
+    params.require(:slack_message).permit(:channel, :note)
+  end
+
+  def message_to_slack
+    info = send_to_reviewers_params
+
+    "*FCD* ##{@story_type.id} <#{story_type_fact_checking_doc_url(@story_type, @fcd)}|#{@story_type.name}>.\n"\
+    "*Developer:* #{@story_type.developer.name}.\n"\
+    "#{info[:note].present? ? "*Note*: #{info[:note]}" : ''}"
   end
 end

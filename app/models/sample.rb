@@ -3,6 +3,7 @@
 class Sample < ApplicationRecord
   belongs_to :iteration
   belongs_to :export_configuration
+  belongs_to :client, optional: true
   belongs_to :publication, optional: true
   belongs_to :output, dependent: :destroy
   belongs_to :time_frame, optional: true
@@ -30,6 +31,7 @@ class Sample < ApplicationRecord
   end
 
   def production_link
-    "https://pipeline.locallabs.com/stories/#{pl_production_id}"
+    "https://pipeline-staging.locallabs.com/stories/#{pl_staging_id}"
+    # "https://pipeline.locallabs.com/stories/#{pl_production_id}"
   end
 end

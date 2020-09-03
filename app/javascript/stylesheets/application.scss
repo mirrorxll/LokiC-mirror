@@ -10,6 +10,10 @@
   overflow: scroll;
 }
 
+.h-90 {
+  height: 90%;
+}
+
 .w-97 {
   width: 97%;
 }
@@ -28,6 +32,36 @@
   }
 }
 
-#human_feedback_modal .modal-content {
+#manual_feedback_modal .modal-content {
   height: 97%;
+}
+
+#editors_feedback_body_modal, #reviewers_feedback_body_modal {
+  padding: 15px;
+  overflow: auto;
+}
+
+.manual_feedback {
+  position: relative;
+  border-radius: 3px;
+  padding: 15px;
+}
+
+.manual_feedback:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.reviewer_fb_info, .editor_fb_info {
+  position: absolute;
+  display: inline-block;
+  margin-top: -26px;
+  margin-left: -5px;
+  background: white;
+}
+
+.label_to_line_modal {
+  position: absolute;
+  background-color: white;
+  margin-top: -27px;
+  margin-left: 5px;
 }

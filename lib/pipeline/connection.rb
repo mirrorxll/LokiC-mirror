@@ -8,8 +8,7 @@ module Pipeline
     private
 
     def connection
-      options = {
-        url: endpoint,
+      headers = {
         headers: {
           'Authorization' => token,
           'Content-Type' => 'application/json',
@@ -17,7 +16,7 @@ module Pipeline
         }
       }
 
-      Faraday::Connection.new(options)
+      Faraday::Connection.new(endpoint, headers)
     end
   end
 end

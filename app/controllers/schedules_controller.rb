@@ -28,7 +28,8 @@ class SchedulesController < ApplicationController # :nodoc:
   end
 
   def section
-    flash.now[:message] = update_section_params[:message]
+    message = update_section_params[:message]
+    flash.now[:message] = update_section_params[:message] if message.present?
   end
 
   private

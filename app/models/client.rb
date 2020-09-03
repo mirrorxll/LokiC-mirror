@@ -9,6 +9,7 @@ class Client < ApplicationRecord # :nodoc:
   has_many :story_type_client_tags
   has_many :story_types, through: :story_type_client_tags
 
+  has_many :clients
   has_many :publications
 
   has_and_belongs_to_many :sections

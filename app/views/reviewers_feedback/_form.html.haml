@@ -1,8 +1,17 @@
-=form_with(url: story_type_fact_checking_doc_reviewers_feedback_path(@story_type, @story_type.fact_checking_doc, @reviewers_feedback),
-           method: :put, local: true, html: { class: 'ml-3' }) do |form|
-  .field{ id: 'reviewers_feedback_editable', "data-controller" => "summernote" }
-    =form.text_area 'reviewers_feedback[body]', data: { editor: 'summernote' }
-  %small.d-block.mb-2.mt-2
-    *** Feedback will be automatically saved every 30 seconds.
-  =form.submit "save and notify developer about a new/updated reviewers feedback",
-        class: 'btn btn-sm btn-outline-dark', onclick: 'stopReviewersFeedbackSaver();'
+#reviewers_feedback_editor_modal.ml-3
+  =form_with(url: story_type_fact_checking_doc_reviewers_feedback_index_path(@story_type, @story_type.fact_checking_doc),
+             local: true) do |form|
+    .field{ id: 'reviewers_feedback_editable', "data-controller" => "summernote" }
+      =form.text_area 'reviewers_feedback[body]', data: { editor: 'summernote' }
+    .mt-3.mb-4
+      =form.submit "create feedback", class: 'btn btn-sm btn-outline-dark',
+                   onclick: "sessionStorage.removeItem('reviewersFeedback');"
+      =form.submit "approve!", class: 'btn btn-sm btn-outline-dark',
+                   onclick: "sessionStorage.removeItem('reviewersFeedback');"
+
+  .position-relative
+    %hr/
+    .label_to_line_modal
+      recent feedback
+
+#reviewers_feedback_body_modal

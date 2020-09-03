@@ -33,8 +33,8 @@ module Pipeline
 
       begin
         send(method, *args)
-      rescue StandardError => e
-        raise SafeMethodError, e if error_counter.eql?(3)
+      rescue Faraday::Error => e
+        raise e if error_counter.eql?(10)
 
         sleep(5)
         error_counter += 1

@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_31_124459) do
-
+ActiveRecord::Schema.define(version: 2020_08_17_175402) do
   create_table "account_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.string "permissions", limit: 5000
@@ -182,9 +181,11 @@ ActiveRecord::Schema.define(version: 2020_08_31_124459) do
 
   create_table "editors_feedback", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "fact_checking_doc_id"
+    t.bigint "editor_id"
     t.text "body", size: :medium
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["editor_id"], name: "index_editors_feedback_on_editor_id"
     t.index ["fact_checking_doc_id"], name: "index_editors_feedback_on_fact_checking_doc_id"
   end
 
@@ -291,10 +292,12 @@ ActiveRecord::Schema.define(version: 2020_08_31_124459) do
 
   create_table "reviewers_feedback", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "fact_checking_doc_id"
+    t.bigint "reviewer_id"
     t.text "body", size: :medium
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["fact_checking_doc_id"], name: "index_reviewers_feedback_on_fact_checking_doc_id"
+    t.index ["reviewer_id"], name: "index_reviewers_feedback_on_reviewer_id"
   end
 
   create_table "samples", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
