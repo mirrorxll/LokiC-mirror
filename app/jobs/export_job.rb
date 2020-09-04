@@ -4,7 +4,7 @@ class ExportJob < ApplicationJob
   queue_as :export
 
   def perform(story_type)
-    Samples[:staging].export!(story_type)
+    Samples[:production].export!(story_type)
     status = true
     message = 'exported.'
   rescue StandardError => e
