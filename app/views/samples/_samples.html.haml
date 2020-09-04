@@ -2,10 +2,10 @@
 -samples = iteration.samples.where(sampled: true)
 
 .row
-  .col-11.offset-1
+  .col-10.offset-1
     #samples_form
-      =render 'samples/form'
-%hr
+      =render 'samples/form', iteration: iteration, samples: samples
+    %hr/
 
 .row
   .col-10.offset-1
@@ -26,7 +26,7 @@
       -else
         .small
           No generated auto-feedback.
-      %hr/
+    %hr/
 
 #fcd__create_destroy_all_samples
-  =render 'samples/fcd__create_all_samples_buttons', iteration: iteration
+  =render 'samples/fcd__create_all_samples_buttons', iteration: iteration, samples: samples

@@ -17,9 +17,9 @@ class CreateSamples < ActiveRecord::Migration[6.0]
       t.date        :published_at
       t.date        :exported_at
       t.boolean     :backdated, default: false
-      t.timestamps
+      t.boolean     :sampled, default: false
 
-      t.boolean :sampled
+      t.timestamps
     end
   end
 end

@@ -5,7 +5,17 @@
   .col-12.text-center
     #story_type_name
       %b ##{@story_type.id} #{@story_type.name}
-%hr
+%hr/
+
+%nav{ 'area-label' => 'breadcrumb' }
+  %ov.breadcrumb
+    %li.breadcrumb-item
+      =link_to('home', root_url)
+    %li.breadcrumb-item.active{ 'area-current' => 'page' }
+      story type
+
+
+%hr/
 
 .row
   .col-10

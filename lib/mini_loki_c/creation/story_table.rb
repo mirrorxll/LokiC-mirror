@@ -41,6 +41,69 @@ module MiniLokiC
         '<table class="hle">' + header + '<tbody>' + content + footer + '</tbody></table>'
       end
 
+
+      def ranking!(arg = -1, rank_key: 'Rank', asc: false)
+        return self if @content.empty?
+
+        clmn_numb =
+          case arg
+          when Integer then arg
+          when String then @header.index(arg)
+          end
+
+        return self if clmn_numb.nil?
+
+        begin
+          @content.sort_by! { |row| (asc ? 1 : -1) * row[clmn_numb] }
+        rescue TypeError
+          p 'Attention! comparing non-digit values!'
+          @content.sort_by! { |row| row[clmn_numb] }
+          @content.reverse! unless asc
+        end
+
+        curr_value = @content.first[clmn_numb]
+        curr_rank = 1
+        free_numb = @content.first.size
+
+        @content.map.with_index(1) do |row, index|
+          unless row[clmn_numb].eql?(curr_value)
+            curr_value = row[clmn_numb]
+            curr_rank = index
+          end
+
+          row[free_numb] = curr_rank
+          row.unshift(row.pop)
+        end
+
+        @header.unshift(rank_key)
+
+        self
+      end
+
+      def delete_empty_columns!(empty_value = '')
+        empty_cols = []
+        (0..@header.count-1).each do |col_num|
+          empty_cols << col_num if @content.all? { |r| r[col_num] == empty_value }
+        end
+
+        empty_cols.reverse.each do |col_num|
+          @content.each do |arr|
+            arr.delete_at(col_num)
+          end
+          @header.delete_at(col_num)
+          @footer&.delete_at(col_num)
+        end
+        self
+      end
+
+      def empty?
+        @content.empty?
+      end
+
+      def self.json_to_html(json)
+        StoryTable.new.from_json(json).to_html
+      end
+
       private
 
       def check
