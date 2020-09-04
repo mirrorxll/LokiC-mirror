@@ -1,7 +1,7 @@
 #info.small
   .row
     .col-12.pl-5.pt-3.pb-3
-      iteration:      #{@story_type.iteration.name}
+      iteration: #{@story_type.iteration.name}
       %br/
       total exported: #{@exported.count}
       %br/
@@ -21,7 +21,7 @@
       %th.hovered_item#published_at{:scope => "col", onclick: 'sortHtmlTable(this.id);'}
         published_at
   %tbody#exported_stories
-    -@exported.each do |story|
+    -@to_report.each do |story|
       %tr
         %td
           =story.headline
