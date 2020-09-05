@@ -13,7 +13,7 @@
       -if samples.count.positive?
         =render samples
       -elsif iteration.story_samples.eql?(false)
-        =render 'samples/spinner', description: 'Creation in progress'
+        =render 'story_types/spinner', description: 'creation in progress'
       -else
         .small
           Samples were not created.

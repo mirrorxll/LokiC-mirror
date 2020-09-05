@@ -31,14 +31,13 @@ module Samples
           Thread.new do
             loop do
               sample = semaphore.synchronize { samples_to_export.shift }
+              break if sample.nil?
 
               story_id = lead_story_post(sample, client_tags)
               organization_ids = sample.organization_ids.delete('[ ]').split(',')
               story_update(story_id, organization_ids)
 
               sample.update(@pl_id_key => story_id)
-
-              break if samples_to_export.empty?
             end
           end
         end
