@@ -7,7 +7,7 @@
       %br/
       developer: #{@story_type.developer.name}
 
-%table.table.table-striped.table-sm.small
+%table#exported_stories.table.table-striped.table-sm.small
   %thead
     %tr
       %th.hovered_item#headline{:scope => "col", onclick: 'sortHtmlTable(this.id);'}
@@ -20,19 +20,19 @@
         publication
       %th.hovered_item#published_at{:scope => "col", onclick: 'sortHtmlTable(this.id);'}
         published_at
-  %tbody#exported_stories
-    -@to_report.each do |story|
-      %tr
-        %td
-          =story.headline
-        %td
-          =link_to(nil, story.production_link, target:'_blank')
-        %td
-          =story.client_name
-        %td
-          =story.publication_name
-        %td
-          =story.published_at.strftime('%F')
+    %tbody
+      -@to_report.each do |story|
+        %tr
+          %td
+            =story.headline
+          %td
+            =link_to(nil, story.production_link, target:'_blank')
+          %td
+            =story.client_name
+          %td
+            =story.publication_name
+          %td
+            =story.published_at.strftime('%F')
 
 :javascript
   document.addEventListener('DOMContentLoaded', () => {
@@ -42,7 +42,7 @@
   function sortHtmlTable(column) {
     let header = Array.from(document.querySelectorAll('th'));
     let columnIndex = header.findIndex((e) => e.innerText.match(column));
-    let body = document.getElementById('exported_stories');
+    let body = document.querySelector('tbody');
     let toSort = Array.from(body.children);
 
     if(sessionStorage[column]) {
@@ -61,9 +61,12 @@
 
     if(sessionStorage[column] === 'desc') toSort.reverse();
 
-    body.innerHtml = "";
+    body.remove();
+    body = document.createElement('tbody')
     for(let i = 0; i < toSort.length; i++)
       body.appendChild(toSort[i]);
+
+    document.getElementById('exported_stories').appendChild(body);
 
     header.forEach((e) => {
       if(e.innerText.match(column)) {
