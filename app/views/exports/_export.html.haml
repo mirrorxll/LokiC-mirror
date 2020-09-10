@@ -3,7 +3,7 @@
   -if @story_type.staging_table && iteration.creation && iteration.schedule
     -samples = iteration.samples
     -exported = samples.where.not(pl_production_id: nil).count
-    -total = samples.count
+    -ready_to_export = samples.where(pl_production_id: nil).count
 
     -if iteration.export.eql?(true)
       .row
@@ -19,7 +19,7 @@
     -else
       .row.mb-2
         .col-10.offset-1
-          ready to export: #{total}
+          ready to export: #{ready_to_export}
       .row
         .col-10.offset-1
           =link_to('export!', production_story_type_iteration_exports_path(@story_type, iteration),

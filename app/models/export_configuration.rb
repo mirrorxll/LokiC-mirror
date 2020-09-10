@@ -4,6 +4,7 @@ class ExportConfiguration < ApplicationRecord # :nodoc:
   belongs_to :story_type
   belongs_to :publication,  optional: true
   belongs_to :tag,          optional: true
+  belongs_to :photo_bucket
 
   has_many :samples
 

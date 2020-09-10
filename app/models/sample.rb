@@ -9,6 +9,7 @@ class Sample < ApplicationRecord
   belongs_to :time_frame, optional: true
 
   has_many   :auto_feedback_confirmations, dependent: :destroy
+  has_many   :fixes, class_name: 'SampleFix'
 
   def headline
     output.headline

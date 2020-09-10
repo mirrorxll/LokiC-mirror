@@ -27,7 +27,7 @@ module Samples
         samples_to_export = samples.to_a
         semaphore = Mutex.new
 
-        threads = Array.new(2) do
+        threads = Array.new(20) do
           Thread.new do
             loop do
               sample = semaphore.synchronize { samples_to_export.shift }
@@ -49,7 +49,8 @@ module Samples
     private
 
     def samples(story_type)
-      story_type.iteration.samples.joins(:export_configuration, :publication, :output)
+      story_type.iteration.samples.where(@pl_id_key => nil)
+                .joins(:export_configuration, :publication, :output)
                 .order(:published_at).where(backdated: false)
                 .where.not(export_configurations: { tag: nil })
     end

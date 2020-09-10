@@ -16,6 +16,8 @@ class StoryTypesController < ApplicationController # :nodoc:
     filter_params.each do |key, value|
       @story_types = @story_types.public_send(key, value) if value.present?
     end
+
+    redirect_to @story_types.first
   end
 
   def distributed
