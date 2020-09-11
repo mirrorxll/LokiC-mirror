@@ -30,7 +30,7 @@ module Samples
 
       def create_job_item(job_id, publication)
         photo_bucket =
-          @pl_client.environment.eql?(:production) ? [@story_type.photo_bucket] : []
+          @pl_client.environment.eql?(:production) ? [@story_type.photo_bucket.pl_identifier] : []
 
         response = @pl_client.post_job_item(
           job_id: job_id,

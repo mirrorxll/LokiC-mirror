@@ -7,12 +7,7 @@ module MiniLokiC
       # generation output to console
       class Base
         def initialize
-          @route =
-            PipelineReplica::Connection.new(:production).pl_replica
-        end
-
-        def pubs
-          get(pubs_query)
+          @route = PipelineReplica::Connection.new(:production).pl_replica
         end
 
         private

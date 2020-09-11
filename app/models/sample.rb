@@ -9,6 +9,7 @@ class Sample < ApplicationRecord
   belongs_to :time_frame, optional: true
 
   has_many   :auto_feedback_confirmations, dependent: :destroy
+  has_many   :fixes, class_name: 'SampleFix'
 
   def headline
     output.headline
@@ -31,7 +32,7 @@ class Sample < ApplicationRecord
   end
 
   def production_link
-    "https://pipeline-staging.locallabs.com/stories/#{pl_staging_id}"
-    # "https://pipeline.locallabs.com/stories/#{pl_production_id}"
+    # "https://pipeline-staging.locallabs.com/stories/#{pl_staging_id}"
+    "https://pipeline.locallabs.com/stories/#{pl_production_id}"
   end
 end

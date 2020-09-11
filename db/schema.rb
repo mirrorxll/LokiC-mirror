@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_17_175402) do
+ActiveRecord::Schema.define(version: 2020_09_09_111814) do
 
   create_table "account_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -164,7 +164,6 @@ ActiveRecord::Schema.define(version: 2020_08_17_175402) do
     t.string "gather_task"
     t.string "scrape_developer"
     t.string "comment", limit: 1000
-    t.string "properties_for_story_types", limit: 4000
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["account_id"], name: "index_data_sets_on_account_id"
@@ -173,17 +172,12 @@ ActiveRecord::Schema.define(version: 2020_08_17_175402) do
     t.index ["src_scrape_frequency_id"], name: "index_data_sets_on_src_scrape_frequency_id"
   end
 
-  create_table "data_sets_photo_buckets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "data_set_id"
-    t.bigint "photo_bucket_id"
-    t.index ["data_set_id"], name: "index_data_sets_photo_buckets_on_data_set_id"
-    t.index ["photo_bucket_id"], name: "index_data_sets_photo_buckets_on_photo_bucket_id"
-  end
-
   create_table "editors_feedback", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "fact_checking_doc_id"
     t.bigint "editor_id"
     t.text "body", size: :medium
+    t.boolean "approvable", default: false
+    t.boolean "confirmed", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["editor_id"], name: "index_editors_feedback_on_editor_id"
@@ -194,11 +188,13 @@ ActiveRecord::Schema.define(version: 2020_08_17_175402) do
     t.bigint "story_type_id"
     t.bigint "publication_id"
     t.bigint "tag_id"
+    t.bigint "photo_bucket_id"
     t.integer "production_job_item"
     t.integer "staging_job_item"
     t.boolean "skipped", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["photo_bucket_id"], name: "index_export_configurations_on_photo_bucket_id"
     t.index ["publication_id"], name: "index_export_configurations_on_publication_id"
     t.index ["story_type_id", "publication_id"], name: "export_config_unique_index", unique: true
     t.index ["story_type_id"], name: "index_export_configurations_on_story_type_id"
@@ -208,6 +204,7 @@ ActiveRecord::Schema.define(version: 2020_08_17_175402) do
   create_table "fact_checking_docs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "story_type_id"
     t.text "body", size: :medium
+    t.string "slack_message_ts"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["story_type_id"], name: "index_fact_checking_docs_on_story_type_id"
@@ -295,15 +292,26 @@ ActiveRecord::Schema.define(version: 2020_08_17_175402) do
     t.bigint "fact_checking_doc_id"
     t.bigint "reviewer_id"
     t.text "body", size: :medium
+    t.boolean "approvable", default: false
+    t.boolean "confirmed", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["fact_checking_doc_id"], name: "index_reviewers_feedback_on_fact_checking_doc_id"
     t.index ["reviewer_id"], name: "index_reviewers_feedback_on_reviewer_id"
   end
 
+  create_table "sample_fixes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "sample_id"
+    t.string "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["sample_id"], name: "index_sample_fixes_on_sample_id"
+  end
+
   create_table "samples", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "iteration_id"
     t.bigint "export_configuration_id"
+    t.bigint "client_id"
     t.bigint "publication_id"
     t.bigint "output_id"
     t.bigint "time_frame_id"
@@ -316,7 +324,8 @@ ActiveRecord::Schema.define(version: 2020_08_17_175402) do
     t.boolean "backdated", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.boolean "sampled"
+    t.boolean "sampled", default: false
+    t.index ["client_id"], name: "index_samples_on_client_id"
     t.index ["export_configuration_id"], name: "index_samples_on_export_configuration_id"
     t.index ["iteration_id"], name: "index_samples_on_iteration_id"
     t.index ["output_id"], name: "index_samples_on_output_id"

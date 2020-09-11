@@ -6,6 +6,7 @@ class CreateExportConfigurations < ActiveRecord::Migration[6.0]
       t.belongs_to :story_type
       t.belongs_to :publication
       t.belongs_to :tag
+      t.belongs_to :photo_bucket
 
       t.integer :production_job_item
       t.integer :staging_job_item
