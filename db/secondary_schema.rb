@@ -10,7 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_10_115910) do
+ActiveRecord::Schema.define(version: 2020_09_16_103626) do
+
+  create_table "report_tracking_hours", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "account_id"
+    t.decimal "hours", precision: 10
+    t.string "type_of_work"
+    t.string "client"
+    t.datetime "date"
+    t.string "comment", limit: 2000
+    t.index ["account_id"], name: "index_report_tracking_hours_on_account_id"
+  end
 
   create_table "reviews", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "report_type"

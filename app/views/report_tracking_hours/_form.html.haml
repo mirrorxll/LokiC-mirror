@@ -1,2 +1,14 @@
-%hr
-  Tracking Hours
+=form_with(url: report_tracking_hours_path) do |form|
+  .row
+    .col-1
+      =form.text_field :hours, class: 'mb-1 form-control form-control-sm'
+    .col-3
+      =form.select :type_of_work, types_of_work, { prompt: '' }, class: 'mb-1 form-control form-control-sm'
+    .col-2
+      =form.select :client, clients, { prompt: '' }, class: 'mb-1 form-control form-control-sm'
+    .col-2
+      =form.date_field :date, class: 'mb-1 form-control form-control-sm'
+    .col-3
+      =form.text_field :comment, class: 'mb-1 form-control form-control-sm'
+    .col-1
+      =link_to(icon('fas', 'minus'), exclude_client_data_set_default_property_path(data_set_id: @data_set, id: client), method: :delete, remote: true)

@@ -141,4 +141,10 @@ Rails.application.routes.draw do
   resources :slack_accounts, only: %i[] do
     patch :sync
   end
+
+  resources :report_tracking_hours, only: %i[create update destroy index] do
+    post   :include, on: :collection
+    delete :exclude, on: :member
+  end
+
 end
