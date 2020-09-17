@@ -143,8 +143,8 @@ Rails.application.routes.draw do
   end
 
   resources :report_tracking_hours, only: %i[create update destroy index] do
-    post   :include, on: :collection
-    delete :exclude, on: :member
+    delete :exclude_row, on: :member
+    get    :add_form, on: :collection
   end
 
 end

@@ -10,5 +10,3 @@
       =form.date_field :date, class: 'mb-1 form-control form-control-sm'
     .col-3
       =form.text_field :comment, class: 'mb-1 form-control form-control-sm'
-    .col-1
-      =link_to(icon('fas', 'minus'), exclude_client_data_set_default_property_path(data_set_id: @data_set, id: client), method: :delete, remote: true)

@@ -5,6 +5,11 @@ class ReportTrackingHoursController < ApplicationController # :nodoc:
 
   def index
     @rows_reports = ReportTrackingHour.all.where(account: current_account)
+
+    respond_to do |format|
+      format.html
+      format.xlsx
+    end
   end
 
   def create
@@ -17,6 +22,12 @@ class ReportTrackingHoursController < ApplicationController # :nodoc:
 
   def destroy
 
+  end
+
+  def exclude_row
+    puts params
+    @row_report = ReportTrackingHour.find(params[:id]).delete
+    @row_id = params[:id]
   end
 
 end
