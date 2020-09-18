@@ -10,7 +10,6 @@
       Date
     .col-3
       Comment
-
   -@rows_reports.each_with_index do |row|
     .row.border-bottom.border-left.border-right.pb-1{id: "row_#{row['id']}"}
       .col-1
@@ -25,8 +24,10 @@
         =row['comment']
       .col-1
         =link_to(icon('fas', 'minus'), exclude_row_report_tracking_hour_path(id: row['id']), method: :delete, remote: true)
-  .row
+  .row{id: 'forms'}
     =render 'report_tracking_hours/form'
+  .row
+    =link_to('Add row', add_form_report_tracking_hours_path, remote: true)
 
 -#.row.pt-1
 -#  =render 'report_tracking_hours/row'
