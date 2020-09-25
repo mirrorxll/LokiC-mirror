@@ -5,7 +5,7 @@ class CreateReportTrackingHours < ActiveRecord::Migration[6.0]
     create_table :report_tracking_hours do |t|
       t.belongs_to :account
 
-      t.decimal  :hours
+      t.decimal  :hours, scale: 2
       t.string   :type_of_work
       t.string   :client
       t.datetime :date

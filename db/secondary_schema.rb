@@ -14,7 +14,7 @@ ActiveRecord::Schema.define(version: 2020_09_16_103626) do
 
   create_table "report_tracking_hours", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "account_id"
-    t.decimal "hours", precision: 10
+    t.decimal "hours", precision: 10, scale: 2
     t.string "type_of_work"
     t.string "client"
     t.datetime "date"

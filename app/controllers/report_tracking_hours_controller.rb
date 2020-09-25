@@ -13,14 +13,15 @@ class ReportTrackingHoursController < ApplicationController # :nodoc:
   end
 
   def new
-    @row_report = ReportTrackingHour.new
+    @report_tracking_hour = ReportTrackingHour.new
   end
 
   def create
-    @row_report = ReportTrackingHour.new(row_report_params)
-    puts '////'
-    puts @row_report.hours
-    @row_report.save
+    @report_tracking_hour = ReportTrackingHour.new(row_report_params)
+    @report_tracking_hour.account = current_account
+    @report_tracking_hour.save!
+
+    @rows_reports = ReportTrackingHour.all.where(account: current_account)
   end
 
   def update
@@ -41,6 +42,6 @@ class ReportTrackingHoursController < ApplicationController # :nodoc:
   private
 
   def row_report_params
-    params.require(:row_report).permit(:hours, :type_of_work, :client, :date, :comment)
+    params.require(:report).permit(:hours, :type_of_work, :client, :date, :comment)
   end
 end

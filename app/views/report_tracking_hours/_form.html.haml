@@ -1,14 +1,18 @@
-=form_with(model: @row_report, url: report_tracking_hours_path, local: true) do |form|
+=form_with(model: @report_tracking_hour, url: report_tracking_hours_path, :html => {:id => "document.getElementById('forms').childElementCount;"} ) do |form|
   .row
     .col-1
-      =form.text_field :hours, class: 'mb-1 form-control form-control-sm'
+      =form.text_field 'report[hours]', class: 'mb-1 form-control form-control-sm'
     .col-3
-      =form.select :type_of_work, types_of_work, { prompt: '' }, class: 'mb-1 form-control form-control-sm'
+      =form.select 'report[type_of_work]', types_of_work, { prompt: '' }, class: 'mb-1 form-control form-control-sm'
     .col-2
-      =form.select :client, clients, { prompt: '' }, class: 'mb-1 form-control form-control-sm'
+      =form.select 'report[client]', clients, { prompt: '' }, class: 'mb-1 form-control form-control-sm'
     .col-2
-      =form.date_field :date, class: 'mb-1 form-control form-control-sm'
+      =form.date_field 'report[date]', class: 'mb-1 form-control form-control-sm'
     .col-3
-      =form.text_field :comment, class: 'mb-1 form-control form-control-sm'
+      =form.text_field 'report[comment]', class: 'mb-1 form-control form-control-sm'
     .col-1
       =form.submit :Add, class: 'mb-1 form-control form-control-sm'
+
+:javascript
+  var count_forms = document.getElementById("forms").childElementCount;
+  console.log(count_forms);

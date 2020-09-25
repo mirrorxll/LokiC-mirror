@@ -31,7 +31,7 @@ module Scheduler
       time_frame_ids.each_with_index do |frame, index|
         backdated_date =
           if index.zero?
-            Date.today
+            Date.today - 1
           else
             smpls = samples.where(time_frame: time_frame_ids[index - 1][:time_frame_id])
             smpls.sort_by { |sample| sample[:published_at] }.reverse.first[:published_at]
@@ -64,7 +64,7 @@ module Scheduler
 
           date_story_is_about = Date.ordinal(year_from_frame, day_from_frame)
 
-          backdated_date = (date_story_is_about - 2).strftime('%Y-%m-%d')
+          backdated_date = (date_story_is_about + 2).strftime('%Y-%m-%d')
 
           Backdate.backdate_scheduler(samples_time_frame, { backdated_date => '' })
         end
