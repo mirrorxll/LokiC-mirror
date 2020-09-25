@@ -14,10 +14,10 @@ class StoryTypesController < ApplicationController # :nodoc:
     @story_types = StoryType.order(id: :desc)
 
     filter_params.each do |key, value|
-      @story_types = @story_types.public_send(key, value) if value.present?
-    end
+      next if value.blank?
 
-    redirect_to @story_types.first
+      @story_types = @story_types.public_send(key, value)
+    end
   end
 
   def distributed
