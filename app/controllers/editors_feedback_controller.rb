@@ -13,7 +13,7 @@ class EditorsFeedbackController < ApplicationController
   def create
     @feedback = @feedback_collection.build(editors_feedback_params)
     @feedback.editor = current_account
-    @feedback.approvable = true if params[:commit].eql?('approve!')
+    @feedback.approvable = params[:commit].eql?('approve!')
 
     if @feedback.save
       redirect_to "#{story_type_fact_checking_doc_path(@story_type, @fcd)}#editors_feedback"

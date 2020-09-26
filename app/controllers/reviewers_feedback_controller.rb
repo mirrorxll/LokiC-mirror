@@ -12,7 +12,7 @@ class ReviewersFeedbackController < ApplicationController
   def create
     @feedback = @feedback_collection.build(reviewers_feedback_params)
     @feedback.reviewer = current_account
-    @feedback.approvable = true if params[:commit].eql?('approve!')
+    @feedback.approvable = params[:commit].eql?('approve!')
 
     if @feedback.save
       redirect_to "#{story_type_fact_checking_doc_path(@story_type, @fcd)}#reviewers_feedback"

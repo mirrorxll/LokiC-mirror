@@ -48,7 +48,7 @@
             -reviewers_feedback.each_with_index do |r_fb, index|
               %div{ id: "r_fb_#{r_fb.id}" }
                 .manual_feedback.border
-                  .reviewer_fb_info
+                  .reviewers_fb_info
                     =r_fb.reviewer.name
                     &nbsp
                     =r_fb.created_at.strftime('%F %R %Z')
@@ -56,13 +56,17 @@
                     -if r_fb.approvable
                       .font-weight-bold.d-inline
                         Approved!
+                    -elsif r_fb.confirmed
+                      =icon('fa', 'check')
+                  .row
+                    -if r_fb.confirmed
+                      .col-12
+                        =r_fb.body&.html_safe
                     -else
-                      .d-inline-block{ onchange: "confirmFeedback(this, 'reviewers', #{r_fb.id});" }
-                        -if r_fb.confirmed
-                          =icon('fa', 'check')
-                        -else
-                          %input{ type: :checkbox }
-                  =r_fb.body&.html_safe
+                      .col-1.d-flex.justify-content-center.align-items-center{ onchange: "confirmFeedback(this, 'reviewers', #{r_fb.id});" }
+                        %input{ type: :checkbox }
+                      .col-11.pl-0
+                        =r_fb.body&.html_safe
                 -if index != (reviewers_feedback.count - 1)
                   %hr.mt-4.mb-4/
 
@@ -81,10 +85,9 @@
 
         .card-body
           #editors_feedback_body
-
             -editors_feedback.each_with_index do |e_fb, index|
               .manual_feedback.border
-                .editor_fb_info
+                .editors_fb_info
                   =e_fb.editor.name
                   &nbsp
                   =e_fb.created_at.strftime('%F %R %Z')
@@ -92,15 +95,21 @@
                   -if e_fb.approvable
                     .font-weight-bold.d-inline
                       Approved!
+                  -elsif e_fb.confirmed
+                    =icon('fa', 'check')
+                .row
+                  -if e_fb.confirmed
+                    .col-12
+                      =e_fb.body&.html_safe
                   -else
-                    .d-inline-block{ onchange: "confirmFeedback(this, 'editors', #{e_fb.id});" }
-                      -if e_fb.confirmed
-                        =icon('fa', 'check')
-                      -else
-                        %input{ type: :checkbox }
-                =e_fb.body&.html_safe
+                    .col-1.d-flex.justify-content-center.align-items-center{ onchange: "confirmFeedback(this, 'editors', #{e_fb.id});" }
+                      %input{ type: :checkbox }
+                    .col-11.pl-0
+                      =e_fb.body&.html_safe
               -if index != (editors_feedback.count - 1)
                 %hr.mt-4.mb-4/
+
+
   =render 'fact_checking_docs/confirm_feedback'
   %hr/
   .row.small
