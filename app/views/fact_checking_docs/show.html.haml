@@ -98,7 +98,6 @@
                   -elsif e_fb.confirmed
                     =icon('fa', 'check')
                 .row
-                  = e_fb.inspect
                   -if e_fb.approvable || e_fb.confirmed
                     .col-12
                       =e_fb.body&.html_safe
