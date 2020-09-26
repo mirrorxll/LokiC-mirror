@@ -59,7 +59,7 @@
                     -elsif r_fb.confirmed
                       =icon('fa', 'check')
                   .row
-                    -if r_fb.confirmed
+                    -if r_fb.approvable || r_fb.confirmed
                       .col-12
                         =r_fb.body&.html_safe
                     -else
@@ -98,7 +98,8 @@
                   -elsif e_fb.confirmed
                     =icon('fa', 'check')
                 .row
-                  -if e_fb.confirmed
+                  = e_fb.inspect
+                  -if e_fb.approvable || e_fb.confirmed
                     .col-12
                       =e_fb.body&.html_safe
                   -else
