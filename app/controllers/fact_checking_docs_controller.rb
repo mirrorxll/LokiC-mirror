@@ -25,6 +25,7 @@ class FactCheckingDocsController < ApplicationController
     @template = @story_type.template
 
     respond_to do |format|
+      format.js { render 'template' }
       format.html { redirect_to story_type_template_path(@story_type, @template) }
     end
   end
