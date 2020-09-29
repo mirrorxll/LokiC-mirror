@@ -23,6 +23,10 @@ class FactCheckingDocsController < ApplicationController
 
   def template
     @template = @story_type.template
+
+    respond_to do |format|
+      format.html { redirect_to story_type_template_path(@story_type, @template) }
+    end
   end
 
   def send_to_reviewers_channel
