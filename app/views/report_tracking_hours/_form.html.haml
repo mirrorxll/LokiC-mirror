@@ -1,4 +1,4 @@
-=form_with(model: @report_tracking_hour, url: report_tracking_hours_path, :html => {:id => "document.getElementById('forms').childElementCount;"} ) do |form|
+=form_with(model: @report_tracking_hour, url: report_tracking_hours_path ) do |form|
   .row
     .col-1
       =form.text_field 'report[hours]', class: 'mb-1 form-control form-control-sm'
@@ -11,8 +11,13 @@
     .col-3
       =form.text_field 'report[comment]', class: 'mb-1 form-control form-control-sm'
     .col-1
-      =form.submit :Add, class: 'mb-1 form-control form-control-sm'
+      =form.submit :Add, class: 'mb-1 form-control form-control-sm', onclick: 'console.log(this.id)'
 
 :javascript
-  var count_forms = document.getElementById("forms").childElementCount;
-  console.log(count_forms);
+  forms = document.getElementsByTagName('form');
+  console.log(forms.length)
+  for (let index = 0; index < forms.length; ++index)
+  {
+    var formId = 'form_'+[index]
+    forms[index].id = formId
+  }
