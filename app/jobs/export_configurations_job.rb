@@ -28,13 +28,23 @@ class ExportConfigurationsJob < ApplicationJob
   private
 
   def st_client_tag(clients_tags, publication)
+    all_mm_pubs = Client.all_mm_publications
+
     clients_tags.to_a.find do |client_tag|
-      client_tag.client.publications.exists?(publication.id)
+      client = client_tag.client
+      publications =
+        if client.name.eql?('Metric Media')
+          all_mm_pubs
+        else
+          client.publications
+        end
+
+      publications.exists?(publication.id)
     end
   end
 
   def create_update_export_config(story_type, publication, tag)
-    exp_c = ExportConfiguration.find_or_create_by(
+    exp_c = ExportConfiguration.find_or_create_by!(
       story_type: story_type,
       publication: publication,
       photo_bucket: story_type.photo_bucket

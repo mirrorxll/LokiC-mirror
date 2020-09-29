@@ -26,7 +26,9 @@ module Table
         if iter_id_present?(t_name)
           a_r_m.change_column_default(t_name, :iter_id, iter_id)
         else
-          a_r_m.add_column(t_name, :iter_id, :integer, default: iter_id, after: :id)
+          a_r_m.add_column(t_name, :iter_id, :integer, after: :id)
+          a_r_m.change_column_default(t_name, :iter_id, iter_id)
+
           a_r_m.add_index(t_name, :iter_id, name: :iter)
         end
       end

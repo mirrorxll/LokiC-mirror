@@ -29,9 +29,10 @@ class CreationJob < ApplicationJob
 
     story_type.client_tags.each_with_object(counts) do |row, obj|
       client = row.client
-      pubs = client.name.eql?('Metric Media') ? Publication.where('name LIKE :like', like: 'MM -%') : client.publications
+      pubs = client.name.eql?('Metric Media') ? Client.all_mm_publications : client.publications
       counts = pubs.joins(:samples).where(samples: { iteration: story_type.iteration })
-                   .group(:publication_id).order('count(publication_id) desc').count(:publication_id)
+                   .group(:publication_id).order('count(publication_id) desc')
+                   .count(:publication_id)
 
       obj[client.name.to_sym] = counts.first[1]
     end

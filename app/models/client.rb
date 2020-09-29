@@ -9,9 +9,17 @@ class Client < ApplicationRecord # :nodoc:
   has_many :story_type_client_tags
   has_many :story_types, through: :story_type_client_tags
 
-  has_many :clients
   has_many :publications
 
   has_and_belongs_to_many :sections
   has_and_belongs_to_many :tags
+
+  def self.all_mm_publications
+    mm_clients = where('name LIKE :like', like: 'MM -%')
+    mm_pub_ids = mm_clients.map(&:publications)
+                           .map(&:to_a).flatten
+                           .map(&:id)
+
+    Publication.where(id: mm_pub_ids)
+  end
 end
