@@ -54,6 +54,123 @@ def dates(range: false)
   range ? start..finish : [start, finish]
 end
 
+def type_of_works
+  [
+    { name: 'Data Collection and Processing'},
+    { name: 'DWYM' },
+    { name: 'General Management' },
+    { name: 'G&A Development Services' },
+    { name: 'G&A Management- Data Services' },
+    { name: 'Story Production' },
+    { name: 'Lead Generation' },
+    { name: 'Data Cleaning' },
+    { name: 'Roseland MVP' },
+    { name: 'Cost Of Sales - Ballotpedia' },
+    { name: 'FOIA Chargers' },
+    { name: 'Franklin Archer Social Media' },
+    { name: 'Blockshopper Customer Service' },
+    { name: "Data Analysis - Voter Profile 'Grid'" },
+    { name: 'Dev Algo work' },
+    { name: 'Application Maintenance' },
+    { name: 'Human Resources - Hiring Skill test' },
+    { name: 'Matching Algos' },
+    { name: 'Physical Hardware Cost' },
+    { name: 'Scrape sourcing, instructions and data review' },
+    { name: 'Data Collection' },
+    { name: 'Data Matching' },
+    { name: 'G&A Management- Human Resources' },
+    { name: 'Scrape Work' }
+  ]
+end
+
+def clients_report
+  [
+    { name: 'AbelsonTaylor' },
+    { name: 'All Texas Process Servers' },
+    { name: 'American Independent Media' },
+    { name: 'Arizona Prosperity Alliance' },
+    { name: 'Austin American-Statesman' },
+    { name: 'Beaumont Enterprise' },
+    { name: 'Berkeley Research Group' },
+    { name: 'Configure One' },
+    { name: 'Curious Task' },
+    { name: 'D181 School Board Campaign' },
+    { name: 'Dan Proft' },
+    { name: 'Delos Communications' },
+    { name: 'Digital Logic' },
+    { name: 'DirecTech' },
+    { name: 'Edelman' },
+    { name: 'Empower Texans' },
+    { name: 'Everett Herald' },
+    { name: 'File & ServeXpress' },
+    { name: 'Financial Poise' },
+    { name: 'Fisher Wallace Laboratories' },
+    { name: 'Franklin News Foundation' },
+    { name: 'Genus Holdings' },
+    { name: 'Georgetown Group' },
+    { name: 'Google AdSense' },
+    { name: 'Grocery Manufacturers Association' },
+    { name: 'Heartland Institute' },
+    { name: 'Houston Chronicle' },
+    { name: 'Hutchinson & Stoy PLLC' },
+    { name: 'Illinois Business Alliance' },
+    { name: 'Illinois Opportunity Project' },
+    { name: 'Illinois Policy Institute' },
+    { name: 'Illinois Policy(501c3)' },
+    { name: 'IMGE' },
+    { name: 'INN-Watchdog.org' },
+    { name: 'Iowa Digital Newsboard' },
+    { name: 'Ironlight' },
+    { name: 'Ives for Illinois' },
+    { name: 'Kin' },
+    { name: 'Kivvit' },
+    { name: 'Liberty Principals PAC' },
+    { name: 'Lisa Wagner Co.' },
+    { name: 'Litify' },
+    { name: 'Local Government Information Services' },
+    { name: 'Local Labs' },
+    { name: 'Local Labs - Shared Services' },
+    { name: 'Metric Media' },
+    { name: 'Project 5 Media' },
+    { name: 'Real Time Reporters' },
+    { name: 'Red Dog Dumpsters' },
+    { name: 'Satter Foundation' },
+    { name: 'Satter Management' },
+    { name: 'Scripps Media' },
+    { name: 'Semiotics' },
+    { name: 'Shaw Media' },
+    { name: 'Shorewood Development Group' },
+    { name: 'Situation Management Group' },
+    { name: 'Spiegel' },
+    { name: 'Steve Lefko - School Board' },
+    { name: 'Texas Monitor' },
+    { name: 'Texas Public Policy Foundation' },
+    { name: 'The Record' },
+    { name: 'Tiger Swan' },
+    { name: 'Timothy Broas' },
+    { name: 'Toba Communications' },
+    { name: 'Trident CEO Council' },
+    { name: 'Two Dog Blog' },
+    { name: 'US Term Limits' },
+    { name: 'WV Bar Association' },
+    { name: 'Zola Creative' },
+    { name: 'Zurich North America' },
+    { name: 'Ballotpedia' },
+    { name: 'Blockshopper' },
+    { name: 'ASC' },
+    { name: 'Roseland' },
+    { name: 'Situation Management Group (SMG)' },
+    { name: 'Broomfield, CO - Big Dog Promotion' },
+    { name: 'G&A Management- Data Services' },
+    { name: 'G&A Development Services' },
+    { name: 'Lumen' },
+    { name: 'G&A Management- Human Resources' },
+    { name: 'urban business underwriting' },
+    { name: 'catholic vote' }
+  ]
+end
+
+
 # ============ Initial filling DB ============
 puts 'Account Types'
 account_type.each { |obj| AccountType.create!(obj) }
@@ -63,6 +180,10 @@ puts 'Frequencies'
 frequency.each { |obj| Frequency.create!(obj) }
 puts 'Statuses'
 status.each { |obj| Status.create!(obj) }
+puts 'Type of works'
+type_of_works.each { |obj| TypeOfWork.create!(obj) }
+puts 'Clients Report'
+clients_report.each { |obj| ClientsReport.create!(obj) }
 
 puts 'Clients Publications Tags'
 ClientsPublicationsTagsJob.perform_now
