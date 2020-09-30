@@ -37,7 +37,7 @@ module Samples
               organization_ids = sample.organization_ids.delete('[ ]').split(',')
               story_update(story_id, organization_ids)
 
-              sample.update(@pl_id_key => story_id)
+              sample.update(@pl_id_key => story_id, exported_at: Date.today)
             end
           end
         end
