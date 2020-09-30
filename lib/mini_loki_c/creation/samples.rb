@@ -5,7 +5,7 @@ module MiniLokiC
     # insert created samples to samples table
     class Samples
       def initialize(staging_table, options)
-        @sampled = options[:sampled]
+        @sampled = options[:sampled].present?
         @staging_table = staging_table
 
         s_type = story_type
@@ -23,7 +23,7 @@ module MiniLokiC
 
       # prepare sample to inserting
       def sample_params
-        time_frame = TimeFrame.find_by(frame: @raw_sample[:time_frame])
+        time_frame = TimeFrame.find_by(frame: @raw_sample[:time_frame].downcase)
         config = export_config
         publication = config.publication
         client = publication.client

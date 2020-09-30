@@ -71,12 +71,12 @@ module Table
 
     def created_at_default_value_query(name)
       "ALTER TABLE `#{name}` CHANGE COLUMN created_at created_at "\
-      'TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;'
+      'TIMESTAMP DEFAULT CURRENT_TIMESTAMP;'
     end
 
     def updated_at_default_value_query(name)
       "ALTER TABLE `#{name}` CHANGE COLUMN updated_at updated_at "\
-      'TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;'
+      'TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;'
     end
 
     def alter_change_iter_id_query(t_name, iter_id)

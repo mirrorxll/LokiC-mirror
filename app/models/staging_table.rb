@@ -4,6 +4,7 @@ class StagingTable < ApplicationRecord # :nodoc:
   before_create   :generate_table_name, if: :noname?
   before_create   :create_table,        if: :not_exists?
   before_create   :default_iter_id
+  before_create   :default_hle_columns
   before_create   :timestamps
   after_create    :sync
 
@@ -63,6 +64,10 @@ class StagingTable < ApplicationRecord # :nodoc:
 
   def create_table
     Table.create(name)
+  end
+
+  def default_hle_columns
+    Table.add_default_columns(name)
   end
 
   def timestamps
