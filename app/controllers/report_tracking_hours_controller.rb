@@ -14,15 +14,14 @@ class ReportTrackingHoursController < ApplicationController # :nodoc:
 
   def new
     @report = ReportTrackingHour.new
-    puts '////new'
-    puts params
   end
 
   def create
+    @report = ReportTrackingHour.new
     puts row_report_params
-    @report_tracking_hour = ReportTrackingHour.new(row_report_params)
-    @report_tracking_hour.account = current_account
-    @report_tracking_hour.save!
+    @report = ReportTrackingHour.new(row_report_params)
+    @report.account = current_account
+    @report.save!
 
     @rows_reports = ReportTrackingHour.all.where(account: current_account)
   end

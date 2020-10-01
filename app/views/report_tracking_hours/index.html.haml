@@ -1,8 +1,7 @@
 #report_tracking_hour
   =render 'report_tracking_hours/table', rows_reports: @rows_reports
-#forms
-  .row
-    =render 'report_tracking_hours/form'
+#forms.row
+  =render 'report_tracking_hours/form'
 .row
   =link_to('Add row', add_form_report_tracking_hours_path, remote: true)
 
