@@ -6,7 +6,7 @@ class SectionsJob < ApplicationJob
   def perform
     PipelineReplica[:production].get_sections.each do |raw_section|
       section = Section.find_or_initialize_by(pl_identifier: raw_section['id'])
-      section.pl_identifier = raw_section['name']
+      section.name = raw_section['name']
       section.save!
 
       clients_section(section)
@@ -20,12 +20,13 @@ class SectionsJob < ApplicationJob
 
     where =
       if section.pl_identifier.eql?(2)
-        "name = 'LGIS' OR name != 'The Record' AND name NOT LIKE 'MM - %'"
+        "name = 'LGIS' OR (name != 'The Record' AND name NOT LIKE 'MM - %')"
       elsif section.pl_identifier.eql?(16)
-        "name = 'LGIS' OR name = 'The Record' AND name LIKE 'MM - %'"
+        "name = 'LGIS' OR name = 'The Record' OR name LIKE 'MM - %'"
       end
 
-    clients = Client.where(where)
-    clients.each { |client| client.sections << section }
+    Client.where(where).each do |client|
+      client.sections << section unless client.sections.exists?(section.id)
+    end
   end
 end
