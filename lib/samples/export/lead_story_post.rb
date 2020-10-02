@@ -5,20 +5,20 @@ module Samples
     module LeadStoryPost
       private
 
-      def lead_story_post(sample, client_tags)
+      def lead_story_post(sample, pl_r_client)
         output = sample.output
         client = sample.client
         publication = sample.publication
-        tag = client_tags.find_by(client: client).tag
+        tag = sample.export_configuration.tag
 
-        lead_id = lead_post(sample, output.headline, publication)
+        lead_id = lead_post(sample, output.headline, publication, pl_r_client)
         story_post(lead_id, output, client, publication, tag, sample.published_at)
       end
 
-      def lead_post(sample, headline, publication)
+      def lead_post(sample, headline, publication, pl_r_client)
         exp_config = sample.export_configuration
         timestamp = "#{Date.today}.#{Time.now.to_i}"
-        job_item_id = job_item_id(exp_config, publication)
+        job_item_id = job_item_id(exp_config, publication, pl_r_client)
 
         params = {
           name: "#{headline} -- [#{exp_config.id}.#{sample.id}::#{timestamp}]",

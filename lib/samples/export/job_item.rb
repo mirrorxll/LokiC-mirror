@@ -5,13 +5,13 @@ module Samples
     module JobItem
       private
 
-      def job_item_id(exp_config, publication)
+      def job_item_id(exp_config, publication, pl_r_client)
         return exp_config[@job_item_key] if exp_config[@job_item_key]
 
-        job = @pl_replica_client.get_job(publication.pl_identifier)
+        job = pl_r_client.get_job(publication.pl_identifier)
         job_id = job ? job['id'] : create_job(publication)
 
-        job_item = @pl_replica_client.get_job_item(job_id, @story_type.name, publication.name)
+        job_item = pl_r_client.get_job_item(job_id, @story_type.name, publication.name)
         job_item_id = job_item ? job_item['id'] : create_job_item(job_id, publication)
 
         exp_config.update(@job_item_key => job_item_id)

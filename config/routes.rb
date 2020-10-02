@@ -37,7 +37,7 @@ Rails.application.routes.draw do
     get :properties
     get :canceling_edit, on: :member
 
-    resources :templates, path: :template, only: %i[edit update] do
+    resources :templates, path: :template, only: %i[show edit update] do
       patch :save, on: :member
     end
 
