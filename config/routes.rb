@@ -142,9 +142,13 @@ Rails.application.routes.draw do
     patch :sync
   end
 
-  resources :report_tracking_hours, only: %i[new create update destroy index] do
+  resources :tracking_hours, only: %i[new create update destroy index] do
     delete :exclude_row, on: :member
     get    :add_form, on: :collection
+  end
+
+  resources :developers_productions, only: %i[index] do
+
   end
 
 end

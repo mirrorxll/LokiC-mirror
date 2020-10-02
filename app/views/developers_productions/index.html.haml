@@ -1,0 +1,31 @@
+-if action_name.eql?('index')
+  %hr/
+  %section#filter
+    =render 'filter'
+
+  %hr/
+
+%hr/
+%section#developers_production.small
+  .row.text-center
+    .col-1 #
+    .col-5.pl-0.text-left story type
+    .col-2 type of export
+    .col-3 developer
+    .col-1 date export
+  %hr/
+  %hr/
+  -@rows_report.each do |row|
+    .row.text-center
+      .col-1
+        =row.iteration.story_type.id
+      .col-5.pl-0.text-left
+        =link_to(row.iteration.story_type.name, story_type_path(row.iteration.story_type))
+      .col-2
+        =row.first_export ? 'first' : 'follow up'
+      .col-3
+        ="#{row.developer.first_name} #{row.developer.last_name}"
+      .col-1
+
+
+
