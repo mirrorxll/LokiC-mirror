@@ -32,7 +32,7 @@ class Sample < ApplicationRecord
   end
 
   def link
-    if PL_TARGET.eql?('production')
+    if PL_TARGET.eql?(:production)
       "https://pipeline.locallabs.com/stories/#{pl_production_id}"
     else
       "https://pipeline-staging.locallabs.com/stories/#{pl_staging_id}"
