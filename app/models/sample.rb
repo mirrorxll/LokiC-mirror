@@ -31,8 +31,8 @@ class Sample < ApplicationRecord
     publication.name
   end
 
-  def production_link
-    if ENV['RAILS_ENV'].eql?('production')
+  def link
+    if PL_TARGET.eql?('production')
       "https://pipeline.locallabs.com/stories/#{pl_production_id}"
     else
       "https://pipeline-staging.locallabs.com/stories/#{pl_staging_id}"
