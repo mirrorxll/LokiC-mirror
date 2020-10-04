@@ -320,11 +320,11 @@ ActiveRecord::Schema.define(version: 2020_09_09_111814) do
     t.integer "pl_production_id"
     t.integer "pl_staging_id"
     t.date "published_at"
-    t.date "exported_at"
+    t.datetime "exported_at"
     t.boolean "backdated", default: false
+    t.boolean "sampled", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.boolean "sampled", default: false
     t.index ["client_id"], name: "index_samples_on_client_id"
     t.index ["export_configuration_id"], name: "index_samples_on_export_configuration_id"
     t.index ["iteration_id"], name: "index_samples_on_iteration_id"

@@ -32,7 +32,10 @@ class Sample < ApplicationRecord
   end
 
   def production_link
-    # "https://pipeline-staging.locallabs.com/stories/#{pl_staging_id}"
-    "https://pipeline.locallabs.com/stories/#{pl_production_id}"
+    if ENV['RAILS_ENV'].eql?('production')
+      "https://pipeline.locallabs.com/stories/#{pl_production_id}"
+    else
+      "https://pipeline-staging.locallabs.com/stories/#{pl_staging_id}"
+    end
   end
 end

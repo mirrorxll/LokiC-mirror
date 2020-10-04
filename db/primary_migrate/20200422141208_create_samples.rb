@@ -15,7 +15,7 @@ class CreateSamples < ActiveRecord::Migration[6.0]
       t.integer     :pl_production_id
       t.integer     :pl_staging_id
       t.date        :published_at
-      t.date        :exported_at
+      t.datetime    :exported_at
       t.boolean     :backdated, default: false
       t.boolean     :sampled, default: false
 

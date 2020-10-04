@@ -29,15 +29,15 @@ module Pipeline
       super unless method.end_with?('_safe')
 
       method.delete_suffix!('_safe')
-      error_counter = 0
+      sleep = 1
 
       begin
-        send(method, *args)
+        response = send(method, *args)
       rescue Faraday::Error => e
-        raise e if error_counter.eql?(10)
+        raise e if sleep > 127
 
-        sleep(5)
-        error_counter += 1
+        sleep(sleep)
+        sleep *= 2
         retry
       end
     end
