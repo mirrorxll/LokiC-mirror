@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DevelopersProductionsController < ApplicationController # :nodoc:
+class ExportedStoryTypesController < ApplicationController # :nodoc:
   skip_before_action :find_parent_story_type
 
   def index

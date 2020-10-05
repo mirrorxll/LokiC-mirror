@@ -12,6 +12,10 @@ class ExportJob < ApplicationJob
     message = e
   ensure
     story_type.update_iteration(export: status)
+    ExportedStoryType.new(developer: story_type.developer,
+                          iteration: story_type.iteration,
+                          first_export: story_type.iterations.count > 1,
+                          date_export: DateTime.now).save if status
     send_to_action_cable(story_type, export_msg: status)
     send_to_slack(story_type, message)
   end

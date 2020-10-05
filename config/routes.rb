@@ -129,7 +129,7 @@ Rails.application.routes.draw do
 
       resources :exports, path: 'export', only: [] do
         post :production,       on: :collection
-        get  :exported_stories, on: :collection
+        get :exported_story_types, on: :collection
         get  :section,          on: :collection
       end
     end
@@ -147,8 +147,7 @@ Rails.application.routes.draw do
     get    :add_form, on: :collection
   end
 
-  resources :developers_productions, only: %i[index] do
-
-  end
+  resources :exported_story_types, only: :index
+  resources :developers_productions, only: :index
 
 end

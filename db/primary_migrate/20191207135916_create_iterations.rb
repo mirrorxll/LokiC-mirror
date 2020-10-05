@@ -17,6 +17,7 @@ class CreateIterations < ActiveRecord::Migration[6.0] # :nodoc:
       t.string  :schedule_args, limit: 2_000
       t.string  :schedule_counts, limit: 1_000
       t.boolean :export
+      t.string  :export_data, limit: 1_000
       t.timestamps
     end
   end
