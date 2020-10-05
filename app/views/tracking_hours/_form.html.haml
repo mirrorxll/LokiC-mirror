@@ -1,0 +1,22 @@
+=form_with(model: @report, method: 'post') do |form|
+  .row
+    .col-1
+      =form.text_field 'report[hours]', class: 'mb-1 form-control form-control-sm'
+    .col-3
+      =form.collection_select 'report[type_of_work_id]', TypeOfWork.order(name: :asc), :id, :name, { prompt: '' }, class: 'mb-1 form-control form-control-sm'
+    .col-2
+      =form.collection_select 'report[clients_report_id]', ClientsReport.order(name: :asc), :id, :name, { prompt: '' }, class: 'mb-1 form-control form-control-sm'
+    .col-2
+      =form.date_field 'report[date]', class: 'mb-1 form-control form-control-sm'
+    .col-3
+      =form.text_field 'report[comment]', class: 'mb-1 form-control form-control-sm'
+    .col-1
+      =form.submit :Add, class: 'mb-1 form-control form-control-sm'
+
+:javascript
+  forms = document.getElementsByTagName('form');
+  console.log(forms.length)
+  for (let index = 0; index < forms.length; ++index)
+  {
+    forms[index].id = 'form_'+[index]
+  }

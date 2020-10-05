@@ -1,0 +1,9 @@
+.row.small
+  .col-12.text-center
+    =form_with(url: exported_story_types_path, method: :get, local: true, html: { class: 'd-inline' }) do |form|
+      =form.label :begin_date
+      =form.date_field 'filter[begin_date]'
+      =form.label :developer
+      =form.collection_select 'filter[developer]', Account.all, :id, :name, prompt: ''
+      =form.submit 'Get report', class: 'ml-3'
+    =button_to('Reset', exported_story_types_path, form: { class: 'd-inline' }, method: :get)

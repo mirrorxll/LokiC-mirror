@@ -1,0 +1,30 @@
+-if action_name.eql?('index')
+  %section#filter
+    =render 'filter'
+
+%hr/
+%section#developers_production.small
+  .row.text-center
+    .col-1 #
+    .col-5.pl-0.text-left story type
+    .col-1 type of export
+    .col-2 developer
+    .col-2 date export
+    .col-1 count stories
+  %hr/
+  -@rows_reports.each do |row|
+    %hr/
+    .row.text-center
+      .col-1
+        =row.iteration.story_type.id
+      .col-5.pl-0.text-left
+        =link_to(row.iteration.story_type.name, story_type_path(row.iteration.story_type))
+      .col-1
+        =row.first_export ? 'first' : 'follow up'
+      .col-2
+        ="#{row.developer.first_name} #{row.developer.last_name}"
+      .col-2
+        =row.date_export.strftime('%F')
+      .col-1
+        =MiniLokiC::Population::Formatize::Numbers.add_commas(row.iteration.samples.count)
+

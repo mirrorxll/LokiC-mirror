@@ -129,7 +129,7 @@ Rails.application.routes.draw do
 
       resources :exports, path: 'export', only: [] do
         post :production,       on: :collection
-        get  :exported_stories, on: :collection
+        get :exported_story_types, on: :collection
         get  :section,          on: :collection
       end
     end
@@ -142,9 +142,12 @@ Rails.application.routes.draw do
     patch :sync
   end
 
-  resources :report_tracking_hours, only: %i[new create update destroy index] do
+  resources :tracking_hours, only: %i[new create update destroy index] do
     delete :exclude_row, on: :member
     get    :add_form, on: :collection
   end
+
+  resources :exported_story_types, only: :index
+  resources :developers_productions, only: :index
 
 end

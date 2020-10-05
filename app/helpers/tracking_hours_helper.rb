@@ -1,4 +1,4 @@
-module ReportTrackingHoursHelper
+module TrackingHoursHelper
   def types_of_work
     ['Data Collection and Processing',
     'DWYM',
