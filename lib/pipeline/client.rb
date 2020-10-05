@@ -32,7 +32,7 @@ module Pipeline
       sleep = 1
 
       begin
-        response = send(method, *args)
+        send(method, *args)
       rescue Faraday::Error => e
         raise e if sleep > 127
 

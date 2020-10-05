@@ -26,8 +26,8 @@ module Samples
 
       def lead_post(sample, exp_config)
         publication = exp_config.publication
-        name = "#{sample.headline} -- [#{exp_config.id}.#{sample.id}"\
-               "::#{Date.today}.#{Time.now.to_i}]"
+        name = "#{sample.headline} -- [#{exp_config.id}."\
+               "#{sample.id}::#{Date.today}.#{Time.now.to_i}]"
 
         params = {
           name: name,

@@ -41,7 +41,7 @@ module Samples
                 SlackNotificationJob.perform_later(target, message)
               end
             end
-
+          ensure
             pl_rep_client.close
           end
         end
