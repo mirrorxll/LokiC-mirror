@@ -149,5 +149,6 @@ Rails.application.routes.draw do
 
   resources :exported_story_types, only: :index
   resources :developers_productions, only: :index
+  resources :developers_scores, only: :index
 
 end

@@ -6,10 +6,11 @@ class CreateTrackingHours < ActiveRecord::Migration[6.0]
       t.belongs_to :developer
       t.belongs_to :type_of_work
       t.belongs_to :clients_report
+      t.belongs_to :week
 
       t.decimal  :hours, scale: 2, precision: 4
 
-      t.datetime :date
+      t.date     :date
       t.string   :comment, limit: 2_000
     end
   end

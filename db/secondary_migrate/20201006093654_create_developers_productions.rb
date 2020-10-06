@@ -5,9 +5,11 @@ class CreateDevelopersProductions < ActiveRecord::Migration[6.0]
     create_table :exported_story_types do |t|
       t.belongs_to :developer
       t.belongs_to :iteration
+      t.belongs_to :week
 
-      t.boolean :first_export
-      t.datetime :date_export
+      t.boolean  :first_export
+      t.date :date_export
+      t.integer  :count_samples
     end
   end
 end
