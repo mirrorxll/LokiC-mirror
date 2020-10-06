@@ -44,7 +44,7 @@ class ExportConfigurationsJob < ApplicationJob
   end
 
   def create_update_export_config(story_type, publication, tag)
-    exp_c = ExportConfiguration.find_or_create_by!(
+    exp_c = ExportConfiguration.find_or_initialize_by(
       story_type: story_type,
       publication: publication
     )
