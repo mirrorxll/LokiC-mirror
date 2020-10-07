@@ -1,17 +1,17 @@
-=form_with(model: @report, method: 'post') do |form|
+=form_with(url: tracking_hours_path, method: 'post') do |form|
   .row
     .col-1
-      =form.text_field 'report[hours]', class: 'mb-1 form-control form-control-sm'
+      =form.text_field 'report[hours]', class: 'form-control form-control-sm'
     .col-3
       =form.collection_select 'report[type_of_work_id]', TypeOfWork.order(name: :asc), :id, :name, { prompt: '' }, class: 'mb-1 form-control form-control-sm'
     .col-2
       =form.collection_select 'report[clients_report_id]', ClientsReport.order(name: :asc), :id, :name, { prompt: '' }, class: 'mb-1 form-control form-control-sm'
     .col-2
       =form.date_field 'report[date]', class: 'mb-1 form-control form-control-sm'
-    .col-3
+    .col-4
       =form.text_field 'report[comment]', class: 'mb-1 form-control form-control-sm'
-    .col-1
-      =form.submit :Add, class: 'mb-1 form-control form-control-sm'
+    .col-1.invisible
+      =form.submit :Add, class: 'mb-1 form-control form-control-sm', id: 'report_button'
 
 :javascript
   forms = document.getElementsByTagName('form');
