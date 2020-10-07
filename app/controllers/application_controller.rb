@@ -37,6 +37,7 @@ class ApplicationController < ActionController::Base
   def staging_table_action(&block)
     flash.now[:error] =
       if @staging_table.nil? || StagingTable.not_exists?(@staging_table.name)
+        @staging_table&.destroy
         detached_or_delete
       else
         block.call
@@ -46,6 +47,6 @@ class ApplicationController < ActionController::Base
   end
 
   def detached_or_delete
-    'Table for this story type already detached or drop. Please update the page.'
+    'The Table for this story type has been renamed, detached or drop. Please update the page.'
   end
 end
