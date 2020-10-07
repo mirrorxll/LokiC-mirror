@@ -41,7 +41,7 @@ class ApplicationController < ActionController::Base
       else
         block.call
       end
-  rescue ActiveRecord::ActiveRecordError => e
+  rescue StandardError => e
     flash.now[:error] = e.message
   end
 

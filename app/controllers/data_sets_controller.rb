@@ -96,13 +96,15 @@ class DataSetsController < ApplicationController # :nodoc:
   end
 
   def new_data_set_notification
+    channel = 'hle_lokic_messages'
     message = "Added a new Data set. Details: #{data_set_url(@data_set)}"
-    SlackNotificationJob.perform_later('hle_lokic_messages', message)
+    SlackNotificationJob.perform_later(channel, message)
   end
 
   def eval_data_set_notification
+    channel = Rails.env.production? ? 'hle_lokic_messages' : 'notifications_test'
     message = "The '#{@data_set.name}' data set was evaluated. We can start to "\
               "create templates. Details: #{data_set_url(@data_set)}"
-    SlackNotificationJob.perform_later('hle_lokic_messages', message)
+    SlackNotificationJob.perform_later(channel, message)
   end
 end

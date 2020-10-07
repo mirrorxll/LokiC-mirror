@@ -9,11 +9,11 @@ class StoryType < ApplicationRecord # :nodoc:
   belongs_to :current_iteration, optional: true, class_name: 'Iteration'
 
   has_one :staging_table
-  has_one :template, dependent: :destroy
+  has_one :template
   has_one :fact_checking_doc
 
-  has_many :iterations,             dependent: :destroy
-  has_many :export_configurations,  dependent: :destroy
+  has_many :iterations
+  has_many :export_configurations
   has_many :configurations_no_tags, -> { where(tag: nil).or(where(skipped: true)) }, class_name: 'ExportConfiguration'
 
   has_many :client_tags, class_name: 'StoryTypeClientTag'
