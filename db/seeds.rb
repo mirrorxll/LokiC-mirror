@@ -180,10 +180,10 @@ puts 'Frequencies'
 frequency.each { |obj| Frequency.create!(obj) }
 puts 'Statuses'
 status.each { |obj| Status.create!(obj) }
-# puts 'Type of works'
-# type_of_works.each { |obj| TypeOfWork.create!(obj) }
-# puts 'Clients Report'
-# clients_report.each { |obj| ClientsReport.create!(obj) }
+puts 'Type of works'
+type_of_works.each { |obj| TypeOfWork.create!(obj) }
+puts 'Clients Report'
+clients_report.each { |obj| ClientsReport.create!(obj) }
 
 puts 'Clients Publications Tags'
 ClientsPublicationsTagsJob.perform_now

@@ -21,8 +21,8 @@ ActiveRecord::Schema.define(version: 2020_10_02_070426) do
     t.bigint "iteration_id"
     t.boolean "first_export"
     t.datetime "date_export"
-    t.index ["developer_id"], name: "index_developers_productions_on_developer_id"
-    t.index ["iteration_id"], name: "index_developers_productions_on_iteration_id"
+    t.index ["developer_id"], name: "index_exported_story_types_on_developer_id"
+    t.index ["iteration_id"], name: "index_exported_story_types_on_iteration_id"
   end
 
   create_table "reviews", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
