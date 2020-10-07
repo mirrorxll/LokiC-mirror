@@ -1,12 +1,7 @@
-.btn-group.w-100
-  =link_to('counts of stories', developers_productions_path,
-           class: 'btn btn-sm btn-light text-dark', remote: true)
-  =link_to('developers score', developers_scores_path,
-           class: 'btn btn-sm btn-light text-dark', remote: true)
+=render 'links'
 
--if action_name.eql?('index')
-  %section#filter
-    =render 'filter'
+%section#filter.mt-3
+  =render 'filter'
 
 %hr/
 %section#developers_production.small

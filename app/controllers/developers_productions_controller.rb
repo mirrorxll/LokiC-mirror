@@ -3,7 +3,7 @@
 class DevelopersProductionsController < ApplicationController # :nodoc:
   skip_before_action :find_parent_story_type
 
-  def index
+  def exported_counts
     @rows_reports = ExportedStoryType.begin_date(Date.today.prev_month)
 
     filter_params.each do |key, value|
@@ -16,6 +16,10 @@ class DevelopersProductionsController < ApplicationController # :nodoc:
                                           sum(if(first_export != 1, count_samples, 0)) as sum_follow_up_export,
                                           count(if(first_export = 1, 1, NULL)) as count_first,
                                           count(if(first_export != 1, 1, NULL)) as count_follow_up").group(:week_id).order(week_id: :desc)
+  end
+
+  def scores
+
   end
 
   private

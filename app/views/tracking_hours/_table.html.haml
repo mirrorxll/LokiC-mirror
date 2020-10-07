@@ -2,12 +2,12 @@
 %section#developers_production.small
   .row.text-center
     .col-1 hours
-    .col-3.pl-0.text-left type of work
+    .col-3 type of work
     .col-2 client
     .col-2 date
     .col-3 comment
   %hr/
-  %hr/
+
   -rows_reports.each do |row|
     .row.text-center{id: "row_#{row['id']}"}
       .col-1
@@ -22,4 +22,4 @@
         =row['comment']
       .col-1
         =link_to(icon('fas', 'minus'), exclude_row_tracking_hour_path(id: row['id']), method: :delete, remote: true)
-
+    %hr/

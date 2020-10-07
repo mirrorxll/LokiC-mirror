@@ -1,1 +1,11 @@
 $('#forms').append('<%= j render 'tracking_hours/form' %>')
+forms = document.getElementById("forms")
+
+count_forms = forms.childElementCount;
+
+console.log(count_forms)
+
+for (let index = 0; index < count_forms; ++index)
+{
+    forms[index].id = 'form_'+[index]
+}

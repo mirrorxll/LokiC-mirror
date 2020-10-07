@@ -143,12 +143,15 @@ Rails.application.routes.draw do
   end
 
   resources :tracking_hours, only: %i[new create update destroy index] do
+    post   :submit_forms, on: :collection
     delete :exclude_row, on: :member
-    get    :add_form, on: :collection
+    post    :add_form, on: :collection
   end
 
   resources :exported_story_types, only: :index
-  resources :developers_productions, only: :index
-  resources :developers_scores, only: :index
+  resources :developers_productions, only: [] do
+    get :scores, on: :collection
+    get :exported_counts, on: :collection
+  end
 
 end
