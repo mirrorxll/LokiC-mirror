@@ -32,9 +32,9 @@
 #story_types
   =render @story_types
 
-#template.modal.fade.template-modal-lg{ "aria-hidden" => "true", "aria-labelledby" => "template",
+#template.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "template",
                                         role: "dialog", tabindex: "-1", 'data-backdrop' => 'static' }
-  .modal-dialog.modal-dialog-centered.modal-lg
+  .modal-dialog.modal-dialog-centered.modal-xl
     .modal-content
       .modal-header
         %h5.modal-title
@@ -42,8 +42,8 @@
           %span{"aria-hidden" => "true"} ×
       .modal-body
 
-#properties.modal.fade.properties-modal-lg{"aria-hidden" => "true", "aria-labelledby" => "properties", role: "dialog", :tabindex => "-1"}
-  .modal-dialog.modal-dialog-centered.modal-lg
+#properties.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "properties", role: "dialog", :tabindex => "-1"}
+  .modal-dialog.modal-dialog-centered.modal-xl
     .modal-content
       .modal-header
         %h5.modal-title
