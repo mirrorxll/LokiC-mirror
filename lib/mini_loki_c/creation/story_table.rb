@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module MiniLokiC
   module Creation
     # class for build a table for the story body

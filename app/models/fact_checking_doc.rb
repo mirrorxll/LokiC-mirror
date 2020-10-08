@@ -15,6 +15,6 @@ class FactCheckingDoc < ApplicationRecord
   private
 
   def drop_negative_margins
-    body.gsub!(/margin[-a-z:]+[^;]*?(?:-\d)[^;]*?;/, '')
+    body.gsub!(/margin[-a-z:]+[^;]*-\d+[^;]*;/, '')
   end
 end
