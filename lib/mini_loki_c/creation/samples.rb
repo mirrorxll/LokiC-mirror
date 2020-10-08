@@ -23,8 +23,8 @@ module MiniLokiC
 
       # prepare sample to inserting
       def sample_params
-        time_frame = TimeFrame.find_by(frame: @raw_sample[:time_frame].downcase)
         config = export_config
+        time_frame = TimeFrame.find_by(frame: @raw_sample[:time_frame].downcase)
         publication = config.publication
         client = publication.client
 
@@ -49,7 +49,17 @@ module MiniLokiC
       end
 
       def export_config
-        @export_configs.find_by(publications: { pl_identifier: @raw_sample[:publication_id] })
+        export_config = @export_configs.find_by(
+          publications: {
+            pl_identifier: @raw_sample[:publication_id]
+          }
+        )
+        return export_config if export_config
+
+        raise ArgumentError,
+              'There is a publication in the staging table '\
+              'for which no export configuration has been created. '\
+              'Please click [create export configurations]'
       end
 
       # wrap to HTML tags

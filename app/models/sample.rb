@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 class Sample < ApplicationRecord
-  belongs_to :iteration,            optional: true
-  belongs_to :export_configuration, optional: true
-  belongs_to :client,               optional: true
-  belongs_to :publication,          optional: true
-  belongs_to :output,               dependent: :destroy
-  belongs_to :time_frame,           optional: true
+  belongs_to :iteration
+  belongs_to :export_configuration
+  belongs_to :client
+  belongs_to :publication
+  belongs_to :output, dependent: :destroy
+  belongs_to :time_frame
 
   has_many   :auto_feedback_confirmations, dependent: :destroy
   has_many   :fixes, class_name: 'SampleFix'
