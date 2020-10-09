@@ -5,7 +5,7 @@ class CreateTrackingHours < ActiveRecord::Migration[6.0]
     create_table :tracking_hours do |t|
       t.belongs_to :developer
       t.belongs_to :type_of_work
-      t.belongs_to :clients_report
+      t.belongs_to :client
       t.belongs_to :week
 
       t.decimal  :hours, scale: 2, precision: 4

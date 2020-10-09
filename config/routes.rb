@@ -145,7 +145,9 @@ Rails.application.routes.draw do
   resources :tracking_hours, only: %i[new create update destroy index] do
     post   :submit_forms, on: :collection
     delete :exclude_row, on: :member
-    post    :add_form, on: :collection
+    post   :add_form, on: :collection
+    get    :assembled_2020, on: :collection
+    get    :google_sheets, on: :collection
   end
 
   resources :exported_story_types, only: :index

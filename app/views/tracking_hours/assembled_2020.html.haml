@@ -1,0 +1,124 @@
+-#.row.overflow-auto
+-#  #first-part.w-25.d-inline
+-#    .row
+-#      .col-4 Date
+-#      .col-4 Dept
+-#      .col-4 Name
+-#  #second-part.w-75
+-#    .row
+-#      .col-2 Updated Description
+-#      .col-2 Oppourtunity Name
+-#      .col-2 Oppourtunity ID
+-#      .col-1 Old Product Name
+-#      .col-1 SF Product ID
+-#      .col-1 Client Name
+-#      .col-1 Account Name
+-#      .col-1 Hours
+-#      .col-1 Employment Classification
+
+=button_to 'Generate table', google_sheets_tracking_hours_path
+
+#dtHorizontal
+  %table.table-bordered.text-center.overflow-auto
+    %thead
+      %tr.small
+        %th Date
+        %th Dept
+        %th Name
+        %th Updated Description
+        %th Oppourtunity Name
+        %th Oppourtunity ID
+        %th Old Product Name
+        %th SF Product ID
+        %th Client Name
+        %th Account Name
+        %th Hours
+        %th Employment Classification
+    %tbody.h-75
+      -@rows_reports.each do |row|
+        %tr.small
+          %td
+            =row['Hours']
+          %td
+            =row['Dept']
+          %td
+            =row['Name']
+          %td
+            =row['Updated Description']
+          %td
+            =row['Oppourtunity Name']
+          %td
+            =row['Oppourtunity ID']
+          %td
+            =row['Old Product Name']
+          %td
+            =row['SF Product ID']
+          %td
+            =row['Client Name']
+          %td
+            =row['Account Name']
+          %td
+            =row['Hours']
+          %td
+            =row['Employment Classification']
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-#.row.text-center.small.font-weight-bold
+-#  .col-4 Date
+-#  .col-4 Dept
+-#  .col-4 Name
+-#  .col-1 Updated Description
+-#  .col-1 Oppourtunity Name
+-#  .col-1 Oppourtunity ID
+-#  .col-1 Old Product Name
+-#  .col-1 SF Product ID
+-#  .col-1 Client Name
+-#  .col-1 Account Name
+-#  .col-1 Hours
+-#  .col-1 Employment Classification
+-#
+-#.overflow-auto
+-#  -@rows_reports.each do |row|
+-#    %hr/
+-#    .row.text-center.small
+-#      .col-1
+-#        =row['Hours']
+-#      .col-1
+-#        =row['Dept']
+-#      .col-1
+-#        =row['Name']
+-#      .col-1
+-#        =row['Updated Description']
+-#      .col-1
+-#        =row['Oppourtunity Name']
+-#      .col-1
+-#        =row['Oppourtunity ID']
+-#      .col-1
+-#        =row['Old Product Name']
+-#      .col-1
+-#        =row['SF Product ID']
+-#      .col-1
+-#        =row['Client Name']
+-#      .col-1
+-#        =row['Account Name']
+-#      .col-1
+-#        =row['Hours']
+-#      .col-1
+-#        =row['Employment Classification']
