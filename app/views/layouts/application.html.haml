@@ -32,15 +32,14 @@
                 =link_to('Developers Production', exported_counts_developers_productions_path, class: 'nav-link')
               %li.nav-item.active
                 =link_to('Assembled 2020', assembled_2020_tracking_hours_path, class: 'nav-link')
-
-            %li.nav-item.dropdown.ml-auto.mr-3
-              #navbarDropdown.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
-                =current_account.name
-              .dropdown-menu{"aria-labelledby" => "navbarDropdown"}
-                .dropdown-item
-                  =link_to('Edit Profile', edit_account_registration_path, class: 'nav-link')
-                .dropdown-item
-                  =link_to('Log Out', destroy_account_session_path, class: 'nav-link', method: :delete)
+              %li.nav-item.dropdown.ml-auto.mr-3
+                #navbarDropdown.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
+                  =current_account.name
+                .dropdown-menu{"aria-labelledby" => "navbarDropdown"}
+                  .dropdown-item
+                    =link_to('Edit Profile', edit_account_registration_path, class: 'nav-link')
+                  .dropdown-item
+                    =link_to('Log Out', destroy_account_session_path, class: 'nav-link', method: :delete)
 
     -if notice
       %p.alert.alert-success.text-center

@@ -1,11 +1,19 @@
+<<<<<<< HEAD
 require 'rubyXL'
 require 'google_drive'
+=======
+# frozen_string_literal: true
+>>>>>>> 1c65077eb2dc90779b1cce4c1e4b74387c239118
 
 module Reports
   module Assembled
     def self.to_google_drive
       workbook = RubyXL::Workbook.new
+<<<<<<< HEAD
       session = GoogleDrive::Session.from_config('../configs/google_drive.json')
+=======
+      session = GoogleDrive::Session.from_config('config/google_drive.json')
+>>>>>>> 1c65077eb2dc90779b1cce4c1e4b74387c239118
 
       assembleds = Assembled.all
 
@@ -51,6 +59,13 @@ module Reports
       File.delete(file)
 
       puts "#{basename}: #{api_file.human_url}"
+<<<<<<< HEAD
     end
   end
 end
+=======
+      "#{basename}: #{api_file.human_url}"
+    end
+  end
+end
+>>>>>>> 1c65077eb2dc90779b1cce4c1e4b74387c239118

@@ -114,4 +114,5 @@ module TrackingHoursHelper
   def weeks
     Week.where(begin_week: Date.today - 1.month .. Date.today)
   end
+
 end

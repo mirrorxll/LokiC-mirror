@@ -47,6 +47,11 @@ gem 'coderay'
 #Spreadsheets
 gem 'caxlsx'
 gem 'caxlsx_rails'
+gem 'rubyXL'
+
+#google
+gem 'google-api-client', '~> 0.11'
+gem 'google_drive'
 
 gem 'google-api-client', '~> 0.11'
 gem 'google_drive'
