@@ -48,6 +48,8 @@ module Samples
 
         threads.each(&:join)
       end
+
+      samples(story_type).count.zero?
     end
 
     private

@@ -1,3 +1,6 @@
-$('#samples .card-body').html('<%= j render 'story_types/spinner', description: 'purge in progress' %>');
-$('#scheduler .card-body *').hide();
-$('#export .card-body *').hide();
+$('#story_type_samples_<%= @story_type.iteration.id %> .flash').empty();
+$('#story_type_samples_<%= @story_type.iteration.id %> .card-body')
+    .html('<%= j render 'story_types/spinner', description: 'purge all samples in progress' %>');
+
+$('#story_type_scheduler_<%= @story_type.iteration.id %> .card-body').empty();
+$('#story_type_export_<%= @story_type.iteration.id %> .card-body').empty();

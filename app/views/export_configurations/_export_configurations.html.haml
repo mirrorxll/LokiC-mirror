@@ -1,14 +1,17 @@
-.row
-  .col-10.offset-1
-    #create_export_configs.btn-group.mr-5
-      =link_to('create export configurations',
-                story_type_export_configurations_path(@story_type),
-                class: 'btn btn-sm btn-outline-dark', method: :post, remote: true)
-%hr/
--configs_no_tags = @story_type.configurations_no_tags
--if configs_no_tags.any?
-  =render 'export_configurations/export_configurations_no_tags_form', configs: configs_no_tags
+-if @story_type.iteration.export_configurations.eql?(false)
+  =render 'story_types/spinner', description: 'export configuration creation in progress'
 -else
-  .row.small
+  .row
     .col-10.offset-1
-      no configs without tags.
+      #create_export_configs.btn-group.mr-5
+        =link_to('create export configurations',
+                  story_type_export_configurations_path(@story_type),
+                  class: 'btn btn-sm btn-outline-dark', method: :post, remote: true)
+  %hr/
+  -configs_no_tags = @story_type.configurations_no_tags
+  -if configs_no_tags.any?
+    =render 'export_configurations/export_configurations_no_tags_form', configs: configs_no_tags
+  -else
+    .row.small
+      .col-10.offset-1
+        no configs without tags.

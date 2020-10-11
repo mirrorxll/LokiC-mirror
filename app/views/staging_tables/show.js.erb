@@ -8,10 +8,17 @@
   $('#staging_table .flash').empty();
   $('#staging_table .card-body').html('<%= j render 'staging_tables/staging_table'%>')
 
+
   <% if controller_name.eql?('staging_tables') && %w[create attach].include?(action_name) %>
     $('#story_type_code .card-body').html('<%= j render 'codes/section' %>')
+
+
+
   <% elsif controller_name.eql?('staging_tables') && action_name.eql?('section') %>
     $('#story_type_export_configs .card-body').html('<%= j render 'export_configurations/export_configurations' %>')
+
+
+
   <% elsif controller_name.eql?('columns') && action_name.eql?('update') && @story_type.iteration.population %>
     $('#samples .card-body').html('<%= j render 'samples/samples' %>');
 <% elsif controller_name.eql?('populations') && action_name.eql?('destroy') %>

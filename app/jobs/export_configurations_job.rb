@@ -4,6 +4,8 @@ class ExportConfigurationsJob < ApplicationJob
   queue_as :export_configurations
 
   def perform(story_type)
+    exp_config_counts = {}
+    exp_config_counts.default = 0
     st_cl_tgs = story_type.client_tags
 
     story_type.staging_table.publication_ids.each do |p_id|
@@ -12,10 +14,12 @@ class ExportConfigurationsJob < ApplicationJob
       next if publication.nil? || cl_tg.nil?
 
       create_update_export_config(story_type, publication, cl_tg.tag)
+      exp_config_counts[cl_tg.client.name] += 1
     end
 
     status = true
     message = 'export configurations created.'
+    story_type.update_iteration(export_configuration_counts: exp_config_counts)
   rescue StandardError => e
     status = nil
     message = e
