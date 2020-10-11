@@ -146,6 +146,7 @@ Rails.application.routes.draw do
     post   :submit_forms, on: :collection
     delete :exclude_row, on: :member
     post    :add_form, on: :collection
+    get   :assembled_2020, on: :collection
   end
 
   resources :exported_story_types, only: :index

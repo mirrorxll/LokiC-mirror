@@ -4,6 +4,7 @@ class TrackingHoursController < ApplicationController # :nodoc:
   skip_before_action :find_parent_story_type
 
   def index
+
     @rows_reports = TrackingHour.all.where(developer: current_account)
 
     respond_to do |format|
@@ -37,6 +38,10 @@ class TrackingHoursController < ApplicationController # :nodoc:
   def exclude_row
     @row_report = TrackingHour.find(params[:id]).delete
     @row_id = params[:id]
+  end
+
+  def assembled_2020
+    @assembleds = Assembled.all
   end
 
   private

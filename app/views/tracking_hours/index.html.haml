@@ -1,4 +1,9 @@
 #report_tracking_hour
+  .nav
+    .nav-link.active
+      =link_to 'Week1', tracking_hours_path, params: weeks.last
+    .nav-link Week2
+    .nav-link Week3
   =render 'tracking_hours/table', rows_reports: @rows_reports
 #forms.row.small
   =render 'tracking_hours/form'

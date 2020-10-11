@@ -110,4 +110,8 @@ module TrackingHoursHelper
     'urban business underwriting',
     'catholic vote']
   end
+
+  def weeks
+    Week.where(begin_week: Date.today - 1.month .. Date.today)
+  end
 end

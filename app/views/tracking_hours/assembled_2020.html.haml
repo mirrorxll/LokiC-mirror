@@ -1,0 +1,44 @@
+.row
+  #first.row.w-25
+    .mr-5 Date
+    .mr-5 Dept
+    .mr-5 Name
+  #second.d-flex.flex-row.w-75
+    .mr-5 Updated Description
+    .mr-5 Oppourtunity Name
+    .mr-5 Oppourtunity ID
+    .mr-5 Old Product Name
+    .mr-5 SF Product ID
+    .mr-5 Client Name
+    .mr-5 Account Name
+    .mr-5 Hours
+    .mr-0 Employment Classification
+-@assembleds.each do |assembled|
+  %hr/
+  .row
+    .row.w-25
+      .mr-5
+        =assembled.date
+      .mr-5
+        =assembled.dept
+      .mr-5
+        =assembled.name
+    .row.w-75
+      .mr-5
+        =assembled.updated_description
+      .mr-5
+        =assembled.oppourtunity_name
+      .mr-5
+        =assembled.oppourtunity_id
+      .mr-5
+        =assembled.old_product_name
+      .mr-5
+        =assembled.sf_product_id
+      .mr-5
+        =assembled.client_name
+      .mr-5
+        =assembled.account_name
+      .mr-5
+        =assembled.hours
+      .mr-5
+        =assembled.employment_classification
