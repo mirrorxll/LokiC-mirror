@@ -1,22 +1,72 @@
 =form_with(url: tracking_hours_path, method: 'post') do |form|
-  .row
-    .col-1
-      =form.text_field 'report[hours]', class: 'form-control form-control-sm'
-    .col-3
-      =form.collection_select 'report[type_of_work_id]', TypeOfWork.order(name: :asc), :id, :name, { prompt: '' }, class: 'mb-1 form-control form-control-sm'
-    .col-2
-      =form.collection_select 'report[clients_report_id]', ClientsReport.order(name: :asc), :id, :name, { prompt: '' }, class: 'mb-1 form-control form-control-sm'
-    .col-2
-      =form.date_field 'report[date]', class: 'mb-1 form-control form-control-sm'
-    .col-4
-      =form.text_field 'report[comment]', class: 'mb-1 form-control form-control-sm'
-    .col-1.invisible
-      =form.submit :Add, class: 'mb-1 form-control form-control-sm', id: 'report_button'
+  #add_report.mb-2
+    =icon('fas', 'plus')
+  #reports_editable
+  =form.submit 'submit', class: 'mt-4 btn btn-sm btn-outline-dark'
 
 :javascript
-  forms = document.getElementsByTagName('form');
-  console.log(forms.length)
-  for (let index = 0; index < forms.length; ++index)
-  {
-    forms[index].id = 'form_'+[index]
+  var reports_block = $('#reports_editable');
+  $('#add_report').click(function () {
+    let hex = secureRandom(6);
+
+    var typesOfWorks = #{raw TypeOfWork.order(name: :asc).map{|type| type.name}};
+    var clients = #{raw ClientsReport.order(name: :asc).map{|type| type.name}};
+
+    $(reports_block).append(
+        `<div id="report_${hex}" class="mb-1">
+            <div class="remove_report d-inline-block" id="rm_report_${hex}" onclick="removeDate(this)"><i class="fas fa-minus"></i></div>
+            <input id="report_${hex}_hours" required="required" type='text" name="report[${hex}[hours]]">
+            <select class="h_25px" id="report_${hex}_type_of_work" name="report[${hex}[type_of_work]]">${buildSelect(typesOfWorks)}</select>
+            <select class="h_25px" id="report_${hex}_client" name="report[${hex}[client]]">${buildSelect(clients)}</select>
+            <input id="report_${hex}_date" required="required" type="date" name="report[${hex}[date]]">
+        </div>`
+    );
+  });
+
+  function secureRandom(n){
+    let result = '';
+    while (n--){
+      result += Math.floor(Math.random() * 16).toString(16);
+    }
+
+    return result;
   }
+
+  function removeDate(elem) {
+    $(elem.parentNode).remove();
+  }
+
+  function buildSelect(options) {
+    var $select = $('');
+
+    for (var i = 0; i < options.length; i++) {
+      $select += ('<option value="' + options[i] + '">' + options[i] + '</option>');
+          console.log($select);
+    }
+    console.log($select);
+    return $select;
+  }
+
+
+-#=form_with(url: tracking_hours_path, method: 'post') do |form|
+-#  .row
+-#    .col-1
+-#      =form.text_field 'report[hours]', class: 'form-control form-control-sm'
+-#    .col-3
+-#      =form.collection_select 'report[type_of_work_id]', TypeOfWork.order(name: :asc), :id, :name, { prompt: '' }, class: 'mb-1 form-control form-control-sm'
+-#    .col-2
+-#      =form.collection_select 'report[clients_report_id]', ClientsReport.order(name: :asc), :id, :name, { prompt: '' }, class: 'mb-1 form-control form-control-sm'
+-#    .col-2
+-#      =form.date_field 'report[date]', class: 'mb-1 form-control form-control-sm'
+-#    .col-4
+-#      =form.text_field 'report[comment]', class: 'mb-1 form-control form-control-sm'
+-#    .col-1.invisible
+-#      =form.submit :Add, class: 'mb-1 form-control form-control-sm', id: 'report_button'
+-#
+-#:javascript
+-#  forms = document.getElementsByTagName('form');
+-#  console.log(forms.length)
+-#  for (let index = 0; index < forms.length; ++index)
+-#  {
+-#    forms[index].id = 'form_'+[index]
+-#  }

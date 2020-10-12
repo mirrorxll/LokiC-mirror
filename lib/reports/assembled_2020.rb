@@ -20,7 +20,7 @@ module Reports
         workbook['Assembled 2020'][0][j].change_font_bold(true)
       end
 
-      [12,7,12,,20,20,35,20,20,20,15,25,20,20].each_with_index do |width, k|
+      [12,7,12,20,20,35,20,20,20,15,25,20,20].each_with_index do |width, k|
         workbook['Assembled 2020'].change_column_width(k, width)
       end
 
