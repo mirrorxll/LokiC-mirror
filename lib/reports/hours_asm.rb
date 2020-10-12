@@ -2,7 +2,6 @@
 
 module Reports
   module HoursAsm
-
     def self.to_clip_b(txt)
       `echo '#{txt.to_s}' | xclip -selection clipboard`
     end
@@ -32,7 +31,7 @@ module Reports
     def self.q(dev_week)
       # headers = ["Name", "Hours", "Updated Description", "Client Name", "(SKIP COLUMN)", "Date", "(SKIP COLUMN)", "(SKIP COLUMN)", "Employment Classification", "Description"]
       # dev_week = tsv_to_hash(tsv, headers)
-
+      date = Date.today - (Date.today.wday - 1)
       puts '/////'
       puts dev_week
       puts dev_week.first
@@ -51,7 +50,7 @@ module Reports
 
       dev_week.each_with_index do |e, i|
         hash = {}
-        hash['Date'] = e.hours
+        hash['Date'] = date
         hash['Client Name'] = e.client.name
 
         hash['Client Name'] = 'Metric Media' if hash['Client Name'] == 'urban business underwriting'
@@ -130,8 +129,10 @@ module Reports
         e
       end
 
-      assembly
 
+      puts '1'
+      puts assembly
+      assembly
       # print "\nSuccess #{dev_name}! Total hours:\t #{total_hours}\n"
       # tsv = ""
       # assembly_headers = ["BLANK COLUMN", "Date", "Dept", "Name", "BLANK COLUMN", "Updated Description", "Oppourtunity Name", "Oppourtunity ID", "Old Product Name", "SF Product ID", "Client Name", "Account Name", "Hours", "BLANK COLUMN", "BLANK COLUMN", "Employment Classification"]

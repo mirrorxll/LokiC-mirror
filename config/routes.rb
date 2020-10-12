@@ -148,7 +148,8 @@ Rails.application.routes.draw do
 
     post   :add_form, on: :collection
     get    :assembled_2020, on: :collection
-    get    :google_sheets, on: :collection
+    post   :google_sheets, on: :collection
+    post   :import_date, on: :collection
   end
 
   resources :exported_story_types, only: :index
