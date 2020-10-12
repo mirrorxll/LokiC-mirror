@@ -21,7 +21,11 @@ module Samples
         lead_id = lead_post(sample, exp_config)
         story_id = story_post(lead_id, sample, exp_config, pl_r_client)
 
-        sample.update(@pl_id_key => story_id, exported_at: DateTime.now)
+        sample.update(
+          @pl_lead_id_key => lead_id,
+          @pl_id_key => story_id,
+          exported_at: DateTime.now
+        )
       end
 
       def lead_post(sample, exp_config)

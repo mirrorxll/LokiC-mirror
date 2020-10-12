@@ -11,7 +11,7 @@ class ExportsController < ApplicationController
   end
 
   def exported_stories
-    @exported = @story_type.iteration.samples.where.not("pl_#{PL_TARGET}_id".to_sym => nil)
+    @exported = @story_type.iteration.samples.where.not("pl_#{PL_TARGET}_story_id".to_sym => nil)
     @to_report = @exported.includes(:output, :publication).limit(2_000)
   end
 

@@ -11,7 +11,8 @@ module Samples
     def initialize(environment)
       @environment = environment
       @pl_client = Pipeline[environment]
-      @pl_id_key = "pl_#{environment}_id".to_sym
+      @pl_lead_id_key = "pl_#{environment}_lead_id".to_sym
+      @pl_story_id_key = "pl_#{environment}_story_id".to_sym
     end
 
     def export!(story_type)

@@ -4,7 +4,7 @@ class ExportJob < ApplicationJob
   queue_as :export
 
   def perform(story_type)
-    loop { break if Samples[PL_TARGET].export!(story_type) }
+    3.times { break if Samples[PL_TARGET].export!(story_type) }
 
     status = true
     message = 'exported.'
