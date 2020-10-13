@@ -2,9 +2,9 @@
   #reports_editable
   .d-flex.justify-content-between
     #add_report
-      =button_tag 'add row', class: 'mt-4 btn btn-sm btn-outline-dark'
+      =button_tag 'add row', class: 'btn btn-sm btn-outline-dark ml-2'
     #submit
-      =form.submit 'submit', class: 'mt-4 btn btn-sm btn-outline-dark'
+      =form.submit 'submit', class: 'btn btn-sm btn-outline-dark mr-2'
 
 :javascript
   var reports_block = $('#reports_editable');
@@ -15,7 +15,7 @@
     var clients = #{raw ClientsReport.order(name: :asc).map{|type| type.name}};
 
     $(reports_block).append(
-        `<div id="report_${hex}" class="row">
+        `<div id="report_${hex}" class="row ml-2 mb-2 text-center ">
             <input id="report_${hex}_hours" class="col-1" required="required" type="text" name="report[${hex}[hours]]">
             <select class="col-3" id="report_${hex}_type_of_work" name="report[${hex}[type_of_work]]">${buildSelect(typesOfWorks)}</select>
             <select class="col-2" id="report_${hex}_client" name="report[${hex}[client]]">${buildSelect(clients)}</select>
@@ -48,6 +48,9 @@
     console.log($select);
     return $select;
   }
+
+
+
 
 
 -#=form_with(url: tracking_hours_path, method: 'post') do |form|

@@ -1,8 +1,8 @@
+# frozen_string_literal: true
+
 require 'rubyXL'
 require 'rubyXL/convenience_methods'
 require 'google_drive'
-
-# frozen_string_literal: true
 
 module Reports
   module Assembled2020

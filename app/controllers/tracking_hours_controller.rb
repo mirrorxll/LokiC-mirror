@@ -2,15 +2,11 @@
 
 class TrackingHoursController < ApplicationController # :nodoc:
   skip_before_action :find_parent_story_type
+  before_action :find_row_reports, only: %i[index]
+  after_action :find_row_reports, only: %i[create]
 
   def index
 
-    @rows_reports = TrackingHour.all.where(developer: current_account)
-
-    respond_to do |format|
-      format.html
-      format.xlsx
-    end
   end
 
   def new
@@ -18,11 +14,16 @@ class TrackingHoursController < ApplicationController # :nodoc:
   end
 
   def create
-    @report = TrackingHour.new(row_report_params)
-    @report.developer = current_account
-    @report.save!
-
-    @rows_reports = TrackingHour.all.where(account: current_account)
+    params[:report].values.each do |row|
+      TrackingHour.create!(developer: current_account,
+                           type_of_work: TypeOfWork.find_by(name: row['type_of_work']),
+                           client: ClientsReport.find_by(name: row['client']),
+                           week: previous_week,
+                           hours: row['hours'],
+                           date: row['date'],
+                           comment: row['comment'])
+    end
+    @rows_reports = TrackingHour.all.where(developer: current_account)
   end
 
   def update
@@ -38,6 +39,10 @@ class TrackingHoursController < ApplicationController # :nodoc:
   def exclude_row
     @row_report = TrackingHour.find(params[:id]).delete
     @row_id = params[:id]
+  end
+
+  def import_data
+
   end
 
   def google_sheets
@@ -69,6 +74,11 @@ class TrackingHoursController < ApplicationController # :nodoc:
   end
 
   private
+
+  def find_row_reports
+    @rows_reports = TrackingHour.all.where(developer: current_account)
+  end
+
   def previous_week
     Week.where(end_week: Date.today - Date.today.wday).first
   end

@@ -4,6 +4,18 @@
       =link_to 'Week1', tracking_hours_path, params: weeks.last
     .nav-link Week2
     .nav-link Week3
+  =button_to
   =render 'tracking_hours/table', rows_reports: @rows_reports
 #forms.small
   =render 'tracking_hours/form'
+
+
+#import-data.modal.fade.template-modal-lg{ "aria-hidden" => "true", "aria-labelledby" => "template",
+                                        role: "dialog", tabindex: "-1", 'data-backdrop' => 'static' }
+  .modal-dialog.modal-dialog-centered.modal-lg
+    .modal-content
+      .modal-header
+        %h5.modal-title
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", type: "button", onclick: 'stopTemplateSaver();'}
+          %span{"aria-hidden" => "true"} ×
+      .modal-body
