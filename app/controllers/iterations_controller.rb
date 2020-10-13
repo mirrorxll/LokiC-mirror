@@ -11,8 +11,6 @@ class IterationsController < ApplicationController
     redirect_to @story_type
   end
 
-  def edit; end
-
   def update
     @iteration.update(iteration_params)
   end

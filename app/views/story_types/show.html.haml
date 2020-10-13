@@ -19,16 +19,16 @@
   .col-10
     #story_type_iterations
       =render @story_type.iterations
-      =link_to('new iteration', '#iteration_form',
-               "aria-controls" => "#iteration_form", "aria-expanded" => "false", "data-toggle" => "collapse",
-               role: "button",class: 'badge badge-pill badge-light')
+
+      .badge.badge-pill.badge-light{'data-container' => 'body',
+                                   'data-toggle' => 'popover',
+                                   'data-placement' => 'top',
+                                   'data-html' => 'true',
+                                   'data-content' => "#{render 'iterations/new_form'}" }
+        new iteration
   .col-2.text-right
     #story_type_status
       =render @iteration.statuses.first
-
-#iteration_form.collapse
-  %hr/
-  =render 'iterations/form'
 %hr/
 
 #story_type_template.accordion
