@@ -95,12 +95,13 @@ class StoryTypesController < ApplicationController # :nodoc:
       if params[:iteration]
         iteration = Iteration.find(params[:iteration])
         @story_type.update(current_iteration: iteration)
+
+        @story_type.staging_table.default_iter_id if StagingTable.exists?(@story_type.staging_table&.name)
+
         iteration
       else
         @story_type.current_iteration
       end
-
-    @story_type.staging_table&.default_iter_id if StagingTable.exists?(@story_type.staging_table&.name)
   end
 
   def filter_params

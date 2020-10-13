@@ -84,6 +84,6 @@ class StoryType < ApplicationRecord # :nodoc:
   end
 
   def self.status(id)
-    iteration.statuses.find_by(id: id)
+    includes(current_iteration: [:statuses]).where(statuses: { id: id })
   end
 end
