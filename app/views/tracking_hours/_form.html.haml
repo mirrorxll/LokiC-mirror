@@ -1,8 +1,10 @@
 =form_with(url: tracking_hours_path, method: 'post') do |form|
-  #add_report.mb-2
-    =icon('fas', 'plus')
   #reports_editable
-  =form.submit 'submit', class: 'mt-4 btn btn-sm btn-outline-dark'
+  .d-flex.justify-content-between
+    #add_report
+      =button_tag 'add row', class: 'mt-4 btn btn-sm btn-outline-dark'
+    #submit
+      =form.submit 'submit', class: 'mt-4 btn btn-sm btn-outline-dark'
 
 :javascript
   var reports_block = $('#reports_editable');
@@ -13,12 +15,13 @@
     var clients = #{raw ClientsReport.order(name: :asc).map{|type| type.name}};
 
     $(reports_block).append(
-        `<div id="report_${hex}" class="mb-1">
-            <div class="remove_report d-inline-block" id="rm_report_${hex}" onclick="removeDate(this)"><i class="fas fa-minus"></i></div>
-            <input id="report_${hex}_hours" required="required" type='text" name="report[${hex}[hours]]">
-            <select class="h_25px" id="report_${hex}_type_of_work" name="report[${hex}[type_of_work]]">${buildSelect(typesOfWorks)}</select>
-            <select class="h_25px" id="report_${hex}_client" name="report[${hex}[client]]">${buildSelect(clients)}</select>
-            <input id="report_${hex}_date" required="required" type="date" name="report[${hex}[date]]">
+        `<div id="report_${hex}" class="row">
+            <input id="report_${hex}_hours" class="col-1" required="required" type="text" name="report[${hex}[hours]]">
+            <select class="col-3" id="report_${hex}_type_of_work" name="report[${hex}[type_of_work]]">${buildSelect(typesOfWorks)}</select>
+            <select class="col-2" id="report_${hex}_client" name="report[${hex}[client]]">${buildSelect(clients)}</select>
+            <input id="report_${hex}_date" class="col-2" required="required" type="date" name="report[${hex}[date]]">
+            <input id="report_${hex}_comment" class="col-3" required="required" type="text" name="report[${hex}[comment]]">
+            <div class="remove_report col-1 d-inline-block" id="rm_report_${hex}" onclick="removeDate(this)"><i class="fas fa-minus"></i></div>
         </div>`
     );
   });
@@ -28,7 +31,6 @@
     while (n--){
       result += Math.floor(Math.random() * 16).toString(16);
     }
-
     return result;
   }
 

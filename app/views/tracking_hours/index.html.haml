@@ -5,22 +5,5 @@
     .nav-link Week2
     .nav-link Week3
   =render 'tracking_hours/table', rows_reports: @rows_reports
-#forms.row.small
+#forms.small
   =render 'tracking_hours/form'
-.row.pt-3
-  .col-6
-    =button_to('Add row', add_form_tracking_hours_path, remote: true)
-  .col-6
-    =button_to('Submit', class: 'btn btn-success', onclick: "document.getElementsByTagName('report_button').submit();")
-
--#.row.pt-1
--#  =render 'report_tracking_hours/row'
-
-
-:javascript
-  forms = document.getElementsByTagName('forms');
-  console.log(forms.length)
-  for (let index = 0; index < forms.length; ++index)
-  {
-    forms[index].id.submit();
-  }
