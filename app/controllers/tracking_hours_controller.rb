@@ -41,9 +41,7 @@ class TrackingHoursController < ApplicationController # :nodoc:
     @row_id = params[:id]
   end
 
-  def import_data
-
-  end
+  def import_data; end
 
   def google_sheets
     assembleds = Assembled.where(date: Date.today - (Date.today.wday - 1))
