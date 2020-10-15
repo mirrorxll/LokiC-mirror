@@ -1,0 +1,47 @@
+=button_to('Generate table', google_sheets_tracking_hours_path)
+
+#dtHorizontal
+  %table.table-bordered.text-center.overflow-auto
+    %thead
+      %tr.small
+        %th Date
+        %th Dept
+        %th Name
+        %th Updated Description
+        %th Oppourtunity Name
+        %th Oppourtunity ID
+        %th Old Product Name
+        %th SF Product ID
+        %th Client Name
+        %th Account Name
+        %th Hours
+        %th Employment Classification
+    %tbody.h-75
+      -@assemleds.each do |row|
+        %tr.small
+          %td
+            =row['Hours']
+          %td
+            =row['Dept']
+          %td
+            =row['Name']
+          %td
+            =row['Updated Description']
+          %td
+            =row['Oppourtunity Name']
+          %td
+            =row['Oppourtunity ID']
+          %td
+            =row['Old Product Name']
+          %td
+            =row['SF Product ID']
+          %td
+            =row['Client Name']
+          %td
+            =row['Account Name']
+          %td
+            =row['Hours']
+          %td
+            =row['Employment Classification']
+
+

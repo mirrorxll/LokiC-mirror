@@ -1,0 +1,7 @@
+=form_with(url: confirm_tracking_hours_path, method: 'post', html: { onchange: "Rails.fire(this, 'submit')" }) do |form|
+  .row
+    .mr-1 click to confirm your hourly tracking report
+    -if confirm.nil?
+      =form.check_box :confirm
+    -else
+      =form.check_box :confirm, checked: true

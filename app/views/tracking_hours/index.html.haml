@@ -1,20 +1,23 @@
-
-.nav
-  .nav-link.active
-    =link_to 'Week1', tracking_hours_path, params: weeks.last
-  .nav-link Week2
-  .nav-link Week3
-=button_to('Import data', show_modal_tracking_hours_path, class:'btn btn-sm btn-outline-dark', remote: true)
+.row
+  .col-10
+    .nav
+      .nav-link.active
+        =link_to 'Week1', tracking_hours_path, params: weeks.last
+      .nav-link Week2
+      .nav-link Week3
+  .col-2.justify-content-between
+    =button_to('Import data', show_modal_tracking_hours_path, class:'btn btn-sm btn-outline-dark', remote: true)
 #report_tracking_hour
   =render 'tracking_hours/table', rows_reports: @rows_reports
 #forms.small
   =render 'tracking_hours/form'
 
+=render 'form_confirm', confirm: @confirm
+
 #import-data.modal.fade.import-data-modal-lg{"aria-hidden" => "true", "aria-labelledby" => "import-data", role: "dialog", :tabindex => "-1"}
   .modal-dialog.modal-dialog-centered.modal-lg
     .modal-content
-      .modal-header
-        %h5.modal-title
+      .d-flex.justify-content-end.mt-1.mr-1
         %button.close{"aria-label" => "Close", "data-dismiss" => "modal", type: "button"}
           %span{"aria-hidden" => "true"} ×
       .modal-body

@@ -29,24 +29,16 @@ module Reports
     end
 
     def self.q(dev_week)
-      # headers = ["Name", "Hours", "Updated Description", "Client Name", "(SKIP COLUMN)", "Date", "(SKIP COLUMN)", "(SKIP COLUMN)", "Employment Classification", "Description"]
-      # dev_week = tsv_to_hash(tsv, headers)
       date = Date.today - (Date.today.wday - 1)
-      puts '/////'
-      puts dev_week
-      puts dev_week.first
-      puts dev_week.first.developer
-
       puts '////'
-      puts dev_week.first.client.name
-      puts dev_week.first.type_of_work.name
+      puts dev_week
+
       dev_week = dev_week.sort_by{|e| [e.developer.first_name, e.client.name, e.type_of_work.name] }
 
-      # dev_name = dev_week[0]["Name"].to_s
       dev = dev_week.first.developer
       dev_name = "#{dev.first_name} #{dev.last_name}"
 
-      assembly = []
+      assemblies = []
 
       dev_week.each_with_index do |e, i|
         hash = {}
@@ -64,29 +56,25 @@ module Reports
           hash['Employment Classification'] = 'International Contractor'
         end
         if i == 0
-          assembly << hash
+          assemblies << hash
           next
         end
 
-        prev = assembly[-1]
+        prev = assemblies[-1]
         if prev['Client Name'] == hash['Client Name']
           if prev['Updated Description'] == hash['Updated Description']
             prev['Hours'] = prev['Hours'].to_f + hash['Hours'].to_f
-            # desc = prev['Description'].to_s.gsub(/"/i, '').split("\n")
-            # desc << e['Description']
-            # desc.uniq!
-            # prev['Description'] = "\"#{desc.join("\n")}\""
-            assembly[-1] = prev
+            assemblies[-1] = prev
           else
-            assembly << hash
+            assemblies << hash
           end
         else
-          assembly << hash
+          assemblies << hash
         end
 
       end
 
-      assembly = assembly.map! do |e|
+      assemblies = assemblies.map! do |e|
         e['Dept'] = 'RIS'
         puts 'qweqweqweqwe'
         puts e['Client Name']
@@ -129,16 +117,21 @@ module Reports
         e
       end
 
+      assemblies.each do |assembly|
+        Assembled.create(date: assembly['Date'],
+                         dept: assembly['Dept'],
+                         name: assembly['Name'],
+                         updated_description: assembly['Updated Description'],
+                         oppourtunity_name: assembly['Oppourtunity Name'],
+                         oppourtunity_id: assembly['Oppourtunity ID'],
+                         old_product_name: assembly['Old Product Name'],
+                         sf_product_id: assembly['SF Product ID'],
+                         client_name: assembly['Client Name'],
+                         account_name: assembly['Account Name'],
+                         hours: assembly['Hours'],
+                         employment_classification: assembly['Employment Classification'])
+      end
 
-      puts '1'
-      puts assembly
-      assembly
-      # print "\nSuccess #{dev_name}! Total hours:\t #{total_hours}\n"
-      # tsv = ""
-      # assembly_headers = ["BLANK COLUMN", "Date", "Dept", "Name", "BLANK COLUMN", "Updated Description", "Oppourtunity Name", "Oppourtunity ID", "Old Product Name", "SF Product ID", "Client Name", "Account Name", "Hours", "BLANK COLUMN", "BLANK COLUMN", "Employment Classification"]
-      # assembly.each{|e| tsv += "#{hash_to_tsv(e, assembly_headers)}\n" }
-      # to_clip_b(tsv)
-      # tsv
     end
   end
 end
