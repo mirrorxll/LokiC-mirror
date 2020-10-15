@@ -41,7 +41,12 @@ class TrackingHoursController < ApplicationController # :nodoc:
     @row_id = params[:id]
   end
 
-  def import_data; end
+  def show_modal; end
+
+  def import_data
+    Reports::ImportTrackingHours.from_google_drive(params[:url], params[:worksheet], params[:range], current_account, previous_week)
+    @rows_reports = TrackingHour.all.where(developer: current_account)
+  end
 
   def google_sheets
     assembleds = Assembled.where(date: Date.today - (Date.today.wday - 1))

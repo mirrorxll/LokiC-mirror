@@ -1,4 +1,4 @@
--if action_name.eql?('index')
+$("#import-data").html("<%= escape_javascript(render 'form_import_data') %>");-if action_name.eql?('index')
   %hr/
   %section#filter
     =render 'filter'

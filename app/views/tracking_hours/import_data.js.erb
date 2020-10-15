@@ -1,3 +1,2 @@
-//$('#import_data .modal-title').html('Import Data')
-//$('#import_data .modal-body').html('<%= j render 'form_import_data' %>')
-//$('#import_data').modal('show');
+$('#import-data').modal('toggle');
+$('#report_tracking_hour').html('<%= j render 'tracking_hours/table', rows_reports: @rows_reports %>')

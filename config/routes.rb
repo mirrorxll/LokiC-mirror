@@ -149,6 +149,7 @@ Rails.application.routes.draw do
     post   :add_form, on: :collection
     get    :assembled_2020, on: :collection
     post   :google_sheets, on: :collection
+    post    :show_modal, on: :collection
     post    :import_data, on: :collection
   end
 
