@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :authenticate_account!
   before_action :find_parent_story_type
+  before_action :set_iteration
 
   private
 
@@ -14,6 +15,15 @@ class ApplicationController < ActionController::Base
 
   def find_parent_story_type
     @story_type = StoryType.find(params[:story_type_id])
+  end
+
+  def set_iteration
+    @iteration =
+      if params[:iteration]
+        Iteration.find(params[:iteration])
+      else
+        @story_type.current_iteration
+      end
   end
 
   def manager?

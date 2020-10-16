@@ -23,7 +23,7 @@ module Samples
 
         sample.update(
           @pl_lead_id_key => lead_id,
-          @pl_id_key => story_id,
+          @pl_story_id_key => story_id,
           exported_at: DateTime.now
         )
       end

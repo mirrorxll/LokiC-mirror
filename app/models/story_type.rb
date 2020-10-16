@@ -52,10 +52,10 @@ class StoryType < ApplicationRecord # :nodoc:
   # nil - not started
   # false - in progress
   # true - success
-  def update_iteration(status = {})
-    return if status.empty?
+  def update_iteration(statuses = {})
+    return if statuses.empty?
 
-    iteration.update(status)
+    iteration.update(statuses)
   end
 
   def download_code_from_db

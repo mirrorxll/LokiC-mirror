@@ -33,6 +33,8 @@ class StagingTable < ApplicationRecord # :nodoc:
   end
 
   def default_iter_id
+    return unless self.class.exists?(name)
+
     Table.iter_id_column(name, story_type.iteration.id)
   end
 

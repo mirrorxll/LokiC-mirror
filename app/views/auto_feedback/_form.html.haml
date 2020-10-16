@@ -42,7 +42,7 @@
     let changeAutoFeedbackStatus = (elem) => { elem.innerHTML = `<i class="fas fa-check"></i>`; }
 
     $.ajax({
-      url: `#{root_url}story_types/#{@story_type.id}/iterations/#{@story_type.iteration.id}/auto_feedback_confirmations/${feedbackConfirmId}/confirm`,
+      url: `#{root_url}story_types/#{@story_type.id}/iterations/#{@iteration.id}/auto_feedback_confirmations/${feedbackConfirmId}/confirm`,
       success: changeAutoFeedbackStatus(feedback),
       method: 'patch',
       dataType: 'script'

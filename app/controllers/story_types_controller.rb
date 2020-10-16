@@ -2,13 +2,14 @@
 
 class StoryTypesController < ApplicationController # :nodoc:
   skip_before_action :find_parent_story_type, except: :properties
+  skip_before_action :set_iteration
 
   before_action :redirect_to_separate_root, only: :index
   before_action :render_400_editor,         only: %i[distributed show], if: :editor?
   before_action :render_400_developer,      only: %i[new create edit update properties destroy], if: :developer?
   before_action :find_data_set,             only: %i[new create]
   before_action :find_story_type,           except: %i[index distributed new create properties]
-  before_action :set_iteration,             only: :show
+  before_action :set_iteration,             except: %i[index distributed new create properties]
 
   def index
     @story_types = StoryType.order(id: :desc)
@@ -88,20 +89,6 @@ class StoryTypesController < ApplicationController # :nodoc:
 
   def story_type_params
     params.require(:story_type).permit(:name)
-  end
-
-  def set_iteration
-    @iteration =
-      if params[:iteration]
-        iteration = Iteration.find(params[:iteration])
-        @story_type.update(current_iteration: iteration)
-
-        @story_type.staging_table.default_iter_id if StagingTable.exists?(@story_type.staging_table&.name)
-
-        iteration
-      else
-        @story_type.current_iteration
-      end
   end
 
   def filter_params

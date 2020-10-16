@@ -1,14 +1,13 @@
--iteration = @story_type.iteration
--samples = iteration.samples.where(sampled: true)
+-samples = @iteration.samples.where(sampled: true)
 
--if iteration.story_samples.eql?(false) || iteration.creation.eql?(false)
+-if @iteration.story_samples.eql?(false) || @iteration.creation.eql?(false)
   =render 'story_types/spinner', description: 'samples creation in the process'
 -else
-  -if !iteration.creation.eql?(true)
+  -if !@iteration.creation.eql?(true)
     .row
       .col-10.offset-1
         #samples_form
-          =render 'samples/form', iteration: iteration, samples: samples
+          =render 'samples/form', samples: samples
         %hr/
   .row
     .col-10.offset-1
@@ -19,9 +18,9 @@
           .small
             Samples were not created.
         %hr/
-        -if iteration.auto_feedback_confirmations.any?
+        -if @iteration.auto_feedback_confirmations.any?
           .mt-4
-            =render 'auto_feedback/form', auto_feedback: iteration.auto_feedback_confirmations
+            =render 'auto_feedback/form', auto_feedback: @iteration.auto_feedback_confirmations
           .small.mt-3
             ***Please confirm all auto-feedback. After that you can go to FCD and create all the samples.
         -else
@@ -30,4 +29,4 @@
       %hr/
 
   #fcd__create_destroy_all_samples
-    =render 'samples/fcd__create_all_samples_buttons', iteration: iteration, samples: samples
+    =render 'samples/fcd__create_all_samples_buttons', samples: samples

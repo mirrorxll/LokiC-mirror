@@ -1,4 +1,4 @@
--if @story_type.iteration.export_configurations.eql?(false)
+-if @iteration.export_configurations.eql?(false)
   =render 'story_types/spinner', description: 'export configuration creation in progress'
 -else
   .row

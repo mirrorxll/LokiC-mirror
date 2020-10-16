@@ -2,6 +2,8 @@
 
 class DefaultPropertiesController < ApplicationController # :nodoc:
   skip_before_action :find_parent_story_type
+  skip_before_action :set_iteration
+
   before_action :find_data_set
   before_action :find_photo_bucket, only: %i[include_photo_bucket exclude_photo_bucket]
   before_action :find_client_tags, except: %i[include_photo_bucket exclude_photo_bucket]

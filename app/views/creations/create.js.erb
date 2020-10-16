@@ -1,3 +1,3 @@
-$('#story_type_samples_<%= @story_type.iteration.id %> .flash').empty();
-$('#story_type_samples_<%= @story_type.iteration.id %> .card-body')
+$('#story_type_samples_<%= @iteration.id %> .flash').empty();
+$('#story_type_samples_<%= @iteration.id %> .card-body')
     .html('<%= j render 'story_types/spinner', description: 'samples creation in the process' %>');

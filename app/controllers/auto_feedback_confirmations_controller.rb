@@ -13,7 +13,7 @@ class AutoFeedbackConfirmationsController < ApplicationController
   private
 
   def find_auto_feedback
-    @confirmations = @story_type.iteration.auto_feedback_confirmations
+    @confirmations = @iteration.auto_feedback_confirmations
     @auto_feedback_to_confirm = @confirmations.find(params[:id])
   end
 end

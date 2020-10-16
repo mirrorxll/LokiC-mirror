@@ -21,10 +21,10 @@
       =render @story_type.iterations
 
       .badge.badge-pill.badge-light{'data-container' => 'body',
-                                   'data-toggle' => 'popover',
-                                   'data-placement' => 'top',
-                                   'data-html' => 'true',
-                                   'data-content' => "#{render 'iterations/new_form'}" }
+                                    'data-toggle' => 'popover',
+                                    'data-placement' => 'top',
+                                    'data-html' => 'true',
+                                    'data-content' => "#{render 'iterations/new_form'}" }
         new iteration
   .col-2.text-right
     #story_type_status
@@ -49,40 +49,45 @@
       .card-body
         =render 'story_types/properties'
 
-#story_type_staging_table.accordion
-  .card
-    .card-header
-      %div.text-center{"aria-controls" => "#staging_table", "aria-expanded" => "false", "data-target" => "#staging_table", "data-toggle" => "collapse", type: "button"}
-        staging table
-    #staging_table.collapse.show{"data-parent" => "#story_type_staging_table"}
-      .flash
-      .card-body
-        -if @story_type.staging_table
-          =render @story_type.staging_table
-        -else
-          =render 'staging_tables/form'
 
-#story_type_code.accordion
-  .card
-    .card-header
-      %div.text-center{"aria-controls" => "#codes", "aria-expanded" => "false", "data-target" => "#code", "data-toggle" => "collapse", type: "button"}
-        code
-    #code.collapse.show{"data-parent" => "#story_type_code"}
-      .flash
-      .card-body
-        =render 'codes/section'
-  =render 'codes/modal_ruby_code'
 
-#story_type_export_configs.accordion
-  .card
-    .card-header
-      %div.text-center{"aria-controls" => "#export_configs", "aria-expanded" => "false", "data-target" => "#export_configs", "data-toggle" => "collapse", type: "button"}
-        export configurations
-    #export_configs.collapse.show{"data-parent" => "#story_type_export_configs"}
-      .flash
-      .card-body
-        -if @story_type.iteration.population
-          =render 'export_configurations/export_configurations'
+-if @iteration.eql?(@story_type.current_iteration)
+  #story_type_staging_table.accordion
+    .card
+      .card-header
+        %div.text-center{"aria-controls" => "#staging_table", "aria-expanded" => "false", "data-target" => "#staging_table", "data-toggle" => "collapse", type: "button"}
+          staging table
+      #staging_table.collapse.show{"data-parent" => "#story_type_staging_table"}
+        .flash
+        .card-body
+          -if @story_type.staging_table
+            =render @story_type.staging_table
+          -else
+            =render 'staging_tables/form'
+
+  #story_type_code.accordion
+    .card
+      .card-header
+        %div.text-center{"aria-controls" => "#codes", "aria-expanded" => "false", "data-target" => "#code", "data-toggle" => "collapse", type: "button"}
+          code
+      #code.collapse.show{"data-parent" => "#story_type_code"}
+        .flash
+        .card-body
+          =render 'codes/section'
+    =render 'codes/modal_ruby_code'
+
+  #story_type_export_configs.accordion
+    .card
+      .card-header
+        %div.text-center{"aria-controls" => "#export_configs", "aria-expanded" => "false", "data-target" => "#export_configs", "data-toggle" => "collapse", type: "button"}
+          export configurations
+      #export_configs.collapse.show{"data-parent" => "#story_type_export_configs"}
+        .flash
+        .card-body
+          -if @iteration.population
+            =render 'export_configurations/export_configurations'
+
+
 
 %div.accordion{id: "story_type_samples_#{@iteration.id}"}
   .card
@@ -92,7 +97,7 @@
     #samples.collapse.show{"data-parent" => "#story_type_samples_#{@iteration.id}"}
       .flash
       .card-body
-        -if @story_type.iteration.export_configurations
+        -if @iteration.export_configurations
           =render 'samples/samples'
 
 %div.accordion{id: "story_type_scheduler_#{@iteration.id}"}
@@ -103,7 +108,7 @@
     #scheduler.collapse.show{"data-parent" => "#story_type_scheduler_#{@iteration.id}"}
       .flash
       .card-body
-        -if @story_type.iteration.creation
+        -if @iteration.creation
           =render 'schedules/scheduler'
 
 %div.accordion{id: "story_type_export_#{@iteration.id}"}
@@ -113,7 +118,7 @@
         export (iteration: #{@iteration.name})
     #export.collapse.show{"data-parent" => "#story_type_export_#{@iteration.id}"}
       .card-body
-        -if @story_type.iteration.schedule
+        -if @iteration.schedule
           =render 'exports/export'
 
 %hr.mb-5/

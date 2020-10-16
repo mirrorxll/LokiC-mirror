@@ -2,7 +2,8 @@ class SchedulerJob < ApplicationJob
   queue_as :scheduler
 
   def perform(story_type, type, options = {})
-    samples = story_type.iteration.samples
+    iteration = story_type.iteration
+    samples = iteration.samples
     status = true
 
     message =
@@ -17,7 +18,7 @@ class SchedulerJob < ApplicationJob
         Scheduler::Auto.auto_scheduler(samples)
         'auto scheduling success'
       end
-    status = false if story_type.iteration.samples.where(published_at: nil).any?
+    status = false if iteration.samples.where(published_at: nil).any?
 
   rescue StandardError => e
     status = nil

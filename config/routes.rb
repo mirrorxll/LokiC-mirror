@@ -99,6 +99,8 @@ Rails.application.routes.draw do
     end
 
     resources :iterations do
+      patch :apply_iteration, on: :member
+
       resources :statuses, only: [] do
         get   :form,    on: :collection
         patch :change,  on: :collection

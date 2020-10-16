@@ -5,7 +5,7 @@ class PopulationsController < ApplicationController # :nodoc:
   before_action :staging_table
 
   def create
-    render_400 && return unless @story_type.iteration.population.nil?
+    render_400 && return unless @iteration.population.nil?
 
     flash.now[:error] =
       if @staging_table.nil? || StagingTable.not_exists?(@staging_table.name)
@@ -27,8 +27,8 @@ class PopulationsController < ApplicationController # :nodoc:
     staging_table_action { @staging_table.purge }
 
     if flash.now[:error].nil?
-      @story_type.iteration.samples.destroy_all
-      @story_type.iteration.auto_feedback.destroy_all
+      @iteration.samples.destroy_all
+      @iteration.auto_feedback.destroy_all
       @story_type.update_iteration(
         population: nil, export_configurations: nil,
         story_samples: nil, creation: nil, schedule: nil, export: nil

@@ -1,4 +1,4 @@
--if @story_type.iteration.auto_feedback_confirmations.all?(&:confirmed)
+-if @iteration.auto_feedback_confirmations.all?(&:confirmed)
   -account_type = current_account.type
   -reviewers_feedback = @fcd.reviewers_feedback
   -editors_feedback = @fcd.editors_feedback
@@ -29,7 +29,7 @@
   .row
     .col-10.offset-1
       #autoFeedbackCollapse.collapse.show
-        =render 'auto_feedback/form', auto_feedback: @story_type.iteration.auto_feedback_confirmations
+        =render 'auto_feedback/form', auto_feedback: @iteration.auto_feedback_confirmations
 
   %hr#reviewers_feedback/
   .row.small

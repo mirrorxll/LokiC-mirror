@@ -2,6 +2,7 @@
 
 class DataSetsController < ApplicationController # :nodoc:
   skip_before_action :find_parent_story_type
+  skip_before_action :set_iteration
 
   before_action :render_400, except: :properties, if: :developer?
   before_action :find_data_set, except: %i[index new create]

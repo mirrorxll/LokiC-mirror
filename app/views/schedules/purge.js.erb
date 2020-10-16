@@ -1,5 +1,5 @@
 <% if flash.now[:message] %>
-  $(`#story_type_scheduler_<%= @story_type.iteration.id %> .flash`).html(
+  $(`#story_type_scheduler_<%= @iteration.id %> .flash`).html(
     `<div class="alert alert-<%= schedules_alert(flash.now[:message]) %> text-center">
         <%= flash.now[:message].gsub('`', "'") %>
     </div>`

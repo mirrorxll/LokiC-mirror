@@ -24,9 +24,8 @@ class SamplesController < ApplicationController # :nodoc:
   end
 
   def purge_sampled
-    iteration = @story_type.iteration
-    iteration.samples.where(sampled: true).destroy_all
-    iteration.auto_feedback_confirmations.destroy_all
+    @iteration.samples.where(sampled: true).destroy_all
+    @iteration.auto_feedback_confirmations.destroy_all
 
     @story_type.staging_table.samples_set_not_created
     @story_type.update_iteration(story_samples: nil)
