@@ -23,11 +23,8 @@
                 -if column[:type].eql?(:decimal)
                   =form.text_field "#{hex}[options[scale]]", { class: 'w_80px', value: column[:options][:scale], placeholder: 'scale', id: "columns_#{hex}_params_scale", onclick: 'showInfo(this);' }
           =form.submit :update, class: 'mt-3 ml-3'
-          =link_to('cancel', section_story_type_staging_tables_path(@story_type), class: 'ml-3', remote: true)
-
+          =link_to('cancel', canceling_edit_story_type_staging_tables_path(@story_type), class: 'ml-3', remote: true)
         .col-4#column_info.border-left
-
-
 
 :javascript
   var submit = $('#columns_editable input[type="submit"]')[0];
@@ -140,10 +137,8 @@
                '2 - smallint</br>' +
                '3 - mediumint</br>' +
                '4 - int</br>' +
-               '5 - bigint</br>' +
                '8 - bigint</br>' +
-               '11 - int</br>' +
-               'if you leave the field empty it will be set to 11'
+               'if you leave the field empty it will be set to 11.'
         break;
       case 'float':
         info = '<b>float</b></br>' +

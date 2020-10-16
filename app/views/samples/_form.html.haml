@@ -1,7 +1,7 @@
--sample_args = iteration.story_sample_args
+-sample_args = @iteration.story_sample_args
 
 .small
-  =form_with(url: create_and_generate_auto_feedback_story_type_iteration_samples_path(@story_type, @story_type.iteration),
+  =form_with(url: create_and_generate_auto_feedback_story_type_iteration_samples_path(@story_type, @iteration),
              id: 'create_samples_form', html: { oninput: 'allowCreateSamples();' }) do |form|
     =form.label :columns, 'columns(edge samples)'
     .form-group
@@ -18,7 +18,7 @@
         =form.submit 'create samples and generate feedback', id: 'submit_create_samples',
                      class: 'btn btn-sm btn-outline-dark', disabled: true
         -if samples.any?
-          =link_to('delete samples', purge_sampled_story_type_iteration_samples_path(@story_type, @story_type.iteration),
+          =link_to('delete samples', purge_sampled_story_type_iteration_samples_path(@story_type, @iteration),
                    class: 'btn btn-sm btn-outline-dark', onclick: 'removePopovers();', method: :delete, remote: true)
 
 :javascript

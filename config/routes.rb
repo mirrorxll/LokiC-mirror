@@ -67,10 +67,11 @@ Rails.application.routes.draw do
     end
 
     resources :staging_tables, only: %i[show create destroy] do
-      post    :attach,    on: :collection
-      delete  :detach,    on: :member
-      patch   :sync,      on: :member
-      get     :section,   on: :collection
+      post    :attach,         on: :collection
+      delete  :detach,         on: :member
+      patch   :sync,           on: :member
+      get     :section,        on: :collection
+      get     :canceling_edit, on: :collection
 
       resources :columns, only: %i[edit update]
       resources :indices, only: %i[new create destroy]
@@ -98,6 +99,8 @@ Rails.application.routes.draw do
     end
 
     resources :iterations do
+      patch :apply_iteration, on: :member
+
       resources :statuses, only: [] do
         get   :form,    on: :collection
         patch :change,  on: :collection

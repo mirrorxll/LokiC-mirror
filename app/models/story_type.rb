@@ -52,10 +52,10 @@ class StoryType < ApplicationRecord # :nodoc:
   # nil - not started
   # false - in progress
   # true - success
-  def update_iteration(status = {})
-    return if status.empty?
+  def update_iteration(statuses = {})
+    return if statuses.empty?
 
-    iteration.update(status)
+    iteration.update(statuses)
   end
 
   def download_code_from_db
@@ -84,6 +84,6 @@ class StoryType < ApplicationRecord # :nodoc:
   end
 
   def self.status(id)
-    iteration.statuses.find_by(id: id)
+    includes(current_iteration: [:statuses]).where(statuses: { id: id })
   end
 end

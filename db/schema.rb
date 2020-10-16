@@ -317,8 +317,8 @@ ActiveRecord::Schema.define(version: 2020_09_09_111814) do
     t.bigint "time_frame_id"
     t.integer "staging_row_id"
     t.string "organization_ids", limit: 2000
-    t.integer "pl_production_id"
-    t.integer "pl_staging_id"
+    t.integer "pl_production_story_id"
+    t.integer "pl_staging_story_id"
     t.date "published_at"
     t.datetime "exported_at"
     t.boolean "backdated", default: false

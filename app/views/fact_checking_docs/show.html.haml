@@ -1,4 +1,4 @@
--if @story_type.iteration.auto_feedback_confirmations.all?(&:confirmed)
+-if @iteration.auto_feedback_confirmations.all?(&:confirmed)
   -account_type = current_account.type
   -reviewers_feedback = @fcd.reviewers_feedback
   -editors_feedback = @fcd.editors_feedback
@@ -29,7 +29,7 @@
   .row
     .col-10.offset-1
       #autoFeedbackCollapse.collapse.show
-        =render 'auto_feedback/form', auto_feedback: @story_type.iteration.auto_feedback_confirmations
+        =render 'auto_feedback/form', auto_feedback: @iteration.auto_feedback_confirmations
 
   %hr#reviewers_feedback/
   .row.small
@@ -137,7 +137,7 @@
           .modal-title#manual_feedback_modal_label
           %button.close{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
             %span{ "aria-hidden" => "true" } ×
-        .modal-body.pl-4.small
+        .modal-body.small
           %ul#manual_feedback_tabs.nav.nav-tabs.w-60{role: "tablist"}
             %li.nav-item{role: "presentation"}
               %a#fcd-tab.nav-link.active{"aria-controls" => "fcd", "aria-selected" => "true", "data-toggle" => "tab", href: "#fcd", role: "tab"} FCD

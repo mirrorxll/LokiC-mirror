@@ -1,22 +1,20 @@
--iteration = @story_type.iteration
-
 -if @story_type.fact_checking_doc.approval_editors.count < 2
   .row.small
     .col-10.offset-1
       First...let's wait when two editors will approve your FCD.
--elsif @story_type.iteration.schedule.eql?(true)
+-elsif @iteration.schedule.eql?(true)
   .row.small
     .col-10.offset-1
       #results_scheduling
-        =render 'schedules/results_scheduling', iteration: iteration, scheduled: true
+        =render 'schedules/results_scheduling', scheduled: true
 -else
   .row.small
     .col-6.offset-1
       =render 'schedules/form'
     .col-4
-      =render 'schedules/results_scheduling', iteration: iteration, scheduled: false
+      =render 'schedules/results_scheduling', scheduled: false
 
-  -if iteration.samples.where.not(published_at: nil).any?
+  -if @iteration.samples.where.not(published_at: nil).any?
     %hr/
     .row.small
       .col-5.offset-1

@@ -10,28 +10,28 @@ def account
       first_name: 'Sergey',
       last_name: 'Emelyanov',
       account_type: AccountType.first,
-      email: 'evilx@loki.com',
+      email: 'evilx@lokic.loc',
       password: '123456'
     },
     {
       first_name: 'Dmitriy',
       last_name: 'Buzina',
       account_type: AccountType.first,
-      email: 'dmitriy.b@loki.com',
+      email: 'dmitriy.b@lokic.loc',
       password: '123456'
     },
     {
       first_name: 'Sergey',
       last_name: 'Burenkov',
       account_type: AccountType.first,
-      email: 'serg.burenkov@lokic.com',
+      email: 'serg.burenkov@lokic.loc',
       password: '123456'
     },
     {
       first_name: 'John',
       last_name: 'Putz',
       account_type: AccountType.first,
-      email: 'john.putz@lokic.com',
+      email: 'john.putz@lokic.loc',
       password: '123456'
     }
   ]

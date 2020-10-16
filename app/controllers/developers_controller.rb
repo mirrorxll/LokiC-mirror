@@ -3,7 +3,7 @@
 class DevelopersController < ApplicationController
   before_action :render_400, if: :developer?
   before_action :find_developer, only: :include
-  after_action :send_notification, only: :include
+  after_action  :send_notification, only: :include
 
   def include
     render_400 && return if @story_type.developer

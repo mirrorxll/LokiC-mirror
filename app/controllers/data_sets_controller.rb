@@ -2,6 +2,7 @@
 
 class DataSetsController < ApplicationController # :nodoc:
   skip_before_action :find_parent_story_type
+  skip_before_action :set_iteration
 
   before_action :render_400, except: :properties, if: :developer?
   before_action :find_data_set, except: %i[index new create]
@@ -96,7 +97,7 @@ class DataSetsController < ApplicationController # :nodoc:
   end
 
   def new_data_set_notification
-    channel = 'hle_lokic_messages'
+    channel = Rails.env.production? ? 'hle_lokic_messages' : 'notifications_test'
     message = "Added a new Data set. Details: #{data_set_url(@data_set)}"
     SlackNotificationJob.perform_later(channel, message)
   end

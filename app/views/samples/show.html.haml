@@ -13,21 +13,19 @@
 %hr/
 #autoFeedbackCollapse.row.collapse
   .col-10.offset-1
-    =render 'auto_feedback/form', auto_feedback: @story_type.iteration.auto_feedback_confirmations
+    =render 'auto_feedback/form', auto_feedback: @iteration.auto_feedback_confirmations
 %hr/
 #story_sample
   .row
     .col-1.small.text-right
       Headline:
     .col-10
-      %h6
-        =@sample.output.headline
+      =@sample.output.headline
   .row
     .col-1.small.text-right
       Teaser:
     .col-10
-      %h6
-        =@sample.output.teaser
+      =@sample.output.teaser
 
   .row.small
     .col-1.text-right

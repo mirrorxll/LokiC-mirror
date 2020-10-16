@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 class IterationsController < ApplicationController
+  skip_before_action :set_iteration
+
   before_action :render_400, if: :editor?
-  before_action :find_iteration, only: %i[show edit update destroy]
+  before_action :find_iteration, only: %i[update apply_iteration]
 
   def create
     @iteration = @story_type.iterations.build(iteration_params)
@@ -11,14 +13,15 @@ class IterationsController < ApplicationController
     redirect_to @story_type
   end
 
-  def edit; end
-
   def update
     @iteration.update(iteration_params)
   end
 
-  def destroy
-    @iteration.destroy
+  def apply_iteration
+    @story_type.update(current_iteration: @iteration)
+    @story_type.staging_table&.default_iter_id
+
+    redirect_to @story_type
   end
 
   private

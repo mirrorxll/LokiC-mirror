@@ -1,6 +1,11 @@
--if @story_type.current_iteration.eql?(iteration)
-  =link_to(iteration.name, '',
-           class: "badge badge-pill badge-info")
+-if @iteration.eql?(iteration)
+   #current_iteration_badge.badge.badge-pill.badge-info{style: 'cursor: pointer',
+                                                        'data-container' => 'body',
+                                                        'data-toggle' => 'popover',
+                                                        'data-placement' => 'top',
+                                                        'data-html' => 'true',
+                                                        'data-content' => "#{render 'iterations/edit_form', iteration: iteration}" }
+      =iteration.name
 -else
-  =link_to(iteration.name, story_type_path(@story_type, iteration: iteration.id),
-           class: "badge badge-pill badge-dark")
+   =link_to(iteration.name, story_type_path(@story_type, iteration: iteration.id),
+            class: "badge badge-pill badge-dark")
