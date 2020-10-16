@@ -7,7 +7,6 @@ class TrackingHoursController < ApplicationController # :nodoc:
 
   def index
     @confirm = ConfirmReport.find_by(developer: current_account, week: previous_week)
-    puts @confirm
   end
 
   def new
@@ -52,10 +51,10 @@ class TrackingHoursController < ApplicationController # :nodoc:
   def confirm
     if params[:confirm].to_i == 1
       ConfirmReport.create(developer: current_account, week: previous_week)
-      Reports::HoursAsm.q(TrackingHour.find_by(developer: current_account, week: previous_week))
+      Reports::HoursAsm.q(TrackingHour.where(developer: current_account, week: previous_week))
     else
       ConfirmReport.find_by(developer: current_account, week: previous_week).delete
-      Assembled.find_by(developer: current_account, week: previous_week).delete
+      Assembled.where(developer: current_account, week: previous_week).delete
     end
   end
 
@@ -65,7 +64,7 @@ class TrackingHoursController < ApplicationController # :nodoc:
   end
 
   def assembleds
-    @assemleds = Assembled.where(date: previous_week.end_week + 1)
+    @assemleds = Assembled.where(week: previous_week)
   end
 
   private
@@ -75,7 +74,7 @@ class TrackingHoursController < ApplicationController # :nodoc:
   end
 
   def previous_week
-    Week.where(end_week: Date.today - Date.today.wday).first
+    Week.where(end: Date.today - Date.today.wday).first
   end
 
   def row_report_params

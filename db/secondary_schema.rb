@@ -10,19 +10,39 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_02_070426) do
+ActiveRecord::Schema.define(version: 2020_10_15_115315) do
+
+  create_table "assembleds", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "dept"
+    t.string "oppourtunity_name"
+    t.string "oppourtunity_id"
+    t.string "old_product_name"
+    t.string "sf_product_id"
+    t.string "account_name"
+    t.string "hours"
+  end
 
   create_table "clients_reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
   end
 
+  create_table "confirm_reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "week_id"
+    t.bigint "developer_id"
+    t.index ["developer_id"], name: "index_confirm_reports_on_developer_id"
+    t.index ["week_id"], name: "index_confirm_reports_on_week_id"
+  end
+
   create_table "exported_story_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "developer_id"
     t.bigint "iteration_id"
+    t.bigint "week_id"
     t.boolean "first_export"
-    t.datetime "date_export"
+    t.date "date_export"
+    t.integer "count_samples"
     t.index ["developer_id"], name: "index_exported_story_types_on_developer_id"
     t.index ["iteration_id"], name: "index_exported_story_types_on_iteration_id"
+    t.index ["week_id"], name: "index_exported_story_types_on_week_id"
   end
 
   create_table "reviews", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -35,17 +55,24 @@ ActiveRecord::Schema.define(version: 2020_10_02_070426) do
   create_table "tracking_hours", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "developer_id"
     t.bigint "type_of_work_id"
-    t.bigint "clients_report_id"
+    t.bigint "client_id"
+    t.bigint "week_id"
     t.decimal "hours", precision: 4, scale: 2
-    t.datetime "date"
+    t.date "date"
     t.string "comment", limit: 2000
-    t.index ["clients_report_id"], name: "index_tracking_hours_on_clients_report_id"
+    t.index ["client_id"], name: "index_tracking_hours_on_clients_report_id"
     t.index ["developer_id"], name: "index_tracking_hours_on_developer_id"
     t.index ["type_of_work_id"], name: "index_tracking_hours_on_type_of_work_id"
+    t.index ["week_id"], name: "index_tracking_hours_on_week_id"
   end
 
   create_table "type_of_works", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
+  end
+
+  create_table "weeks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.date "begin_week"
+    t.date "end_week"
   end
 
 end

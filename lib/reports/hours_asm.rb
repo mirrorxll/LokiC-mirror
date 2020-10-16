@@ -29,32 +29,28 @@ module Reports
     end
 
     def self.q(dev_week)
-      date = Date.today - (Date.today.wday - 1)
-      puts '////'
       puts dev_week
-
       dev_week = dev_week.sort_by{|e| [e.developer.first_name, e.client.name, e.type_of_work.name] }
-
+      week = dev_week.first.week
       dev = dev_week.first.developer
-      dev_name = "#{dev.first_name} #{dev.last_name}"
 
       assemblies = []
 
       dev_week.each_with_index do |e, i|
         hash = {}
-        hash['Date'] = date
+        hash['Week'] = week
         hash['Client Name'] = e.client.name
 
         hash['Client Name'] = 'Metric Media' if hash['Client Name'] == 'urban business underwriting'
 
         hash['Updated Description'] = e.type_of_work.name
         hash['Hours'] = e.hours
-        hash['Name'] = dev_name
-        if dev.upwork
-          hash['Employment Classification'] = 'Upwork'
-        else
-          hash['Employment Classification'] = 'International Contractor'
-        end
+        hash['Developer'] = dev
+        # if dev.upwork
+        #   hash['Employment Classification'] = 'Upwork'
+        # else
+        #   hash['Employment Classification'] = 'International Contractor'
+        # end
         if i == 0
           assemblies << hash
           next
@@ -76,8 +72,6 @@ module Reports
 
       assemblies = assemblies.map! do |e|
         e['Dept'] = 'RIS'
-        puts 'qweqweqweqwe'
-        puts e['Client Name']
         if e['Client Name'].to_s.match(/\bL(ocal)?\s*G(overnment)?\s*I(nformation)?\s*S(ervices)?\b/i)
           e['Client Name'] = 'LGIS - Local Government Information Services'
           e['Oppourtunity ID'] = '0061I00000MCMkRQAX'
@@ -118,9 +112,9 @@ module Reports
       end
 
       assemblies.each do |assembly|
-        Assembled.create(date: assembly['Date'],
+        Assembled.create(week: assembly['Week'],
                          dept: assembly['Dept'],
-                         name: assembly['Name'],
+                         developer: assembly['Developer'],
                          updated_description: assembly['Updated Description'],
                          oppourtunity_name: assembly['Oppourtunity Name'],
                          oppourtunity_id: assembly['Oppourtunity ID'],
@@ -128,8 +122,7 @@ module Reports
                          sf_product_id: assembly['SF Product ID'],
                          client_name: assembly['Client Name'],
                          account_name: assembly['Account Name'],
-                         hours: assembly['Hours'],
-                         employment_classification: assembly['Employment Classification'])
+                         hours: assembly['Hours'])
       end
 
     end

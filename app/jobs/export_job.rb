@@ -18,7 +18,7 @@ class ExportJob < ApplicationJob
                           first_export: story_type.iteration.name == 'Initial',
                           date_export: DateTime.now,
                           count_samples: story_type.iteration.samples.count,
-                          week: Week.where(begin_week: Date.today - (Date.today.wday - 1)).first).save if status
+                          week: Week.where(begin: Date.today - (Date.today.wday - 1)).first).save if status
 
     send_to_action_cable(story_type, export_msg: status)
     send_to_slack(story_type, message)

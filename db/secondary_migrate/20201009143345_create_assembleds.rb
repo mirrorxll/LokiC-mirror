@@ -3,9 +3,10 @@
 class CreateAssembleds < ActiveRecord::Migration[6.0]
   def change
     create_table :assembleds do |t|
-      t.date :date
+      t.belongs_to :developer
+      t.belongs_to :week
+
       t.string :dept
-      t.string :name
       t.string :updated_description
       t.string :oppourtunity_name
       t.string :oppourtunity_id
@@ -14,7 +15,6 @@ class CreateAssembleds < ActiveRecord::Migration[6.0]
       t.string :client_name
       t.string :account_name
       t.string :hours
-      t.string :employment_classification
     end
   end
 end

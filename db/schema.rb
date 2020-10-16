@@ -27,9 +27,10 @@ ActiveRecord::Schema.define(version: 2020_09_09_111814) do
     t.datetime "reset_password_sent_at"
     t.string "first_name", null: false
     t.string "last_name", null: false
-    t.datetime "remember_created_at"
+    t.boolean "upwork"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.datetime "remember_created_at"
     t.index ["account_type_id"], name: "index_accounts_on_account_type_id"
     t.index ["email"], name: "index_accounts_on_email", unique: true
     t.index ["first_name", "last_name"], name: "index_accounts_on_first_name_and_last_name"
@@ -247,8 +248,8 @@ ActiveRecord::Schema.define(version: 2020_09_09_111814) do
     t.string "schedule_counts", limit: 1000
     t.boolean "export"
     t.string "export_data", limit: 1000
-    t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", precision: 6, null: false
     t.index ["story_type_id"], name: "index_iterations_on_story_type_id"
   end
 

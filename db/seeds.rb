@@ -252,7 +252,7 @@ clients_report.each { |obj| ClientsReport.create!(obj) }
 begin_date = Date.parse('2020/01/06')
 end_date = Date.parse('2020/01/12 23/59/59')
 110.times do
-  Week.create(begin_week: begin_date, end_week: end_date)
+  Week.create(begin: begin_date, end: end_date)
   begin_date = begin_date + 7
   end_date = end_date + 7
 end
