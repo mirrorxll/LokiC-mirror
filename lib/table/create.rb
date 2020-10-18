@@ -40,6 +40,20 @@ module Table
       end
     end
 
+    def delete_useless_columns(t_name)
+      loki_story_creator do
+        columns = a_r_m.columns(t_name)
+        useless_columns = %w[source_table_id source_id
+                             project_name debug exported_at county_prefix]
+
+        useless_columns.each do |u_col|
+          next unless columns.find { |c| c.name.eql?(u_col) }
+
+          a_r_m.remove_column(t_name, u_col)
+        end
+      end
+    end
+
     def iter_id_column(t_name, iter_id)
       loki_story_creator do
         iter_column = a_r_m.columns(t_name).find { |c| c.name.eql?('iter_id') }
@@ -57,9 +71,15 @@ module Table
 
     def timestamps(t_name)
       loki_story_creator do
-        a_r_m.add_column(t_name, :created_at, :datetime, null: true, after: :id) unless a_r_m.column_exists?(t_name, :created_at)
-        a_r_m.add_column(t_name, :updated_at, :datetime, null: true, after: :created_at) unless a_r_m.column_exists?(t_name, :updated_at)
-        a_r_m.add_column(t_name, :time_frame, :string,   null: true, after: :story_created) unless a_r_m.column_exists?(t_name, :time_frame)
+        unless a_r_m.column_exists?(t_name, :created_at)
+          a_r_m.add_column(t_name, :created_at, :datetime, null: true, after: :id)
+        end
+        unless a_r_m.column_exists?(t_name, :updated_at)
+          a_r_m.add_column(t_name, :updated_at, :datetime, null: true, after: :created_at)
+        end
+        unless a_r_m.column_exists?(t_name, :time_frame)
+          a_r_m.add_column(t_name, :time_frame, :string,   null: true, after: :story_created)
+        end
 
         cr_at_query = created_at_default_value_query(t_name)
         a_r_b_conn.exec_query(cr_at_query)
