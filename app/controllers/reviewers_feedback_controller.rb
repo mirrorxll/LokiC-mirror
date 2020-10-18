@@ -77,6 +77,6 @@ class ReviewersFeedbackController < ApplicationController
               "<#{story_type_fact_checking_doc_url(@story_type, @story_type.fact_checking_doc)}"\
               '#reviewers_feedback|Check it>.'
 
-    SlackNotificationJob.perform_later('hle_reviews_queue_test', message, @fcd.slack_message_ts)
+    SlackNotificationJob.perform_later('hle_reviews_queue', message, @fcd.slack_message_ts)
   end
 end
