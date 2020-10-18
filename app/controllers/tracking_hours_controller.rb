@@ -2,11 +2,11 @@
 
 class TrackingHoursController < ApplicationController # :nodoc:
   skip_before_action :find_parent_story_type
-  before_action :find_row_reports, only: %i[index]
-  after_action :find_row_reports, only: %i[create]
+  before_action :find_week, only: %i[index create confirm assembleds]
 
   def index
-    @confirm = ConfirmReport.find_by(developer: current_account, week: previous_week)
+    @rows_reports = TrackingHour.all.where(developer: current_account, week: @week)
+    @confirm = ConfirmReport.find_by(developer: current_account, week: @week)
   end
 
   def new
@@ -18,12 +18,12 @@ class TrackingHoursController < ApplicationController # :nodoc:
       TrackingHour.create!(developer: current_account,
                            type_of_work: TypeOfWork.find_by(name: row['type_of_work']),
                            client: ClientsReport.find_by(name: row['client']),
-                           week: previous_week,
+                           week: @week,
                            hours: row['hours'],
                            date: row['date'],
                            comment: row['comment'])
     end
-    @rows_reports = TrackingHour.all.where(developer: current_account)
+    @rows_reports = TrackingHour.all.where(developer: current_account, week: week)
   end
 
   def update
@@ -50,11 +50,11 @@ class TrackingHoursController < ApplicationController # :nodoc:
 
   def confirm
     if params[:confirm].to_i == 1
-      ConfirmReport.create(developer: current_account, week: previous_week)
-      Reports::HoursAsm.q(TrackingHour.where(developer: current_account, week: previous_week))
+      ConfirmReport.create(developer: current_account, week: @week)
+      Reports::HoursAsm.q(TrackingHour.where(developer: current_account, week: @week))
     else
-      ConfirmReport.find_by(developer: current_account, week: previous_week).delete
-      Assembled.where(developer: current_account, week: previous_week).delete
+      ConfirmReport.find_by(developer: current_account, week: @week).delete
+      Assembled.where(developer: current_account, week: @week).destroy_all
     end
   end
 
@@ -69,12 +69,12 @@ class TrackingHoursController < ApplicationController # :nodoc:
 
   private
 
-  def find_row_reports
-    @rows_reports = TrackingHour.all.where(developer: current_account)
+  def find_week
+    @week = Week.find(params[:week])
   end
 
-  def previous_week
-    Week.where(end: Date.today - Date.today.wday).first
+  def find_row_reports
+    @rows_reports = TrackingHour.all.where(developer: current_account)
   end
 
   def row_report_params

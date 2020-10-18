@@ -1,12 +1,16 @@
 .row
   .col-10
-    .nav
-      .nav-link.active
-        =link_to 'Week1', tracking_hours_path, params: weeks.last
-      .nav-link Week2
-      .nav-link Week3
+    .nav.justify-content-center
+      -weeks.each_with_index do |week,i|
+        .nav-item
+          -if i == weeks.length - 1
+            .nav-link.active
+              =link_to week.to_s, tracking_hours_path(week: week)
+          -else
+            .nav-link
+              =link_to week.to_s, tracking_hours_path(week: week)
   .col-2.justify-content-between
-    =button_to('Import data', show_modal_tracking_hours_path, class:'btn btn-sm btn-outline-dark', remote: true)
+    =button_to('Import data', show_modal_tracking_hours_path, class: "btn btn-sm btn-outline-dark", remote: true, disabled: @confirm)
 #report_tracking_hour
   =render 'tracking_hours/table', rows_reports: @rows_reports
 #forms.small
