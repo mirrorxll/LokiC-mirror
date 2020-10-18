@@ -6,11 +6,7 @@
       #add_column_to_index.mb-2
         =icon('fas', 'plus')
       %div#index_editable
-        -@columns.each_with_index do |column, i|
-          %div{id: "col_#{i + 1}", class: 'mb-1'}
-            %div.remove_column.d-inline-block{ id: "rm_col_#{i + 1}", onclick: 'removeColumn(this);'}
-              =icon('fas', 'minus')
-            =form.select "index[column_ids][]", options_for_select(@columns, @columns[i]), {}, { id: "col_#{i + 1}_ind"}
+
       =form.submit :create, class: 'mt-3 ml-3'
       =link_to('cancel', canceling_edit_story_type_staging_tables_path(@story_type), class: 'ml-3', remote: true)
 
@@ -24,19 +20,16 @@
     var editable_block = $('#index_editable');
     var count = editable_block.children().length;
 
-    if(editable_block.children().length === count){
-      return false;
-    } else {
-      $(editable_block).append(
-        `<div id="col_${count + 1}">
-          <div class="remove_column d-inline-block mr-1" id="rm_col_${count + 1}" onclick="removeColumn(this)"><i class="fas fa-minus"></i></div>
-          <select name="index[]" id="index_${count + 1}">
-            ${options.join()}
-          </select>
-        </div>`
-      );
-    }
-
+    $(editable_block).append(
+      `<div id="col_${count + 1}" class="mb-1">
+        <div class="remove_column d-inline-block mr-1" id="rm_col_${count + 1}" onclick="removeColumn(this)">
+          <i class="fas fa-minus"></i>
+        </div>
+        <select name="index[column_ids][]" id="index_${count + 1}">
+          ${options.join()}
+        </select>
+      </div>`
+    );
   });
 
   function removeColumn(elem) {

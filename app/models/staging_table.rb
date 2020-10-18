@@ -5,6 +5,7 @@ class StagingTable < ApplicationRecord # :nodoc:
   before_create   :create_table,        if: :not_exists?
   before_create   :default_iter_id
   before_create   :default_hle_columns
+  before_create   :delete_useless_columns
   before_create   :timestamps
   after_create    :sync
 
@@ -70,6 +71,10 @@ class StagingTable < ApplicationRecord # :nodoc:
 
   def default_hle_columns
     Table.add_default_columns(name)
+  end
+
+  def delete_useless_columns
+    Table.delete_useless_columns(name)
   end
 
   def timestamps
