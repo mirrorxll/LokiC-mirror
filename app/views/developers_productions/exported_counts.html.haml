@@ -1,7 +1,7 @@
 =render 'links'
 
 %section#filter.mt-3
-  =render 'filter'
+  =render 'filter_exported_count'
 
 %hr/
 %section#developers_production.small
@@ -30,7 +30,7 @@
     %hr/
     .row.text-center
       .col-2
-        ="#{row.week.end_week}"
+        ="#{row.week.to_text}"
       .col-2
         =row.count_first
       .col-2
@@ -41,4 +41,5 @@
         =MiniLokiC::Population::Formatize::Numbers.add_commas(row.sum_follow_up_export)
       .col-2
         =MiniLokiC::Population::Formatize::Numbers.add_commas(row.sum_total)
+
 

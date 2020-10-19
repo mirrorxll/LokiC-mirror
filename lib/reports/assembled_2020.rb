@@ -25,7 +25,7 @@ module Reports
       end
 
       assembleds.each_with_index do |row,j|
-        workbook['Assembled 2020'].add_cell(j + 1, 0, row.week.end + 1)
+        workbook['Assembled 2020'].add_cell(j + 1, 0, (row.week.end + 1).strftime('%F'))
         workbook['Assembled 2020'].add_cell(j + 1, 1, row.dept)
         workbook['Assembled 2020'].add_cell(j + 1, 2, "#{row.developer.first_name} #{row.developer.last_name}")
         workbook['Assembled 2020'].add_cell(j + 1, 3, row.updated_description)

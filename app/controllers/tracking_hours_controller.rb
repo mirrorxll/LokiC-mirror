@@ -23,7 +23,7 @@ class TrackingHoursController < ApplicationController # :nodoc:
                            date: row['date'],
                            comment: row['comment'])
     end
-    @rows_reports = TrackingHour.all.where(developer: current_account, week: week)
+    @rows_reports = TrackingHour.all.where(developer: current_account, week: @week)
   end
 
   def update
@@ -59,6 +59,7 @@ class TrackingHoursController < ApplicationController # :nodoc:
   end
 
   def google_sheets
+    LinkAssembled.find_by(week: @week).delete
     assembleds = Assembled.where(week: @week)
     Reports::Assembled2020.to_google_drive(assembleds)
   end

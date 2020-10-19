@@ -11,8 +11,8 @@
               =link_to week.to_text, assembleds_tracking_hours_path(week: week)
   .col-2
     =button_to('Generate google sheets', google_sheets_tracking_hours_path(week: @week), class: "btn btn-sm btn-outline-dark")
-  .col-2.link.mt-1
-    =link_to('Google sheets', @link.link, target: '_blank') if @link
+  .col-2#link
+    =render 'link', link: @link
 %table.table-bordered.text-center.table-sm.table-responsive.overflow-x
   %thead
     %tr.small

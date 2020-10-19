@@ -248,8 +248,8 @@ ActiveRecord::Schema.define(version: 2020_09_09_111814) do
     t.string "schedule_counts", limit: 1000
     t.boolean "export"
     t.string "export_data", limit: 1000
-    t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", precision: 6, null: false
     t.index ["story_type_id"], name: "index_iterations_on_story_type_id"
   end
 

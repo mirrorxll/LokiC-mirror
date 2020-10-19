@@ -2,9 +2,11 @@
 
 class CreateLinkAssembleds < ActiveRecord::Migration[6.0]
   def change
-    create_table :links_assembleds do |t|
+    create_table :link_assembleds do |t|
       t.belongs_to :week
       t.string :link
     end
+
+    add_index :link_assembleds, :week, unique: true
   end
 end
