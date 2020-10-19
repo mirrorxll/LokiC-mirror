@@ -18,7 +18,7 @@
 .row
   .col-10
     #story_type_iterations
-      =render @story_type.iterations
+      =render @story_type.iterations, curr_iteration: @story_type.current_iteration
 
       .badge.badge-pill.badge-light{'data-container' => 'body',
                                     'data-toggle' => 'popover',
