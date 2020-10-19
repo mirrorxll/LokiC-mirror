@@ -1,7 +1,7 @@
 ActiveAdmin.setup do |config|
   config.use_webpacker = true
   config.skip_before_action :find_parent_story_type
-
+  config.skip_before_action :set_iteration
   # == Site Title
   #
   # Set the title that is displayed on the main layout
