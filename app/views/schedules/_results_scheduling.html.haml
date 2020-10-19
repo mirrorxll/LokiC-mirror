@@ -11,6 +11,7 @@ stories backdated:
   ="#{client}: #{count}"
   %br/
 -if scheduled && @iteration.export.nil?
-  =link_to('purge schedule',
-           purge_story_type_iteration_schedules_path(@story_type, @iteration),
-           class: 'mt-3 btn btn-sm btn-outline-dark', method: :patch, remote: true)
+  -if @story_type.iteration.eql?(@iteration)
+    =link_to('purge schedule',
+             purge_story_type_iteration_schedules_path(@story_type, @iteration),
+             class: 'mt-3 btn btn-sm btn-outline-dark', method: :patch, remote: true)

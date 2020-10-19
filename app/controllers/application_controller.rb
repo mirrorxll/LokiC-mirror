@@ -19,8 +19,8 @@ class ApplicationController < ActionController::Base
 
   def set_iteration
     @iteration =
-      if params[:iteration]
-        Iteration.find(params[:iteration])
+      if params[:iteration_id]
+        Iteration.find(params[:iteration_id])
       else
         @story_type.current_iteration
       end
