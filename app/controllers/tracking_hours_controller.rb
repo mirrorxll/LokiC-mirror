@@ -2,7 +2,7 @@
 
 class TrackingHoursController < ApplicationController # :nodoc:
   skip_before_action :find_parent_story_type
-  before_action :find_week, only: %i[index create confirm assembleds]
+  before_action :find_week, only: %i[index create confirm assembleds google_sheets]
 
   def index
     @rows_reports = TrackingHour.all.where(developer: current_account, week: @week)
@@ -59,12 +59,13 @@ class TrackingHoursController < ApplicationController # :nodoc:
   end
 
   def google_sheets
-    assembleds = Assembled.where(date: Date.today - (Date.today.wday - 1))
-    @link = Reports::Assembled2020.to_google_drive(assembleds)
+    assembleds = Assembled.where(week: @week)
+    Reports::Assembled2020.to_google_drive(assembleds)
   end
 
   def assembleds
-    @assemleds = Assembled.where(week: previous_week)
+    @assemleds = Assembled.where(week: @week)
+    @link = LinkAssembled.find_by(week: @week)
   end
 
   private

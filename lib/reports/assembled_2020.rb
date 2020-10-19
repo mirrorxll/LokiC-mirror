@@ -25,9 +25,9 @@ module Reports
       end
 
       assembleds.each_with_index do |row,j|
-        workbook['Assembled 2020'].add_cell(j + 1, 0, row.date.to_s)
+        workbook['Assembled 2020'].add_cell(j + 1, 0, row.week.end + 1)
         workbook['Assembled 2020'].add_cell(j + 1, 1, row.dept)
-        workbook['Assembled 2020'].add_cell(j + 1, 2, row.name)
+        workbook['Assembled 2020'].add_cell(j + 1, 2, "#{row.developer.first_name} #{row.developer.last_name}")
         workbook['Assembled 2020'].add_cell(j + 1, 3, row.updated_description)
         workbook['Assembled 2020'].add_cell(j + 1, 4, row.oppourtunity_name)
         workbook['Assembled 2020'].add_cell(j + 1, 5, row.oppourtunity_id)
@@ -36,7 +36,7 @@ module Reports
         workbook['Assembled 2020'].add_cell(j + 1, 8, row.client_name)
         workbook['Assembled 2020'].add_cell(j + 1, 9, row.account_name)
         workbook['Assembled 2020'].add_cell(j + 1, 10, row.hours)
-        workbook['Assembled 2020'].add_cell(j + 1, 11, row.employment_classification)
+        workbook['Assembled 2020'].add_cell(j + 1, 11, row.developer.upwork ? 'Upwork' : 'International Contractor')
       end
 
       file = "Assembled 2020.xlsx"
@@ -47,11 +47,11 @@ module Reports
       session.upload_from_file(file, basename)
       api_file = GoogleDrive::File.new(session, session.file_by_title(basename))
       api_file.acl.push(type: 'anyone', role: 'writer')
-      puts basename
+
       File.delete(file)
 
-      puts "#{basename}: #{api_file.human_url}"
-
+      LinkAssembled.create(week: assembleds.first.week, link: api_file.human_url)
+      
       "#{basename}: #{api_file.human_url}"
     end
   end

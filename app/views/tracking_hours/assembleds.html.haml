@@ -1,6 +1,18 @@
-=button_to('Generate table', google_sheets_tracking_hours_path)
-
-
+.row
+  .col-8
+    .nav
+      -weeks.each_with_index do |week,i|
+        .nav-item
+          -if i == weeks.length - 1
+            .nav-link.active
+              =link_to week.to_text, assembleds_tracking_hours_path(week: week)
+          -else
+            .nav-link
+              =link_to week.to_text, assembleds_tracking_hours_path(week: week)
+  .col-2
+    =button_to('Generate google sheets', google_sheets_tracking_hours_path(week: @week), class: "btn btn-sm btn-outline-dark")
+  .col-2.link.mt-1
+    =link_to('Google sheets', @link.link, target: '_blank') if @link
 %table.table-bordered.text-center.table-sm.table-responsive.overflow-x
   %thead
     %tr.small
@@ -43,11 +55,3 @@
           =row.hours
         %td
           =row.developer.upwork ? 'Upwork' : 'International Contractor'
-
-
-:javascript
-  $(document).ready(function() {
-    $('#dtHorizontal') {
-        "scrollX": true
-    };
-  } );

@@ -10,16 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_15_115315) do
+ActiveRecord::Schema.define(version: 2020_10_19_070617) do
 
   create_table "assembleds", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "developer_id"
+    t.bigint "week_id"
     t.string "dept"
+    t.string "updated_description"
     t.string "oppourtunity_name"
     t.string "oppourtunity_id"
     t.string "old_product_name"
     t.string "sf_product_id"
+    t.string "client_name"
     t.string "account_name"
     t.string "hours"
+    t.index ["developer_id"], name: "index_assembleds_on_developer_id"
+    t.index ["week_id"], name: "index_assembleds_on_week_id"
   end
 
   create_table "clients_reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -45,6 +51,12 @@ ActiveRecord::Schema.define(version: 2020_10_15_115315) do
     t.index ["week_id"], name: "index_exported_story_types_on_week_id"
   end
 
+  create_table "links_assembleds", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "week_id"
+    t.string "link"
+    t.index ["week_id"], name: "index_links_assembleds_on_week_id"
+  end
+
   create_table "reviews", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "report_type"
     t.text "table"
@@ -60,7 +72,7 @@ ActiveRecord::Schema.define(version: 2020_10_15_115315) do
     t.decimal "hours", precision: 4, scale: 2
     t.date "date"
     t.string "comment", limit: 2000
-    t.index ["client_id"], name: "index_tracking_hours_on_clients_report_id"
+    t.index ["client_id"], name: "index_tracking_hours_on_client_id"
     t.index ["developer_id"], name: "index_tracking_hours_on_developer_id"
     t.index ["type_of_work_id"], name: "index_tracking_hours_on_type_of_work_id"
     t.index ["week_id"], name: "index_tracking_hours_on_week_id"
@@ -71,8 +83,8 @@ ActiveRecord::Schema.define(version: 2020_10_15_115315) do
   end
 
   create_table "weeks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.date "begin_week"
-    t.date "end_week"
+    t.date "begin"
+    t.date "end"
   end
 
 end
