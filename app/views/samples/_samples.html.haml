@@ -1,6 +1,20 @@
 -samples = @iteration.samples.where(sampled: true)
 
--if @iteration.story_samples.eql?(false) || @iteration.creation.eql?(false)
+-if !@story_type.iteration.eql?(@iteration)
+  .row
+    .col-10.offset-1
+      #created_samples
+        -if samples.count.positive?
+          =render samples
+        -else
+          .small
+            Samples were not created.
+        %hr/
+        -if @iteration.auto_feedback_confirmations.any?
+          .mt-4
+            =render 'auto_feedback/form', auto_feedback: @iteration.auto_feedback_confirmations
+
+-elsif @iteration.story_samples.eql?(false) || @iteration.creation.eql?(false)
   =render 'story_types/spinner', description: 'samples creation in the process'
 -else
   -if !@iteration.creation.eql?(true)
