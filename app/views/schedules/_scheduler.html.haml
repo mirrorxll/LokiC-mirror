@@ -12,6 +12,8 @@
     .col-10.offset-1
       #results_scheduling
         =render 'schedules/results_scheduling', scheduled: true
+-elsif @iteration.schedule.eql?(false)
+  =render 'story_types/spinner', description: 'scheduling in progress'
 -else
   .row.small
     .col-6.offset-1
