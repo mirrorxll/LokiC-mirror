@@ -10,7 +10,7 @@
             .nav-link
               =link_to week.to_text, assembleds_tracking_hours_path(week: week)
   .col-2
-    =button_to('Generate google sheets', google_sheets_tracking_hours_path(week: @week), class: "btn btn-sm btn-outline-dark")
+    =button_to 'Generate google sheets', google_sheets_tracking_hours_path(week: @week), class: "btn btn-sm btn-outline-dark", remote: true
   .col-2#link
     =render 'link', link: @link
 %table.table-bordered.text-center.table-sm.table-responsive.overflow-x

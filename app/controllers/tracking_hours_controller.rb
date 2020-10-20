@@ -41,7 +41,7 @@ class TrackingHoursController < ApplicationController # :nodoc:
     @row_id = params[:id]
   end
 
-  def show_modal; end
+  def properties; end
 
   def import_data
     Reports::ImportTrackingHours.from_google_drive(params[:url], params[:worksheet], params[:range], current_account, previous_week)
@@ -59,9 +59,7 @@ class TrackingHoursController < ApplicationController # :nodoc:
   end
 
   def google_sheets
-    LinkAssembled.find_by(week: @week).delete
-    assembleds = Assembled.where(week: @week)
-    Reports::Assembled2020.to_google_drive(assembleds)
+    AssembledsJob.set(wait: 2.seconds).perform_now(@week)
   end
 
   def assembleds

@@ -10,7 +10,7 @@
             .nav-link
               =link_to week.to_text, tracking_hours_path(week: week)
   .col-2.justify-content-between
-    =button_to('Import data', show_modal_tracking_hours_path, class: "btn btn-sm btn-outline-dark", remote: true, disabled: @confirm)
+    =button_to('Import data', properties_tracking_hours_path, class: "btn btn-sm btn-outline-dark", remote: true, disabled: @confirm)
 #report_tracking_hour
   =render 'tracking_hours/table', rows_reports: @rows_reports
 #forms.small

@@ -7,6 +7,5 @@ class CreateLinkAssembleds < ActiveRecord::Migration[6.0]
       t.string :link
     end
 
-    add_index :link_assembleds, :week, unique: true
   end
 end
