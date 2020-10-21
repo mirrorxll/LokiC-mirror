@@ -6,7 +6,6 @@ class TrackingHoursController < ApplicationController # :nodoc:
 
   def index
     @rows_reports = TrackingHour.all.where(developer: current_account, week: @week)
-    @confirm = ConfirmReport.find_by(developer: current_account, week: @week)
   end
 
   def new
@@ -23,6 +22,8 @@ class TrackingHoursController < ApplicationController # :nodoc:
                            date: row['date'],
                            comment: row['comment'])
     end
+    Assembled.where(developer: current_account, week: @week).destroy_all
+    Reports::HoursAsm.q(TrackingHour.where(developer: current_account, week: @week))
     @rows_reports = TrackingHour.all.where(developer: current_account, week: @week)
   end
 
@@ -37,7 +38,11 @@ class TrackingHoursController < ApplicationController # :nodoc:
   def add_form; end
 
   def exclude_row
-    @row_report = TrackingHour.find(params[:id]).delete
+    @row_report = TrackingHour.find(params[:id])
+    week = @row_report.week
+    @row_report.delete
+    Assembled.where(developer: current_account, week: week).destroy_all
+    Reports::HoursAsm.q(TrackingHour.where(developer: current_account, week: week))
     @row_id = params[:id]
   end
 
@@ -48,15 +53,16 @@ class TrackingHoursController < ApplicationController # :nodoc:
     @rows_reports = TrackingHour.all.where(developer: current_account)
   end
 
-  def confirm
-    if params[:confirm].to_i == 1
-      ConfirmReport.create(developer: current_account, week: @week)
-      Reports::HoursAsm.q(TrackingHour.where(developer: current_account, week: @week))
-    else
-      ConfirmReport.find_by(developer: current_account, week: @week).delete
-      Assembled.where(developer: current_account, week: @week).destroy_all
-    end
-  end
+  # def confirm
+  #   @confirm = params[:confirm].to_i == 1 ? true : false
+  #   if @confirm
+  #     ConfirmReport.create(developer: current_account, week: @week)
+  #     Reports::HoursAsm.q(TrackingHour.where(developer: current_account, week: @week))
+  #   else
+  #     ConfirmReport.find_by(developer: current_account, week: @week).delete
+  #     Assembled.where(developer: current_account, week: @week).destroy_all
+  #   end
+  # end
 
   def google_sheets
     AssembledsJob.set(wait: 2.seconds).perform_now(@week)
@@ -78,6 +84,6 @@ class TrackingHoursController < ApplicationController # :nodoc:
   end
 
   def row_report_params
-    params.require(:report).permit(:hours, :type_of_work_id, :client_id, :date, :comment)
+    params.require(:report).each{ |report| report.values.permit(:hours, :type_of_work_id, :client_id, :date) }
   end
 end

@@ -2,23 +2,29 @@
   #reports_editable
   .d-flex.justify-content-between
     =form.hidden_field :week, value: request.query_parameters[:week]
-    =button_tag 'add row', class: 'btn btn-sm btn-outline-dark ml-2', disabled: @confirm, id: 'add_form'
-    =form.submit 'submit', class: 'btn btn-sm btn-outline-dark mr-2', disabled: @confirm
-
+    #add_row.btn.btn-sm.btn-outline-dark.ml-2 Add row
+    =form.submit 'submit', class: 'btn btn-sm btn-outline-dark mr-2', id: 'submit'
+  -puts week.end
 :javascript
   var reports_block = $('#reports_editable');
-  $('#add_form').click(function () {
+  $('#add_row').click(function () {
     let hex = secureRandom(6);
-
+    let qwe = Date.parse(#{raw week.end.strftime("%F")});
+    console.log(qwe.getTime());
     var typesOfWorks = #{raw TypeOfWork.order(name: :asc).map{|type| type.name}};
     var clients = #{raw ClientsReport.order(name: :asc).map{|type| type.name}};
-
+    var max_date = #{raw week.end.to_s};
+    var min_date = #{raw week.begin};
+    var date = #{raw week.end.strftime("%F")};
+    console.log(date);
+    console.log(max_date);
+    console.log(min_date);
     $(reports_block).append(
         `<div id="report_${hex}" class="row ml-2 mb-2 text-center">
             <input id="report_${hex}_hours" class="col-1" required="required" type="text" name="report[${hex}[hours]]">
             <select class="col-3" id="report_${hex}_type_of_work" name="report[${hex}[type_of_work]]">${buildSelect(typesOfWorks)}</select>
             <select class="col-2" id="report_${hex}_client" name="report[${hex}[client]]">${buildSelect(clients)}</select>
-            <input id="report_${hex}_date" class="col-2" required="required" type="date" name="report[${hex}[date]]">
+            <input id="report_${hex}_date" class="col-2" required="required" type="date" max="${max_date}" min="${min_date}" name="report[${hex}[date]]">
             <input id="report_${hex}_comment" class="col-3" type="text" name="report[${hex}[comment]]">
             <div class="remove_report col-1" id="rm_report_${hex}" onclick="removeDate(this)"><i class="fas fa-minus"></i></div>
         </div>`

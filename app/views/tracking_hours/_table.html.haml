@@ -5,7 +5,7 @@
     .col-3 type of work
     .col-2 client
     .col-2 date
-    .col-3 comment
+    .col-3.text-left comment
   %hr/
 
   -rows_reports.each do |row|
@@ -19,7 +19,7 @@
           =row.client.name
         .col-2
           =row['date'].strftime('%F')
-        .col-3
+        .col-3.text-left
           =row['comment']
         .col-1
           =link_to(icon('fas', 'minus', class: 'fas fa-minus'), exclude_row_tracking_hour_path(id: row['id']), method: :delete, remote: true, style: "color:black;")
