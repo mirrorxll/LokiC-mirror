@@ -1,8 +1,0 @@
-=form_with(url: confirm_tracking_hours_path, method: 'post', html: { onchange: "Rails.fire(this, 'submit')" }) do |form|
-  .row.small
-    .mr-1 click to confirm
-    -if confirm.nil?
-      =form.check_box :confirm
-    -else
-      =form.check_box :confirm, checked: true
-    =form.hidden_field :week, value: request.query_parameters[:week]

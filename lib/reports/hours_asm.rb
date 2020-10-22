@@ -29,7 +29,8 @@ module Reports
     end
 
     def self.q(dev_week)
-      puts dev_week
+      puts 'defeffe'
+      return if dev_week.nil?
       dev_week = dev_week.sort_by{|e| [e.developer.first_name, e.client.name, e.type_of_work.name] }
       week = dev_week.first.week
       dev = dev_week.first.developer

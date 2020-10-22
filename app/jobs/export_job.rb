@@ -10,7 +10,7 @@ class ExportJob < ApplicationJob
     ExportedStoryType.new(developer: story_type.developer,
                           iteration: story_type.iteration,
                           first_export: story_type.iteration.name == 'Initial',
-                          date_export: DateTime.now,
+                          date_export: Date.now,
                           count_samples: story_type.iteration.samples.count,
                           week: Week.where(begin: Date.today - (Date.today.wday - 1)).first).save
     story_type.update(last_export: Date.now)

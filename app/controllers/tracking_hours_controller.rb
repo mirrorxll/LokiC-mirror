@@ -2,7 +2,7 @@
 
 class TrackingHoursController < ApplicationController # :nodoc:
   skip_before_action :find_parent_story_type
-  before_action :find_week, only: %i[index create confirm assembleds google_sheets]
+  before_action :find_week, only: %i[index create confirm assembleds google_sheets properties import_data]
 
   def index
     @rows_reports = TrackingHour.all.where(developer: current_account, week: @week)
@@ -24,7 +24,7 @@ class TrackingHoursController < ApplicationController # :nodoc:
     end
     Assembled.where(developer: current_account, week: @week).destroy_all
     Reports::HoursAsm.q(TrackingHour.where(developer: current_account, week: @week))
-    @rows_reports = TrackingHour.all.where(developer: current_account, week: @week)
+    @rows_reports = TrackingHour.all.where(developer: current_account, week: @week).order(:date)
   end
 
   def update
@@ -42,27 +42,18 @@ class TrackingHoursController < ApplicationController # :nodoc:
     week = @row_report.week
     @row_report.delete
     Assembled.where(developer: current_account, week: week).destroy_all
-    Reports::HoursAsm.q(TrackingHour.where(developer: current_account, week: week))
+    @tracking_hours = TrackingHour.where(developer: current_account, week: week)
+    Reports::HoursAsm.q(@tracking_hours) unless @tracking_hours.empty?
     @row_id = params[:id]
   end
 
   def properties; end
 
   def import_data
-    Reports::ImportTrackingHours.from_google_drive(params[:url], params[:worksheet], params[:range], current_account, previous_week)
+    Reports::ImportTrackingHours.from_google_drive(params[:url], params[:worksheet], params[:range], current_account, @week)
+
     @rows_reports = TrackingHour.all.where(developer: current_account)
   end
-
-  # def confirm
-  #   @confirm = params[:confirm].to_i == 1 ? true : false
-  #   if @confirm
-  #     ConfirmReport.create(developer: current_account, week: @week)
-  #     Reports::HoursAsm.q(TrackingHour.where(developer: current_account, week: @week))
-  #   else
-  #     ConfirmReport.find_by(developer: current_account, week: @week).delete
-  #     Assembled.where(developer: current_account, week: @week).destroy_all
-  #   end
-  # end
 
   def google_sheets
     AssembledsJob.set(wait: 2.seconds).perform_now(@week)

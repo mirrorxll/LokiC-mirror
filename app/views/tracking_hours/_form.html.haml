@@ -4,21 +4,17 @@
     =form.hidden_field :week, value: request.query_parameters[:week]
     #add_row.btn.btn-sm.btn-outline-dark.ml-2 Add row
     =form.submit 'submit', class: 'btn btn-sm btn-outline-dark mr-2', id: 'submit'
-  -puts week.end
+
 :javascript
   var reports_block = $('#reports_editable');
   $('#add_row').click(function () {
     let hex = secureRandom(6);
-    let qwe = Date.parse(#{raw week.end.strftime("%F")});
-    console.log(qwe.getTime());
+
     var typesOfWorks = #{raw TypeOfWork.order(name: :asc).map{|type| type.name}};
     var clients = #{raw ClientsReport.order(name: :asc).map{|type| type.name}};
-    var max_date = #{raw week.end.to_s};
-    var min_date = #{raw week.begin};
-    var date = #{raw week.end.strftime("%F")};
-    console.log(date);
-    console.log(max_date);
-    console.log(min_date);
+    var max_date = date(#{raw week.end.year}, #{raw week.end.strftime("%m")}, #{raw week.end.strftime("%d")});
+    var min_date = date(#{raw week.begin.year}, #{raw week.begin.strftime("%m")}, #{raw week.begin.strftime("%d")});
+
     $(reports_block).append(
         `<div id="report_${hex}" class="row ml-2 mb-2 text-center">
             <input id="report_${hex}_hours" class="col-1" required="required" type="text" name="report[${hex}[hours]]">
@@ -30,6 +26,10 @@
         </div>`
     );
   });
+
+  function date(year, month, day){
+    return year + '-' + ('0' + month).slice(-2) + '-' + ('0' + day).slice(-2);
+  }
 
   function secureRandom(n){
     let result = '';
