@@ -21,13 +21,10 @@ prod_default: &prod_default
   socket: /var/run/mysqld/mysqld.sock
   username: <%= Rails.application.credentials.mysql[:regular][:user] %>
   password: <%= Rails.application.credentials.mysql[:regular][:password] %>
-  encoding: latin1
 
 dev_default: &dev_default
   username: root
   password: Qw12345678*
-  encoding: utf8
-
 
 development:
   primary:
