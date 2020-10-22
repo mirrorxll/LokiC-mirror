@@ -1,8 +1,10 @@
 $('#template .modal-title').html('<%= @story_type.name %>')
+
 $('#template .modal-body').empty()
 $('#template .modal-body').html('<%= j render 'edit_form' %>')
+
 $('[data-editor="summernote"]').summernote({
-    height: 700,
+    height: 600,
     toolbar: [
         ['style', ['style']],
         ['font', ['clear', 'bold', 'italic', 'underline', 'strikethrough']],
@@ -14,4 +16,5 @@ $('[data-editor="summernote"]').summernote({
         ['view', ['fullscreen', 'codeview', 'help']],
     ]
 });
+
 $('#template').modal('show');
