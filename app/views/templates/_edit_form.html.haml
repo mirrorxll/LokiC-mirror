@@ -2,12 +2,10 @@
   .field.small{ "data-controller" => "summernote" }
     =form.text_area :body, data: { editor: 'summernote' }
   .modal-footer
-    =button_tag('close', class: 'ml-auto btn btn-sm btn-outline-secondary',
-                'data-dismiss' => 'modal', onclick: 'stopTemplateSaver();')
-    =form.submit 'save changes', class: 'mr-auto btn btn-sm btn-outline-success',
-                 onclick: 'stopTemplateSaver();'
+    =button_tag('close', class: 'ml-auto btn btn-sm btn-outline-secondary', 'data-dismiss' => 'modal')#, onclick: 'stopTemplateSaver();')
+    =form.submit 'save changes', class: 'mr-auto btn btn-sm btn-outline-success' #, onclick: 'stopTemplateSaver();'
 
-:javascript
+-#:javascript
   (function startTemplateSaver() {
      sessionStorage['templateSaverId'] = setInterval(templateSaver, 30000);
   }).call();
