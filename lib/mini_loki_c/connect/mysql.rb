@@ -24,6 +24,14 @@ module MiniLokiC
           retry
         end
       end
+
+      def self.exec_query(host, database, query, symbolize = false)
+        conn = on(host, database)
+        query_result = conn.query(query, symbolize_keys: symbolize)
+        conn.close
+
+        query_result
+      end
     end
   end
 end
