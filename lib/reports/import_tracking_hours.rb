@@ -22,6 +22,7 @@ module Reports
         date = Date.parse(ws["#{letters[3]}#{i}"])
 
         next if date > week.end || date < week.begin
+
         TrackingHour.create!(developer: developer,
                              hours: ws["#{letters[0]}#{i}"],
                              type_of_work: TypeOfWork.find_by(name: ws["#{letters[1]}#{i}"]),

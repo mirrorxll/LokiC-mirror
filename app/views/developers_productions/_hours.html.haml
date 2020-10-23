@@ -1,0 +1,15 @@
+%hr/
+%section#hours.small
+  .row.text-center.font-weight-bold
+    .col-6 type of work
+    .col-3.text-center hours
+  %hr/
+
+  -tracking_hours.each do |row|
+    .row.text-center
+      .col-6
+        =row.first.name
+      .col-3
+        =row.last
+
+    %hr/

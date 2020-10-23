@@ -14,9 +14,9 @@
         .col-1
           =row['hours']
         .col-3
-          =row.type_of_work.name
+          =row.type_of_work.nil? ? '' : row.type_of_work.name
         .col-2
-          =row.client.name
+          =row.client.nil? ? '' : row.client.name
         .col-2
           =row['date'].strftime('%F')
         .col-3.text-left

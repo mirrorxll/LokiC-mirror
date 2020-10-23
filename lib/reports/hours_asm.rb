@@ -68,7 +68,6 @@ module Reports
         else
           assemblies << hash
         end
-
       end
 
       assemblies = assemblies.map! do |e|

@@ -1,4 +1,4 @@
-=form_with(model: [@story_type, @story_type.template]) do |form|
+=form_with(model: [@story_type, @story_type.template]) do |form|#template
   .field.small{ "data-controller" => "summernote" }
     =form.text_area :body, data: { editor: 'summernote' }
   .modal-footer

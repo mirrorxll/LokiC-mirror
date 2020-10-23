@@ -21,7 +21,7 @@ class DevelopersProductionsController < ApplicationController # :nodoc:
   def scores
     @exported_story_types = ExportedStoryType.begin_date(Date.today.prev_month)
 
-    begin_date = filter_params[:begin_date].nil? ? Date.today.prev_month : filter_params[:begin_date]
+    @begin_date = filter_params[:begin_date].nil? ? Date.today.prev_month : filter_params[:begin_date]
 
     filter_params.each do |key, value|
       @exported_story_types = @exported_story_types.public_send(key, value) if value.present?
@@ -32,18 +32,24 @@ class DevelopersProductionsController < ApplicationController # :nodoc:
     developers.each do |dev|
       count_first = @exported_story_types.where(developer: dev, first_export: true).count
       count_follow_up = @exported_story_types.where(developer: dev, first_export: false).count * 0.15
-      puts count_first
-      puts count_follow_up
+
       score = count_first + count_follow_up
-      tracking_hours = TrackingHour.where(developer: dev).where("date >= ?", begin_date).select("type_of_work_id, sum(hours) as sum").group(:type_of_work_id)
+      tracking_hours = TrackingHour.where(developer: dev).where("date >= ?", @begin_date).select("type_of_work_id, sum(hours) as sum").group(:type_of_work_id)
       hours = tracking_hours.sum { |el| el.sum }
       @rows_reports << {
         developer: dev,
         score: score,
-        hours: hours
+        hours: hours,
+        hours_per_story: score == 0 ? 0 : (hours / score).round(2)
       }
     end
     @rows_reports = @rows_reports.sort_by {|row| row[:score]}.reverse
+  end
+
+  def show_hours
+    @developer = Account.find(params[:developer])
+    begin_date = params[:begin_date]
+    @tracking_hours = TrackingHour.where(developer: @developer).where("date >= ?", begin_date).group(:type_of_work).sum(:hours)
   end
 
   private

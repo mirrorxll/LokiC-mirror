@@ -149,7 +149,7 @@ Rails.application.routes.draw do
     post   :add_form, on: :collection
     get    :assembleds, on: :collection
     post   :google_sheets, on: :collection
-    post    :properties, on: :collection
+    post   :properties, on: :collection
     post   :import_data, on: :collection
     post   :confirm, on: :collection
   end
@@ -157,7 +157,7 @@ Rails.application.routes.draw do
   resources :exported_story_types, only: :index
   resources :developers_productions, only: [] do
     get :scores, on: :collection
-    get :show_hours, on: :member
+    get :show_hours, on: :collection
     get :exported_counts, on: :collection
   end
 
