@@ -17,28 +17,32 @@ module MiniLokiC
         ByClientsState.new.pubs
       end
 
-      def by(clients: %w[MM MB LGIS], state: nil)
+      def by(clients: nil, state: nil)
         ByClientsState.new(clients, state).pubs
       end
 
-      def by_org_client_id(org_id, client_ids = [])
-        ByOrgClientId.new(org_id, client_ids).pubs
+      def by_org_client_id(org_id, *client_ids)
+        ByOrgClientId.new(org_id, client_ids.flatten).pubs
       end
 
-      def mm(org_id, states = [])
-        MetricMedia.new(org_id: org_id, states: states).pubs
+      def mm(org_id, *states)
+        MetricMedia.new(org_id: org_id, states: states.flatten).pubs
       end
 
-      def mm_excluding_states(org_id, states = [])
-        MetricMedia.new(org_id: org_id, states: states).pubs_excluding_states
+      def mm_excluding_states(org_id, *states)
+        MetricMedia.new(org_id: org_id, states: states.flatten).pubs_excluding_states
       end
 
-      def mm_only_states(org_id, states = [])
-        MetricMedia.new(org_id: org_id, states: states).pubs_only_states
+      def mm_only_states(org_id, *states)
+        MetricMedia.new(org_id: org_id, states: states.flatten).pubs_only_states
       end
 
-      def mm_by_state(state)
-        MetricMedia.new(states: [state]).pubs_by_passed_state
+      def mm_by_state(*state)
+        MetricMedia.new(states: state.flatten).pubs_by_passed_state
+      end
+
+      def from_lat_lon(latitude, longitude, *clients)
+        FromLatLon.new(latitude, longitude, clients.flatten).pubs
       end
     end
   end

@@ -7,25 +7,17 @@ module MiniLokiC
     module Publications
       # get publications by client id
       class ByClientsState < Publications::Base
-        def initialize(clients = %w[MM MB LGIS], state = nil)
+        def initialize(clients = nil, state = nil)
           super()
-          @clients = clients
+          @clients = clients || %w[MM MB LGIS]
           @state = state
         end
 
         def pubs
           publications = []
-          if @clients.include?('LGIS') && ['Illinois', nil].include?(@state)
-            publications += get(lgis_query, false)
-          end
-
-          if @clients.include?('MB')
-            publications += get(mb_query, false)
-          end
-
-          if @clients.include?('MM')
-            publications += get(mm_query, false)
-          end
+          publications += get(lgis_query, false) if @clients.include?('LGIS') && ['Illinois', nil].include?(@state)
+          publications += get(mb_query, false) if @clients.include?('MB')
+          publications += get(mm_query, false) if @clients.include?('MM')
 
           publications
         end

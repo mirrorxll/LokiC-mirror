@@ -14,7 +14,6 @@ module MiniLokiC
 
         def get(query, close_connection = true)
           publications = @route.query(query).to_a
-          publications.each { |p| p.delete('org_name') }
 
           @route&.close if close_connection
           publications

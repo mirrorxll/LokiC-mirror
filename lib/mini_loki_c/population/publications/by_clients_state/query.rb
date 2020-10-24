@@ -52,15 +52,16 @@ module MiniLokiC
                 ON c.client_company_id = cc.id
             WHERE c.client_company_id IN (
                     SELECT id
-                    FROM client_companies WHERE #{mm_clients} ) AND
-                         c.id NOT IN (
-                           SELECT pg.project_id
-                           FROM project_geographies pg
-                             JOIN communities c
-                               ON c.id = pg.project_id AND
-                                  pg.geography_type = 'State'
-                             JOIN client_companies cc on cc.id = c.client_company_id AND
-                                  cc.name rlike 'MM - ') AND
+                    FROM client_companies
+                    WHERE #{mm_clients}) AND
+                  c.id NOT IN (
+                    SELECT pg.project_id
+                    FROM project_geographies pg
+                      JOIN communities c
+                        ON c.id = pg.project_id AND
+                           pg.geography_type = 'State'
+                      JOIN client_companies cc on cc.id = c.client_company_id AND
+                           cc.name rlike 'MM - ') AND
                   c.id NOT IN (2041, 2419, 2394)
             ORDER BY c.name;)
         end
