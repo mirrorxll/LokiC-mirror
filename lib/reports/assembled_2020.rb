@@ -51,8 +51,6 @@ module Reports
       File.delete(file)
 
       LinkAssembled.create(week: assembleds.first.week, link: api_file.human_url)
-      
-      "#{basename}: #{api_file.human_url}"
     end
   end
 end

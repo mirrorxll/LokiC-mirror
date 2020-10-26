@@ -5,7 +5,7 @@ class TrackingHoursController < ApplicationController # :nodoc:
   before_action :find_week, only: %i[index create confirm assembleds google_sheets properties import_data]
 
   def index
-    @rows_reports = TrackingHour.all.where(developer: current_account, week: @week)
+    @rows_reports = TrackingHour.where(developer: current_account, week: @week)
   end
 
   def new
@@ -24,7 +24,7 @@ class TrackingHoursController < ApplicationController # :nodoc:
     end
     Assembled.where(developer: current_account, week: @week).destroy_all
     Reports::HoursAsm.q(TrackingHour.where(developer: current_account, week: @week))
-    @rows_reports = TrackingHour.all.where(developer: current_account, week: @week).order(:date)
+    @rows_reports = TrackingHour.where(developer: current_account, week: @week).order(:date)
   end
 
   def update
