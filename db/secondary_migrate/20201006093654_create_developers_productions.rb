@@ -8,7 +8,7 @@ class CreateDevelopersProductions < ActiveRecord::Migration[6.0]
       t.belongs_to :week
 
       t.boolean  :first_export
-      t.date :date_export
+      t.date     :date_export
       t.integer  :count_samples
     end
   end

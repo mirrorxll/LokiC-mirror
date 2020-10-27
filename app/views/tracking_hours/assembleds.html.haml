@@ -10,10 +10,10 @@
             .nav-link
               =link_to week.to_text, assembleds_tracking_hours_path(week: week)
   .col-2
-    =button_to 'Generate google sheets', google_sheets_tracking_hours_path(week: @week), class: "btn btn-sm btn-outline-dark", remote: true
+    =button_to 'Generate google sheets', google_sheets_tracking_hours_path(week: @week), class: "btn btn-sm btn-outline-dark", remote: true, id: 'google_sheets'
   .col-2#link
     =render 'link', link: @link
-#assembleds
+#assembleds.w-100{:style => "overflow-x:auto;"}
   %table.table-bordered.text-center.table-sm
     %thead
       %tr.small
@@ -57,3 +57,11 @@
           %td
             =row.developer.upwork ? 'Upwork' : 'International Contractor'
 
+
+:javascript
+  $('#google_sheets').click(function () {
+    $('#link').html(` <div class="text-center">
+                        <div class="spinner-border text-dark text-center" role="status"></div>
+                        <div class="font-weight-bold"></div>
+                      </div>`)
+  });

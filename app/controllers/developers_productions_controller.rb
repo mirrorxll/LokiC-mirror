@@ -49,7 +49,7 @@ class DevelopersProductionsController < ApplicationController # :nodoc:
   def show_hours
     @developer = Account.find(params[:developer])
     begin_date = params[:begin_date]
-    @tracking_hours = TrackingHour.where(developer: @developer).where("date >= ?", begin_date).group(:type_of_work).sum(:hours)
+    @row_reports = TrackingHour.where(developer: @developer).where("date >= ?", begin_date).group(:type_of_work).sum(:hours)
   end
 
   private
@@ -61,6 +61,6 @@ class DevelopersProductionsController < ApplicationController # :nodoc:
   end
 
   def developers
-    Account.where(account_type: 1)
+    Account.all
   end
 end

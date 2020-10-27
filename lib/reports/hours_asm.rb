@@ -29,7 +29,6 @@ module Reports
     end
 
     def self.q(dev_week)
-      puts 'defeffe'
       return if dev_week.nil?
       dev_week = dev_week.sort_by{|e| [e.developer.first_name, e.client.name, e.type_of_work.name] }
       week = dev_week.first.week
@@ -43,7 +42,7 @@ module Reports
         hash['Client Name'] = e.client.name
 
         hash['Client Name'] = 'Metric Media' if hash['Client Name'] == 'urban business underwriting'
-
+        next if e.client.name.nil? || e.type_of_work.nil?
         hash['Updated Description'] = e.type_of_work.name
         hash['Hours'] = e.hours
         hash['Developer'] = dev
@@ -122,7 +121,7 @@ module Reports
                          sf_product_id: assembly['SF Product ID'],
                          client_name: assembly['Client Name'],
                          account_name: assembly['Account Name'],
-                         hours: assembly['Hours'])
+                         hours: assembly['Hours'].round(2))
       end
 
     end

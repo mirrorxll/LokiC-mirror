@@ -3,7 +3,7 @@ import consumer from "./consumer";
 $(document).on('turbolinks:load', function () {
     let assembleds = $('#assembleds');
 
-    if(!assembleds.length) return false
+    if(!assembleds.length) return false;
 
     consumer.subscriptions.create("AssembledsChannel", {
         connected() { console.log('connect'); },

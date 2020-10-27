@@ -5,7 +5,7 @@ class TrackingHoursController < ApplicationController # :nodoc:
   before_action :find_week, only: %i[index create confirm assembleds google_sheets properties import_data]
 
   def index
-    @rows_reports = TrackingHour.where(developer: current_account, week: @week)
+    @rows_reports = row_reports(@week)
   end
 
   def new
@@ -22,17 +22,9 @@ class TrackingHoursController < ApplicationController # :nodoc:
                            date: row['date'],
                            comment: row['comment'])
     end
-    Assembled.where(developer: current_account, week: @week).destroy_all
-    Reports::HoursAsm.q(TrackingHour.where(developer: current_account, week: @week))
-    @rows_reports = TrackingHour.where(developer: current_account, week: @week).order(:date)
-  end
-
-  def update
-
-  end
-
-  def destroy
-
+    Assembled.destroy_current(current_account, @week)
+    Reports::HoursAsm.q(row_reports(@week))
+    @rows_reports = row_reports(@week)
   end
 
   def add_form; end
@@ -41,9 +33,9 @@ class TrackingHoursController < ApplicationController # :nodoc:
     @row_report = TrackingHour.find(params[:id])
     week = @row_report.week
     @row_report.delete
-    Assembled.where(developer: current_account, week: week).destroy_all
-    @tracking_hours = TrackingHour.where(developer: current_account, week: week)
-    Reports::HoursAsm.q(@tracking_hours) unless @tracking_hours.empty?
+    Assembled.destroy_current(current_account, week)
+    @row_reports = row_reports(week)
+    Reports::HoursAsm.q(@row_reports) unless @row_reports.empty?
     @row_id = params[:id]
   end
 
@@ -52,7 +44,7 @@ class TrackingHoursController < ApplicationController # :nodoc:
   def import_data
     Reports::ImportTrackingHours.from_google_drive(params[:url], params[:worksheet], params[:range], current_account, @week)
 
-    @rows_reports = TrackingHour.all.where(developer: current_account)
+    @rows_reports = row_reports(@week)
   end
 
   def google_sheets
@@ -66,12 +58,16 @@ class TrackingHoursController < ApplicationController # :nodoc:
 
   private
 
+  def assembleds_destroy
+    Assembled.where(developer: current_account, week: @week).destroy_all
+  end
+
   def find_week
     @week = Week.find(params[:week])
   end
 
-  def find_row_reports
-    @rows_reports = TrackingHour.all.where(developer: current_account)
+  def row_reports(week)
+    TrackingHour.where(developer: current_account, week: week).order(:date)
   end
 
   def row_report_params

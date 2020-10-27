@@ -24,22 +24,26 @@
               -if !current_account.type.eql?('editor')
                 %li.nav-item.active
                   =link_to('Admin panel', admin_root_path, class: 'nav-link')
-              %li.nav-item.active
-                =link_to('Tracking Hours', tracking_hours_path(week: previous_week), class: 'nav-link')
-              %li.nav-item.active
-                =link_to('Exported stories', exported_story_types_path, class: 'nav-link')
-              %li.nav-item.active
-                =link_to('Developers Production', exported_counts_developers_productions_path, class: 'nav-link')
-              %li.nav-item.active
-                =link_to('Assembled 2020', assembleds_tracking_hours_path(week: previous_week), class: 'nav-link')
-              %li.nav-item.dropdown.ml-auto.mr-3
-                #navbarDropdown.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
-                  =current_account.name
-                .dropdown-menu{"aria-labelledby" => "navbarDropdown"}
-                  .dropdown-item
-                    =link_to('Edit Profile', edit_account_registration_path, class: 'nav-link')
-                  .dropdown-item
-                    =link_to('Log Out', destroy_account_session_path, class: 'nav-link', method: :delete)
+                %li.nav-item.active.dropdown
+                  #navbarDropdown.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
+                    Reports
+                  .dropdown-menu{"aria-labelledby" => "navbarDropdown"}
+                    .dropdown-item
+                      =link_to('Exported stories', exported_story_types_path, class: 'nav-link')
+                    .dropdown-item
+                      =link_to('Developers Production', exported_counts_developers_productions_path, class: 'nav-link')
+                    .dropdown-item
+                      =link_to('Assembled 2020', assembleds_tracking_hours_path(week: previous_week), class: 'nav-link')
+            %li.nav-item.active
+              =link_to('Tracking Hours', tracking_hours_path(week: previous_week), class: 'nav-link')
+            %li.nav-item.dropdown.ml-auto
+              #navbarDropdown.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
+                =current_account.name
+              .dropdown-menu{"aria-labelledby" => "navbarDropdown"}
+                .dropdown-item
+                  =link_to('Edit Profile', edit_account_registration_path, class: 'nav-link')
+                .dropdown-item
+                  =link_to('Log Out', destroy_account_session_path, class: 'nav-link', method: :delete)
 
     -if notice
       %p.alert.alert-success.text-center
