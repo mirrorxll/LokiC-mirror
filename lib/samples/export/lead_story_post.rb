@@ -42,14 +42,7 @@ module Samples
 
         raw_response = @pl_client.post_lead_safe(params)
         response = JSON.parse(raw_response.body)
-
-        if (raw_response.status / 100) != 2
-          raise Samples::LeadPostError, response.to_json
-
-          # raise Samples::LeadPostError,
-          #       "Post lead failed. Status: #{response.status}.\n"\
-          #       "Why? > #{response.body}."
-        end
+        raise Samples::LeadPostError, response.to_json if (raw_response.status / 100) != 2
 
         response['id']
       end
@@ -109,10 +102,6 @@ module Samples
         if (raw_response.status / 100) != 2
           @pl_client.delete_lead_safe(lead_id)
           raise Samples::StoryPostError, response.to_json
-
-          # raise Samples::StoryPostError,
-          #       "Post story failed. Status: #{response.status}.\n"\
-          #       "Why? > #{response.body}."
         end
 
         response['id']

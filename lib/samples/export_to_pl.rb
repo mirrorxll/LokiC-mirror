@@ -16,6 +16,7 @@ module Samples
       @report = { exported: 0, skipped: 0, errors: { leads: [], stories: [] } }
       @main_semaphore = Mutex.new
       @report_semaphore = Mutex.new
+      @story_type = nil
     end
 
     def export!(story_type)
@@ -40,7 +41,6 @@ module Samples
                 @report[:exported] += 1
                 @report[:errors].each { |_k, v| v.uniq! }
               end
-
             rescue Samples::Error => e
               @report_semaphore.synchronize do
                 response = JSON.parse(e.message)
@@ -50,14 +50,6 @@ module Samples
                 @report[:errors][:stories] << response if e.class.eql?(Samples::StoryPostError)
                 @report[:errors].each { |_k, v| v.uniq! }
               end
-
-              # target = story_type.developer.slack.identifier
-              # if target
-              #   message = "*##{story_type.id} #{story_type.name}* -- #{e}\n"\
-              #             'Sample was skipped. *Export continued...*'
-              #
-              #   SlackNotificationJob.perform_later(target, message)
-              # end
             end
           ensure
             pl_rep_client.close
@@ -67,29 +59,7 @@ module Samples
         threads.each(&:join)
       end
 
-      target = story_type.developer.slack.identifier
-      return if target.nil?
-
-      samples = story_type.iteration.samples
-      total_exported = samples.where.not(pl_staging_story_id: nil, backdated: 1).count
-      not_exported = samples.where(pl_staging_story_id: nil, backdated: 0).count
-
-      message = "*exported by iteration:* #{total_exported}\n"\
-                "*exported by execution:* #{@report[:exported]}\n"\
-                "*not exported yet:* #{not_exported}\n"
-
-      if @report[:skipped].positive?
-        message += "*errors:*\n"
-
-        @report[:errors].each do |stage, e|
-          next if e.empty?
-
-          message += "  *#{stage}:*\n"
-          e.each { |k, v| message += "    #{k}\n" }
-        end
-      end
-
-      message
+      generate_report
     end
 
     private
@@ -99,6 +69,31 @@ module Samples
                 .joins(:export_configuration, :publication, :output)
                 .order(:published_at).where(backdated: false)
                 .where.not(export_configurations: { tag: nil })
+    end
+
+    def generate_report
+      samples = @story_type.iteration.samples
+      total_exported = samples.where.not(pl_staging_story_id: nil, backdated: 1).count
+      not_exported = samples.where(pl_staging_story_id: nil, backdated: 0).count
+      backdated = samples.where(backdated: 1).count
+
+      message = "*exported by iteration:* #{total_exported}\n"\
+                "*exported by execution:* #{@report[:exported]}\n"\
+                "*not exported yet:* #{not_exported}\n"\
+                "*backdated:* #{backdated}"
+
+      if @report[:skipped].positive?
+        message += "*errors:*\n"
+
+        @report[:errors].each do |stage, e|
+          next if e.empty?
+
+          message += "  *#{stage}:*\n"
+          e.each { |k, _v| message += "    #{k}\n" }
+        end
+      end
+
+      message
     end
   end
 end
