@@ -80,7 +80,7 @@ module Samples
       message = "*exported by iteration:* #{total_exported}\n"\
                 "*exported by execution:* #{@report[:exported]}\n"\
                 "*not exported yet:* #{not_exported}\n"\
-                "*backdated:* #{backdated}"
+                "*backdated:* #{backdated}\n"
 
       if @report[:skipped].positive?
         message += "*errors:*\n"
