@@ -6,12 +6,15 @@ class ExportJob < ApplicationJob
   def perform(story_type)
     status = true
     message = Samples[PL_TARGET].export!(story_type)
-    ExportedStoryType.new(developer: story_type.developer,
-                          iteration: story_type.iteration,
-                          first_export: story_type.iteration.name == 'Initial',
-                          date_export: Date.now,
-                          count_samples: story_type.iteration.samples.count,
-                          week: Week.where(begin: Date.today - (Date.today.wday - 1)).first).save
+
+    exp_st = ExportedStoryType.find_or_initialize_by(iteration: story_type.iteration)
+    exp_st.developer = story_type.developer
+    exp_st.first_export = story_type.iteration.name.eql?('Initial')
+    exp_st.date_export = Date.now
+    exp_st.count_samples = story_type.iteration.samples.count
+    exp_st.week = Week.where(begin: Date.today - (Date.today.wday - 1)).first
+    exp_st.save
+
     story_type.update(last_export: Date.now)
   rescue StandardError => e
     status = nil
