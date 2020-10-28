@@ -13,8 +13,8 @@
     =button_to 'Generate google sheets', google_sheets_tracking_hours_path(week: @week), class: "btn btn-sm btn-outline-dark", remote: true, id: 'google_sheets'
   .col-2#link
     =render 'link', link: @link
-#assembleds.w-100{:style => "overflow-x:auto;"}
-  %table.table-bordered.text-center.table-sm
+#assembleds.w-100
+  %table.table-bordered.text-center.table-sm.text-nowrap.table-responsive
     %thead
       %tr.small
         %th Date

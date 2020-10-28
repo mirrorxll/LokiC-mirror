@@ -39,6 +39,11 @@ module Reports
         workbook['Assembled 2020'].add_cell(j + 1, 11, row.developer.upwork ? 'Upwork' : 'International Contractor')
       end
 
+      workbook['Assembled 2020'].update_borders(
+        1, 1, 1, 1,
+        {bottom: Google::Apis::SheetsV4::Border.new(
+          style: "DOUBLE", color: GoogleDrive::Worksheet::Colors::BLACK)})
+
       file = "Assembled 2020.xlsx"
       workbook.write(file)
 
