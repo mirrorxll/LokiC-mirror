@@ -352,10 +352,3 @@ rules = {
 
 puts 'Auto-feedback'
 rules.each { |rule, output| AutoFeedback.create!(rule: rule, output: output) }
-
-
-
-
-
-
-

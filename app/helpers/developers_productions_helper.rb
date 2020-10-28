@@ -9,5 +9,4 @@ module DevelopersProductionsHelper # :nodoc:
   def date_month_ago
     Date.today.prev_month
   end
-
 end
