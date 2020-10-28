@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_09_111814) do
+ActiveRecord::Schema.define(version: 2020_10_22_145658) do
 
   create_table "account_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -239,6 +239,7 @@ ActiveRecord::Schema.define(version: 2020_09_09_111814) do
     t.boolean "population"
     t.string "population_args"
     t.boolean "export_configurations"
+    t.string "export_configuration_counts", limit: 1000
     t.boolean "story_samples"
     t.string "story_sample_args", limit: 1000
     t.boolean "creation"
@@ -263,6 +264,8 @@ ActiveRecord::Schema.define(version: 2020_09_09_111814) do
     t.string "headline", limit: 300
     t.string "teaser", limit: 1500
     t.text "body", size: :medium
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "photo_buckets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -319,10 +322,12 @@ ActiveRecord::Schema.define(version: 2020_09_09_111814) do
     t.bigint "time_frame_id"
     t.integer "staging_row_id"
     t.string "organization_ids", limit: 2000
-    t.integer "pl_production_id"
-    t.integer "pl_staging_id"
+    t.integer "pl_production_lead_id"
+    t.integer "pl_production_story_id"
+    t.integer "pl_staging_lead_id"
+    t.integer "pl_staging_story_id"
     t.date "published_at"
-    t.date "exported_at"
+    t.datetime "exported_at"
     t.boolean "backdated", default: false
     t.boolean "sampled", default: false
     t.datetime "created_at", precision: 6, null: false

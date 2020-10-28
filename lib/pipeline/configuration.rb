@@ -9,6 +9,8 @@ module Pipeline
       staging_endpoint
       production_token
       production_endpoint
+      shapes_token
+      shapes_endpoint
     ].freeze
 
     attr_accessor(*ACCESS_OPTIONS_KEYS)
@@ -19,11 +21,19 @@ module Pipeline
       yield self
     end
 
-    # @return hash of options for pl access
-    def options(environment)
+    # @return hash of options for main pl access
+    def main_options(environment)
       {
         token: send(:"#{environment}_token"),
         endpoint: send(:"#{environment}_endpoint")
+      }
+    end
+
+    # @return hash of options for pl shapes access
+    def shapes_options
+      {
+        token: shapes_token,
+        endpoint: shapes_endpoint
       }
     end
   end

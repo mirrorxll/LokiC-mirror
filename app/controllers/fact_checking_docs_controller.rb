@@ -23,10 +23,15 @@ class FactCheckingDocsController < ApplicationController
 
   def template
     @template = @story_type.template
+
+    respond_to do |format|
+      format.js { render 'template' }
+      format.html { redirect_to story_type_template_path(@story_type, @template) }
+    end
   end
 
   def send_to_reviewers_channel
-    response = SlackNotificationJob.perform_now('hle_reviews_queue_test', message_to_slack)
+    response = SlackNotificationJob.perform_now('hle_reviews_queue', message_to_slack)
     @fcd.update(slack_message_ts: response[:ts])
   end
 

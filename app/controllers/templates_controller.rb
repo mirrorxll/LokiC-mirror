@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 class TemplatesController < ApplicationController
-  before_action :render_400, if: :developer?
+  before_action :render_400, except: :show, if: :developer?
   before_action :update_template, only: %i[update save]
+
+  def show; end
 
   def edit; end
 
@@ -13,7 +15,7 @@ class TemplatesController < ApplicationController
   private
 
   def update_template
-    @story_type.template.update(template_params)
+    Template.find(params[:id]).update(template_params)
   end
 
   def template_params

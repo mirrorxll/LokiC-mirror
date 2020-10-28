@@ -48,7 +48,7 @@ class TrackingHoursController < ApplicationController # :nodoc:
   end
 
   def google_sheets
-    AssembledsJob.set(wait: 2.seconds).perform_now(@week)
+    AssembledsJob.set(wait: 2.seconds).perform_later(@week)
   end
 
   def assembleds

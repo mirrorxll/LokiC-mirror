@@ -1,6 +1,7 @@
 @import "~bootstrap/scss/bootstrap";
 @import '~@fortawesome/fontawesome-free';
 @import "data_set";
+@import "story_type";
 @import "exported_stories";
 @import "staging_table";
 @import "story_type_tables";
@@ -51,7 +52,7 @@
   background-color: rgba(0, 0, 0, 0.03);
 }
 
-.reviewer_fb_info, .editor_fb_info {
+.reviewers_fb_info, .editors_fb_info {
   position: absolute;
   display: inline-block;
   margin-top: -26px;

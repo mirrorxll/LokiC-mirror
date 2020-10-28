@@ -61,6 +61,6 @@ module DataSetsHelper # :nodoc:
   end
 
   def developers_filter(data_set)
-    data_set.story_types.where.not(developer: nil).map(&:developer).uniq
+    data_set.story_types.where.not(developer: nil).map(&:developer).uniq.sort_by(&:name)
   end
 end

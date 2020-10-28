@@ -7,7 +7,9 @@
         -auto_feedback.each_with_index do |fb, index|
           .row
             .col-1{class: "auto-fb-confirm_#{fb.id} text-center", onchange: 'confirmAutoFeedback(this.className);'}
-              -if fb.confirmed
+              -if !@story_type.iteration.eql?(@iteration)
+                =fb.confirmed ? icon('fas','check') : icon('fas','times')
+              -elsif fb.confirmed
                 =icon('fas','check')
               -else
                 =check_box_tag :auto_feedback_confirm, fb.confirmed
@@ -42,7 +44,7 @@
     let changeAutoFeedbackStatus = (elem) => { elem.innerHTML = `<i class="fas fa-check"></i>`; }
 
     $.ajax({
-      url: `#{root_url}story_types/#{@story_type.id}/iterations/#{@story_type.iteration.id}/auto_feedback_confirmations/${feedbackConfirmId}/confirm`,
+      url: `#{root_url}story_types/#{@story_type.id}/iterations/#{@iteration.id}/auto_feedback_confirmations/${feedbackConfirmId}/confirm`,
       success: changeAutoFeedbackStatus(feedback),
       method: 'patch',
       dataType: 'script'

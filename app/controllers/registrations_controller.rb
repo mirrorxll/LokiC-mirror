@@ -2,6 +2,7 @@
 
 class RegistrationsController < Devise::RegistrationsController # :nodoc:
   skip_before_action :find_parent_story_type
+  skip_before_action :set_iteration
 
   def new
     flash[:alert] = 'Registration disabled'

@@ -9,12 +9,13 @@ class CreateIterations < ActiveRecord::Migration[6.0] # :nodoc:
       t.boolean :population
       t.string  :population_args
       t.boolean :export_configurations
+      t.string  :export_configuration_counts, limit: 1_000
       t.boolean :story_samples
       t.string  :story_sample_args, limit: 1_000
       t.boolean :creation
       t.boolean :purge_all_samples
       t.boolean :schedule
-      t.string  :schedule_args, limit: 2_000
+      t.text    :schedule_args
       t.string  :schedule_counts, limit: 1_000
       t.boolean :export
       t.timestamps

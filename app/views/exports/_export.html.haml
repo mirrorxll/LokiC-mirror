@@ -1,20 +1,34 @@
-.small
-  -iteration = @story_type.iteration
-  -if @story_type.staging_table && iteration.creation && iteration.schedule
-    -samples = iteration.samples
-    -exported = samples.where.not(pl_production_id: nil).count
-    -ready_to_export = samples.where(pl_production_id: nil).count
+-samples = @iteration.samples.where(backdated: false)
+-exported = samples.where.not("pl_#{PL_TARGET}_story_id".to_sym => nil).count
+-ready_to_export = samples.where("pl_#{PL_TARGET}_story_id".to_sym => nil).count
 
-    -if iteration.export.eql?(true)
-      .row
-        .col-10.offset-1
-          total exported: #{exported}
-      .row
-        .col-10.offset-1
-          =link_to('exported stories', exported_stories_story_type_iteration_exports_path(@story_type, iteration),
+.small
+  -if !@story_type.iteration.eql?(@iteration)
+    .row
+      .col-10.offset-1
+        total exported: #{exported} / #{samples.count}
+    .row
+      .col-10.offset-1
+        =link_to('exported stories', exported_stories_story_type_iteration_exports_path(@story_type, @iteration),
                    class: 'mt-3 btn btn-sm btn-outline-dark', target: '_blank')
 
-    -elsif iteration.export.eql?(false)
+  -elsif @story_type.staging_table && @iteration.creation && @iteration.schedule
+
+    -if @iteration.export.eql?(true)
+      .row
+        .col-10.offset-1
+          total exported: #{exported} / #{samples.count}
+      .row
+        .col-10.offset-1
+          -if exported < samples.count
+            =link_to('extra export!', export_story_type_iteration_exports_path(@story_type, @iteration),
+                     class: 'mt-3 btn btn-sm btn-outline-dark',
+                     method: :post, remote: true)
+
+          =link_to('exported stories', exported_stories_story_type_iteration_exports_path(@story_type, @iteration),
+                   class: 'mt-3 btn btn-sm btn-outline-dark', target: '_blank')
+
+    -elsif @iteration.export.eql?(false)
       =render 'story_types/spinner', description: 'export in progress'
     -else
       .row.mb-2
@@ -22,6 +36,6 @@
           ready to export: #{ready_to_export}
       .row
         .col-10.offset-1
-          =link_to('export!', production_story_type_iteration_exports_path(@story_type, iteration),
+          =link_to('export!', export_story_type_iteration_exports_path(@story_type, @iteration),
                    class: 'mt-3 btn btn-sm btn-outline-dark',
                    method: :post, remote: true)

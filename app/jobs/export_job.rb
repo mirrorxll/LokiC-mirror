@@ -4,9 +4,8 @@ class ExportJob < ApplicationJob
   queue_as :export
 
   def perform(story_type)
-    Samples[:production].export!(story_type)
     status = true
-    message = 'exported.'
+    message = Samples[PL_TARGET].export!(story_type)
     ExportedStoryType.new(developer: story_type.developer,
                           iteration: story_type.iteration,
                           first_export: story_type.iteration.name == 'Initial',
@@ -16,11 +15,11 @@ class ExportJob < ApplicationJob
     story_type.update(last_export: Date.now)
   rescue StandardError => e
     status = nil
-    message = e
+    message = e.full_message
   ensure
     story_type.update_iteration(export: status)
 
     send_to_action_cable(story_type, export_msg: status)
-    send_to_slack(story_type, message)
+    send_to_slack(story_type, "export\n#{message}")
   end
 end

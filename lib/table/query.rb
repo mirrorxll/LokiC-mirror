@@ -59,25 +59,24 @@ module Table
 
     def rows_by_ids_query(t_name, iter_id, options)
       "SELECT * FROM `#{t_name}` "\
-      "WHERE story_created = 0 AND id IN (#{options[:ids]}) AND "\
-      "iter_id = #{iter_id} "\
-      "LIMIT #{options[:limit] || 10_000};"
+      "WHERE (story_created = 0 OR story_created IS NULL) AND id IN (#{options[:ids]}) AND "\
+      "iter_id = #{iter_id} LIMIT #{options[:limit] || 10_000};"
     end
 
     def rows_by_last_iteration_query(t_name, iter_id, options)
       "SELECT * FROM `#{t_name}` "\
-      "WHERE story_created = 0 AND iter_id = (#{iter_id}) "\
+      "WHERE (story_created = 0 OR story_created IS NULL) AND iter_id = (#{iter_id}) "\
       "LIMIT #{options[:limit] || 10_000};"
     end
 
     def created_at_default_value_query(name)
       "ALTER TABLE `#{name}` CHANGE COLUMN created_at created_at "\
-      'TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;'
+      'TIMESTAMP DEFAULT CURRENT_TIMESTAMP;'
     end
 
     def updated_at_default_value_query(name)
       "ALTER TABLE `#{name}` CHANGE COLUMN updated_at updated_at "\
-        'TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;'
+      'TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;'
     end
 
     def alter_change_iter_id_query(t_name, iter_id)

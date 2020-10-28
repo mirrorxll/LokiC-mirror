@@ -37,7 +37,7 @@ Rails.application.routes.draw do
     get :properties
     get :canceling_edit, on: :member
 
-    resources :templates, path: :template, only: %i[edit update] do
+    resources :templates, path: :template, only: %i[show edit update] do
       patch :save, on: :member
     end
 
@@ -67,16 +67,22 @@ Rails.application.routes.draw do
     end
 
     resources :staging_tables, only: %i[show create destroy] do
-      post    :attach,    on: :collection
-      delete  :detach,    on: :member
-      patch   :sync,      on: :member
-      get     :section,   on: :collection
+      post    :attach,         on: :collection
+      delete  :detach,         on: :member
+      patch   :sync,           on: :member
+      get     :section,        on: :collection
+      get     :canceling_edit, on: :collection
 
       resources :columns, only: %i[edit update]
       resources :indices, only: %i[new create destroy]
     end
 
-    resources :codes, only: %i[create destroy show]
+    resources :codes, only: [] do
+      get    :show,   on: :collection
+      post   :attach, on: :collection
+      put    :reload, on: :collection
+      delete :detach, on: :collection
+    end
 
     resources :export_configurations, only: :create do
       get   :section,     on: :collection
@@ -98,6 +104,8 @@ Rails.application.routes.draw do
     end
 
     resources :iterations do
+      patch :apply_iteration, on: :member
+
       resources :statuses, only: [] do
         get   :form,    on: :collection
         patch :change,  on: :collection
@@ -128,8 +136,8 @@ Rails.application.routes.draw do
       end
 
       resources :exports, path: 'export', only: [] do
-        post :production,       on: :collection
-        get :exported_story_types, on: :collection
+        post :export,           on: :collection
+        get  :exported_stories, on: :collection
         get  :section,          on: :collection
       end
     end

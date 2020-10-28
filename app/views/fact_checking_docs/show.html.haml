@@ -1,4 +1,4 @@
--if @story_type.iteration.auto_feedback_confirmations.all?(&:confirmed)
+-if @iteration.auto_feedback_confirmations.all?(&:confirmed)
   -account_type = current_account.type
   -reviewers_feedback = @fcd.reviewers_feedback
   -editors_feedback = @fcd.editors_feedback
@@ -29,7 +29,7 @@
   .row
     .col-10.offset-1
       #autoFeedbackCollapse.collapse.show
-        =render 'auto_feedback/form', auto_feedback: @story_type.iteration.auto_feedback_confirmations
+        =render 'auto_feedback/form', auto_feedback: @iteration.auto_feedback_confirmations
 
   %hr#reviewers_feedback/
   .row.small
@@ -48,7 +48,7 @@
             -reviewers_feedback.each_with_index do |r_fb, index|
               %div{ id: "r_fb_#{r_fb.id}" }
                 .manual_feedback.border
-                  .reviewer_fb_info
+                  .reviewers_fb_info
                     =r_fb.reviewer.name
                     &nbsp
                     =r_fb.created_at.strftime('%F %R %Z')
@@ -56,13 +56,17 @@
                     -if r_fb.approvable
                       .font-weight-bold.d-inline
                         Approved!
+                    -elsif r_fb.confirmed
+                      =icon('fa', 'check')
+                  .row
+                    -if r_fb.approvable || r_fb.confirmed
+                      .col-12
+                        =r_fb.body&.html_safe
                     -else
-                      .d-inline-block{ onchange: "confirmFeedback(this, 'reviewers', #{r_fb.id});" }
-                        -if r_fb.confirmed
-                          =icon('fa', 'check')
-                        -else
-                          %input{ type: :checkbox }
-                  =r_fb.body&.html_safe
+                      .col-1.d-flex.justify-content-center.align-items-center{ onchange: "confirmFeedback(this, 'reviewers', #{r_fb.id});" }
+                        %input{ type: :checkbox }
+                      .col-11.pl-0
+                        =r_fb.body&.html_safe
                 -if index != (reviewers_feedback.count - 1)
                   %hr.mt-4.mb-4/
 
@@ -81,10 +85,9 @@
 
         .card-body
           #editors_feedback_body
-
             -editors_feedback.each_with_index do |e_fb, index|
               .manual_feedback.border
-                .editor_fb_info
+                .editors_fb_info
                   =e_fb.editor.name
                   &nbsp
                   =e_fb.created_at.strftime('%F %R %Z')
@@ -92,15 +95,21 @@
                   -if e_fb.approvable
                     .font-weight-bold.d-inline
                       Approved!
+                  -elsif e_fb.confirmed
+                    =icon('fa', 'check')
+                .row
+                  -if e_fb.approvable || e_fb.confirmed
+                    .col-12
+                      =e_fb.body&.html_safe
                   -else
-                    .d-inline-block{ onchange: "confirmFeedback(this, 'editors', #{e_fb.id});" }
-                      -if e_fb.confirmed
-                        =icon('fa', 'check')
-                      -else
-                        %input{ type: :checkbox }
-                =e_fb.body&.html_safe
+                    .col-1.d-flex.justify-content-center.align-items-center{ onchange: "confirmFeedback(this, 'editors', #{e_fb.id});" }
+                      %input{ type: :checkbox }
+                    .col-11.pl-0
+                      =e_fb.body&.html_safe
               -if index != (editors_feedback.count - 1)
                 %hr.mt-4.mb-4/
+
+
   =render 'fact_checking_docs/confirm_feedback'
   %hr/
   .row.small
@@ -128,7 +137,7 @@
           .modal-title#manual_feedback_modal_label
           %button.close{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
             %span{ "aria-hidden" => "true" } ×
-        .modal-body.pl-4.small
+        .modal-body.small
           %ul#manual_feedback_tabs.nav.nav-tabs.w-60{role: "tablist"}
             %li.nav-item{role: "presentation"}
               %a#fcd-tab.nav-link.active{"aria-controls" => "fcd", "aria-selected" => "true", "data-toggle" => "tab", href: "#fcd", role: "tab"} FCD

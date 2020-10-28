@@ -1,7 +1,7 @@
 #info.small
   .row
     .col-12.pl-5.pt-3.pb-3
-      iteration: #{@story_type.iteration.name}
+      iteration: #{@iteration.name}
       %br/
       total exported: #{@exported.count}
       %br/
@@ -26,7 +26,7 @@
           %td
             =story.headline
           %td
-            =link_to(nil, story.production_link, target:'_blank')
+            =link_to(nil, story.link, target:'_blank')
           %td
             =story.client_name
           %td

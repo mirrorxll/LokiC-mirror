@@ -4,6 +4,8 @@ class StagingTable < ApplicationRecord # :nodoc:
   before_create   :generate_table_name, if: :noname?
   before_create   :create_table,        if: :not_exists?
   before_create   :default_iter_id
+  before_create   :default_hle_columns
+  before_create   :delete_useless_columns
   before_create   :timestamps
   after_create    :sync
 
@@ -32,6 +34,8 @@ class StagingTable < ApplicationRecord # :nodoc:
   end
 
   def default_iter_id
+    return unless self.class.exists?(name)
+
     Table.iter_id_column(name, story_type.iteration.id)
   end
 
@@ -63,6 +67,14 @@ class StagingTable < ApplicationRecord # :nodoc:
 
   def create_table
     Table.create(name)
+  end
+
+  def default_hle_columns
+    Table.add_default_columns(name)
+  end
+
+  def delete_useless_columns
+    Table.delete_useless_columns(name)
   end
 
   def timestamps

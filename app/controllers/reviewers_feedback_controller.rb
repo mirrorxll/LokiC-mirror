@@ -12,7 +12,7 @@ class ReviewersFeedbackController < ApplicationController
   def create
     @feedback = @feedback_collection.build(reviewers_feedback_params)
     @feedback.reviewer = current_account
-    @feedback.approvable = true if params[:commit].eql?('approve!')
+    @feedback.approvable = params[:commit].eql?('approve!')
 
     if @feedback.save
       redirect_to "#{story_type_fact_checking_doc_path(@story_type, @fcd)}#reviewers_feedback"
@@ -77,6 +77,6 @@ class ReviewersFeedbackController < ApplicationController
               "<#{story_type_fact_checking_doc_url(@story_type, @story_type.fact_checking_doc)}"\
               '#reviewers_feedback|Check it>.'
 
-    SlackNotificationJob.perform_later('hle_reviews_queue_test', message, @fcd.slack_message_ts)
+    SlackNotificationJob.perform_later('hle_reviews_queue', message, @fcd.slack_message_ts)
   end
 end

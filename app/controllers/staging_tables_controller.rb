@@ -48,6 +48,10 @@ class StagingTablesController < ApplicationController # :nodoc:
     render 'show'
   end
 
+  def canceling_edit
+    render 'show'
+  end
+
   def section
     flash.now[:error] = detached_or_delete if @staging_table.nil?
 

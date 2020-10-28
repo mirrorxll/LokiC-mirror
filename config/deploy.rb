@@ -42,7 +42,7 @@ namespace :sidekiq do
   task :stop do
     on roles(:app) do
       within current_path do
-        execute'tmux send-keys -t sidekiq-tmux.0 ^C ENTER'
+        execute 'tmux send-keys -t sidekiq-tmux.0 ^C ENTER'
         sleep(10)
       end
     end

@@ -30,8 +30,17 @@ module MiniLokiC
 
     def exec
       load file
+      story_type_class = Object.const_get("S#{@story_type.id}")
 
-      Object.const_get("S#{@story_type.id}").new.send(@method, @options)
+      story_type_class.include(
+        MiniLokiC::Connect,
+        MiniLokiC::Formatize,
+        MiniLokiC::Population,
+        MiniLokiC::Creation,
+        MiniLokiC::NoLog
+      )
+
+      story_type_class.new.send(@method, @options)
     ensure
       Object.send(:remove_const, "S#{@story_type.id}") if Object.const_defined?("S#{@story_type.id}")
     end

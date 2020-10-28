@@ -57,8 +57,10 @@ module Table # :nodoc:
       max_query = select_minmax_id_query(t_name, last_iter, col_name, :MAX)
 
       loki_story_creator do
-        selected << a_r_b_conn.exec_query(min_query).first['id']
-        selected << a_r_b_conn.exec_query(max_query).first['id']
+        min = a_r_b_conn.exec_query(min_query).first
+        selected << min['id'] if min
+        max = a_r_b_conn.exec_query(max_query).first
+        selected << max['id'] if max
       end
     end
   end

@@ -1,26 +1,15 @@
 # frozen_string_literal: true
 
-require_relative 'configuration.rb'
 require_relative 'connection.rb'
 require_relative 'request.rb'
-require_relative 'endpoint.rb'
 
 module Pipeline
-  # Class for api requests to PL
-  class Client
+  class Base
     include Connection
     include Request
-    include Endpoint
 
     attr_reader :environment
     attr_accessor :token, :endpoint
-
-    def initialize(environment)
-      raise EnvironmentError unless %i[staging production].include?(environment)
-
-      @environment = environment
-      Pipeline.options(environment).each { |name, value| send("#{name}=", value) }
-    end
 
     private
 
@@ -29,15 +18,15 @@ module Pipeline
       super unless method.end_with?('_safe')
 
       method.delete_suffix!('_safe')
-      error_counter = 0
+      sleep = 1
 
       begin
         send(method, *args)
       rescue Faraday::Error => e
-        raise e if error_counter.eql?(10)
+        raise e if sleep > 127
 
-        sleep(5)
-        error_counter += 1
+        sleep(sleep)
+        sleep *= 2
         retry
       end
     end

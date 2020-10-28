@@ -1,3 +1,15 @@
+:concurrency: 50
+:queues:
+  - default
+  - slack_api
+  - population
+  - export_configurations
+  - samples
+  - creation
+  - scheduler
+  - export
+
+:dynamic: true
 :schedule:
   clients_publications:
     cron: '0 0 */1 * *'
@@ -11,14 +23,3 @@
   slack_accounts:
     cron: '8 0 */1 * *'
     class: SlackAccountsJob
-
-:concurrency: 30
-:queues:
-  - default
-  - slack_api
-  - population
-  - export_configurations
-  - samples
-  - creation
-  - scheduler
-  - export

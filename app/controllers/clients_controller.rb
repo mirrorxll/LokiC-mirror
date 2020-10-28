@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ClientsController < ApplicationController # :nodoc:
+  skip_before_action :set_iteration
+
   before_action :render_400, if: :developer?
   before_action :find_client
 

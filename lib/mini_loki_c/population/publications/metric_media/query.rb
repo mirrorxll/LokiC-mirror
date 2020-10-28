@@ -15,8 +15,7 @@ module MiniLokiC
         end
 
         def pubs_query
-          %|select o.name org_name,
-                   c.id,
+          %|select c.id,
                    c.name,
                    cc.id client_id,
                    cc.name client_name
@@ -33,8 +32,7 @@ module MiniLokiC
         end
 
         def pubs_excluding_states_query
-          %|select o.name org_name,
-                   c.id,
+          %|select c.id,
                    c.name,
                    cc.id client_id,
                    cc.name client_name
@@ -61,8 +59,7 @@ module MiniLokiC
         end
 
         def pubs_only_states_query
-          %|select o.name org_name,
-                   c.id,
+          %|select c.id,
                    c.name,
                    cc.id client_id,
                    cc.name client_name
@@ -86,6 +83,27 @@ module MiniLokiC
                   c.id in (2041, 2419, 2394)) and
                   organization_id = #{@org_id}
             group by c.id;|
+        end
+
+        def pubs_by_passed_state_query
+          %|select c.id as id,
+                   c.name as name,
+                   cc.id as client_id,
+                   cc.name as client_name
+            from client_companies as cc
+                join communities as c
+                    on c.client_company_id = cc.id
+            where c.client_company_id = #{@client_ids} and
+                  c.id not in (
+                    select pg.project_id
+                    from project_geographies pg
+                        join communities c
+                            on c.id = pg.project_id and
+                               pg.geography_type = 'State'
+                        join client_companies cc
+                            on cc.id = c.client_company_id
+                    where cc.id = #{@client_ids}) and
+                  c.id not in (2041, 2419, 2394);|
         end
       end
     end

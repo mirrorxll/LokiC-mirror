@@ -1,12 +1,12 @@
-# frozen_string_literal: true
+# frozen_string_literallat, lon: true
 
 module Pipeline
-  module Endpoint
+  module MainEndpoint
     # Job endpoints
     module Job
       # https://pipeline-api-docs.locallabs.com/#create-a-job
-      def post_job(options = {})
-        post('jobs', options)
+      def post_job(body = {})
+        post('jobs', body)
       end
     end
   end

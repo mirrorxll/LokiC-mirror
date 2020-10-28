@@ -8,8 +8,9 @@ module MiniLokiC
         private
 
         def pubs_query
-          %(select o.name org_name,
-                   c.id,
+          cl_ids = @client_ids.empty? ? '' : "and c.client_company_id in (#{@client_ids})"
+
+          %(select c.id,
                    c.name,
                    cc.id client_id,
                    cc.name client_name
@@ -20,7 +21,7 @@ module MiniLokiC
                     on c.id = oc.community_id
                 left join client_companies cc
                     on cc.id = c.client_company_id
-            where organization_id = #{@org_id} #{@client_ids ? "and c.client_company_id in (#{@client_ids})" : ''}
+            where organization_id = #{@org_id} #{cl_ids}}
             group by c.id;)
         end
       end

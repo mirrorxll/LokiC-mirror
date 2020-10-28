@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 class ExportConfiguration < ApplicationRecord # :nodoc:
+  after_save :attach_job_item
+
   belongs_to :story_type
   belongs_to :publication,  optional: true
   belongs_to :tag,          optional: true
-  belongs_to :photo_bucket
+  belongs_to :photo_bucket, optional: true
 
   has_many :samples
 
@@ -23,5 +25,13 @@ class ExportConfiguration < ApplicationRecord # :nodoc:
         tag_id: tag[:tag_id]
       )
     end
+  end
+
+  private
+
+  def attach_job_item
+    return if self["#{PL_TARGET}_job_item"]
+
+    JobItem.find_or_create(self, PL_TARGET)
   end
 end

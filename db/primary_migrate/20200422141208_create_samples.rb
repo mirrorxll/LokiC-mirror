@@ -12,10 +12,13 @@ class CreateSamples < ActiveRecord::Migration[6.0]
 
       t.integer     :staging_row_id
       t.string      :organization_ids, limit: 2000
-      t.integer     :pl_production_id
-      t.integer     :pl_staging_id
+      t.integer
+      t.integer     :pl_production_lead_id
+      t.integer     :pl_production_story_id
+      t.integer     :pl_staging_lead_id
+      t.integer     :pl_staging_story_id
       t.date        :published_at
-      t.date        :exported_at
+      t.datetime    :exported_at
       t.boolean     :backdated, default: false
       t.boolean     :sampled, default: false
 

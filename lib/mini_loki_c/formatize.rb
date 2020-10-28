@@ -6,9 +6,8 @@ require_relative 'formatize/numbers.rb'
 require_relative 'formatize/money.rb'
 require_relative 'formatize/address.rb'
 require_relative 'formatize/percents.rb'
+require_relative 'formatize/the.rb'
 
 module MiniLokiC
-  module Population
-    module Formatize; end
-  end
+  module Formatize; end
 end
