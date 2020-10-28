@@ -5,7 +5,6 @@ class DevelopersScoresController < ApplicationController # :nodoc:
 
   def index
     @rows_reports = ExportedStoryType.begin_date(Date.today.prev_month)
-
   end
 
   private
