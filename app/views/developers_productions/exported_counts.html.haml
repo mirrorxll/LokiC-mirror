@@ -1,0 +1,44 @@
+=render 'links'
+
+%section#filter.mt-3
+  =render 'filter_exported_count'
+
+%hr/
+%section#developers_production.small
+  .row.text-center
+    .col-2 week
+    .col-2 first export
+    .col-2 count stories first
+    .col-2 follow up export
+    .col-2 count stories follow up
+    .col-2 total count stories
+  %hr/
+  .row.text-center.text-dark.font-weight-bold
+    .col-2 Summary
+    .col-2
+      =@rows_reports.sum { |row| row.count_first }
+    .col-2
+      =MiniLokiC::Population::Formatize::Numbers.add_commas(@rows_reports.sum { |row| row.sum_first_export })
+    .col-2
+      =@rows_reports.sum { |row| row.count_follow_up }
+    .col-2
+      =MiniLokiC::Population::Formatize::Numbers.add_commas(@rows_reports.sum { |row| row.sum_follow_up_export })
+    .col-2
+      =MiniLokiC::Population::Formatize::Numbers.add_commas(@rows_reports.sum { |row| row.sum_total })
+  %hr/
+  -@rows_reports.each do |row|
+    %hr/
+    .row.text-center
+      .col-2
+        ="#{row.week.to_text}"
+      .col-2
+        =row.count_first
+      .col-2
+        =MiniLokiC::Population::Formatize::Numbers.add_commas(row.sum_first_export)
+      .col-2
+        =row.count_follow_up
+      .col-2
+        =MiniLokiC::Population::Formatize::Numbers.add_commas(row.sum_follow_up_export)
+      .col-2
+        =MiniLokiC::Population::Formatize::Numbers.add_commas(row.sum_total)
+

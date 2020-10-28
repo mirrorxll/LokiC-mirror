@@ -1,0 +1,20 @@
+=form_with(url: import_data_tracking_hours_path, method: 'post', class: 'small') do |form|
+  =form.hidden_field :week, value: week
+  .row
+    .col
+      .font-weight-bold url
+  .row.mt-1
+    .col
+      =form.text_field :url, class: 'w-75'
+  .row.mt-3
+    .col-4
+      .font-weight-bold worksheet
+    .col-4
+      .font-weight-bold range
+  .row.mt-1
+    .col-4
+      =form.text_field :worksheet
+    .col-4
+      =form.text_field :range
+    .col-4.align-items-end
+      =form.submit 'import', class: 'btn btn-sm btn-outline-dark mr-2'

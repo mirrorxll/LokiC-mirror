@@ -1,0 +1,67 @@
+.row
+  .col-8
+    .nav
+      -weeks.each_with_index do |week,i|
+        .nav-item
+          -if i == weeks.length - 1
+            .nav-link.active
+              =link_to week.to_text, assembleds_tracking_hours_path(week: week)
+          -else
+            .nav-link
+              =link_to week.to_text, assembleds_tracking_hours_path(week: week)
+  .col-2
+    =button_to 'Generate google sheets', google_sheets_tracking_hours_path(week: @week), class: "btn btn-sm btn-outline-dark", remote: true, id: 'google_sheets'
+  .col-2#link
+    =render 'link', link: @link
+#assembleds.w-100
+  %table.table-bordered.text-center.table-sm.text-nowrap.table-responsive
+    %thead
+      %tr.small
+        %th Date
+        %th Dept
+        %th Name
+        %th Updated Description
+        %th Oppourtunity Name
+        %th Oppourtunity ID
+        %th Old Product Name
+        %th SF Product ID
+        %th Client Name
+        %th Account Name
+        %th Hours
+        %th Employment Classification
+    %tbody
+      -@assemleds.each do |row|
+        %tr.small
+          %td
+            =row.week.end + 1
+          %td
+            =row.dept
+          %td
+            ="#{row.developer.first_name} #{row.developer.last_name}"
+          %td
+            =row.updated_description
+          %td
+            =row.oppourtunity_name
+          %td
+            =row.oppourtunity_id
+          %td
+            =row.old_product_name
+          %td
+            =row.sf_product_id
+          %td
+            =row.client_name
+          %td
+            =row.account_name
+          %td
+            =row.hours
+          %td
+            =row.developer.upwork ? 'Upwork' : 'International Contractor'
+
+
+:javascript
+  $('#google_sheets').click(function () {
+    $('#link').html(` <div class="text-center">
+                        <div class="spinner-border text-dark text-center" role="status"></div>
+                        <div class="font-weight-bold"></div>
+                      </div>`)
+  });

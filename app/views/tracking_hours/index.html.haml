@@ -1,0 +1,26 @@
+.row
+  .col-10
+    .nav.justify-content-center
+      -weeks.each_with_index do |week,i|
+        .nav-item
+          -if i == weeks.length - 1
+            .nav-link.active
+              =link_to week.to_text, tracking_hours_path(week: week)
+          -else
+            .nav-link
+              =link_to week.to_text, tracking_hours_path(week: week)
+  .col-2.mt-1
+    =button_to('Import data', properties_tracking_hours_path(week: request.query_parameters[:week]), class: "btn btn-sm btn-outline-dark", remote: true, id: 'import_data')
+
+#report_tracking_hour
+  =render 'tracking_hours/table', rows_reports: @rows_reports
+#forms.small
+  =render 'tracking_hours/form', week: @week
+
+#import-data.modal.fade.import-data-modal-lg{"aria-hidden" => "true", "aria-labelledby" => "import-data", role: "dialog", :tabindex => "-1"}
+  .modal-dialog.modal-dialog-centered.modal-lg
+    .modal-content
+      .d-flex.justify-content-end.mt-1.mr-1
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", type: "button"}
+          %span{"aria-hidden" => "true"} ×
+      .modal-body

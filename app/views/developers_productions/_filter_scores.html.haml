@@ -1,0 +1,7 @@
+.row.small
+  .col-12.text-center
+    =form_with(url: scores_developers_productions_path, method: :get, local: true, html: { class: 'd-inline' }) do |form|
+      =form.label :begin_date
+      =form.date_field 'filter[begin_date]'
+      =form.submit 'Get report', class: 'ml-3'
+    =button_to('Reset', scores_developers_productions_path, form: { class: 'd-inline' }, method: :get)

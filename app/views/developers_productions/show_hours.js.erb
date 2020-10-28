@@ -1,0 +1,3 @@
+$('#hours-data .modal-title').html('<%= @developer.first_name + ' ' + @developer.last_name %>')
+$('#hours-data .modal-body').html('<%= j render 'hours', tracking_hours: @row_reports %>')
+$('#hours-data').modal('show');

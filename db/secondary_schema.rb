@@ -10,13 +10,81 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_10_115910) do
+ActiveRecord::Schema.define(version: 2020_10_19_070617) do
+
+  create_table "assembleds", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "developer_id"
+    t.bigint "week_id"
+    t.string "dept"
+    t.string "oppourtunity_name"
+    t.string "oppourtunity_id"
+    t.string "old_product_name"
+    t.string "sf_product_id"
+    t.string "account_name"
+    t.string "hours"
+    t.string "updated_description"
+    t.string "client_name"
+    t.index ["developer_id"], name: "index_assembleds_on_developer_id"
+    t.index ["week_id"], name: "index_assembleds_on_week_id"
+  end
+
+  create_table "clients_reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name"
+  end
+
+  create_table "confirm_reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "week_id"
+    t.bigint "developer_id"
+    t.index ["developer_id"], name: "index_confirm_reports_on_developer_id"
+    t.index ["week_id"], name: "index_confirm_reports_on_week_id"
+  end
+
+  create_table "exported_story_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "developer_id"
+    t.bigint "iteration_id"
+    t.bigint "week_id"
+    t.boolean "first_export"
+    t.date "date_export"
+    t.integer "count_samples"
+    t.index ["developer_id"], name: "index_exported_story_types_on_developer_id"
+    t.index ["iteration_id"], name: "index_exported_story_types_on_iteration_id"
+    t.index ["week_id"], name: "index_exported_story_types_on_week_id"
+  end
+
+  create_table "links_assembleds", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "week_id"
+    t.string "link"
+    t.index ["week_id"], name: "index_links_assembleds_on_week_id"
+  end
 
   create_table "reviews", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "report_type"
     t.text "table"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "tracking_hours", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "developer_id"
+    t.bigint "type_of_work_id"
+    t.bigint "client_id"
+    t.bigint "week_id"
+    t.decimal "hours", precision: 4, scale: 2
+    t.date "date"
+    t.string "comment", limit: 2000
+    t.index ["client_id"], name: "index_tracking_hours_on_client_id"
+    t.index ["developer_id"], name: "index_tracking_hours_on_developer_id"
+    t.index ["type_of_work_id"], name: "index_tracking_hours_on_type_of_work_id"
+    t.index ["week_id"], name: "index_tracking_hours_on_week_id"
+  end
+
+  create_table "type_of_works", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name"
+  end
+
+  create_table "weeks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.date "begin"
+    t.date "end"
   end
 
 end

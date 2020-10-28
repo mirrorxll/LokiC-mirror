@@ -6,11 +6,19 @@ class ExportJob < ApplicationJob
   def perform(story_type)
     status = true
     message = Samples[PL_TARGET].export!(story_type)
+    ExportedStoryType.new(developer: story_type.developer,
+                          iteration: story_type.iteration,
+                          first_export: story_type.iteration.name == 'Initial',
+                          date_export: Date.now,
+                          count_samples: story_type.iteration.samples.count,
+                          week: Week.where(begin: Date.today - (Date.today.wday - 1)).first).save
+    story_type.update(last_export: Date.now)
   rescue StandardError => e
     status = nil
     message = e.full_message
   ensure
     story_type.update_iteration(export: status)
+
     send_to_action_cable(story_type, export_msg: status)
     send_to_slack(story_type, "export\n#{message}")
   end
