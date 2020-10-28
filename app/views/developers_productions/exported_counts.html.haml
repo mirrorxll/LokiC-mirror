@@ -18,13 +18,13 @@
     .col-2
       =@rows_reports.sum { |row| row.count_first }
     .col-2
-      =MiniLokiC::Population::Formatize::Numbers.add_commas(@rows_reports.sum { |row| row.sum_first_export })
+      =MiniLokiC::Formatize::Numbers.add_commas(@rows_reports.sum { |row| row.sum_first_export })
     .col-2
       =@rows_reports.sum { |row| row.count_follow_up }
     .col-2
-      =MiniLokiC::Population::Formatize::Numbers.add_commas(@rows_reports.sum { |row| row.sum_follow_up_export })
+      =MiniLokiC::Formatize::Numbers.add_commas(@rows_reports.sum { |row| row.sum_follow_up_export })
     .col-2
-      =MiniLokiC::Population::Formatize::Numbers.add_commas(@rows_reports.sum { |row| row.sum_total })
+      =MiniLokiC::Formatize::Numbers.add_commas(@rows_reports.sum { |row| row.sum_total })
   %hr/
   -@rows_reports.each do |row|
     %hr/
@@ -34,11 +34,11 @@
       .col-2
         =row.count_first
       .col-2
-        =MiniLokiC::Population::Formatize::Numbers.add_commas(row.sum_first_export)
+        =MiniLokiC::Formatize::Numbers.add_commas(row.sum_first_export)
       .col-2
         =row.count_follow_up
       .col-2
-        =MiniLokiC::Population::Formatize::Numbers.add_commas(row.sum_follow_up_export)
+        =MiniLokiC::Formatize::Numbers.add_commas(row.sum_follow_up_export)
       .col-2
-        =MiniLokiC::Population::Formatize::Numbers.add_commas(row.sum_total)
+        =MiniLokiC::Formatize::Numbers.add_commas(row.sum_total)
 
