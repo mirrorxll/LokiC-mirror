@@ -22,7 +22,7 @@
           %span{"aria-hidden" => "true"} ×
       =form_with(url: story_type_fact_checking_doc_send_to_reviewers_channel_path(@story_type, @fcd)) do |f|
         .modal-body
-          .cxcvb hannel
+          .channel
           =f.hidden_field 'slack_message[channel]'
           =f.label :note, 'note:'
           =f.text_area 'slack_message[note]', class: 'form-control'

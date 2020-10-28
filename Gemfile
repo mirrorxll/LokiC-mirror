@@ -45,9 +45,6 @@ gem 'bootsnap', '>= 1.4.2', require: false
 gem 'coderay'
 
 #Spreadsheets
-gem 'caxlsx'
-gem 'caxlsx_rails'
-
 gem 'rubyXL'
 
 #google

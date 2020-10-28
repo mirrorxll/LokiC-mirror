@@ -3,7 +3,6 @@
 class Iteration < ApplicationRecord # :nodoc:
   serialize :story_sample_args, Hash
   serialize :schedule_counts, Hash
-  serialize :export_data, Hash
 
   before_create { statuses << Status.first }
 
