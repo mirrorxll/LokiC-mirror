@@ -2,6 +2,7 @@
 
 class DevelopersScoresController < ApplicationController # :nodoc:
   skip_before_action :find_parent_story_type
+  skip_before_action :set_iteration
 
   def index
     @rows_reports = ExportedStoryType.begin_date(Date.today.prev_month)

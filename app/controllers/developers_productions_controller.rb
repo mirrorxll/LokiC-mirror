@@ -2,6 +2,7 @@
 
 class DevelopersProductionsController < ApplicationController # :nodoc:
   skip_before_action :find_parent_story_type
+  skip_before_action :set_iteration
 
   def exported_counts
     @rows_reports = ExportedStoryType.begin_date(Date.today.prev_month)

@@ -2,6 +2,8 @@
 
 class TrackingHoursController < ApplicationController # :nodoc:
   skip_before_action :find_parent_story_type
+  skip_before_action :set_iteration
+
   before_action :find_week, only: %i[index create confirm assembleds google_sheets properties import_data]
 
   def index
