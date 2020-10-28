@@ -5,14 +5,19 @@ class ExportJob < ApplicationJob
 
   def perform(story_type)
     status = true
+    iteration = story_type.iteration
     message = Samples[PL_TARGET].export!(story_type)
 
-    exp_st = ExportedStoryType.find_or_initialize_by(iteration: story_type.iteration)
+    exp_st = ExportedStoryType.find_or_initialize_by(iteration: iteration)
     exp_st.developer = story_type.developer
     exp_st.first_export = story_type.iteration.name.eql?('Initial')
-    exp_st.date_export = Date.now
     exp_st.count_samples = story_type.iteration.samples.count
-    exp_st.week = Week.where(begin: Date.today - (Date.today.wday - 1)).first
+
+    if exp_st.new_record?
+      exp_st.week = Week.where(begin: Date.today - (Date.today.wday - 1)).first
+      exp_st.date_export = Date.now
+    end
+
     exp_st.save
 
     story_type.update(last_export: Date.now)
