@@ -44,5 +44,3 @@ public/ruby_code/*
 # lock files
 /Gemfile.lock
 /yarn.lock
-
-/config/google_drive.json
