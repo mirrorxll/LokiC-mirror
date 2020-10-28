@@ -2,9 +2,9 @@
   .col-12.text-center
     =form_with(url: story_types_path, method: :get, local: true, html: { class: 'd-inline' }) do |form|
       =form.label :data_set
-      =form.collection_select 'filter[data_set]', DataSet.all, :id, :name, prompt: ''
+      =form.collection_select 'filter[data_set]', DataSet.all.order(:name), :id, :name, prompt: ''
       =form.label :developer
-      =form.collection_select 'filter[developer]', Account.all, :id, :name, prompt: ''
+      =form.collection_select 'filter[developer]', Account.all.order('CONCAT(first_name, last_name)'), :id, :name, prompt: ''
       =form.label :frequency
       =form.collection_select 'filter[frequency]', Frequency.where.not(name: 'manual input'), :id, :name, prompt: ''
       =form.label :dev_status

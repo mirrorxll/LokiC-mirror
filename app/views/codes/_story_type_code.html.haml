@@ -1,7 +1,0 @@
-.row
-  .col-10.offset-1
-    .btn-group.mb-3
-      =link_to('remove', story_type_code_path(@story_type, @story_type.code),
-               class: 'btn btn-sm btn-outline-dark', method: :delete, remote: true)
-      =link_to('download', url_for(@story_type.code), class: 'btn btn-sm btn-outline-dark')
-      =link_to('show', story_type_code_path(@story_type, @story_type.code), class: 'btn btn-sm btn-outline-dark', remote: true)

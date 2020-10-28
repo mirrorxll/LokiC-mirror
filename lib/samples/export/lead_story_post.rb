@@ -40,14 +40,11 @@ module Samples
           community_ids: [publication.pl_identifier]
         }
 
-        response = @pl_client.post_lead_safe(params)
-        if (response.status / 100) != 2
-          raise Samples::LeadPostError,
-                "Post lead failed. Status: #{response.status}.\n"\
-                "Why? > #{response.body}."
-        end
+        raw_response = @pl_client.post_lead_safe(params)
+        response = JSON.parse(raw_response.body)
+        raise Samples::LeadPostError, response.to_json if (raw_response.status / 100) != 2
 
-        JSON.parse(response.body)['id']
+        response['id']
       end
 
       def published_at(date)
@@ -89,16 +86,25 @@ module Samples
           bucket_id: photo_bucket_id
         }
 
-        response = @pl_client.post_story_safe(params)
+        raw_response = @pl_client.post_story_safe(params)
+        response = JSON.parse(raw_response.body)
 
-        if (response.status / 100) != 2
-          @pl_client.delete_lead_safe(lead_id)
-          raise Samples::StoryPostError,
-                "Post story failed. Status: #{response.status}.\n"\
-                "Why? > #{response.body}."
+        # if story organization ids are broken,
+        # it'll try to post story without organization ids
+        if (raw_response.status / 100) != 2 && response.any?(['organizations', 'is invalid'])
+          @report_semaphore.synchronize { @report[:errors][:stories] << response }
+
+          params['organization_ids'] = []
+          raw_response = @pl_client.post_story_safe(params)
+          response = JSON.parse(raw_response.body)
         end
 
-        JSON.parse(response.body)['id']
+        if (raw_response.status / 100) != 2
+          @pl_client.delete_lead_safe(lead_id)
+          raise Samples::StoryPostError, response.to_json
+        end
+
+        response['id']
       end
     end
   end

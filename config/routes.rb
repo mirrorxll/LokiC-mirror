@@ -77,7 +77,12 @@ Rails.application.routes.draw do
       resources :indices, only: %i[new create destroy]
     end
 
-    resources :codes, only: %i[create destroy show]
+    resources :codes, only: [] do
+      get    :show,   on: :collection
+      post   :attach, on: :collection
+      put    :reload, on: :collection
+      delete :detach, on: :collection
+    end
 
     resources :export_configurations, only: :create do
       get   :section,     on: :collection
@@ -131,7 +136,7 @@ Rails.application.routes.draw do
       end
 
       resources :exports, path: 'export', only: [] do
-        post :production,       on: :collection
+        post :export,           on: :collection
         get  :exported_stories, on: :collection
         get  :section,          on: :collection
       end
