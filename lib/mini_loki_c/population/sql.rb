@@ -16,7 +16,7 @@ module MiniLokiC
           value =
             case val
             when String
-              val.dump
+              "'#{Mysql2::Client.escape(val)}'"
             when TrueClass
               1
             when FalseClass
@@ -24,7 +24,7 @@ module MiniLokiC
             when NilClass
               'NULL'
             when Array, Hash
-              val.to_json.dump
+              "'#{Mysql2::Client.escape(val.to_json)}'"
             else
               val.to_json
             end
