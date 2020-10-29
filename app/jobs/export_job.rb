@@ -14,16 +14,17 @@ class ExportJob < ApplicationJob
     exp_st.count_samples = story_type.iteration.samples.count
 
     if exp_st.new_record?
+      story_type.update(last_export: Date.today)
+
       exp_st.week = Week.where(begin: Date.today - (Date.today.wday - 1)).first
-      exp_st.date_export = Date.now
+      exp_st.date_export = Date.today
     end
 
     exp_st.save
 
-    story_type.update(last_export: Date.now)
   rescue StandardError => e
     status = nil
-    message = e.full_message
+    message = e.message
   ensure
     story_type.update_iteration(export: status)
 

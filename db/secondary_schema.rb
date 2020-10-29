@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_09_143345) do
+ActiveRecord::Schema.define(version: 2020_10_19_070617) do
 
   create_table "assembleds", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "developer_id"
@@ -42,6 +42,12 @@ ActiveRecord::Schema.define(version: 2020_10_09_143345) do
     t.index ["developer_id"], name: "index_exported_story_types_on_developer_id"
     t.index ["iteration_id"], name: "index_exported_story_types_on_iteration_id"
     t.index ["week_id"], name: "index_exported_story_types_on_week_id"
+  end
+
+  create_table "link_assembleds", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "week_id"
+    t.string "link"
+    t.index ["week_id"], name: "index_link_assembleds_on_week_id"
   end
 
   create_table "reviews", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|

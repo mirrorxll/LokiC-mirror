@@ -12,10 +12,7 @@ class AssembledsJob < ApplicationJob
   rescue StandardError => e
     status = nil
   ensure
-    ActionCable.server.broadcast(
-      "AssembledsChannel",
-      new_link
-    )
+    ActionCable.server.broadcast('AssembledsChannel', new_link)
 
     link.delete if status && link
   end

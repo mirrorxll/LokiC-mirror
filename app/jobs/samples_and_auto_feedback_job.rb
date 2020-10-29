@@ -17,7 +17,6 @@ class SamplesAndAutoFeedbackJob < ApplicationJob
     message = 'samples created.'
   rescue StandardError => e
     sample_args = status = nil
-    puts e.backtrace
     message = e.message
   ensure
     story_type.update_iteration(story_samples: status, story_sample_args: sample_args)
