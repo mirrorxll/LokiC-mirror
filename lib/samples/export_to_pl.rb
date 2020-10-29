@@ -73,8 +73,8 @@ module Samples
 
     def generate_report
       samples = @story_type.iteration.samples
-      total_exported = samples.where.not(pl_staging_story_id: nil, backdated: 1).count
-      not_exported = samples.where(pl_staging_story_id: nil, backdated: 0).count
+      total_exported = samples.where.not(@pl_story_id_key => nil, backdated: 1).count
+      not_exported = samples.where(@pl_story_id_key => nil, backdated: 0).count
       backdated = samples.where(backdated: 1).count
 
       message = "*exported by iteration:* #{total_exported}\n"\
