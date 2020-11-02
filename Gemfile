@@ -5,9 +5,6 @@ ruby '2.7.1'
 
 gem 'activeadmin'
 
-# ActiveRecord pretty output in Rails console
-gem 'hirb'
-
 # front-end
 gem 'devise'
 gem 'devise-bootstrap-views', '~> 1.0'
@@ -19,6 +16,16 @@ gem 'sidekiq-scheduler'
 gem 'slack-ruby-client'
 # haml's engine
 gem 'haml-rails', '~> 2.0'
+# pagination
+gem 'kaminari'
+# Displaying ruby code
+gem 'coderay'
+# Spreadsheets
+gem 'rubyXL'
+# google
+gem 'google-api-client', '~> 0.11'
+gem 'google_drive'
+
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 6.0.3'
@@ -40,16 +47,6 @@ gem 'image_processing', '~> 1.2'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false
-
-# Displaying ruby code
-gem 'coderay'
-
-#Spreadsheets
-gem 'rubyXL'
-
-#google
-gem 'google-api-client', '~> 0.11'
-gem 'google_drive'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

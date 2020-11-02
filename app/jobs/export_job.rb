@@ -23,7 +23,6 @@ class ExportJob < ApplicationJob
     exp_st.save
 
   rescue StandardError => e
-    status = nil
     message = e.message
   ensure
     story_type.update_iteration(export: status)

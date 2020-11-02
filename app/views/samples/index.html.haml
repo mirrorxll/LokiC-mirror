@@ -1,0 +1,69 @@
+#info.small.pt-3.pb-3
+  .row
+    .col-1.text-right
+      developer:
+    .col-11
+      #{@story_type.developer.name}
+
+  .row
+    .col-1.text-right
+      iteration:
+    .col-11
+      #{@iteration.name}
+
+  .row
+    .col-1.text-right
+      total stories:
+    .col-11
+      #{@all_samples.count}
+
+  -if @iteration.schedule
+    .row
+      .col-1.text-right
+        main export:
+      .col-11
+        #{@all_samples.where(backdated: 0).count}
+    .row
+      .col-1.text-right
+        backdated:
+      .col-11
+        #{@all_samples.where(backdated: 1).count}
+
+%hr.mt-1.mb-3/
+=paginate @paged_samples, window: 2
+
+%table#exported_stories.table.table-striped.table-sm.small
+  %thead
+    %tr
+      %th#headline{ :scope => "col" }
+        headline
+      %th#link{ :scope => "col" }
+        link
+      %th#client{ :scope => "col" }
+        client
+      %th#publication{ :scope => "col" }
+        publication
+      %th#published_at{ :scope => "col" }
+        published_at
+      %th#backdated{ :scope => "col" }
+        backdated
+    %tbody
+      -@paged_samples.each do |sample|
+        %tr.hovered_item
+          %td
+            =sample.headline
+          %td
+            -link = sample.link ? ['pipeline', sample.link] : ['local preview', story_type_iteration_sample_url(@story_type, @iteration, sample)]
+            = link_to(*link, target:'_blank')
+          %td
+            =sample.client_name
+          %td
+            =sample.publication_name
+          %td
+            =sample.published_at ? sample.published_at.strftime('%F') : '---'
+          %td
+            =sample.backdated ? 'yes' : 'no'
+
+%hr.mb-3/
+=paginate @paged_samples
+%hr/

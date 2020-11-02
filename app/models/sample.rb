@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Sample < ApplicationRecord
+  paginates_per 200
+
   belongs_to :iteration
   belongs_to :export_configuration
   belongs_to :client
@@ -32,9 +34,10 @@ class Sample < ApplicationRecord
   end
 
   def link
-    target = Rails.env.production? ? 'pipeline' : 'pipeline-staging'
     story_id = public_send("pl_#{PL_TARGET}_story_id")
+    return unless story_id
 
+    target = Rails.env.production? ? 'pipeline' : 'pipeline-staging'
     "https://#{target}.locallabs.com/stories/#{story_id}"
   end
 end

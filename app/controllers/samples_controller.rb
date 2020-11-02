@@ -3,6 +3,14 @@
 class SamplesController < ApplicationController # :nodoc:
   before_action :find_sample, only: %i[show edit update]
 
+  def index
+    @all_samples = @iteration.samples
+    @paged_samples = @all_samples.order(backdated: :asc).order(published_at: :asc)
+                                 .page(params[:page]).joins(:output, :publication)
+
+    @tab_title = "Samples ##{@story_type.id} #{@story_type.name}"
+  end
+
   def show
     @tab_title = @sample.headline
 

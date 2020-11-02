@@ -51,5 +51,5 @@
     -if alert
       %p.alert.alert-danger.text-center
         =alert
-    %div{ class: action_name.eql?('exported_stories') ? "container-fluid" : "container-xl" }
+    %div{ class: controller_name.eql?('samples') && action_name.eql?('index') ? "container-fluid" : "container-xl" }
       = yield
