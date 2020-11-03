@@ -7,7 +7,7 @@ class ExportConfigurationsController < ApplicationController
 
   def create
     ExportConfigurationsJob.set(wait: 2.seconds).perform_later(@story_type)
-    @story_type.update_iteration(export_configurations: false)
+    @iteration.update(export_configurations: false)
   end
 
   def section; end

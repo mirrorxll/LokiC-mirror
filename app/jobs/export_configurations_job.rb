@@ -19,12 +19,12 @@ class ExportConfigurationsJob < ApplicationJob
 
     status = true
     message = 'export configurations created.'
-    story_type.update_iteration(export_configuration_counts: exp_config_counts)
+    story_type.iteration.update(export_configuration_counts: exp_config_counts)
   rescue StandardError => e
     status = nil
     message = e
   ensure
-    story_type.update_iteration(export_configurations: status)
+    story_type.iteration.update(export_configurations: status)
     send_to_action_cable(story_type, export_configurations_msg: status)
     send_to_slack(story_type, message)
   end

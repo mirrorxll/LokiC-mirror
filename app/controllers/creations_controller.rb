@@ -5,13 +5,13 @@ class CreationsController < ApplicationController # :nodoc:
 
   def create
     CreationJob.set(wait: 2.second).perform_later(@story_type)
-    @story_type.update_iteration(creation: false)
+    @story_type.iteration.update(creation: false)
   end
 
   def purge_all
     PurgeSamplesByLastIterationJob.set(wait: 2.second).perform_later(@story_type)
 
-    @story_type.update_iteration(
+    @story_type.iteration.update(
       purge_all_samples: false, creation: nil, schedule: nil,
       schedule_args: nil, schedule_counts: nil, export: nil
     )

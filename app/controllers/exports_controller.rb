@@ -5,7 +5,7 @@ class ExportsController < ApplicationController
 
   def export
     ExportJob.set(wait: 2.second).perform_later(@story_type)
-    @story_type.update_iteration(export: false)
+    @story_type.iteration.update(export: false)
   end
 
   def section; end

@@ -25,7 +25,7 @@ class ExportJob < ApplicationJob
   rescue StandardError => e
     message = e.message
   ensure
-    story_type.update_iteration(export: status)
+    story_type.iteration.update(export: status)
 
     send_to_action_cable(story_type, export_msg: status)
     send_to_slack(story_type, "export\n#{message}")

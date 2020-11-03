@@ -19,7 +19,7 @@ class SamplesAndAutoFeedbackJob < ApplicationJob
     sample_args = status = nil
     message = e.message
   ensure
-    story_type.update_iteration(story_samples: status, story_sample_args: sample_args)
+    story_type.iteration.update(story_samples: status, story_sample_args: sample_args)
     send_to_action_cable(story_type, samples_msg: message)
     send_to_slack(story_type, message)
   end
