@@ -23,12 +23,10 @@ class DevelopersProductionsController < ApplicationController # :nodoc:
     @exported_story_types = ExportedStoryType.begin_date(Date.today.prev_month)
 
     @begin_date = filter_params[:begin_date].nil? ? Date.today.prev_month : filter_params[:begin_date]
-    
+
     filter_params.each do |key, value|
       @exported_story_types = ExportedStoryType.public_send(key, value) if value.present?
     end
-
-    @exported_story_types.each { |e| puts e.date_export }
 
     @rows_reports = []
 

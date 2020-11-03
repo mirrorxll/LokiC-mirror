@@ -32,6 +32,7 @@ class TrackingHoursController < ApplicationController # :nodoc:
   def add_form; end
 
   def exclude_row
+    puts params
     @row_report = TrackingHour.find(params[:id])
     week = @row_report.week
     @row_report.delete
