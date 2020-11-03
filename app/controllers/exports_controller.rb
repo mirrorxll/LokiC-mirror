@@ -9,4 +9,8 @@ class ExportsController < ApplicationController
   end
 
   def section; end
+
+  def exported_stories
+    redirect_to story_type_iteration_samples_path(params[:story_type_id], params[:iteration_id])
+  end
 end

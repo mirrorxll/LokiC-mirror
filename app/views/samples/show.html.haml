@@ -16,19 +16,19 @@
     =render 'auto_feedback/form', auto_feedback: @iteration.auto_feedback_confirmations
 %hr/
 #story_sample
-  .row
-    .col-1.small.text-right
+  .row.mb-4
+    .col-1.text-right.font-weight-bold
       Headline:
     .col-10
       =@sample.output.headline
-  .row
-    .col-1.small.text-right
+  .row.mb-2.small
+    .col-1.text-right.font-weight-bold
       Teaser:
     .col-10
       =@sample.output.teaser
 
   .row.small
-    .col-1.text-right
+    .col-1.text-right.font-weight-bold
       Body:
     .col-10
       =@sample.output.body.html_safe

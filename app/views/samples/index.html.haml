@@ -30,15 +30,17 @@
         #{@all_samples.where(backdated: 1).count}
 
 %hr.mt-1.mb-3/
-=paginate @paged_samples, window: 2
+=paginate @paged_samples, window: 3
 
 %table#exported_stories.table.table-striped.table-sm.small
   %thead
     %tr
       %th#headline{ :scope => "col" }
         headline
-      %th#link{ :scope => "col" }
-        link
+      %th#pipeline{ :scope => "col" }
+        pipeline
+      %th#lokic{ :scope => "col" }
+        lokic
       %th#client{ :scope => "col" }
         client
       %th#publication{ :scope => "col" }
@@ -53,8 +55,9 @@
           %td
             =sample.headline
           %td
-            -link = sample.link ? ['pipeline', sample.link] : ['local preview', story_type_iteration_sample_url(@story_type, @iteration, sample)]
-            = link_to(*link, target:'_blank')
+            =sample.link ? link_to('pipeline', sample.link, target:'_blank') : '---'
+          %td
+            =link_to('lokic', story_type_iteration_sample_url(@story_type, @iteration, sample), target:'_blank')
           %td
             =sample.client_name
           %td
@@ -65,5 +68,5 @@
             =sample.backdated ? 'yes' : 'no'
 
 %hr.mb-3/
-=paginate @paged_samples
+=paginate @paged_samples, window: 3
 %hr/
