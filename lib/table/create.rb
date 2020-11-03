@@ -78,7 +78,7 @@ module Table
           a_r_m.add_column(t_name, :updated_at, :datetime, null: true, after: :created_at)
         end
         unless a_r_m.column_exists?(t_name, :time_frame)
-          a_r_m.add_column(t_name, :time_frame, :string,   null: true, after: :story_created)
+          a_r_m.add_column(t_name, :time_frame, :string,   null: true, after: :publication_name)
         end
 
         cr_at_query = created_at_default_value_query(t_name)
