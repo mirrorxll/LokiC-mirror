@@ -41,10 +41,9 @@ module Samples
         }
 
         raw_response = @pl_client.post_lead_safe(params)
-        response = JSON.parse(raw_response.body)
-        raise Samples::LeadPostError, response.to_json if (raw_response.status / 100) != 2
+        raise Samples::LeadPostError if (raw_response.status / 100) != 2
 
-        response['id']
+        JSON.parse(raw_response.body)['id']
       end
 
       def published_at(date)
@@ -92,19 +91,20 @@ module Samples
         # if story organization ids are broken,
         # it'll try to post story without organization ids
         if (raw_response.status / 100) != 2 && response.any?(['organizations', 'is invalid'])
-          @report_semaphore.synchronize { @report[:errors][:stories] << response }
-
-          params['organization_ids'] = []
+          params[:organization_ids] = []
           raw_response = @pl_client.post_story_safe(params)
           response = JSON.parse(raw_response.body)
         end
 
         if (raw_response.status / 100) != 2
           @pl_client.delete_lead_safe(lead_id)
-          raise Samples::StoryPostError, response.to_json
+          raise Samples::StoryPostError
         end
 
         response['id']
+      rescue JSON::ParserError
+        @pl_client.delete_lead_safe(lead_id)
+        raise Samples::StoryPostError
       end
     end
   end
