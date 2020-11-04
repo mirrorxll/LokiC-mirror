@@ -6,6 +6,7 @@ module Reports
   module ImportTrackingHours
     def self.from_google_drive(url, title = nil, range = nil, developer, week)
       session = GoogleDrive::Session.from_config("config/google_drive.json")
+      session
       spreadsheet = session.spreadsheet_by_url("#{url}")
       ws = if title.nil?
              spreadsheet.worksheets[0]
@@ -23,14 +24,20 @@ module Reports
 
         next if date > week.end || date < week.begin
 
+        type_of_work = TypeOfWork.find_by(name: ws["#{letters[1]}#{i}"])
+        client_report = ClientsReport.find_by(name: ws["#{letters[2]}#{i}"])
+        next if type_of_work.nil? || client_report.nil?
+
         TrackingHour.create!(developer: developer,
                              hours: ws["#{letters[0]}#{i}"],
-                             type_of_work: TypeOfWork.find_by(name: ws["#{letters[1]}#{i}"]),
-                             client: ClientsReport.find_by(name: ws["#{letters[2]}#{i}"]),
+                             type_of_work: type_of_work,
+                             client: client_report,
                              week: week,
                              date: ws["#{letters[3]}#{i}"],
                              comment: ws["#{letters[4]}#{i}"])
       end
+    rescue StandardError
+      return
     end
   end
 end
