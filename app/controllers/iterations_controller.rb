@@ -8,7 +8,11 @@ class IterationsController < ApplicationController
 
   def create
     @iteration = @story_type.iterations.build(iteration_params)
-    @story_type.update(current_iteration: @iteration) if @iteration.save
+
+    if @iteration.save
+      @story_type.update(current_iteration: @iteration)
+      @story_type.staging_table&.default_iter_id
+    end
 
     redirect_to @story_type
   end
