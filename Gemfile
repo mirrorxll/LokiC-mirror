@@ -23,9 +23,8 @@ gem 'coderay'
 # Spreadsheets
 gem 'rubyXL'
 # google
-gem 'google-api-client', '~> 0.11'
+gem 'google-api-client', '~> 0.34'
 gem 'google_drive'
-
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 6.0.3'

@@ -12,10 +12,8 @@
   .col-2
     =button_to 'Generate google sheets', google_sheets_tracking_hours_path(week: @week), class: "btn btn-sm btn-outline-dark #{@assemleds.empty? ? 'disabled' : ''}", remote: true, id: 'google_sheets'
   .col-2#link
-    -puts 'linkkk'
-    -puts @link.in_process
     -if @link.in_process
-      =render 'story_types/spinner', description: ''
+      =render 'story_types/spinner', description: '' if @link
     -else
       =render 'link', link: @link
 #assembleds.w-100

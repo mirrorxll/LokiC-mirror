@@ -6,7 +6,6 @@ module Reports
   module ImportTrackingHours
     def self.from_google_drive(url, title = nil, range = nil, developer, week)
       session = GoogleDrive::Session.from_config("config/google_drive.json")
-      session
       spreadsheet = session.spreadsheet_by_url("#{url}")
       ws = if title.nil?
              spreadsheet.worksheets[0]
