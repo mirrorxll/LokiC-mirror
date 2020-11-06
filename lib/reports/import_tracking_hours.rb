@@ -12,9 +12,6 @@ module Reports
            else
              spreadsheet.worksheet_by_title("#{title}")
            end
-      # A1-G5
-      # puts week.begin
-      # puts '//'
       ranges = range.split('-')
       letters = (ranges.first[0].upcase..ranges.last[0].upcase).to_a
       (ranges.first[1..-1].to_i..ranges.last[1..-1].to_i).each do |i|
@@ -35,8 +32,7 @@ module Reports
                              date: ws["#{letters[3]}#{i}"],
                              comment: ws["#{letters[4]}#{i}"])
       end
-    rescue StandardError
-      return
+      TrackingHour.where(developer: developer, week: week).order(:date)
     end
   end
 end

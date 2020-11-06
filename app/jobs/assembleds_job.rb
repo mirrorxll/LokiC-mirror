@@ -8,7 +8,7 @@ class AssembledsJob < ApplicationJob
     new_link = Reports::Assembled2020.to_google_drive(assembleds)
     status = true
 
-  rescue StandardError => e
+  rescue StandardError
     status = nil
   ensure
     ActionCable.server.broadcast('AssembledsChannel', new_link)
