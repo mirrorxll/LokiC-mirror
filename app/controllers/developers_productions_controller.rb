@@ -20,12 +20,13 @@ class DevelopersProductionsController < ApplicationController # :nodoc:
   end
 
   def scores
-    @exported_story_types = ExportedStoryType.begin_date(Date.today.prev_month)
+    default_date = Date.today.prev_month < Date.parse('2020-11-02') ? '2020-11-02' : Date.today.prev_month
+    @exported_story_types = ExportedStoryType.begin_date(default_date)
 
-    @begin_date = filter_params[:begin_date].nil? ? Date.today.prev_month : filter_params[:begin_date]
+    @begin_date = filter_params[:begin_date].nil? ? default_date : filter_params[:begin_date]
 
     filter_params.each do |key, value|
-      @exported_story_types = @exported_story_types.public_send(key, value) if value.present?
+      @exported_story_types = ExportedStoryType.public_send(key, value) if value.present?
     end
 
     @rows_reports = []
@@ -57,6 +58,10 @@ class DevelopersProductionsController < ApplicationController # :nodoc:
 
   def filter_params
     return {} unless params[:filter]
+
+    unless params[:filter][:begin_date].nil?
+      params[:filter][:begin_date] = '2020-11-02' if Date.parse(params[:filter][:begin_date]) < Date.parse('2020-11-02')
+    end
 
     params.require(:filter).slice(:begin_date, :developer)
   end
