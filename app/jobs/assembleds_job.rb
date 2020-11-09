@@ -12,7 +12,6 @@ class AssembledsJob < ApplicationJob
     status = nil
   ensure
     ActionCable.server.broadcast('AssembledsChannel', new_link)
-    link.update_attribute(:in_process, false)
     link.delete if status && link
   end
 end

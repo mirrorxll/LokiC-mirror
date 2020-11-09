@@ -7,6 +7,5 @@ class ImportTrackingReportJob < ApplicationJob
     row_reports = Reports::ImportTrackingHours.from_google_drive(url, worksheet, range, account, week)
 
     ActionCable.server.broadcast('ImportTrackingReportChannel', row_reports)
-
   end
 end

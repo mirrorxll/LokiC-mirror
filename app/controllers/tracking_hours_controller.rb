@@ -51,7 +51,7 @@ class TrackingHoursController < ApplicationController # :nodoc:
 
   def google_sheets
     link = LinkAssembled.find_by(week: @week)
-    link.update_attribute(:in_process, true)
+    link.update_attribute(:in_process, true) unless link.nil?
     AssembledsJob.set(wait: 2.seconds).perform_later(@week, link)
   end
 

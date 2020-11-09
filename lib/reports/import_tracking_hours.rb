@@ -12,6 +12,7 @@ module Reports
            else
              spreadsheet.worksheet_by_title("#{title}")
            end
+
       ranges = range.split('-')
       letters = (ranges.first[0].upcase..ranges.last[0].upcase).to_a
       (ranges.first[1..-1].to_i..ranges.last[1..-1].to_i).each do |i|
@@ -32,7 +33,17 @@ module Reports
                              date: ws["#{letters[3]}#{i}"],
                              comment: ws["#{letters[4]}#{i}"])
       end
-      TrackingHour.where(developer: developer, week: week).order(:date)
+    ensure
+      return TrackingHour.where(developer: developer, week: week).order(:date).map do |dev_hours|
+        {
+          id: dev_hours.id,
+          hours: dev_hours.hours,
+          type_of_work: TypeOfWork.find(dev_hours.type_of_work_id).name,
+          client: ClientsReport.find(dev_hours.client_id).name,
+          date: dev_hours.date,
+          comment: dev_hours.comment
+        }
+      end
     end
   end
 end
