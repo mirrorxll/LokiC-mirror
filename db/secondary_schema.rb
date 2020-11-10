@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema.define(version: 2020_10_19_070617) do
 
-  create_table "assembleds", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "assembleds", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "developer_id"
     t.bigint "week_id"
     t.string "dept"
@@ -23,16 +23,23 @@ ActiveRecord::Schema.define(version: 2020_10_19_070617) do
     t.string "sf_product_id"
     t.string "client_name"
     t.string "account_name"
-    t.decimal "hours", precision: 4, scale: 2
+    t.string "hours"
     t.index ["developer_id"], name: "index_assembleds_on_developer_id"
     t.index ["week_id"], name: "index_assembleds_on_week_id"
   end
 
-  create_table "clients_reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "clients_reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
   end
 
-  create_table "exported_story_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "confirm_reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "week_id"
+    t.bigint "developer_id"
+    t.index ["developer_id"], name: "index_confirm_reports_on_developer_id"
+    t.index ["week_id"], name: "index_confirm_reports_on_week_id"
+  end
+
+  create_table "exported_story_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "developer_id"
     t.bigint "iteration_id"
     t.bigint "week_id"
@@ -44,20 +51,20 @@ ActiveRecord::Schema.define(version: 2020_10_19_070617) do
     t.index ["week_id"], name: "index_exported_story_types_on_week_id"
   end
 
-  create_table "link_assembleds", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "link_assembleds", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "week_id"
     t.string "link"
-    t.index ["week_id"], name: "index_link_assembleds_on_week_id"
+    t.index ["week_id"], name: "index_links_assembleds_on_week_id"
   end
 
-  create_table "reviews", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "reviews", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "report_type"
     t.text "table"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "tracking_hours", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "tracking_hours", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "developer_id"
     t.bigint "type_of_work_id"
     t.bigint "client_id"
@@ -71,11 +78,11 @@ ActiveRecord::Schema.define(version: 2020_10_19_070617) do
     t.index ["week_id"], name: "index_tracking_hours_on_week_id"
   end
 
-  create_table "type_of_works", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "type_of_works", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
   end
 
-  create_table "weeks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "weeks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.date "begin"
     t.date "end"
   end
