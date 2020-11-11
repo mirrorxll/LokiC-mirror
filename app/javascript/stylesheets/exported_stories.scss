@@ -1,11 +1,3 @@
-th.hovered_item {
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none;
-  cursor: ns-resize;
-}
-
-#published_at {
-  width: 10%;
+tr.hovered_item:hover {
+  background-color: rgba(128, 128, 128, 0.3) !important;
 }

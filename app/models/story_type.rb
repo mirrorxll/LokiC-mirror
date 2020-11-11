@@ -43,21 +43,6 @@ class StoryType < ApplicationRecord # :nodoc:
     current_iteration
   end
 
-  # method will update last iteration status
-  # possible keys:
-  # population, export_configuration,
-  # samples, creation, export
-  # -----------------
-  # possible values:
-  # nil - not started
-  # false - in progress
-  # true - success
-  def update_iteration(statuses = {})
-    return if statuses.empty?
-
-    iteration.update(statuses)
-  end
-
   def download_code_from_db
     MiniLokiC::Code.download(self)
   end

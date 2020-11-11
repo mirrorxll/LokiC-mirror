@@ -2,6 +2,7 @@
 
 class ExportedStoryTypesController < ApplicationController # :nodoc:
   skip_before_action :find_parent_story_type
+  skip_before_action :set_iteration
 
   def index
     @rows_reports = ExportedStoryType.order(date_export: :desc)

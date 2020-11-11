@@ -4,7 +4,7 @@ class SchedulerJob < ApplicationJob
   def perform(story_type, type, options = {})
     iteration = story_type.iteration
     samples = iteration.samples
-    status = true
+    status = nil
 
     message =
       case type
@@ -18,13 +18,13 @@ class SchedulerJob < ApplicationJob
         Scheduler::Auto.auto_scheduler(samples)
         'auto scheduling success'
       end
-    status = false if iteration.samples.where(published_at: nil).any?
+    status = true unless iteration.samples.where(published_at: nil).any?
 
   rescue StandardError => e
     status = nil
     message = e
   ensure
-    story_type.update_iteration(schedule: status)
+    story_type.iteration.update(schedule: status)
     send_to_action_cable(story_type, scheduler_msg: message)
     send_to_slack(story_type, message)
   end

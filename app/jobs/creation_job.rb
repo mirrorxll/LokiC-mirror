@@ -5,7 +5,7 @@ class CreationJob < ApplicationJob
 
   def perform(story_type, options = {})
     MiniLokiC::Code.execute(story_type, :creation, options)
-    story_type.update_iteration(
+    story_type.iteration.update(
       schedule_counts: schedule_counts(story_type)
     )
 
@@ -15,7 +15,7 @@ class CreationJob < ApplicationJob
     status = nil
     message = e
   ensure
-    story_type.update_iteration(creation: status)
+    story_type.iteration.update(creation: status)
     send_to_action_cable(story_type, creation_msg: message)
     send_to_slack(story_type, message)
   end

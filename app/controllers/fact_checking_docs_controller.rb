@@ -9,7 +9,9 @@ class FactCheckingDocsController < ApplicationController
 
   def edit; end
 
-  def save; end
+  def save
+    @fcd.update(fcd_params)
+  end
 
   def update
     @fcd.update(fcd_params)

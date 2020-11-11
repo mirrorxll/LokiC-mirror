@@ -8,6 +8,8 @@
   - creation
   - scheduler
   - export
+  - assembleds
+  - import
 
 :dynamic: true
 :schedule:

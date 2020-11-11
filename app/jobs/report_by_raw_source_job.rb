@@ -6,5 +6,4 @@ class ReportByRawSourceJob < ApplicationJob
   def perform(*args)
     Report::ReportByRawSource.report
   end
-
 end

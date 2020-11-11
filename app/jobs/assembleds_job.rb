@@ -3,20 +3,15 @@
 class AssembledsJob < ApplicationJob
   queue_as :assembleds
 
-  def perform(week)
+  def perform(week, link)
     assembleds = Assembled.where(week: week)
-    link = LinkAssembled.find_by(week: week)
     new_link = Reports::Assembled2020.to_google_drive(assembleds)
     status = true
 
-  rescue StandardError => e
+  rescue StandardError
     status = nil
   ensure
-    ActionCable.server.broadcast(
-      "AssembledsChannel",
-      new_link
-    )
-
+    ActionCable.server.broadcast('AssembledsChannel', new_link)
     link.delete if status && link
   end
 end

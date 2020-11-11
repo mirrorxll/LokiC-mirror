@@ -113,7 +113,7 @@ Rails.application.routes.draw do
 
       resources :populations, path: 'populate', only: %i[create destroy]
 
-      resources :samples, only: :show do
+      resources :samples, only: %i[index show] do
         post   :create_and_generate_auto_feedback, on: :collection
         delete :purge_sampled,                     on: :collection
         get    :section,                           on: :collection
@@ -123,7 +123,7 @@ Rails.application.routes.draw do
         patch :confirm, on: :member
       end
 
-      resources :creations, path: 'create_samples', only: :create do
+      resources :creations, only: :create do
         delete :purge_all, on: :collection
       end
 
@@ -137,8 +137,8 @@ Rails.application.routes.draw do
 
       resources :exports, path: 'export', only: [] do
         post :export,           on: :collection
-        get  :exported_stories, on: :collection
         get  :section,          on: :collection
+        get  :exported_stories, on: :collection
       end
     end
   end
@@ -163,10 +163,10 @@ Rails.application.routes.draw do
   end
 
   resources :exported_story_types, only: :index
+
   resources :developers_productions, only: [] do
     get :scores, on: :collection
     get :show_hours, on: :collection
     get :exported_counts, on: :collection
   end
-
 end

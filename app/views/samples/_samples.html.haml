@@ -14,6 +14,11 @@
           .mt-4
             =render 'auto_feedback/form', auto_feedback: @iteration.auto_feedback_confirmations
 
+  .row
+    .col-10.offset-1
+      %hr/
+      =render 'samples/samples_link'
+
 -elsif @iteration.story_samples.eql?(false) || @iteration.creation.eql?(false)
   =render 'story_types/spinner', description: 'samples creation in the process'
 -else

@@ -17,7 +17,7 @@ class PopulationsController < ApplicationController # :nodoc:
     if flash.now[:error].nil?
       args = population_params[:args]
       PopulationJob.set(wait: 2.second).perform_later(@story_type, args)
-      @story_type.update_iteration(population: false, population_args: args)
+      @iteration.update(population: false, population_args: args)
     end
 
     render 'staging_tables/show'
@@ -29,7 +29,7 @@ class PopulationsController < ApplicationController # :nodoc:
     if flash.now[:error].nil?
       @iteration.samples.destroy_all
       @iteration.auto_feedback.destroy_all
-      @story_type.update_iteration(
+      @story_type.iteration.update(
         population: nil, export_configurations: nil,
         story_samples: nil, creation: nil, schedule: nil, export: nil
       )

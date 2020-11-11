@@ -13,6 +13,7 @@ class JobItem
     @pl_r_client = PipelineReplica[environment]
   end
 
+  # find or create job_item
   def f_o_cr(exp_config)
     story_type = exp_config.story_type
     publication = exp_config.publication

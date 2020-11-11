@@ -11,7 +11,7 @@ class DeviseCreateAccounts < ActiveRecord::Migration[6.0] # :nodoc:
       t.datetime  :reset_password_sent_at
       t.string    :first_name,                null: false
       t.string    :last_name,                 null: false
-      t.boolean   :upwork,
+      t.boolean   :upwork
       t.datetime  :remember_created_at
       t.timestamps
     end

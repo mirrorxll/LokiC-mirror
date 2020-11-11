@@ -18,7 +18,7 @@
       .col-1
         =row.iteration.story_type.id
       .col-5.pl-0.text-left
-        =link_to(row.iteration.story_type.name, story_type_path(row.iteration.story_type))
+        =link_to(row.iteration.story_type.name, story_type_iteration_samples_path(row.iteration.story_type, row.iteration), target: '_blank')
       .col-1
         =row.first_export ? 'first' : 'follow up'
       .col-2
@@ -26,5 +26,5 @@
       .col-2
         =row.date_export.strftime('%F')
       .col-1
-        =MiniLokiC::Population::Formatize::Numbers.add_commas(row.count_samples)
+        =MiniLokiC::Formatize::Numbers.add_commas(row.count_samples)
 

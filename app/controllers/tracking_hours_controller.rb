@@ -2,6 +2,8 @@
 
 class TrackingHoursController < ApplicationController # :nodoc:
   skip_before_action :find_parent_story_type
+  skip_before_action :set_iteration
+
   before_action :find_week, only: %i[index create confirm assembleds google_sheets properties import_data]
 
   def index
@@ -42,13 +44,15 @@ class TrackingHoursController < ApplicationController # :nodoc:
   def properties; end
 
   def import_data
-    Reports::ImportTrackingHours.from_google_drive(params[:url], params[:worksheet], params[:range], current_account, @week)
+    ImportTrackingReportJob.set(wait: 2.seconds).perform_later(params[:url], params[:worksheet], params[:range], current_account, @week)
 
     @rows_reports = row_reports(@week)
   end
 
   def google_sheets
-    AssembledsJob.set(wait: 2.seconds).perform_later(@week)
+    link = LinkAssembled.find_by(week: @week)
+    link.update_attribute(:in_process, true) unless link.nil?
+    AssembledsJob.set(wait: 2.seconds).perform_later(@week, link)
   end
 
   def assembleds

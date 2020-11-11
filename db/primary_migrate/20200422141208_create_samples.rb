@@ -2,6 +2,8 @@
 
 class CreateSamples < ActiveRecord::Migration[6.0]
   def change
+    env = %w[development test].include?(Rails.env) ? 'staging' : Rails.env
+
     create_table :samples do |t|
       t.belongs_to :iteration
       t.belongs_to :export_configuration
@@ -12,11 +14,8 @@ class CreateSamples < ActiveRecord::Migration[6.0]
 
       t.integer     :staging_row_id
       t.string      :organization_ids, limit: 2000
-      t.integer
-      t.integer     :pl_production_lead_id
-      t.integer     :pl_production_story_id
-      t.integer     :pl_staging_lead_id
-      t.integer     :pl_staging_story_id
+      t.integer     "pl_#{env}_lead_id".to_sym
+      t.integer     "pl_#{env}_story_id".to_sym
       t.date        :published_at
       t.datetime    :exported_at
       t.boolean     :backdated, default: false

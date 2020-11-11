@@ -1,0 +1,18 @@
+-#  Link showing page number
+-#  available local variables
+-#    page:          a page object for "this" page
+-#    url:           url to this page
+-#    current_page:  a page object for the currently displayed page
+-#    total_pages:   total number of pages
+-#    per_page:      number of items to fetch per page
+-#    remote:        data-remote
+
+
+%span{class: "page-item#{' active' if page.current?}"}
+  -if page.current?
+    .d-inline.page-item.active
+      %span.page-link.bg-secondary.border-dark.rounded-0
+        =page
+        %span.sr-only (current)
+  -else
+    =link_to(page, url, class: 'page-link text-dark', remote: remote, rel: page.rel)

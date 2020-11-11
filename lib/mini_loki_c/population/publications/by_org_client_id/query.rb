@@ -21,7 +21,7 @@ module MiniLokiC
                     on c.id = oc.community_id
                 left join client_companies cc
                     on cc.id = c.client_company_id
-            where organization_id = #{@org_id} #{cl_ids}}
+            where organization_id = #{@org_id} #{cl_ids}
             group by c.id;)
         end
       end
