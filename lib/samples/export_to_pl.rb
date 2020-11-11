@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
 require_relative 'export/lead_story_post.rb'
-require_relative 'export/story_update.rb'
 
 module Samples
   class ExportToPl
     include Export::LeadStoryPost
-    include Export::StoryUpdate
 
     def initialize(environment)
       @environment = environment
