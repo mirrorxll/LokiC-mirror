@@ -44,6 +44,7 @@ class TrackingHoursController < ApplicationController # :nodoc:
   def properties; end
 
   def import_data
+    Assembled.destroy_current(current_account, @week)
     ImportTrackingReportJob.set(wait: 2.seconds).perform_later(params[:url], params[:worksheet], params[:range], current_account, @week)
 
     @rows_reports = row_reports(@week)
@@ -60,6 +61,12 @@ class TrackingHoursController < ApplicationController # :nodoc:
     @link = LinkAssembled.find_by(week: @week)
   end
 
+  def dev_hours
+    @week = params[:week]
+    @developer = params[:developer]
+    @rows_reports = row_reports(@week)
+  end
+
   private
 
   def assembleds_destroy
@@ -67,7 +74,7 @@ class TrackingHoursController < ApplicationController # :nodoc:
   end
 
   def find_week
-    @week = Week.find(params[:week])
+    @week = params[:week].nil? ? Week.find_by(begin: Date.today.beginning_of_week.last_week) : Week.find(params[:week])
   end
 
   def row_reports(week)

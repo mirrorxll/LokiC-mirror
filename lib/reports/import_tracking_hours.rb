@@ -34,7 +34,10 @@ module Reports
                              comment: ws["#{letters[4]}#{i}"])
       end
     ensure
-      return TrackingHour.where(developer: developer, week: week).order(:date).map do |dev_hours|
+      rows_reports = TrackingHour.where(developer: developer, week: week)
+      return if rows_reports.empty?
+      Reports::HoursAsm.q(rows_reports)
+      return rows_reports.order(:date).map do |dev_hours|
         {
           id: dev_hours.id,
           hours: dev_hours.hours,
