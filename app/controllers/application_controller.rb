@@ -59,6 +59,4 @@ class ApplicationController < ActionController::Base
   def detached_or_delete
     'The Table for this story type has been renamed, detached or drop. Please update the page.'
   end
-
-
 end

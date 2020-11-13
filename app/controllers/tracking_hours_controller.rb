@@ -44,7 +44,7 @@ class TrackingHoursController < ApplicationController # :nodoc:
   def properties; end
 
   def import_data
-    Assembled.destroy_current(@developer, @week)
+    Assembled.destroy_current(current_account, @week)
     ImportTrackingReportJob.set(wait: 2.seconds).perform_later(params[:url], params[:worksheet], params[:range], current_account, @week)
 
     @rows_reports = row_reports(@week)
