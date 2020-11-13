@@ -7,7 +7,7 @@ class DevelopersProductionsController < ApplicationController # :nodoc:
   def exported_counts
     @rows_reports = ExportedStoryType.begin_date(Date.today.prev_month)
 
-    filter_params.each do |key, value|
+    filter_params_counts.each do |key, value|
       @rows_reports = ExportedStoryType.all.public_send(key, value) if value.present?
     end
 
@@ -62,6 +62,12 @@ class DevelopersProductionsController < ApplicationController # :nodoc:
     unless params[:filter][:begin_date].nil? || params[:filter][:begin_date] == ''
       params[:filter][:begin_date] = '2020-11-02' if Date.parse(params[:filter][:begin_date]) < Date.parse('2020-11-02')
     end
+
+    params.require(:filter).slice(:begin_date, :developer)
+  end
+
+  def filter_params_counts
+    return {} unless params[:filter]
 
     params.require(:filter).slice(:begin_date, :developer)
   end
