@@ -8,7 +8,7 @@
     .col-3.text-left comment
   %hr/
 
-  %div{ id: "developers_hours_#{current_account.id}"}
+  #developers_hours
     -rows_reports.each do |row|
       .text-center{id: "row_#{row['id']}"}
         .row

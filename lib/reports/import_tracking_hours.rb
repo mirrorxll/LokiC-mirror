@@ -33,16 +33,22 @@ module Reports
                              date: ws["#{letters[3]}#{i}"],
                              comment: ws["#{letters[4]}#{i}"])
       end
+      rows_reports = TrackingHour.where(developer: developer, week: week)
+      Reports::HoursAsm.q(rows_reports) unless rows_reports.empty?
     ensure
-      return TrackingHour.where(developer: developer, week: week).order(:date).map do |dev_hours|
-        {
-          id: dev_hours.id,
-          hours: dev_hours.hours,
-          type_of_work: TypeOfWork.find(dev_hours.type_of_work_id).name,
-          client: ClientsReport.find(dev_hours.client_id).name,
-          date: dev_hours.date,
-          comment: dev_hours.comment
-        }
+      if rows_reports.nil?
+        return nil?
+      else
+        return rows_reports.order(:date).map do |dev_hours|
+          {
+            id: dev_hours.id,
+            hours: dev_hours.hours,
+            type_of_work: TypeOfWork.find(dev_hours.type_of_work_id).name,
+            client: ClientsReport.find(dev_hours.client_id).name,
+            date: dev_hours.date,
+            comment: dev_hours.comment
+          }
+        end
       end
     end
   end

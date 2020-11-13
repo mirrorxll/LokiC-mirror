@@ -9,7 +9,7 @@ $(document).on('turbolinks:load', function () {
         connected() { console.log('connect'); },
         disconnected() { console.log('disconnected'); },
         received(data) {
-            document.getElementById('link').innerHTML = `<div class='mt-1'><a target='_blank' href="${data.link}">Google sheets</a></div>`
+            document.getElementById(`link_assembled_${data['week_id']}`).innerHTML = `<div class='mt-1'><a target='_blank' href="${data.link}">Google sheets</a></div>`
         }
     });
 });
