@@ -1,2 +1,2 @@
-$('#report_tracking_hour').html('<%= j render 'tracking_hours/table', rows_reports: @rows_reports %>')
-$('#reports_editable').empty()
+$("[id='report_tracking_hour'][developer_id=<%= current_account.id %> ][week_id=<%= @week.id %>]").html('<%= j render 'tracking_hours/table', rows_reports: @rows_reports %>')
+$("[id='reports_editable'][developer_id=<%= current_account.id %> ][week_id=<%= @week.id %>]").empty()
