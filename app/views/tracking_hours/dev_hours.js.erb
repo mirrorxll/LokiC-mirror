@@ -1,1 +1,1 @@
-$("[developer_id=<%= @developer %> ][week_id=<%= @week %>]").html('<%= j render 'tracking_hours/table', rows_reports: @rows_reports %>')
+$("[id='report_tracking_hour'][developer_id=<%= @developer %> ][week_id=<%= @week %>]").html('<%= j render 'tracking_hours/table', rows_reports: @rows_reports %>')
