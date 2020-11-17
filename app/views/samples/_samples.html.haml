@@ -22,12 +22,11 @@
 -elsif @iteration.story_samples.eql?(false) || @iteration.creation.eql?(false)
   =render 'story_types/spinner', description: 'samples creation in the process'
 -else
-  -if !@iteration.creation.eql?(true)
-    .row
-      .col-10.offset-1
-        #samples_form
-          =render 'samples/form', samples: samples
-        %hr/
+  .row
+    .col-10.offset-1
+      #samples_form
+        =render 'samples/form', samples: samples
+      %hr/
   .row
     .col-10.offset-1
       #created_samples

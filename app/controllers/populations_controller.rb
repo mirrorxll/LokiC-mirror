@@ -29,7 +29,7 @@ class PopulationsController < ApplicationController # :nodoc:
     if flash.now[:error].nil?
       @iteration.samples.destroy_all
       @iteration.auto_feedback.destroy_all
-      @story_type.iteration.update(
+      @iteration.update(
         population: nil, export_configurations: nil,
         story_samples: nil, creation: nil, schedule: nil, export: nil
       )
