@@ -110,7 +110,7 @@ module MiniLokiC
               else 'th'
               end
             end
-          "#{number}#{postfix}"
+          "#{add_commas(number)}#{postfix}"
         else
           ranks =
             if no_text
