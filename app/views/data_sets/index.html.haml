@@ -10,17 +10,14 @@
 %hr/
 
 #data_sets
-  -@data_sets.each do |dl|
+  -@data_sets.sort_by { |ds| ds.name.downcase }.each do |dl|
     .row
-      %small.col-3
-        =dl.name
+      %small.col-4
+        =link_to(dl.name, data_set_path(dl))
       %small.col-3
         =domain_name(dl.src_address)
-      %small.col-3
+      %small.col-4
         =dl.location
-      %small.col-1
+      %small.col-2
         =dl.evaluated ? 'evaluated' : ''
-      %small.col-1.text-right
-        =link_to('show', data_set_path(dl))
-      .col-1
     %hr/
