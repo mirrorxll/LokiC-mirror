@@ -33,11 +33,11 @@ class TrackingHoursController < ApplicationController # :nodoc:
 
   def exclude_row
     @row_report = TrackingHour.find(params[:id])
-    week = @row_report.week
+    @week = @row_report.week
     @row_report.delete
-    Assembled.destroy_current(current_account, week)
-    @row_reports = row_reports(week)
-    Reports::HoursAsm.q(@row_reports) unless @row_reports.empty?
+    Assembled.destroy_current(current_account, @week)
+    @rows_reports = row_reports(@week)
+    Reports::HoursAsm.q(@rows_reports) unless @rows_reports.empty?
     @row_id = params[:id]
   end
 
