@@ -18,6 +18,10 @@
 #forms.small
   =render 'tracking_hours/form', week: @week
 
+%div{ id: "total_hours", developer_id: current_account.id, week_id: @week.id }
+  -unless @rows_reports.empty?
+    =render 'total_hours', rows_reports: @rows_reports
+
 #import-data.modal.fade.import-data-modal-lg{"aria-hidden" => "true", "aria-labelledby" => "import-data", role: "dialog", :tabindex => "-1"}
   .modal-dialog.modal-dialog-centered.modal-lg
     .modal-content
