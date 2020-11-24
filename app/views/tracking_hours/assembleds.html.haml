@@ -1,9 +1,9 @@
-.row
+.row.pt-2
   .col-8
-    .nav
-      -weeks.each_with_index do |week,i|
+    .nav.nav-tabs
+      -weeks.each do |week|
         .nav-item
-          -if i == weeks.length - 1
+          -if week.id == request[:week].to_i || (request[:week].nil? && week.begin == Date.today.beginning_of_week)
             .nav-link.active
               =link_to week.to_text, assembleds_tracking_hours_path(week: week)
           -else
