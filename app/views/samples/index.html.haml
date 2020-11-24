@@ -57,7 +57,7 @@
           %td
             =sample.headline
           %td
-            =sample.link? ? link_to('live', sample.live_link, target:'_blank') : '---'
+            =published_at && published_at > Date.today ? link_to('live', sample.live_link, target:'_blank') : '---'
           %td
             =sample.link? ? link_to('pipeline', sample.pl_link, target:'_blank') : '---'
           %td

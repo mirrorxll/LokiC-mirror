@@ -47,8 +47,6 @@ class Sample < ApplicationRecord
   end
 
   def live_link
-    return if published_at > Date.today
-
     "#{publication.home_page}/stories/#{pl_story_id}"
   end
 
