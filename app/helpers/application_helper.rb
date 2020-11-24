@@ -4,6 +4,10 @@ module ApplicationHelper
   end
 
   def previous_week
-    Week.where(end: Date.today.end_of_week - 7).first
+    Week.where(begin: Date.today.beginning_of_week.last_week).first
+  end
+
+  def current_week
+    Week.where(begin: Date.today.beginning_of_week).first
   end
 end
