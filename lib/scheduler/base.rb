@@ -113,9 +113,9 @@ module Scheduler
       args[:end_date] = Date.parse(args[:end_date]) if args[:end_date]
       args[:start_date] = Date.today unless args[:start_date]
 
-      if args[:start_date] < Date.today
-        raise ArgumentError, 'invalid start_date - should be >= today! (correct format: yyyy-mm-dd)'
-      end
+      # if args[:start_date] < Date.today
+      #   raise ArgumentError, 'invalid start_date - should be >= today! (correct format: yyyy-mm-dd)'
+      # end
 
       if args[:limit]&.to_i && args[:limit].to_i > 0
         args[:limit] = args[:limit].to_i
