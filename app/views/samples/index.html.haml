@@ -38,6 +38,8 @@
       %th#headline{ :scope => "col" }
         headline
       %th#pipeline{ :scope => "col" }
+        live
+      %th#pipeline{ :scope => "col" }
         pipeline
       %th#lokic{ :scope => "col" }
         lokic
@@ -55,7 +57,9 @@
           %td
             =sample.headline
           %td
-            =sample.link ? link_to('pipeline', sample.link, target:'_blank') : '---'
+            =sample.link? ? link_to('live', sample.live_link, target:'_blank') : '---'
+          %td
+            =sample.link? ? link_to('pipeline', sample.pl_link, target:'_blank') : '---'
           %td
             =link_to('lokic', story_type_iteration_sample_url(@story_type, @iteration, sample), target:'_blank')
           %td

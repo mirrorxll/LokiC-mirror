@@ -40,9 +40,16 @@ class ClientsPublicationsTagsJob < ApplicationJob
   def update_publication(client, cl_pub_tags)
     pub = client.publications.find_or_initialize_by(pl_identifier: cl_pub_tags['publication_id'])
     pub.name = cl_pub_tags['publication_name']
+    pub.home_page = drop_ends_slash(cl_pub_tags['site_url'])
     pub.save!
 
     pub
+  end
+
+  def drop_ends_slash(url)
+    return if url.blank?
+
+    url.end_with?('/') ? url[0...-1] : url
   end
 
   def update_tags(publication, cl_pub_tags)
