@@ -1,10 +1,9 @@
 .row
   .col-10
-    .nav.justify-content-center
-      -length = weeks.length
-      -weeks.each_with_index do |week,i|
+    .nav.nav-tabs.justify-content-center
+      -weeks.each do |week|
         .nav-item
-          -if i == length - 1
+          -if week.id == request[:week].to_i || (request[:week].nil? && week.begin == Date.today.beginning_of_week)
             .nav-link.active
               =link_to week.to_text, tracking_hours_path(week: week, developer: current_account.id)
           -else

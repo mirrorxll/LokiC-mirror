@@ -74,7 +74,7 @@ class TrackingHoursController < ApplicationController # :nodoc:
   end
 
   def find_week
-    @week = params[:week].nil? ? Week.find_by(begin: Date.today.beginning_of_week.last_week) : Week.find(params[:week])
+    @week = params[:week].nil? ? Week.find_by(begin: Date.today.beginning_of_week) : Week.find(params[:week])
   end
 
   def row_reports(week)
