@@ -156,7 +156,9 @@ module Samples
       def comma_after_state_name(sample)
         @states.each do |state|
           return [:headline, sample[:headline]] if sample[:headline].match?(/,\s*#{state['name']}/i)
-          return [:body, sample[:body]] if sample[:body].any? { |b| b.match?(/,\s*#{state['name']}/i) }
+
+          body_row = sample[:body].index { |b| b.match?(/,\s*#{state['name']}/i) }
+          return [:body, sample[:body][body_row]] if body_row
         end
 
         false

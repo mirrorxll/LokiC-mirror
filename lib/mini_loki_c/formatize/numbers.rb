@@ -47,7 +47,7 @@ module MiniLokiC
         parts = value.to_s.split('.')
         parts.first.gsub!(/(\d)(?=(\d\d\d)+(?!\d))/, '\\1,')
         parts.delete_at(1) if parts[1].to_i.zero?
-        parts.first
+        parts.join('.')
       end
 
       def add_commas_with_decimals(value)
@@ -110,7 +110,7 @@ module MiniLokiC
               else 'th'
               end
             end
-          "#{number}#{postfix}"
+          "#{add_commas(number)}#{postfix}"
         else
           ranks =
             if no_text

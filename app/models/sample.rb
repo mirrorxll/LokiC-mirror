@@ -33,11 +33,21 @@ class Sample < ApplicationRecord
     publication.name
   end
 
-  def link
-    story_id = public_send("pl_#{PL_TARGET}_story_id")
-    return unless story_id
-
-    target = Rails.env.production? ? 'pipeline' : 'pipeline-staging'
-    "https://#{target}.locallabs.com/stories/#{story_id}"
+  def pl_story_id
+    public_send("pl_#{PL_TARGET}_story_id")
   end
+
+  def link?
+    pl_story_id.present?
+  end
+
+  def pl_link
+    target = Rails.env.production? ? 'pipeline' : 'pipeline-staging'
+    "https://#{target}.locallabs.com/stories/#{pl_story_id}"
+  end
+
+  def live_link
+    "#{publication.home_page}/stories/#{pl_story_id}"
+  end
+
 end
