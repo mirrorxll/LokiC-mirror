@@ -7,7 +7,7 @@
         data location
     .row
       .col-6
-        -if current_account.type.eql?('manager')
+        -if current_account.types.include?('manager')
           =link_to @story_type.data_set.name, data_set_path(@story_type.data_set), class: 'no-link'
         -else
           =@story_type.data_set.name

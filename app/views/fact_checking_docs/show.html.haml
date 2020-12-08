@@ -1,5 +1,5 @@
 -if @iteration.auto_feedback_confirmations.all?(&:confirmed)
-  -account_type = current_account.type
+  -account_types = current_account.types
   -reviewers_feedback = @fcd.reviewers_feedback
   -editors_feedback = @fcd.editors_feedback
   %hr/
@@ -8,7 +8,7 @@
       %b FCD ##{@story_type.id} #{@story_type.name} -- #{@story_type.developer.name}
   %hr/
 
-  -unless current_account.type.eql?('editor')
+  -unless current_account.types.include?('editor')
     .row
       .col-10.offset-1
         %nav{ 'area-label' => 'breadcrumb' }
@@ -24,7 +24,7 @@
   .row
     .col-10.offset-1
       #fcd_control.small
-        =render 'fcd_buttons', account_type: account_type
+        =render 'fcd_buttons', account_types: account_types
   %hr/
   .row
     .col-10.offset-1
@@ -38,7 +38,7 @@
         .card-header.d-flex.justify-content-between.align-items-center
           reviewers feedback
           .btn-group
-            -if account_type.eql?('manager')
+            -if account_types.include?('manager')
               =link_to("add feedback", new_story_type_fact_checking_doc_reviewers_feedback_path(@story_type, @fcd),
                        'data-toggle'=>'modal', 'data-target'=>'#manual_feedback_modal',
                        class: "btn btn-sm btn-light text-dark", onclick: 'hideAllPopovers();', remote: true)
@@ -78,7 +78,7 @@
           editors feedback
 
           .btn-group
-            -if !account_type.eql?('developer')
+            -if !account_types.include?('developer')
               =link_to("add feedback", new_story_type_fact_checking_doc_editors_feedback_path(@story_type, @fcd),
                        'data-toggle'=>'modal', 'data-target'=>'#manual_feedback_modal',
                        class: "btn btn-sm btn-light text-dark", onclick: 'hideAllPopovers();', remote: true)

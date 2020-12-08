@@ -18,10 +18,10 @@
       #navbarNavDropdown.collapse.navbar-collapse
         %ul.navbar-nav.w-100
           -if current_account
-            -if !current_account.type.eql?('developer')
+            -if !current_account.types.include?('developer')
               %li.nav-item.active
                 =link_to('Data Sets', data_sets_path, class: 'nav-link')
-              -if !current_account.type.eql?('editor')
+              -if !current_account.types.include?('editor')
                 %li.nav-item.active
                   =link_to('Admin panel', admin_root_path, class: 'nav-link')
                 %li.nav-item.active.dropdown

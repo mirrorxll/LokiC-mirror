@@ -3,5 +3,5 @@
 class AccountType < ApplicationRecord # :nodoc:
   serialize :permissions, JSON
 
-  has_many :accounts
+  has_and_belongs_to_many :accounts
 end

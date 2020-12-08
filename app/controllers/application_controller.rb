@@ -27,15 +27,15 @@ class ApplicationController < ActionController::Base
   end
 
   def manager?
-    current_account.type.eql?('manager')
+    current_account.types.include?('manager')
   end
 
   def editor?
-    current_account.type.eql?('editor')
+    current_account.types.include?('editor')
   end
 
   def developer?
-    current_account.type.eql?('developer')
+    current_account.types.include?('developer')
   end
 
   def render_400

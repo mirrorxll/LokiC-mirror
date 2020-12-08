@@ -27,7 +27,7 @@
             -if current_account.slack
               %small.form-text.text-muted
                 attached: #{current_account.slack.user_name} - #{current_account.slack.identifier}
-      -if !current_account.type.eql?('editor')
+      -if !current_account.types.include?('editor')
         .form-group
           .row
             .col-12

@@ -5,7 +5,8 @@ require 'sidekiq-scheduler/web'
 
 Rails.application.routes.draw do
   devise_for :accounts, controllers: { registrations: 'registrations', sessions: 'sessions' }
-  authenticate :account, ->(u) { u.account_type.name.eql?('manager') } do
+
+  authenticate :account, ->(u) { u.types.include?('manager') } do
     ActiveAdmin.routes(self)
     mount Sidekiq::Web => '/sidekiq'
   end

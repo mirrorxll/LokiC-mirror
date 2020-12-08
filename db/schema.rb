@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_24_195726) do
+ActiveRecord::Schema.define(version: 2020_11_30_152434) do
 
   create_table "account_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
@@ -19,8 +19,14 @@ ActiveRecord::Schema.define(version: 2020_11_24_195726) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "account_types_accounts", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.bigint "account_type_id", null: false
+    t.index ["account_id", "account_type_id"], name: "index_account_types_accounts_on_account_id_and_account_type_id", unique: true
+    t.index ["account_type_id", "account_id"], name: "index_account_types_accounts_on_account_type_id_and_account_id", unique: true
+  end
+
   create_table "accounts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "account_type_id"
     t.string "email", null: false
     t.string "encrypted_password", null: false
     t.string "reset_password_token"
@@ -31,7 +37,6 @@ ActiveRecord::Schema.define(version: 2020_11_24_195726) do
     t.datetime "remember_created_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["account_type_id"], name: "index_accounts_on_account_type_id"
     t.index ["email"], name: "index_accounts_on_email", unique: true
     t.index ["first_name", "last_name"], name: "index_accounts_on_first_name_and_last_name"
     t.index ["reset_password_token"], name: "index_accounts_on_reset_password_token", unique: true

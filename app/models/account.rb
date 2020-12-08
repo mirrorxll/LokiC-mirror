@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
 class Account < ApplicationRecord # :nodoc:
+  attr_accessor :type_ids, :slack_id # it needs for formtastic-activeadmin-form
+
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  belongs_to :account_type
+
+  has_and_belongs_to_many :account_types
 
   has_one :slack, class_name: 'SlackAccount'
   has_one :fc_channel
@@ -19,7 +22,7 @@ class Account < ApplicationRecord # :nodoc:
     "#{first_name} #{last_name}"
   end
 
-  def type
-    account_type.name
+  def types
+    account_types.map(&:name)
   end
 end
