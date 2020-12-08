@@ -7,7 +7,6 @@ class Account < ApplicationRecord # :nodoc:
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-
   has_and_belongs_to_many :account_types
 
   has_one :slack, class_name: 'SlackAccount'
