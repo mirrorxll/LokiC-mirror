@@ -8,6 +8,7 @@ class Account < ApplicationRecord # :nodoc:
          :recoverable, :rememberable, :validatable
 
   has_and_belongs_to_many :account_types
+  has_and_belongs_to_many :sheriff_data_sets, class_name: 'DataSet', join_table: 'data_sets_sheriffs'
 
   has_one :slack, class_name: 'SlackAccount'
   has_one :fc_channel

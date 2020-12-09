@@ -1,76 +1,36 @@
 #data_set_info
-  .row
+  .row.card-body
     .col-6
       .card.small
         .card-header.p-2
-          source
+          data
         .card-body
-          .row
-            .col-4.pr-0.text-right
-              address:
-            .col-8
-              #{link_to(URI.parse(data_set.src_address).host, data_set.src_address, target: '_blank')}
-            .col-4.pr-0.text-right
-              explaining data:
-            .col-8
-              #{link_to(URI.parse(data_set.src_explaining_data).host, data_set.src_explaining_data, target: '_blank')}
-            .col-4.pr-0.text-right
-              release frequency:
-            .col-8
-              #{release_frequency(data_set)}
-            .col-4.pr-0.text-right
-              scrape frequency:
-            .col-8
-              #{scrape_frequency(data_set)}
-            .col-4.pr-0.text-right
-              on cron?:
-            .col-8
-              -if data_set.cron_scraping
-                Yes
+          .row.mb-2
+            .col-2.pr-0.text-right
+              location:
+            .col-10
+              #{data_set.location}
+          .row.mb-2
+            .col-2.pr-0.text-right
+              channel:
+            .col-10
+              #{data_set.location}
+          .row.mb-2
+            .col-2.pr-0.text-right
+              sheriff(s):
+            .col-10
+              -data_set.sheriffs.each do |s|
+                =s.name
                 %br/
-              -else
-                No
-
-      .card.small.mt-3
-        .card-header.p-2
-          additional info:
-        .card-body
           .row
-            .col-4.pr-0.text-right
-              gather task:
-            .col-8
-              #{link_to(URI.parse(data_set.gather_task).host, data_set.gather_task, target: '_blank') }
-            .col-4.pr-0.text-right
-              scrape dev:
-            .col-8
-              #{data_set.scrape_developer}
-            .col-4.pr-0.text-right
+            .col-2.pr-0.text-right
               comment:
-            .col-8
+            .col-10
               #{data_set.comment}
 
-    .col-6
-      .card.small
-        .card-header.p-2
-          data #{eval_indicate(data_set)}
-        .card-body
-          .row
-            .col-4.pr-0.text-right
-              location:
-            .col-8
-              #{data_set.location}
-            .col-4.pr-0.text-right
-              evaluation doc:
-            .col-8
-              #{eval_doc(data_set)}
-            -if data_set.evaluated?
-              .col-4.pr-0.text-right
-                evaluated_at:
-              .col-8
-                #{data_set.evaluated_at.strftime('%F %R')}
-
-      -unless action_name.eql?('properties')
-        .card.small.mt-3
+    -unless action_name.eql?('properties')
+      .col-6
+        .card.small
           .card-header.p-2
             default properties:
           .card-body

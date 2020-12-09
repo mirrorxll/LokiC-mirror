@@ -16,7 +16,6 @@ Rails.application.routes.draw do
   root 'story_types#index'
 
   resources :data_sets do
-    patch :evaluate, on: :member
     get   :properties, on: :member
 
     resources :story_types, only: %i[new create]

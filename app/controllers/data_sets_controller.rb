@@ -10,7 +10,6 @@ class DataSetsController < ApplicationController # :nodoc:
   def index
     @tab_title = 'Data Sets'
     @data_sets = DataSet.all
-    @data_sets = @data_sets.where(data_set_filter_params)
   end
 
   def show
@@ -43,13 +42,6 @@ class DataSetsController < ApplicationController # :nodoc:
     render :edit unless @data_set.update(data_set_params)
   end
 
-  def evaluate
-    render_400 && return if @data_set.evaluated?
-
-    @data_set.update(evaluated: true, evaluated_at: Time.now)
-    eval_data_set_notification
-  end
-
   def destroy
     @data_set&.destroy
   end
@@ -62,12 +54,6 @@ class DataSetsController < ApplicationController # :nodoc:
     @data_set = DataSet.find(params[:id])
   end
 
-  def data_set_filter_params
-    return {} unless params[:filter]
-
-    params.require(:filter).permit(:evaluated)
-  end
-
   def story_type_filter_params
     return {} unless params[:filter]
 
@@ -78,20 +64,8 @@ class DataSetsController < ApplicationController # :nodoc:
 
   def data_set_params
     params.require(:data_set).permit(
-      :src_release_frequency_id,
-      :src_scrape_frequency_id,
       :name,
-      :src_address,
-      :src_explaining_data,
-      :src_release_frequency_manual,
-      :src_scrape_frequency_manual,
-      :cron_scraping,
       :location,
-      :evaluation_document,
-      :evaluated,
-      :evaluated_at,
-      :gather_task,
-      :scrape_developer,
       :comment
     )
   end
@@ -99,13 +73,6 @@ class DataSetsController < ApplicationController # :nodoc:
   def new_data_set_notification
     channel = Rails.env.production? ? 'hle_lokic_messages' : 'notifications_test'
     message = "Added a new Data set. Details: #{data_set_url(@data_set)}"
-    SlackNotificationJob.perform_later(channel, message)
-  end
-
-  def eval_data_set_notification
-    channel = Rails.env.production? ? 'hle_lokic_messages' : 'notifications_test'
-    message = "The '#{@data_set.name}' data set was evaluated. We can start to "\
-              "create templates. Details: #{data_set_url(@data_set)}"
     SlackNotificationJob.perform_later(channel, message)
   end
 end
