@@ -3,6 +3,8 @@
 class DeviseCreateAccounts < ActiveRecord::Migration[6.0] # :nodoc:
   def change
     create_table :accounts do |t|
+      t.belongs_to :account_type
+
       t.string    :email,                     null: false
       t.string    :encrypted_password,        null: false
       t.string    :reset_password_token
