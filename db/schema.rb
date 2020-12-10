@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_08_143620) do
+ActiveRecord::Schema.define(version: 2020_12_08_145521) do
 
   create_table "account_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
@@ -156,12 +156,19 @@ ActiveRecord::Schema.define(version: 2020_12_08_143620) do
     t.bigint "account_id"
     t.string "name"
     t.string "location"
-    t.string "sheriffs_doc"
+    t.string "data_prep_doc"
     t.string "slack_channel"
     t.string "comment", limit: 1000
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["account_id"], name: "index_data_sets_on_account_id"
+  end
+
+  create_table "data_sets_sheriffs", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "data_set_id", null: false
+    t.bigint "account_id", null: false
+    t.index ["account_id", "data_set_id"], name: "index_data_sets_sheriffs_on_account_id_and_data_set_id", unique: true
+    t.index ["data_set_id", "account_id"], name: "index_data_sets_sheriffs_on_data_set_id_and_account_id", unique: true
   end
 
   create_table "editors_feedback", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|

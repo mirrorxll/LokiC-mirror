@@ -4,19 +4,67 @@
     .row
       .col-6
         =form.text_field :name, placeholder: 'name', class: 'mb-1 form-control form-control-sm', required: true
-        %hr/
+    %hr/
+
     .row
-      .col-6
+      .col-6.border-right
         =form.label :data_set, 'data:', class: 'small'
         =form.text_field :location, placeholder: 'location', class: 'mb-1 form-control form-control-sm'
-        =form.text_field :sheriffs_doc, placeholder: "sheriff's document", class: 'mb-1 form-control form-control-sm'
+        =form.text_field :data_prep_doc, placeholder: "data preparation document", class: 'mb-1 form-control form-control-sm'
+        =form.text_field :slack_channel, placeholder: "slack_channel", class: 'mb-1 form-control form-control-sm'
+        .sheriff
+          .select_placeholder.text-secondary.form-control.form-control-sm.border-right-0{ 'data-text' => 'sheriff: ' }
+          =form.collection_select :sheriff_id, Account.all.sort_by(&:name), :id, :name,
+                                  { prompt: '' }, { name: :id, class: 'form-control form-control-sm' }
 
-    .row.mt-4
+        =form.text_area :comment, placeholder: 'comment', class: 'mb-1 mt-3 form-control form-control-sm'
+
       .col-6
-        =form.text_area :comment, placeholder: 'comment', class: 'mb-1 form-control form-control-sm'
+        =form.label :data_set, 'default properties:', class: 'small'
+        .photo_bucket
+          .select_placeholder.text-secondary.form-control.form-control-sm.border-right-0{ 'data-text' => 'photo bucket: ' }
+          =form.collection_select :photo_bucket_id, PhotoBucket.all.sort_by(&:name), :id, :name,
+                                  { prompt: '' }, { name: :id, class: 'form-control form-control-sm' }
+        .text-secondary.small.mt-2.mb-2
+          =link_to('[add client]', '#', id: 'add_client', class: 'badge badge-pill badge-light text-secondary')
+        #clients_tags
+          -#.row
+          -#  #clients.col-6
+          -#    =form.collection_select :client_id, Client.where(hidden: false), :id, :name,
+          -#                            { prompt: '' }, { name: :id, class: 'form-control form-control-sm' }
+          -#  #tags.col-6
+          -#    =form.collection_select :client_id, Tag.all, :id, :name,
+          -#                            { prompt: '' }, { name: :id, class: 'form-control form-control-sm', required: true }
 
-    =form.submit @data_set.new_record? ? 'Add' : 'Update',
-                 class: 'btn btn-sm btn-outline-dark mt-2', data: { disable_with: "..." }
-    =link_to 'cancel', :back, class: 'btn btn-sm btn-outline-dark mt-2'
+    %hr.mb-2/
+    .text-center
+      =form.submit @data_set.new_record? ? 'create' : 'update',
+                   class: 'btn btn-sm btn-outline-dark mt-2', data: { disable_with: "..." }
+      =link_to 'cancel', :back, class: 'btn btn-sm btn-outline-dark mt-2'
 
-=render 'set_frequency'
+:javascript
+  function setPlaceholder(block) {
+      let placeholder = block.find('.select_placeholder');
+      let select = block.find('select');
+
+      placeholder.html(
+        placeholder.attr('data-text') + `<span class='text-dark'>${select.find('option:selected').text()}</span>`
+      );
+  }
+
+  $('.sheriff, .photo_bucket').each(function() { setPlaceholder($(this)); });
+  $('.sheriff select, .photo_bucket select').on('change', function() { setPlaceholder($(this).parent()) });
+
+  $('#add_client').on('click', (e)=> {
+    e.preventDefault();
+
+    if($('#client_tags').length === 0) {
+      let response = $.ajax({
+        url: `${window.location.origin}/data_sets/:data_set_id/default_properties/:default_property_id/clients`,
+        dataType: 'script'
+      })
+
+      console.log(JSON.parse(response))
+    }
+
+  })
