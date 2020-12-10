@@ -26,15 +26,15 @@
           =form.collection_select :photo_bucket_id, PhotoBucket.all.sort_by(&:name), :id, :name,
                                   { prompt: '' }, { name: :id, class: 'form-control form-control-sm' }
         .text-secondary.small.mt-2.mb-2
-          =link_to('[add client]', '#', id: 'add_client', class: 'badge badge-pill badge-light text-secondary')
+          =link_to('[add client/tag]', '#', id: 'add_client', class: 'badge badge-pill badge-light text-secondary')
         #clients_tags
           -#.row
-          -#  #clients.col-6
+          -#  .col-6
           -#    =form.collection_select :client_id, Client.where(hidden: false), :id, :name,
-          -#                            { prompt: '' }, { name: :id, class: 'form-control form-control-sm' }
-          -#  #tags.col-6
+          -#                           { prompt: '' }, { class: 'form-control form-control-sm' }
+          -#  .col-6
           -#    =form.collection_select :client_id, Tag.all, :id, :name,
-          -#                            { prompt: '' }, { name: :id, class: 'form-control form-control-sm', required: true }
+          -#                           { prompt: '' }, { class: 'form-control form-control-sm', required: true }
 
     %hr.mb-2/
     .text-center
@@ -55,16 +55,102 @@
   $('.sheriff, .photo_bucket').each(function() { setPlaceholder($(this)); });
   $('.sheriff select, .photo_bucket select').on('change', function() { setPlaceholder($(this).parent()) });
 
+  let clients = []
+
   $('#add_client').on('click', (e)=> {
     e.preventDefault();
 
-    if($('#client_tags').length === 0) {
-      let response = $.ajax({
-        url: `${window.location.origin}/data_sets/:data_set_id/default_properties/:default_property_id/clients`,
-        dataType: 'script'
-      })
+    let uId = secureRandom(6)
+    let blankOption = document.createElement('option')
 
-      console.log(JSON.parse(response))
+    let clientsSelect = document.createElement('select')
+    clientsSelect.appendChild(blankOption)
+    clientsSelect.className = 'form-control form-control-sm clients_select'
+    clientsSelect.addEventListener('change', tagsByClient)
+
+    let tagsSelect = document.createElement('select')
+    clientsSelect.appendChild(blankOption)
+    tagsSelect.className = 'form-control form-control-sm tags_select'
+
+    let clientsCol = document.createElement('div')
+    clientsCol.className = 'col-6'
+    clientsCol.appendChild(clientsSelect)
+
+    let tagsCol = document.createElement('div')
+    tagsCol.className = 'col-6'
+    tagsCol.appendChild(tagsSelect)
+
+    let row = document.createElement('div')
+    row.className = 'row mb-1'
+    row.id = uId
+    row.appendChild(clientsCol)
+    row.appendChild(tagsCol)
+
+    document.getElementById('clients_tags').appendChild(row)
+
+    if($('#clients_tags').children().length === 1 && clients.length === 0) {
+      $.ajax({
+        url: `${window.location.origin}/api/v1/clients/visible`,
+        dataType: 'json',
+        success: (clients)=> { addClientsToSelectGroup(uId, clients.visible) }
+      });
+    } else {
+      addClientsToSelectGroup(uId);
+    }
+  })
+
+  function secureRandom(n){
+    let result = '';
+    while (n--){
+      result += Math.floor(Math.random() * 16).toString(16);
     }
 
-  })
+    return result;
+  }
+
+  function addClientsToSelectGroup(uId, clientsFromApi = null) {
+    if(clientsFromApi != null) clients = clientsFromApi
+
+    if(clients.length > 0) {
+      let select = document.getElementById(uId).getElementsByClassName('clients_select')[0]
+      let option = null
+
+      for (let i = 0; i < clients.length; i++) {
+        option = document.createElement("option");
+        option.setAttribute("value", clients[i].id);
+        option.text = clients[i].name;
+        select.appendChild(option);
+      }
+    } else {
+      setTimeout(addClientsToSelectGroup, 1000)
+    }
+  }
+
+  function tagsByClient(event) {
+    let clientId = event.target.value
+    if(clientId === '') return false;
+
+    let tagsSelect = event.target.parentNode.parentNode.getElementsByClassName('tags_select')[0]
+
+    while (tagsSelect.firstChild) {
+      tagsSelect.removeChild(tagsSelect.firstChild);
+    }
+
+    $.ajax({
+      url: `${window.location.origin}/api/v1/clients/${clientId}/tags`,
+      dataType: 'json',
+      success: (tags)=> { addTagsToSelectGroup(tagsSelect, tags.attached) }
+    });
+  }
+
+  function addTagsToSelectGroup(tagsSelect, tags) {
+    tagsSelect.appendChild(document.createElement('option'))
+    let option = null
+
+    for (let i = 0; i < tags.length; i++) {
+      option = document.createElement("option");
+      option.setAttribute("value", tags[i].id);
+      option.text = tags[i].name;
+      tagsSelect.appendChild(option);
+    }
+  }

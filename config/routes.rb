@@ -15,8 +15,17 @@ Rails.application.routes.draw do
 
   root 'story_types#index'
 
+  namespace :api, constraints: { format: :json } do
+    namespace :v1 do
+      resources :clients, only: [] do
+        get :visible, on: :collection
+        get :tags
+      end
+    end
+  end
+
   resources :data_sets do
-    get   :properties, on: :member
+    get :properties, on: :member
 
     resources :story_types, only: %i[new create]
   end
