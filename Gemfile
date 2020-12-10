@@ -26,6 +26,9 @@ gem 'rubyXL'
 gem 'google-api-client', '~> 0.34'
 gem 'google_drive'
 
+# mini_loki_c gems
+gem 'svg-graph'
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 6.0.3'
 # Use mysql as the database for Active Record
