@@ -24,7 +24,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :data_sets do
+  resources :data_sets, except: %i[new] do
     get :properties, on: :member
 
     resources :story_types, only: %i[new create]

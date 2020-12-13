@@ -8,7 +8,7 @@
                id: 'upd_data_set_btn', class: 'btn btn-sm btn-outline-dark', remote: true)
 %hr/
 
-=render @data_set
+=render 'data_set'
 
 %hr/
 
@@ -20,7 +20,7 @@
   .row
     .col-1
     .col-5.pl-0
-      =link_to('New Story Type',
+      =link_to('new story type',
                new_data_set_story_type_path(@data_set),
                class: 'btn btn-sm btn-outline-dark',
                remote: true)

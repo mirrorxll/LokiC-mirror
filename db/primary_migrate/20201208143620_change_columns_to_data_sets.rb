@@ -17,8 +17,10 @@ class ChangeColumnsToDataSets < ActiveRecord::Migration[6.0]
                :gather_task,
                :scrape_developer
 
+      t.belongs_to :sheriff, after: :account_id
+
       t.string :preparation_doc, after: :location
-      t.string :slack_channel, after: :data_prep_doc
+      t.string :slack_channel, after: :preparation_doc
     end
   end
 end

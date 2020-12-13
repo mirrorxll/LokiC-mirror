@@ -8,7 +8,7 @@ class SamplesController < ApplicationController # :nodoc:
     @paged_samples = @all_samples.order(backdated: :asc).order(published_at: :asc)
                                  .page(params[:page]).includes(:output, :publication)
 
-    @tab_title = "Samples ##{@story_type.id} #{@story_type.name}"
+    @tab_title = "LokiC::Samples ##{@story_type.id} #{@story_type.name}"
   end
 
   def show

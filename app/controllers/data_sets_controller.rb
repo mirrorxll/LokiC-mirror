@@ -5,11 +5,14 @@ class DataSetsController < ApplicationController # :nodoc:
   skip_before_action :set_iteration
 
   before_action :render_400, except: :properties, if: :developer?
-  before_action :find_data_set, except: %i[index new create]
+  before_action :find_data_set, except: %i[index create]
+  after_action  :new_data_set_notification, only: :create
+  after_action  :set_default_props, only: %i[create update]
 
   def index
-    @tab_title = 'Data Sets'
+    @tab_title = 'LokiC::Data Sets'
     @data_sets = DataSet.all
+    @data_set = DataSet.new
   end
 
   def show
@@ -21,15 +24,10 @@ class DataSetsController < ApplicationController # :nodoc:
     end
   end
 
-  def new
-    @data_set = DataSet.new
-  end
-
   def create
     @data_set = current_account.data_sets.build(data_set_params)
 
     if @data_set.save
-      new_data_set_notification
       redirect_to @data_set
     else
       render :new
@@ -54,19 +52,31 @@ class DataSetsController < ApplicationController # :nodoc:
     @data_set = DataSet.find(params[:id])
   end
 
+  def data_set_params
+    params.require(:data_set).permit(
+      :name, :location, :preparation_doc,
+      :slack_channel, :sheriff_id, :comment
+    )
+  end
+
+  def default_props_params
+    params.require(:default_props).permit(
+      :photo_bucket_id, client_tag_ids: {}
+    )
+  end
+
+  def set_default_props
+    @data_set.data_set_photo_bucket&.delete
+    @data_set.client_tags.delete_all
+
+    DataSetDefaultProps.setup(@data_set, default_props_params)
+  end
+
   def story_type_filter_params
     return {} unless params[:filter]
 
     params.require(:filter).slice(
       :editor, :developer, :client, :frequency, :status
-    )
-  end
-
-  def data_set_params
-    params.require(:data_set).permit(
-      :name,
-      :location,
-      :comment
     )
   end
 
