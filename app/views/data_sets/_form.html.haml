@@ -48,6 +48,11 @@
     .text-center
       =form.submit @data_set.new_record? ? 'create' : 'update',
                    class: 'btn btn-sm btn-outline-dark mt-2', data: { disable_with: "..." }
-      =link_to 'cancel', :back, class: 'btn btn-sm btn-outline-dark mt-2'
+      -if @data_set.new_record?
+        =link_to('cancel', '#data_set_form', 'aria-controls' => 'data_set_form',
+             'aria-expanded' => false, data: { toggle: "collapse", target: "#data_set_form" },
+             type: "button", id: '#crt_upd_data_set_btn', class: 'btn btn-sm btn-outline-dark mt-2')
+      -else
+        =link_to 'cancel', data_set_path(@data_set), class: 'btn btn-sm btn-outline-dark mt-2'
 
 =javascript_pack_tag 'data_sets/form'

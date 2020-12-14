@@ -1,11 +1,10 @@
 .row.mt-3
   #show_new_data_set_form.col-4.offset-8.text-right
-    =link_to('add a new Data Set', '#new_data_set_form', 'aria-controls' => 'new_data_set_form',
-             'aria-expanded' => false, data: { toggle: "collapse", target: "#new_data_set_form" },
-             type: "button", class: 'btn btn-sm btn-outline-dark')
+    =link_to('add a new data set', '#data_set_form', 'aria-controls' => 'data_set_form',
+             'aria-expanded' => false, data: { toggle: "collapse", target: "#data_set_form" },
+             type: "button", id: '#crt_upd_data_set_btn', class: 'btn btn-sm btn-outline-dark')
 
-
-#new_data_set_form.collapse
+#data_set_form.collapse
   =render 'form'
 %hr/
 
