@@ -80,6 +80,7 @@ module Scheduler
         limit = 50
         samples_time_frame = samples.where(time_frame: frame[:time_frame_id])
         total_days_till_end = (Date.parse(start_publish_date)..Date.parse("#{Time.now.year}-12-31")).count
+        total_days_till_end = 120 if total_days_till_end < 60 # if start date > November 1
         backdated_date = (Date.parse("#{Time.now.year}-01-01")..(Date.today - 1)).to_a.sample.strftime('%Y-%m-%d')
         unless year_from_frame == previous_year
           total_days_till_end = total_days_till_end >= 200 ? 200 : total_days_till_end
