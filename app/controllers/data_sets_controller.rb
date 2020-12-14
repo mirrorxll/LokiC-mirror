@@ -27,17 +27,13 @@ class DataSetsController < ApplicationController # :nodoc:
   def create
     @data_set = current_account.data_sets.build(data_set_params)
 
-    if @data_set.save
-      redirect_to @data_set
-    else
-      render :new
-    end
+    redirect_to @data_set if @data_set.save!
   end
 
   def edit; end
 
   def update
-    render :edit unless @data_set.update(data_set_params)
+    redirect_to @data_set if @data_set.update(data_set_params)
   end
 
   def destroy

@@ -2,7 +2,7 @@
 
 class DataSet < ApplicationRecord # :nodoc:
   belongs_to :account
-  belongs_to :sheriff, class_name: 'Account'
+  belongs_to :sheriff, class_name: 'Account', optional: true
 
   has_one :data_set_photo_bucket
   has_one :photo_bucket, through: :data_set_photo_bucket

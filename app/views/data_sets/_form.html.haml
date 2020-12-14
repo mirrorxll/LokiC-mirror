@@ -1,6 +1,6 @@
 %hr/
 .card.card-body
-  =form_with(model: @data_set) do |form|
+  =form_with(model: @data_set, local: true) do |form|
     .row
       .col-6
         =form.text_field :name, placeholder: 'name', class: 'mb-1 form-control form-control-sm', required: true
@@ -15,7 +15,7 @@
         .sheriff
           .select_placeholder.text-secondary.form-control.form-control-sm.border-right-0{ 'data-text' => 'sheriff: ' }
           =form.collection_select :sheriff_id, Account.all.sort_by(&:name), :id, :name,
-                                  { prompt: '' }, { class: 'form-control form-control-sm' }
+                                  { include_blank: true }, { class: 'form-control form-control-sm' }
 
         =form.text_area :comment, placeholder: 'comment', class: 'mb-1 mt-3 form-control form-control-sm'
 
@@ -24,142 +24,30 @@
         .photo_bucket
           .select_placeholder.text-secondary.form-control.form-control-sm.border-right-0{ 'data-text' => 'photo bucket: ' }
           =form.collection_select :photo_bucket_id, PhotoBucket.all.sort_by(&:name), :id, :name,
-                                  { prompt: '', selected: @data_set.new_record? ? false : @data_set.photo_bucket.id },
+                                  { include_blank: true, selected: @data_set.new_record? ? false : @data_set.photo_bucket&.id },
                                   { name: 'default_props[photo_bucket_id]', class: 'form-control form-control-sm' }
         .text-secondary.small.mt-2.mb-2
           =link_to('[add client/tag]', '#', id: 'add_client', class: 'badge badge-pill badge-light text-secondary')
         #clients_tags
           -if @data_set.persisted?
-            # TO DO
-
-
+            -@data_set.client_tags.each do |row|
+              -u_id = SecureRandom.hex(3)
+              .row.mb-1{ id: u_id }
+                .col-5.pr-1
+                  =form.collection_select :client_id, Client.where(hidden: false).sort_by(&:name), :id, :name,
+                                          { include_blank: true, selected: row.client.id },
+                                          { id: "data_set_default_#{u_id}_client_id", name: "default_props[client_tag_ids[#{u_id}[client_id]]]", class: 'form-control form-control-sm clients_select', required: true }
+                .col-6.pl-1.pr-1
+                  =form.collection_select :tag_id, row.client.tags.sort_by(&:name), :id, :name,
+                                          { include_blank: true, selected: row.tag.id },
+                                          { id: "data_set_default_#{u_id}_tag_id", name: "default_props[client_tag_ids[#{u_id}[tag_id]]]", class: 'form-control form-control-sm tags_select', required: true }
+                .col-1.pl-1.my-auto
+                  %strong.remove_x
+                    x
     %hr.mb-2/
     .text-center
       =form.submit @data_set.new_record? ? 'create' : 'update',
                    class: 'btn btn-sm btn-outline-dark mt-2', data: { disable_with: "..." }
       =link_to 'cancel', :back, class: 'btn btn-sm btn-outline-dark mt-2'
 
-:javascript
-  function setPlaceholder(block) {
-      let placeholder = block.find('.select_placeholder');
-      let select = block.find('select');
-
-      placeholder.html(
-        placeholder.attr('data-text') + `<span class='text-dark'>${select.find('option:selected').text()}</span>`
-      );
-  }
-
-  $('.sheriff, .photo_bucket').each(function() { setPlaceholder($(this)); });
-  $('.sheriff select, .photo_bucket select').on('change', function() { setPlaceholder($(this).parent()) });
-
-  let clients = []
-
-  $('#add_client').on('click', (e)=> {
-    e.preventDefault();
-
-    let uId = secureRandom(6)
-
-    let clientsSelect = document.createElement('select')
-    clientsSelect.appendChild(document.createElement('option'))
-    clientsSelect.id = `data_set_default_${uId}_client_id`
-    clientsSelect.name = `default_props[client_tag_ids[${uId}[client_id]]]`
-    clientsSelect.className = 'form-control form-control-sm clients_select'
-    clientsSelect.addEventListener('change', tagsByClient)
-
-    let tagsSelect = document.createElement('select')
-    tagsSelect.appendChild(document.createElement('option'))
-    tagsSelect.id = `data_set_default_${uId}_tag_id`
-    tagsSelect.name = `default_props[client_tag_ids[${uId}[tag_id]]]`
-    tagsSelect.className = 'form-control form-control-sm tags_select'
-
-    let clientsCol = document.createElement('div')
-    clientsCol.className = 'col-5 pr-1'
-    clientsCol.appendChild(clientsSelect)
-
-    let tagsCol = document.createElement('div')
-    tagsCol.className = 'col-6 pl-1 pr-1'
-    tagsCol.appendChild(tagsSelect)
-
-    let x = document.createElement('strong')
-    x.innerText = 'x'
-    x.addEventListener('click', (e) => { e.target.parentNode.parentNode.remove() } )
-
-    let removeCol = document.createElement('div')
-    removeCol.className = 'col-1 pl-1 my-auto'
-    removeCol.appendChild(x)
-
-    let row = document.createElement('div')
-    row.className = 'row mb-1'
-    row.id = uId
-    row.appendChild(clientsCol)
-    row.appendChild(tagsCol)
-    row.appendChild(removeCol)
-
-    document.getElementById('clients_tags').appendChild(row)
-
-    if($('#clients_tags').children().length === 1 && clients.length === 0) {
-      $.ajax({
-        url: `${window.location.origin}/api/v1/clients/visible`,
-        dataType: 'json',
-        success: (clients)=> { addClientsToSelectGroup(uId, clients.visible) }
-      });
-    } else {
-      addClientsToSelectGroup(uId);
-    }
-  })
-
-  function secureRandom(n){
-    let result = '';
-    while (n--){
-      result += Math.floor(Math.random() * 16).toString(16);
-    }
-
-    return result;
-  }
-
-  function addClientsToSelectGroup(uId, clientsFromApi = null) {
-    if(clientsFromApi != null) clients = clientsFromApi
-
-    if(clients.length > 0) {
-      let select = document.getElementById(uId).getElementsByClassName('clients_select')[0]
-      let option = null
-
-      for (let i = 0; i < clients.length; i++) {
-        option = document.createElement("option");
-        option.setAttribute("value", clients[i].id);
-        option.text = clients[i].name;
-        select.appendChild(option);
-      }
-    } else {
-      setTimeout(addClientsToSelectGroup, 1000)
-    }
-  }
-
-  function tagsByClient(event) {
-    let clientId = event.target.value
-    if(clientId === '') return false;
-
-    let tagsSelect = event.target.parentNode.parentNode.getElementsByClassName('tags_select')[0]
-
-    while (tagsSelect.firstChild) {
-      tagsSelect.removeChild(tagsSelect.firstChild);
-    }
-
-    $.ajax({
-      url: `${window.location.origin}/api/v1/clients/${clientId}/tags`,
-      dataType: 'json',
-      success: (tags)=> { addTagsToSelectGroup(tagsSelect, tags.attached) }
-    });
-  }
-
-  function addTagsToSelectGroup(tagsSelect, tags) {
-    tagsSelect.appendChild(document.createElement('option'))
-    let option = null
-
-    for (let i = 0; i < tags.length; i++) {
-      option = document.createElement("option");
-      option.setAttribute("value", tags[i].id);
-      option.text = tags[i].name;
-      tagsSelect.appendChild(option);
-    }
-  }
+=javascript_pack_tag 'data_sets/form'
