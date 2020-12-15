@@ -15,22 +15,19 @@ Rails.application.routes.draw do
 
   root 'story_types#index'
 
-  resources :data_sets do
-    patch :evaluate, on: :member
-    get   :properties, on: :member
+  namespace :api, constraints: { format: :json } do
+    namespace :v1 do
+      resources :clients, only: [] do
+        get :visible, on: :collection
+        get :tags
+      end
+    end
+  end
+
+  resources :data_sets, except: %i[new] do
+    get :properties, on: :member
 
     resources :story_types, only: %i[new create]
-
-    resources :default_properties, only: [] do
-      post :include_client, on: :collection
-      delete :exclude_client, on: :member
-
-      post :include_tag, on: :collection
-      delete :exclude_tag, on: :member
-
-      post :include_photo_bucket, on: :collection
-      delete :exclude_photo_bucket, on: :member
-    end
   end
 
   resources :story_types, except: %i[new create] do

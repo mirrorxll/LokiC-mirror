@@ -40,11 +40,11 @@ class ExportConfigurationsJob < ApplicationJob
         if client.name.eql?('Metric Media')
           all_mm_pubs
         else
-          p client.publications
+          client.publications
         end
 
-      p publication.id
-      p publications.exists?(publication.id)
+      publication.id
+      publications.exists?(publication.id)
     end
   end
 

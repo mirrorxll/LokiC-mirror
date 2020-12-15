@@ -1,96 +1,51 @@
 #data_set_info
-  .row
+  .row.card-body
     .col-6
       .card.small
         .card-header.p-2
-          source
+          data
         .card-body
-          .row
-            .col-4.pr-0.text-right
-              address:
-            .col-8
-              #{link_to(URI.parse(data_set.src_address).host, data_set.src_address, target: '_blank')}
-            .col-4.pr-0.text-right
-              explaining data:
-            .col-8
-              #{link_to(URI.parse(data_set.src_explaining_data).host, data_set.src_explaining_data, target: '_blank')}
-            .col-4.pr-0.text-right
-              release frequency:
-            .col-8
-              #{release_frequency(data_set)}
-            .col-4.pr-0.text-right
-              scrape frequency:
-            .col-8
-              #{scrape_frequency(data_set)}
-            .col-4.pr-0.text-right
-              on cron?:
-            .col-8
-              -if data_set.cron_scraping
-                Yes
-                %br/
-              -else
-                No
-
-      .card.small.mt-3
-        .card-header.p-2
-          additional info:
-        .card-body
-          .row
-            .col-4.pr-0.text-right
-              gather task:
-            .col-8
-              #{link_to(URI.parse(data_set.gather_task).host, data_set.gather_task, target: '_blank') }
-            .col-4.pr-0.text-right
-              scrape dev:
-            .col-8
-              #{data_set.scrape_developer}
-            .col-4.pr-0.text-right
-              comment:
-            .col-8
-              #{data_set.comment}
-
-    .col-6
-      .card.small
-        .card-header.p-2
-          data #{eval_indicate(data_set)}
-        .card-body
-          .row
-            .col-4.pr-0.text-right
+          .row.mb-2
+            .col-4.pr-0.text-right.font-weight-bold
               location:
             .col-8
-              #{data_set.location}
-            .col-4.pr-0.text-right
-              evaluation doc:
+              =@data_set.location
+          .row.mb-2
+            .col-4.pr-0.text-right.font-weight-bold
+              preparation document:
             .col-8
-              #{eval_doc(data_set)}
-            -if data_set.evaluated?
-              .col-4.pr-0.text-right
-                evaluated_at:
-              .col-8
-                #{data_set.evaluated_at.strftime('%F %R')}
+              =@data_set.preparation_doc
+          .row.mb-2
+            .col-4.pr-0.text-right.font-weight-bold
+              slack channel:
+            .col-8
+              =@data_set.slack_channel
+          .row.mb-2
+            .col-4.pr-0.text-right.font-weight-bold
+              sheriff:
+            .col-8
+              =@data_set.sheriff&.name
+          .row
+            .col-4.pr-0.text-right.font-weight-bold
+              comment:
+            .col-8
+              =@data_set.comment
 
-      -unless action_name.eql?('properties')
-        .card.small.mt-3
-          .card-header.p-2
-            default properties:
-          .card-body
-            .row.pb-2
-              .col-6.font-weight-bold
-                photobucket:
-              .col-6
-                #photobucket
-                  -if data_set.photo_bucket
-                    =render 'default_properties/photo_bucket', photo_bucket: data_set.photo_bucket
-                  -else
-                    =render 'default_properties/photo_bucket_form'
-            .row.font-weight-bold
-              .col-6
-                client:
-              .col-6
-                tag:
-            #default_properties
-              -unless data_set.client_tags.nil?
-                -data_set.client_tags.each do |client_tag|
-                  =render 'default_properties/client_tags', client_tag: client_tag
-            .p
-              =render 'default_properties/client_form'
+    .col-6
+      .card.small
+        .card-header.p-2
+          default properties:
+        .card-body
+          .row.pb-2
+            .col-3.text-right.font-weight-bold
+              photo bucket:
+            .col-9
+              =@data_set.photo_bucket&.name
+          .row
+            .col-3.text-right.font-weight-bold
+              client (tag):
+            .col-9
+              -@data_set.client_tags.each do |row|
+                ="#{row.client.name} (#{row.tag.name})"
+                %br/
+

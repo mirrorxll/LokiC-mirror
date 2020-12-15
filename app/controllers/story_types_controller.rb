@@ -29,7 +29,7 @@ class StoryTypesController < ApplicationController # :nodoc:
   def show
     render_400 and return if developer? && @story_type.developer != current_account
 
-    @tab_title = "##{@story_type.id} #{@story_type.name}"
+    @tab_title = "LokiC::##{@story_type.id} #{@story_type.name}"
   end
 
   def canceling_edit; end

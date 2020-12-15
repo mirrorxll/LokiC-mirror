@@ -4,7 +4,10 @@
   position: relative;
 }
 
-.frequency .placeholder {
+.select_placeholder {
+  width: 90%;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
   position: absolute;
   z-index: 1;
   pointer-events: none;

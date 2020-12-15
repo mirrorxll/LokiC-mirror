@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_30_152434) do
+ActiveRecord::Schema.define(version: 2020_12_08_143620) do
 
   create_table "account_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
@@ -154,28 +154,16 @@ ActiveRecord::Schema.define(version: 2020_11_30_152434) do
 
   create_table "data_sets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "account_id"
-    t.bigint "evaluator_id"
-    t.bigint "src_release_frequency_id"
-    t.bigint "src_scrape_frequency_id"
+    t.bigint "sheriff_id"
     t.string "name"
-    t.string "src_address"
-    t.string "src_explaining_data"
-    t.string "src_release_frequency_manual"
-    t.string "src_scrape_frequency_manual"
-    t.boolean "cron_scraping", default: false
     t.string "location"
-    t.string "evaluation_document"
-    t.boolean "evaluated", default: false
-    t.datetime "evaluated_at"
-    t.string "gather_task"
-    t.string "scrape_developer"
+    t.string "preparation_doc"
+    t.string "slack_channel"
     t.string "comment", limit: 1000
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["account_id"], name: "index_data_sets_on_account_id"
-    t.index ["evaluator_id"], name: "index_data_sets_on_evaluator_id"
-    t.index ["src_release_frequency_id"], name: "index_data_sets_on_src_release_frequency_id"
-    t.index ["src_scrape_frequency_id"], name: "index_data_sets_on_src_scrape_frequency_id"
+    t.index ["sheriff_id"], name: "index_data_sets_on_sheriff_id"
   end
 
   create_table "editors_feedback", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
