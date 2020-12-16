@@ -23,8 +23,8 @@ prod_default: &prod_default
   password: <%= Rails.application.credentials.mysql[:regular][:password] %>
 
 dev_default: &dev_default
-  username: root
-  password: Qw12345678*
+  username: <%= Rails.application.credentials.mysql[:local][:user] %>
+  password: <%= Rails.application.credentials.mysql[:local][:password] %>
 
 development:
   primary:
