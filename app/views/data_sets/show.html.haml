@@ -4,14 +4,11 @@
     %b #{@data_set.name}
   .col-4.text-right
     .btn-group
-      =link_to('Update a Data set', edit_data_set_path,
-               id: 'upd_data_set_btn', class: 'btn btn-sm btn-outline-dark', remote: true)
-      =link_to('Evaluate', evaluate_data_set_path, id: 'eval_data_set_btn',
-               class: "btn btn-sm btn-outline-dark #{allow_evaluate?(@data_set) ? '' : 'disabled'}",
-               method: :patch, remote: true)
+      =link_to('update a data set', edit_data_set_path,
+               id: 'crt_upd_data_set_btn', class: 'btn btn-sm btn-outline-dark', remote: true)
 %hr/
 
-=render @data_set
+=render 'data_set'
 
 %hr/
 
@@ -23,7 +20,7 @@
   .row
     .col-1
     .col-5.pl-0
-      =link_to('New Story Type',
+      =link_to('new story type',
                new_data_set_story_type_path(@data_set),
                class: 'btn btn-sm btn-outline-dark',
                remote: true)

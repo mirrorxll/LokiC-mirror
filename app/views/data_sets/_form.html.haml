@@ -1,39 +1,58 @@
 %hr/
 .card.card-body
-  =form_with(model: @data_set, local: action_name != 'edit') do |form|
+  =form_with(model: @data_set, local: true) do |form|
     .row
       .col-6
         =form.text_field :name, placeholder: 'name', class: 'mb-1 form-control form-control-sm', required: true
-        %hr/
+    %hr/
+
     .row
-      .col-6
-        =form.label :source, 'source:', class: 'small'
-        -src_keys.each do |field|
-          =form.text_field field[0], placeholder: field[1], class: 'mb-1 form-control form-control-sm'
-        .frequency
-          .placeholder.text-secondary.w-75.form-control.form-control-sm.border-right-0.text{ 'data-text' => 'release frequency: ' }
-          =form.text_field :src_release_frequency_manual, placeholder: 'release frequency...', class: 'd-none mb-1 form-control form-control-sm', disabled: true
-          =form.collection_select :src_release_frequency_id, Frequency.all, :id, :name, {}, class: 'mb-1 form-control form-control-sm'
-        .frequency
-          .placeholder.text-secondary.w-75.form-control.form-control-sm.border-right-0{ 'data-text' => 'scrape frequency: ' }
-          =form.text_field :src_scrape_frequency_manual, placeholder: 'scrape frequency...', class: 'd-none disabled mb-1 form-control form-control-sm', disabled: true
-          =form.collection_select :src_scrape_frequency_id, Frequency.all, :id, :name, {}, class: 'mb-1 form-control form-control-sm'
-
-        .small
-          on cron? #{form.check_box :cron_scraping}
-      .col-6
+      .col-6.border-right
         =form.label :data_set, 'data:', class: 'small'
-        -data_set_keys.each do |field|
-          =form.text_field field[0], placeholder: field[1], class: 'mb-1 form-control form-control-sm'
+        =form.text_field :location, placeholder: 'location', class: 'mb-1 form-control form-control-sm'
+        =form.text_field :preparation_doc, placeholder: "preparation document", class: 'mb-1 form-control form-control-sm'
+        =form.text_field :slack_channel, placeholder: "slack_channel", class: 'mb-1 form-control form-control-sm'
+        .sheriff
+          .select_placeholder.text-secondary.form-control.form-control-sm.border-right-0{ 'data-text' => 'sheriff: ' }
+          =form.collection_select :sheriff_id, Account.all.sort_by(&:name), :id, :name,
+                                  { include_blank: true }, { class: 'form-control form-control-sm' }
 
-    .row.mt-4
+        =form.text_area :comment, placeholder: 'comment', class: 'mb-1 mt-3 form-control form-control-sm'
+
       .col-6
-        =form.label :additional_information, 'additional info:', class: 'small'
-        =form.text_field :gather_task, placeholder: 'gather task', class: 'mb-1 form-control form-control-sm'
-        =form.text_field :scrape_developer, placeholder: 'scrape developer', class: 'mb-1 form-control form-control-sm'
-        =form.text_area :comment, placeholder: 'comment', class: 'mb-1 form-control form-control-sm'
-    =form.submit @data_set.new_record? ? 'Add' : 'Update',
-                 class: 'btn btn-sm btn-outline-dark mt-2', data: { disable_with: "..." }
-    =link_to 'cancel', :back, class: 'btn btn-sm btn-outline-dark mt-2'
+        =form.label :data_set, 'default properties:', class: 'small'
+        .photo_bucket
+          .select_placeholder.text-secondary.form-control.form-control-sm.border-right-0{ 'data-text' => 'photo bucket: ' }
+          =form.collection_select :photo_bucket_id, PhotoBucket.all.sort_by(&:name), :id, :name,
+                                  { include_blank: true, selected: @data_set.new_record? ? false : @data_set.photo_bucket&.id },
+                                  { name: 'default_props[photo_bucket_id]', class: 'form-control form-control-sm' }
+        .text-secondary.small.mt-2.mb-2
+          =link_to('[add client/tag]', '#', id: 'add_client', class: 'badge badge-pill badge-light text-secondary')
+        #clients_tags
+          -if @data_set.persisted?
+            -@data_set.client_tags.each do |row|
+              -u_id = SecureRandom.hex(3)
+              .row.mb-1{ id: u_id }
+                .col-5.pr-1
+                  =form.collection_select :client_id, Client.where(hidden: false).sort_by(&:name), :id, :name,
+                                          { include_blank: true, selected: row.client.id },
+                                          { id: "data_set_default_#{u_id}_client_id", name: "default_props[client_tag_ids[#{u_id}[client_id]]]", class: 'form-control form-control-sm clients_select', required: true }
+                .col-6.pl-1.pr-1
+                  =form.collection_select :tag_id, row.client.tags.sort_by(&:name), :id, :name,
+                                          { include_blank: true, selected: row.tag.id },
+                                          { id: "data_set_default_#{u_id}_tag_id", name: "default_props[client_tag_ids[#{u_id}[tag_id]]]", class: 'form-control form-control-sm tags_select', required: true }
+                .col-1.pl-1.my-auto
+                  %strong.remove_x
+                    x
+    %hr.mb-2/
+    .text-center
+      =form.submit @data_set.new_record? ? 'create' : 'update',
+                   class: 'btn btn-sm btn-outline-dark mt-2', data: { disable_with: "..." }
+      -if @data_set.new_record?
+        =link_to('cancel', '#data_set_form', 'aria-controls' => 'data_set_form',
+             'aria-expanded' => false, data: { toggle: "collapse", target: "#data_set_form" },
+             type: "button", id: '#crt_upd_data_set_btn', class: 'btn btn-sm btn-outline-dark mt-2')
+      -else
+        =link_to 'cancel', data_set_path(@data_set), class: 'btn btn-sm btn-outline-dark mt-2'
 
-=render 'set_frequency'
+=javascript_pack_tag 'data_sets/form'

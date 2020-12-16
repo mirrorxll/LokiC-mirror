@@ -18,32 +18,34 @@
       #navbarNavDropdown.collapse.navbar-collapse
         %ul.navbar-nav.w-100
           -if current_account
-            -if !current_account.types.include?('developer')
+            -if current_account.types.include?('manager')
               %li.nav-item.active
-                =link_to('Data Sets', data_sets_path, class: 'nav-link')
-              -if !current_account.types.include?('editor')
-                %li.nav-item.active
-                  =link_to('Admin panel', admin_root_path, class: 'nav-link')
-                %li.nav-item.active.dropdown
-                  #navbarDropdown.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
-                    Reports
-                  .dropdown-menu{"aria-labelledby" => "navbarDropdown"}
-                    .dropdown-item
-                      =link_to('Exported stories', exported_story_types_path, class: 'nav-link')
-                    .dropdown-item
-                      =link_to('Developers Production', exported_counts_developers_productions_path, class: 'nav-link')
-                    .dropdown-item
-                      =link_to('Assembled 2020', assembleds_tracking_hours_path(week: current_week), class: 'nav-link')
+                =link_to('admin panel', admin_root_path, class: 'nav-link')
+            -if !current_account.types.eql?(['developer'])
+              %li.nav-item.active
+                =link_to('data sets', data_sets_path, class: 'nav-link')
+
+            -if current_account.types.include?('manager')
+              %li.nav-item.active.dropdown
+                #navbarDropdown.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
+                  reports
+                .dropdown-menu{"aria-labelledby" => "navbarDropdown"}
+                  .dropdown-item
+                    =link_to('exported stories', exported_story_types_path, class: 'nav-link')
+                  .dropdown-item
+                    =link_to('developers production', exported_counts_developers_productions_path, class: 'nav-link')
+                  .dropdown-item
+                    =link_to('assembled 2020', assembleds_tracking_hours_path(week: current_week), class: 'nav-link')
             %li.nav-item.active
-              =link_to('Tracking Hours', tracking_hours_path(week: current_week, developer: current_account), class: 'nav-link')
+              =link_to('tracking hours', tracking_hours_path(week: current_week, developer: current_account), class: 'nav-link')
             %li.nav-item.dropdown.ml-auto
               #navbarDropdown.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
                 =current_account.name
               .dropdown-menu{"aria-labelledby" => "navbarDropdown"}
                 .dropdown-item
-                  =link_to('Edit Profile', edit_account_registration_path, class: 'nav-link')
+                  =link_to('edit profile', edit_account_registration_path, class: 'nav-link')
                 .dropdown-item
-                  =link_to('Log Out', destroy_account_session_path, class: 'nav-link', method: :delete)
+                  =link_to('log out', destroy_account_session_path, class: 'nav-link', method: :delete)
 
     -if notice
       %p.alert.alert-success.text-center

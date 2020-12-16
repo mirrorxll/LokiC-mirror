@@ -4,7 +4,7 @@ class FactCheckingDocsController < ApplicationController
   before_action :find_fcd, except: :template
 
   def show
-    @tab_title = "FCD ##{@story_type.id} #{@story_type.name}"
+    @tab_title = "LokiC::FCD ##{@story_type.id} #{@story_type.name}"
   end
 
   def edit; end
