@@ -13,8 +13,9 @@ class StoryTypesController < ApplicationController # :nodoc:
 
   def index
     @story_types = StoryType.order(id: :desc)
+    @filter_params = filter_params
 
-    filter_params.each do |key, value|
+    @filter_params.each do |key, value|
       next if value.blank?
 
       @story_types = @story_types.public_send(key, value)
