@@ -13,8 +13,10 @@
     .row
       %small.col-5
         =link_to(dl.name, data_set_path(dl))
-      %small.col-6
+      %small.col-5
         =dl.location
       %small.col-1
         =dl.story_types.count
+      %small.col-1
+        =dl.state&.short_name
     %hr/

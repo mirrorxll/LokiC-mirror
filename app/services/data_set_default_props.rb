@@ -16,7 +16,7 @@ class DataSetDefaultProps
   def stp
     @data_set.create_data_set_photo_bucket(photo_bucket: @photo_bucket) if @photo_bucket
 
-    @client_tag_ids.each do |_uid, row|
+    @client_tag_ids&.each do |_uid, row|
       client = Client.find(row[:client_id])
       tag = Tag.find(row[:tag_id])
 

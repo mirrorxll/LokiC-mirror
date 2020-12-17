@@ -15,6 +15,10 @@
         .sheriff
           .select_placeholder.text-secondary.form-control.form-control-sm.border-right-0{ 'data-text' => 'sheriff: ' }
           =form.collection_select :sheriff_id, Account.all.sort_by(&:name), :id, :name,
+                                  { include_blank: true }, { class: 'mb-1 form-control form-control-sm' }
+        .state
+          .select_placeholder.text-secondary.form-control.form-control-sm.border-right-0{ 'data-text' => 'state: ' }
+          =form.collection_select :state_id, State.all, :id, :name,
                                   { include_blank: true }, { class: 'form-control form-control-sm' }
 
         =form.text_area :comment, placeholder: 'comment', class: 'mb-1 mt-3 form-control form-control-sm'

@@ -15,8 +15,8 @@ function setPlaceholder(block) {
     );
 }
 
-window.$('.sheriff, .photo_bucket').each(function() { setPlaceholder(window.$(this)); });
-window.$('.sheriff select, .photo_bucket select').on('change', function() { setPlaceholder(window.$(this).parent()) });
+window.$('.sheriff, .photo_bucket, .state').each(function() { setPlaceholder(window.$(this)); });
+window.$('.sheriff select, .photo_bucket select, .state select').on('change', function() { setPlaceholder(window.$(this).parent()) });
 
 let clients = []
 
