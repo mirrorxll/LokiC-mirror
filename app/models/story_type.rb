@@ -53,6 +53,7 @@ class StoryType < ApplicationRecord # :nodoc:
   end
 
   def self.developer(id)
+    id = nil if id == 'null'
     where(developer_id: id)
   end
 
