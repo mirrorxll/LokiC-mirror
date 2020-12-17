@@ -11,12 +11,14 @@
 #data_sets
   -@data_sets.sort_by { |ds| ds.name.downcase }.each do |dl|
     .row
-      %small.col-5
+      %small.col-1
+        =dl.state&.short_name
+      %small.col-1
+        =dl.category&.name
+      %small.col-4
         =link_to(dl.name, data_set_path(dl))
       %small.col-5
         =dl.location
       %small.col-1
         =dl.story_types.count
-      %small.col-1
-        =dl.state&.short_name
     %hr/

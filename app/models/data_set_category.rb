@@ -1,0 +1,2 @@
+class DataSetCategory < ApplicationRecord
+end
