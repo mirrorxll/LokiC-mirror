@@ -51,7 +51,7 @@ class DataSetsController < ApplicationController # :nodoc:
   def data_set_params
     params.require(:data_set).permit(
       :name, :location, :preparation_doc,
-      :slack_channel, :sheriff_id, :comment
+      :slack_channel, :sheriff_id, :comment, :state_id, :category_id
     )
   end
 
