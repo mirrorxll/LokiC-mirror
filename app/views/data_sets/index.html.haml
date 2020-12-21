@@ -1,24 +1,28 @@
 .row.mt-3
-  #show_new_data_set_form.col-4.offset-8.text-right
+  #total.col-8
+    Total:
+    =@data_sets_grid.assets.total_count
+  #show_filter_form.col-2.text-right
+    =link_to('filter datasets', '#filter_form', 'aria-controls' => 'filter_form',
+             'aria-expanded' => false, data: { toggle: "collapse", target: "#filter_form" },
+             type: "button", id: '#crt_upd_filter_btn', class: 'btn btn-sm btn-outline-dark')
+  #show_new_data_set_form.col-2.text-right
     =link_to('add a new data set', '#data_set_form', 'aria-controls' => 'data_set_form',
              'aria-expanded' => false, data: { toggle: "collapse", target: "#data_set_form" },
              type: "button", id: '#crt_upd_data_set_btn', class: 'btn btn-sm btn-outline-dark')
 
 #data_set_form.collapse
-  =render 'form'
-%hr/
+  .row.mt-3.col-12
+    =render 'form'
 
-#data_sets
-  -@data_sets.sort_by { |ds| ds.name.downcase }.each do |dl|
-    .row
-      %small.col-1
-        =dl.state&.short_name
-      %small.col-1
-        =dl.category&.name
-      %small.col-4
-        =link_to(dl.name, data_set_path(dl))
-      %small.col-5
-        =dl.location
-      %small.col-1
-        =dl.story_types.count
-    %hr/
+#filter_form.collapse
+  .row.mt-3.col-12
+    =datagrid_form_for @data_sets_grid, url: data_sets_path
+
+.row.mt-3.col-12
+  #data_sets
+    #grid_wrapper
+      =datagrid_table(@data_sets_grid)
+
+.row.mt-3.col-12
+  =paginate @data_sets_grid.assets
