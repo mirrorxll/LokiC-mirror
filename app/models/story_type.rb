@@ -3,7 +3,7 @@
 class StoryType < ApplicationRecord # :nodoc:
   belongs_to :editor,            class_name: 'Account'
   belongs_to :developer,         optional: true, class_name: 'Account'
-  belongs_to :data_set
+  belongs_to :data_set,          counter_cache: true
   belongs_to :frequency,         optional: true
   belongs_to :photo_bucket,      optional: true
   belongs_to :current_iteration, optional: true, class_name: 'Iteration'

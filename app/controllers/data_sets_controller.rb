@@ -11,8 +11,11 @@ class DataSetsController < ApplicationController # :nodoc:
 
   def index
     @tab_title = 'LokiC::Data Sets'
-    @data_sets = DataSet.all
+    # @data_sets = DataSet.preload(:state)
     @data_set = DataSet.new
+    @data_sets_grid = DataSetsGrid.new(params[:data_sets_grid]) do |scope|
+      scope.page(params[:page])
+    end
   end
 
   def show

@@ -27,6 +27,8 @@ gem 'rubyXL'
 # google
 gem 'google-api-client', '~> 0.34'
 gem 'google_drive'
+# build and represent table-like data
+gem "datagrid"
 
 # mini_loki_c gems
 gem 'svg-graph'
