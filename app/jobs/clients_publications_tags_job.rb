@@ -2,8 +2,8 @@ class ClientsPublicationsTagsJob < ApplicationJob
   queue_as :default
 
   def perform
-    clients_pubs_tags = PipelineReplica[:production]
-                        .get_clients_publications_tags.reject { |row| row['client_name'] == 'Metric Media' }
+    clients_pubs_tags = PipelineReplica[:production] .get_clients_publications_tags
+    clients_pubs_tags.reject! { |row| row['client_name'].eql?('Metric Media') }
 
     clients_pubs_tags.flatten.each do |cl_pub_tags|
       client = update_client(cl_pub_tags)
@@ -11,7 +11,13 @@ class ClientsPublicationsTagsJob < ApplicationJob
       update_tags(publication, cl_pub_tags)
     end
 
-    mm_generic
+    mm_gen = Client.find_or_initialize_by(name: 'Metric Media')
+    mm_gen.author = Author.find_by(name: 'Metric Media News Service')
+    mm_gen.save!
+    mm_gen.touch
+
+    Client.where('DATE(updated_at) < CURRENT_DATE()').delete_all
+    Publication.where('DATE(updated_at) < CURRENT_DATE()').delete_all
   end
 
   private
@@ -33,6 +39,7 @@ class ClientsPublicationsTagsJob < ApplicationJob
     client.author = author(client_name)
     client.name = client_name
     client.save!
+    client.touch
 
     client
   end
@@ -42,6 +49,7 @@ class ClientsPublicationsTagsJob < ApplicationJob
     pub.name = cl_pub_tags['publication_name']
     pub.home_page = drop_ends_slash(cl_pub_tags['site_url'])
     pub.save!
+    pub.touch
 
     pub
   end
@@ -65,11 +73,5 @@ class ClientsPublicationsTagsJob < ApplicationJob
 
       publication.tags << tag
     end
-  end
-
-  def mm_generic
-    mm_gen = Client.find_or_initialize_by(name: 'Metric Media')
-    mm_gen.author = Author.find_by(name: 'Metric Media News Service')
-    mm_gen.save!
   end
 end
