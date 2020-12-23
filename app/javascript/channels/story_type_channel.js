@@ -26,6 +26,7 @@ $(document).on("turbolinks:load", function() {
         st_samples_section(data);
         st_scheduler(data);
         st_export(data);
+        st_remove_from_pl(data);
     }
 
     function st_population(data) {
@@ -69,7 +70,7 @@ $(document).on("turbolinks:load", function() {
     }
 
     function st_export(data) {
-        if (data['scheduler_msg'] || data['export_msg']) {
+        if (data['scheduler_msg'] || data['export_msg'] || data['remove_from_pl_msg']) {
             $.ajax({
                 url: `${window.location.origin}/story_types/${storyTypeId}/iterations/${storyTypeIter}/export/section`,
                 dataType: 'script'
