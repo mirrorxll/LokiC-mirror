@@ -22,7 +22,7 @@ table.datagrid
   max-width: 100%
 
   th
-    background-color: #eee
+    background-color: #ddd
     text-align: left
     top: 0
     position: sticky
@@ -53,12 +53,13 @@ table.datagrid
     text-align: center
 
 .datagrid-form
-  background-color: #f0f0f0
+  background-color: #ffffff
   border-radius: 5px
   padding: 20px
   width: 100%
 
 .datagrid-filter
+  font-size: 0.875rem
   margin: 10px
   +clearfix
 
@@ -139,13 +140,25 @@ table.datagrid
 #data_sets
   display: flex
   flex-direction: column
-  height: 70vh
+  height: 75vh
   margin: 0 auto
   max-width: 100%
 
+  thead tr
+    font-size: 0.85em
+
+  thead .order
+    min-width: 18px
+
+  tbody tr
+    font-size: 0.85em
+
   tbody .location
-    font-size: 0.7em
+    font-size: 0.85em
 
 #grid_wrapper
   overflow-y: auto
   flex-grow: 1
+
+#pagination
+  margin: 0 auto

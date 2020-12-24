@@ -39,7 +39,7 @@
             .col-4.pr-0.text-right.font-weight-bold
               comment:
             .col-8
-              =@data_set.comment
+              =@data_set.comment.gsub("\n",'<br>').html_safe
 
     .col-6
       .card.small
