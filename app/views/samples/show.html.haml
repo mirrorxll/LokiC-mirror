@@ -33,6 +33,13 @@
       publication:
     .col-10
       =@sample.publication.name
+
+  .row.small
+    .col-1.p-0.text-right.font-weight-bold
+      photo buckets:
+    .col-10
+      -photo_bucket = @sample.iteration.story_type.photo_bucket
+      =link_to("#{photo_bucket.name}", "https://pipeline.locallabs.com/media/buckets/#{photo_bucket.id}", target: '_blank')
   %hr/
 
   .row.mb-2.small

@@ -47,3 +47,7 @@ public/ruby_code/*
 
 # env variables
 .env
+
+/db/loki_story_creator_schema.rb
+/db/schema.rb
+/db/secondary_schema.rb

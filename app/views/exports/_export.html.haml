@@ -20,9 +20,17 @@
             =link_to('extra export!', export_story_type_iteration_exports_path(@story_type, @iteration),
                      class: 'mt-3 btn btn-sm btn-outline-dark',
                      method: :post, remote: true)
+            .ml-3.d-inline-block
 
+          .remove_from_pl_button.mt-3.btn.btn-sm.btn-outline-danger
+            remove from PL
+          =link_to(nil, remove_from_pl_story_type_iteration_exports_path(@story_type, @iteration),
+                   class: 'd-none remove_from_pl_link',
+                   method: :delete, remote: true)
     -elsif @iteration.export.eql?(false)
       =render 'story_types/spinner', description: 'export in progress'
+    -elsif @iteration.removing_from_pl.eql?(true)
+      =render 'story_types/spinner', description: 'removing from PL in progress'
     -else
       .row.mb-2
         .col-10.offset-1
@@ -32,3 +40,13 @@
           =link_to('export!', export_story_type_iteration_exports_path(@story_type, @iteration),
                    class: 'mt-3 btn btn-sm btn-outline-dark',
                    method: :post, remote: true)
+
+:javascript
+  document.getElementsByClassName('remove_from_pl_button')[0].addEventListener('click', function(event) {
+    let userInput = prompt("Are you sure? Please write 'REMOVE FROM PL'");
+
+    if (userInput !== 'REMOVE FROM PL') return false;
+
+    document.getElementsByClassName('remove_from_pl_link')[0].click();
+  })
+
