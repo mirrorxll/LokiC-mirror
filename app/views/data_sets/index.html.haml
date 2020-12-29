@@ -4,7 +4,7 @@
     =@data_sets_grid.assets.total_count
 
   #show_new_data_set_form.col-4.text-right
-    =link_to('download in CSV', url_for(format: 'csv', data_sets_grid: params[:users_grid]),
+    =link_to('download in CSV', url_for(format: 'csv', data_sets_grid: params[:data_sets_grid]),
              type: "button", id: '#save_as_csv_btn', class: 'btn btn-sm btn-outline-dark')
     =link_to('filter datasets', '#filter_form', 'aria-controls' => 'filter_form',
              'aria-expanded' => false, data: { toggle: "collapse", target: "#filter_form" },

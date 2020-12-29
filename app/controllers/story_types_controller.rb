@@ -12,14 +12,26 @@ class StoryTypesController < ApplicationController # :nodoc:
   before_action :set_iteration,             except: %i[index distributed new create properties]
 
   def index
-    @story_types = StoryType.order(id: :desc)
-    @filter_params = filter_params
-
-    @filter_params.each do |key, value|
-      next if value.blank?
-
-      @story_types = @story_types.public_send(key, value)
+    @story_types_grid = StoryTypesGrid.new(params[:story_types_grid])
+    respond_to do |f|
+      f.html do
+        @story_types_grid.scope { |scope| scope.page(params[:page]) }
+      end
+      f.csv do
+        send_data @story_types_grid.to_csv,
+                  type: 'text/csv',
+                  disposition: 'inline',
+                  filename: "LokiC_StoryTypes_#{Time.now}.csv"
+      end
     end
+    #@story_types = StoryType.order(id: :desc)
+    # @filter_params = filter_params
+
+    # @filter_params.each do |key, value|
+    #   next if value.blank?
+    #
+    #   @story_types = @story_types.public_send(key, value)
+    # end
   end
 
   def distributed
