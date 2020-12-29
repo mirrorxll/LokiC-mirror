@@ -7,14 +7,14 @@ Local variables:
 <% if grid.html_columns(*options[:columns]).any? %>
   <%= content_tag :table, class: %w(datagrid data_sets_grid table-striped) do %>
     <thead>
-      <%= datagrid_header(grid, options) %>
+    <%= datagrid_header(grid, options) %>
     </thead>
     <tbody>
-      <% if assets.any? %>
-        <%= datagrid_rows(grid, assets, **options) %>
-      <% else %>
-        <tr><td class="noresults" colspan="100%"><%= I18n.t('datagrid.no_results').html_safe %></td></tr>
-      <% end %>
+    <% if assets.any? %>
+      <%= datagrid_rows(grid, assets, **options) %>
+    <% else %>
+      <tr><td class="noresults" colspan="100%"><%= I18n.t('datagrid.no_results').html_safe %></td></tr>
+    <% end %>
     </tbody>
   <% end %>
 <% else -%>

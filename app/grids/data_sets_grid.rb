@@ -42,7 +42,7 @@ class DataSetsGrid
     record.story_types.size
   end
   column(:comment, mandatory: true) do |record|
-    record.comment.gsub("\n",'<br>').html_safe
+    record.comment ? record.comment.gsub("\n", '<br>').html_safe : ''
   end
   column(:created_at) do |record|
     record.created_at.to_date
