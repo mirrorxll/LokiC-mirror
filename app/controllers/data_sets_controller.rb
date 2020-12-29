@@ -13,17 +13,8 @@ class DataSetsController < ApplicationController # :nodoc:
     @tab_title = 'LokiC::Data Sets'
     # @data_sets = DataSet.preload(:state)
     @data_set = DataSet.new
-    @data_sets_grid = DataSetsGrid.new(params[:data_sets_grid])
-    respond_to do |f|
-      f.html do
-        @data_sets_grid.scope { |scope| scope.page(params[:page]) }
-      end
-      f.csv do
-        send_data @data_sets_grid.to_csv,
-                  type: "text/csv",
-                  disposition: 'inline',
-                  filename: "LokiC_DataSets_#{Time.now.to_s}.csv"
-      end
+    @data_sets_grid = DataSetsGrid.new(params[:data_sets_grid]) do |scope|
+      scope.page(params[:page])
     end
   end
 
