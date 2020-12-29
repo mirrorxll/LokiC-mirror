@@ -2,13 +2,11 @@
   #total.col-8
     Total:
     =@data_sets_grid.assets.total_count
-
-  #show_new_data_set_form.col-4.text-right
-    =link_to('download in CSV', url_for(format: 'csv', data_sets_grid: params[:users_grid]),
-             type: "button", id: '#save_as_csv_btn', class: 'btn btn-sm btn-outline-dark')
+  #show_filter_form.col-2.text-right
     =link_to('filter datasets', '#filter_form', 'aria-controls' => 'filter_form',
              'aria-expanded' => false, data: { toggle: "collapse", target: "#filter_form" },
              type: "button", id: '#crt_upd_filter_btn', class: 'btn btn-sm btn-outline-dark')
+  #show_new_data_set_form.col-2.text-right
     =link_to('add a new data set', '#data_set_form', 'aria-controls' => 'data_set_form',
              'aria-expanded' => false, data: { toggle: "collapse", target: "#data_set_form" },
              type: "button", id: '#crt_upd_data_set_btn', class: 'btn btn-sm btn-outline-dark')
@@ -27,5 +25,4 @@
       =datagrid_table(@data_sets_grid)
 
 .row.mt-3.col-12
-  #pagination
-    =paginate @data_sets_grid.assets
+  =paginate @data_sets_grid.assets
