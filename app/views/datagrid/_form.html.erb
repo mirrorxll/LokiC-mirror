@@ -1,0 +1,27 @@
+<div class="card card-body">
+  <%= form_for grid, options do |f| -%>
+    <div class="row">
+      <div class="col-6 border-right">
+        <% grid.filters.select { |filter| filter.options[:left] }.each do |filter| %>
+          <div class="datagrid-filter filter">
+            <%= f.datagrid_label filter %>
+            <%= f.datagrid_filter filter %>
+          </div>
+        <% end %>
+      </div>
+      <div class="col-6">
+        <% grid.filters.select { |filter| !filter.options[:left] }.each do |filter| %>
+          <div class="datagrid-filter filter">
+            <%= f.datagrid_label filter %>
+            <%= f.datagrid_filter filter %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+    <hr class="mb-2">
+    <div class="text-center">
+      <%= f.submit 'apply', :class => "btn btn-sm btn-outline-dark mt-2" %>
+      <%= link_to 'reset', url_for(grid.to_param => {}), :class => "btn btn-sm btn-outline-dark mt-2" %>
+    </div>
+  <% end -%>
+</div>
