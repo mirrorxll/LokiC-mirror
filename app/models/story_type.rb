@@ -47,29 +47,29 @@ class StoryType < ApplicationRecord # :nodoc:
     MiniLokiC::Code.download(self)
   end
 
-  # filter
-  def self.editor(id)
-    where(editor_id: id)
-  end
-
-  def self.developer(id)
-    id = nil if id == 'null'
-    where(developer_id: id)
-  end
-
-  def self.data_set(id)
-    where(data_set_id: id)
-  end
-
-  def self.client(id)
-    includes(:clients).where(clients: { id: id })
-  end
-
-  def self.frequency(id)
-    where(frequency: id)
-  end
-
-  def self.status(id)
-    includes(current_iteration: [:statuses]).where(statuses: { id: id })
-  end
+  # # filter
+  # def self.editor(id)
+  #   where(editor_id: id)
+  # end
+  #
+  # def self.developer(id)
+  #   id = nil if id == 'null'
+  #   where(developer_id: id)
+  # end
+  #
+  # def self.data_set(id)
+  #   where(data_set_id: id)
+  # end
+  #
+  # def self.client(id)
+  #   includes(:clients).where(clients: { id: id })
+  # end
+  #
+  # def self.frequency(id)
+  #   where(frequency: id)
+  # end
+  #
+  # def self.status(id)
+  #   includes(current_iteration: [:statuses]).where(statuses: { id: id })
+  # end
 end

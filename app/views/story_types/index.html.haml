@@ -1,18 +1,45 @@
--if action_name.eql?('index')
-  %hr/
-  %section#filter
-    =render 'filter'
+.row.mt-3
+  #total.col-8
+    Total:
+    =@story_types_grid.assets.total_count
 
-  %hr/
+  #additional_menu.col-4.text-right
+    =link_to('download in CSV', url_for(format: 'csv', story_types_grid: params[:story_types_grid]),
+             type: "button", id: '#save_as_csv_btn', class: 'btn btn-sm btn-outline-dark')
+    =link_to('filter story types', '#filter_form', 'aria-controls' => 'filter_form',
+             'aria-expanded' => false, data: { toggle: "collapse", target: "#filter_form" },
+             type: "button", id: '#crt_upd_filter_btn', class: 'btn btn-sm btn-outline-dark')
 
-%hr/
-%section#story_types.small
-  .row.text-center
-    .col-1 #
-    .col-6.pl-0.text-left name
-    .col-3 developer
-    .col-1 status
-    .col-1 last export
-  %hr/
-  %hr/
-  =render @story_types
+#filter_form.collapse
+  .row.mt-3.col-12
+    =datagrid_form_for @story_types_grid, url: story_types_path
+
+.row.mt-3.col-12
+  #data_sets
+    #grid_wrapper
+      =datagrid_table(@story_types_grid)
+
+.row.mt-3.col-12
+  #pagination
+    =paginate @story_types_grid.assets
+
+
+
+-#-if action_name.eql?('index')
+-#  %hr/
+-#  %section#filter
+-#    =render 'filter'
+-#
+-#  %hr/
+-#
+-#%hr/
+-#%section#story_types.small
+-#  .row.text-center
+-#    .col-1 #
+-#    .col-6.pl-0.text-left name
+-#    .col-3 developer
+-#    .col-1 status
+-#    .col-1 last export
+-#  %hr/
+-#  %hr/
+-#  =render @story_types
