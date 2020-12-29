@@ -42,8 +42,8 @@ yarn-debug.log*
 public/ruby_code/*
 
 # lock files
-/Gemfile.lock
-/yarn.lock
+#/Gemfile.lock
+#/yarn.lock
 
 # env variables
 .env
