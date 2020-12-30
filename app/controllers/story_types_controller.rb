@@ -24,14 +24,6 @@ class StoryTypesController < ApplicationController # :nodoc:
                   filename: "LokiC_StoryTypes_#{Time.now}.csv"
       end
     end
-    #@story_types = StoryType.order(id: :desc)
-    # @filter_params = filter_params
-
-    # @filter_params.each do |key, value|
-    #   next if value.blank?
-    #
-    #   @story_types = @story_types.public_send(key, value)
-    # end
   end
 
   def distributed

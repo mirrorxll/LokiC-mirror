@@ -22,24 +22,3 @@
 .row.mt-3.col-12
   #pagination
     =paginate @story_types_grid.assets
-
-
-
--#-if action_name.eql?('index')
--#  %hr/
--#  %section#filter
--#    =render 'filter'
--#
--#  %hr/
--#
--#%hr/
--#%section#story_types.small
--#  .row.text-center
--#    .col-1 #
--#    .col-6.pl-0.text-left name
--#    .col-3 developer
--#    .col-1 status
--#    .col-1 last export
--#  %hr/
--#  %hr/
--#  =render @story_types
