@@ -45,10 +45,10 @@ class DataSetsGrid
     record.comment ? record.comment.gsub("\n", '<br>').html_safe : ''
   end
   column(:created_at) do |record|
-    record.created_at.to_date
+    record.created_at&.to_date
   end
   column(:updated_at) do |record|
-    record.updated_at.to_date
+    record.updated_at&.to_date
   end
 
 end

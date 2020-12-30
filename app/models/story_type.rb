@@ -18,6 +18,7 @@ class StoryType < ApplicationRecord # :nodoc:
 
   has_many :client_tags, class_name: 'StoryTypeClientTag'
   has_many :clients, through: :client_tags
+  has_many :tags, through: :client_tags
 
   has_one_attached :code
 

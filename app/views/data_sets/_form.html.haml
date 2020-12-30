@@ -31,7 +31,7 @@
         =form.label :data_set, 'default properties:', class: 'small'
         .photo_bucket
           .select_placeholder.text-secondary.form-control.form-control-sm.border-right-0{ 'data-text' => 'photo bucket: ' }
-          =form.collection_select :photo_bucket_id, PhotoBucket.all.sort_by(&:name), :id, :name,
+          =form.collection_select :photo_bucket_id, PhotoBucket.all.order(:name), :id, :name,
                                   { include_blank: true, selected: @data_set.new_record? ? false : @data_set.photo_bucket&.id },
                                   { name: 'default_props[photo_bucket_id]', class: 'form-control form-control-sm' }
         .text-secondary.small.mt-2.mb-2
