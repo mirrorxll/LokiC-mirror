@@ -36,7 +36,7 @@ class StoryMixer
   end
 
   def self.get_pubs_statistics(staging, where = nil)
-    db02 = C::Mysql.on(DB02, 'loki_storycreator')
+    db02 = MiniLokiC::Connect::Mysql.on(DB02, 'loki_storycreator')
     query = <<~SQL
       SELECT
         publication_id,
