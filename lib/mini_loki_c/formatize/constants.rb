@@ -114,7 +114,7 @@ module MiniLokiC
         /(\bXING\b|\bCRST\b|\bCRO?SSI?NG\b)\.*/i => 'Crossing',
         /\bXR(OA)?D\b\.*/i => 'Crossroad',
         /\bCURVE?\b\.*/i => 'Curve',
-        /\bDA?LE?\.*/i => 'Dale',
+        /\bDA?LE?\b\.*/i => 'Dale',
         /\bDA?M\b\.*/i => 'Dam',
         /\bDI?V(IDE)?D?\b\.*/i => 'Divide',
         /\bDR(IVE?)?\b\.*/i => 'Drive',
