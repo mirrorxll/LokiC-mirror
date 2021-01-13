@@ -8,7 +8,7 @@ module MiniLokiC
 
         case period
         when :daily then      "d:#{date.yday}:#{date.year}"
-        when :weekly then     "w:#{date.cweek}:#{date.year}"
+        when :weekly then     "w:#{date.cweek}:#{date.cwyear}"
         when :monthly then    "m:#{date.month}:#{date.year}"
         when :quarterly then  "q:#{(date.month / 3.0).ceil}:#{date.year}"
         when :biannually then "b:#{date.month < 7 ? 1 : 2}:#{date.year}"
