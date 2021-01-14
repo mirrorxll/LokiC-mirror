@@ -2,10 +2,8 @@
 
 class AddForeignKeyStoryTypeToSamples < ActiveRecord::Migration[6.0]
   def change
-    unless column_exists?(:samples, :story_type_id)
-      change_table :samples do |t|
-        t.belongs_to :story_type, after: :id
-      end
+    change_table :samples do |t|
+      t.belongs_to :story_type, after: :id
     end
 
     Iteration.all.each do |iter|
