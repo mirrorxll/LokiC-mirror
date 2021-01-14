@@ -3,6 +3,7 @@
 class Sample < ApplicationRecord
   paginates_per 200
 
+  belongs_to :story_type
   belongs_to :iteration
   belongs_to :export_configuration
   belongs_to :client

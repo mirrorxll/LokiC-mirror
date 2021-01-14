@@ -10,7 +10,7 @@ module Api
       end
 
       def tags
-        @tags = Client.find(params[:client_id]).tags
+        @tags = Client.find(params[:client_id]).tags.order(:name)
 
         render json: { attached: @tags }
       end

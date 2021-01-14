@@ -59,7 +59,7 @@ module Samples
       end
 
       def story_post(lead_id, sample, exp_config, pl_r_client)
-        author = sample.client.author.name
+        author = sample.publications.name
         client = sample.client
         publication = exp_config.publication
         story_tag_ids = exp_config.tag.pl_identifier

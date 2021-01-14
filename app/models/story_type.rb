@@ -15,6 +15,7 @@ class StoryType < ApplicationRecord # :nodoc:
   has_many :iterations
   has_many :export_configurations
   has_many :configurations_no_tags, -> { where(tag: nil).or(where(skipped: true)) }, class_name: 'ExportConfiguration'
+  has_many :samples
 
   has_many :client_tags, class_name: 'StoryTypeClientTag'
   has_many :clients, through: :client_tags
@@ -74,3 +75,8 @@ class StoryType < ApplicationRecord # :nodoc:
   #   includes(current_iteration: [:statuses]).where(statuses: { id: id })
   # end
 end
+
+
+
+
+

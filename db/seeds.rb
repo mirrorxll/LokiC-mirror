@@ -9,28 +9,24 @@ def account
     {
       first_name: 'Sergey',
       last_name: 'Emelyanov',
-      account_type: AccountType.first,
       email: 'evilx@lokic.loc',
       password: '123456'
     },
     {
       first_name: 'Dmitriy',
       last_name: 'Buzina',
-      account_type: AccountType.first,
       email: 'dmitriy.b@lokic.loc',
       password: '123456'
     },
     {
       first_name: 'Sergey',
       last_name: 'Burenkov',
-      account_type: AccountType.first,
       email: 'serg.burenkov@lokic.loc',
       password: '123456'
     },
     {
       first_name: 'John',
       last_name: 'Putz',
-      account_type: AccountType.first,
       email: 'john.putz@lokic.loc',
       password: '123456'
     }
@@ -174,7 +170,7 @@ end
 puts 'Account Types'
 account_type.each { |obj| AccountType.create!(obj) }
 puts 'Accounts'
-account.each { |obj| Account.create!(obj) }
+account.each { |obj| Account.create!(obj).account_types << AccountType.first }
 puts 'Frequencies'
 frequency.each { |obj| Frequency.create!(obj) }
 puts 'Statuses'
