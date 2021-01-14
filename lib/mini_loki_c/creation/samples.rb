@@ -7,10 +7,9 @@ module MiniLokiC
       def initialize(staging_table, options)
         @sampled = options[:sampled].present?
         @staging_table = staging_table
-
-        s_type = story_type
-        @iteration = s_type.iteration
-        @export_configs = s_type.export_configurations.joins(:publication)
+        @s_type = StagingTable.find_by(name: @staging_table).story_type
+        @iteration = @s_type.iteration
+        @export_configs = @s_type.export_configurations.joins(:publication)
       end
 
       def insert(sample)
@@ -29,6 +28,7 @@ module MiniLokiC
         client = publication.client
 
         {
+          story_type: @s_type,
           output: output,
           staging_row_id: @raw_sample[:staging_row_id],
           client: client,
@@ -68,11 +68,6 @@ module MiniLokiC
         @raw_sample[:body].gsub!(%r{(<svg .*?/svg>)}) { |svg| svg.gsub(%r{</?p>}, '') }
 
         "<html><head><title></title><style></style></head><body>#{@raw_sample[:body]}</body></html>"
-      end
-
-      # find story type
-      def story_type
-        StagingTable.find_by(name: @staging_table).story_type
       end
     end
   end
