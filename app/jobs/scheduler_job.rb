@@ -2,31 +2,34 @@ class SchedulerJob < ApplicationJob
   queue_as :scheduler
 
   def perform(story_type, type, options = {})
-    iteration = story_type.iteration
-    samples = iteration.samples
-    status = nil
+    ActiveRecord::Base.uncached do
 
-    message =
-      case type
-      when 'manual'
-        Scheduler::Base.old_scheduler(samples, options)
-        'manual scheduling success'
-      when 'backdate'
-        Scheduler::Backdate.backdate_scheduler(samples, backdate_params(options))
-        'backdate scheduling success'
-      when 'auto'
-        Scheduler::Auto.auto_scheduler(samples)
-        'auto scheduling success'
-      end
-    status = true unless iteration.samples.where(published_at: nil).any?
+      iteration = story_type.iteration
+      samples = iteration.samples
+      status = nil
 
-  rescue StandardError => e
-    status = nil
-    message = e
-  ensure
-    story_type.iteration.update(schedule: status)
-    send_to_action_cable(story_type, scheduler_msg: message)
-    send_to_slack(story_type, message)
+      message =
+        case type
+        when 'manual'
+          Scheduler::Base.old_scheduler(samples, options)
+          'manual scheduling success'
+        when 'backdate'
+          Scheduler::Backdate.backdate_scheduler(samples, backdate_params(options))
+          'backdate scheduling success'
+        when 'auto'
+          Scheduler::Auto.auto_scheduler(samples)
+          'auto scheduling success'
+        end
+      status = true unless iteration.samples.where(published_at: nil).any?
+
+    rescue StandardError => e
+      status = nil
+      message = e
+    ensure
+      story_type.iteration.update(schedule: status)
+      send_to_action_cable(story_type, scheduler_msg: message)
+      send_to_slack(story_type, message)
+    end
   end
 
   private

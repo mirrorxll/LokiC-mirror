@@ -4,20 +4,22 @@ class CreationJob < ApplicationJob
   queue_as :creation
 
   def perform(story_type, options = {})
-    MiniLokiC::Code.execute(story_type, :creation, options)
-    story_type.iteration.update(
-      schedule_counts: schedule_counts(story_type)
-    )
+    ActiveRecord::Base.uncached do
+      MiniLokiC::Code.execute(story_type, :creation, options)
+      story_type.iteration.update(
+        schedule_counts: schedule_counts(story_type)
+      )
 
-    status = true
-    message = 'all samples created.'
-  rescue StandardError => e
-    status = nil
-    message = e
-  ensure
-    story_type.iteration.update(creation: status)
-    send_to_action_cable(story_type, creation_msg: message)
-    send_to_slack(story_type, message)
+      status = true
+      message = 'all samples created.'
+    rescue StandardError => e
+      status = nil
+      message = e
+    ensure
+      story_type.iteration.update(creation: status)
+      send_to_action_cable(story_type, creation_msg: message)
+      send_to_slack(story_type, message)
+    end
   end
 
   private
