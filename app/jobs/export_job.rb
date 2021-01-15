@@ -6,7 +6,7 @@ class ExportJob < ApplicationJob
   def perform(story_type)
     status = true
     iteration = story_type.iteration
-    message = Samples[PL_TARGET].export!(story_type)
+    Samples[PL_TARGET].export!(story_type)
 
     exp_st = ExportedStoryType.find_or_initialize_by(iteration: iteration)
     exp_st.developer = story_type.developer
@@ -28,6 +28,6 @@ class ExportJob < ApplicationJob
     story_type.iteration.update(export: status)
 
     send_to_action_cable(story_type, export_msg: status)
-    send_to_slack(story_type, "export\n#{message}")
+    send_to_slack(story_type, 'exported')
   end
 end
