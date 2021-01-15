@@ -10,24 +10,16 @@ class StoryTypesController < ApplicationController # :nodoc:
   before_action :find_data_set,             only: %i[new create]
   before_action :find_story_type,           except: %i[index distributed new create properties]
   before_action :set_iteration,             except: %i[index distributed new create properties]
+  before_action :grid_params,               only: %i[index distributed]
 
   def index
-    @story_types_grid = StoryTypesGrid.new(params[:story_types_grid])
-    respond_to do |f|
-      f.html do
-        @story_types_grid.scope { |scope| scope.page(params[:page]) }
-      end
-      f.csv do
-        send_data @story_types_grid.to_csv,
-                  type: 'text/csv',
-                  disposition: 'inline',
-                  filename: "LokiC_StoryTypes_#{Time.now}.csv"
-      end
-    end
+    @story_types_grid = StoryTypesGrid.new(@grid_params)
+    responder
   end
 
   def distributed
-    @story_types = StoryType.order(id: :desc).where(developer: current_account)
+    @story_types_grid = StoryTypesGrid.new(@grid_params.merge(developer: current_account))
+    responder
     render 'index'
   end
 
@@ -72,6 +64,23 @@ class StoryTypesController < ApplicationController # :nodoc:
   end
 
   private
+  def grid_params
+    @grid_params = request.parameters[:story_types_grid] ? request.parameters[:story_types_grid] : {order: :id, descending: true}
+  end
+
+  def responder
+    respond_to do |f|
+      f.html do
+        @story_types_grid.scope {|scope| scope.page(params[:page])}
+      end
+      f.csv do
+        send_data @story_types_grid.to_csv,
+                  type: 'text/csv',
+                  disposition: 'inline',
+                  filename: "LokiC_StoryTypes_#{Time.now}.csv"
+      end
+    end
+  end
 
   def redirect_to_separate_root
     return if manager?
