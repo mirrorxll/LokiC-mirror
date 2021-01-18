@@ -31,7 +31,6 @@ Rails.application.routes.draw do
   end
 
   resources :story_types, except: %i[new create] do
-    get :distributed, on: :collection
     get :properties
     get :canceling_edit, on: :member
 
