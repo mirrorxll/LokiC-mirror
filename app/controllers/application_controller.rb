@@ -35,7 +35,7 @@ class ApplicationController < ActionController::Base
   end
 
   def developer?
-    current_account.types.include?('developer')
+    current_account.types.eql?(['developer'])
   end
 
   def render_400
