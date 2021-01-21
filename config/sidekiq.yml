@@ -1,6 +1,6 @@
 :dynamic: true
 
-:concurrency: 50
+:concurrency: 30
 :queues:
   - default
   - slack_api

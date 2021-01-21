@@ -4,16 +4,17 @@ class SectionsJob < ApplicationJob
   queue_as :default
 
   def perform
-    ActiveRecord::Base.uncached do
+    Process.wait(
+      fork do
+        PipelineReplica[:production].get_sections.each do |raw_section|
+          section = Section.find_or_initialize_by(pl_identifier: raw_section['id'])
+          section.name = raw_section['name']
+          section.save!
 
-      PipelineReplica[:production].get_sections.each do |raw_section|
-        section = Section.find_or_initialize_by(pl_identifier: raw_section['id'])
-        section.name = raw_section['name']
-        section.save!
-
-        clients_section(section)
+          clients_section(section)
+        end
       end
-    end
+    )
   end
 
   private

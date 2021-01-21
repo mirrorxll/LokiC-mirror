@@ -4,13 +4,15 @@ class ClientsTagsJob < ApplicationJob
   queue_as :default
 
   def perform
-    ActiveRecord::Base.uncached do
-      Client.all.each { |cl| attach_tags_to(cl) }
+    Process.wait(
+      fork do
+        Client.all.each { |cl| attach_tags_to(cl) }
 
-      mm_generic = Client.find_by(name: 'Metric Media')
-      mm_by_state = Client.where('name LIKE :query', query: 'MM -%').to_a
-      attach_tags_to_mm_generic(mm_generic, mm_by_state)
-    end
+        mm_generic = Client.find_by(name: 'Metric Media')
+        mm_by_state = Client.where('name LIKE :query', query: 'MM -%').to_a
+        attach_tags_to_mm_generic(mm_generic, mm_by_state)
+      end
+    )
   end
 
   private

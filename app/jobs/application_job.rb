@@ -5,17 +5,19 @@ class ApplicationJob < ActiveJob::Base
 
   private
 
-  def send_to_action_cable(stp, message = {})
-    action_cable_send = { status: stp.iteration }.merge(message)
-    StoryTypeChannel.broadcast_to(stp, action_cable_send)
+  def send_to_action_cable(story_type, iteration, message = {})
+    action_cable_send = { status: iteration }.merge(message)
+    StoryTypeChannel.broadcast_to(story_type, action_cable_send)
   end
 
-  def send_to_slack(stp, message)
-    return unless stp.developer_slack_id
+  def send_to_slack(story_type, step, message)
+    return unless story_type.developer_slack_id
 
-    SlackNotificationJob.perform_later(
-      stp.developer.slack.identifier,
-      "*##{stp.id} #{stp.name} (iteration: #{stp.iteration.name})* -- #{message}"
-    )
+    msg = "*[ LokiC ] Story Type ##{story_type.id} -- #{step}:*\n"\
+          "> #{message}"
+    SlackNotificationJob.perform_now(story_type.developer.slack.identifier, msg)
+
+    channel = Rails.env.production? ? 'hle_lokic_messages' : 'notifications_test'
+    SlackNotificationJob.perform_now(channel, msg)
   end
 end

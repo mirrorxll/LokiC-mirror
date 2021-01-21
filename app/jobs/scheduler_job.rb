@@ -1,35 +1,53 @@
+# frozen_string_literal: true
+
 class SchedulerJob < ApplicationJob
   queue_as :scheduler
 
   def perform(story_type, type, options = {})
-    ActiveRecord::Base.uncached do
+    status = nil
+    message = 'SUCCESS'
+    iteration = story_type.iteration
 
-      iteration = story_type.iteration
-      samples = iteration.samples
-      status = nil
+    rd, wr = IO.pipe
 
-      message =
+    Process.wait(
+      fork do
+        rd.close
+        samples = iteration.samples
+
         case type
         when 'manual'
           Scheduler::Base.old_scheduler(samples, options)
-          'manual scheduling success'
         when 'backdate'
           Scheduler::Backdate.backdate_scheduler(samples, backdate_params(options))
-          'backdate scheduling success'
         when 'auto'
           Scheduler::Auto.auto_scheduler(samples)
-          'auto scheduling success'
         end
-      status = true unless iteration.samples.where(published_at: nil).any?
 
-    rescue StandardError => e
-      status = nil
-      message = e
-    ensure
-      story_type.iteration.update(schedule: status)
-      send_to_action_cable(story_type, scheduler_msg: message)
-      send_to_slack(story_type, message)
+      rescue StandardError => e
+        wr.write %({"#{e.class}":"#{e.message}"})
+      ensure
+        wr.close
+      end
+    )
+
+    wr.close
+    exception = rd.read
+    rd.close
+
+    if exception.present?
+      klass, message = JSON.parse(exception).to_a.first
+      raise Object.const_get(klass), message
     end
+
+    status = true unless iteration.reload.samples.where(published_at: nil).any?
+  rescue StandardError => e
+    status = nil
+    message = e
+  ensure
+    iteration.update(schedule: status)
+    send_to_action_cable(story_type, iteration, scheduler_msg: message)
+    send_to_slack(story_type, "#{type}-scheduling", message)
   end
 
   private
