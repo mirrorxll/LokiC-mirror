@@ -51,4 +51,10 @@ class Sample < ApplicationRecord
     "#{publication.home_page}/stories/#{pl_story_id}"
   end
 
+  def self.ready_to_export
+    where("pl_#{PL_TARGET}_story_id" => nil)
+      .joins(:export_configuration, :publication, :output)
+      .order(:published_at).where(backdated: false)
+      .where.not(export_configurations: { tag: nil })
+  end
 end

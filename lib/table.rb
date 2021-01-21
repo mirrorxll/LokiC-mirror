@@ -77,6 +77,12 @@ module Table # :nodoc:
     loki_story_creator { a_r_b_conn.exec_query(rows_query).to_a }
   end
 
+  def left_count_by_last_iteration(t_name)
+    last_iter = last_iter_id(t_name)
+    rows_query = left_count_by_last_iteration_query(t_name, last_iter)
+    loki_story_creator { a_r_b_conn.exec_query(rows_query).first['count'] }
+  end
+
   def sample_set_as_created(t_name, id)
     upd_query = sample_created_update_query(t_name, id)
     loki_story_creator { a_r_b_conn.exec_query(upd_query) }

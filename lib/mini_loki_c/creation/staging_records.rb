@@ -14,18 +14,14 @@ module MiniLokiC
       def each
         raise ArgumentError, 'No block is given' unless block_given?
 
-        loop do
-          select =
-            if @options[:ids]
-              Table.rows_by_ids(@staging_table, @options)
-            else
-              Table.rows_by_last_iteration(@staging_table, @options)
-            end
+        select =
+          if @options[:ids]
+            Table.rows_by_ids(@staging_table, @options)
+          else
+            Table.rows_by_last_iteration(@staging_table, @options)
+          end
 
-          break if select.empty?
-
-          select.each { |row| yield(row) }
-        end
+        select.each { |row| yield(row) }
       end
 
       private
