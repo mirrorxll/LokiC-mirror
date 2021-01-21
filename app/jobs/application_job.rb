@@ -15,7 +15,9 @@ class ApplicationJob < ActiveJob::Base
 
     msg = "*[ LokiC ] Story Type ##{story_type.id} -- #{step}:*\n"\
           "> #{message}"
-
     SlackNotificationJob.perform_now(story_type.developer.slack.identifier, msg)
+
+    channel = Rails.env.production? ? 'hle_lokic_messages' : 'notifications_test'
+    SlackNotificationJob.perform_now(channel, msg)
   end
 end
