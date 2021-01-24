@@ -10,7 +10,7 @@
 
   -elsif @story_type.staging_table && @iteration.creation && @iteration.schedule
 
-    -if @iteration.export.eql?(true)
+    -if @iteration.export.eql?(true) && !@iteration.removing_from_pl.eql?(true)
       .row
         .col-10.offset-1
           total exported: #{exported} / #{samples.count}

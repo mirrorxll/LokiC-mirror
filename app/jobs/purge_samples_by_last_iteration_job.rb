@@ -3,20 +3,24 @@
 class PurgeSamplesByLastIterationJob < ApplicationJob
   queue_as :creation
 
-  def perform(story_type)
+  def perform(iteration)
     Process.wait(
       fork do
-        status = true
-        iteration = story_type.iteration
+        message = 'PURGED'
 
         iteration.samples.destroy_all
-        story_type.staging_table.samples_set_not_created
+        iteration.story_type.staging_table.samples_set_not_created
         iteration.update(story_samples: nil, creation: nil)
+
+        iteration.update(
+          creation: nil, schedule: nil,
+          schedule_args: nil, schedule_counts: nil
+        )
       rescue StandardError => e
-        status = nil
+        message = e.message
       ensure
-        iteration.reload.update(population: status)
-        send_to_action_cable(story_type, iteration, purge_last_creation_msg: status)
+        iteration.update(purge_all_samples: nil)
+        send_to_action_cable(iteration, purge_last_creation_msg: message)
       end
     )
   end

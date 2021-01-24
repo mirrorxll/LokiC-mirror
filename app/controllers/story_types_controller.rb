@@ -15,13 +15,13 @@ class StoryTypesController < ApplicationController # :nodoc:
     @grid_params = if request.parameters[:story_types_grid]
                      request.parameters[:story_types_grid]
                    else
-                     developer? ? {order: :id, descending: true, developer: current_account.id} : {order: :id, descending: true}
+                     developer? ? { order: :id, descending: true, developer: current_account.id } : { order: :id, descending: true }
                    end
-    p @grid_params
+
     @story_types_grid = StoryTypesGrid.new(@grid_params)
     respond_to do |f|
       f.html do
-        @story_types_grid.scope {|scope| scope.page(params[:page])}
+        @story_types_grid.scope { |scope| scope.page(params[:page]).per(50) }
       end
       f.csv do
         send_data @story_types_grid.to_csv,

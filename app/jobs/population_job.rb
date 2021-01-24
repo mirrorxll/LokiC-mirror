@@ -4,23 +4,22 @@
 class PopulationJob < ApplicationJob
   queue_as :population
 
-  def perform(story_type, options = {})
+  def perform(iteration, options = {})
     Process.wait(
       fork do
         status = true
         message = 'SUCCESS'
-        iteration = story_type.iteration
 
-        MiniLokiC::Code.execute(story_type, :population, options)
+        MiniLokiC::Code.execute(iteration.story_type, :population, options)
 
-        iteration.reload.update(population: true)
+        iteration.update(population: true)
       rescue StandardError => e
         status = nil
         message = e
       ensure
-        story_type.iteration.update(population: status)
-        send_to_action_cable(story_type, iteration, population_msg: message)
-        send_to_slack(story_type, 'population', message)
+        iteration.update(population: status)
+        send_to_action_cable(iteration, population_msg: message)
+        send_to_slack(iteration, 'POPULATION', message)
       end
     )
   end
