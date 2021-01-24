@@ -40,5 +40,25 @@ module Samples
       threads.each(&:join)
       iteration.update(last_export_batch_size: exported)
     end
+
+    def remove!(iteration)
+      semaphore = Mutex.new
+      samples = iteration.samples.where.not(@pl_lead_id_key => nil, @pl_story_id_key => nil).limit(10_000).to_a
+
+      threads = Array.new(5) do
+        Thread.new do
+          loop do
+            sample = semaphore.synchronize { samples.shift }
+            break if sample.nil?
+
+            @pl_client.delete_lead(sample[@pl_story_id_key])
+            sample.update(@pl_lead_id_key => nil, @pl_story_id_key => nil)
+          end
+        end
+      end
+
+      threads.each(&:join)
+      iteration.update(export: nil)
+    end
   end
 end

@@ -3,10 +3,9 @@
 class SchedulerJob < ApplicationJob
   queue_as :scheduler
 
-  def perform(story_type, type, options = {})
+  def perform(iteration, type, options = {})
     status = nil
     message = 'SUCCESS'
-    iteration = story_type.iteration
 
     rd, wr = IO.pipe
 
@@ -25,7 +24,7 @@ class SchedulerJob < ApplicationJob
         end
 
       rescue StandardError => e
-        wr.write %({"#{e.class}":"#{e.message}"})
+        wr.write({ e.class.to_s => e.message }.to_json)
       ensure
         wr.close
       end
@@ -40,14 +39,14 @@ class SchedulerJob < ApplicationJob
       raise Object.const_get(klass), message
     end
 
-    status = true unless iteration.reload.samples.where(published_at: nil).any?
+    status = true unless iteration.samples.where(published_at: nil).any?
   rescue StandardError => e
     status = nil
     message = e
   ensure
     iteration.update(schedule: status)
-    send_to_action_cable(story_type, iteration, scheduler_msg: message)
-    send_to_slack(story_type, "#{type}-scheduling", message)
+    send_to_action_cable(iteration, scheduler_msg: message)
+    send_to_slack(iteration, "#{type.upcase}-SCHEDULING", message)
   end
 
   private

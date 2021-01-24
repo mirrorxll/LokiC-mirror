@@ -4,16 +4,14 @@ class CreationsController < ApplicationController # :nodoc:
   before_action :render_400, if: :editor?
 
   def create
-    CreationJob.set(wait: 2.second).perform_later(@story_type)
-    @story_type.iteration.update(creation: false)
+    CreationJob.set(wait: 1.second).perform_later(@iteration)
+
+    @iteration.update(creation: false)
   end
 
   def purge_all
-    PurgeSamplesByLastIterationJob.set(wait: 2.second).perform_later(@story_type)
+    PurgeSamplesByLastIterationJob.set(wait: 1.second).perform_later(@iteration)
 
-    @story_type.iteration.update(
-      purge_all_samples: false, creation: nil, schedule: nil,
-      schedule_args: nil, schedule_counts: nil, export: nil
-    )
+    @story_type.iteration.update(purge_all_samples: true)
   end
 end

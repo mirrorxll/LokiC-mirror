@@ -5,6 +5,6 @@ class AddColumnRemovingFromPlToIterations < ActiveRecord::Migration[6.0]
     add_column :iterations,
                :removing_from_pl,
                :boolean,
-               default: false, after: :export
+               after: :export
   end
 end
