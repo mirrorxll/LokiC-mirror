@@ -7,7 +7,7 @@ class SamplesAndAutoFeedbackJob < ApplicationJob
     Process.wait(
       fork do
         status = true
-        message = 'SUCCESS'
+        message = 'Success'
         staging_table = iteration.story_type.staging_table
 
         column_names = staging_table.columns.ids_to_names(params[:columns])

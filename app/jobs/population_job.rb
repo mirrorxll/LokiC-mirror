@@ -8,7 +8,7 @@ class PopulationJob < ApplicationJob
     Process.wait(
       fork do
         status = true
-        message = 'SUCCESS'
+        message = 'Success'
 
         MiniLokiC::Code.execute(iteration.story_type, :population, options)
 

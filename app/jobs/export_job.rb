@@ -5,7 +5,7 @@ class ExportJob < ApplicationJob
 
   def perform(iteration)
     status = true
-    message = 'SUCCESS. MAKE SURE THAT ALL STORIES ARE EXPORTED'
+    message = 'Success. Make sure that all stories are exported'
     threads_count = (iteration.samples.count / 75_000.0).ceil + 1
 
     iteration.update(last_export_batch_size: nil)

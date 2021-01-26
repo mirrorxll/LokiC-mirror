@@ -31,10 +31,6 @@ ActiveAdmin.register Account do
         [type.name, type.id, { checked: object.account_types.include?(type) }]
       end
 
-      slack_id = SlackAccount.where(deleted: false).map do |slack|
-        [slack.user_name, slack.id]
-      end
-
       f.input :email
 
       f.input :type_ids,

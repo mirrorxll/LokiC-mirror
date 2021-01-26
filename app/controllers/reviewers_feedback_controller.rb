@@ -47,22 +47,23 @@ class ReviewersFeedbackController < ApplicationController
     developer_pm = @story_type.developer&.slack&.identifier
     return if developer_pm.nil? || fcd_channel.nil?
 
+    message_to_dev = "*[ LokiC ] STORY TYPE ##{@story_type.id} (#{@story_type.current_iteration.name}) | FCD*\n>"
+
     if params[:commit].eql?('approve!')
       note = ActionView::Base.full_sanitizer.sanitize(@feedback.body)
-      message = "*FCD ##{@story_type.id}* "\
-                "<#{story_type_fact_checking_doc_url(@story_type, @fcd)}|#{@story_type.name}>.\n"\
-                "#{@feedback.body.present? ? "*Reviewer's Note*: #{note}" : ''}"
-      SlackNotificationJob.perform_later(fcd_channel, message)
+      message_to_fc_channel = "*FCD ##{@story_type.id}* "\
+                              "<#{story_type_fact_checking_doc_url(@story_type, @fcd)}|#{@story_type.name}>.\n"\
+                              "#{@feedback.body.present? ? "*Reviewer's Note*: #{note}" : ''}"
+      SlackNotificationJob.perform_later(fcd_channel, message_to_fc_channel)
 
-      message = "*##{@story_type.id} #{@story_type.name}* -- FCD was approved by #{current_account.name} "\
-                "and sent to *#{fcd_channel}* channel."
+      message_to_dev += "Approved by *#{current_account.name}* and sent to *#{fcd_channel}* channel"
     else
-      message = "*##{@story_type.id} #{@story_type.name}* -- You received the *reviewers' feedback* by #{current_account.name}. "\
-                "<#{story_type_fact_checking_doc_url(@story_type, @story_type.fact_checking_doc)}"\
-                '#reviewers_feedback|Check it>.'
+      message_to_dev += "You received the *reviewers' feedback* by *#{current_account.name}*. "\
+                       "<#{story_type_fact_checking_doc_url(@story_type, @story_type.fact_checking_doc)}"\
+                       '#reviewers_feedback|Check it>.'
     end
 
-    SlackNotificationJob.perform_later(developer_pm, message)
+    SlackNotificationJob.perform_later(developer_pm, message_to_dev)
   end
 
   def send_confirm_to_review_channel
@@ -73,7 +74,7 @@ class ReviewersFeedbackController < ApplicationController
         @feedback.reviewer.name
       end
 
-    message = "#{reviewer} -- the developer confirms your feedback. "\
+    message = "#{reviewer} the developer confirms your feedback. "\
               "<#{story_type_fact_checking_doc_url(@story_type, @story_type.fact_checking_doc)}"\
               '#reviewers_feedback|Check it>.'
 

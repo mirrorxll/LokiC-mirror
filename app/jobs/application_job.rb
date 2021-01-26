@@ -15,7 +15,7 @@ class ApplicationJob < ActiveJob::Base
     return unless story_type.developer_slack_id
 
     message =
-      "*[ LokiC ] #{step} | STORY TYPE ##{story_type.id} (#{iteration.name})*\n#{raw_message}".gsub("\n", "\n>")
+      "*[ LokiC ] STORY TYPE ##{story_type.id} (#{iteration.name}) | #{step}*\n#{raw_message}".gsub("\n", "\n>")
     SlackNotificationJob.perform_now(story_type.developer.slack.identifier, message)
 
     channel = Rails.env.production? ? 'hle_lokic_messages' : 'notifications_test'

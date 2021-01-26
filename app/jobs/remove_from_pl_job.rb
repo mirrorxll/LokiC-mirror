@@ -4,7 +4,7 @@ class RemoveFromPlJob < ApplicationJob
   queue_as :default
 
   def perform(iteration)
-    message = 'SUCCESS'
+    message = 'Success'
 
     loop do
       rd, wr = IO.pipe
@@ -30,14 +30,13 @@ class RemoveFromPlJob < ApplicationJob
         raise Object.const_get(klass), message
       end
 
-      break if iteration.samples.where.not(pl_production_story_id: nil).zero?
+      break if iteration.samples.where.not(pl_production_story_id: nil).count.zero?
     end
 
   rescue StandardError => e
     message = e.message
   ensure
     iteration.update(removing_from_pl: nil)
-
     send_to_action_cable(iteration, remove_from_pl_msg: message)
     send_to_slack(iteration, 'REMOVE FROM PL', message)
   end
