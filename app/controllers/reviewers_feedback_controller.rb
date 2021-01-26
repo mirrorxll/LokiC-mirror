@@ -58,7 +58,7 @@ class ReviewersFeedbackController < ApplicationController
 
       message_to_dev += "Approved by *#{current_account.name}* and sent to *#{fcd_channel}* channel"
     else
-      message_to_dev = "You received the *reviewers' feedback* by #{current_account.name}. "\
+      message_to_dev = "You received the *reviewers' feedback* by *#{current_account.name}*. "\
                        "<#{story_type_fact_checking_doc_url(@story_type, @story_type.fact_checking_doc)}"\
                        '#reviewers_feedback|Check it>.'
     end
