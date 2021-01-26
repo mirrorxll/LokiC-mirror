@@ -5,7 +5,7 @@ class SchedulerJob < ApplicationJob
 
   def perform(iteration, type, options = {})
     status = nil
-    message = 'SUCCESS'
+    message = 'Success'
 
     rd, wr = IO.pipe
 

@@ -7,7 +7,7 @@ class ExportConfigurationsJob < ApplicationJob
     Process.wait(
       fork do
         status = true
-        message = 'SUCCESS'
+        message = 'Success'
         exp_config_counts = {}
         exp_config_counts.default = 0
         st_cl_tgs = iteration.story_type.client_tags

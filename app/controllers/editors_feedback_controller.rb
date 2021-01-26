@@ -47,7 +47,7 @@ class EditorsFeedbackController < ApplicationController
     developer_pm = @story_type.developer&.slack&.identifier
     return if developer_pm.nil?
 
-    message = "*##{@story_type.id} #{@story_type.name}* -- "
+    message = "*[ LokiC ] STORY TYPE ##{@story_type.id} | FCD*\n>"
 
     if params[:commit].eql?('approve!')
       approvable = @fcd.approval_editors
@@ -58,7 +58,7 @@ class EditorsFeedbackController < ApplicationController
         else
           'You need one more approval from editors'
         end
-      message += "FCD was approved by #{editors}. #{scheduling}."
+      message += "Approved by #{editors}. #{scheduling}."
     else
       message += "You received the *editors' feedback* by #{current_account.name}. "\
                 "<#{story_type_fact_checking_doc_url(@story_type, @story_type.fact_checking_doc)}"\

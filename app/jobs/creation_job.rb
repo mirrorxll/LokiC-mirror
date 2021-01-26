@@ -5,7 +5,7 @@ class CreationJob < ApplicationJob
 
   def perform(iteration, options = {})
     status = true
-    message = 'ALL SAMPLES HAVE BEEN CREATED'
+    message = 'All samples have been created'
 
     loop do
       rd, wr = IO.pipe

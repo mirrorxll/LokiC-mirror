@@ -28,9 +28,8 @@ class DevelopersController < ApplicationController
 
     SlackNotificationJob.perform_later(
       @developer.slack.identifier,
-      "Hi #{@developer.first_name}. "\
-      "The story type was distributed to you. Details:\n"\
-      "#{story_type_url(@story_type)}"
+      "*[ LokiC ] STORY TYPE ##{@story_type.id} | DISTRIBUTED TO YOU*\n>"\
+      "<#{story_type_url(@story_type)}| #{@story_type.name}>"
     )
   end
 end

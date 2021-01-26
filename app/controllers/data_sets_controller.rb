@@ -6,7 +6,6 @@ class DataSetsController < ApplicationController # :nodoc:
 
   before_action :render_400, except: :properties, if: :developer?
   before_action :find_data_set, except: %i[index create]
-  after_action  :new_data_set_notification, only: :create
   after_action  :set_default_props, only: %i[create update]
 
   def index
@@ -85,11 +84,5 @@ class DataSetsController < ApplicationController # :nodoc:
     params.require(:filter).slice(
       :editor, :developer, :client, :frequency, :status
     )
-  end
-
-  def new_data_set_notification
-    channel = Rails.env.production? ? 'hle_lokic_messages' : 'notifications_test'
-    message = "Added a new Data set. Details: #{data_set_url(@data_set)}"
-    SlackNotificationJob.perform_later(channel, message)
   end
 end
