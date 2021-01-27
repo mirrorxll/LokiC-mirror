@@ -11,6 +11,7 @@ class StoryType < ApplicationRecord # :nodoc:
   has_one :staging_table
   has_one :template
   has_one :fact_checking_doc
+  has_one :cron_tab
 
   has_many :iterations
   has_many :export_configurations
@@ -48,32 +49,6 @@ class StoryType < ApplicationRecord # :nodoc:
   def download_code_from_db
     MiniLokiC::Code.download(self)
   end
-
-  # # filter
-  # def self.editor(id)
-  #   where(editor_id: id)
-  # end
-  #
-  # def self.developer(id)
-  #   id = nil if id == 'null'
-  #   where(developer_id: id)
-  # end
-  #
-  # def self.data_set(id)
-  #   where(data_set_id: id)
-  # end
-  #
-  # def self.client(id)
-  #   includes(:clients).where(clients: { id: id })
-  # end
-  #
-  # def self.frequency(id)
-  #   where(frequency: id)
-  # end
-  #
-  # def self.status(id)
-  #   includes(current_iteration: [:statuses]).where(statuses: { id: id })
-  # end
 end
 
 
