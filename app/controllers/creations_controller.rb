@@ -10,8 +10,12 @@ class CreationsController < ApplicationController # :nodoc:
   end
 
   def purge_all
-    PurgeSamplesByLastIterationJob.set(wait: 1.second).perform_later(@iteration)
+    if @iteration.samples.where.not("pl_#{PL_TARGET}_story_id" => nil).present?
+      flash.now[:error] = 'At least one story from this iteration has already exported to PL.'
+    else
+      RemoveSamplesByLastIterationJob.set(wait: 1.second).perform_later(@iteration)
 
-    @story_type.iteration.update(purge_all_samples: true)
+      @story_type.iteration.update(purge_all_samples: true)
+    end
   end
 end
