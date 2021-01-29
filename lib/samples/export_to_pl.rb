@@ -51,7 +51,7 @@ module Samples
             sample = semaphore.synchronize { samples.shift }
             break if sample.nil?
 
-            @pl_client.delete_lead(sample[@pl_story_id_key])
+            @pl_client.delete_lead(sample[@pl_lead_id_key])
             sample.update(@pl_lead_id_key => nil, @pl_story_id_key => nil)
           end
         end

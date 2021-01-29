@@ -1,0 +1,29 @@
+-width = 'width: 65px;'
+
+=form_with(model: [@story_type, @cron_tab], html: { class: 'm-3'}) do |form|
+  .text-center.d-inline-block
+    .text-secondary.d-inline-block
+      (minute)
+      %br/
+      =form.text_field :minute, placeholder: '*', class: 'form-control form-control-sm', style: width
+    .text-secondary.d-inline-block
+      (hour)
+      %br/
+      =form.text_field :hour, placeholder: '*', class: 'form-control form-control-sm', style: width
+    .text-secondary.d-inline-block
+      (day)
+      %br/
+      =form.text_field :day, placeholder: '*', class: 'form-control form-control-sm', style: width
+    .text-secondary.d-inline-block
+      (month)
+      %br/
+      =form.text_field :month, placeholder: '*',  class: 'form-control form-control-sm', style: width
+    .text-secondary.d-inline-block
+      (week day)
+      %br/
+      =form.text_field :week_day, placeholder: '*', class: 'form-control form-control-sm', style: width
+
+    =form.text_field :population_options, placeholder: 'population options', class: 'mt-2 form-control form-control-sm d-inline-block', style: 'width: 339.25px;'
+    =form.submit 'install crontab', class: 'mt-2 в-шт btn btn-sm btn-outline-dark', style: 'width: 250px;'
+    =link_to('cancel', '#', class: 'mt-2 btn btn-sm btn-light', style: 'width: 85px;')
+%hr/

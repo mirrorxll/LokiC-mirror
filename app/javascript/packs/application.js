@@ -3,20 +3,23 @@
 // a relevant structure within app/javascript and only use these pack files to reference
 // that code so it'll be compiled.
 
-require("@rails/ujs").start()
-require("turbolinks").start()
-require("@rails/activestorage").start()
-require("channels")
+require("@rails/ujs").start();
+require("turbolinks").start();
+require("@rails/activestorage").start();
+require("channels");
 
 import 'bootstrap'
 import "@fortawesome/fontawesome-free/js/all";
 import '../stylesheets/application'
 import './summernote'
 import Rails from "@rails/ujs";
+import cronstrue from 'cronstrue'
 
 window.Rails = Rails;
 window.jQuery = $;
 window.$ = $;
+window.cronValidator = require('cron-validator')
+window.cronstrue = cronstrue
 
 document.addEventListener('turbolinks:load', () => {
   $('[data-toggle="tooltip"]').tooltip()
