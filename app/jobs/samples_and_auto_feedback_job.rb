@@ -7,7 +7,7 @@ class SamplesAndAutoFeedbackJob < ApplicationJob
     Process.wait(
       fork do
         status = true
-        message = 'Success'
+        message = "Success. FCD's samples have been created"
         staging_table = iteration.story_type.staging_table
 
         column_names = staging_table.columns.ids_to_names(params[:columns])

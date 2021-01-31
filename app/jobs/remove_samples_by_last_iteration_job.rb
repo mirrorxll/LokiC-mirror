@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-class PurgeSamplesByLastIterationJob < ApplicationJob
+class RemoveSamplesByLastIterationJob < ApplicationJob
   queue_as :creation
 
   def perform(iteration)
     Process.wait(
       fork do
-        message = 'PURGED'
+        message = 'Success. All samples have been removed'
 
         iteration.samples.destroy_all
         iteration.story_type.staging_table.samples_set_not_created
