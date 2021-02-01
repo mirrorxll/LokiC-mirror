@@ -4,9 +4,9 @@ $('#add_column').click(function () {
 
     $(submit).before(
         `<div id="col_${hex}" class="mb-1">
-            <div class=" remove_column d-inline-block mr-1" id="rm_col_${hex}" onclick="removeColumn(this)"><i class="fas fa-minus"></i></div>
+            <div class=" remove_column d-inline-block mr-1" id="rm_col_${hex}""><i class="fas fa-minus"></i></div>
             <input placeholder="name" id="columns_${hex}_name" required="required" type="text" name="columns[${hex}[name]]">
-            <select class="h_25px" id="columns_${hex}_type" onchange="optionsForColumnType(this)" name="columns[${hex}[type]]">
+            <select class="h_25px" id="columns_${hex}_type" name="columns[${hex}[type]]">
                 <option selected="selected" value="string">string</option>
                 <option value="text">text</option>
                 <option value="integer">integer</option>
@@ -25,7 +25,20 @@ $('#add_column').click(function () {
             </div>
         </div>`
     );
+
+    $(`[id="rm_col_${hex}"]`).click(function (event){
+        removeColumn(event.currentTarget);
+    })
+
+    $(`[id="columns_${hex}_type"]`).click(function (event){
+        optionsForColumnType(event.currentTarget)
+    })
 });
+
+$('[id*="rm_col_"]').click(function (event){
+    removeColumn(event.currentTarget);
+    return false;
+})
 
 function secureRandom(n){
     let result = '';

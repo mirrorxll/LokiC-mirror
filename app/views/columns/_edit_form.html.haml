@@ -9,7 +9,7 @@
         .col-8#columns_editable
           -@staging_table.columns.list.each do |hex, column|
             %div{ id: "col_#{hex}", class: 'mb-1' }
-              %div.remove_column.d-inline-block.mr-1{ id: "rm_col_#{hex}", onclick: 'removeColumn(this)' }
+              %div.remove_column.d-inline-block.mr-1{ id: "rm_col_#{hex}" }
                 =icon('fas', 'minus')
               =form.text_field "#{hex}[name]",
                                { value: column[:name], placeholder: 'name', id: "columns_#{hex}_name" }
