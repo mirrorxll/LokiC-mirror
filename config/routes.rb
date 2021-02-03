@@ -100,6 +100,8 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :cron_tabs
+
     resources :iterations do
       patch :apply_iteration, on: :member
 

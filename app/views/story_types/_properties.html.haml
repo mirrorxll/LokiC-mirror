@@ -1,19 +1,16 @@
 .row.small
-  .col-10.offset-1
+  .col-5.offset-1.border-right
+
     .row.mb-2.font-weight-bold
-      .col-6
+      .col-12
         data set
-      .col-6
-        data location
     .row
-      .col-6
+      .col-12
         -if current_account.types.include?('manager')
           =link_to @story_type.data_set.name, data_set_path(@story_type.data_set), class: 'no-link'
         -else
           =@story_type.data_set.name
         =link_to icon('fa', 'fa fa-info-circle'), properties_data_set_path(@story_type.data_set), remote: true
-      .col-6
-        =@story_type.data_set.location
     %hr/
 
     .row.mb-2.font-weight-bold
@@ -40,5 +37,23 @@
       .col-6
         =@story_type&.photo_bucket&.name
     %hr/
+
+    .row.mb-2.font-weight-bold
+      .col-6
+        editor
+      .col-6
+        developer
+    .row
+      .col-6
+        =@story_type.editor.name
+      .col-6
+        =@story_type.developer ? @story_type.developer.name: '---'
+    %hr/
+
+  #cron_tab_panel.col-5
+    -if @story_type.cron_tab
+      =render 'cron_tabs/cron_tab'
+    -else
+      crontab not installed yet. #{ link_to('setup', new_story_type_cron_tab_path(@story_type), remote: true) }
 
 =render 'data_sets/modal_data_set'
