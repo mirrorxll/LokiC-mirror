@@ -1,6 +1,20 @@
+-cron_status = @story_type.cron_tab.enabled
+
 .row.mb-2.font-weight-bold
   .col-12
-    cron tab [ #{@story_type.cron_tab.enabled ? ''} ]
-.row
-  .col-12
-    =
+    cron tab
+    %span{ class: "text-#{cron_status ? 'success' : 'danger'}" }
+      =icon('fas', 'circle')
+    =link_to('[ edit ]', edit_story_type_cron_tab_path(@story_type, @story_type.cron_tab),
+             class: 'd-inline-block ml-4', remote: true)
+
+-if cron_status
+  .row
+    #current_cron_description.col-12
+      =@story_type.cron_tab.pattern
+
+  :javascript
+    (() => {
+      let description = document.getElementById('current_cron_description')
+      description.innerText = cronstrue.toString(description.innerText);
+    }).call();

@@ -6,6 +6,7 @@ class CronTab < ApplicationRecord
   belongs_to :story_type
 
   def pattern
-    "#{setup[:minute]} #{setup[:hour]} #{setup[:day]} #{setup[:minute]} #{setup[:minute]} "
+    cron = setup[:pattern]
+    "#{cron[:minute]} #{cron[:hour]} #{cron[:month_day]} #{cron[:month]} #{cron[:week_day]}"
   end
 end

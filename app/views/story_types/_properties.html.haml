@@ -54,6 +54,6 @@
     -if @story_type.cron_tab
       =render 'cron_tabs/cron_tab'
     -else
-      crontab not installed yet. #{ link_to('setup', new_story_type_cron_tab_path(@story_type), remote: true) }
+      cron tab not installed yet. #{ link_to('setup', new_story_type_cron_tab_path(@story_type), remote: true) }
 
 =render 'data_sets/modal_data_set'
