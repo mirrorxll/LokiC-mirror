@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class CronTabsController < ApplicationController
+  after_action :setup_cron_tab, only: %i[create update]
+
   def new
     @cron_tab = @story_type.build_cron_tab
     render 'form'
@@ -25,5 +27,9 @@ class CronTabsController < ApplicationController
 
   def cron_tab_params
     params.require(:cron_tab).permit(:enabled, setup: {})
+  end
+
+  def setup_cron_tab
+    SetupCronTabJob.perform_later(@story_type)
   end
 end

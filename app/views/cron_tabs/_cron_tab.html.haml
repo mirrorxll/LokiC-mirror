@@ -10,8 +10,16 @@
 
 -if cron_status
   .row
-    #current_cron_description.col-12
-      =@story_type.cron_tab.pattern
+    .col-12
+      .font-weight-bold.d-inline-block
+        shall execute:
+      #current_cron_description.d-inline-block
+        #{@story_type.cron_tab.pattern}
+      %br/
+      .font-weight-bold.d-inline-block
+        population parameters:
+      .d-inline-block
+        #{@story_type.cron_tab.population_params}
 
   :javascript
     (() => {

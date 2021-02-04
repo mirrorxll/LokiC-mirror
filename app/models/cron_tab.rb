@@ -9,4 +9,8 @@ class CronTab < ApplicationRecord
     cron = setup[:pattern]
     "#{cron[:minute]} #{cron[:hour]} #{cron[:month_day]} #{cron[:month]} #{cron[:week_day]}"
   end
+
+  def population_params
+    setup[:population_params]
+  end
 end

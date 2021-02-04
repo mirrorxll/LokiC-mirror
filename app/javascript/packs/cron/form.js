@@ -8,6 +8,9 @@ function checkCronPattern() {
     let pattern = `${minute} ${hour} ${month_day} ${month} ${weekDay}`;
     let isCorrectPattern = cronValidator.isValidCron(pattern);
 
+    let formSubmitButton = document.querySelector('#cron_tab_panel form input[type="submit"]')
+    formSubmitButton.disabled = !isCorrectPattern;
+
     if([minute, hour, month_day, month, weekDay].every((el) => el.trim().length === 0)) {
         description.innerText = "";
     } else if(isCorrectPattern) {
@@ -19,25 +22,10 @@ function checkCronPattern() {
     return isCorrectPattern;
 }
 
-let cronPattern = document.querySelectorAll('#cron_pattern input[type="text"]')
+let cronPattern = document.querySelectorAll('#cron_pattern input[name^="cron_tab[setup[pattern["]')
 
 for(let i = 0; i < cronPattern.length; i++) {
     cronPattern[i].addEventListener('input', checkCronPattern);
 }
 
-document.querySelector('#cron_tab_panel form').addEventListener('submit', (event) => {
-    event.preventDefault();
-
-    if(checkCronPattern()) {
-        event.currentTarget.setAttribute('data-remote', true)
-        // event.currentTarget.submit()
-        Rails.fire(event.currentTarget,  'submit')
-    } else {
-        console.log(0)
-    }
-
-    return false;
-});
-
 checkCronPattern();
-

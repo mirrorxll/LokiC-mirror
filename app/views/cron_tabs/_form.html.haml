@@ -1,6 +1,6 @@
 -hashed_pattern = @cron_tab.setup.empty? ? @cron_tab.setup : @cron_tab.setup[:pattern]
 
-=form_with(model: [@story_type, @cron_tab], html: { class: 'm-3'}, local: true) do |form|
+=form_with(model: [@story_type, @cron_tab], html: { class: 'm-3'}) do |form|
   .text-center.mb-2
     %div{ class: 'w-339_25px text-left d-inline-block' }
       =form.check_box :enabled
