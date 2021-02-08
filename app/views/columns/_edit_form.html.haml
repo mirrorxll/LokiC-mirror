@@ -14,14 +14,14 @@
               =form.text_field "#{hex}[name]",
                                { value: column[:name], placeholder: 'name', id: "columns_#{hex}_name" }
               =form.select "#{hex}[type]", options_for_select(data_types, column[:type]), {},
-                           { class: 'h_25px', id: "columns_#{hex}_type", onchange: 'optionsForColumnType(this)' }
+                           { class: 'h_25px', id: "columns_#{hex}_type" }
               .d-inline-block
                 -if %i[string text integer float].include?(column[:type])
-                  =form.text_field "#{hex}[options[limit]]", { class: 'w_80px', value: column[:options][:limit], placeholder: 'limit', id: "columns_#{hex}_params_limit", onclick: 'showInfo(this);' }
+                  =form.text_field "#{hex}[options[limit]]", { class: 'w_80px', value: column[:options][:limit], placeholder: 'limit', id: "columns_#{hex}_params_limit" }
                 -elsif %i[decimal datetime time].include?(column[:type])
-                  =form.text_field "#{hex}[options[precision]]", { class: 'w_80px', value: column[:options][:precision], placeholder: 'precision', id: "columns_#{hex}_params_precision", onclick: 'showInfo(this);' }
+                  =form.text_field "#{hex}[options[precision]]", { class: 'w_80px', value: column[:options][:precision], placeholder: 'precision', id: "columns_#{hex}_params_precision" }
                 -if column[:type].eql?(:decimal)
-                  =form.text_field "#{hex}[options[scale]]", { class: 'w_80px', value: column[:options][:scale], placeholder: 'scale', id: "columns_#{hex}_params_scale", onclick: 'showInfo(this);' }
+                  =form.text_field "#{hex}[options[scale]]", { class: 'w_80px', value: column[:options][:scale], placeholder: 'scale', id: "columns_#{hex}_params_scale" }
           =form.submit :update, class: 'mt-3 ml-3'
           =link_to('cancel', canceling_edit_story_type_staging_tables_path(@story_type), class: 'ml-3', remote: true)
         .col-4#column_info.border-left
