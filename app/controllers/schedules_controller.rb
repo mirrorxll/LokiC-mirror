@@ -4,20 +4,20 @@ class SchedulesController < ApplicationController # :nodoc:
   before_action :render_400, if: :editor?
 
   def manual
-    SchedulerJob.perform_later(@iteration, 'manual', manual_params)
     @iteration.update(schedule: false)
+    SchedulerJob.perform_later(@iteration, 'manual', manual_params)
     render 'hide_section'
   end
 
   def backdate
-    SchedulerJob.perform_later(@iteration, 'backdate', backdated_params)
     @iteration.update(schedule: false)
+    SchedulerJob.perform_later(@iteration, 'backdate', backdated_params)
     render 'hide_section'
   end
 
   def auto
-    SchedulerJob.perform_later(@iteration, 'auto')
     @iteration.update(schedule: false)
+    SchedulerJob.perform_later(@iteration, 'auto')
     render 'hide_section'
   end
 
