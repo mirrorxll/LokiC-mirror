@@ -30,6 +30,6 @@ class CronTabsController < ApplicationController
   end
 
   def setup_cron_tab
-    SetupCronTabJob.perform_later(@story_type)
+    CronTabSetupJob.perform_later(@story_type)
   end
 end

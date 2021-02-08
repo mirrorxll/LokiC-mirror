@@ -10,7 +10,7 @@ class ClientsController < ApplicationController # :nodoc:
     render_400 && return if @story_type.clients.exists?(@client.id)
 
     @story_type.clients << @client
-    @client_tag = @story_type.client_tags.reload.find_by(client: @client)
+    @client_tag = @story_type.client_tags.find_by(client: @client)
   end
 
   def exclude
