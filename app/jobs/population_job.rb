@@ -22,5 +22,7 @@ class PopulationJob < ApplicationJob
         send_to_slack(iteration, 'POPULATION', message)
       end
     )
+
+    iteration.reload.population
   end
 end

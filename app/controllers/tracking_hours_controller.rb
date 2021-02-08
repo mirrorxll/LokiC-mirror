@@ -45,7 +45,7 @@ class TrackingHoursController < ApplicationController # :nodoc:
 
   def import_data
     Assembled.destroy_current(current_account, @week)
-    ImportTrackingReportJob.set(wait: 1.second).perform_later(params[:url], params[:worksheet], params[:range], current_account, @week)
+    ImportTrackingReportJob.perform_later(params[:url], params[:worksheet], params[:range], current_account, @week)
 
     @rows_reports = row_reports(@week)
   end
@@ -53,7 +53,7 @@ class TrackingHoursController < ApplicationController # :nodoc:
   def google_sheets
     link = LinkAssembled.find_by(week: @week)
     link.update_attribute(:in_process, true) unless link.nil?
-    AssembledsJob.set(wait: 1.second).perform_later(@week, link)
+    AssembledsJob.perform_later(@week, link)
   end
 
   def assembleds
