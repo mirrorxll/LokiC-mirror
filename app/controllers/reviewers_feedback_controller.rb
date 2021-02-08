@@ -47,7 +47,7 @@ class ReviewersFeedbackController < ApplicationController
     developer_pm = @story_type.developer&.slack&.identifier
     return if developer_pm.nil? || fcd_channel.nil?
 
-    message_to_dev = "*[ LokiC ] STORY TYPE ##{@story_type.id} (#{@story_type.current_iteration.name}) | FCD*\n>"
+    message_to_dev = "*[ LokiC ] STORY TYPE ##{@story_type.id} (#{@story_type.iteration.name}) | FCD*\n>"
 
     if params[:commit].eql?('approve!')
       note = ActionView::Base.full_sanitizer.sanitize(@feedback.body)
