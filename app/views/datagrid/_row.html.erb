@@ -1,5 +1,8 @@
 <tr >
   <% grid.html_columns(*options[:columns]).each do |column| %>
-    <td class="<%= datagrid_column_classes(grid, column) %>"><%= datagrid_value(grid, column, asset) %></td>
+    <% value = datagrid_value(grid, column, asset) %>
+    <td class="<%= datagrid_column_classes(grid, column) %> <%= "bg-#{status_color(value)}" %>">
+      <%= value %>
+    </td>
   <% end %>
 </tr>
