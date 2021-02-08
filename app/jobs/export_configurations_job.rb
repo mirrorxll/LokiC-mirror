@@ -26,11 +26,13 @@ class ExportConfigurationsJob < ApplicationJob
         status = nil
         message = e
       ensure
-        iteration.reload.update(export_configurations: status)
+        iteration.update(export_configurations: status)
         send_to_action_cable(iteration, export_configurations_msg: status)
         send_to_slack(iteration, 'EXPORT CONFIGURATIONS', message)
       end
     )
+
+    iteration.reload.export_configurations
   end
 
   private

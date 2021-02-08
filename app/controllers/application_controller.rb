@@ -22,7 +22,7 @@ class ApplicationController < ActionController::Base
       if params[:iteration_id]
         Iteration.find(params[:iteration_id])
       else
-        @story_type.current_iteration
+        @story_type.iteration
       end
   end
 

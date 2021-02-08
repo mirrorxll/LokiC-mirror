@@ -6,7 +6,7 @@ class ExportConfigurationsController < ApplicationController
   def check; end
 
   def create
-    ExportConfigurationsJob.set(wait: 1.second).perform_later(@iteration)
+    ExportConfigurationsJob.perform_later(@iteration)
 
     @iteration.update(export_configurations: false)
   end

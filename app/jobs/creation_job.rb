@@ -41,6 +41,7 @@ class CreationJob < ApplicationJob
     iteration.update(creation: status)
     send_to_action_cable(iteration, creation_msg: message)
     send_to_slack(iteration, 'CREATION', message)
+    iteration.creation
   end
 
   private

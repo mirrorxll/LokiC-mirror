@@ -1,6 +1,6 @@
 #data_set_info
   .row.card-body
-    .col-6
+    %div{ class: action_name.eql?('properties') ? 'col-12' : 'col-6' }
       .card.small
         .card-header.p-2
           data
@@ -41,21 +41,22 @@
             .col-8
               =@data_set.comment ? @data_set.comment.gsub("\n",'<br>').html_safe : ''
 
-    .col-6
-      .card.small
-        .card-header.p-2
-          default properties:
-        .card-body
-          .row.pb-2
-            .col-3.text-right.font-weight-bold
-              photo bucket:
-            .col-9
-              =@data_set.photo_bucket&.name
-          .row
-            .col-3.text-right.font-weight-bold
-              client (tag):
-            .col-9
-              -@data_set.client_tags.each do |row|
-                ="#{row.client.name} (#{row.tag.name})"
-                %br/
+    -if !action_name.eql?('properties')
+      .col-6
+        .card.small
+          .card-header.p-2
+            default properties:
+          .card-body
+            .row.pb-2
+              .col-3.text-right.font-weight-bold
+                photo bucket:
+              .col-9
+                =@data_set.photo_bucket&.name
+            .row
+              .col-3.text-right.font-weight-bold
+                client (tag):
+              .col-9
+                -@data_set.client_tags.each do |row|
+                  ="#{row.client.name} (#{row.tag.name})"
+                  %br/
 
