@@ -16,7 +16,7 @@ class PopulationsController < ApplicationController # :nodoc:
 
     if flash.now[:error].nil?
       args = population_params[:args]
-      PopulationJob.set(wait: 1.second).perform_later(@iteration, args)
+      PopulationJob.perform_later(@iteration, args)
       @iteration.update(population: false, population_args: args)
     end
 
