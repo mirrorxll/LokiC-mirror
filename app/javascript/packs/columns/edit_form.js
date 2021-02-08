@@ -1,8 +1,8 @@
-let submit = $('#columns_editable input[type="submit"]')[0];
+// event-handlers
 $('#add_column').click(function () {
     let hex = secureRandom(6);
 
-    $(submit).before(
+    $('#columns_editable input[type="submit"]').before(
         `<div id="col_${hex}" class="mb-1">
             <div class=" remove_column d-inline-block mr-1" id="rm_col_${hex}""><i class="fas fa-minus"></i></div>
             <input placeholder="name" id="columns_${hex}_name" required="required" type="text" name="columns[${hex}[name]]">
@@ -19,27 +19,26 @@ $('#add_column').click(function () {
                 <option value="boolean">boolean</option></select>
             </select>
             <div class="d-inline-block">
-                <input class="w_80px" placeholder="limit" onclick="showInfo(this);"
+                <input class="w_80px" placeholder="limit"
                        id="columns_${hex}_params_limit" type="text"
                        name="columns[${hex}[options[limit]]]">
             </div>
         </div>`
     );
 
-    $(`[id="rm_col_${hex}"]`).click(function (event){
-        removeColumn(event.currentTarget);
-    })
-
-    $(`[id="columns_${hex}_type"]`).click(function (event){
-        optionsForColumnType(event.currentTarget)
-    })
+    $(`[id="rm_col_${hex}"]`).click(removeColumn);
+    $(`[id="columns_${hex}_type"]`).change(optionsForColumnType);
+    $(`[id="columns_${hex}_params_limit"]`).click(showInfo);
 });
 
-$('[id*="rm_col_"]').click(function (event){
-    removeColumn(event.currentTarget);
-    return false;
-})
+$('[id*="rm_col_"]').click(removeColumn)
+$('[name*="[type]"]').change(optionsForColumnType);
+$('[name*="options[limit]"]').click(showInfo)
+$('[name*="options[precision]"]').click(showInfo)
+$('[name*="options[scale]"]').click(showInfo)
 
+
+// methods for the event-handlers
 function secureRandom(n){
     let result = '';
     while (n--){
@@ -49,13 +48,15 @@ function secureRandom(n){
     return result;
 }
 
-function removeColumn(elem) {
-    $(elem.parentNode).remove();
+function removeColumn(event) {
+    $(event.currentTarget.parentNode).remove();
 }
 
-function optionsForColumnType(elem) {
+function optionsForColumnType(event) {
+    let elem = event.currentTarget;
     let parent = elem.parentNode;
-    let hex = parent.id.split('_')[1]
+    let hex = parent.id.split('_')[1];
+
     while (parent.childElementCount > 3)
         $(elem).next().remove();
 
@@ -65,36 +66,45 @@ function optionsForColumnType(elem) {
         case 'integer':
         case 'float':
             $(parent).append(`
-          <div class="d-inline-block">
-            <input class="w_80px" placeholder="limit" type="text" onclick="showInfo(this);"
-              name="columns[${hex}[options[limit]]]" id="columns_${hex}_params_limit">
-          </div>
-        `);
+              <div class="d-inline-block">
+                <input class="w_80px" placeholder="limit" type="text"
+                  name="columns[${hex}[options[limit]]]" id="columns_${hex}_params_limit">
+              </div>
+        `   );
+
+            $(`[id="columns_${hex}_params_limit"`).click(showInfo)
+
             break;
         case 'decimal':
             $(parent).append(`
-          <div class="d-inline-block">
-            <input class="w_80px" placeholder="precision" type="text" onclick="showInfo(this);"
-              name="columns[${hex}[options[precision]]]" id="columns_${hex}_params_precision">
-            <input class="w_80px" placeholder="scale" type="text" onclick="showInfo(this);"
-              name="columns[${hex}[options[scale]]]" id="columns_${hex}_params_scale">
-          </div>
-        `);
+              <div class="d-inline-block">
+                <input class="w_80px" placeholder="precision" type="text"
+                  name="columns[${hex}[options[precision]]]" id="columns_${hex}_params_precision">
+                <input class="w_80px" placeholder="scale" type="text"
+                  name="columns[${hex}[options[scale]]]" id="columns_${hex}_params_scale">
+              </div>
+            `);
+
+            $(`[id="columns_${hex}_params_precision"]`).click(showInfo)
+            $(`[id="columns_${hex}_params_scale"]`).click(showInfo)
+
             break;
         case 'datetime':
         case 'time':
             $(parent).append(`
-          <div class="d-inline-block">
-            <input class="w_80px" placeholder="precision" type="text" onclick="showInfo(this);"
-              name="columns[${hex}[options[precision]]]" id="columns_${hex}_params_precision">
-          </div>
-        `);
+              <div class="d-inline-block">
+                <input class="w_80px" placeholder="precision" type="text"
+                  name="columns[${hex}[options[precision]]]" id="columns_${hex}_params_precision">
+              </div>
+            `);
 
+            $(`[id="columns_${hex}_params_precision"]`).click(showInfo)
             break;
     }
 }
 
-function showInfo(elem) {
+function showInfo(event) {
+    let elem = event.currentTarget
     let info = ''
     let select = elem.parentNode.parentNode.querySelector("select")
     let selected = select.options[select.selectedIndex].value
