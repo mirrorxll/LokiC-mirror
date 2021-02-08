@@ -16,8 +16,8 @@ class PopulationsController < ApplicationController # :nodoc:
 
     if flash.now[:error].nil?
       args = population_params[:args]
-      PopulationJob.perform_later(@iteration, args)
       @iteration.update(population: false, population_args: args)
+      PopulationJob.perform_later(@iteration, args)
     end
 
     render 'staging_tables/show'

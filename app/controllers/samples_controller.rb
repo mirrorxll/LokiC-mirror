@@ -21,8 +21,8 @@ class SamplesController < ApplicationController # :nodoc:
   end
 
   def create_and_generate_auto_feedback
-    SamplesAndAutoFeedbackJob.perform_later(@iteration, samples_params)
     @story_type.iteration.update(story_samples: false)
+    SamplesAndAutoFeedbackJob.perform_later(@iteration, samples_params)
 
     render 'creations/create'
   end

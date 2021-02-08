@@ -6,9 +6,8 @@ class ExportConfigurationsController < ApplicationController
   def check; end
 
   def create
-    ExportConfigurationsJob.perform_later(@iteration)
-
     @iteration.update(export_configurations: false)
+    ExportConfigurationsJob.perform_later(@iteration)
   end
 
   def section; end
