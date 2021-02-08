@@ -3,36 +3,57 @@
 class CreationJob < ApplicationJob
   queue_as :creation
 
-  def perform(story_type, options = {})
-    ActiveRecord::Base.uncached do
-      MiniLokiC::Code.execute(story_type, :creation, options)
-      story_type.iteration.update(
-        schedule_counts: schedule_counts(story_type)
+  def perform(iteration, options = {})
+    status = true
+    message = 'Success. All samples have been created'
+
+    loop do
+      rd, wr = IO.pipe
+
+      Process.wait(
+        fork do
+          rd.close
+          MiniLokiC::Code.execute(iteration.story_type, :creation, options)
+        rescue StandardError => e
+          wr.write({ e.class.to_s => e.message }.to_json)
+        ensure
+          wr.close
+        end
       )
 
-      status = true
-      message = 'all samples created.'
-    rescue StandardError => e
-      status = nil
-      message = e
-    ensure
-      story_type.iteration.update(creation: status)
-      send_to_action_cable(story_type, creation_msg: message)
-      send_to_slack(story_type, message)
+      wr.close
+      exception = rd.read
+      rd.close
+
+      if exception.present?
+        klass, message = JSON.parse(exception).to_a.first
+        raise Object.const_get(klass), message
+      end
+
+      break if Table.left_count_by_last_iteration(iteration.story_type.staging_table.name).zero?
     end
+
+    iteration.update(schedule_counts: schedule_counts(iteration))
+  rescue StandardError => e
+    status = nil
+    message = e
+  ensure
+    iteration.update(creation: status)
+    send_to_action_cable(iteration, creation_msg: message)
+    send_to_slack(iteration, 'CREATION', message)
   end
 
   private
 
-  def schedule_counts(story_type)
+  def schedule_counts(iteration)
     counts = {}
-    counts[:total] = story_type.iteration.samples.count
+    counts[:total] = iteration.samples.count
     return counts if counts[:total].zero?
 
-    story_type.client_tags.each_with_object(counts) do |row, obj|
+    iteration.story_type.client_tags.each_with_object(counts) do |row, obj|
       client = row.client
       pubs = client.name.eql?('Metric Media') ? Client.all_mm_publications : client.publications
-      counts = pubs.joins(:samples).where(samples: { iteration: story_type.iteration })
+      counts = pubs.joins(:samples).where(samples: { iteration: iteration })
                    .group(:publication_id).order('count(publication_id) desc')
                    .count(:publication_id)
 

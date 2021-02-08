@@ -41,6 +41,10 @@ module MiniLokiC
       )
 
       story_type_class.new.send(@method, @options)
+
+    rescue StandardError => e
+      raise "MiniLokiC::#{@method.to_s.capitalize}ExecutionError".constantize,
+            "[ #{@method.to_s.capitalize}ExecutionError ] -> #{e.message} at #{e.backtrace.first}".gsub('`', "'")
     ensure
       Object.send(:remove_const, "S#{@story_type.id}") if Object.const_defined?("S#{@story_type.id}")
     end

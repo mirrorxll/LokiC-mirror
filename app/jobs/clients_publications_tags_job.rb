@@ -2,43 +2,32 @@ class ClientsPublicationsTagsJob < ApplicationJob
   queue_as :default
 
   def perform
-    ActiveRecord::Base.uncached do
-      clients_pubs_tags = PipelineReplica[:production].get_clients_publications_tags
-      clients_pubs_tags.reject! { |row| row['client_name'].eql?('Metric Media') }
+    Process.wait(
+      fork do
+        clients_pubs_tags = PipelineReplica[:production].get_clients_publications_tags
+        clients_pubs_tags.reject! { |row| row['client_name'].eql?('Metric Media') }
 
-      clients_pubs_tags.flatten.each do |cl_pub_tags|
-        client = update_client(cl_pub_tags)
-        publication = update_publication(client, cl_pub_tags)
-        update_tags(publication, cl_pub_tags)
+        clients_pubs_tags.flatten.each do |cl_pub_tags|
+          client = update_client(cl_pub_tags)
+          publication = update_publication(client, cl_pub_tags)
+          update_tags(publication, cl_pub_tags)
+        end
+
+        mm_gen = Client.find_or_initialize_by(name: 'Metric Media')
+        mm_gen.save!
+        mm_gen.touch
+
+        Client.where('DATE(updated_at) < CURRENT_DATE()').delete_all
+        Publication.where('DATE(updated_at) < CURRENT_DATE()').delete_all
       end
-
-      mm_gen = Client.find_or_initialize_by(name: 'Metric Media')
-      mm_gen.author = Author.find_by(name: 'Metric Media News Service')
-      mm_gen.save!
-      mm_gen.touch
-
-      Client.where('DATE(updated_at) < CURRENT_DATE()').delete_all
-      Publication.where('DATE(updated_at) < CURRENT_DATE()').delete_all
-    end
+    )
   end
 
   private
 
-  def author(client_name)
-    author =
-      if client_name.eql?('The Record')
-        'Record Inc News Service'
-      else
-        'Metric Media News Service'
-      end
-
-    Author.find_or_create_by!(name: author)
-  end
-
   def update_client(cl_pub_tags)
     client = Client.find_or_initialize_by(pl_identifier: cl_pub_tags['client_id'])
     client_name = cl_pub_tags['client_name']
-    client.author = author(client_name)
     client.name = client_name
     client.save!
     client.touch

@@ -21,7 +21,7 @@ class SamplesController < ApplicationController # :nodoc:
   end
 
   def create_and_generate_auto_feedback
-    SamplesAndAutoFeedbackJob.set(wait: 2.second).perform_later(@story_type, samples_params)
+    SamplesAndAutoFeedbackJob.set(wait: 1.second).perform_later(@iteration, samples_params)
     @story_type.iteration.update(story_samples: false)
 
     render 'creations/create'
@@ -37,7 +37,7 @@ class SamplesController < ApplicationController # :nodoc:
 
     @story_type.staging_table.samples_set_not_created
     @story_type.iteration.update(story_samples: nil)
-    flash.now[:message] = 'Samples deleted.'
+    flash.now[:message] = 'samples deleted'
   end
 
   private

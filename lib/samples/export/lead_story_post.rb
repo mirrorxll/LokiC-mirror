@@ -40,10 +40,19 @@ module Samples
           community_ids: [publication.pl_identifier]
         }
 
-        raw_response = @pl_client.post_lead_safe(params)
-        raise Samples::LeadPostError if (raw_response.status / 100) != 2
+        response = @pl_client.post_lead_safe(params)
+        body = JSON.parse(response.body)
 
-        JSON.parse(raw_response.body)['id']
+        raise_msg = "PL has returned status #{response.status}"
+        raise Faraday::ClientError, raise_msg if (response.status / 100).eql?(4)
+        raise Faraday::ServerError, raise_msg if (response.status / 100).eql?(5)
+
+        raise_msg = "PL didn't return lead_id (status: #{response.status}, response: #{response.body})"
+        raise ArgumentError, raise_msg if body['id'].nil?
+
+        body['id']
+      rescue StandardError => e
+        raise Samples::LeadPostError, "[#{e.class}] -> #{e.message} at #{e.backtrace.first}"
       end
 
       def published_at(date)
@@ -62,7 +71,7 @@ module Samples
         author = sample.publication.name
         client = sample.client
         publication = exp_config.publication
-        story_tag_ids = exp_config.tag.pl_identifier
+        story_tag_ids = publication.name.eql?('Dallas Express') ? [] : [exp_config.tag.pl_identifier]
         photo_bucket_id = exp_config.photo_bucket.pl_identifier
         published_at = published_at(sample.published_at)
         story_section_ids = client.sections.map { |section| section[:pl_identifier] }
@@ -80,31 +89,33 @@ module Samples
           published_at: published_at,
           author: author,
           story_section_ids: story_section_ids,
-          story_tag_ids: [story_tag_ids],
+          story_tag_ids: story_tag_ids,
           published: true,
           bucket_id: photo_bucket_id
         }
 
-        raw_response = @pl_client.post_story_safe(params)
-        response = JSON.parse(raw_response.body)
+        response = @pl_client.post_story_safe(params)
+        body = JSON.parse(response.body)
 
         # if story organization ids are broken,
         # it'll try to post story without organization ids
-        if (raw_response.status / 100) != 2 && response.any?(['organizations', 'is invalid'])
+        if (response.status / 100) != 2 && body.any?(['organizations', 'is invalid'])
           params[:organization_ids] = []
-          raw_response = @pl_client.post_story_safe(params)
-          response = JSON.parse(raw_response.body)
+          response = @pl_client.post_story_safe(params)
+          body = JSON.parse(response.body)
         end
 
-        if (raw_response.status / 100) != 2
-          @pl_client.delete_lead_safe(lead_id)
-          raise Samples::StoryPostError
-        end
+        raise_msg = "PL has returned status #{response.status}"
+        raise Faraday::ClientError, raise_msg if (response.status / 100).eql?(4)
+        raise Faraday::ServerError, raise_msg if (response.status / 100).eql?(5)
 
-        response['id']
-      rescue JSON::ParserError
+        raise_msg = "PL didn't return story_id (status: #{response.status}, response: #{response.body})"
+        raise ArgumentError, raise_msg if body['id'].nil?
+
+        body['id']
+      rescue StandardError => e
         @pl_client.delete_lead_safe(lead_id)
-        raise Samples::StoryPostError
+        raise Samples::StoryPostError, "[#{e.class}] -> #{e.message} at #{e.backtrace.first}".gsub('`', "'")
       end
     end
   end

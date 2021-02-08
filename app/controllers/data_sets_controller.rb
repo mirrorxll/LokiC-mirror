@@ -6,7 +6,6 @@ class DataSetsController < ApplicationController # :nodoc:
 
   before_action :render_400, except: :properties, if: :developer?
   before_action :find_data_set, except: %i[index create]
-  after_action  :new_data_set_notification, only: :create
   after_action  :set_default_props, only: %i[create update]
 
   def index
@@ -15,7 +14,7 @@ class DataSetsController < ApplicationController # :nodoc:
     @data_sets_grid = DataSetsGrid.new(params[:data_sets_grid])
     respond_to do |f|
       f.html do
-        @data_sets_grid.scope { |scope| scope.page(params[:page]) }
+        @data_sets_grid.scope { |scope| scope.page(params[:page]).per(50) }
       end
       f.csv do
         send_data @data_sets_grid.to_csv,
@@ -28,7 +27,7 @@ class DataSetsController < ApplicationController # :nodoc:
 
   def show
     @tab_title = @data_set.name
-    @story_types = @data_set.story_types
+    @story_types = @data_set.story_types.order(id: :desc)
 
     story_type_filter_params.each do |key, value|
       @story_types = @story_types.public_send(key, value) if value.present?
@@ -85,11 +84,5 @@ class DataSetsController < ApplicationController # :nodoc:
     params.require(:filter).slice(
       :editor, :developer, :client, :frequency, :status
     )
-  end
-
-  def new_data_set_notification
-    channel = Rails.env.production? ? 'hle_lokic_messages' : 'notifications_test'
-    message = "Added a new Data set. Details: #{data_set_url(@data_set)}"
-    SlackNotificationJob.perform_later(channel, message)
   end
 end

@@ -3,33 +3,34 @@
 class ExportConfigurationsJob < ApplicationJob
   queue_as :export_configurations
 
-  def perform(story_type)
-    ActiveRecord::Base.uncached do
+  def perform(iteration)
+    Process.wait(
+      fork do
+        status = true
+        message = 'Success'
+        exp_config_counts = {}
+        exp_config_counts.default = 0
+        st_cl_tgs = iteration.story_type.client_tags
 
-      exp_config_counts = {}
-      exp_config_counts.default = 0
-      st_cl_tgs = story_type.client_tags
+        iteration.story_type.staging_table.publication_ids.each do |pub_id|
+          publication = Publication.find_by(pl_identifier: pub_id)
+          cl_tg = st_client_tag(st_cl_tgs, publication)
+          next if publication.nil? || cl_tg.nil?
 
-      story_type.staging_table.publication_ids.each do |p_id|
-        publication = Publication.find_by(pl_identifier: p_id)
-        cl_tg = st_client_tag(st_cl_tgs, publication)
-        next if publication.nil? || cl_tg.nil?
+          create_update_export_config(iteration.story_type, publication, cl_tg.tag)
+          exp_config_counts[cl_tg.client.name] += 1
+        end
 
-        create_update_export_config(story_type, publication, cl_tg.tag)
-        exp_config_counts[cl_tg.client.name] += 1
+        iteration.update(export_configuration_counts: exp_config_counts)
+      rescue StandardError => e
+        status = nil
+        message = e
+      ensure
+        iteration.reload.update(export_configurations: status)
+        send_to_action_cable(iteration, export_configurations_msg: status)
+        send_to_slack(iteration, 'EXPORT CONFIGURATIONS', message)
       end
-
-      status = true
-      message = 'export configurations created.'
-      story_type.iteration.update(export_configuration_counts: exp_config_counts)
-    rescue StandardError => e
-      status = nil
-      message = e
-    ensure
-      story_type.iteration.update(export_configurations: status)
-      send_to_action_cable(story_type, export_configurations_msg: status)
-      send_to_slack(story_type, message)
-    end
+    )
   end
 
   private
@@ -46,7 +47,6 @@ class ExportConfigurationsJob < ApplicationJob
           client.publications
         end
 
-      publication.id
       publications.exists?(publication.id)
     end
   end

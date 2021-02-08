@@ -49,7 +49,7 @@
       .card-body
         =render 'story_types/properties'
 
--if @iteration.eql?(@story_type.current_iteration) && @iteration.export.nil?
+-if @iteration.eql?(@story_type.current_iteration)
   #story_type_staging_table.accordion
     .card
       .card-header

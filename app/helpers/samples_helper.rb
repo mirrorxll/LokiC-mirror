@@ -1,5 +1,13 @@
+# frozen_string_literal: true
+
 module SamplesHelper
   def samples_alert(message)
-    ['all samples created.', 'samples created.', 'last iteration purged.'].include?(message) ? 'success' : 'danger'
+    messages = [
+      "Success. FCD's samples have been created",
+      'Success. All samples have been created',
+      'Success. All samples have been removed'
+    ]
+
+    messages.include?(message) ? 'success' : 'danger'
   end
 end
