@@ -5,6 +5,8 @@ class SchedulerJob < ApplicationJob
     ActiveRecord::Base.uncached do
 
       iteration = story_type.iteration
+      return unless iteration.creation
+
       samples = iteration.samples
       status = nil
 
@@ -17,7 +19,7 @@ class SchedulerJob < ApplicationJob
           Scheduler::Backdate.backdate_scheduler(samples, backdate_params(options))
           'backdate scheduling success'
         when 'auto'
-          Scheduler::Auto.auto_scheduler(samples)
+          Scheduler::Auto.auto_scheduler(samples, options)
           'auto scheduling success'
         end
       status = true unless iteration.samples.where(published_at: nil).any?

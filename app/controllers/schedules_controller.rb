@@ -16,7 +16,7 @@ class SchedulesController < ApplicationController # :nodoc:
   end
 
   def auto
-    SchedulerJob.set(wait: 2.seconds).perform_later(@story_type, 'auto')
+    SchedulerJob.set(wait: 2.seconds).perform_later(@story_type, 'auto', auto_start_date)
     @story_type.iteration.update(schedule: false)
     render 'hide_section'
   end
@@ -32,6 +32,10 @@ class SchedulesController < ApplicationController # :nodoc:
     flash.now[:message] = update_section_params[:message] if message.present?
   end
 
+  def show_form
+    @type = type_params[:type]
+  end
+
   private
 
   def manual_params
@@ -45,6 +49,14 @@ class SchedulesController < ApplicationController # :nodoc:
 
   def backdated_params
     params.require(:backdate).permit!
+  end
+
+  def type_params
+    params.permit(:type)
+  end
+
+  def auto_start_date
+    params.permit(:start_date)
   end
 
   def update_section_params

@@ -1,0 +1,10 @@
+=form_with(url: auto_story_type_iteration_schedules_path(@story_type, @iteration)) do |form|
+  .row
+    .col-3
+      =form.label :start_date, 'start date:'
+    .col-5
+      =form.date_field :start_date, class: 'w-100'
+
+  .row.mt-3
+    .col-9
+      =form.submit 'schedule', class: 'btn btn-sm btn-outline-dark'

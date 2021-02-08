@@ -20,10 +20,5 @@
     .col-5
       =form.text_field :extra_args, class: 'w-100'
   .row.mt-3
-    .col-3
-      =link_to('auto schedule',
-               auto_story_type_iteration_schedules_path(@story_type, @iteration),
-               class: 'btn btn-sm btn-outline-dark',
-               method: :post, remote: true)
     .col-9
       =form.submit 'schedule', class: 'btn btn-sm btn-outline-dark'

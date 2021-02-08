@@ -1,0 +1,8 @@
+form_schedule = $('#form_schedule')
+<% if @type == 'manual'%>
+  form_schedule.html('<%= j render 'schedules/form' %>')
+<% elsif @type == 'auto'%>
+  form_schedule.html('<%= j render 'schedules/form_auto' %>')
+<% elsif @type == 'backdate'%>
+  form_schedule.html('<%= j render 'schedules/form_backdate', iteration: @iteration %>')
+<% end %>

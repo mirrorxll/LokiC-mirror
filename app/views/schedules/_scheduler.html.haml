@@ -14,16 +14,31 @@
         =render 'schedules/results_scheduling', scheduled: true
 -elsif @iteration.schedule.eql?(false)
   =render 'story_types/spinner', description: 'scheduling in progress'
+
 -else
   .row.small
-    .col-6.offset-1
-      =render 'schedules/form'
-    .col-4
+    .col-2.offset-1
+      =link_to 'manual schedule', show_form_story_type_iteration_schedules_path(@story_type, @iteration, type: 'manual'), class: 'btn btn-sm btn-outline-dark', remote: true
+    .col-2
+      =link_to 'auto schedule', show_form_story_type_iteration_schedules_path(@story_type, @iteration, type: 'auto'), class: 'btn btn-sm btn-outline-dark', remote: true
+    .col-2
+      =link_to 'backdate schedule', show_form_story_type_iteration_schedules_path(@story_type, @iteration, type: 'backdate'), class: 'btn btn-sm btn-outline-dark', remote: true
+    .col-4.offset-1
       =render 'schedules/results_scheduling', scheduled: false
+  .row.small
+    .col-6.offset-1
+      #form_schedule
 
-  -if @iteration.samples.where.not(published_at: nil).any?
-    %hr/
-    .row.small
-      .col-5.offset-1
-        #backdate_scheduler
-          =render 'schedules/form_backdate', iteration: @iteration
+-# -else
+-#   .row.small
+-#     .col-6.offset-1
+-#       =render 'schedules/form'
+-#     .col-4
+-#       =render 'schedules/results_scheduling', scheduled: false
+-#
+-#   -if @iteration.samples.where.not(published_at: nil).any?
+-#     %hr/
+-#     .row.small
+-#       .col-5.offset-1
+-#         #backdate_scheduler
+-#           =render 'schedules/form_backdate', iteration: @iteration
