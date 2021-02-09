@@ -102,11 +102,3 @@ class StoryTypesController < ApplicationController # :nodoc:
     params.require(:filter).slice(:data_set, :developer, :frequency, :status)
   end
 end
-
-Sample.where(publication_id: 691).map(&:export_configuration).uniq.each do |ec|
-
-end
-
-ExportConfiguration.where(publication_id: 691).each do |ec|
-  pl = Pipeline[:production].get_
-end
