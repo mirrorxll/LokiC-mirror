@@ -9,6 +9,8 @@ class SchedulerJob < ApplicationJob
 
     rd, wr = IO.pipe
 
+    return unless iteration.creation
+
     Process.wait(
       fork do
         rd.close
@@ -21,6 +23,8 @@ class SchedulerJob < ApplicationJob
           Scheduler::Backdate.backdate_scheduler(samples, backdate_params(options))
         when 'auto'
           Scheduler::Auto.auto_scheduler(samples)
+        when 'run_from_code'
+          Scheduler::FromCode.run_from_code(samples, options)
         end
 
       rescue StandardError => e

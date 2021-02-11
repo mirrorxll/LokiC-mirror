@@ -7,13 +7,13 @@ class ExportConfigurationsController < ApplicationController
 
   def create
     @iteration.update(export_configurations: false)
-    ExportConfigurationsJob.perform_later(@iteration)
+    ExportConfigurationsJob.set(wait: 2.seconds).perform_later(@iteration)
   end
 
   def section; end
 
   def update_tags
-    ExportConfiguration.update_tags(update_tags_params)
+    ExportConfiguration.set(wait: 2.seconds).update_tags(update_tags_params)
 
     render 'section'
   end
