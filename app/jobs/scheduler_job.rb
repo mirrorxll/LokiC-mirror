@@ -23,6 +23,8 @@ class SchedulerJob < ApplicationJob
           Scheduler::Backdate.backdate_scheduler(samples, backdate_params(options))
         when 'auto'
           Scheduler::Auto.auto_scheduler(samples, options)
+        when 'run_from_code'
+          Scheduler::FromCode.run_from_code(samples, options)
         end
 
       rescue StandardError => e

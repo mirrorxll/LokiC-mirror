@@ -11,10 +11,10 @@ class StoryTypesGrid
   filter(:state, :enum, left: true, select: State.all.pluck(:short_name, :full_name, :id).map { |r| [r[0] + ' - ' + r[1], r[2]] }) do |value, scope|
     scope.joins(data_set: [:state]).where(['states.id = ?', value])
   end
-  filter(:category, :enum, left: true, select: DataSetCategory.all.pluck(:name, :id)) do |value, scope|
+  filter(:category, :enum, left: true, select: DataSetCategory.all.order(:name).pluck(:name, :id)) do |value, scope|
     scope.joins(data_set: [:category]).where(['data_set_categories.id = ?', value])
   end
-  filter(:data_set, :enum, left: true, select: DataSet.all.pluck(:name, :id))
+  filter(:data_set, :enum, left: true, select: DataSet.all.order(:name).pluck(:name, :id))
   filter(:location, :string, left: true, header: 'Location (like)') do |value, scope|
     scope.joins(:data_set).where('location like ?', "%#{value}%")
   end

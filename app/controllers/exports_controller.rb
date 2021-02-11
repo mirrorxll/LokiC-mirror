@@ -4,13 +4,13 @@ class ExportsController < ApplicationController
   before_action :render_400, except: :exported_stories, if: :editor?
 
   def export
-    ExportJob.perform_later(@iteration)
     @iteration.update(export: false)
+    ExportJob.set(wait: 2.seconds).perform_later(@iteration)
   end
 
   def remove_from_pl
-    RemoveFromPlJob.perform_later(@iteration)
     @iteration.update(removing_from_pl: true)
+    RemoveFromPlJob.set(wait: 2.seconds).perform_later(@iteration)
   end
 
   def section; end

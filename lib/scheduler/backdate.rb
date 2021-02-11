@@ -6,6 +6,9 @@ module Scheduler
       schedule_args = 'backdated: '
       backdated_data = backdated_data.sort_by { |_date, arg| arg }.reverse
 
+      puts 'backdate'
+      puts backdated_data
+
       backdated_data.each do |date, arg|
         samples_backdated = samples.where(published_at: nil)
         next if samples.empty?

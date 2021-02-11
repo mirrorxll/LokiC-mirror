@@ -25,7 +25,6 @@ module Scheduler
     end
 
     def self.frequency_from_time_frame(sample)
-      puts '//q123123131313'
       case sample.first.time_frame.frame[0]
       when 'd'
         'daily'
@@ -94,8 +93,6 @@ module Scheduler
     end
 
     def self.schedule_annually(samples, start_date)
-      puts 'Annually'
-      puts start_date
       time_frame_ids = get_time_frame_ids(samples)
       previous_year = Time.now.year - 1
       time_frame_ids.each do |frame|
@@ -114,9 +111,6 @@ module Scheduler
     end
 
     def self.run(start_publish_date, limit, total_days_till_end, backdated_date, samples_time_frame)
-      puts start_publish_date
-      puts '/////'
-
       params = {
         start_date: start_publish_date,
         limit: limit,
