@@ -5,7 +5,7 @@ class CreationsController < ApplicationController # :nodoc:
 
   def create
     @iteration.update(creation: false)
-    CreationJob.perform_later(@iteration)
+    CreationJob.set(wait: 2.seconds).perform_later(@iteration)
   end
 
   def purge_all
@@ -13,7 +13,7 @@ class CreationsController < ApplicationController # :nodoc:
       flash.now[:error] = 'At least one story from this iteration has already exported to PL.'
     else
       @story_type.iteration.update(purge_all_samples: true)
-      RemoveSamplesByLastIterationJob.perform_later(@iteration)
+      RemoveSamplesByLastIterationJob.set(wait: 2.seconds).perform_later(@iteration)
     end
   end
 end
