@@ -9,8 +9,6 @@ class SchedulerJob < ApplicationJob
 
     rd, wr = IO.pipe
 
-    return unless iteration.creation
-
     Process.wait(
       fork do
         rd.close
@@ -48,9 +46,7 @@ class SchedulerJob < ApplicationJob
     status = nil
     message = e
   ensure
-    puts status
     iteration.update(schedule: status)
-    puts iteration
     send_to_action_cable(iteration, scheduler_msg: message)
     send_to_slack(iteration, "#{type.upcase}-SCHEDULING", message)
   end
