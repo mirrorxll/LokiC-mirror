@@ -13,7 +13,7 @@ class CreationJob < ApplicationJob
       Process.wait(
         fork do
           rd.close
-          MiniLokiC::Code.execute(iteration.story_type, :creation, options)
+          MiniLokiC::Code.execute(iteration, :creation, options)
         rescue StandardError => e
           wr.write({ e.class.to_s => e.message }.to_json)
         ensure
@@ -30,7 +30,8 @@ class CreationJob < ApplicationJob
         raise Object.const_get(klass), message
       end
 
-      break if Table.left_count_by_last_iteration(iteration.story_type.staging_table.name).zero?
+      staging_table = iteration.story_type.staging_table.name
+      break if Table.left_count_by_last_iteration(staging_table).zero?
     end
 
     iteration.update(schedule_counts: schedule_counts(iteration))

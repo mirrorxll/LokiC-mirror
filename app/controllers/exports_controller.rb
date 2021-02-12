@@ -5,12 +5,12 @@ class ExportsController < ApplicationController
 
   def export
     @iteration.update(export: false)
-    ExportJob.set(wait: 2.seconds).perform_later(@iteration)
+    ExportJob.perform_later(@iteration)
   end
 
   def remove_from_pl
     @iteration.update(removing_from_pl: true)
-    RemoveFromPlJob.set(wait: 2.seconds).perform_later(@iteration)
+    RemoveFromPlJob.perform_later(@iteration)
   end
 
   def section; end

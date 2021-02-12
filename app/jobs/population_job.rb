@@ -10,9 +10,7 @@ class PopulationJob < ApplicationJob
         status = true
         message = 'Success'
 
-        MiniLokiC::Code.execute(iteration.story_type, :population, options)
-
-        iteration.update(population: true)
+        MiniLokiC::Code.execute(iteration, :population, options)
       rescue StandardError => e
         status = nil
         message = e

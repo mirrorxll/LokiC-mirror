@@ -5,19 +5,19 @@ class SchedulesController < ApplicationController # :nodoc:
 
   def manual
     @iteration.update(schedule: false)
-    SchedulerJob.set(wait: 2.seconds).perform_later(@iteration, 'manual', manual_params)
+    SchedulerJob.perform_later(@iteration, 'manual', manual_params)
     render 'hide_section'
   end
 
   def backdate
     @iteration.update(schedule: false)
-    SchedulerJob.set(wait: 2.seconds).perform_later(@iteration, 'backdate', backdated_params)
+    SchedulerJob.perform_later(@iteration, 'backdate', backdated_params)
     render 'hide_section'
   end
 
   def auto
     @iteration.update(schedule: false)
-    SchedulerJob.set(wait: 2.seconds).perform_later(@iteration, 'auto')
+    SchedulerJob.perform_later(@iteration, 'auto')
     render 'hide_section'
   end
 

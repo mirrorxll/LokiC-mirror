@@ -15,9 +15,9 @@ class PopulationsController < ApplicationController # :nodoc:
       end
 
     if flash.now[:error].nil?
-      args = population_params[:args]
-      @iteration.update(population: false, population_args: args)
-      PopulationJob.set(wait: 2.seconds).perform_later(@iteration, args)
+      args = { population: false }.merge(population_params)
+      @iteration.update(args)
+      PopulationJob.perform_later(@iteration, args)
     end
 
     render 'staging_tables/show'
@@ -40,7 +40,7 @@ class PopulationsController < ApplicationController # :nodoc:
   private
 
   def population_params
-    params.require(:population).permit(:args)
+    { population_args: params.require(:population).permit(:args)[:args] }
   end
 
   def staging_table

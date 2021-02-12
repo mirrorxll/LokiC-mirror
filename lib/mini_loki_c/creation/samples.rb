@@ -5,11 +5,11 @@ module MiniLokiC
     # insert created samples to samples table
     class Samples
       def initialize(staging_table, options)
-        @sampled = options[:sampled].present?
         @staging_table = staging_table
-        @s_type = StagingTable.find_by(name: @staging_table).story_type
-        @iteration = @s_type.iteration
-        @export_configs = @s_type.export_configurations.joins(:publication)
+        @sampled = !!options[:sampled]
+        @iteration = options[:iteration]
+        @story_type = @iteration.story_type
+        @export_configs = @story_type.export_configurations.joins(:publication)
       end
 
       def insert(sample)
@@ -28,7 +28,7 @@ module MiniLokiC
         client = publication.client
 
         {
-          story_type: @s_type,
+          story_type: @story_type,
           output: output,
           staging_row_id: @raw_sample[:staging_row_id],
           client: client,
