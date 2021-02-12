@@ -10,14 +10,10 @@
   - creation
   - scheduler
   - export
-  - cron_tab
   - assembleds
   - import
 
 :schedule:
-  initialize:
-    in: '0s'
-    class: CronTabInitializerJob
   clients_publications_tags:
     cron: '0 0 * * *'
     class: ClientsPublicationsTagsJob
