@@ -1,6 +1,7 @@
 :dynamic: true
 
 :concurrency: 20
+
 :queues:
   - cron_tab
 

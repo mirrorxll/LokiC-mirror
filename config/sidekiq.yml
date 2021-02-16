@@ -1,6 +1,7 @@
 :dynamic: true
 
 :concurrency: 30
+
 :queues:
   - default
   - slack_api
@@ -14,18 +15,6 @@
   - import
 
 :schedule:
-  clients_publications_tags:
-    cron: '0 0 * * *'
-    class: ClientsPublicationsTagsJob
-  clients_tags:
-    cron: '10 0 * * *'
-    class: ClientsTagsJob
-  sections:
-    cron: '20 0 * * *'
-    class: SectionsJob
-  photo_buckets:
-    cron: '30 0 * * *'
-    class: PhotoBucketsJob
-  slack_accounts:
-    cron: '40 0 * * *'
-    class: SlackAccountsJob
+  initialize:
+    in: '0s'
+    class: CronTabInitializerJob
