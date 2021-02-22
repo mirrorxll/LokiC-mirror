@@ -12,10 +12,11 @@ module Samples
     include AutoFeedbackGenerator::SampleToHash
     include AutoFeedbackGenerator::Rules
 
-    def initialize(story_type)
+    def initialize(story_type, confirmed)
       @iteration = story_type.iteration
       @samples = @iteration.samples.where(sampled: true).joins(:output)
       @feedback_rules = AutoFeedback.all.to_a
+      @confirmed = confirmed
 
       @db02 = Samples::Mysql.on(DB02, 'loki_storycreator')
       @states = list_states
@@ -37,7 +38,8 @@ module Samples
             @iteration.auto_feedback_confirmations.last.update(
               sample: sample,
               sample_part: part_txt[0].to_s.singularize,
-              sample_txt_part: part_txt[1]
+              sample_txt_part: part_txt[1],
+              confirmed: @confirmed
             )
           end
 
