@@ -1,4 +1,8 @@
 %hr/
+.d-flex.justify-content-between
+  #add_row_clone.btn.btn-sm.btn-outline-dark.ml-2 add row
+  #submit_clone.btn.btn-sm.btn-outline-dark.mr-2 submit
+%hr/
 %section#hours.small
   .row.text-center
     .col-1 hours
@@ -25,3 +29,12 @@
           .col-1
             =link_to(icon('fas', 'minus', class: 'fas fa-minus'), exclude_row_tracking_hour_path(id: row['id']), method: :delete, remote: true, style: "color:black;")
         %hr/
+
+:javascript
+    $('#add_row_clone').click(function () {
+      $('#add_row').click();
+    });
+
+    $('#submit_clone').click(function () {
+      $('#submit').click();
+    });

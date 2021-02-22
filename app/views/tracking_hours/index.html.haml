@@ -1,5 +1,9 @@
 .row
-  .col-10
+  .col-2
+    %div{ id: "total_hours", developer_id: current_account.id, week_id: @week.id }
+      -unless @rows_reports.empty?
+        =render 'total_hours', rows_reports: @rows_reports
+  .col-8
     .nav.nav-tabs.justify-content-center
       -weeks.each do |week|
         .nav-item
@@ -16,10 +20,6 @@
   =render 'tracking_hours/table', rows_reports: @rows_reports
 #forms.small
   =render 'tracking_hours/form', week: @week
-
-%div{ id: "total_hours", developer_id: current_account.id, week_id: @week.id }
-  -unless @rows_reports.empty?
-    =render 'total_hours', rows_reports: @rows_reports
 
 #import-data.modal.fade.import-data-modal-lg{"aria-hidden" => "true", "aria-labelledby" => "import-data", role: "dialog", :tabindex => "-1"}
   .modal-dialog.modal-dialog-centered.modal-lg
