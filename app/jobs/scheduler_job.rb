@@ -9,8 +9,6 @@ class SchedulerJob < ApplicationJob
 
     rd, wr = IO.pipe
 
-    return unless iteration.creation
-
     Process.wait(
       fork do
         rd.close
@@ -22,8 +20,8 @@ class SchedulerJob < ApplicationJob
         when 'backdate'
           Scheduler::Backdate.backdate_scheduler(samples, backdate_params(options))
         when 'auto'
-          Scheduler::Auto.auto_scheduler(samples, options)
-        when 'run_from_code'
+          Scheduler::Auto.auto_scheduler(samples)
+        when 'run-from-code'
           Scheduler::FromCode.run_from_code(samples, options)
         end
 
@@ -43,7 +41,7 @@ class SchedulerJob < ApplicationJob
       raise Object.const_get(klass), message
     end
 
-    status = true unless iteration.samples.where(published_at: nil).any?
+    status = true unless iteration.reload.samples.where(published_at: nil).any?
   rescue StandardError => e
     status = nil
     message = e

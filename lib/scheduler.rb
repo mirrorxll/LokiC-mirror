@@ -1,11 +1,19 @@
 # frozen_string_literal: true
 
-module Scheduler
-  def self.run(samples, params = {})
-    return if !ENV['RAILS_ENV'] || samples.instance_variable_get(:@sampled)
+require_relative 'mini_loki_c/connect/mysql.rb'
+require_relative 'scheduler/base.rb'
+require_relative 'scheduler/backdate.rb'
+require_relative 'scheduler/auto.rb'
 
-    iteration = samples.instance_variable_get(:@iteration)
-    SchedulerJob.set(wait: 2.seconds).perform_later(iteration, 'run_from_code', params)
-    iteration.update(schedule: false)
+module Scheduler
+  include Scheduler::Base
+  include Scheduler::Backdate
+  include Scheduler::Auto
+
+  def self.run(staging_table, options, scheduling_rules)
+    return if options[:sampled] || Table.left_count_by_last_iteration(staging_table).positive?
+
+    options[:iteration].update(schedule: false)
+    SchedulerJob.perform_now(options[:iteration], 'run-from-code', scheduling_rules)
   end
 end

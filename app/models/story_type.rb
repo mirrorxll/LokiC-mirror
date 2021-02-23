@@ -47,7 +47,7 @@ class StoryType < ApplicationRecord # :nodoc:
   end
 
   def download_code_from_db
-    MiniLokiC::Code.download(self)
+    MiniLokiC::Code.download(iteration)
   end
 end
 

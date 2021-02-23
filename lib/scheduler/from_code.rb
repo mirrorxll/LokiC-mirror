@@ -12,6 +12,7 @@ module Scheduler
     def self.backdate_params(params)
       return { params => '' } if params.class == String
 
+<<<<<<< HEAD
       puts params.count
       backdate_params = {}
       params.each do |elem|
@@ -22,6 +23,12 @@ module Scheduler
       end
       puts '1111111'
       puts backdate_params
+=======
+      backdate_params = {}
+      params.each do |elem|
+        elem.class == String ? backdate_params[elem.to_s] = '' : backdate_params[elem.first[0].to_s] = elem.first[1]
+      end
+>>>>>>> eed9d9e977f3a965fcbb5e613884a904651062ce
       backdate_params
     end
   end

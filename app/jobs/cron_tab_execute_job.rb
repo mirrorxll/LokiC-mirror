@@ -8,16 +8,26 @@ class CronTabExecuteJob < ApplicationJob
     cron_tab = story_type.cron_tab
     return if cron_tab.freeze_execution
 
-    iteration = story_type.iterations.create(name: DateTime.now.strftime('%Y:%m:%d:%H:%M'))
+    iteration = story_type.iterations.create(name: DateTime.now.strftime('CT%Y%m%d'))
     story_type.update(current_iteration: iteration)
     story_type.staging_table.default_iter_id
 
-    raise RuntimeError unless PopulationJob.perform_now(iteration, cron_tab.population_params)
-    raise RuntimeError unless ExportConfigurationsJob.perform_now(iteration)
-    raise RuntimeError unless SamplesAndAutoFeedbackJob.perform_now(iteration, cron: true)
-    raise RuntimeError unless CreationJob.perform_now(iteration)
-    raise RuntimeError unless ExportJob.perform_now(iteration)
+    iteration.update(population: false, population_args: cron_tab.population_params)
+    raise StandardError unless PopulationJob.perform_now(iteration, population_args: cron_tab.population_params)
+
+    iteration.update(export_configurations: false)
+    raise StandardError unless ExportConfigurationsJob.perform_now(iteration)
+
+    iteration.update(story_samples: false)
+    raise StandardError unless SamplesAndAutoFeedbackJob.perform_now(iteration, cron: true)
+
+    iteration.update(creation: false)
+    raise StandardError unless CreationJob.perform_now(iteration)
+
+    iteration.update(export: false)
+    raise StandardError unless ExportJob.perform_now(iteration)
   rescue StandardError
-    false
+    message = 'Something went wrong. Please, check messages above'
+    send_to_slack(iteration, 'CRONTAB', message)
   end
 end

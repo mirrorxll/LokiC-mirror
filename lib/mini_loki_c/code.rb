@@ -3,20 +3,30 @@
 module MiniLokiC
   # Execute uploaded stage population/story creation code
   class Code
-    def self.execute(story_type, method, options)
-      new(story_type, method, options).send(:exec)
+    def self.execute(iteration, method, options)
+      new(iteration, method, options).send(:exec)
     end
 
-    def self.download(story_type)
-      new(story_type).send(:download)
+    def self.download(iteration)
+      new(iteration).send(:download)
     end
 
     private
 
-    def initialize(story_type, method = nil, options = {})
-      @story_type = story_type
-      @method = method
-      @options = method.eql?(:population) ? options_to_hash(options) : options
+    def initialize(iteration, method = nil, options = {})
+      @story_type = iteration.story_type
+      @method = method.to_s
+
+      @options =
+        case method
+        when :population
+          options_to_hash(options[:population_args])
+        when :creation
+          options[:iteration] = iteration
+          options
+        else
+          options
+        end
     end
 
     def download
@@ -43,8 +53,8 @@ module MiniLokiC
       story_type_class.new.send(@method, @options)
 
     rescue StandardError => e
-      raise "MiniLokiC::#{@method.to_s.capitalize}ExecutionError".constantize,
-            "[ #{@method.to_s.capitalize}ExecutionError ] -> #{e.message} at #{e.backtrace.first}".gsub('`', "'")
+      raise "MiniLokiC::#{@method.capitalize}ExecutionError".constantize,
+            "[ #{@method.capitalize}ExecutionError ] -> #{e.message} at #{e.backtrace.first}".gsub('`', "'")
     ensure
       Object.send(:remove_const, "S#{@story_type.id}") if Object.const_defined?("S#{@story_type.id}")
     end

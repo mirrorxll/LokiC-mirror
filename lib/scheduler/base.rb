@@ -98,7 +98,7 @@ module Scheduler
 
       samples_for_iteration = Sample.where(iteration: iteration).where(published_at: nil)
       iteration.update_attribute(:schedule, true) if samples_for_iteration.where(published_at: nil).empty?
-      options_for_schedule_args = options.select { |k,v| [:start_date, :limit, :total_days_till_end, :extra_args].include?(k) }
+      options_for_schedule_args = options.select { |k,_v| %i[start_date limit total_days_till_end extra_args].include?(k) }
       iteration.update_attribute(:schedule_args, iteration.schedule_args.nil? ? "shedule: #{options_for_schedule_args};" : iteration.schedule_args += "#{options_for_schedule_args};")
     end
 
