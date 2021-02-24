@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class AssembledsJob < ApplicationJob
-  queue_as :assembleds
+  queue_as :lokic
 
   def perform(week, link)
     assembleds = Assembled.where(week: week)

@@ -1,4 +1,6 @@
--if !@story_type.iteration.eql?(@iteration)
+-if !@iteration.creation
+  -#empty section
+-elsif !@story_type.iteration.eql?(@iteration)
   .row.small
     .col-10.offset-1
       #results_scheduling

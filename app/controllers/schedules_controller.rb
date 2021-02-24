@@ -27,11 +27,6 @@ class SchedulesController < ApplicationController # :nodoc:
     flash.now[:message] = 'scheduling purged'
   end
 
-  def section
-    message = update_section_params[:message]
-    flash.now[:message] = update_section_params[:message] if message.present?
-  end
-
   private
 
   def manual_params

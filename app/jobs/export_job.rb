@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ExportJob < ApplicationJob
-  queue_as :export
+  queue_as :story_type
 
   def perform(iteration)
     status = true
@@ -59,7 +59,7 @@ class ExportJob < ApplicationJob
     message = e.message
   ensure
     iteration.reload.update(export: status)
-    send_to_action_cable(iteration, export_msg: status)
+    send_to_action_cable(iteration, :export, message)
     send_to_slack(iteration, 'EXPORT', message)
     iteration.export
   end

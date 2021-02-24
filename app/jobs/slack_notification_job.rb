@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SlackNotificationJob < ApplicationJob
-  queue_as :slack_api
+  queue_as :lokic
 
   def perform(identifier, msg, thread_ts = nil)
     params = {

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ExportConfigurationsJob < ApplicationJob
-  queue_as :export_configurations
+  queue_as :story_type
 
   def perform(iteration)
     Process.wait(
@@ -27,7 +27,7 @@ class ExportConfigurationsJob < ApplicationJob
         message = e
       ensure
         iteration.update(export_configurations: status)
-        send_to_action_cable(iteration, export_configurations_msg: status)
+        send_to_action_cable(iteration, :export_configurations, message)
         send_to_slack(iteration, 'EXPORT CONFIGURATIONS', message)
       end
     )

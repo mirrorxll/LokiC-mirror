@@ -1,12 +1,12 @@
 -hashed_pattern = @cron_tab.setup.empty? ? @cron_tab.setup : @cron_tab.setup[:pattern]
 
 =form_with(model: [@story_type, @cron_tab], html: { class: 'm-3'}) do |form|
-  .text-center.mb-2
+  .mb-2
     %div{ class: 'w-339_25px text-left d-inline-block' }
       =form.check_box :enabled
       =form.label :enabled, 'enabled'
 
-  #cron_pattern.text-center
+  #cron_pattern
     .text-secondary.d-inline-block
       (minute)
       %br/
@@ -37,15 +37,13 @@
       =form.text_field 'setup[pattern[week_day]]',
                        class: 'w-65px form-control form-control-sm',
                        value: hashed_pattern[:week_day], required: true
-  .text-center
-    =form.text_field 'setup[population_params]', placeholder: 'population params',
-                     class: 'w-339_25px mt-2 form-control form-control-sm d-inline-block',
-                     value: @cron_tab.setup[:population_params]
-    =form.submit 'setup cron tab', class: 'w-250px mt-2 в-шт btn btn-sm btn-outline-dark'
-    =link_to('cancel', '#', class: 'w-85px mt-2 btn btn-sm btn-light')
+  =form.text_field 'setup[population_params]', placeholder: 'population params',
+                   class: 'w-339_25px mt-2 form-control form-control-sm d-inline-block',
+                   value: @cron_tab.setup[:population_params]
+  =form.submit 'setup cron tab', class: 'w-250px mt-2 в-шт btn btn-sm btn-outline-dark'
+  =link_to('cancel', '#', class: 'w-85px mt-2 btn btn-sm btn-light')
 
 %hr/
-#cron_description.text-center
-%hr/
+#cron_description.ml-3
 
 =javascript_pack_tag 'cron/form'

@@ -5,7 +5,7 @@ class PopulationsController < ApplicationController # :nodoc:
   before_action :staging_table
 
   def create
-    render_400 && return unless @iteration.population.nil?
+    render_400 && return if [true, false].include?(@iteration.population)
 
     flash.now[:error] =
       if @staging_table.nil? || StagingTable.not_exists?(@staging_table.name)

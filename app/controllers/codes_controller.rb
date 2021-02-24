@@ -7,7 +7,7 @@ class CodesController < ApplicationController # :nodoc:
 
   def show
     code = @story_type.code.download
-    @ruby_code = CodeRay.scan(code, :ruby).div(line_numbers: :table)
+    @ruby_code = CodeRay.scan(cod, :ruby).div(line_numbers: :table)
   end
 
   def attach
@@ -25,9 +25,5 @@ class CodesController < ApplicationController # :nodoc:
 
     @story_type.code.purge
     @story_type.code.attach(io: StringIO.new(code), filename: "S#{@story_type.id}.rb")
-  end
-
-  def detach
-    @story_type.code.purge if @story_type.code.attached?
   end
 end

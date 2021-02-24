@@ -16,7 +16,7 @@ module Pipeline
         }
       }
 
-      Faraday::Connection.new(endpoint, headers)
+      Faraday::Connection.new(endpoint, headers) { |c| c.response :raise_error }
     end
   end
 end

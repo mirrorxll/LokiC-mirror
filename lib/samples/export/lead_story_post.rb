@@ -43,12 +43,12 @@ module Samples
         response = @pl_client.post_lead_safe(params)
         body = JSON.parse(response.body)
 
-        raise_msg = "PL has returned status #{response.status}"
-        raise Faraday::ClientError, raise_msg if (response.status / 100).eql?(4)
-        raise Faraday::ServerError, raise_msg if (response.status / 100).eql?(5)
+        raise_message = "PL has returned status #{response.status}"
+        raise Faraday::ClientError, raise_message if (response.status / 100).eql?(4)
+        raise Faraday::ServerError, raise_message if (response.status / 100).eql?(5)
 
-        raise_msg = "PL didn't return lead_id (status: #{response.status}, response: #{response.body})"
-        raise ArgumentError, raise_msg if body['id'].nil?
+        raise_message = "PL didn't return lead_id (status: #{response.status}, response: #{response.body})"
+        raise ArgumentError, raise_message if body['id'].nil?
 
         body['id']
       rescue StandardError => e
@@ -105,12 +105,12 @@ module Samples
           body = JSON.parse(response.body)
         end
 
-        raise_msg = "PL has returned status #{response.status}"
-        raise Faraday::ClientError, raise_msg if (response.status / 100).eql?(4)
-        raise Faraday::ServerError, raise_msg if (response.status / 100).eql?(5)
+        raise_message = "PL has returned status #{response.status}"
+        raise Faraday::ClientError, raise_message if (response.status / 100).eql?(4)
+        raise Faraday::ServerError, raise_message if (response.status / 100).eql?(5)
 
-        raise_msg = "PL didn't return story_id (status: #{response.status}, response: #{response.body})"
-        raise ArgumentError, raise_msg if body['id'].nil?
+        raise_message = "PL didn't return story_id (status: #{response.status}, response: #{response.body})"
+        raise ArgumentError, raise_message if body['id'].nil?
 
         body['id']
       rescue StandardError => e

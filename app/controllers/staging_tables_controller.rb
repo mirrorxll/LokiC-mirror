@@ -2,33 +2,22 @@
 
 class StagingTablesController < ApplicationController # :nodoc:
   before_action :render_400, if: :editor?
-  before_action :attach_staging_table, only: %i[attach]
+  before_action :staging_table_name_from_params, only: :create
   before_action :staging_table
 
   def create
     flash.now[:error] =
       if @staging_table.present?
         'Table for this story type already exist. Please update the page.'
-      elsif StagingTable.find_by(name: "s#{@story_type.id}_staging")
-        "Table with name 's#{@story_type.id}_staging' already attached to another story type."
-      end
-
-    @story_type.create_staging_table if flash.now[:error].nil?
-
-    render 'show'
-  end
-
-  def attach
-    flash.now[:error] =
-      if @staging_table.present?
-        'Table for this story type already attached. Please update the page.'
       elsif StagingTable.find_by(name: @staging_table_name)
-        "This table already attached to another story type. Please pass another staging table's name."
-      elsif StagingTable.not_exists?(@staging_table_name)
-        'Table not found.'
+        "Table with name '#{@staging_table_name}' already attached to another story type."
+      elsif @staging_table_name.present? && StagingTable.not_exists?(@staging_table_name)
+        "Table with name '#{@staging_table_name}' not exists."
+      else
+        StagingTableAttachingJob.perform_later(@story_type, @staging_table_name)
+        @story_type.update(staging_table_attached: false)
+        nil
       end
-
-    @story_type.create_staging_table(name: @staging_table_name) if flash.now[:error].nil?
 
     render 'show'
   end
@@ -36,6 +25,7 @@ class StagingTablesController < ApplicationController # :nodoc:
   def detach
     staging_table_action do
       messages = @staging_table.destroy.errors.full_messages
+      @story_type.update(staging_table_attached: nil)
       messages.any? ? messages.join(' | ') : nil
     end
 
@@ -52,17 +42,10 @@ class StagingTablesController < ApplicationController # :nodoc:
     render 'show'
   end
 
-  def section
-    flash.now[:error] = detached_or_delete if @staging_table.nil?
-
-    render 'show'
-  end
-
   private
 
-  def attach_staging_table
-    @staging_table_name =
-      params.require(:staging_table).permit(:name)[:name]
+  def staging_table_name_from_params
+    @staging_table_name = params.require(:staging_table).permit(:name)[:name]
   end
 
   def staging_table

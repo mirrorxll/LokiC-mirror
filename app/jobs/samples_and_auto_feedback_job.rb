@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SamplesAndAutoFeedbackJob < ApplicationJob
-  queue_as :samples
+  queue_as :story_type
 
   def perform(iteration, options = {})
     Process.wait(
@@ -28,12 +28,12 @@ class SamplesAndAutoFeedbackJob < ApplicationJob
         Samples.auto_feedback(iteration.story_type, true)
 
         iteration.update(story_sample_args: sample_args)
-      rescue StandardError => e
+      rescue StandardError, ScriptError => e
         status = nil
         message = e.message
       ensure
         iteration.update(story_samples: status)
-        send_to_action_cable(iteration, samples_msg: message)
+        send_to_action_cable(iteration, :samples, message)
       end
     )
 

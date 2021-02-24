@@ -2,7 +2,7 @@
 
 # Execute population method on sidekiq backend
 class PopulationJob < ApplicationJob
-  queue_as :population
+  queue_as :story_type
 
   def perform(iteration, options = {})
     Process.wait(
@@ -11,12 +11,12 @@ class PopulationJob < ApplicationJob
         message = 'Success'
 
         MiniLokiC::Code.execute(iteration, :population, options)
-      rescue StandardError => e
+      rescue StandardError, ScriptError => e
         status = nil
         message = e
       ensure
         iteration.update(population: status)
-        send_to_action_cable(iteration, population_msg: message)
+        send_to_action_cable(iteration, :population, message)
         send_to_slack(iteration, 'POPULATION', message)
       end
     )

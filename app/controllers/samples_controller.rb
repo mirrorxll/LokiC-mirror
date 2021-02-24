@@ -27,10 +27,6 @@ class SamplesController < ApplicationController # :nodoc:
     render 'creations/create'
   end
 
-  def section
-    flash.now[:message] = update_section_params[:message]
-  end
-
   def purge_sampled
     @iteration.samples.where(sampled: true).destroy_all
     @iteration.auto_feedback_confirmations.destroy_all

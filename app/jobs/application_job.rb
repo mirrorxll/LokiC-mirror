@@ -5,9 +5,10 @@ class ApplicationJob < ActiveJob::Base
 
   private
 
-  def send_to_action_cable(iteration, message = {})
-    action_cable_send = { status: iteration }.merge(message)
-    StoryTypeChannel.broadcast_to(iteration.story_type, action_cable_send)
+  def send_to_action_cable(iteration, key, message)
+    message_to_send = { iteration_id: iteration.id, message: { key: key, key => message } }
+
+    StoryTypeChannel.broadcast_to(iteration.story_type, message_to_send)
   end
 
   def send_to_slack(iteration, step, raw_message)

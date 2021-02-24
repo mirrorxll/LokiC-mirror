@@ -1,0 +1,17 @@
+(function () {
+    $('#export_configs').html('<%= j render 'export_configurations/export_configurations' %>');
+
+    let stFlash = $('#staging_table .flash');
+    let stBody = $('#staging_table .card-body');
+
+    <% if flash.now[:staging_table] %>
+      stFlash.html(
+        `<div class="alert alert-danger text-center">
+          <%= flash.now[:staging_table].gsub('`', "'") %>
+        </div>`
+      )
+    <% else %>
+      stFlash.empty();
+    <% end %>
+    stBody.html('<%= j render 'staging_tables/staging_table'%>')
+})()

@@ -1,4 +1,4 @@
-# fronzen_string_literal: true
+# frozen_string_literal: true
 
 require 'sidekiq/web'
 require 'sidekiq-scheduler/web'
@@ -31,8 +31,9 @@ Rails.application.routes.draw do
   end
 
   resources :story_types, except: %i[new create] do
-    get :properties
-    get :canceling_edit, on: :member
+    get   :properties
+    get   :canceling_edit,  on: :member
+    patch :update_sections, on: :member
 
     resources :templates, path: :template, only: %i[show edit update] do
       patch :save, on: :member
@@ -78,7 +79,6 @@ Rails.application.routes.draw do
       get    :show,   on: :collection
       post   :attach, on: :collection
       put    :reload, on: :collection
-      delete :detach, on: :collection
     end
 
     resources :export_configurations, only: :create do
@@ -142,9 +142,6 @@ Rails.application.routes.draw do
       end
     end
   end
-
-  # summernote image upload/destroy points
-  resources :uploads, only: %i[create destroy]
 
   resources :slack_accounts, only: %i[] do
     patch :sync

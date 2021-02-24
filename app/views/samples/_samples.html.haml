@@ -1,9 +1,10 @@
--samples = @iteration.samples.where(sampled: true)
-
--if !@story_type.iteration.eql?(@iteration)
+-if !@iteration.export_configurations
+  -#empty section
+-elsif !@story_type.iteration.eql?(@iteration)
   .row
     .col-10.offset-1
       #created_samples
+        -samples = @iteration.samples.where(sampled: true)
         -if samples.count.positive?
           =render samples
         -else
@@ -22,6 +23,7 @@
 -elsif @iteration.story_samples.eql?(false) || @iteration.creation.eql?(false)
   =render 'story_types/spinner', description: 'samples creation in the process'
 -else
+  -samples = @iteration.samples.where(sampled: true)
   .row
     .col-10.offset-1
       #samples_form

@@ -22,7 +22,7 @@ module Pipeline
 
       begin
         send(method, *args)
-      rescue Faraday::Error => e
+      rescue Faraday::ServerError => e
         raise e if sleep > 127
 
         sleep(sleep)

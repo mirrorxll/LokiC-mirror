@@ -15,6 +15,11 @@ class IndicesController < ApplicationController
   end
 
   def create
+    staging_table_action do
+      @staging_table.columns.update(columns_modifying: true)
+      StagingTableColumnsJob.perform_later(@staging_table)
+    end
+
     staging_table_action { @index.add(uniq_index_params) }
     @staging_table.sync if flash.now[:error].nil?
 

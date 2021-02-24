@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class RemoveSamplesByLastIterationJob < ApplicationJob
-  queue_as :creation
+  queue_as :story_type
 
   def perform(iteration)
     Process.wait(
@@ -20,7 +20,7 @@ class RemoveSamplesByLastIterationJob < ApplicationJob
         message = e.message
       ensure
         iteration.update(purge_all_samples: nil)
-        send_to_action_cable(iteration, purge_last_creation_msg: message)
+        send_to_action_cable(iteration, :purge_last_creation, message)
       end
     )
   end

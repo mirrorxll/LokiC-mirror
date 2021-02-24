@@ -1,4 +1,2 @@
-.row.small
-  .col-10.offset-1
-    =form_with(url: attach_story_type_codes_path(@story_type)) do |form|
-      =form.submit 'attach code from DB', class: 'btn btn-sm btn-outline-dark', data: { disable_with: '...'}
+=link_to('[ attach code from DB ]', attach_story_type_codes_path(@story_type),
+         class: '', method: :post, remote: true, data: { disable_with: '[ ... ]'})

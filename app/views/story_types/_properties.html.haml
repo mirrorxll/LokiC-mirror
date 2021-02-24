@@ -1,6 +1,5 @@
 .row.small
-  .col-5.offset-1.border-right
-
+  .col-5.offset-1.border-right.mr-1
     .row.mb-2.font-weight-bold
       .col-12
         data set
@@ -50,10 +49,31 @@
         =@story_type.developer ? @story_type.developer.name: '---'
     %hr/
 
-  #cron_tab_panel.col-5
-    -if @story_type.cron_tab
-      =render 'cron_tabs/cron_tab'
-    -else
-      cron tab not installed yet. #{ link_to('setup', new_story_type_cron_tab_path(@story_type), remote: true) }
+  .col-5.border-left.ml-1
+    .row.mb-2.font-weight-bold
+      .col-12
+        story type's code
+    #story_type_code
+      =render 'codes/section'
+    %hr/
+
+    .row.mb-2.font-weight-bold
+      .col-12
+        export configurations
+    #export_configs
+      =render 'export_configurations/export_configurations'
+    %hr/
+
+    .row.mb-2.font-weight-bold
+      .col-12
+        cron tab
+
+    #cron_tab_panel
+      -if @story_type.cron_tab
+        =render 'cron_tabs/cron_tab'
+      -else
+        =link_to('[ setup ]', new_story_type_cron_tab_path(@story_type), remote: true)
+    %hr/
 
 =render 'data_sets/modal_data_set'
+=render 'codes/modal_ruby_code'

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ReportByRawSourceJob < ApplicationJob
-  queue_as :report_mm
+  queue_as :lokic
 
   def perform(*args)
     Report::ReportByRawSource.report
