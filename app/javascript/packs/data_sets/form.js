@@ -122,7 +122,7 @@ function tagsByClient(event) {
 }
 
 function addTagsToSelectGroup(tagsSelect, tags) {
-    tagsSelect.appendChild(document.createElement('option'))
+    // tagsSelect.appendChild(document.createElement('option'))
     let option = null
 
     for (let i = 0; i < tags.length; i++) {
