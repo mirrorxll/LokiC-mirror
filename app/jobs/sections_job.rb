@@ -15,7 +15,7 @@ class SectionsJob < ApplicationJob
           clients_section(section)
         end
 
-        Section.where('DATE(updated_at) < CURRENT_DATE()').delete_all
+        Section.where('DATE(updated_at) < DATE(created_at)').delete_all
       end
     )
   end
