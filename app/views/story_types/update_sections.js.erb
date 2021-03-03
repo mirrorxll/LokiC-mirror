@@ -4,10 +4,10 @@
     let stFlash = $('#staging_table .flash');
     let stBody = $('#staging_table .card-body');
 
-    <% if flash.now[:staging_table] %>
+    <% if flash.now[@key] %>
       stFlash.html(
         `<div class="alert alert-danger text-center">
-          <%= flash.now[:staging_table].gsub('`', "'") %>
+          <%= flash.now[@key].gsub('`', "'") %>
         </div>`
       )
     <% else %>

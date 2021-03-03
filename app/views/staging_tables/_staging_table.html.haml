@@ -1,14 +1,15 @@
--staging_table = @story_type.staging_table
-
 -if @story_type.staging_table.nil? && @story_type.staging_table_attached.nil?
   =render 'staging_tables/form'
 -elsif @story_type.staging_table_attached.eql?(false)
   =render 'story_types/spinner', description: 'staging table attaching in progress'
--elsif staging_table.columns_modifying.eql?(false)
-  =render 'story_types/spinner', description: 'staging table attaching in progress'
+-elsif @story_type.staging_table.columns_modifying.eql?(true)
+  =render 'story_types/spinner', description: 'staging table modifying in progress'
+-elsif @story_type.staging_table.indices_modifying.eql?(true)
+  =render 'story_types/spinner', description: 'staging table modifying in progress'
 -elsif @iteration.population.eql?(false)
   =render 'story_types/spinner', description: 'population in progress'
 -else
+  -staging_table = @story_type.staging_table
   -columns = staging_table.columns.list
   -uniq_index = staging_table.index.list
   .row.small

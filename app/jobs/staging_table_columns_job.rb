@@ -1,12 +1,12 @@
 class StagingTableColumnsJob < ApplicationJob
   queue_as :story_type
 
-  def perform(staging_table)
+  def perform(staging_table, columns)
     Process.wait(
       fork do
         message = "Success. Staging table's columns modified"
 
-        staging_table.columns.modify(columns_front_params)
+        staging_table.columns.modify(columns)
         staging_table.sync
       rescue StandardError, ScriptError => e
         message = e.message

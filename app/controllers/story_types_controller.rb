@@ -106,7 +106,7 @@ class StoryTypesController < ApplicationController # :nodoc:
   end
 
   def message
-    key = params[:message][:key].to_sym
-    flash.now[key] = params[:message][key]
+    @key = params[:message][:key].to_sym
+    flash.now[@key] = params[:message][@key]
   end
 end

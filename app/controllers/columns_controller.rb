@@ -3,7 +3,6 @@
 class ColumnsController < ApplicationController
   before_action :render_400, if: :editor?
   before_action :staging_table
-  before_action :columns
 
   def edit
     staging_table_action { @staging_table.sync }
@@ -12,7 +11,7 @@ class ColumnsController < ApplicationController
   def update
     staging_table_action do
       @staging_table.update(columns_modifying: true)
-      StagingTableColumnsJob.perform_later(@columns)
+      StagingTableColumnsJob.perform_later(@staging_table, columns_front_params)
       nil
     end
 
@@ -34,9 +33,5 @@ class ColumnsController < ApplicationController
 
   def staging_table
     @staging_table = @story_type.staging_table
-  end
-
-  def columns
-    @columns = @staging_table.columns
   end
 end
