@@ -142,7 +142,7 @@ module Scheduler
       elsif args[:limit]
         raise ArgumentError, 'invalid limit (needs to be an int value, > 0)'
       end
-      
+
       unless args[:total_days_till_end].to_s.empty?
         if args[:end_date]
           raise ArgumentError, "invalid options - total_days_till_end_date can't be used with end_date - choose one"
