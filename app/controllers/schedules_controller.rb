@@ -17,7 +17,7 @@ class SchedulesController < ApplicationController # :nodoc:
 
   def auto
     @iteration.update(schedule: false)
-    SchedulerJob.perform_later(@iteration, 'auto')
+    SchedulerJob.perform_later(@iteration, 'auto', auto_params)
     render 'hide_section'
   end
 
@@ -32,19 +32,26 @@ class SchedulesController < ApplicationController # :nodoc:
     flash.now[:message] = update_section_params[:message] if message.present?
   end
 
+  def show_form
+    @type = type_params[:type]
+  end
+
   private
 
   def manual_params
-    params.permit(
-      :start_date,
-      :limit,
-      :total_days_till_end,
-      :extra_args
-    )
+    params.require(:manual).permit!
   end
 
   def backdated_params
     params.require(:backdate).permit!
+  end
+
+  def type_params
+    params.permit(:type)
+  end
+
+  def auto_params
+    params[:auto].blank? ? {} : params.require(:auto).permit!
   end
 
   def update_section_params

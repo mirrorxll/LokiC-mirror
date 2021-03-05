@@ -16,11 +16,11 @@ class SchedulerJob < ApplicationJob
 
         case type
         when 'manual'
-          Scheduler::Base.old_scheduler(samples, options)
+          Scheduler::Base.run_schedule(samples, manual_params(options))
         when 'backdate'
           Scheduler::Backdate.backdate_scheduler(samples, backdate_params(options))
         when 'auto'
-          Scheduler::Auto.auto_scheduler(samples)
+          Scheduler::Auto.run_auto(samples, auto_params(options))
         when 'run-from-code'
           Scheduler::FromCode.run_from_code(samples, options)
         end
@@ -57,6 +57,20 @@ class SchedulerJob < ApplicationJob
     options.each_with_object({}) do |(_key, schedule), hash|
       date = schedule[:date]
       hash[date] = schedule[:where]
+    end
+  end
+
+  def auto_params(options)
+    options.each_with_object({}) do |(_key, schedule), hash|
+      date = schedule[:date]
+      time_frame_ids = TimeFrame.where(frame: schedule[:time_frame]).ids
+      hash[date] = time_frame_ids
+    end
+  end
+
+  def manual_params(options)
+    options.each_with_object([]) do |(_key, schedule), array|
+      array << schedule
     end
   end
 end

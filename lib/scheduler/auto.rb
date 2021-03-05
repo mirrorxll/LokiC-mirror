@@ -2,23 +2,58 @@
 
 module Scheduler
   module Auto # :nodoc:
-    def self.auto_scheduler(samples)
-      frequency = samples.first.iteration.story_type.frequency.name
+    def self.run_auto(samples, options)
+      if options.blank?
+        auto_scheduler(samples.where(published_at: nil), options)
+      else
+        options = options.sort_by { |_start_date, time_frame_ids| time_frame_ids }.reverse
+        options.each do |start_date, time_frame_ids|
+          if time_frame_ids.blank?
+            auto_scheduler(samples.where(published_at: nil), start_date)
+          else
+            auto_scheduler(samples.where(published_at: nil).where(time_frame: time_frame_ids), start_date)
+          end
+        end
+      end
+    end
+
+    def self.auto_scheduler(samples, start_date)
+      frequency = samples.first.iteration.story_type.frequency
+      frequency = frequency.nil? ? frequency_from_time_frame(samples.first) : frequency.name
       case frequency
       when 'daily'
         schedule_daily(samples)
       when 'weekly'
-        schedule_other_frequencies(samples, 75, 7, Date.today)
+        schedule_other_frequencies(samples, 75, 7, start_date.blank? ? Date.today : start_date)
       when 'monthly'
-        schedule_other_frequencies(samples, 50, 30, Date.today + 3)
+        schedule_other_frequencies(samples, 50, 30, start_date.blank? ? Date.today + 3 : start_date)
       when 'quarterly'
-        schedule_other_frequencies(samples, 70, 90, Date.today + 3)
+        schedule_other_frequencies(samples, 70, 90, start_date.blank? ? Date.today + 3 : start_date)
       when 'biannually'
-        schedule_other_frequencies(samples, 50, 150, Date.today + 2)
+        schedule_other_frequencies(samples, 50, 150, start_date.blank? ? Date.today + 2 : start_date)
       when 'annually'
-        schedule_annually(samples)
+        schedule_annually(samples, start_date)
       else
         raise ArgumentError, 'Error in frequency'
+      end
+    end
+
+    def self.frequency_from_time_frame(sample)
+      case sample.first.time_frame.frame[0]
+      when 'd'
+        'daily'
+      when 'w'
+        'weekly'
+      when 'm'
+        'monthly'
+      when 'q'
+        'quarterly'
+      when 'b'
+        'biannually'
+      when '2'
+        'annually'
+      else
+        raise ArgumentError, 'Error in time frame'
       end
     end
 
@@ -54,7 +89,8 @@ module Scheduler
           params = {
             start_date: start_publish_date,
             limit: limit,
-            total_days_till_end: total_days_till_end.to_s
+            total_days_till_end: total_days_till_end.to_s,
+            previous_date: 1
           }
           Base.old_scheduler(samples_time_frame, params)
         else
@@ -71,12 +107,12 @@ module Scheduler
       end
     end
 
-    def self.schedule_annually(samples)
+    def self.schedule_annually(samples, start_date)
       time_frame_ids = get_time_frame_ids(samples)
       previous_year = Time.now.year - 1
       time_frame_ids.each do |frame|
         year_from_frame = TimeFrame.find_by(id: frame[:time_frame_id]).frame.to_i
-        start_publish_date = (Date.today + 3).strftime('%Y-%m-%d')
+        start_publish_date = start_date.blank? ? (Date.today + 3).strftime('%Y-%m-%d') : start_date
         limit = 50
         samples_time_frame = samples.where(time_frame: frame[:time_frame_id])
         total_days_till_end = (Date.parse(start_publish_date)..Date.parse("#{Time.now.year}-12-31")).count
@@ -93,7 +129,8 @@ module Scheduler
       params = {
         start_date: start_publish_date,
         limit: limit,
-        total_days_till_end: total_days_till_end.to_s
+        total_days_till_end: total_days_till_end.to_s,
+        previous_date: 1
       }
       Base.old_scheduler(samples_time_frame, params)
       return if samples_time_frame.where(published_at: nil).empty?

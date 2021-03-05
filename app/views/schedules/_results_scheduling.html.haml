@@ -10,7 +10,7 @@ stories backdated:
 -@iteration.schedule_counts.except(:total).each do |client, count|
   ="#{client}: #{count}"
   %br/
--if scheduled && @iteration.export.nil?
+-if @iteration.samples.where.not(published_at: nil).count > 1 && @iteration.export.nil?
   -if @story_type.iteration.eql?(@iteration)
     =link_to('purge schedule',
              purge_story_type_iteration_schedules_path(@story_type, @iteration),
