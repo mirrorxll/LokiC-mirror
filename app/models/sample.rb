@@ -57,4 +57,8 @@ class Sample < ApplicationRecord
       .order(:published_at).where(backdated: false)
       .where.not(export_configurations: { tag: nil })
   end
+
+  def self.exported
+    where.not("pl_#{PL_TARGET}_story_id" => nil)
+  end
 end
