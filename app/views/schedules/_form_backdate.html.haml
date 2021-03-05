@@ -1,8 +1,12 @@
 =form_with(url: backdate_story_type_iteration_schedules_path(@story_type, iteration), method: :post) do |form|
-  #add_date.mb-2
-    =icon('fas', 'plus')
   #dates_editable
-  =form.submit 'backdate', class: 'mt-4 btn btn-sm btn-outline-dark'
+  .row.mt-3
+    .col-6
+      =form.submit 'backdate', class: 'btn btn-sm btn-outline-dark'
+    .col-6
+      #add_date.btn.btn-sm.btn-outline-dark.ml-2
+        =icon('fas', 'plus')
+
 
 :javascript
   var editable_block = $('#dates_editable');

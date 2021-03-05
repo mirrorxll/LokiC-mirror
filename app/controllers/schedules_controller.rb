@@ -5,19 +5,19 @@ class SchedulesController < ApplicationController # :nodoc:
 
   def manual
     @iteration.update(schedule: false)
-    SchedulerJob.set(wait: 2.seconds).perform_later(@iteration, 'manual', manual_params)
+    SchedulerJob.perform_later(@iteration, 'manual', manual_params)
     render 'hide_section'
   end
 
   def backdate
     @iteration.update(schedule: false)
-    SchedulerJob.set(wait: 2.seconds).perform_later(@iteration, 'backdate', backdated_params)
+    SchedulerJob.perform_later(@iteration, 'backdate', backdated_params)
     render 'hide_section'
   end
 
   def auto
     @iteration.update(schedule: false)
-    SchedulerJob.set(wait: 2.seconds).perform_later(@iteration, 'auto', auto_start_date)
+    SchedulerJob.perform_later(@iteration, 'auto', auto_params)
     render 'hide_section'
   end
 
@@ -39,12 +39,7 @@ class SchedulesController < ApplicationController # :nodoc:
   private
 
   def manual_params
-    params.permit(
-      :start_date,
-      :limit,
-      :total_days_till_end,
-      :extra_args
-    )
+    params.require(:manual).permit!
   end
 
   def backdated_params
@@ -55,8 +50,8 @@ class SchedulesController < ApplicationController # :nodoc:
     params.permit(:type)
   end
 
-  def auto_start_date
-    params.permit(:start_date)
+  def auto_params
+    params[:auto].blank? ? {} : params.require(:auto).permit!
   end
 
   def update_section_params

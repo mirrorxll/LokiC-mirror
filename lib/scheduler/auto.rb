@@ -2,9 +2,23 @@
 
 module Scheduler
   module Auto # :nodoc:
-    def self.auto_scheduler(samples, options)
+    def self.run_auto(samples, options)
+      if options.blank?
+        auto_scheduler(samples.where(published_at: nil), options)
+      else
+        options = options.sort_by { |_start_date, time_frame_ids| time_frame_ids }.reverse
+        options.each do |start_date, time_frame_ids|
+          if time_frame_ids.blank?
+            auto_scheduler(samples.where(published_at: nil), start_date)
+          else
+            auto_scheduler(samples.where(published_at: nil).where(time_frame: time_frame_ids), start_date)
+          end
+        end
+      end
+    end
+
+    def self.auto_scheduler(samples, start_date)
       frequency = samples.first.iteration.story_type.frequency
-      start_date = options[:start_date]
       frequency = frequency.nil? ? frequency_from_time_frame(samples.first) : frequency.name
       case frequency
       when 'daily'
@@ -75,7 +89,8 @@ module Scheduler
           params = {
             start_date: start_publish_date,
             limit: limit,
-            total_days_till_end: total_days_till_end.to_s
+            total_days_till_end: total_days_till_end.to_s,
+            previous_date: 1
           }
           Base.old_scheduler(samples_time_frame, params)
         else
@@ -114,7 +129,8 @@ module Scheduler
       params = {
         start_date: start_publish_date,
         limit: limit,
-        total_days_till_end: total_days_till_end.to_s
+        total_days_till_end: total_days_till_end.to_s,
+        previous_date: 1
       }
       Base.old_scheduler(samples_time_frame, params)
       return if samples_time_frame.where(published_at: nil).empty?

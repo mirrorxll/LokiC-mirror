@@ -21,9 +21,6 @@ class PopulationsController < ApplicationController # :nodoc:
     end
 
     render 'staging_tables/show'
-    end
-
-    render 'staging_tables/show'
   end
 
   def destroy

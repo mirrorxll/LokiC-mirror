@@ -1,10 +1,35 @@
 =form_with(url: auto_story_type_iteration_schedules_path(@story_type, @iteration)) do |form|
-  .row
-    .col-3
-      =form.label :start_date, 'start date:'
-    .col-5
-      =form.date_field :start_date, class: 'w-100'
-
+  #auto_dates
   .row.mt-3
-    .col-9
+    .col-6
       =form.submit 'schedule', class: 'btn btn-sm btn-outline-dark'
+    .col-6
+      #add_date.btn.btn-sm.btn-outline-dark.ml-2
+        =icon('fas', 'plus')
+
+:javascript
+  var auto_dates = $('#auto_dates');
+  $('#add_date').click(function () {
+    let hex = secureRandom(6);
+
+    $(auto_dates).append(
+        `<div id="auto_${hex}" class="mb-1">
+            <div class="remove_date d-inline-block" id="rm_date_${hex}" onclick="removeDate(this)"><i class="fas fa-minus"></i></div>
+            <input id="date_${hex}" required="required" type="date" name="auto[${hex}[date]]">
+            <input placeholder="time frame:" id="time_frame_${hex}" type="name" name="auto[${hex}[time_frame]]">
+        </div>`
+    );
+  });
+
+  function secureRandom(n){
+    let result = '';
+    while (n--){
+      result += Math.floor(Math.random() * 16).toString(16);
+    }
+
+    return result;
+  }
+
+  function removeDate(elem) {
+    $(elem.parentNode).remove();
+  }

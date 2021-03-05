@@ -27,18 +27,4 @@
       =render 'schedules/results_scheduling', scheduled: false
   .row.small
     .col-6.offset-1
-      #form_schedule
-
--# -else
--#   .row.small
--#     .col-6.offset-1
--#       =render 'schedules/form'
--#     .col-4
--#       =render 'schedules/results_scheduling', scheduled: false
--#
--#   -if @iteration.samples.where.not(published_at: nil).any?
--#     %hr/
--#     .row.small
--#       .col-5.offset-1
--#         #backdate_scheduler
--#           =render 'schedules/form_backdate', iteration: @iteration
+      #forms_schedule
