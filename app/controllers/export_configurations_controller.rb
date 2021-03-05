@@ -1,3 +1,4 @@
+
 # frozen_string_literal: true
 
 class ExportConfigurationsController < ApplicationController
@@ -7,13 +8,13 @@ class ExportConfigurationsController < ApplicationController
 
   def create
     @iteration.update(export_configurations: false)
-    ExportConfigurationsJob.set(wait: 2.seconds).perform_later(@iteration)
+    ExportConfigurationsJob.perform_later(@iteration)
   end
 
   def section; end
 
   def update_tags
-    ExportConfiguration.set(wait: 2.seconds).update_tags(update_tags_params)
+    ExportConfiguration.update_tags(update_tags_params)
 
     render 'section'
   end
