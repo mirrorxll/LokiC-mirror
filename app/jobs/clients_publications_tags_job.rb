@@ -17,8 +17,20 @@ class ClientsPublicationsTagsJob < ApplicationJob
         mm_gen.save!
         mm_gen.touch
 
-        Client.where('DATE(updated_at) < CURRENT_DATE()').delete_all
-        Publication.where('DATE(updated_at) < CURRENT_DATE()').delete_all
+        blank_tag = Tag.find_or_initialize_by(name: '')
+        blank_tag.save!
+        blank_tag.touch
+
+        Client.all.each do |c|
+          next if c.tags.exists?(blank_tag.id)
+
+          c.tags << blank_tag
+          c.publications.each { |p| p.tags << blank_tag }
+        end
+
+        Client.where('DATE(updated_at) < DATE(created_at)').delete_all
+        Publication.where('DATE(updated_at) < DATE(created_at)').delete_all
+        Tag.where('DATE(updated_at) < DATE(created_at)').delete_all
       end
     )
   end
