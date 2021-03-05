@@ -43,7 +43,7 @@ module Samples
 
     def remove!(iteration)
       semaphore = Mutex.new
-      samples = iteration.samples.where.not(@pl_lead_id_key => nil, @pl_story_id_key => nil).limit(10_000).to_a
+      samples = iteration.samples.exported.limit(10_000).to_a
 
       threads = Array.new(5) do
         Thread.new do

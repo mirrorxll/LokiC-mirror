@@ -22,10 +22,7 @@
                   -n_t.publication.tags.order(name: :asc).each do |t|
                     .col-6
                       =f.radio_button "export_configurations[#{n_t.id}[tag_id]]]", t.id
-                      =f.label "export_configurations[#{n_t.id}[tag_id]]]_#{t.id}", t.name
-                  .col-6
-                    =f.radio_button "export_configurations[#{n_t.id}[tag_id]]]", 0
-                    =f.label "export_configurations[#{n_t.id}[tag_id]]]_#{0}", 'Keep Blank'
+                      =f.label "export_configurations[#{n_t.id}[tag_id]]]_#{t.id}", (t.name.empty? ? 'Keep Blank' : t.name)
 
       .row
         .col-12
