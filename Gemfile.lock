@@ -364,7 +364,7 @@ GEM
     sshkit (1.21.2)
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
-    svg-graph (2.2.1)
+    svg-graph (2.2.0)
     temple (0.8.2)
     thor (1.1.0)
     thread_safe (0.3.6)
@@ -429,7 +429,7 @@ DEPENDENCIES
   slack-ruby-client
   spring
   spring-watcher-listen (~> 2.0.0)
-  svg-graph
+  svg-graph (= 2.2.0)
   web-console (>= 3.3.0)
   webpacker (~> 5.0.0)
 

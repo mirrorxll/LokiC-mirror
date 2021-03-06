@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
@@ -28,10 +30,10 @@ gem 'rubyXL'
 gem 'google-api-client', '~> 0.34'
 gem 'google_drive'
 # build and represent table-like data
-gem "datagrid"
+gem 'datagrid'
 
 # mini_loki_c gems
-gem 'svg-graph'
+gem 'svg-graph', '2.2.0' # don't change version as long as it is possible! :)
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 6.0.3'
@@ -73,4 +75,3 @@ group :development do
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
-
