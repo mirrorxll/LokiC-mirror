@@ -1,23 +1,22 @@
-=form_with(url: backdate_story_type_iteration_schedules_path(@story_type, iteration), method: :post) do |form|
-  #dates_editable
+=form_with(url: auto_story_type_iteration_schedules_path(@story_type, @iteration)) do |form|
+  #auto_dates
   .row.mt-3
     .col-6
-      =form.submit 'backdate', class: 'btn btn-sm btn-outline-dark'
+      =form.submit 'schedule', class: 'btn btn-sm btn-outline-dark'
     .col-6
       #add_date.btn.btn-sm.btn-outline-dark.ml-2
         =icon('fas', 'plus')
 
-
 :javascript
-  var editable_block = $('#dates_editable');
+  var auto_dates = $('#auto_dates');
   $('#add_date').click(function () {
     let hex = secureRandom(6);
 
-    $(editable_block).append(
-        `<div id="date_${hex}" class="mb-1">
+    $(auto_dates).append(
+        `<div id="auto_${hex}" class="mb-1">
             <div class="remove_date d-inline-block" id="rm_date_${hex}" onclick="removeDate(this)"><i class="fas fa-minus"></i></div>
-            <input id="dates_${hex}_name" required="required" type="date" name="backdate[${hex}[date]]">
-            <input placeholder="staging table where:" id="arg_${hex}_name" type="name" name="backdate[${hex}[where]]">
+            <input id="date_${hex}" required="required" type="date" name="auto[${hex}[date]]">
+            <input placeholder="time frame:" id="time_frame_${hex}" type="name" name="auto[${hex}[time_frame]]">
         </div>`
     );
   });

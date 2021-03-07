@@ -132,6 +132,7 @@ Rails.application.routes.draw do
         post  :auto,      on: :collection
         patch :purge,     on: :collection
         get   :section,   on: :collection
+        get   :show_form, on: :collection
       end
 
       resources :exports, path: 'export', only: [] do

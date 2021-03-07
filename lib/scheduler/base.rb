@@ -29,12 +29,16 @@ module Scheduler
         'su' => 'Sunday'
     }.freeze
 
+    def self.run_schedule(samples, array_options)
+      array_options.each { |options| old_scheduler(samples, options)}
+    end
+
     def self.get_samples(samples, extra_args)
       if extra_args == '' || extra_args.nil?
         samples = samples.where(published_at: nil)
       else
         stage_ids = ExtraArgs.stage_ids(samples.first.iteration.story_type.staging_table.name, extra_args)
-        samples = samples.where(staging_row_id: stage_ids)
+        samples = samples.where(published_at: nil).where(staging_row_id: stage_ids)
       end
       samples
     end
@@ -98,12 +102,28 @@ module Scheduler
 
       samples_for_iteration = Sample.where(iteration: iteration).where(published_at: nil)
       iteration.update_attribute(:schedule, true) if samples_for_iteration.where(published_at: nil).empty?
-      options_for_schedule_args = options.select { |k,_v| %i[start_date limit total_days_till_end extra_args].include?(k) }
-      iteration.update_attribute(:schedule_args, iteration.schedule_args.nil? ? "shedule: #{options_for_schedule_args};" : iteration.schedule_args += "#{options_for_schedule_args};")
+      schedule_args = schedule_args_to_hash(options)
+      iteration.update_attribute(:schedule_args, iteration.schedule_args.nil? ? schedule_args : iteration.schedule_args += schedule_args)
+    end
+
+    def self.schedule_args_to_hash(options)
+      hash = {}
+      hash[:st] = options[:start_date]
+      hash[:lm] = options[:limit]
+      hash[:td] = options[:total_days_till_end]
+      hash[:wh] = options[:extra_args].nil? ? '' : options[:extra_args]
+      hash.to_json
     end
 
     # Set default values if args have not been passed
     def self.check_and_define_args(args)
+      if args[:limit].blank?
+        raise ArgumentError, 'you need to provide stories per day'
+      end
+
+      if args[:total_days_till_end].blank?
+        raise ArgumentError, 'you need to provide days to end'
+      end
 
       unless args[:limit] || args[:end_date] || args[:total_days_till_end]
         raise ArgumentError, 'you need to provide limit and/or end_date/total days till end date args!'
@@ -113,9 +133,9 @@ module Scheduler
       args[:end_date] = Date.parse(args[:end_date]) if args[:end_date]
       args[:start_date] = Date.today unless args[:start_date]
 
-      # if args[:start_date] < Date.today
-      #   raise ArgumentError, 'invalid start_date - should be >= today! (correct format: yyyy-mm-dd)'
-      # end
+      if args[:start_date] < Date.today && args[:previous_date].to_i.zero?
+        raise ArgumentError, 'invalid start_date - should be >= today! (correct format: yyyy-mm-dd)'
+      end
 
       if args[:limit]&.to_i && args[:limit].to_i > 0
         args[:limit] = args[:limit].to_i
