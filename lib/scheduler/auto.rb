@@ -4,7 +4,7 @@ module Scheduler
   module Auto # :nodoc:
     def self.run_auto(samples, options)
       if options.blank?
-        auto_scheduler(samples.where(published_at: nil), options)
+        auto_scheduler(samples, options)
       else
         options = options.sort_by { |_start_date, time_frame_ids| time_frame_ids }.reverse
         options.each do |start_date, time_frame_ids|
@@ -24,13 +24,13 @@ module Scheduler
       when 'daily'
         schedule_daily(samples)
       when 'weekly'
-        schedule_other_frequencies(samples, 75, 7, start_date.blank? ? Date.today : start_date)
+        schedule_other_frequencies(samples, 75, 7, start_date.blank? ? Date.today : Date.parse(start_date))
       when 'monthly'
-        schedule_other_frequencies(samples, 50, 30, start_date.blank? ? Date.today + 3 : start_date)
+        schedule_other_frequencies(samples, 50, 30, start_date.blank? ? Date.today + 3 : Date.parse(start_date))
       when 'quarterly'
-        schedule_other_frequencies(samples, 70, 90, start_date.blank? ? Date.today + 3 : start_date)
+        schedule_other_frequencies(samples, 70, 90, start_date.blank? ? Date.today + 3 : Date.parse(start_date))
       when 'biannually'
-        schedule_other_frequencies(samples, 50, 150, start_date.blank? ? Date.today + 2 : start_date)
+        schedule_other_frequencies(samples, 50, 150, start_date.blank? ? Date.today + 2 : Date.parse(start_date))
       when 'annually'
         schedule_annually(samples, start_date)
       else
