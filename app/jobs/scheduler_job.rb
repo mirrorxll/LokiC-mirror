@@ -64,6 +64,8 @@ class SchedulerJob < ApplicationJob
     options.each_with_object({}) do |(_key, schedule), hash|
       date = schedule[:date]
       time_frame_ids = TimeFrame.where(frame: schedule[:time_frame]).ids
+      raise 'Error name of time frame' if time_frame_ids.blank? && !schedule[:time_frame].blank?
+
       hash[date] = time_frame_ids
     end
   end
