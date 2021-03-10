@@ -84,14 +84,14 @@ module MiniLokiC
       end
 
       def to_text(value)
-        return if value < 0
+        if [Integer, Float].none? { |klass| value.is_a?(klass) } || value.negative?
+          raise ArgumentError, '{ Numbers.to_text } Passed value must be a digit and positive'
+        end
 
-        if value < 10
-          %w[one two three four five six seven eight nine][value.to_i - 1]
-        elsif value.abs > 999
-          add_commas(value)
+        if (0..9).to_a.include?(value)
+          %w[zero one two three four five six seven eight nine][value.to_i]
         else
-          value
+          add_commas(value)
         end
       end
 

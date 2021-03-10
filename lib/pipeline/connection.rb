@@ -15,8 +15,17 @@ module Pipeline
           'X-Force-Update' => 'true'
         }
       }
+      retry_options = {
+        exceptions: [Faraday::ServerError, Faraday::ConnectionFailed],
+        max: 6,
+        interval: 1,
+        backoff_factor: 2
+      }
 
-      Faraday::Connection.new(endpoint, headers) { |c| c.response :raise_error }
+      Faraday::Connection.new(endpoint, headers) do |c|
+        c.response :raise_error
+        c.request :retry, retry_options
+      end
     end
   end
 end

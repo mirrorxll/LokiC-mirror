@@ -3,6 +3,7 @@
 module Scheduler
   module FromCode # :nodoc:
     def self.run_from_code(samples, options)
+      options[:previous_date] = 1
       Base.old_scheduler(samples, options)
       return if samples.where(published_at: nil).empty?
 
