@@ -19,22 +19,15 @@ module Samples
       exported = 0
 
       threads = Array.new(threads_count) do
-
         Thread.new do
-          pl_rep_client = PipelineReplica[@environment]
-
           loop do
             sample = main_semaphore.synchronize { samples_to_export.shift }
             break if sample.nil?
 
-            lead_story_post(sample, pl_rep_client)
+            lead_story_post(sample)
             main_semaphore.synchronize { exported += 1 }
           end
-
-        ensure
-          pl_rep_client.close
         end
-
       end
 
       threads.each(&:join)
@@ -51,7 +44,7 @@ module Samples
             sample = semaphore.synchronize { samples.shift }
             break if sample.nil?
 
-            @pl_client.delete_lead_safe(sample[@pl_lead_id_key])
+            @pl_client.delete_lead(sample[@pl_lead_id_key])
             sample.update(@pl_lead_id_key => nil, @pl_story_id_key => nil)
           end
         end

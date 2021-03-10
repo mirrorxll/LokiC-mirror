@@ -31,7 +31,7 @@ class JobItem
   end
 
   def create_job(publication)
-    response = @pl_client.post_job_safe(
+    response = @pl_client.post_job(
       name: "#{publication.name} - HLE",
       project_id: publication.pl_identifier
     )
@@ -42,7 +42,7 @@ class JobItem
   def create_job_item(job_id, story_type, publication, p_bucket)
     photo_bucket = @environment.eql?(:production) ? [p_bucket.pl_identifier] : []
 
-    response = @pl_client.post_job_item_safe(
+    response = @pl_client.post_job_item(
       job_id: job_id,
       name: "#{publication.name} - #{story_type.name} HLE",
       content_type: 'hle',
