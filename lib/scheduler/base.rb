@@ -117,14 +117,6 @@ module Scheduler
 
     # Set default values if args have not been passed
     def self.check_and_define_args(args)
-      if args[:limit].blank?
-        raise ArgumentError, 'you need to provide stories per day'
-      end
-
-      if args[:total_days_till_end].blank?
-        raise ArgumentError, 'you need to provide days to end'
-      end
-
       unless args[:limit] || args[:end_date] || args[:total_days_till_end]
         raise ArgumentError, 'you need to provide limit and/or end_date/total days till end date args!'
       end
