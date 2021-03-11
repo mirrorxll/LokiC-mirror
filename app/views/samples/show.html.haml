@@ -62,6 +62,14 @@
 =render 'codes/modal_ruby_code'
 
 :javascript
+  (()=> {
+    let svgTags = document.getElementsByTagName('svg');
+
+    for(let i = 0; i < svgTags.length; i ++) {
+      svgTags[i].parentNode.className = `svg_graph_lokic_${i}`
+    }
+  })();
+
   function hideAllPopovers() {
     let fbOutputs = document.querySelectorAll('[id^="feedback_output_"]');
 
