@@ -7,26 +7,26 @@ module MiniLokiC
       module_function
 
       def add_commas(value)
-        if value.positive?
-          "$#{Formatize::Numbers.add_commas(value)}"
-        else
+        if value.negative?
           "-$#{Formatize::Numbers.add_commas(value.abs)}"
+        else
+          "$#{Formatize::Numbers.add_commas(value)}"
         end
       end
 
       def add_commas_with_decimals(value)
-        if value.positive?
-          "$#{Formatize::Numbers.add_commas_with_decimals(value)}"
-        else
+        if value.negative?
           "-$#{Formatize::Numbers.add_commas_with_decimals(value.abs)}"
+        else
+          "$#{Formatize::Numbers.add_commas_with_decimals(value)}"
         end
       end
 
       def huge_money_to_text(value)
-        if value.positive?
-          "$#{Formatize::Numbers.huge_number_to_text(value)}"
-        else
+        if value.negative?
           "-$#{Formatize::Numbers.huge_number_to_text(value)}"
+        else
+          "$#{Formatize::Numbers.huge_number_to_text(value)}"
         end
       end
     end
