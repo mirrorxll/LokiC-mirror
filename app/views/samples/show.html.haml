@@ -65,8 +65,8 @@
   (()=> {
     let svgTags = document.getElementsByTagName('svg');
 
-    for(let i = 0; i < svgTags.length; i ++) {
-      svgTags[i].parentNode.className = `svg_graph_lokic_${i}`
+    for(let i = 0; i < svgTags.length; i++) {
+      svgTags[i].parentNode.classList.add(`svg_graph_lokic_${i}`)
     }
   })();
 
