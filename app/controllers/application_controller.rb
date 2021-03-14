@@ -47,6 +47,7 @@ class ApplicationController < ActionController::Base
   def staging_table_action(&block)
     flash.now[:error] =
       if @staging_table.nil? || StagingTable.not_exists?(@staging_table.name)
+        @story_type.update(staging_table_attached: nil)
         @staging_table&.destroy
         detached_or_delete
       else
