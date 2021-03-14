@@ -67,7 +67,7 @@ module SVG
   fill: rgb(75, 75, 75);
   font-size: #{title_font_size}px;
   font-family: "Arial", sans-serif;
-  font-weight: normal;
+  font-weight: bold;
 }
 .subTitle{
   text-anchor: middle;
@@ -123,7 +123,7 @@ module SVG
 .dataPointLabel{
   fill: #000000;
   text-anchor:middle;
-  font-size: 10px;
+  font-size: 20px;
   font-family: "Arial", sans-serif;
   font-weight: normal;
 }
