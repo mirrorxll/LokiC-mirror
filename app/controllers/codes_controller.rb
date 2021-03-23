@@ -6,8 +6,8 @@ class CodesController < ApplicationController # :nodoc:
   before_action :render_400, if: :editor?
 
   def show
-    code = @story_type.code.download
-    @ruby_code = CodeRay.scan(cod, :ruby).div(line_numbers: :table)
+    @ruby_code = CodeRay.scan(@story_type.code.download, :ruby)
+                        .div(line_numbers: :table)
   end
 
   def attach

@@ -68,7 +68,6 @@ Rails.application.routes.draw do
       post    :attach,         on: :collection
       delete  :detach,         on: :member
       patch   :sync,           on: :member
-      get     :section,        on: :collection
       get     :canceling_edit, on: :collection
 
       resources :columns, only: %i[edit update]
@@ -82,7 +81,6 @@ Rails.application.routes.draw do
     end
 
     resources :export_configurations, only: :create do
-      get   :section,     on: :collection
       patch :update_tags, on: :collection
     end
 
@@ -110,19 +108,22 @@ Rails.application.routes.draw do
         patch :change,  on: :collection
       end
 
-      resources :populations, path: 'populate', only: %i[create destroy]
+      resources :populations, path: 'populate', only: [] do
+        get    :execute, on: :collection
+        delete :purge,   on: :collection
+      end
 
       resources :samples, only: %i[index show] do
         post   :create_and_generate_auto_feedback, on: :collection
         delete :purge_sampled,                     on: :collection
-        get    :section,                           on: :collection
       end
 
       resources :auto_feedback_confirmations, only: [] do
         patch :confirm, on: :member
       end
 
-      resources :creations, only: :create do
+      resources :creations, only: [] do
+        get    :execute,   on: :collection
         delete :purge_all, on: :collection
       end
 
@@ -131,14 +132,12 @@ Rails.application.routes.draw do
         post  :backdate,  on: :collection
         post  :auto,      on: :collection
         patch :purge,     on: :collection
-        get   :section,   on: :collection
         get   :show_form, on: :collection
       end
 
       resources :exports, path: 'export', only: [] do
         post   :export,           on: :collection
         delete :remove_from_pl,   on: :collection
-        get    :section,          on: :collection
         get    :exported_stories, on: :collection
       end
     end

@@ -15,7 +15,6 @@ module MiniLokiC
       def insert(sample)
         @raw_sample = sample
         @iteration.samples.create!(sample_params)
-        Table.sample_set_as_created(@staging_table, sample[:staging_row_id])
       end
 
       private

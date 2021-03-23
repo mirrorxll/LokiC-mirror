@@ -1,52 +1,51 @@
--if !@iteration.export_configurations
-  -#empty section
--elsif !@story_type.iteration.eql?(@iteration)
-  .row
-    .col-10.offset-1
-      #created_samples
-        -samples = @iteration.samples.where(sampled: true)
-        -if samples.count.positive?
-          =render samples
-        -else
-          .small
-            Samples were not created.
+-if @story_type.creating_export_configurations
+  -if !@story_type.iteration.eql?(@iteration)
+    .row
+      .col-10.offset-1
+        #created_samples
+          -samples = @iteration.samples.where(sampled: true)
+          -if samples.count.positive?
+            =render samples
+          -else
+            .small
+              Samples were not created.
+          %hr/
+          -if @iteration.auto_feedback_confirmations.any?
+            .mt-4
+              =render 'auto_feedback/form', auto_feedback: @iteration.auto_feedback_confirmations
+
+    .row
+      .col-10.offset-1
         %hr/
-        -if @iteration.auto_feedback_confirmations.any?
-          .mt-4
-            =render 'auto_feedback/form', auto_feedback: @iteration.auto_feedback_confirmations
+        =render 'samples/samples_link'
 
-  .row
-    .col-10.offset-1
-      %hr/
-      =render 'samples/samples_link'
-
--elsif @iteration.story_samples.eql?(false) || @iteration.creation.eql?(false)
-  =render 'story_types/spinner', description: 'samples creation in the process'
--else
-  -samples = @iteration.samples.where(sampled: true)
-  .row
-    .col-10.offset-1
-      #samples_form
-        =render 'samples/form', samples: samples
-      %hr/
-  .row
-    .col-10.offset-1
-      #created_samples
-        -if samples.count.positive?
-          =render samples
-        -else
-          .small
-            Samples were not created.
+  -elsif @iteration.story_samples.eql?(false) || @iteration.creation.eql?(false)
+    =render 'story_types/spinner', description: 'samples creation in the process'
+  -else
+    -samples = @iteration.samples.where(sampled: true)
+    .row
+      .col-10.offset-1
+        #samples_form
+          =render 'samples/form', samples: samples
         %hr/
-        -if @iteration.auto_feedback_confirmations.any?
-          .mt-4
-            =render 'auto_feedback/form', auto_feedback: @iteration.auto_feedback_confirmations
-          .small.mt-3
-            ***Please confirm all auto-feedback. After that you can go to FCD and create all the samples.
-        -else
-          .small
-            No generated auto-feedback.
-      %hr/
+    .row
+      .col-10.offset-1
+        #created_samples
+          -if samples.count.positive?
+            =render samples
+          -else
+            .small
+              Samples were not created.
+          %hr/
+          -if @iteration.auto_feedback_confirmations.any?
+            .mt-4
+              =render 'auto_feedback/form', auto_feedback: @iteration.auto_feedback_confirmations
+            .small.mt-3
+              ***Please confirm all auto-feedback. After that you can go to FCD and create all the samples.
+          -else
+            .small
+              No generated auto-feedback.
+        %hr/
 
-  #fcd__create_destroy_all_samples
-    =render 'samples/fcd__create_all_samples_buttons', samples: samples
+    #fcd__create_destroy_all_samples
+      =render 'samples/fcd__create_all_samples_buttons', samples: samples

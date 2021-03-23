@@ -25,7 +25,7 @@
         .col-6#manipulate
           .btn-group
             -if @iteration.population.eql?(true)
-              =link_to('purge current iteration', story_type_iteration_population_path(@story_type, @iteration, staging_table),
+              =link_to('purge current iteration', purge_story_type_iteration_populations_path(@story_type, @iteration, staging_table),
                         class: 'btn btn-sm btn-outline-danger', method: :delete,  remote: true,
                         data: { confirm: 'PURGE CURRENT ITERATION: You sure?' })
             -elsif @iteration.created_at.to_s.eql?(@iteration.updated_at.to_s)

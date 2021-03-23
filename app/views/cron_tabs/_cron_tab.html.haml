@@ -1,14 +1,19 @@
 -cron = @story_type.cron_tab
--cron_status = cron.enabled
--freeze_execution = cron.freeze_execution
+-cron_status = cron&.enabled
+-freeze_execution = cron&.freeze_execution
 
-.row.mb-2.font-weight-bold
-  .col-12
-    -if freeze_execution
-      [ execution frozen ]
-    -else
-      =link_to('[ edit ]', edit_story_type_cron_tab_path(@story_type, @story_type.cron_tab),
-             class: 'd-inline-block font-weight-normal', remote: true)
+-if !@story_type.iteration.eql?(@iteration)
+  \---
+-elsif @story_type.cron_tab
+  .row.mb-2.font-weight-bold
+    .col-12
+      -if freeze_execution
+        [ execution frozen ]
+      -else
+        =link_to('[ edit ]', edit_story_type_cron_tab_path(@story_type, @story_type.cron_tab),
+               class: 'd-inline-block font-weight-normal', remote: true)
+-else
+  =link_to('[ setup ]', new_story_type_cron_tab_path(@story_type), remote: true)
 
 -if cron_status && !freeze_execution
   .row

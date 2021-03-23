@@ -6,10 +6,10 @@ class ExportConfigurationsController < ApplicationController
   def check; end
 
   def create
-    render_400 && return if @story_type.staging_table_attached.nil? || !@iteration.population
+    render_400 && return if @story_type.staging_table_attached.nil?
 
-    @iteration.update(export_configurations: false)
-    ExportConfigurationsJob.perform_later(@iteration)
+    @story_type.update(creating_export_configurations: false)
+    ExportConfigurationsJob.perform_later(@story_type, true)
   end
 
   def update_tags

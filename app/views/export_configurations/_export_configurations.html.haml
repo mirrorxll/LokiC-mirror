@@ -1,5 +1,17 @@
--if @iteration.export_configurations.eql?(false)
-  %a{ href: "#", onclick: "return false;" } [ ...in progress... ]
--else
-  =link_to('[ create/update ]', story_type_export_configurations_path(@story_type),
-           method: :post, remote: true)
+.row
+  .col-12
+    -if !@story_type.iteration.eql?(@iteration)
+      \---
+      %br/
+    -elsif @iteration.population.eql?(nil)
+      first...execute population
+      %br/
+    -elsif @story_type.creating_export_configurations.eql?(false)
+      %a{ href: "#", onclick: "return false;" } [ ...in progress... ]
+    -else
+      =link_to('[ create/update ]', story_type_export_configurations_path(@story_type),
+               class: 'd-block', method: :post, remote: true)
+    -if @story_type.export_configurations_counts.present?
+      -@story_type.export_configurations_counts.each do |client, cfg_count|
+        #{client} - #{cfg_count}
+        %br/

@@ -1,4 +1,6 @@
--if @story_type.code.attached?
+-if !@story_type.iteration.eql?(@iteration)
+  \---
+-elsif @story_type.code.attached?
   =render 'codes/code'
 -else
   =render 'codes/form'

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Sample < ApplicationRecord
+  before_create { Table.sample_set_as_created(staging_table.name, staging_row_id) }
+
   paginates_per 200
 
   belongs_to :story_type
@@ -13,6 +15,10 @@ class Sample < ApplicationRecord
 
   has_many   :auto_feedback_confirmations, dependent: :destroy
   has_many   :fixes, class_name: 'SampleFix'
+
+  def staging_table
+    story_type.staging_table
+  end
 
   def headline
     output.headline

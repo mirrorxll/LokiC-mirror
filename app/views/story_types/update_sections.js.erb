@@ -1,6 +1,7 @@
 (function () {
     $('#export_configs').html('<%= j render 'export_configurations/export_configurations' %>');
 
+
     let stFlash = $('#staging_table .flash');
     let stBody = $('#staging_table .card-body');
 
@@ -14,4 +15,38 @@
       stFlash.empty();
     <% end %>
     stBody.html('<%= j render 'staging_tables/staging_table'%>')
+
+
+    let samplesFlash = $('#samples .flash');
+    let samplesBody = $('#samples .card-body');
+
+    <% if flash.now[@key] %>
+      samplesFlash.html(
+          `<div class="alert alert-danger text-center">
+            <%= flash.now[@key].gsub('`', "'") %>
+          </div>`
+      )
+    <% else %>
+      samplesFlash.empty();
+    <% end %>
+    samplesBody.html('<%= j render 'staging_tables/staging_table'%>')
+
+
+    let scheduleFlash = $('#scheduler .flash');
+    let scheduleBody = $('#scheduler .card-body');
+
+    <% if flash.now[@key] %>
+      scheduleFlash.html(
+        `<div class="alert alert-danger text-center">
+            <%= flash.now[@key].gsub('`', "'") %>
+          </div>`
+    )
+    <% else %>
+      scheduleBody.empty();
+    <% end %>
+    scheduleFlash.html('<%= j render 'staging_tables/staging_table'%>')
+
+
+    let exportBody = $('#export .card-body');
+    exportBody.html('<%= j render 'staging_tables/staging_table'%>')
 })()

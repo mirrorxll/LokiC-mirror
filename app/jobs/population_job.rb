@@ -11,6 +11,8 @@ class PopulationJob < ApplicationJob
         message = 'Success'
 
         MiniLokiC::Code.execute(iteration, :population, options)
+        ExportConfigurationsJob.perform_now(iteration.story_type)
+
       rescue StandardError, ScriptError => e
         status = nil
         message = e
