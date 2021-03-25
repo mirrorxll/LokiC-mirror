@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SlackAccountsJob < ActiveJob::Base
-  queue_as :slack_api
+  queue_as :lokic
 
   def perform
     Process.wait(

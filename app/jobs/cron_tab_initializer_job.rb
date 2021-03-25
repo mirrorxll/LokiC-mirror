@@ -1,5 +1,5 @@
 class CronTabInitializerJob < ApplicationJob
-  queue_as :default
+  queue_as :cron_tab
 
   def perform
     Sidekiq.set_schedule(:clients_publications_tags, cron: '0 0 * * *', class: ClientsPublicationsTagsJob)

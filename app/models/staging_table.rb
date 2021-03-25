@@ -54,7 +54,7 @@ class StagingTable < ApplicationRecord # :nodoc:
   private
 
   def noname?
-    name.nil?
+    name.nil? || name.empty?
   end
 
   def not_exists?

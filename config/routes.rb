@@ -1,4 +1,4 @@
-# fronzen_string_literal: true
+# frozen_string_literal: true
 
 require 'sidekiq/web'
 require 'sidekiq-scheduler/web'
@@ -31,8 +31,9 @@ Rails.application.routes.draw do
   end
 
   resources :story_types, except: %i[new create] do
-    get :properties
-    get :canceling_edit, on: :member
+    get   :properties
+    get   :canceling_edit,  on: :member
+    patch :update_sections, on: :member
 
     resources :templates, path: :template, only: %i[show edit update] do
       patch :save, on: :member
@@ -67,7 +68,6 @@ Rails.application.routes.draw do
       post    :attach,         on: :collection
       delete  :detach,         on: :member
       patch   :sync,           on: :member
-      get     :section,        on: :collection
       get     :canceling_edit, on: :collection
 
       resources :columns, only: %i[edit update]
@@ -78,11 +78,9 @@ Rails.application.routes.draw do
       get    :show,   on: :collection
       post   :attach, on: :collection
       put    :reload, on: :collection
-      delete :detach, on: :collection
     end
 
     resources :export_configurations, only: :create do
-      get   :section,     on: :collection
       patch :update_tags, on: :collection
     end
 
@@ -102,27 +100,31 @@ Rails.application.routes.draw do
 
     resources :cron_tabs
 
-    resources :iterations do
-      patch :apply_iteration, on: :member
+    resources :iterations, only: %i[create update] do
+      patch :apply, on: :member
+      delete :purge, on: :member
 
       resources :statuses, only: [] do
         get   :form,    on: :collection
         patch :change,  on: :collection
       end
 
-      resources :populations, path: 'populate', only: %i[create destroy]
+      resources :populations, path: 'populate', only: [] do
+        post   :execute, on: :collection
+        delete :purge,   on: :collection
+      end
 
       resources :samples, only: %i[index show] do
         post   :create_and_generate_auto_feedback, on: :collection
         delete :purge_sampled,                     on: :collection
-        get    :section,                           on: :collection
       end
 
       resources :auto_feedback_confirmations, only: [] do
         patch :confirm, on: :member
       end
 
-      resources :creations, only: :create do
+      resources :creations, only: [] do
+        post   :execute,   on: :collection
         delete :purge_all, on: :collection
       end
 
@@ -131,21 +133,16 @@ Rails.application.routes.draw do
         post  :backdate,  on: :collection
         post  :auto,      on: :collection
         patch :purge,     on: :collection
-        get   :section,   on: :collection
         get   :show_form, on: :collection
       end
 
       resources :exports, path: 'export', only: [] do
         post   :export,           on: :collection
         delete :remove_from_pl,   on: :collection
-        get    :section,          on: :collection
         get    :exported_stories, on: :collection
       end
     end
   end
-
-  # summernote image upload/destroy points
-  resources :uploads, only: %i[create destroy]
 
   resources :slack_accounts, only: %i[] do
     patch :sync

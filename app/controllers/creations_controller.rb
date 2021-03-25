@@ -3,7 +3,7 @@
 class CreationsController < ApplicationController # :nodoc:
   before_action :render_400, if: :editor?
 
-  def create
+  def execute
     @iteration.update(creation: false)
     CreationJob.perform_later(@iteration)
   end

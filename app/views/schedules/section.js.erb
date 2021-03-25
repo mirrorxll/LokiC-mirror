@@ -1,9 +1,0 @@
-<% if flash.now[:message] %>
-  $(`#story_type_scheduler_<%= @iteration.id %> .flash`).html(
-    `<div class="alert alert-<%= schedules_alert(flash.now[:message]) %> text-center">
-        <%= flash.now[:message].gsub('`', "'") %>
-    </div>`
-  )
-<% end %>
-
-$('#story_type_scheduler_<%= @iteration.id %> .card-body').html('<%= j render 'schedules/scheduler' %>');

@@ -15,7 +15,6 @@ module Pipeline
           'X-Force-Update' => 'true'
         }
       }
-
       retry_options = {
         exceptions: [Faraday::ServerError, Faraday::ConnectionFailed],
         max: 6,

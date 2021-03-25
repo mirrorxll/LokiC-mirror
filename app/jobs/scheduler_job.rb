@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SchedulerJob < ApplicationJob
-  queue_as :scheduler
+  queue_as :story_type
 
   def perform(iteration, type, options = {})
     status = nil
@@ -47,7 +47,7 @@ class SchedulerJob < ApplicationJob
     message = e
   ensure
     iteration.update(schedule: status)
-    send_to_action_cable(iteration, scheduler_msg: message)
+    send_to_action_cable(iteration, :scheduler, message)
     send_to_slack(iteration, "#{type.upcase}-SCHEDULING", message)
   end
 

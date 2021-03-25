@@ -1,5 +1,5 @@
 class ClientsPublicationsTagsJob < ApplicationJob
-  queue_as :default
+  queue_as :lokic
 
   def perform
     Process.wait(

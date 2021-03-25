@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module StatusesHelper
   def status_color(name)
     case name
@@ -12,5 +14,9 @@ module StatusesHelper
     when 'blocked'
       'danger text-white'
     end
+  end
+
+  def flash_color(message)
+    message.start_with?('Success') ? 'success' : 'danger'
   end
 end

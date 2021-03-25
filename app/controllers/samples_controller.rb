@@ -24,11 +24,7 @@ class SamplesController < ApplicationController # :nodoc:
     @iteration.update(story_samples: false)
     SamplesAndAutoFeedbackJob.perform_later(@iteration, samples_params)
 
-    render 'creations/create'
-  end
-
-  def section
-    flash.now[:message] = update_section_params[:message]
+    render 'creations/execute'
   end
 
   def purge_sampled

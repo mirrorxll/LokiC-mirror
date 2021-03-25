@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ImportTrackingReportJob < ApplicationJob
-  queue_as :import
+  queue_as :lokic
 
   def perform(url, worksheet, range, account, week)
     row_reports = Reports::ImportTrackingHours.from_google_drive(url, worksheet, range, account, week)

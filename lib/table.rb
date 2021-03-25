@@ -29,15 +29,16 @@ module Table # :nodoc:
     loki_story_creator { a_r_m.table_exists?(t_name) }
   end
 
-  def publication_ids(t_name)
-    p_ids_query = publication_ids_query(t_name)
-    p_ids = loki_story_creator { a_r_b_conn.exec_query(p_ids_query).to_a }
-    p_ids.map { |row| row['p_id'] }.compact
-  end
-
   def last_iter_id(t_name)
     last_iter_query = iter_id_value_query(t_name)
     loki_story_creator { a_r_b_conn.exec_query(last_iter_query).first['default_value'] }
+  end
+
+  def publication_ids(t_name)
+    last_iter_id = last_iter_id(t_name)
+    p_ids_query = publication_ids_query(t_name, last_iter_id)
+    p_ids = loki_story_creator { a_r_b_conn.exec_query(p_ids_query).to_a }
+    p_ids.map { |row| row['p_id'] }.compact
   end
 
   # purge rows that were inserted to staging table

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # # frozen_string_literal: true
 
 def account_type
@@ -52,7 +54,7 @@ end
 
 def type_of_works
   [
-    { name: 'Data Collection and Processing'},
+    { name: 'Data Collection and Processing' },
     { name: 'DWYM' },
     { name: 'General Management' },
     { name: 'G&A Development Services' },
@@ -195,7 +197,6 @@ hidden = Client.where('name LIKE :like OR name IN (:mm, :mb)',
                       like: 'MM -%', mm: 'Metric Media', mb: 'Metro Business Network')
 hidden.update_all(hidden: false)
 
-
 # ============ Time Frames for staging tables ============
 puts 'Time Frames'
 # daily
@@ -247,10 +248,9 @@ begin_date = Date.parse('2020/01/06')
 end_date = Date.parse('2020/01/12 23/59/59')
 110.times do
   Week.create(begin: begin_date, end: end_date)
-  begin_date = begin_date + 7
-  end_date = end_date + 7
+  begin_date += 7
+  end_date += 7
 end
-
 
 # ============ FeedBack rules for samples ============
 rules = {

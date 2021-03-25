@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class CreationJob < ApplicationJob
-  queue_as :creation
+  queue_as :story_type
 
   def perform(iteration, options = {})
     status = true
@@ -14,7 +14,7 @@ class CreationJob < ApplicationJob
         fork do
           rd.close
           MiniLokiC::Code.execute(iteration, :creation, options)
-        rescue StandardError => e
+        rescue StandardError, ScriptError => e
           wr.write({ e.class.to_s => e.message }.to_json)
         ensure
           wr.close
@@ -35,12 +35,12 @@ class CreationJob < ApplicationJob
     end
 
     iteration.update(schedule_counts: schedule_counts(iteration))
-  rescue StandardError => e
+  rescue StandardError, ScriptError => e
     status = nil
     message = e
   ensure
     iteration.update(creation: status)
-    send_to_action_cable(iteration, creation_msg: message)
+    send_to_action_cable(iteration, :samples, message)
     send_to_slack(iteration, 'CREATION', message)
     iteration.creation
   end

@@ -3,16 +3,10 @@
 :concurrency: 30
 
 :queues:
-  - default
-  - slack_api
-  - population
-  - export_configurations
-  - samples
-  - creation
-  - scheduler
-  - export
-  - assembleds
-  - import
+  - active_storage_analysis
+  - active_storage_purge
+  - lokic
+  - story_type
 
 :schedule:
   initialize:

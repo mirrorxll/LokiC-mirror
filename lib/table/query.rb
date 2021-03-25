@@ -5,8 +5,9 @@ module Table
   # from staging tables
   module Query
     # return publication ids, grouped by a client id.
-    def publication_ids_query(t_name)
-      "SELECT distinct publication_id p_id FROM `#{t_name}`;"
+    def publication_ids_query(t_name, iter_id)
+      "SELECT distinct publication_id p_id FROM `#{t_name}` "\
+      "WHERE iter_id = #{iter_id};"
     end
 
     # return default iteration number from staging table

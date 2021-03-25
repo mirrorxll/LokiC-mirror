@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class RemoveFromPlJob < ApplicationJob
-  queue_as :default
+  queue_as :story_type
 
   def perform(iteration)
     message = 'Success'
@@ -36,8 +36,8 @@ class RemoveFromPlJob < ApplicationJob
   rescue StandardError => e
     message = e.message
   ensure
-    iteration.update(removing_from_pl: nil)
-    send_to_action_cable(iteration, remove_from_pl_msg: message)
+    iteration.update(removing_from_pl: false)
+    send_to_action_cable(iteration, :export, message)
     send_to_slack(iteration, 'REMOVE FROM PL', message)
   end
 end

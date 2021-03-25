@@ -6,16 +6,14 @@ class ExportConfigurationsController < ApplicationController
   def check; end
 
   def create
-    @iteration.update(export_configurations: false)
-    ExportConfigurationsJob.perform_later(@iteration)
-  end
+    render_400 && return if @story_type.staging_table_attached.nil?
 
-  def section; end
+    @story_type.update(creating_export_configurations: false)
+    ExportConfigurationsJob.perform_later(@story_type, true)
+  end
 
   def update_tags
     ExportConfiguration.update_tags(update_tags_params)
-
-    render 'section'
   end
 
   private
