@@ -1,6 +1,6 @@
 -if @story_type.code.attached?
   -if @iteration.population.nil?
-    =form_with(url: execute_story_type_iteration_populations_path(@story_type, @iteration), method: :get) do |form|
+    =form_with(url: execute_story_type_iteration_populations_path(@story_type, @iteration)) do |form|
       .row
         .col-sm-8.col-lg-9.pr-1
           =form.text_field 'population[args]', class: 'form-control w-100 h-100', value: @iteration.population_args

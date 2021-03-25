@@ -4,4 +4,4 @@
       =form.text_field 'name', placeholder: 'new name', required: true
       =form.submit :rename
     -if @story_type.iteration != iteration
-      =button_to('apply', apply_iteration_story_type_iteration_path(@story_type, iteration), method: :patch)
+      =button_to('apply', apply_story_type_iteration_path(@story_type, iteration), method: :patch)

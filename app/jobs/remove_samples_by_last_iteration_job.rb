@@ -20,7 +20,7 @@ class RemoveSamplesByLastIterationJob < ApplicationJob
         message = e.message
       ensure
         iteration.update(purge_all_samples: nil)
-        send_to_action_cable(iteration, :purge_last_creation, message)
+        send_to_action_cable(iteration, :samples, message)
       end
     )
   end

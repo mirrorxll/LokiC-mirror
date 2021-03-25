@@ -37,7 +37,7 @@ class RemoveFromPlJob < ApplicationJob
     message = e.message
   ensure
     iteration.update(removing_from_pl: false)
-    send_to_action_cable(iteration, :remove_from_pl, message)
+    send_to_action_cable(iteration, :export, message)
     send_to_slack(iteration, 'REMOVE FROM PL', message)
   end
 end

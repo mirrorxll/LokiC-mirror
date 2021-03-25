@@ -5,10 +5,10 @@
     let stFlash = $('#staging_table .flash');
     let stBody = $('#staging_table .card-body');
 
-    <% if flash.now[@key] %>
+    <% if flash.now[:staging_table] %>
       stFlash.html(
-        `<div class="alert alert-danger text-center">
-          <%= flash.now[@key].gsub('`', "'") %>
+        `<div class="alert alert-<%= flash_color(flash.now[:staging_table]) %> text-center">
+          <%= flash.now[:staging_table].gsub('`', "'") %>
         </div>`
       )
     <% else %>
@@ -20,33 +20,44 @@
     let samplesFlash = $('#samples .flash');
     let samplesBody = $('#samples .card-body');
 
-    <% if flash.now[@key] %>
+    <% if flash.now[:samples] %>
       samplesFlash.html(
-          `<div class="alert alert-danger text-center">
-            <%= flash.now[@key].gsub('`', "'") %>
-          </div>`
+        `<div class="alert alert-<%= flash_color(flash.now[:samples]) %> text-center">
+          <%= flash.now[:samples].gsub('`', "'") %>
+        </div>`
       )
     <% else %>
       samplesFlash.empty();
     <% end %>
-    samplesBody.html('<%= j render 'staging_tables/staging_table'%>')
+    samplesBody.html('<%= j render 'samples/samples' %>')
 
 
     let scheduleFlash = $('#scheduler .flash');
     let scheduleBody = $('#scheduler .card-body');
 
-    <% if flash.now[@key] %>
+    <% if flash.now[:scheduler] %>
       scheduleFlash.html(
-        `<div class="alert alert-danger text-center">
-            <%= flash.now[@key].gsub('`', "'") %>
-          </div>`
+        `<div class="alert alert-<%= flash_color(flash.now[:scheduler]) %> text-center">
+          <%= flash.now[:scheduler].gsub('`', "'") %>
+        </div>`
     )
     <% else %>
-      scheduleBody.empty();
+      scheduleFlash.empty();
     <% end %>
-    scheduleFlash.html('<%= j render 'staging_tables/staging_table'%>')
+    scheduleBody.html('<%= j render 'schedules/scheduler'%>')
 
 
+    let exportFlash = $('#export .flash');
     let exportBody = $('#export .card-body');
-    exportBody.html('<%= j render 'staging_tables/staging_table'%>')
+
+    <% if flash.now[:export] %>
+      exportFlash.html(
+        `<div class="alert alert-<%= flash_color(flash.now[:export]) %> text-center">
+            <%= flash.now[:export].gsub('`', "'") %>
+        </div>`
+    )
+    <% else %>
+      exportFlash.empty();
+    <% end %>
+    exportBody.html('<%= j render 'exports/export'%>')
 })()

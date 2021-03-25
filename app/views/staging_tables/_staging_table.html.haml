@@ -1,4 +1,4 @@
--if @story_type.staging_table.nil? && @story_type.staging_table_attached.nil?
+-if @story_type.staging_table.nil?
   =render 'staging_tables/form'
 -elsif @story_type.staging_table_attached.eql?(false)
   =render 'story_types/spinner', description: 'staging table attaching in progress'
@@ -25,7 +25,7 @@
         .col-6#manipulate
           .btn-group
             -if @iteration.population.eql?(true)
-              =link_to('purge current iteration', purge_story_type_iteration_populations_path(@story_type, @iteration, staging_table),
+              =link_to('purge current iteration', purge_story_type_iteration_path(@story_type, @iteration),
                         class: 'btn btn-sm btn-outline-danger', method: :delete,  remote: true,
                         data: { confirm: 'PURGE CURRENT ITERATION: You sure?' })
             -elsif @iteration.created_at.to_s.eql?(@iteration.updated_at.to_s)

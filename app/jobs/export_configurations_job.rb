@@ -47,7 +47,7 @@ class ExportConfigurationsJob < ApplicationJob
     story_type.update(creating_export_configurations: status)
 
     if manual
-      send_to_action_cable(story_type.iteration, :export_configurations, message)
+      # send_to_action_cable(story_type.iteration, :export_configurations, message)
       send_to_slack(iteration, 'EXPORT CONFIGURATIONS', message)
     end
   end

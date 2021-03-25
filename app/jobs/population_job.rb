@@ -18,7 +18,7 @@ class PopulationJob < ApplicationJob
         message = e
       ensure
         iteration.update(population: status)
-        send_to_action_cable(iteration, :population, message)
+        send_to_action_cable(iteration, :staging_table, message)
         send_to_slack(iteration, 'POPULATION', message)
       end
     )

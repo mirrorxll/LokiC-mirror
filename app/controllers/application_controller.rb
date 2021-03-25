@@ -45,7 +45,7 @@ class ApplicationController < ActionController::Base
   alias render_400_editor    render_400
 
   def staging_table_action(&block)
-    flash.now[:error] =
+    flash.now[:staging_table] =
       if @staging_table.nil? || StagingTable.not_exists?(@staging_table.name)
         @story_type.update(staging_table_attached: nil)
         @staging_table&.destroy
@@ -54,7 +54,7 @@ class ApplicationController < ActionController::Base
         block.call
       end
   rescue StandardError => e
-    flash.now[:error] = e.message
+    flash.now[:staging_table] = e.message
   end
 
   def detached_or_delete

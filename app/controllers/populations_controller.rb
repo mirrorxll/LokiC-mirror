@@ -23,20 +23,6 @@ class PopulationsController < ApplicationController # :nodoc:
     render 'staging_tables/show'
   end
 
-  def purge
-    staging_table_action { @staging_table.purge }
-
-    if flash.now[:error].nil?
-      @iteration.samples.destroy_all
-      @iteration.auto_feedback.destroy_all
-      @iteration.update(
-        population: nil, story_samples: nil,
-        creation: nil, schedule: nil, export: nil
-      )
-    end
-    render 'staging_tables/show'
-  end
-
   private
 
   def population_params

@@ -25,7 +25,7 @@ class SamplesAndAutoFeedbackJob < ApplicationJob
         MiniLokiC::Code.execute(iteration, :creation, sampled: true, ids: ids.join(','))
         iteration.samples.where(staging_row_id: ids).update_all(sampled: true)
 
-        Samples.auto_feedback(iteration.story_type, true)
+        Samples.auto_feedback(iteration.story_type, options[:cron])
 
         iteration.update(story_sample_args: sample_args)
       rescue StandardError, ScriptError => e
