@@ -15,9 +15,6 @@ class CronTabExecuteJob < ApplicationJob
     iteration.update(population: false, population_args: cron_tab.population_params)
     raise StandardError unless PopulationJob.perform_now(iteration, population_args: cron_tab.population_params)
 
-    story_type.update(creating_export_configurations: false)
-    raise StandardError unless ExportConfigurationsJob.perform_now(iteration)
-
     iteration.update(story_samples: false)
     raise StandardError unless SamplesAndAutoFeedbackJob.perform_now(iteration, cron: true)
 
