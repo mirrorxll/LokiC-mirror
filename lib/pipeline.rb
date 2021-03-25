@@ -8,7 +8,7 @@ require_relative 'pipeline/shapes_client.rb'
 
 # pipeline-api library.
 # It gives the HLE-developers team
-# access to a Pipeline thought api
+# access to a Pipeline via api
 module Pipeline
   extend Configuration
 

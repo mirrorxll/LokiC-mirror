@@ -100,8 +100,9 @@ Rails.application.routes.draw do
 
     resources :cron_tabs
 
-    resources :iterations do
-      patch :apply_iteration, on: :member
+    resources :iterations, only: %i[create update] do
+      patch :apply, on: :member
+      delete :purge, on: :member
 
       resources :statuses, only: [] do
         get   :form,    on: :collection
@@ -109,7 +110,7 @@ Rails.application.routes.draw do
       end
 
       resources :populations, path: 'populate', only: [] do
-        get    :execute, on: :collection
+        post   :execute, on: :collection
         delete :purge,   on: :collection
       end
 
@@ -123,7 +124,7 @@ Rails.application.routes.draw do
       end
 
       resources :creations, only: [] do
-        get    :execute,   on: :collection
+        post   :execute,   on: :collection
         delete :purge_all, on: :collection
       end
 
