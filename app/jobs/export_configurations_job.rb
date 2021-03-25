@@ -35,8 +35,10 @@ class ExportConfigurationsJob < ApplicationJob
       exp_c.photo_bucket = story_type.photo_bucket
       exp_c.tag = (cl_tg.tag && publication.tag?(cl_tg.tag) ? cl_tg.tag : nil)
       exp_c.save!
+    end
 
-      exp_config_counts[cl_tg.client.name] += 1
+    story_type.export_configurations.each do |exp_conf|
+      exp_config_counts[exp_conf.publication.client.name] += 1
     end
 
     story_type.update(export_configurations_counts: exp_config_counts)
