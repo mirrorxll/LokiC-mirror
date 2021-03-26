@@ -16,7 +16,7 @@ class ExportConfigurationsJob < ApplicationJob
 
   def create_update_export_config(story_type, manual)
     status = true
-    message = 'Success'
+    message = 'Success. Export configurations created'
     exp_config_counts = {}
     exp_config_counts.default = 0
     iteration = story_type.iteration
@@ -43,7 +43,10 @@ class ExportConfigurationsJob < ApplicationJob
   ensure
     story_type.update(creating_export_configurations: status)
 
-    send_to_slack(iteration, 'EXPORT CONFIGURATIONS', message) if manual
+    if manual
+      send_to_action_cable(story_type.iteration, :properties, message)
+      send_to_slack(iteration, 'EXPORT CONFIGURATIONS', message)
+    end
   end
 
   def st_client_tag(clients_tags, publication)
