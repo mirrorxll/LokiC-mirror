@@ -11,4 +11,5 @@
 :schedule:
   initialize:
     in: '0s'
+    queue: lokic
     class: CronTabInitializerJob

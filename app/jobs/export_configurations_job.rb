@@ -37,21 +37,13 @@ class ExportConfigurationsJob < ApplicationJob
       exp_c.save!
     end
 
-    story_type.export_configurations.each do |exp_conf|
-      exp_config_counts[exp_conf.publication.client.name] += 1
-    end
-
-    story_type.update(export_configurations_counts: exp_config_counts)
   rescue StandardError => e
     status = nil
     message = e
   ensure
     story_type.update(creating_export_configurations: status)
 
-    if manual
-      # send_to_action_cable(story_type.iteration, :export_configurations, message)
-      send_to_slack(iteration, 'EXPORT CONFIGURATIONS', message)
-    end
+    send_to_slack(iteration, 'EXPORT CONFIGURATIONS', message) if manual
   end
 
   def st_client_tag(clients_tags, publication)

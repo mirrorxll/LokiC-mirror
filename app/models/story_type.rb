@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class StoryType < ApplicationRecord # :nodoc:
-  serialize :export_configurations_counts, JSON
-
   belongs_to :editor,            class_name: 'Account'
   belongs_to :developer,         optional: true, class_name: 'Account'
   belongs_to :data_set,          counter_cache: true
