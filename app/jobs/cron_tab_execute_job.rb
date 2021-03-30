@@ -28,4 +28,3 @@ class CronTabExecuteJob < ApplicationJob
     send_to_slack(iteration, 'CRONTAB', message)
   end
 end
-

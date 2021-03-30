@@ -34,10 +34,9 @@ module Table
       "UPDATE `#{t_name}` SET story_created = TRUE WHERE id = #{row_id};"
     end
 
-    # mark staging table's row as sample/story as not creates
-    def sample_destroyed_update_query(t_name, iter_id)
-      "UPDATE `#{t_name}` SET story_created = FALSE "\
-      "WHERE iter_id = #{iter_id};"
+    # mark staging table's row as sample/story as not created
+    def sample_not_created_update_query(t_name, row_id)
+      "UPDATE `#{t_name}` SET story_created = FALSE WHERE id = #{row_id};"
     end
 
     # delete rows from staging table

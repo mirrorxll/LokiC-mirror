@@ -4,24 +4,46 @@ class RemoveSamplesByLastIterationJob < ApplicationJob
   queue_as :story_type
 
   def perform(iteration)
-    Process.wait(
-      fork do
-        message = 'Success. All samples have been removed'
+    sleep(20)
+    message = 'Success. All samples have been removed'
 
-        iteration.samples.destroy_all
-        iteration.story_type.staging_table.samples_set_not_created
-        iteration.update(story_samples: nil, creation: nil)
+    loop do
+      rd, wr = IO.pipe
 
-        iteration.update(
-          creation: nil, schedule: nil,
-          schedule_args: nil, schedule_counts: nil
-        )
-      rescue StandardError => e
-        message = e.message
-      ensure
-        iteration.update(purge_all_samples: nil)
-        send_to_action_cable(iteration, :samples, message)
+      Process.wait(
+        fork do
+          rd.close
+
+          iteration.samples.limit(10_000).destroy_all
+        rescue StandardError => e
+          wr.write({ e.class.to_s => e.message }.to_json)
+        ensure
+          wr.close
+        end
+      )
+
+      wr.close
+      exception = rd.read
+      rd.close
+
+      if exception.present?
+        klass, message = JSON.parse(exception).to_a.first
+        raise Object.const_get(klass), message
       end
+
+      break if iteration.samples.reload.blank?
+    end
+
+    iteration.update(
+      story_samples: nil, creation: nil,
+      schedule: nil, schedule_args: nil,
+      schedule_counts: nil
     )
+  rescue StandardError => e
+    message = e
+  ensure
+    iteration.update(purge_all_samples: nil)
+    send_to_action_cable(iteration, :samples, message)
+    send_to_slack(iteration, 'CREATION', message)
   end
 end

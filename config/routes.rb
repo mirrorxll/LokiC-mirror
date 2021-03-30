@@ -13,8 +13,6 @@ Rails.application.routes.draw do
 
   mount ActionCable.server, at: '/cable'
 
-  root 'story_types#index'
-
   namespace :api, constraints: { format: :json } do
     namespace :v1 do
       resources :clients, only: [] do
@@ -23,6 +21,10 @@ Rails.application.routes.draw do
       end
     end
   end
+
+  root 'story_types#index'
+
+  get '/iterations/:id', to: 'iterations#show'
 
   resources :data_sets, except: %i[new] do
     get :properties, on: :member

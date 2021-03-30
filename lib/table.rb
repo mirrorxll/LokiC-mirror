@@ -91,9 +91,8 @@ module Table # :nodoc:
     nil
   end
 
-  def samples_set_as_not_created(t_name)
-    last_iter = last_iter_id(t_name)
-    upd_query = sample_destroyed_update_query(t_name, last_iter)
+  def sample_set_as_not_created(t_name, id)
+    upd_query = sample_not_created_update_query(t_name, id)
     loki_story_creator { a_r_b_conn.exec_query(upd_query) }
 
     nil
