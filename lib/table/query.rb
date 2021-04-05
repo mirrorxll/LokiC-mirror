@@ -69,9 +69,10 @@ module Table
       "LIMIT #{options[:limit] || 10_000};"
     end
 
-    def left_count_by_last_iteration_query(t_name, iter_id)
-      "SELECT COUNT(*) count FROM `#{t_name}` "\
-      "WHERE (story_created = 0 OR story_created IS NULL) AND iter_id = (#{iter_id});"
+    def all_created_by_last_iteration_query(t_name, iter_id)
+      "SELECT id FROM `#{t_name}` "\
+      "WHERE (story_created = 0 OR story_created IS NULL) AND iter_id = (#{iter_id})"\
+      'LIMIT 1;'
     end
 
     def created_at_default_value_query(name)
