@@ -4,15 +4,17 @@ module MiniLokiC
   # Execute uploaded stage population/story creation code
   class Code
     def self.execute(iteration, method, options)
-      thr = Thread.new { new(iteration, method, options).send(:exec) }
-
-      if %i[population creation].include?(method.to_sym)
-        while thr.alive?
-          iteration.send("kill_#{method}?") ? Thread.kill(thr) : sleep(2)
-        end
-      else
-        thr.join
-      end
+      new(iteration, method, options).send(:exec)
+      # thr = Thread.new { new(iteration, method, options).send(:exec) }
+      # thr.abort_on_exception = true
+      #
+      # if %i[population creation].include?(method.to_sym)
+      #   while thr.alive?
+      #     iteration.send("kill_#{method}?") ? Thread.kill(thr) : sleep(2)
+      #   end
+      # else
+      #   thr.join
+      # end
     end
 
     def self.download(iteration)
@@ -59,7 +61,7 @@ module MiniLokiC
       )
 
       story_type_class.new.send(@method, @options)
-    rescue StandardError => e
+    rescue StandardError, ScriptError => e
       raise "MiniLokiC::#{@method.capitalize}ExecutionError".constantize,
             "[ #{@method.capitalize}ExecutionError ] -> #{e.message} at #{e.backtrace.first}".gsub('`', "'")
     ensure

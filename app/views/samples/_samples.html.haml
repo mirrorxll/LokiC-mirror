@@ -21,6 +21,8 @@
 
   -elsif @iteration.story_samples.eql?(false) || @iteration.creation.eql?(false)
     =render 'story_types/spinner', description: 'samples creation in the process'
+  -elsif @iteration.purge_all_samples.eql?(true)
+    =render 'story_types/spinner', description: 'purge all samples in progress'
   -else
     -samples = @iteration.samples.where(sampled: true)
     .row

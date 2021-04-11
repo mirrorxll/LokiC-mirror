@@ -78,10 +78,10 @@ module Table # :nodoc:
     loki_story_creator { a_r_b_conn.exec_query(rows_query).to_a }
   end
 
-  def left_count_by_last_iteration(t_name)
+  def all_created_by_last_iteration?(t_name)
     last_iter = last_iter_id(t_name)
-    rows_query = left_count_by_last_iteration_query(t_name, last_iter)
-    loki_story_creator { a_r_b_conn.exec_query(rows_query).first['count'] }
+    rows_query = all_created_by_last_iteration_query(t_name, last_iter)
+    loki_story_creator { a_r_b_conn.exec_query(rows_query).first.nil? }
   end
 
   def sample_set_as_created(t_name, id)
@@ -91,9 +91,8 @@ module Table # :nodoc:
     nil
   end
 
-  def samples_set_as_not_created(t_name)
-    last_iter = last_iter_id(t_name)
-    upd_query = sample_destroyed_update_query(t_name, last_iter)
+  def sample_set_as_not_created(t_name, id)
+    upd_query = sample_not_created_update_query(t_name, id)
     loki_story_creator { a_r_b_conn.exec_query(upd_query) }
 
     nil

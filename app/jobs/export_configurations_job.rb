@@ -16,7 +16,7 @@ class ExportConfigurationsJob < ApplicationJob
 
   def create_update_export_config(story_type, manual)
     status = true
-    message = 'Success'
+    message = 'Success. Export configurations created'
     exp_config_counts = {}
     exp_config_counts.default = 0
     iteration = story_type.iteration
@@ -35,11 +35,8 @@ class ExportConfigurationsJob < ApplicationJob
       exp_c.photo_bucket = story_type.photo_bucket
       exp_c.tag = (cl_tg.tag && publication.tag?(cl_tg.tag) ? cl_tg.tag : nil)
       exp_c.save!
-
-      exp_config_counts[cl_tg.client.name] += 1
     end
 
-    story_type.update(export_configurations_counts: exp_config_counts)
   rescue StandardError => e
     status = nil
     message = e
@@ -47,7 +44,7 @@ class ExportConfigurationsJob < ApplicationJob
     story_type.update(creating_export_configurations: status)
 
     if manual
-      # send_to_action_cable(story_type.iteration, :export_configurations, message)
+      send_to_action_cable(story_type.iteration, :properties, message)
       send_to_slack(iteration, 'EXPORT CONFIGURATIONS', message)
     end
   end

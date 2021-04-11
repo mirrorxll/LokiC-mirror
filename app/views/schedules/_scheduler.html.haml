@@ -1,4 +1,4 @@
--if !@iteration.creation
+-if !@iteration.creation || @iteration.purge_all_samples
   -#empty section
 -elsif !@story_type.iteration.eql?(@iteration)
   .row.small

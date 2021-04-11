@@ -1,14 +1,16 @@
 :dynamic: true
 
-:concurrency: 30
+:concurrency: 50
 
 :queues:
   - active_storage_analysis
   - active_storage_purge
   - lokic
   - story_type
+  - cron_tab
 
 :schedule:
-  initialize:
+  initial:
     in: '0s'
+    queue: cron_tab
     class: CronTabInitializerJob
