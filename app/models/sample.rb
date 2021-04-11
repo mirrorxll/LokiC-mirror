@@ -2,6 +2,7 @@
 
 class Sample < ApplicationRecord
   before_create { Table.sample_set_as_created(staging_table.name, staging_row_id) }
+  after_destroy { Table.sample_set_as_not_created(staging_table.name, staging_row_id) }
 
   paginates_per 200
 

@@ -31,7 +31,7 @@ class CreationJob < ApplicationJob
       end
 
       staging_table = iteration.story_type.staging_table.name
-      break if Table.left_count_by_last_iteration(staging_table).zero?
+      break if Table.all_created_by_last_iteration?(staging_table)
     end
 
     iteration.update(schedule_counts: schedule_counts(iteration))

@@ -1,4 +1,6 @@
--if @iteration.schedule
+-if @iteration.purge_all_samples
+  -#empty section
+-elsif @iteration.schedule
   -samples = @iteration.samples.where(backdated: false)
   -exported = samples.where.not("pl_#{PL_TARGET}_story_id".to_sym => nil).count
   -ready_to_export = samples.where("pl_#{PL_TARGET}_story_id".to_sym => nil).count

@@ -1,7 +1,7 @@
--if @story_type.staging_table.nil?
-  =render 'staging_tables/form'
--elsif @story_type.staging_table_attached.eql?(false)
+-if @story_type.staging_table_attached.eql?(false)
   =render 'story_types/spinner', description: 'staging table attaching in progress'
+-elsif @story_type.staging_table.nil?
+  =render 'staging_tables/form'
 -elsif @story_type.staging_table.columns_modifying.eql?(true)
   =render 'story_types/spinner', description: 'staging table modifying in progress'
 -elsif @story_type.staging_table.indices_modifying.eql?(true)

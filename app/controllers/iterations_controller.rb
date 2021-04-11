@@ -2,10 +2,17 @@
 
 class IterationsController < ApplicationController
   skip_before_action :set_iteration
+  skip_before_action :find_parent_story_type, only: :show
 
   before_action :render_400, if: :editor?
-  before_action :find_iteration, only: %i[update apply purge]
-  before_action :find_staging_table,  only: :purge
+  before_action :find_iteration, only: %i[show update apply purge]
+  before_action :find_staging_table, only: :purge
+
+  def show
+    @story_type = @iteration.story_type
+
+    render 'story_types/show'
+  end
 
   def create
     @iteration = @story_type.iterations.build(iteration_params)

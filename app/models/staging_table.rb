@@ -47,10 +47,6 @@ class StagingTable < ApplicationRecord # :nodoc:
     Table.purge_last_iteration(name)
   end
 
-  def samples_set_not_created
-    Table.samples_set_as_not_created(name)
-  end
-
   private
 
   def noname?
