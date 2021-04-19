@@ -95,8 +95,8 @@ module Scheduler
           Base.old_scheduler(samples_time_frame, params)
         else
           frame = TimeFrame.find_by(id: frame[:time_frame_id]).frame
-          day_from_frame = frame.split(',').first.to_i
-          year_from_frame = frame.split(',').last.to_i
+          day_from_frame = frame.split(':')[1].to_i
+          year_from_frame = frame.split(':').last.to_i
 
           date_story_is_about = Date.ordinal(year_from_frame, day_from_frame)
 
