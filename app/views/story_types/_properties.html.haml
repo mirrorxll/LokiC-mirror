@@ -17,7 +17,7 @@
         client
       .col-6
         tag
-    -@story_type.client_tags.each do |cl_t|
+    -@story_type.clients_tags.each do |cl_t|
       .row
         .col-6
           =cl_t.client.name
@@ -48,7 +48,12 @@
       .col-6
         =@story_type.developer ? @story_type.developer.name: '---'
     %hr/
-
+    .row.mb-2.font-weight-bold
+      .col-12
+        current iteration id
+    .row
+      .col-12
+        =@iteration.id
   .col-5.border-left.ml-1
     .row.mb-2.font-weight-bold
       .col-12

@@ -4,10 +4,14 @@ module Table
   # Custom queries for manipulated data
   # from staging tables
   module Query
+    def and_client_ids(ids)
+      ids.empty? ? '' : "AND client_id IN (#{ids})"
+    end
+
     # return publication ids, grouped by a client id.
-    def publication_ids_query(t_name, iter_id)
+    def publication_ids_query(t_name, iter_id, client_ids)
       "SELECT distinct publication_id p_id FROM `#{t_name}` "\
-      "WHERE iter_id = #{iter_id};"
+      "WHERE iter_id = #{iter_id} #{and_client_ids(client_ids)};"
     end
 
     # return default iteration number from staging table
@@ -46,32 +50,34 @@ module Table
 
     # return staging table row id equal
     # min or max value by iteration_id
-    def select_minmax_id_query(t_name, iter_id, column_name, type)
+    def select_minmax_id_query(t_name, iter_id, client_ids, column_name, type)
       sub_query = "SELECT #{type}(`#{column_name}`) "\
-                  "FROM `#{t_name}` WHERE iter_id = #{iter_id}"
+                  "FROM `#{t_name}` WHERE iter_id = #{iter_id} #{and_client_ids(client_ids)}"
 
       'SELECT id '\
       "FROM `#{t_name}` "\
       "WHERE iter_id = #{iter_id} AND "\
-             "`#{column_name}` = (#{sub_query})"\
+      "`#{column_name}` = (#{sub_query}) #{and_client_ids(client_ids)} "\
       'LIMIT 1;'
     end
 
     def rows_by_ids_query(t_name, iter_id, options)
       "SELECT * FROM `#{t_name}` "\
-      'WHERE (story_created = 0 OR story_created IS NULL) AND '\
+      "WHERE (story_created = 0 OR story_created IS NULL) #{and_client_ids(options[:client_ids])} AND "\
       "id IN (#{options[:ids]}) AND iter_id = #{iter_id};"
     end
 
     def rows_by_last_iteration_query(t_name, iter_id, options)
       "SELECT * FROM `#{t_name}` "\
-      "WHERE (story_created = 0 OR story_created IS NULL) AND iter_id = (#{iter_id}) "\
+      'WHERE (story_created = 0 OR story_created IS NULL) AND '\
+      "iter_id = (#{iter_id}) #{and_client_ids(options[:client_ids])} "\
       "LIMIT #{options[:limit] || 10_000};"
     end
 
-    def all_created_by_last_iteration_query(t_name, iter_id)
+    def all_created_by_last_iteration_query(t_name, iter_id, raw_client_ids)
       "SELECT id FROM `#{t_name}` "\
-      "WHERE (story_created = 0 OR story_created IS NULL) AND iter_id = (#{iter_id})"\
+      'WHERE (story_created = 0 OR story_created IS NULL) AND '\
+      "iter_id = (#{iter_id}) #{and_client_ids(raw_client_ids)} "\
       'LIMIT 1;'
     end
 

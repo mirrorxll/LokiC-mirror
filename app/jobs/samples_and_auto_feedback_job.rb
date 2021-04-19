@@ -8,21 +8,25 @@ class SamplesAndAutoFeedbackJob < ApplicationJob
       fork do
         status = true
         message = "Success. FCD's samples have been created"
-        staging_table = iteration.story_type.staging_table
         sample_args = nil
+        staging_table = iteration.story_type.staging_table
+        client_ids = iteration.story_type.client_pl_ids.join(',')
+        options[:client_ids] = client_ids
+        options[:sampled] = true
 
         ids =
           if options[:cron]
-            Table.select_edge_ids(staging_table.name, [:id])
+            Table.select_edge_ids(staging_table.name, client_ids, [:id])
           else
             column_names = staging_table.columns.ids_to_names(options[:columns])
             sample_args = { columns: column_names, ids: options[:row_ids] }
-            edge_ids = Table.select_edge_ids(staging_table.name, column_names)
+            edge_ids = Table.select_edge_ids(staging_table.name, client_ids, column_names)
             row_ids = options[:row_ids].delete(' ').split(',')
             edge_ids + row_ids
           end
 
-        MiniLokiC::Code.execute(iteration, :creation, sampled: true, ids: ids.join(','))
+        options = options.merge({ ids: ids.join(',') })
+        MiniLokiC::Code.execute(iteration, :creation, options)
         iteration.samples.where(staging_row_id: ids).update_all(sampled: true)
 
         Samples.auto_feedback(iteration.story_type, options[:cron])

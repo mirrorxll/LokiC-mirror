@@ -52,7 +52,7 @@ class StoryTypesController < ApplicationController # :nodoc:
 
     if @story_type.save!
       @data_set.client_tags.each do |client_tag|
-        @story_type.client_tags.build(client: client_tag.client, tag: client_tag.tag).save!
+        @story_type.clients_tags.build(client: client_tag.client, tag: client_tag.tag).save!
       end
 
       redirect_to data_set_path(@data_set)

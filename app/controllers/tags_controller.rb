@@ -21,7 +21,7 @@ class TagsController < ApplicationController # :nodoc:
 
   def find_story_type_client
     @story_type_client_tag =
-      @story_type.client_tags.find_by(client_id: params[:client_id])
+      @story_type.clients_tags.find_by(client_id: params[:client_id])
   end
 
   def find_tag

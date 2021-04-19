@@ -6,6 +6,8 @@ class CreationJob < ApplicationJob
   def perform(iteration, options = {})
     status = true
     message = 'Success. All samples have been created'
+    client_ids = iteration.story_type.client_pl_ids.join(',')
+    options[:client_ids] = client_ids
 
     loop do
       rd, wr = IO.pipe
@@ -31,7 +33,7 @@ class CreationJob < ApplicationJob
       end
 
       staging_table = iteration.story_type.staging_table.name
-      break if Table.all_created_by_last_iteration?(staging_table)
+      break if Table.all_created_by_last_iteration?(staging_table, client_ids)
     end
 
     iteration.update(schedule_counts: schedule_counts(iteration))
@@ -52,12 +54,13 @@ class CreationJob < ApplicationJob
     counts[:total] = iteration.samples.count
     return counts if counts[:total].zero?
 
-    iteration.story_type.client_tags.each_with_object(counts) do |row, obj|
+    iteration.story_type.clients_tags.each_with_object(counts) do |row, obj|
       client = row.client
-      pubs = client.name.eql?('Metric Media') ? Client.all_mm_publications : client.publications
+      pubs = client.name.eql?('Metric Media') ? Publication.all_mm_publications : client.publications
       counts = pubs.joins(:samples).where(samples: { iteration: iteration })
                    .group(:publication_id).order('count(publication_id) desc')
                    .count(:publication_id)
+      next if counts.empty?
 
       obj[client.name.to_sym] = counts.first[1]
     end

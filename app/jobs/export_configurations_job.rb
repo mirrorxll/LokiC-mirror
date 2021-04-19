@@ -20,7 +20,7 @@ class ExportConfigurationsJob < ApplicationJob
     exp_config_counts = {}
     exp_config_counts.default = 0
     iteration = story_type.iteration
-    st_cl_tgs = story_type.client_tags
+    st_cl_tgs = story_type.clients_tags
 
     story_type.staging_table.publication_ids.each do |pub_id|
       publication = Publication.find_by(pl_identifier: pub_id)
@@ -50,7 +50,7 @@ class ExportConfigurationsJob < ApplicationJob
   end
 
   def st_client_tag(clients_tags, publication)
-    all_mm_pubs = Client.all_mm_publications
+    all_mm_pubs = Publication.all_mm_publications
 
     clients_tags.to_a.find do |client_tag|
       client = client_tag.client

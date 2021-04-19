@@ -11,11 +11,4 @@ class Client < ApplicationRecord # :nodoc:
 
   has_and_belongs_to_many :sections
   has_and_belongs_to_many :tags
-
-  def self.all_mm_publications
-    mm_clients = where('name LIKE :like', like: 'MM -%')
-    mm_pub_ids = mm_clients.map(&:publications).flat_map(&:to_a).map(&:id)
-
-    Publication.where(id: mm_pub_ids)
-  end
 end

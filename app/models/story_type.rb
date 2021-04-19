@@ -18,9 +18,9 @@ class StoryType < ApplicationRecord # :nodoc:
   has_many :configurations_no_tags, -> { where(tag: nil).or(where(skipped: true)) }, class_name: 'ExportConfiguration'
   has_many :samples
 
-  has_many :client_tags, class_name: 'StoryTypeClientTag'
-  has_many :clients, through: :client_tags
-  has_many :tags, through: :client_tags
+  has_many :clients_tags, class_name: 'StoryTypeClientTag'
+  has_many :clients, through: :clients_tags
+  has_many :tags, through: :clients_tags
 
   has_one_attached :code
 
@@ -49,9 +49,14 @@ class StoryType < ApplicationRecord # :nodoc:
   def download_code_from_db
     MiniLokiC::Code.download(iteration)
   end
+
+  def client_pl_ids
+    clients_tags.flat_map do |cl_t|
+      if cl_t.client.name.eql?('Metric Media')
+        Publication.all_mm_publications.map(&:pl_identifier)
+      else
+        cl_t.client.pl_identifier
+      end
+    end
+  end
 end
-
-
-
-
-

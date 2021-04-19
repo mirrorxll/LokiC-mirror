@@ -1,5 +1,10 @@
 -sample_args = @iteration.story_sample_args
 
+.small.mb-3.text-danger
+  You can create samples only for clients specified in the properties section above
+  %br/
+  Please make sure you have rows in the staging table and your code have no any mistakes
+
 .small
   =form_with(url: create_and_generate_auto_feedback_story_type_iteration_samples_path(@story_type, @iteration),
              id: 'create_samples_form', html: { oninput: 'allowCreateSamples();' }) do |form|

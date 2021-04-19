@@ -7,7 +7,7 @@
         tag
     #clients_tags_table_body
       -if @story_type.clients.present?
-        =render partial: 'clients/client_tag', collection: @story_type.client_tags
+        =render partial: 'clients/client_tag', collection: @story_type.clients_tags
     .p-1
       =render 'clients/form'
 %hr/

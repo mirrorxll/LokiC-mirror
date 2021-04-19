@@ -40,7 +40,7 @@ class StagingTable < ApplicationRecord # :nodoc:
   end
 
   def publication_ids
-    Table.publication_ids(name)
+    Table.publication_ids(name, story_type.client_ids)
   end
 
   def purge
