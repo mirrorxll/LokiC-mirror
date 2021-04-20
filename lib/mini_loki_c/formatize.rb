@@ -8,6 +8,7 @@ require_relative 'formatize/address.rb'
 require_relative 'formatize/percents.rb'
 require_relative 'formatize/the.rb'
 require_relative 'formatize/cleaner'
+require_relative 'formatize/data_sanitation'
 
 module MiniLokiC
   module Formatize; end
