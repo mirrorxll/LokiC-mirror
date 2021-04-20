@@ -3,7 +3,7 @@ class StoryTypesGrid
 
   # Scope
   scope do
-    StoryType.includes(:frequency, :photo_bucket, :developer, :client_tags, :clients, :tags, data_set: %i[state category], current_iteration: [:statuses])
+    StoryType.includes(:frequency, :photo_bucket, :developer, :clients_tags, :clients, :tags, data_set: %i[state category], current_iteration: [:statuses])
   end
 
   # Filters
