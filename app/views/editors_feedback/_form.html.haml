@@ -1,8 +1,7 @@
 #editors_feedback_editor_modal.ml-3
-  =form_with(url: story_type_fact_checking_doc_editors_feedback_index_path(@story_type, @story_type.fact_checking_doc),
-             local: true) do |form|
-    .field{ id: 'editors_feedback_editable', "data-controller" => "summernote" }
-      =form.text_area 'editors_feedback[body]', data: { editor: 'summernote' }
+  =form_with(url: story_type_fact_checking_doc_editors_feedback_index_path(@story_type, @story_type.fact_checking_doc), local: true) do |form|
+    .field
+      =form.text_area 'editors_feedback[body]', id: 'editors_feedback_editable'
     .mt-3.mb-4
       =form.submit "create feedback", class: 'btn btn-sm btn-outline-dark',
                    onclick: "sessionStorage.removeItem('editorsFeedback');"
@@ -16,3 +15,41 @@
 
 #editors_feedback_body_modal
 
+:javascript
+  new FroalaEditor('#editors_feedback_editable', {
+    key: 'KfdolbcqsaA2wzA-13==',
+    attribution: false,
+    toolbarSticky: true,
+    height: 200,
+    zIndex: 2501,
+    imageUploadURL: '/images.json',
+    toolbarButtons: {
+      moreAction: {
+        buttons: ['undo', 'redo'],
+        align: 'left'
+      },
+      moreText: {
+        buttons: ['fontFamily', 'bold', 'italic', 'underline', 'strikeThrough', 'fontSize', 'textColor', 'backgroundColor', 'clearFormatting'],
+        align: 'left',
+        buttonsVisible: 9
+      },
+      moreParagraph: {
+        buttons: ['paragraphFormat', 'alignLeft', 'alignCenter', 'alignRight', 'alignJustify', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote'],
+        align: 'left',
+        buttonsVisible: 10
+      },
+      moreRich: {
+        buttons: ['insertLink', 'insertImage', 'insertTable', 'specialCharacters', 'selectAll'],
+        align: 'left',
+        buttonsVisible: 5
+      },
+      moreMisc: {
+        buttons: ['fullscreen', 'help'],
+        align: 'right'
+      }
+    }
+  })
+
+  $('#template').on('hidden.bs.modal', function () {
+    $('#template .modal-body').empty();
+  });

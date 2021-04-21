@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class FactCheckingDocsController < ApplicationController
+  skip_before_action :verify_authenticity_token, only: :save
   before_action :find_fcd, except: :template
 
   def show
