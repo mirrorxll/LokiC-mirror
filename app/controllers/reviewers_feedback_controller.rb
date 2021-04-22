@@ -39,7 +39,10 @@ class ReviewersFeedbackController < ApplicationController
   end
 
   def reviewers_feedback_params
-    params.require(:reviewers_feedback).permit(:body).gsub(POW_BY_FROALA, '')
+    permitted = params.require(:reviewers_feedback).permit(:body)
+    permitted[:body].gsub!(POW_BY_FROALA, '')
+
+    permitted
   end
 
   def send_notifications

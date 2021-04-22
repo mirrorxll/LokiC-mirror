@@ -40,7 +40,10 @@ class EditorsFeedbackController < ApplicationController
   end
 
   def editors_feedback_params
-    params.require(:editors_feedback).permit(:body).gsub(POW_BY_FROALA, '')
+    permitted = params.require(:editors_feedback).permit(:body)
+    permitted[:body].gsub!(POW_BY_FROALA, '')
+
+    permitted
   end
 
   def send_notification_to_dev
