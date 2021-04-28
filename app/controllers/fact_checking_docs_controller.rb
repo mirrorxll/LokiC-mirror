@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class FactCheckingDocsController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: :save
   before_action :find_fcd, except: :template
 
   def show
@@ -34,8 +33,7 @@ class FactCheckingDocsController < ApplicationController
   end
 
   def send_to_reviewers_channel
-    channel = Rails.env.production? ? 'hle_reviews_queue' : 'notifications_test'
-    response = SlackNotificationJob.perform_now(channel, message_to_slack)
+    response = SlackNotificationJob.perform_now('hle_reviews_queue', message_to_slack)
     @fcd.update(slack_message_ts: response[:ts])
   end
 

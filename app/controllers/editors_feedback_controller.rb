@@ -40,10 +40,7 @@ class EditorsFeedbackController < ApplicationController
   end
 
   def editors_feedback_params
-    permitted = params.require(:editors_feedback).permit(:body)
-    permitted[:body].gsub!(POW_BY_FROALA, '')
-
-    permitted
+    params.require(:editors_feedback).permit(:body)
   end
 
   def send_notification_to_dev
@@ -79,7 +76,6 @@ class EditorsFeedbackController < ApplicationController
     message = "*Updated FCD* ##{@story_type.id} "\
               "<#{story_type_fact_checking_doc_url(@story_type, @fcd)}|#{@story_type.name}>."
 
-    channel = Rails.env.production? ? fc_channel : 'notifications_test'
-    SlackNotificationJob.perform_later(channel, message)
+    SlackNotificationJob.perform_later(fc_channel, message)
   end
 end

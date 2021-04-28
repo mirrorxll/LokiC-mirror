@@ -1,10 +1,11 @@
 (()=>{
+    let manual_feedback_modal = $('#manual_feedback_modal')
     let fcd_body = document.getElementById('fcd_body').innerHTML;
     let reviewersFeedback = document.getElementById('reviewers_feedback_body').innerHTML
 
     document.getElementById('manual_feedback_modal_label').innerText = `<%= "FCD ##{@story_type.id} #{@story_type.name} -- #{@story_type.developer.name} -- reviewers feedback".html_safe %>`
     document.querySelector('#manual_feedback_modal #fcd').innerHTML = fcd_body;
-    $('#manual_feedback_modal .w-39').html(`<%= j render 'form' %>`);
+    document.querySelector('#manual_feedback_modal .w-39').innerHTML = `<%= j render 'form' %>`;
     document.querySelector('#reviewers_feedback_body_modal').innerHTML = reviewersFeedback;
 
     let allFcdLinks = document.querySelectorAll('#manual_feedback_modal #fcd a')
@@ -24,5 +25,30 @@
        a.setAttribute('data-remote', 'true')
     });
 
-    $('#manual_feedback_modal').off('hidden.bs.modal')
+    let feedbackEditor = $('#reviewers_feedback_editable [data-editor="summernote"]')
+    feedbackEditor.summernote({
+        height: 200,
+        disableResizeEditor: true,
+        toolbar: [
+            ['style', ['style']],
+            ['font', ['clear' , 'bold', 'italic', 'underline', 'strikethrough']],
+            ['fontname', ['fontname', 'fontsize']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['table', ['table']],
+            ['insert', ['link', 'picture', 'video']],
+            ['view', ['fullscreen', 'codeview', 'help']],
+        ]
+    });
+
+    if(sessionStorage['reviewersFeedback']) {
+        feedbackEditor.summernote('code', sessionStorage['reviewersFeedback']);
+    }
+
+    $(manual_feedback_modal).off('hidden.bs.modal')
+    manual_feedback_modal.on('hidden.bs.modal', reviewersFeedbackSaver)
 }).call();
+
+function reviewersFeedbackSaver() {
+    sessionStorage['reviewersFeedback'] = document.querySelector('#reviewers_feedback_editable .note-editable').innerHTML;
+}
