@@ -1,46 +1,12 @@
 =form_with(model: [@story_type, @story_type.template]) do |form|
-  .field
-    =form.text_area :body, id: 'template_editor'
+  .field.small{ "data-controller" => "summernote" }
+    =form.text_area :body, data: { editor: 'summernote' }
   .modal-footer
-    =link_to( 'close', '#', class: 'ml-auto btn btn-sm btn-outline-secondary', 'data-dismiss' => 'modal')
+    =link_to( 'close', '#', class: 'ml-auto btn btn-sm btn-outline-secondary',
+              'data-dismiss' => 'modal', data: { confirm: 'All changes shall be lost. Close?'})
     =form.submit 'save changes', class: 'mr-auto btn btn-sm btn-outline-success'
 
 :javascript
-  new FroalaEditor('#template_editor', {
-    key: 'KfdolbcqsaA2wzA-13==',
-    attribution: false,
-    toolbarSticky: true,
-    documentReady: true,
-    height: 685,
-    zIndex: 2501,
-    imageUploadURL: '/images.json',
-    toolbarButtons: {
-      moreAction: {
-        buttons: ['undo', 'redo'],
-        align: 'left'
-      },
-      moreText: {
-        buttons: ['fontFamily', 'bold', 'italic', 'underline', 'strikeThrough', 'fontSize', 'textColor', 'backgroundColor', 'clearFormatting'],
-        align: 'left',
-        buttonsVisible: 9
-      },
-      moreParagraph: {
-        buttons: ['paragraphFormat', 'alignLeft', 'alignCenter', 'alignRight', 'alignJustify', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote'],
-        align: 'left',
-        buttonsVisible: 10
-      },
-      moreRich: {
-        buttons: ['insertLink', 'insertImage', 'insertTable', 'specialCharacters', 'selectAll'],
-        align: 'left',
-        buttonsVisible: 5
-      },
-      moreMisc: {
-        buttons: ['fullscreen', 'help'],
-        align: 'right'
-      }
-    }
-  })
-
   $('#template').on('hidden.bs.modal', function () {
     $('#template .modal-body').empty();
   });

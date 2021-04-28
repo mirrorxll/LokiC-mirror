@@ -39,7 +39,7 @@ class ReviewersFeedbackController < ApplicationController
   end
 
   def reviewers_feedback_params
-    params.require(:reviewers_feedback).permit(:body).gsub(POW_BY_FROALA, '')
+    params.require(:reviewers_feedback).permit(:body)
   end
 
   def send_notifications
@@ -54,9 +54,7 @@ class ReviewersFeedbackController < ApplicationController
       message_to_fc_channel = "*FCD ##{@story_type.id}* "\
                               "<#{story_type_fact_checking_doc_url(@story_type, @fcd)}|#{@story_type.name}>.\n"\
                               "#{@feedback.body.present? ? "*Reviewer's Note*: #{note}" : ''}"
-
-      channel = Rails.env.production? ? fcd_channel : 'notifications_test'
-      SlackNotificationJob.perform_later(channel, message_to_fc_channel)
+      SlackNotificationJob.perform_later(fcd_channel, message_to_fc_channel)
 
       message_to_dev += "Approved by *#{current_account.name}* and sent to *#{fcd_channel}* channel"
     else
@@ -80,7 +78,6 @@ class ReviewersFeedbackController < ApplicationController
               "<#{story_type_fact_checking_doc_url(@story_type, @story_type.fact_checking_doc)}"\
               '#reviewers_feedback|Check it>.'
 
-    channel = Rails.env.production? ? 'hle_reviews_queue' : 'notifications_test'
-    SlackNotificationJob.perform_later(channel, message, @fcd.slack_message_ts)
+    SlackNotificationJob.perform_later('hle_reviews_queue', message, @fcd.slack_message_ts)
   end
 end

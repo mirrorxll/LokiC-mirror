@@ -19,6 +19,6 @@ class TemplatesController < ApplicationController
   end
 
   def template_params
-    params.require(:template).permit(:body).gsub(POW_BY_FROALA, '')
+    params.require(:template).permit(:body)
   end
 end

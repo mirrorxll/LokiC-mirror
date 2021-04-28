@@ -1,4 +1,4 @@
-=form_with(model: [@story_type, @fcd], method: :put, local: true) do |form|
+=form_with(url: story_type_fact_checking_doc_path(@story_type, @fcd), method: :put, local: true) do |form|
   =form.submit 'save', class: 'btn btn-sm btn-outline-dark', onclick: 'stopFcdSaver();'
   .btn-group.ml-3
     =link_to('template', story_type_fact_checking_doc_template_path(@story_type, @fcd),
@@ -7,48 +7,6 @@
              "data-target" => "#autoFeedbackCollapse", "data-toggle" => "collapse", type: "button",
              class: 'btn btn-sm btn-outline-dark', onclick: 'hideAllPopovers();')
   %small.d-block.mb-2.mt-2
-    *** FCD will be automatically saved
-  .field
-    =form.text_area :body, id: 'fcd_editor'
-
-:javascript
-  new FroalaEditor('#fcd_editor', {
-    key: 'KfdolbcqsaA2wzA-13==',
-    saveInterval: 2500,
-    saveMethod: 'PATCH',
-    saveParam: 'fact_checking_doc[body]',
-    saveURL: '#{save_story_type_fact_checking_doc_url(@story_type, @fcd)}',
-    attribution: false,
-    toolbarSticky: true,
-    zIndex: 2501,
-    imageUploadURL: '/images.json',
-    toolbarButtons: {
-      moreAction: {
-        buttons: ['undo', 'redo'],
-        align: 'left'
-      },
-      moreText: {
-        buttons: ['fontFamily', 'bold', 'italic', 'underline', 'strikeThrough', 'fontSize', 'textColor', 'backgroundColor', 'clearFormatting'],
-        align: 'left',
-        buttonsVisible: 9
-      },
-      moreParagraph: {
-        buttons: ['paragraphFormat', 'alignLeft', 'alignCenter', 'alignRight', 'alignJustify', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote'],
-        align: 'left',
-        buttonsVisible: 10
-      },
-      moreRich: {
-        buttons: ['insertLink', 'insertImage', 'insertTable', 'specialCharacters', 'selectAll'],
-        align: 'left',
-        buttonsVisible: 5
-      },
-      moreMisc: {
-        buttons: ['fullscreen', 'help'],
-        align: 'right'
-      }
-    }
-  })
-
-  $('#template').on('hidden.bs.modal', function () {
-    $('#template .modal-body').empty();
-  });
+    *** FCD will be automatically saved every 30 seconds.
+  .field{ id: 'fcd_editable', "data-controller" => "summernote" }
+    =form.text_area 'fact_checking_doc[body]', data: { editor: 'summernote' }
