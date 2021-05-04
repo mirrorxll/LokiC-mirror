@@ -54,7 +54,7 @@ class StoryType < ApplicationRecord # :nodoc:
   def client_pl_ids
     clients_publications_tags.flat_map do |cl_t|
       if cl_t.client.name.eql?('Metric Media')
-        Publication.all_mm_publications.map(&:pl_identifier)
+        Client.where('name LIKE :like', like: 'MM -%').map(&:pl_identifier)
       else
         cl_t.client.pl_identifier
       end

@@ -27,6 +27,11 @@ Rails.application.routes.draw do
 
   get '/iterations/:id', to: 'iterations#show'
 
+  resources :images, only: :create, defaults: { format: :json } do
+    get    :show,    on: :collection, path: '/:name', name: /.*/
+    delete :destroy, on: :collection, path: '/:name', name: /.*/
+  end
+
   resources :data_sets, except: %i[new] do
     get :properties, on: :member
 
