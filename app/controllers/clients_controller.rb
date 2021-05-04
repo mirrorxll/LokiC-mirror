@@ -7,16 +7,15 @@ class ClientsController < ApplicationController # :nodoc:
   before_action :find_client
 
   def include
-    render_400 && return if @story_type.clients.exists?(@client.id)
+    render_400 && return unless @story_type.clients_publications_tags.find_by(client: @client, publication: nil).nil?
 
     @story_type.clients << @client
-    @client_tag = @story_type.clients_tags.find_by(client: @client)
+    @client_publication_tag = @story_type.clients_publications_tags.find_by(client: @client, publication: nil)
   end
 
   def exclude
-    render_400 && return unless @story_type.clients.exists?(@client.id)
-
-    @story_type.clients.destroy(@client)
+    @client_publication_tag = StoryTypeClientPublicationTag.find(params[:client_publication_tag])
+    @client_publication_tag.destroy
   end
 
   private

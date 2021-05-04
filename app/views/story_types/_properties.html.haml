@@ -13,15 +13,15 @@
     %hr/
 
     .row.mb-2.font-weight-bold
-      .col-6
+      .col-8
         client
-      .col-6
+      .col-4
         tag
-    -@story_type.clients_tags.each do |cl_t|
+    -@story_type.clients_publications_tags.each do |cl_t|
       .row
-        .col-6
-          =cl_t.client.name
-        .col-6
+        .col-8
+          =cl_t.client.name + "(#{cl_t.publication ? cl_t.publication.name : 'all pubs'})"
+        .col-4
           =cl_t.tag ? cl_t.tag.name : 'tag not set'
     %hr/
 

@@ -10,7 +10,7 @@ class DataSet < ApplicationRecord # :nodoc:
   has_one :photo_bucket, through: :data_set_photo_bucket
 
   has_many :story_types
-  has_many :client_tags, class_name: 'DataSetClientTag'
-  has_many :clients, through: :client_tags
-  has_many :tags, through: :client_tags
+  has_many :client_publication_tags, class_name: 'DataSetClientPublicationTag'
+  has_many :clients, through: :client_publication_tags
+  has_many :tags, through: :client_publication_tags
 end

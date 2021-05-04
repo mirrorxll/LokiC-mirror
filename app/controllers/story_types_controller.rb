@@ -51,8 +51,10 @@ class StoryTypesController < ApplicationController # :nodoc:
     @story_type.photo_bucket = @data_set.photo_bucket
 
     if @story_type.save!
-      @data_set.client_tags.each do |client_tag|
-        @story_type.clients_tags.build(client: client_tag.client, tag: client_tag.tag).save!
+      @data_set.client_publication_tags.each do |client_publication_tag|
+        @story_type.clients_publications_tags.build(client: client_publication_tag.client,
+                                                    publication: client_publication_tag.publication,
+                                                    tag: client_publication_tag.tag).save!
       end
 
       redirect_to data_set_path(@data_set)

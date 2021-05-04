@@ -18,6 +18,7 @@ Rails.application.routes.draw do
       resources :clients, only: [] do
         get :visible, on: :collection
         get :tags
+        get :publications
       end
     end
   end
@@ -51,6 +52,11 @@ Rails.application.routes.draw do
       delete  :exclude, on: :member
 
       resources :tags, only: [] do
+        post   :include, on: :collection
+        delete :exclude, on: :member
+      end
+
+      resources :publications, only: [] do
         post   :include, on: :collection
         delete :exclude, on: :member
       end

@@ -3,7 +3,7 @@ class StoryTypesGrid
 
   # Scope
   scope do
-    StoryType.includes(:frequency, :photo_bucket, :developer, :clients_tags, :clients, :tags, data_set: %i[state category], current_iteration: [:statuses])
+    StoryType.includes(:frequency, :photo_bucket, :developer, :clients_publications_tags, :clients, :tags, data_set: %i[state category], current_iteration: [:statuses])
   end
 
   # Filters
@@ -25,7 +25,7 @@ class StoryTypesGrid
     scope.joins(current_iteration: [:statuses]).where(['statuses.id = ?', value])
   end
   filter(:client, :enum, left: true, select: Client.where(hidden: false).order(:name).pluck(:name, :id)) do |value, scope|
-    scope.joins(client_tags: [:client]).where(['clients.id = ?', value])
+    scope.joins(clients_publications_tags: [:client]).where(['clients.id = ?', value])
   end
   filter(:condition1, :dynamic, left: false, header: 'Dynamic condition 1')
   filter(:condition2, :dynamic, left: false, header: 'Dynamic condition 2')
