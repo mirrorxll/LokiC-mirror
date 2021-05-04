@@ -19,6 +19,8 @@ Rails.application.routes.draw do
         get :visible, on: :collection
         get :tags
       end
+
+      resources :samples, only: :update
     end
   end
 

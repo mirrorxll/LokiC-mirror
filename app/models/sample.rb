@@ -68,4 +68,8 @@ class Sample < ApplicationRecord
   def self.exported
     where.not("pl_#{PL_TARGET}_story_id" => nil)
   end
+
+  def self.exported_without_backdate
+    where.not("pl_#{PL_TARGET}_story_id" => nil, backdated: true)
+  end
 end

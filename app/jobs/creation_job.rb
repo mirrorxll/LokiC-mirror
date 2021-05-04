@@ -43,7 +43,7 @@ class CreationJob < ApplicationJob
   ensure
     iteration.update(creation: status)
     send_to_action_cable(iteration, :samples, message)
-    send_to_slack(iteration, 'CREATION', message)
+    send_to_dev_slack(iteration, 'CREATION', message)
     iteration.creation
   end
 

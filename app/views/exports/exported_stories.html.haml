@@ -1,0 +1,159 @@
+#info.small.pt-3.pb-3
+  .row
+    .col-1.text-right
+      developer:
+    .col-11
+      #{@story_type.developer.name}
+
+  .row
+    .col-1.text-right
+      iteration:
+    .col-11
+      #{@iteration.name}
+
+  .row.mt-3
+    .col-1.mb-1.text-right
+      show samples:
+    #show_samples.col-11
+
+%hr.mt-1.mb-3/
+
+%table#exported_stories.table.table-striped.table-sm.small
+  %thead
+    %tr
+      %th#headline.text-center{ :scope => "col" }
+        show sample
+      %th#headline{ :scope => "col" }
+        headline
+      %th#pipeline{ :scope => "col" }
+        live
+      %th#pipeline{ :scope => "col" }
+        pipeline
+      %th#lokic{ :scope => "col" }
+        lokic
+      %th#client{ :scope => "col" }
+        client
+      %th#publication{ :scope => "col" }
+        publication
+      %th#published_at{ :scope => "col" }
+        published_at
+      %th#backdated{ :scope => "col" }
+        backdated
+    %tbody
+      -@samples.each do |sample|
+        %tr.hovered_item
+          %td.text-center
+            %input{ type: 'checkbox', id: sample.pl_story_id, disabled: sample.backdated,
+                    onchange: "saveShowSampleChoice(this.id, #{sample.id}, this.checked)" }
+          %td
+            =sample.headline
+          %td
+            =sample.link? && sample.published_at <= Date.today ? link_to('live', sample.live_link, target:'_blank') : '---'
+          %td
+            =sample.link? ? link_to('pipeline', sample.pl_link, target:'_blank') : '---'
+          %td
+            =link_to('lokic', story_type_iteration_sample_url(@story_type, @iteration, sample), target:'_blank')
+          %td
+            =sample.client_name
+          %td
+            =sample.publication_name
+          %td
+            =sample.published_at ? sample.published_at.strftime('%F') : '---'
+          %td
+            =sample.backdated ? 'yes' : 'no'
+
+%hr.mb-3/
+.small
+  =paginate @samples, window: 3
+%hr/
+
+-target = Rails.env.production? ? 'pipeline' : 'pipeline-staging'
+-pl_endpoint = "https://#{target}.locallabs.com/stories/"
+
+:javascript
+  (() => { sessionStorage['showSampleIds'] = '#{raw(@show_sample_ids.to_json)}' }).call();
+
+  function fillCheckedBoxes() {
+    let checkBox = null;
+    let showSampleIds = JSON.parse(sessionStorage['showSampleIds']);
+
+    for(const key in showSampleIds) {
+      checkBox = document.getElementById(key)
+      if (checkBox) { checkBox.checked = true; }
+    }
+  }
+  fillCheckedBoxes();
+
+  function fillShowSamplesList() {
+    let showSampleIds = JSON.parse(sessionStorage['showSampleIds']);
+    let showSamples = document.getElementById('show_samples');
+    let link = null;
+    let span = null;
+    let showSampleBlock = null;
+
+    showSamples.innerHTML = '';
+
+    for(const key in showSampleIds) {
+      showSampleBlock = document.createElement('div')
+      showSampleBlock.id = `ss${key}`;
+      showSampleBlock.setAttribute('lokic', showSampleIds[key])
+      showSampleBlock.className = 'd-inline-block mr-3'
+
+      span = document.createElement('span');
+      span.className = "badge badge-light";
+
+      link = document.createElement('a');
+      link.innerText = key;
+      link.href = `#{pl_endpoint}${key}`;
+      link.target = '_blank';
+
+      span.appendChild(link);
+      showSampleBlock.appendChild(span);
+
+      span = document.createElement('span');
+      span.className = 'd-inline-block ml-1 mb-1 mouse-hover';
+      span.onclick = removeShowSample;
+      span.innerText = 'x';
+      showSampleBlock.appendChild(span);
+
+      showSamples.appendChild(showSampleBlock);
+    }
+  }
+  fillShowSamplesList();
+
+  function saveShowSampleChoice(checkboxId, lokicId, checked, isCheckBox = true) {
+    let showSampleIds = JSON.parse(sessionStorage['showSampleIds']);
+
+    if(checked) {
+      showSampleIds[checkboxId] = lokicId
+    } else {
+      delete showSampleIds[checkboxId]
+    }
+
+    Rails.ajax({
+      type: "PUT",
+      dataType: 'json',
+      url: `#{root_url}api/v1/samples/${lokicId}`,
+      data: `samples[show]=${checked}`,
+      success: function (_data) {
+        sessionStorage['showSampleIds'] = JSON.stringify(showSampleIds);
+
+        if (isCheckBox) {
+          fillShowSamplesList();
+          fillCheckedBoxes();
+        }
+      }
+    })
+  }
+
+  function removeShowSample() {
+    let showSample = this.parentNode;
+    let sampleId = showSample.id.replace('ss', '');
+    let lokicId = showSample.getAttribute('lokic')
+    let checkBox = document.getElementById(sampleId)
+
+    if (checkBox) { checkBox.checked = false; }
+    showSample.remove();
+
+    saveShowSampleChoice(checkBox, lokicId, false, false)
+  }

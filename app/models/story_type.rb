@@ -42,6 +42,10 @@ class StoryType < ApplicationRecord # :nodoc:
     developer&.slack&.identifier
   end
 
+  def developer_fc_channel_name
+    developer&.fc_channel&.name
+  end
+
   def iteration
     current_iteration
   end

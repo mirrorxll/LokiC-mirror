@@ -2,10 +2,12 @@
 
 class ExportsController < ApplicationController
   before_action :render_400, except: :exported_stories, if: :editor?
+  before_action :exported_stories, :show_sample_ids
 
   def export
     @iteration.update(export: false)
-    ExportJob.perform_later(@iteration)
+    url = exported_stories_story_type_iteration_exports_url(params[:story_type_id], params[:iteration_id])
+    ExportJob.perform_later(@iteration, url)
   end
 
   def remove_from_pl
@@ -14,6 +16,22 @@ class ExportsController < ApplicationController
   end
 
   def exported_stories
-    redirect_to story_type_iteration_samples_path(params[:story_type_id], params[:iteration_id])
+    @samples =
+      if params[:backdated]
+        @iteration.samples.exported
+      else
+        @iteration.samples.exported_without_backdate
+      end
+
+    @samples =
+      @samples.order(backdated: :asc, published_at: :asc).page(params[:page]).per(2)
+              .includes(:output, :publication)
+  end
+
+  private
+
+  def show_sample_ids
+    @show_sample_ids = {}
+    @iteration.samples.where(show: true).map { |smpl| @show_sample_ids[smpl.pl_story_id] = smpl.id }
   end
 end

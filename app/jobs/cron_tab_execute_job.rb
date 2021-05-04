@@ -25,6 +25,6 @@ class CronTabExecuteJob < ApplicationJob
     raise StandardError unless ExportJob.perform_now(iteration)
   rescue StandardError
     message = 'Something went wrong. Please, check messages above'
-    send_to_slack(iteration, 'CRONTAB', message)
+    send_to_dev_slack(iteration, 'CRONTAB', message)
   end
 end

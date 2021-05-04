@@ -3,7 +3,7 @@
 class ExportJob < ApplicationJob
   queue_as :story_type
 
-  def perform(iteration)
+  def perform(iteration, url)
     status = true
     message = 'Success. Make sure that all stories are exported'
     threads_count = (iteration.samples.count / 75_000.0).ceil + 1
@@ -60,7 +60,9 @@ class ExportJob < ApplicationJob
   ensure
     iteration.reload.update(export: status)
     send_to_action_cable(iteration, :export, message)
-    send_to_slack(iteration, 'EXPORT', message)
+    send_to_dev_slack(iteration, 'EXPORT', message)
+    send_rprt_to_editors_slack(iteration, url) if status
+
     iteration.export
   end
 end

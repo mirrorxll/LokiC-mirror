@@ -25,6 +25,9 @@
                        method: :post, remote: true)
               .ml-3.d-inline-block
 
+            =link_to('exported stories', exported_stories_story_type_iteration_exports_url(@story_type, @iteration),
+                     class: 'd-inline-block mr-3 mt-3 btn btn-sm btn-outline-dark', target: '_blank')
+
             .remove_from_pl_button.mt-3.btn.btn-sm.btn-outline-danger
               remove from PL
             =link_to(nil, remove_from_pl_story_type_iteration_exports_path(@story_type, @iteration),

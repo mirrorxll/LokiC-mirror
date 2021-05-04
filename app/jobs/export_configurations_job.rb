@@ -27,7 +27,7 @@ class ExportConfigurationsJob < ApplicationJob
       cl_tg = st_client_tag(st_cl_tgs, publication)
       next if publication.nil? || cl_tg.nil?
 
-      exp_c = ExportConfiguration.find_or_initialize_by(
+      exp _c = ExportConfiguration.find_or_initialize_by(
         story_type: story_type,
         publication: publication
       )
@@ -45,7 +45,7 @@ class ExportConfigurationsJob < ApplicationJob
 
     if manual
       send_to_action_cable(story_type.iteration, :properties, message)
-      send_to_slack(iteration, 'EXPORT CONFIGURATIONS', message)
+      send_to_dev_slack(iteration, 'EXPORT CONFIGURATIONS', message)
     end
   end
 
