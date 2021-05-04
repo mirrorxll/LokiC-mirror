@@ -14,6 +14,12 @@ module Api
 
         render json: { attached: @tags }
       end
+
+      def publications
+        @publications = Client.find(params[:client_id]).publications.order(:name)
+
+        render json: { attached: @publications }
+      end
     end
   end
 end

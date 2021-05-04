@@ -1,2 +1,2 @@
 =tag.name.eql?('') ? 'Blank' : tag.name
-=link_to('x', exclude_story_type_client_tag_path(@story_type, client, tag), method: :delete, remote: true)
+=link_to('x', exclude_story_type_client_tag_path(@story_type, client_publication_tag.client, tag, client_publication_tag: client_publication_tag), method: :delete, remote: true)
