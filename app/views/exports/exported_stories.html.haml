@@ -43,8 +43,10 @@
       -@samples.each do |sample|
         %tr.hovered_item
           %td.text-center
-            %input{ type: 'checkbox', id: sample.pl_story_id, disabled: sample.backdated,
-                    onchange: "saveShowSampleChoice(this.id, #{sample.id}, this.checked)" }
+            %label
+              %input{ type: 'checkbox', id: sample.pl_story_id, disabled: sample.backdated,
+                      onchange: "saveShowSampleChoice(this.id, #{sample.id}, this.checked)" }
+              =sample.pl_story_id
           %td
             =sample.headline
           %td
@@ -78,11 +80,21 @@
     let showSampleIds = JSON.parse(sessionStorage['showSampleIds']);
 
     for(const key in showSampleIds) {
-      checkBox = document.getElementById(key)
+      checkBox = document.getElementById(key);
       if (checkBox) { checkBox.checked = true; }
     }
   }
   fillCheckedBoxes();
+
+  function checkBoxesOnOff(showSampleIds) {
+    let checkBoxesState = Object.keys(showSampleIds).length === 3
+
+    document.querySelectorAll('input[type="checkbox"]').forEach(elem => {
+      if (!elem.checked) { elem.disabled = checkBoxesState; }
+    })
+    return checkBoxesState;
+  }
+  checkBoxesOnOff(JSON.parse(sessionStorage['showSampleIds']));
 
   function fillShowSamplesList() {
     let showSampleIds = JSON.parse(sessionStorage['showSampleIds']);
@@ -123,21 +135,25 @@
 
   function saveShowSampleChoice(checkboxId, lokicId, checked, isCheckBox = true) {
     let showSampleIds = JSON.parse(sessionStorage['showSampleIds']);
+    let commit = null;
 
     if(checked) {
-      showSampleIds[checkboxId] = lokicId
+      showSampleIds[checkboxId] = lokicId;
+      commit = 'show';
     } else {
-      delete showSampleIds[checkboxId]
+      delete showSampleIds[checkboxId];
+      commit = 'hide';
     }
+
+    checkBoxesOnOff(showSampleIds);
+    sessionStorage['showSampleIds'] = JSON.stringify(showSampleIds);
 
     Rails.ajax({
       type: "PUT",
       dataType: 'json',
       url: `#{root_url}api/v1/samples/${lokicId}`,
-      data: `samples[show]=${checked}`,
+      data: `commit=${commit}`,
       success: function (_data) {
-        sessionStorage['showSampleIds'] = JSON.stringify(showSampleIds);
-
         if (isCheckBox) {
           fillShowSamplesList();
           fillCheckedBoxes();
@@ -155,5 +171,5 @@
     if (checkBox) { checkBox.checked = false; }
     showSample.remove();
 
-    saveShowSampleChoice(checkBox, lokicId, false, false)
+    saveShowSampleChoice(sampleId, lokicId, false, false)
   }

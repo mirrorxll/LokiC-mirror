@@ -24,7 +24,7 @@ class ExportsController < ApplicationController
       end
 
     @samples =
-      @samples.order(backdated: :asc, published_at: :asc).page(params[:page]).per(2)
+      @samples.order(backdated: :asc, published_at: :asc).page(params[:page]).per(4)
               .includes(:output, :publication)
   end
 
@@ -32,6 +32,6 @@ class ExportsController < ApplicationController
 
   def show_sample_ids
     @show_sample_ids = {}
-    @iteration.samples.where(show: true).map { |smpl| @show_sample_ids[smpl.pl_story_id] = smpl.id }
+    @iteration.show_samples.map { |smpl| @show_sample_ids[smpl.pl_story_id] = smpl.id }
   end
 end

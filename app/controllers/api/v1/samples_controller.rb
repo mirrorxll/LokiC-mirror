@@ -6,7 +6,14 @@ module Api
       before_action :find_sample
 
       def update
-        @sample.update(sample_params)
+        show =
+          if params[:commit].eql?('show') && show_samples_count < 3
+            true
+          elsif params[:commit].eql?('hide')
+            false
+          end
+
+        @sample.update(show: show) unless show.nil?
       end
 
       private
@@ -15,8 +22,8 @@ module Api
         @sample = Sample.find(params[:id])
       end
 
-      def sample_params
-        params.require(:samples).permit(:show)
+      def show_samples_count
+        @sample.iteration.show_samples.count
       end
     end
   end

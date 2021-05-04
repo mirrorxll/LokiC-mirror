@@ -27,7 +27,7 @@ class ExportConfigurationsJob < ApplicationJob
       cl_pub_tg = st_client_publication_tag(st_cl_tgs, publication)
       next if publication.nil? || cl_pub_tg.nil?
 
-      exp _c = ExportConfiguration.find_or_initialize_by(
+      exp_c = ExportConfiguration.find_or_initialize_by(
         story_type: story_type,
         publication: publication
       )
