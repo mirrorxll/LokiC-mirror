@@ -10,17 +10,18 @@ class DataSetDefaultProps
   def initialize(data_set, params)
     @data_set = data_set
     @photo_bucket = PhotoBucket.find_by(id: params[:photo_bucket_id])
-    @client_tag_ids = params[:client_tag_ids]
+    @client_publication_tag_ids = params[:client_tag_ids]
   end
 
   def stp
     @data_set.create_data_set_photo_bucket(photo_bucket: @photo_bucket) if @photo_bucket
 
-    @client_tag_ids&.each do |_uid, row|
+    @client_publication_tag_ids.to_h.map { |_uid, row| row }.uniq { |row| [row[:client_id],row[:publication_id]] }.each do |row|
       client = Client.find(row[:client_id])
       tag = Tag.find(row[:tag_id])
+      publication = Publication.find(row[:publication_id]) unless row[:publication_id].blank?
 
-      @data_set.client_tags.create(client: client, tag: tag)
+      @data_set.client_publication_tags.create(client: client, publication: publication, tag: tag)
     end
   end
 end

@@ -56,7 +56,10 @@
               .col-3.text-right.font-weight-bold
                 client (tag):
               .col-9
-                -@data_set.client_tags.each do |row|
-                  ="#{row.client.name} (#{row.tag.name})"
+                -@data_set.client_publication_tags.each do |row|
+                  -if row.publication.nil?
+                    ="#{row.client.name}(all pubs) - #{row.tag.name}"
+                  -else
+                    ="#{row.client.name}(#{row.publication.name}) - #{row.tag.name}"
                   %br/
 

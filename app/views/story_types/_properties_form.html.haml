@@ -1,13 +1,15 @@
 .row.small
   #clients__tags.col-10.offset-1
     .row.font-weight-bold
-      .col-6
+      .col-4
         client
-      .col-6
+      .col-4
+        publication
+      .col-4
         tag
     #clients_tags_table_body
       -if @story_type.clients.present?
-        =render partial: 'clients/client_tag', collection: @story_type.clients_tags
+        =render partial: 'clients/client_publication_tag', collection: @story_type.clients_publications_tags
     .p-1
       =render 'clients/form'
 %hr/

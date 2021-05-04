@@ -40,7 +40,8 @@ class StagingTable < ApplicationRecord # :nodoc:
   end
 
   def publication_ids
-    Table.publication_ids(name, story_type.client_ids)
+    client_ids = story_type.client_pl_ids.join(',')
+    Table.publication_ids(name, client_ids)
   end
 
   def purge
