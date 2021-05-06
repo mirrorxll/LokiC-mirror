@@ -20,11 +20,12 @@ class ExportConfigurationsJob < ApplicationJob
     exp_config_counts = {}
     exp_config_counts.default = 0
     iteration = story_type.iteration
-    st_cl_tgs = story_type.clients_publications_tags.sort_by { |el| el.publication ? el.publication.id : 0 }.reverse
+
+    st_cl_pub_tgs = sort_client_publication_tag(story_type.clients_publications_tags)
 
     story_type.staging_table.publication_ids.each do |pub_id|
       publication = Publication.find_by(pl_identifier: pub_id)
-      cl_pub_tg = st_client_publication_tag(st_cl_tgs, publication)
+      cl_pub_tg = st_client_publication_tag(st_cl_pub_tgs, publication)
       next if publication.nil? || cl_pub_tg.nil?
 
       exp_c = ExportConfiguration.find_or_initialize_by(
@@ -46,6 +47,15 @@ class ExportConfigurationsJob < ApplicationJob
     if manual
       send_to_action_cable(story_type.iteration, :properties, message)
       send_to_slack(iteration, 'EXPORT CONFIGURATIONS', message)
+    end
+  end
+
+  def sort_client_publication_tag(st_cl_pub_tgs)
+    st_cl_pub_tgs = st_cl_pub_tgs.sort_by { |el| el.publication ? el.publication.id : 0 }.reverse # pop st_cl_pub_tgs with pubs
+    st_cl_pub_tgs.each_with_index do |st_cl_pub_tg, index|
+      if st_cl_pub_tg.publication.nil? && (st_cl_pub_tg.client.name == 'Metric Media' || st_cl_pub_tg.client.name == 'Metro Business Network')
+        st_cl_pub_tgs.insert(st_cl_pub_tgs.count - 1, st_cl_pub_tgs.delete_at(index))
+      end
     end
   end
 
