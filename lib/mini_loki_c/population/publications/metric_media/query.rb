@@ -86,14 +86,14 @@ module MiniLokiC
         end
 
         def pubs_by_passed_state_query
-          %|select c.id as id,
+          p %|select c.id as id,
                    c.name as name,
                    cc.id as client_id,
                    cc.name as client_name
             from client_companies as cc
                 join communities as c
                     on c.client_company_id = cc.id
-            where c.client_company_id = #{@client_ids} and
+            where c.client_company_id in (#{@client_ids}) and
                   c.id not in (
                     select pg.project_id
                     from project_geographies pg
@@ -102,7 +102,7 @@ module MiniLokiC
                                pg.geography_type = 'State'
                         join client_companies cc
                             on cc.id = c.client_company_id
-                    where cc.id = #{@client_ids}) and
+                    where cc.id in (#{@client_ids})) and
                   c.id not in (2041, 2419, 2394);|
         end
       end

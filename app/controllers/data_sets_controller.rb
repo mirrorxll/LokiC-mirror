@@ -73,7 +73,7 @@ class DataSetsController < ApplicationController # :nodoc:
 
   def set_default_props
     @data_set.data_set_photo_bucket&.delete
-    @data_set.client_tags.delete_all
+    @data_set.client_publication_tags.destroy_all
 
     DataSetDefaultProps.setup(@data_set, default_props_params)
   end

@@ -18,6 +18,7 @@ Rails.application.routes.draw do
       resources :clients, only: [] do
         get :visible, on: :collection
         get :tags
+        get :publications
       end
     end
   end
@@ -25,6 +26,11 @@ Rails.application.routes.draw do
   root 'story_types#index'
 
   get '/iterations/:id', to: 'iterations#show'
+
+  resources :images, only: :create, defaults: { format: :json } do
+    get    :show,    on: :collection, path: '/:name', name: /.*/
+    delete :destroy, on: :collection, path: '/:name', name: /.*/
+  end
 
   resources :data_sets, except: %i[new] do
     get :properties, on: :member
@@ -46,6 +52,11 @@ Rails.application.routes.draw do
       delete  :exclude, on: :member
 
       resources :tags, only: [] do
+        post   :include, on: :collection
+        delete :exclude, on: :member
+      end
+
+      resources :publications, only: [] do
         post   :include, on: :collection
         delete :exclude, on: :member
       end

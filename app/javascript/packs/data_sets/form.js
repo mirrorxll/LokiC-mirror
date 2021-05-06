@@ -1,6 +1,8 @@
 let clientsSelect = document.getElementsByClassName('clients_select')
-for(let i = 0; i < clientsSelect.length; i++)
+for(let i = 0; i < clientsSelect.length; i++) {
+    clientsSelect[i].addEventListener('change', publicationsByClient)
     clientsSelect[i].addEventListener('change', tagsByClient)
+}
 
 let removeX = document.getElementsByClassName('remove_x')
 for(let i = 0; i < removeX.length; i++)
@@ -32,6 +34,7 @@ window.$('#add_client').on('click', (e)=> {
     clientsSelect.className = 'form-control form-control-sm clients_select'
     clientsSelect.required = true
     clientsSelect.addEventListener('change', tagsByClient)
+    clientsSelect.addEventListener('change', publicationsByClient)
 
     let tagsSelect = document.createElement('select')
     tagsSelect.appendChild(document.createElement('option'))
@@ -40,12 +43,22 @@ window.$('#add_client').on('click', (e)=> {
     tagsSelect.className = 'form-control form-control-sm tags_select'
     tagsSelect.required = true
 
+    let publicationsSelect = document.createElement('select')
+    publicationsSelect.appendChild(document.createElement('option'))
+    publicationsSelect.id = `data_set_default_${uId}_publication_id`
+    publicationsSelect.name = `default_props[client_tag_ids[${uId}[publication_id]]]`
+    publicationsSelect.className = 'form-control form-control-sm publications_select'
+
     let clientsCol = document.createElement('div')
-    clientsCol.className = 'col-5 pr-1'
+    clientsCol.className = 'col-4 pr-1'
     clientsCol.appendChild(clientsSelect)
 
+    let publicationsCol = document.createElement('div')
+    publicationsCol.className = 'col-4 pr-1'
+    publicationsCol.appendChild((publicationsSelect))
+
     let tagsCol = document.createElement('div')
-    tagsCol.className = 'col-6 pl-1 pr-1'
+    tagsCol.className = 'col-3 pl-1 pr-1'
     tagsCol.appendChild(tagsSelect)
 
     let x = document.createElement('strong')
@@ -61,10 +74,11 @@ window.$('#add_client').on('click', (e)=> {
     row.className = 'row mb-1'
     row.id = uId
     row.appendChild(clientsCol)
+    row.appendChild(publicationsCol)
     row.appendChild(tagsCol)
     row.appendChild(removeCol)
 
-    document.getElementById('clients_tags').appendChild(row)
+    document.getElementById('clients_publications_tags').appendChild(row)
 
     if(clients.length === 0) {
         window.$.ajax({
@@ -122,7 +136,6 @@ function tagsByClient(event) {
 }
 
 function addTagsToSelectGroup(tagsSelect, tags) {
-    // tagsSelect.appendChild(document.createElement('option'))
     let option = null
 
     for (let i = 0; i < tags.length; i++) {
@@ -132,6 +145,41 @@ function addTagsToSelectGroup(tagsSelect, tags) {
         tagsSelect.appendChild(option);
     }
 }
+
+function publicationsByClient(event) {
+    let clientId = event.target.value
+    if(clientId === '') return false;
+
+    let publicationsSelect = event.target.parentNode.parentNode.getElementsByClassName('publications_select')[0]
+
+    while (publicationsSelect.firstChild) {
+        publicationsSelect.removeChild(publicationsSelect.firstChild);
+    }
+
+    window.$.ajax({
+        url: `${window.location.origin}/api/v1/clients/${clientId}/publications`,
+        dataType: 'json',
+        success: (publications)=> { addPublicationsToSelectGroup(publicationsSelect, publications.attached) }
+    });
+}
+
+function addPublicationsToSelectGroup(publicationsSelect, publications) {
+    let option = null
+
+    option = document.createElement("option");
+    option.setAttribute("value", '');
+    option.text = 'all publications';
+    publicationsSelect.appendChild(option);
+
+    for (let i = 0; i < publications.length; i++) {
+        option = document.createElement("option");
+        option.setAttribute("value", publications[i].id);
+        option.text = publications[i].name;
+        publicationsSelect.appendChild(option);
+    }
+
+}
+
 
 function removeClientTag(e) {
     e.target.parentNode.parentNode.remove();
