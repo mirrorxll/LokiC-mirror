@@ -14,6 +14,9 @@ class Iteration < ApplicationRecord # :nodoc:
   has_many :auto_feedback_confirmations
   has_many :auto_feedback, through: :auto_feedback_confirmations
 
+  has_one :editor_post_export_report,  -> { where(report_type: 'editor') },  class_name: 'PostExportReport'
+  has_one :manager_post_export_report, -> { where(report_type: 'manager') }, class_name: 'PostExportReport'
+
   def show_samples
     samples.where(show: true)
   end

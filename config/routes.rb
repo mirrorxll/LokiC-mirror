@@ -151,10 +151,11 @@ Rails.application.routes.draw do
         get   :show_form, on: :collection
       end
 
-      resources :exports, path: 'export', only: [] do
-        post   :export,           on: :collection
-        delete :remove_from_pl,   on: :collection
-        get    :exported_stories, on: :collection
+      resources :exports, path: 'export', only: :create do
+        delete :remove_from_pl,         on: :collection
+        get    :stories,                on: :collection
+        post   :submit_editor_report,   on: :collection
+        post   :submit_manager_report,  on: :collection
       end
     end
   end
@@ -164,8 +165,8 @@ Rails.application.routes.draw do
   end
 
   resources :tracking_hours, only: %i[new create update destroy index] do
-    post   :submit_forms, on: :collection
-    delete :exclude_row,  on: :member
+    post   :submit_forms,  on: :collection
+    delete :exclude_row,   on: :member
 
     post   :add_form,      on: :collection
     get    :assembleds,    on: :collection

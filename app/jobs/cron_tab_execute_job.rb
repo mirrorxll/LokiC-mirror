@@ -23,8 +23,8 @@ class CronTabExecuteJob < ApplicationJob
 
     iteration.update(export: false)
     raise StandardError unless ExportJob.perform_now(iteration)
-  rescue StandardError
-    message = 'Something went wrong. Please, check messages above'
+  rescue StandardError => e
+    message = "[ CronTabExecutionError ] -> #{e.message} at #{e.backtrace.first}".gsub('`', "'")
     send_to_dev_slack(iteration, 'CRONTAB', message)
   end
 end

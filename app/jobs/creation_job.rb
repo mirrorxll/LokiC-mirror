@@ -54,7 +54,7 @@ class CreationJob < ApplicationJob
     counts[:total] = iteration.samples.count
     return counts if counts[:total].zero?
 
-    iteration.story_type.clients_tags.each_with_object(counts) do |row, obj|
+    iteration.story_type.clients_publications_tags.each_with_object(counts) do |row, obj|
       client = row.client
       pubs = client.name.eql?('Metric Media') ? Publication.all_mm_publications : client.publications
       counts = pubs.joins(:samples).where(samples: { iteration: iteration })

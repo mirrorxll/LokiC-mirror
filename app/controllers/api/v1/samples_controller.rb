@@ -13,7 +13,7 @@ module Api
             false
           end
 
-        @sample.update(show: show) unless show.nil?
+        @sample.update!(show: show) unless show.nil?
       end
 
       private
