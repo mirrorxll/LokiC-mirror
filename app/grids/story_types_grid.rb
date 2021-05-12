@@ -7,7 +7,7 @@ class StoryTypesGrid
   end
 
   # Filters
-  # filter(:id, :string, multiple: ',')
+  filter(:id, :string, left: true, multiple: ',')
   filter(:state, :enum, left: true, select: State.all.pluck(:short_name, :full_name, :id).map { |r| [r[0] + ' - ' + r[1], r[2]] }) do |value, scope|
     scope.joins(data_set: [:state]).where(['states.id = ?', value])
   end
