@@ -19,7 +19,7 @@
       .col-2
         =link_to row[:hours], show_hours_developers_productions_path(developer: row[:developer], begin_date: @begin_date), remote: true
       .col-2
-        =row[:score]
+        =row[:score].round(2)
       .col-2
         =row[:hours_per_story]
 
