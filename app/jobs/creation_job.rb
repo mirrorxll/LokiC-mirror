@@ -56,7 +56,7 @@ class CreationJob < ApplicationJob
 
     iteration.story_type.clients_publications_tags.each_with_object(counts) do |row, obj|
       client = row.client
-      pubs = client.name.eql?('Metric Media') ? Publication.all_mm_publications : client.publications
+      pubs = client.publications
       counts = pubs.joins(:samples).where(samples: { iteration: iteration })
                    .group(:publication_id).order('count(publication_id) desc')
                    .count(:publication_id)

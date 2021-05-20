@@ -1,0 +1,8 @@
+-report = @iteration.exported_story_type&.manager_post_export_report&.answers || {}
+.small
+  -manager_questions.each do |q_id, question|
+    .ml-2.mb-2
+      .mb-2
+        ="#{q_id[1..-1]}. #{question}"
+      .ml-2
+        =report[q_id]

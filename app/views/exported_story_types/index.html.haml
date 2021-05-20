@@ -1,30 +1,30 @@
--if action_name.eql?('index')
-  %section#filter
-    =render 'filter'
+.mt-3
+  =datagrid_form_for @exported_story_types_grid, url: exported_story_types_path
 
-%hr/
-%section#developers_production.small
-  .row.text-center
-    .col-1 #
-    .col-5.pl-0.text-left story type
-    .col-1 type of export
-    .col-2 developer
-    .col-2 date export
-    .col-1 count stories
-  %hr/
-  -@rows_reports.each do |row|
-    %hr/
-    .row.text-center
-      .col-1
-        =row.iteration.story_type.id
-      .col-5.pl-0.text-left
-        =link_to(row.iteration.story_type.name, story_type_iteration_samples_path(row.iteration.story_type, row.iteration), target: '_blank')
-      .col-1
-        =row.first_export ? 'first' : 'follow up'
-      .col-2
-        ="#{row.developer.first_name} #{row.developer.last_name}"
-      .col-2
-        =row.date_export.strftime('%F')
-      .col-1
-        =MiniLokiC::Formatize::Numbers.add_commas(row.count_samples)
+.row.mt-3.small
+  .col-12
+    =datagrid_table(@exported_story_types_grid)
 
+.row.mt-3
+  #pagination.col-12
+    =paginate @exported_story_types_grid.assets
+
+#editor_answers.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "editor_answers", role: "dialog", tabindex: "-1" }
+  .modal-dialog.modal-dialog-centered.modal-xl.modal-dialog-scrollable
+    .modal-content
+      .modal-header
+        %h5.modal-title
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", type: "button"}
+          %span{"aria-hidden" => "true"} ×
+      .modal-body
+      .modal-footer
+
+#manager_answers.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "manager_answers", role: "dialog", tabindex: "-1" }
+  .modal-dialog.modal-dialog-centered.modal-xl.modal-dialog-scrollable
+    .modal-content
+      .modal-header
+        %h5.modal-title
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", type: "button"}
+          %span{"aria-hidden" => "true"} ×
+      .modal-body
+      .modal-footer

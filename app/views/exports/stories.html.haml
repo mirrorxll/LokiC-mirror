@@ -21,23 +21,24 @@
       .col-1.mb-1.text-right
         editor:
       #editor_submit.col-11
-        -if @iteration.editor_post_export_report
-          .small.d-inline-block.mr-3
-            submitted by #{@iteration.editor_post_export_report.submitter.name}
         =link_to('post-export-report', '#', "data-toggle" => "modal",
-                 "data-target" => "#editors_questions", class: 'badge badge-light')
-      =render 'modal_editors_questions'
+                 "data-target" => "#editor_questions", class: 'badge badge-light')
+        -if @iteration.exported_story_type.editor_post_export_report
+          .small.d-inline-block.mr-3
+            submitted by #{@iteration.exported_story_type.editor_post_export_report.submitter.name}
+      =render 'modal_editor_questions'
 
     .row.mt-3
       .col-1.mb-1.text-right
         manager:
       #manager_submit.col-11
-        -if @iteration.manager_post_export_report
-          .small.d-inline-block.mr-3
-            submitted by #{@iteration.editor_post_export_report.submitter.name}
         =link_to('post-export-report', '#', "data-toggle" => "modal",
                  "data-target" => "#manager_questions", class: 'badge badge-light')
-      =render 'modal_managers_questions'
+        -if @iteration.exported_story_type.manager_post_export_report
+          .small.d-inline-block.mr-3
+            submitted by #{@iteration.exported_story_type.manager_post_export_report.submitter.name}
+
+      =render 'modal_manager_questions'
 
   %hr.mt-1.mb-3/
 
@@ -174,7 +175,7 @@
       Rails.ajax({
         type: "PUT",
         dataType: 'json',
-        url: `#{root_url}api/v1/samples/${lokicId}`,
+        url: `#{root_url}api/v1/shown_samples/${lokicId}`,
         data: `commit=${commit}`,
         success: function (_data) {
           if (isCheckBox) {

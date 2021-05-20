@@ -50,6 +50,8 @@ class Sample < ApplicationRecord
   end
 
   def pl_link
+    return unless link?
+
     target = Rails.env.production? ? 'pipeline' : 'pipeline-staging'
     "https://#{target}.locallabs.com/stories/#{pl_story_id}"
   end

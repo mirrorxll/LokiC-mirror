@@ -60,16 +60,9 @@ class ExportConfigurationsJob < ApplicationJob
   end
 
   def st_client_publication_tag(clients_publications_tags, publication)
-    all_mm_pubs = Publication.all_mm_publications
-
     clients_publications_tags.to_a.find do |client_publication_tag|
       client = client_publication_tag.client
-      publications =
-        if client.name.eql?('Metric Media')
-          all_mm_pubs
-        else
-          client.publications
-        end
+      publications = client.publications
 
       client_publication_tag.publication.nil? ? publications.exists?(publication.id) : client_publication_tag.publication == publication
     end

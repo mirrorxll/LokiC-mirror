@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-class ExportedStoryType < SecondaryRecord # :nodoc
-  belongs_to :developer, optional: true, class_name: 'Account'
+class ExportedStoryType < SecondaryRecord
+  belongs_to :developer, class_name: 'Account'
+  belongs_to :story_type
   belongs_to :iteration
   belongs_to :week
 
-  def self.developer(id)
-    where(developer_id: id)
-  end
+  has_one :editor_post_export_report,  -> { where(report_type: 'editor') },  class_name: 'PostExportReport'
+  has_one :manager_post_export_report, -> { where(report_type: 'manager') }, class_name: 'PostExportReport'
 
   def self.begin_date(date)
-    where("date_export >= ?", date)
+    where('date_export >= ?', date)
   end
 end

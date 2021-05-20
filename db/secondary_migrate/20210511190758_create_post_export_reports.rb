@@ -2,8 +2,8 @@
 
 class CreatePostExportReports < ActiveRecord::Migration[6.0]
   def change
-    create_table :post_export_feedbacks do |t|
-      t.belongs_to :iteration
+    create_table :post_export_reports do |t|
+      t.belongs_to :exported_story_type
       t.belongs_to :submitter
 
       t.string :report_type, index: true

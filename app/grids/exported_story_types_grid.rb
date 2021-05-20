@@ -1,82 +1,100 @@
+# frozen_string_literal: true
+
 class ExportedStoryTypesGrid
   include Datagrid
 
   # Scope
   scope do
-    StoryType.includes(:frequency, :photo_bucket, :developer, :clients_publications_tags, :clients, :tags, data_set: %i[state category], current_iteration: [:statuses])
+    ExportedStoryType.order(date_export: :desc)
   end
 
   # Filters
-  # filter(:id, :string, multiple: ',')
-  filter(:state, :enum, left: true, select: State.all.pluck(:short_name, :full_name, :id).map { |r| [r[0] + ' - ' + r[1], r[2]] }) do |value, scope|
-    scope.joins(data_set: [:state]).where(['states.id = ?', value])
+  accounts = Account.all.map { |r| [r.name, r.id] }.sort
+  filter(:developer, :enum, select: accounts)
+
+  accounts = Account.joins(:account_types).where(account_types: { name: %i[manager editor] }).map { |r| [r.name, r.id] }.sort
+  filter(:editor, :enum, select: accounts) do |value, scope|
+    story_type_ids = StoryType.where(editor_id: value).ids
+    scope.where(story_type_id: story_type_ids)
   end
-  filter(:category, :enum, left: true, select: DataSetCategory.all.order(:name).pluck(:name, :id)) do |value, scope|
-    scope.joins(data_set: [:category]).where(['data_set_categories.id = ?', value])
+
+  data_sets = DataSet.all.order(:name).pluck(:name, :id)
+  filter(:data_set, :enum, select: data_sets) do |value, scope|
+    story_type_ids = StoryType.joins(:data_set).where(data_sets: { id: value }).ids
+    scope.where(story_type_id: story_type_ids)
   end
-  filter(:data_set, :enum, left: true, select: DataSet.all.order(:name).pluck(:name, :id))
-  filter(:location, :string, left: true, header: 'Location (like)') do |value, scope|
-    scope.joins(:data_set).where('location like ?', "%#{value}%")
+
+  category = DataSetCategory.all.order(:name)
+  filter(:category, :enum, select: category.pluck(:name, :id)) do |value, scope|
+    story_type_ids = StoryType.joins(data_set: :category).where(data_sets: { data_set_categories: { id: value } }).ids
+    scope.where(story_type_id: story_type_ids)
   end
-  filter(:developer, :enum, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
-  filter(:frequency, :enum, left: true, select: Frequency.regular.pluck(:name, :id))
-  filter(:photo_bucket, :enum, left: true, select: PhotoBucket.all.order(:name).pluck(:name, :id))
-  filter(:status, :enum, left: true, select: Status.all.pluck(:name, :id)) do |value, scope|
-    scope.joins(current_iteration: [:statuses]).where(['statuses.id = ?', value])
+
+  states = State.all.map { |state| ["#{state.short_name} - #{state.full_name}", state.id] }
+  filter(:state, :enum, select: states) do |value, scope|
+    story_type_ids = StoryType.joins(data_set: :state).where(data_sets: { states: { id: value } }).ids
+    scope.where(story_type_id: story_type_ids)
   end
-  filter(:client, :enum, left: true, select: Client.where(hidden: false).order(:name).pluck(:name, :id)) do |value, scope|
-    scope.joins(clients_publications_tags: [:client]).where(['clients.id = ?', value])
+
+  clients = Client.where(hidden: false).order(:name)
+  filter(:client, :enum, select: clients.pluck(:name, :id)) do |value, scope|
+    story_type_ids = StoryType.joins(clients_publications_tags: :client)
+                              .where(story_type_client_publication_tags: { client_id: value }).ids
+    scope.where(story_type_id: story_type_ids)
   end
-  filter(:condition1, :dynamic, left: false, header: 'Dynamic condition 1')
-  filter(:condition2, :dynamic, left: false, header: 'Dynamic condition 2')
-  column_names_filter(header: 'Extra Columns', left: false, checkboxes: false)
+
+  editor_submitters = PostExportReport.all_editor_reports.map { |r| [r.submitter.name, r.submitter.id] }.uniq
+  filter(:reports_submitted_by_editor, :enum, select: editor_submitters) do |value, scope|
+    scope.joins(:editor_post_export_report).where(post_export_reports: { submitter_id: value })
+  end
+
+  manager_submitters = PostExportReport.all_manager_reports.map { |r| [r.submitter.name, r.submitter.id] }.uniq
+  filter(:reports_submitted_by_manager, :enum, select: manager_submitters) do |value, scope|
+    scope.joins(:manager_post_export_report).where(post_export_reports: { submitter_id: value })
+  end
 
   # Columns
-  column(:id, mandatory: true, header: 'ID')
-  column(:state, order: 'states.short_name') do |record|
-    record.data_set.state&.short_name
-  end
-  column(:category, order: 'data_set_categories.name') do |record|
-    record.data_set.category&.name
-  end
-  column(:data_set, mandatory: true, order: 'data_sets.name') do |record|
-    record.data_set&.name
-  end
-  column(:location, order: 'data_sets.location') do |record|
-    record.data_set.location
-  end
-  column(:developer, mandatory: true, order: 'accounts.first_name, accounts.last_name') do |record|
-    record.developer&.name
-  end
+  column(:id, mandatory: true, header: 'ID') { |record| record.story_type.id }
+
   column(:name, mandatory: true) do |record|
-    format(record.name) do |value|
-      link_to value, record
-    end
-  end
-  column(:status, mandatory: true, order: 'statuses.name') do |record|
-    record.iteration.statuses.first&.name
-  end
-  column(:last_export, mandatory: true) do |record|
-    record.last_export&.to_date
-  end
-  column(:client_tags, order: 'frequencies.name', header: 'Client: Tag') do |record|
-    str = ''
-    record.clients.each_with_index do |client, i|
-      str += "<div><strong>#{client.name}</strong>: #{record.tags[i].name}</div>"
-    end
-    str.html_safe
-  end
-  column(:frequency, order: 'frequencies.name') do |record|
-    record.frequency&.name
-  end
-  column(:photo_bucket, order: 'photo_buckets.name') do |record|
-    record.photo_bucket&.name
-  end
-  column(:created_at) do |record|
-    record.created_at&.to_date
-  end
-  column(:updated_at) do |record|
-    record.updated_at&.to_date
+    format(record.story_type.name) { |value| link_to(value, record.story_type) }
   end
 
+  column(:type_of_export, mandatory: true) { |record| record.first_export ? 'first' : 'follow up' }
+
+  column(:developer, mandatory: true) { |record| record.developer.name }
+
+  column(:export_date, mandatory: true, &:date_export)
+
+  column(:count_of_stories, mandatory: true) { |record| MiniLokiC::Formatize::Numbers.add_commas(record.count_samples) }
+
+  column(:exported_stories, mandatory: true) do |record|
+    format(record) do
+      link_to('link', stories_story_type_iteration_exports_path(record.story_type, record.iteration), target: '_blank')
+    end
+  end
+
+  column("editor's report", mandatory: true) do |record|
+    format(record.editor_post_export_report) do |report|
+      if report
+        link_to(
+          'report',
+          show_editor_report_story_type_iteration_exported_story_types_path(record.story_type, record.iteration),
+          remote: true
+        )
+      end
+    end
+  end
+
+  column("manager's report", mandatory: true) do |record|
+    format(record.manager_post_export_report) do |report|
+      if report
+        link_to(
+          'report',
+          show_manager_report_story_type_iteration_exported_story_types_path(record.story_type, record.iteration),
+          remote: true
+        )
+      end
+    end
+  end
 end

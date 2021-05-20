@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class StoryType < ApplicationRecord # :nodoc:
+class StoryType < ApplicationRecord
   belongs_to :editor,            class_name: 'Account'
   belongs_to :developer,         optional: true, class_name: 'Account'
   belongs_to :data_set,          counter_cache: true
@@ -21,7 +21,6 @@ class StoryType < ApplicationRecord # :nodoc:
   has_many :clients_publications_tags, class_name: 'StoryTypeClientPublicationTag'
   has_many :clients, through: :clients_publications_tags
   has_many :tags, through: :clients_publications_tags
-  has_many :publications, through: :clients_publications_tags
 
   has_one_attached :code
 
@@ -34,6 +33,11 @@ class StoryType < ApplicationRecord # :nodoc:
   end
 
   after_create { update(current_iteration: iterations.first) }
+
+  def publications
+    pub_ids = clients.map(&:publications).reduce(:|).map(&:id)
+    Publication.where(id: pub_ids)
+  end
 
   def number_name
     "##{id} #{name}"
@@ -63,5 +67,24 @@ class StoryType < ApplicationRecord # :nodoc:
         cl_t.client.pl_identifier
       end
     end
+  end
+
+  def show_samples
+    samples.where(show: true)
+  end
+
+  def first_show_sample
+    smpls = show_samples.reverse
+    smpls.count.positive? ? smpls.first : nil
+  end
+
+  def second_show_sample
+    smpls = show_samples.reverse
+    smpls.count > 1 ? smpls.second : nil
+  end
+
+  def third_show_sample
+    smpls = show_samples.reverse
+    smpls.count > 2 ? smpls.last : nil
   end
 end

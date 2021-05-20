@@ -21,7 +21,7 @@ Rails.application.routes.draw do
         get :publications
       end
 
-      resources :samples, only: :update
+      resources :shown_samples, only: :update
     end
   end
 
@@ -154,11 +154,18 @@ Rails.application.routes.draw do
       resources :exports, path: 'export', only: :create do
         delete :remove_from_pl,         on: :collection
         get    :stories,                on: :collection
-        post   :submit_editor_report,   on: :collection
-        post   :submit_manager_report,  on: :collection
+      end
+
+      resources :exported_story_types, only: [] do
+        get  :show_editor_report,    on: :collection
+        get  :show_manager_report,   on: :collection
+        post :submit_editor_report,  on: :collection
+        post :submit_manager_report, on: :collection
       end
     end
   end
+
+  resources :shown_samples, only: :index
 
   resources :slack_accounts, only: %i[] do
     patch :sync

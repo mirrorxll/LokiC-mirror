@@ -1,0 +1,7 @@
+$('#editor_questions').modal('hide');
+$('#editor_submit').html(
+    `<%= link_to('post-export-report', '#', "data-toggle" => "modal", "data-target" => "#editor_questions", class: 'badge badge-light') %>
+     <div class="small d-inline-block mr-3">
+       submitted by <%= @iteration.exported_story_type.editor_post_export_report.submitter.name %>
+     </div>`
+)

@@ -2,7 +2,7 @@
 
 module Api
   module V1
-    class SamplesController < ApiController
+    class ShownSamplesController < ApiController
       before_action :find_sample
 
       def update

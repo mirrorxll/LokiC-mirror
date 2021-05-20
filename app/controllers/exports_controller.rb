@@ -32,43 +32,10 @@ class ExportsController < ApplicationController
               .includes(:output, :publication)
   end
 
-  def submit_editor_report
-    @report.update(editor_report_params)
-  end
-
-  def submit_manager_report
-    @report.update(manager_report_params)
-  end
-
   private
 
   def show_sample_ids
     @show_sample_ids = {}
     @iteration.show_samples.map { |smpl| @show_sample_ids[smpl.pl_story_id] = smpl.id }
-  end
-
-  def editor_report
-    @report =
-      @iteration.editor_post_export_report ||
-      @iteration.create_editor_post_export_report(submitter: current_account, report_type: 'editor')
-  end
-
-  def manager_report
-    @report =
-      @iteration.manager_post_export_report ||
-      @iteration.create_manager_post_export_report(submitter: current_account, report_type: 'manager')
-  end
-
-  def editor_report_params
-    answers = params.require(:answers).permit!
-    answers.each_key { |k| answers[k] = (answers[k].eql?('true') ? true : false) if k.start_with?('q') }
-
-    { answers: answers }
-  end
-
-  def manager_report_params
-    answers = params.require(:answers).permit!
-
-    { answers: answers }
   end
 end

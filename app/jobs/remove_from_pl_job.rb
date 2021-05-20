@@ -30,7 +30,7 @@ class RemoveFromPlJob < ApplicationJob
         raise Object.const_get(klass), message
       end
 
-      break if iteration.samples.exported.count.zero?
+      break if iteration.samples.reload.exported.count.zero?
     end
 
   rescue StandardError => e
