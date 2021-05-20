@@ -20,6 +20,8 @@ Rails.application.routes.draw do
         get :tags
         get :publications
       end
+
+      resources :shown_samples, only: :update
     end
   end
 
@@ -149,21 +151,29 @@ Rails.application.routes.draw do
         get   :show_form, on: :collection
       end
 
-      resources :exports, path: 'export', only: [] do
-        post   :export,           on: :collection
-        delete :remove_from_pl,   on: :collection
-        get    :exported_stories, on: :collection
+      resources :exports, path: 'export', only: :create do
+        delete :remove_from_pl,         on: :collection
+        get    :stories,                on: :collection
+      end
+
+      resources :exported_story_types, only: [] do
+        get  :show_editor_report,    on: :collection
+        get  :show_manager_report,   on: :collection
+        post :submit_editor_report,  on: :collection
+        post :submit_manager_report, on: :collection
       end
     end
   end
+
+  resources :shown_samples, only: :index
 
   resources :slack_accounts, only: %i[] do
     patch :sync
   end
 
   resources :tracking_hours, only: %i[new create update destroy index] do
-    post   :submit_forms, on: :collection
-    delete :exclude_row,  on: :member
+    post   :submit_forms,  on: :collection
+    delete :exclude_row,   on: :member
 
     post   :add_form,      on: :collection
     get    :assembleds,    on: :collection

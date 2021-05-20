@@ -43,7 +43,7 @@ class CreationJob < ApplicationJob
   ensure
     iteration.update(creation: status)
     send_to_action_cable(iteration, :samples, message)
-    send_to_slack(iteration, 'CREATION', message)
+    send_to_dev_slack(iteration, 'CREATION', message)
     iteration.creation
   end
 
@@ -56,7 +56,7 @@ class CreationJob < ApplicationJob
 
     iteration.story_type.clients_publications_tags.each_with_object(counts) do |row, obj|
       client = row.client
-      pubs = client.name.eql?('Metric Media') ? Publication.all_mm_publications : client.publications
+      pubs = client.publications
       counts = pubs.joins(:samples).where(samples: { iteration: iteration })
                    .group(:publication_id).order('count(publication_id) desc')
                    .count(:publication_id)

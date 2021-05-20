@@ -1,0 +1,14 @@
+-report = @iteration.exported_story_type&.editor_post_export_report&.answers || {}
+.small
+  -editor_questions.each do |q_id, question|
+    .ml-2.mb-2
+      .mb-2
+        ="#{q_id[1..-1]}. #{question}"
+      .ml-2
+        =report[q_id].eql?(true) ? 'yes' : 'no'
+  %hr/
+  .ml-2.mb-2
+    .font-weight-bold
+      Comment:
+    .ml-2
+      =report['comment']

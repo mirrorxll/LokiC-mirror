@@ -1,0 +1,3 @@
+$('#editor_answers .modal-title').html(`Editor's report | Submitted by <%= @report.submitter.name %>`)
+$('#editor_answers .modal-body').html(`<%= j render 'editor_answers' %>`)
+$('#editor_answers').modal('show')

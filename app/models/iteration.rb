@@ -8,11 +8,17 @@ class Iteration < ApplicationRecord # :nodoc:
 
   belongs_to :story_type
 
+  has_one :exported_story_type
+
   has_and_belongs_to_many :statuses
 
   has_many :samples
   has_many :auto_feedback_confirmations
   has_many :auto_feedback, through: :auto_feedback_confirmations
+
+  def show_samples
+    samples.where(show: true)
+  end
 
   def kill_population?
     reload.kill_population

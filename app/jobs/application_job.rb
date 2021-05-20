@@ -11,7 +11,7 @@ class ApplicationJob < ActiveJob::Base
     StoryTypeChannel.broadcast_to(iteration.story_type, message_to_send)
   end
 
-  def send_to_slack(iteration, step, raw_message)
+  def send_to_dev_slack(iteration, step, raw_message)
     story_type = iteration.story_type
     return unless story_type.developer_slack_id
 
@@ -20,6 +20,15 @@ class ApplicationJob < ActiveJob::Base
     SlackNotificationJob.perform_now(story_type.developer.slack.identifier, message)
 
     channel = Rails.env.production? ? 'hle_lokic_messages' : 'notifications_test'
+    SlackNotificationJob.perform_now(channel, message)
+  end
+
+  def send_rprt_to_editors_slack(iteration, url)
+    story_type = iteration.story_type
+    return unless story_type.developer_fc_channel_name
+
+    channel = Rails.env.production? ? story_type.developer_fc_channel_name : 'notifications_test'
+    message = "Exported Stories *##{story_type.id} #{story_type.name} (#{iteration.name})*\n#{url}"
     SlackNotificationJob.perform_now(channel, message)
   end
 end

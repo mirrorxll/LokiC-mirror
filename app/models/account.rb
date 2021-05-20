@@ -13,9 +13,10 @@ class Account < ApplicationRecord # :nodoc:
   has_one :slack, class_name: 'SlackAccount'
   has_one :fc_channel
 
-  has_many :edit_story_types, foreign_key: :editor_id,    class_name: 'StoryType'
-  has_many :dev_story_types,  foreign_key: :developer_id, class_name: 'StoryType'
   has_many :data_sets
+  has_many :edit_story_types, foreign_key: :editor_id, class_name: 'StoryType'
+  has_many :dev_story_types, foreign_key: :developer_id, class_name: 'StoryType'
+  has_many :submitters, class_name: 'PostExportReport'
 
   def name
     "#{first_name} #{last_name}"

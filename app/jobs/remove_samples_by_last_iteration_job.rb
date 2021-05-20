@@ -44,6 +44,6 @@ class RemoveSamplesByLastIterationJob < ApplicationJob
   ensure
     iteration.update(purge_all_samples: nil)
     send_to_action_cable(iteration, :samples, message)
-    send_to_slack(iteration, 'CREATION', message)
+    send_to_dev_slack(iteration, 'CREATION', message)
   end
 end

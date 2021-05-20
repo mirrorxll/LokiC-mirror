@@ -1,0 +1,3 @@
+$('#manager_answers .modal-title').html(`Manager's report | Submitted by <%= @report.submitter.name %>`)
+$('#manager_answers .modal-body').html(`<%= j render 'manager_answers' %>`)
+$('#manager_answers').modal('show')

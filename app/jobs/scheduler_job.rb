@@ -48,7 +48,7 @@ class SchedulerJob < ApplicationJob
   ensure
     iteration.update(schedule: status)
     send_to_action_cable(iteration, :scheduler, message)
-    send_to_slack(iteration, "#{type.upcase}-SCHEDULING", message)
+    send_to_dev_slack(iteration, "#{type.upcase}-SCHEDULING", message)
   end
 
   private

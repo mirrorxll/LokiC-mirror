@@ -31,7 +31,9 @@
                   reports
                 .dropdown-menu{"aria-labelledby" => "navbarDropdown"}
                   .dropdown-item
-                    =link_to('exported stories', exported_story_types_path, class: 'nav-link')
+                    =link_to('shown samples', shown_samples_path, class: 'nav-link')
+                  .dropdown-item
+                    =link_to('exported story types', exported_story_types_path, class: 'nav-link')
                   .dropdown-item
                     =link_to('developers production', exported_counts_developers_productions_path, class: 'nav-link')
                   .dropdown-item
@@ -53,5 +55,5 @@
     -if alert
       %p.alert.alert-danger.text-center
         =alert
-    %div{ class: controller_name.in?(%w(samples data_sets story_types)) && action_name.in?(%w(index)) ? "container-fluid" : "container-xl" }
+    %div{ class: controller_name.in?(%w(samples data_sets story_types exports exported_story_types)) && action_name.in?(%w(index stories)) ? "container-fluid" : "container-xl" }
       = yield

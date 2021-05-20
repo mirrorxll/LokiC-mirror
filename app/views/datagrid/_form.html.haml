@@ -1,0 +1,30 @@
+- if controller_name.in?(%w[shown_samples exported_story_types])
+  .container-xl
+    .card.card-body
+      =form_for grid, options do |f|
+        .row.small
+          -grid.filters.each do |filter|
+            .col-3.mb-3
+              =f.datagrid_label filter
+              =f.datagrid_filter filter, class: 'form-control form-control-sm'
+        .text-center
+          =f.submit 'apply', class: "btn btn-sm btn-outline-dark"
+          =link_to 'reset', url_for(grid.to_param => {}), class: "btn btn-sm btn-outline-dark2"
+- else
+  .card.card-body
+    = form_for grid, options do |f|
+      .row
+        .col-6.border-right
+          -grid.filters.select { |filter| filter.options[:left] }.each do |filter|
+            .datagrid-filter.filter
+              =f.datagrid_label filter
+              =f.datagrid_filter filter
+        .col-6
+          -grid.filters.select { |filter| !filter.options[:left] }.each do |filter|
+            .datagrid-filter.filter
+              =f.datagrid_label filter
+              =f.datagrid_filter filter
+      %hr.mb-2/
+      .text-center
+        =f.submit 'apply', :class => "btn btn-sm btn-outline-dark mt-2"
+        =link_to 'reset', url_for(grid.to_param => {}), :class => "btn btn-sm btn-outline-dark mt-2"

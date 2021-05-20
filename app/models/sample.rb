@@ -50,6 +50,8 @@ class Sample < ApplicationRecord
   end
 
   def pl_link
+    return unless link?
+
     target = Rails.env.production? ? 'pipeline' : 'pipeline-staging'
     "https://#{target}.locallabs.com/stories/#{pl_story_id}"
   end
@@ -67,5 +69,9 @@ class Sample < ApplicationRecord
 
   def self.exported
     where.not("pl_#{PL_TARGET}_story_id" => nil)
+  end
+
+  def self.exported_without_backdate
+    where.not("pl_#{PL_TARGET}_story_id" => nil).where.not(backdated: true)
   end
 end
