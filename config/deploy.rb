@@ -38,7 +38,7 @@ namespace :sidekiq do
     invoke 'sidekiq:start'
   end
 
-  # before 'deploy:finished', 'sidekiq:restart'
+  before 'deploy:finished', 'sidekiq:restart'
 
   task :stop do
     on roles(:app) do
