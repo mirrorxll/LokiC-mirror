@@ -62,7 +62,7 @@ class ExportJob < ApplicationJob
     iteration.reload.update(export: status)
     send_to_action_cable(iteration, :export, message)
     send_to_dev_slack(iteration, 'EXPORT', message)
-    send_rprt_to_editors_slack(iteration, url) if status
+    # send_rprt_to_editors_slack(iteration, url) if status
 
     iteration.export
   end
