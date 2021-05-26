@@ -151,9 +151,10 @@ Rails.application.routes.draw do
         get   :show_form, on: :collection
       end
 
-      resources :exports, path: 'export', only: :create do
-        delete :remove_from_pl,         on: :collection
-        get    :stories,                on: :collection
+      resources :exports, path: 'export', only: [] do
+        post   :execute,        on: :collection
+        delete :remove_exported_stories, on: :collection
+        get    :stories,        on: :collection
       end
 
       resources :exported_story_types, only: [] do

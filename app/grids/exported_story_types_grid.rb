@@ -9,6 +9,11 @@ class ExportedStoryTypesGrid
   end
 
   # Filters
+  filter(:cron_export, :enum, select: [['yes', 1], ['no', 0]]) do |value, scope|
+    iteration_ids = Iteration.where("name #{value.eql?('1') ? '' : 'NOT'} RLIKE 'CT[0-9]{8}'").ids
+    scope.where(iteration_id: iteration_ids)
+  end
+
   accounts = Account.all.map { |r| [r.name, r.id] }.sort
   filter(:developer, :enum, select: accounts)
 
@@ -97,4 +102,6 @@ class ExportedStoryTypesGrid
       end
     end
   end
+
+  column('Cron Export?', mandatory: true) { |record| record.iteration.name.match?(/CT\d{8}/) ? 'yes' : 'no' }
 end

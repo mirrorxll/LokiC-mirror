@@ -15,6 +15,7 @@ class Iteration < ApplicationRecord # :nodoc:
   has_many :samples
   has_many :auto_feedback_confirmations
   has_many :auto_feedback, through: :auto_feedback_confirmations
+  has_many :production_removals
 
   def show_samples
     samples.where(show: true)
