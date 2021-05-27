@@ -8,19 +8,17 @@ class ExportedStoryTypesController < ApplicationController # :nodoc:
   before_action :manager_report,  only: :submit_manager_report
 
   def index
-    @grid_params =
-      request.parameters[:exported_story_types_grid] || { order: :id }
-
+    @grid_params = request.parameters[:exported_story_types_grid] || {}
     @exported_story_types_grid = ExportedStoryTypesGrid.new(@grid_params)
     @exported_story_types_grid.scope { |scope| scope.page(params[:page]).per(50) }
   end
 
   def show_editor_report
-    @report = @iteration.exported_story_type&.editor_post_export_report
+    @report = @iteration.exported&.editor_post_export_report
   end
 
   def show_manager_report
-    @report = @iteration.exported_story_type.manager_post_export_report
+    @report = @iteration.exported.manager_post_export_report
   end
 
   def submit_editor_report
@@ -35,15 +33,15 @@ class ExportedStoryTypesController < ApplicationController # :nodoc:
 
   def editor_report
     @report =
-      @iteration.exported_story_type.editor_post_export_report ||
-      @iteration.exported_story_type
+      @iteration.exported.editor_post_export_report ||
+      @iteration.exported
                 .create_editor_post_export_report(submitter: current_account, report_type: 'editor')
   end
 
   def manager_report
     @report =
-      @iteration.exported_story_type.manager_post_export_report ||
-      @iteration.exported_story_type
+      @iteration.exported.manager_post_export_report ||
+      @iteration.exported
                 .create_manager_post_export_report(submitter: current_account, report_type: 'manager')
   end
 

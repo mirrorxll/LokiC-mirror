@@ -25,15 +25,23 @@
               %li.nav-item.active
                 =link_to('data sets', data_sets_path, class: 'nav-link')
 
+            -if (current_account.types & %w[manager editor]).any?
+              %li.nav-item.active.dropdown
+                #navbarDropdown.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
+                  story types
+                .dropdown-menu{"aria-labelledby" => "navbarDropdown"}
+                  .dropdown-item
+                    =link_to('exported iterations', exported_story_types_path, class: 'nav-link')
+                  .dropdown-item
+                    =link_to('shown samples', shown_samples_path, class: 'nav-link')
+                  .dropdown-item
+                    =link_to('removals', production_removals_path, class: 'nav-link')
+
             -if current_account.types.include?('manager')
               %li.nav-item.active.dropdown
                 #navbarDropdown.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
                   reports
                 .dropdown-menu{"aria-labelledby" => "navbarDropdown"}
-                  .dropdown-item
-                    =link_to('shown samples', shown_samples_path, class: 'nav-link')
-                  .dropdown-item
-                    =link_to('exported story types', exported_story_types_path, class: 'nav-link')
                   .dropdown-item
                     =link_to('developers production', exported_counts_developers_productions_path, class: 'nav-link')
                   .dropdown-item

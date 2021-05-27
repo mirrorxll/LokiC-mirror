@@ -152,9 +152,9 @@ Rails.application.routes.draw do
       end
 
       resources :exports, path: 'export', only: [] do
-        post   :execute,        on: :collection
+        post   :execute,                 on: :collection
         delete :remove_exported_stories, on: :collection
-        get    :stories,        on: :collection
+        get    :stories,                 on: :collection
       end
 
       resources :exported_story_types, only: [] do
@@ -166,7 +166,9 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :shown_samples, only: :index
+  resources :shown_samples,        only: :index
+  resources :exported_story_types, only: :index
+  resources :production_removals,  only: :index
 
   resources :slack_accounts, only: %i[] do
     patch :sync
@@ -184,8 +186,6 @@ Rails.application.routes.draw do
     get    :dev_hours,     on: :collection
     post   :confirm,       on: :collection
   end
-
-  resources :exported_story_types, only: :index
 
   resources :developers_productions, only: [] do
     get :scores,          on: :collection

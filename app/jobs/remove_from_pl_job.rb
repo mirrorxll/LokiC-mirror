@@ -33,6 +33,8 @@ class RemoveFromPlJob < ApplicationJob
       break if iteration.samples.reload.exported.count.zero?
     end
 
+    iteration.exported&.destroy
+
   rescue StandardError => e
     message = e.message
   ensure

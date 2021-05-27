@@ -1,4 +1,4 @@
--report = @iteration.exported_story_type&.editor_post_export_report&.answers || {}
+-report = @iteration.exported&.editor_post_export_report&.answers || {}
 .small
   -editor_questions.each do |q_id, question|
     .ml-2.mb-2
