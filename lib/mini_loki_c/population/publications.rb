@@ -16,7 +16,7 @@ module MiniLokiC
       # [{"id"=>2072, "name"=>"Hawkeye Reporter", "client_id"=>158, "client_name"=>"MM - Iowa "}]
 
       # Publications.all -- all MB, MM, LGIS non-state-level publications
-      # Publications.by(clients: nil, state: nil) -- ['MB', 'MM', 'LGIS']publications for special state.
+      # Publications.by(clients: nil, state: nil) -- ['MB', 'MM', 'LGIS'] publications for special state.
       #   e.g: Publications.by(clients: ['MM', 'MB'], state: 'Iowa') -- all non-state-level publications for MM - Iowa and MB in Iowa
       #        Publications.by(clients: ['MB']) -- all MB publications
       # Publications.mm_by_state(*state) -- all MM publications in passed states
@@ -26,7 +26,7 @@ module MiniLokiC
       #   e.g: Publications.from_lat_lon(123, -321, 'MM', 'MB') -- all MM and MB publications in passed coords
       #   e.g: Publications.from_lat_lon(123, -321) -- ALL PUBLICATIONS IN PASSED COORDS. ! ATTENTION ! IT CAN BE RETURNED CLIENTS-PUBLICATION THAT WE USUALY NOT USE
       # Publications.by_org_client_id(org_id, *client_ids) -- non-state-level publications by organization_id
-      #   e.g: Publications.by_org_client_id(647534066, 91, 120) -- all
+      #   e.g: Publications.by_org_client_id(647534066, 91, 120) -- non-state-level publications by organization_id for LGIS and MB
       # Publications.mm_excluding_states(org_id, *states) -- non-state-level MM publications by organization_id and state
       #   e.g: Publications.mm_excluding_states(647534066, 'Iowa', 'Texas') - non-state-level publications by organization_id for MM - Iowa and MM - Texas
       # Publications.mm_by_org_id(org_id, *states) - The same us method above (alias of mm_excluding_states)
