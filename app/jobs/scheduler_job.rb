@@ -16,13 +16,13 @@ class SchedulerJob < ApplicationJob
 
         case type
         when 'manual'
-          Scheduler::Base.run_schedule(samples, manual_params(options))
+          MiniLokiC::Creation::Scheduler::Base.run_schedule(samples, manual_params(options))
         when 'backdate'
-          Scheduler::Backdate.backdate_scheduler(samples, backdate_params(options))
+          MiniLokiC::Creation::Scheduler::Backdate.backdate_scheduler(samples, backdate_params(options))
         when 'auto'
-          Scheduler::Auto.run_auto(samples, auto_params(options))
+          MiniLokiC::Creation::Scheduler::Auto.run_auto(samples, auto_params(options))
         when 'run-from-code'
-          Scheduler::FromCode.run_from_code(samples, options)
+          MiniLokiC::Creation::Scheduler::FromCode.run_from_code(samples, options)
         end
 
       rescue StandardError => e

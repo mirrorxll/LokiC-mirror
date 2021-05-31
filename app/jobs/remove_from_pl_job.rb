@@ -34,6 +34,7 @@ class RemoveFromPlJob < ApplicationJob
     end
 
     iteration.exported&.destroy
+    iteration.production_removals.last.update(status: true)
 
   rescue StandardError => e
     message = e.message

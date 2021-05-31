@@ -35,7 +35,7 @@ class ExportsController < ApplicationController
 
   def removal
     recent_removal = @iteration.production_removals.last
-    @removal = recent_removal&.status ? recent_removal : @iteration.production_removals.create(account: current_account)
+    @removal = recent_removal&.status.eql?(false) ? recent_removal : @iteration.production_removals.create(account: current_account)
   end
 
   def removal_params

@@ -12,6 +12,8 @@ require_relative 'mini_loki_c/population.rb'
 require_relative 'mini_loki_c/creation.rb'
 require_relative 'mini_loki_c/no_log.rb'
 require_relative 'mini_loki_c/code.rb'
+require_relative 'mini_loki_c/common.rb'
+require_relative 'mini_loki_c/data_matching.rb'
 
 # mini lokiC rails integration
 module MiniLokiC
