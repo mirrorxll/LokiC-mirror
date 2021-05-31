@@ -8,6 +8,25 @@ module MiniLokiC
         module StateLevel
           module_function
 
+          def clients_ids_states_query
+            %|select cc.id client_id,
+                     if(substr(cc.name, 1, 4) = 'MM -', replace(cc.name, 'MM - ', ''), 'Illinois') state
+              from client_companies cc
+                     join communities c
+                          on cc.id = c.client_company_id
+              where c.id in (
+                select pg.project_id
+                from project_geographies pg
+                         join communities c
+                              on c.id = pg.project_id and
+                                 pg.geography_type = 'State'
+                         join client_companies cc on
+                            cc.id = c.client_company_id and
+                            cc.name rlike 'MM - ') or
+                    c.id in (2041, 2419, 2394, 1541)
+              group by c.id;|
+          end
+
           def pubs_query
             %|select o.name org_name,
                      c.id,
@@ -21,7 +40,7 @@ module MiniLokiC
                       on c.id = oc.community_id
                   join client_companies cc
                       on c.client_company_id = cc.id
-              where #{@client_ids.empty? ? '1 = 1' : "cc.id in (#{@client_ids})"} and
+              where #{@client_ids&.present? ? "cc.id in (#{@client_ids})" : '1 = 1'} and
                     (c.id in (
                       select pg.project_id
                       from project_geographies pg

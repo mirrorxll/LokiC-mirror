@@ -9,10 +9,30 @@ require_relative 'publications/state_level.rb'
 
 module MiniLokiC
   module Population
-    # The methods are returned an array of hashes like this:
-    # [{"id"=>2072, "name"=>"Hawkeye Reporter", "client_id"=>158, "client_name"=>"MM - Iowa "}]
     module Publications
       module_function
+
+      # The methods are returned an array of hashes like this:
+      # [{"id"=>2072, "name"=>"Hawkeye Reporter", "client_id"=>158, "client_name"=>"MM - Iowa "}]
+
+      # Publications.all -- all MB, MM, LGIS non-state-level publications
+      # Publications.by(clients: nil, state: nil) -- ['MB', 'MM', 'LGIS']publications for special state.
+      #   e.g: Publications.by(clients: ['MM', 'MB'], state: 'Iowa') -- all non-state-level publications for MM - Iowa and MB in Iowa
+      #        Publications.by(clients: ['MB']) -- all MB publications
+      # Publications.mm_by_state(*state) -- all MM publications in passed states
+      #   e.g: Publications.mm_by_state('Iowa', 'Texas') -- all non-state-level publications in Iowa and Texas
+      # Publications.from_lat_lon(latitude, longitude, *clients) -- non-state-level publications from lat/lon coords.
+      #   e.g: Publications.from_lat_lon(123, -321, 'MM') -- all MM publications by passed coords
+      #   e.g: Publications.from_lat_lon(123, -321, 'MM', 'MB') -- all MM and MB publications in passed coords
+      #   e.g: Publications.from_lat_lon(123, -321) -- ALL PUBLICATIONS IN PASSED COORDS. ! ATTENTION ! IT CAN BE RETURNED CLIENTS-PUBLICATION THAT WE USUALY NOT USE
+      # Publications.by_org_client_id(org_id, *client_ids) -- non-state-level publications by organization_id
+      #   e.g: Publications.by_org_client_id(647534066, 91, 120) -- all
+      # Publications.mm_excluding_states(org_id, *states) -- non-state-level MM publications by organization_id and state
+      #   e.g: Publications.mm_excluding_states(647534066, 'Iowa', 'Texas') - non-state-level publications by organization_id for MM - Iowa and MM - Texas
+      # Publications.mm_by_org_id(org_id, *states) - The same us method above (alias of mm_excluding_states)
+      # Publications.all_state_lvl -- all state-level-publications
+      # Publications.state_lvl_by_org_id(org_id, *states) -- all state-level publications by passed states (Illinois == LGIS)
+      #   e.g: Publications.state_lvl_by_org_id(647534066, 'Iowa', 'Illinois') - state-level publications by organization_id for MM - Iowa and LGIS
 
       def all
         ByClientsState.new.pubs
@@ -38,8 +58,8 @@ module MiniLokiC
         mm_by_org_id(org_id, *states)
       end
 
-      def mm_by_state(*state)
-        MetricMedia.new(states: state.flatten).pubs
+      def mm_by_state(*states)
+        MetricMedia.new(states: states.flatten).pubs
       end
 
       # STATE LEVEL PUBS
@@ -47,8 +67,8 @@ module MiniLokiC
         StateLevel.new.pubs
       end
 
-      def state_lvl_by_org_client_id(org_id, *client_ids)
-        StateLevel.new(org_id, client_ids.flatten).pubs
+      def state_lvl_by_org_id(org_id, *states)
+        StateLevel.new(org_id, states.flatten).pubs
       end
     end
   end
