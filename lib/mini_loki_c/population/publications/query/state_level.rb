@@ -10,20 +10,24 @@ module MiniLokiC
 
           def clients_ids_states_query
             %|select cc.id client_id,
-                     if(substr(cc.name, 1, 4) = 'MM -', replace(cc.name, 'MM - ', ''), 'Illinois') state
+                     if(
+                         substr(cc.name, 1, 4) = 'MM -',
+                         replace(cc.name, 'MM - ', ''),
+                         if(cc.name = 'LGIS', 'Illinois', null)
+                     ) state
               from client_companies cc
-                     join communities c
-                          on cc.id = c.client_company_id
+                       join communities c
+                            on cc.id = c.client_company_id
               where c.id in (
-                select pg.project_id
-                from project_geographies pg
-                         join communities c
-                              on c.id = pg.project_id and
-                                 pg.geography_type = 'State'
-                         join client_companies cc on
-                            cc.id = c.client_company_id and
-                            cc.name rlike 'MM - ') or
-                    c.id in (2041, 2419, 2394, 1541)
+                  select pg.project_id
+                  from project_geographies pg
+                           join communities c
+                                on c.id = pg.project_id and
+                                   pg.geography_type = 'State'
+                           join client_companies cc on
+                              cc.id = c.client_company_id and
+                              cc.name rlike 'MM - ') or
+                      c.id in (2041, 2419, 2394, 1541)
               group by c.id;|
           end
 
@@ -50,8 +54,7 @@ module MiniLokiC
                           join client_companies cc on
                               cc.id = c.client_company_id and
                               cc.name rlike 'MM - ') or
-                    c.id in (2041, 2419, 2394, 1541)) and
-                    organization_id = #{@org_id}
+                    c.id in (2041, 2419, 2394, 1541))
               group by c.id;|
           end
 

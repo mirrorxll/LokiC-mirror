@@ -31,8 +31,8 @@ module MiniLokiC
       #   e.g: Publications.mm_excluding_states(647534066, 'Iowa', 'Texas') - non-state-level publications by organization_id for MM - Iowa and MM - Texas
       # Publications.mm_by_org_id(org_id, *states) - The same us method above (alias of mm_excluding_states)
       # Publications.all_state_lvl -- all state-level-publications
-      # Publications.state_lvl_by_org_id(org_id, *states) -- all state-level publications by passed states (Illinois == LGIS)
-      #   e.g: Publications.state_lvl_by_org_id(647534066, 'Iowa', 'Illinois') - state-level publications by organization_id for MM - Iowa and LGIS
+      # Publications.state_lvl_by(*states) -- all state-level publications by passed states
+      #   e.g: Publications.state_lvl_by('Iowa', 'Illinois') - state-level publications for MM - Iowa and LGIS
 
       def all
         ByClientsState.new.pubs
@@ -67,8 +67,8 @@ module MiniLokiC
         StateLevel.new.pubs
       end
 
-      def state_lvl_by_org_id(org_id, *states)
-        StateLevel.new(org_id, states.flatten).pubs
+      def state_lvl_by(*states)
+        StateLevel.new(states.flatten).pubs
       end
     end
   end

@@ -9,16 +9,20 @@ module MiniLokiC
       class StateLevel < Publications::Base
         include Query::StateLevel
 
-        def initialize(org_id = nil, states = [])
+        def initialize(states = [])
           super()
-          @org_id = org_id
-          @client_ids = client_ids(states) if states.any?
+
+          @query =
+            if states.any?
+              @client_ids = client_ids(states)
+              pubs_query
+            else
+              all_state_lvl_pubs_query
+            end
         end
 
         def pubs
-          query = @org_id ? pubs_query : all_state_lvl_pubs_query
-
-          get(query)
+          get(@query)
         end
 
         private
