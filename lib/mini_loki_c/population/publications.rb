@@ -39,6 +39,8 @@ module MiniLokiC
       end
 
       def by(clients: nil, state: nil)
+        return [] if [clients, state].all?(&:blank?)
+
         ByClientsState.new(clients, state).pubs
       end
 
@@ -59,6 +61,8 @@ module MiniLokiC
       end
 
       def mm_by_state(*states)
+        return [] if states.empty?
+
         MetricMedia.new(states: states.flatten).pubs
       end
 
@@ -68,6 +72,8 @@ module MiniLokiC
       end
 
       def state_lvl_by(*states)
+        return [] if states.empty?
+
         StateLevel.new(states.flatten).pubs
       end
     end

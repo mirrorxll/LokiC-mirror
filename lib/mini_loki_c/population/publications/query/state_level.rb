@@ -32,18 +32,13 @@ module MiniLokiC
           end
 
           def pubs_query
-            %|select o.name org_name,
-                     c.id,
+            %|select c.id,
                      c.name,
                      cc.id client_id,
                      cc.name client_name
-              from organizations o
-                  join organization_communities oc
-                      on oc.organization_id = o.id
+              from client_companies cc
                   join communities c
-                      on c.id = oc.community_id
-                  join client_companies cc
-                      on c.client_company_id = cc.id
+                      on cc.id = c.client_company_id
               where #{@client_ids&.present? ? "cc.id in (#{@client_ids})" : '1 = 1'} and
                     (c.id in (
                       select pg.project_id
@@ -64,8 +59,8 @@ module MiniLokiC
                      cc.id client_id,
                      cc.name client_name
               from client_companies cc
-                       join communities c
-                            on cc.id = c.client_company_id
+                  join communities c
+                      on cc.id = c.client_company_id
               where c.id in (
                   select pg.project_id
                   from project_geographies pg
