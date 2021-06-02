@@ -38,23 +38,21 @@ class ExportJob < ApplicationJob
       break if last_export_batch
     end
 
-    Process.wait(
-      fork do
-        exp_st = ExportedStoryType.find_or_initialize_by(iteration: iteration)
-        exp_st.developer = iteration.story_type.developer
-        exp_st.first_export = iteration.name.eql?('Initial')
-        exp_st.count_samples = iteration.samples.count
+    exp_st = ExportedStoryType.find_or_initialize_by(iteration: iteration)
+    exp_st.story_type = iteration.story_type
+    exp_st.developer = iteration.story_type.developer
+    exp_st.first_export = iteration.name.eql?('Initial')
+    exp_st.count_samples = iteration.samples.count
 
-        if exp_st.new_record?
-          iteration.story_type.update(last_export: Date.today)
+    if exp_st.new_record?
+      iteration.story_type.update(last_export: Date.today)
 
-          exp_st.week = Week.where(begin: Date.today - (Date.today.wday - 1)).first
-          exp_st.date_export = Date.today
-        end
+      exp_st.week = Week.where(begin: Date.today - (Date.today.wday - 1)).first
+      exp_st.date_export = Date.today
+    end
 
-        exp_st.save
-      end
-    )
+    exp_st.save!
+
   rescue StandardError => e
     status = nil
     message = e.message

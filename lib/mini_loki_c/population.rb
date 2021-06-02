@@ -2,6 +2,9 @@
 
 require_relative 'population/publications.rb'
 require_relative 'population/sql.rb'
+require_relative 'population/population_success.rb'
+require_relative 'population/frame.rb'
+require_relative 'population/story_mixer.rb'
 
 module MiniLokiC
   module Population; end

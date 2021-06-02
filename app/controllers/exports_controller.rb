@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
 class ExportsController < ApplicationController
-  before_action :render_400, except: :stories, if: :editor?
-  before_action :render_400, only: :stories, if: :developer?
-  before_action :render_400, only: %i[submit_editor_report submit_manager_report], if: :developer?
-
+  before_action :render_400_editor, except: :stories, if: :editor?
+  before_action :render_400_developer, only: %i[stories submit_editor_report submit_manager_report], if: :developer?
   before_action :show_sample_ids, only: :stories
   before_action :removal, only: :remove_exported_stories
 
@@ -37,7 +35,7 @@ class ExportsController < ApplicationController
 
   def removal
     recent_removal = @iteration.production_removals.last
-    @removal = recent_removal&.status ? recent_removal : @iteration.production_removals.create(account: current_account)
+    @removal = recent_removal&.status.eql?(false) ? recent_removal : @iteration.production_removals.create(account: current_account)
   end
 
   def removal_params

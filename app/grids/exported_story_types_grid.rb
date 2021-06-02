@@ -4,9 +4,7 @@ class ExportedStoryTypesGrid
   include Datagrid
 
   # Scope
-  scope do
-    ExportedStoryType.order(date_export: :desc)
-  end
+  scope { ExportedStoryType.order(id: :desc) }
 
   # Filters
   filter(:cron_export, :enum, select: [['yes', 1], ['no', 0]]) do |value, scope|

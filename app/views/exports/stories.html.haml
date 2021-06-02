@@ -17,27 +17,28 @@
         show samples:
       #show_samples.col-11
 
-    .row.mt-3
-      .col-1.mb-1.text-right
-        editor:
-      #editor_submit.col-11
-        =link_to('post-export-report', '#', "data-toggle" => "modal",
-                 "data-target" => "#editor_questions", class: 'badge badge-light')
-        -if @iteration.exported_story_type.editor_post_export_report
-          .small.d-inline-block.mr-3
-            submitted by #{@iteration.exported_story_type.editor_post_export_report.submitter.name}
-      =render 'modal_editor_questions'
+    -if (current_account.types & %w[manager editor]).any?
+      .row.mt-3
+        .col-1.mb-1.text-right
+          editor:
+        #editor_submit.col-11
+          =link_to('post-export-report', '#', "data-toggle" => "modal",
+                   "data-target" => "#editor_questions", class: 'badge badge-light')
+          -if @iteration.exported&.editor_post_export_report
+            .small.d-inline-block.mr-3
+              submitted by #{@iteration.exported.editor_post_export_report.submitter.name}
+        =render 'modal_editor_questions'
 
-    .row.mt-3
-      .col-1.mb-1.text-right
-        manager:
-      #manager_submit.col-11
-        =link_to('post-export-report', '#', "data-toggle" => "modal",
-                 "data-target" => "#manager_questions", class: 'badge badge-light')
-        -if @iteration.exported_story_type.manager_post_export_report
-          .small.d-inline-block.mr-3
-            submitted by #{@iteration.exported_story_type.manager_post_export_report.submitter.name}
-
+    -if current_account.types.include?('manager')
+      .row.mt-3
+        .col-1.mb-1.text-right
+          manager:
+        #manager_submit.col-11
+          =link_to('post-export-report', '#', "data-toggle" => "modal",
+                   "data-target" => "#manager_questions", class: 'badge badge-light')
+          -if @iteration.exported&.manager_post_export_report
+            .small.d-inline-block.mr-3
+              submitted by #{@iteration.exported.manager_post_export_report.submitter.name}
       =render 'modal_manager_questions'
 
   %hr.mt-1.mb-3/

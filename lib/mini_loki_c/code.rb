@@ -60,7 +60,7 @@ module MiniLokiC
         MiniLokiC::NoLog
       )
 
-      story_type_class.new.send(@method, @options)
+      METHODS_TRACER.enable { story_type_class.new.send(@method, @options) }
     rescue StandardError, ScriptError => e
       raise "MiniLokiC::#{@method.capitalize}ExecutionError".constantize,
             "[ #{@method.capitalize}ExecutionError ] -> #{e.message} at #{e.backtrace.first}".gsub('`', "'")
