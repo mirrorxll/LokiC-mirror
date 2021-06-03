@@ -72,6 +72,7 @@ module MiniLokiC
       end
 
       def state_lvl_by(*states)
+        states.reject! { |state| state.downcase.eql?('district of columbia') }
         return [] if states.empty?
 
         StateLevel.new(states.flatten).pubs
