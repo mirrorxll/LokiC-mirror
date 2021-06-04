@@ -10,6 +10,7 @@ class StoryTypesController < ApplicationController # :nodoc:
   before_action :find_story_type,           except: %i[index new create properties]
   before_action :set_iteration,             except: %i[index new create properties change_data_set]
   before_action :message,                   only: :update_sections
+  before_action :find_current_data_set,     only: :change_data_set
 
   def index
     @grid_params = if request.parameters[:story_types_grid]
@@ -71,7 +72,6 @@ class StoryTypesController < ApplicationController # :nodoc:
   def properties; end
 
   def change_data_set
-    @old_data_set = @story_type.data_set
     @story_type.update(change_data_set_params)
   end
 
@@ -108,7 +108,11 @@ class StoryTypesController < ApplicationController # :nodoc:
   end
 
   def change_data_set_params
-    p params.require(:story_type).permit(:data_set_id)
+    params.require(:story_type).permit(:data_set_id)
+  end
+
+  def find_current_data_set
+    @current_data_set = DataSet.find(params[:current_data_set_page_id])
   end
 
   def message

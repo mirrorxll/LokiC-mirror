@@ -1,2 +1,2 @@
 $('#change_data_set').html(`<%= j render 'change_data_set' %>`);
-$('#story_types').html(`<%= j render @old_data_set.story_types.order(id: :desc) %>`)
+$('#story_types').html(`<%= j render @current_data_set.story_types.order(id: :desc) %>`)
