@@ -1,0 +1,14 @@
+.current_data_set
+  =link_to(@story_type.data_set.name, @story_type.data_set)
+  =link_to('x', '#')
+.change_data_set_form.d-none
+  =form_with(url: change_data_set_story_type_path(@story_type), method: :patch, html: { onchange: "Rails.fire(this, 'submit')"}) do |f|
+    =f.collection_select 'story_type[data_set_id]', DataSet.order(name: :asc), :id, :name, selected: @story_type.reload.data_set.id
+
+:javascript
+  document.querySelector('.current_data_set a[href="#"]').addEventListener('click', function (evt) {
+    evt.preventDefault();
+    evt.target.parentNode.classList.add('d-none');
+    document.getElementsByClassName('change_data_set_form')[0].classList.remove('d-none');
+    return false;
+  })
