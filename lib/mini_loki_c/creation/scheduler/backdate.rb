@@ -13,14 +13,16 @@ module MiniLokiC
             next if samples.empty?
 
             if arg.empty?
-              samples_backdated.each { |smpl| smpl.update_attributes(published_at: date, backdated: true) }
+              samples_backdated.find_in_batches do |samples_backdated_batch|
+                samples_backdated_batch.each { |smpl| smpl.update_attributes(published_at: date, backdated: true) }
+              end
               schedule_args[date.to_s] = ''
             else
               staging_table_name = samples_backdated.first.iteration.story_type.staging_table.name
               stage_ids = ExtraArgs.stage_ids(staging_table_name, arg)
 
-              samples_backdated.where(staging_row_id: stage_ids).each do |smpl|
-                smpl.update_attributes(published_at: date, backdated: true)
+              samples_backdated.where(staging_row_id: stage_ids).find_in_batches do |samples_backdated_batch|
+                samples_backdated_batch.each { |smpl| smpl.update_attributes(published_at: date, backdated: true) }
               end
               schedule_args[date.to_s] = arg
             end
