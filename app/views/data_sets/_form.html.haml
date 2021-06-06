@@ -47,8 +47,8 @@
                                           { include_blank: true, selected: row.client.id },
                                           { id: "data_set_default_#{u_id}_client_id", name: "default_props[client_tag_ids[#{u_id}[client_id]]]", class: 'form-control form-control-sm clients_select', required: true }
                 .col-4.pr-1
-                  =form.collection_select :publication_id, row.client.publications.sort_by(&:name), :id, :name,
-                                          { include_blank: 'all publication', selected: row.publication ? row.publication.id : 'all publications' },
+                  =form.collection_select :publication_id, Publication.where(name: ['all publications','all local publications','all statewide publications']) + row.client.publications.sort_by(&:name), :id, :name,
+                                          { include_blank: true, selected: row.publication ? row.publication.id : '' },
                                           { id: "data_set_default_#{u_id}_publication_id", name: "default_props[client_tag_ids[#{u_id}[publication_id]]]", class: 'form-control form-control-sm publications_select' }
 
                 .col-3.pl-1.pr-1

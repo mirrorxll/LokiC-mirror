@@ -6,7 +6,7 @@ class PublicationsController < ApplicationController # :nodoc:
 
   def include
     @publication = Publication.find(params[:id])
-    render_400 && return if @story_type.clients_publications_tags.find_by(client: @client_publication_tag.client, publication: @publication ).present?
+    render_400 && return if @story_type.clients_publications_tags.find_by(client: @client_publication_tag.client, publication: @publication).present?
 
     @client_publication_tag.update(publication: @publication)
   end
