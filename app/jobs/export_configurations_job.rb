@@ -21,11 +21,7 @@ class ExportConfigurationsJob < ApplicationJob
     exp_config_counts.default = 0
     iteration = story_type.iteration
 
-    story_type.clients_publications_tags.each { |s| puts (s.client.nil? ? 'nil' : s.client.name) + ' -------------- ' + (s.publication.nil? ? 'nil' : s.publication.name)  }
-    puts '//////////////////////////'
     st_cl_pub_tgs = story_type.clients_publications_tags.sort_by { |st_cl_pub_tg| sort_weight(st_cl_pub_tg) }
-
-    st_cl_pub_tgs.each { |s| puts (s.client.nil? ? 'nil' : s.client.name) + ' -------------- ' + (s.publication.nil? ? 'nil' : s.publication.name)  }
 
     story_type.staging_table.publication_ids.each do |pub_id|
       publication = Publication.find_by(pl_identifier: pub_id)
@@ -41,9 +37,6 @@ class ExportConfigurationsJob < ApplicationJob
       exp_c.tag = (cl_pub_tg.tag && publication.tag?(cl_pub_tg.tag) ? cl_pub_tg.tag : nil)
       exp_c.save!
     end
-
-    ExportConfiguration.where(story_type: story_type).each { |ex| puts ex.publication.name.to_s + ' ------- ' + ex.publication.client.name.to_s + ' ------- ' + ex.tag.name.to_s }
-
   rescue StandardError => e
     status = nil
     message = e
