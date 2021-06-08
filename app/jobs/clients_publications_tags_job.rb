@@ -7,9 +7,11 @@ class ClientsPublicationsTagsJob < ApplicationJob
         clients_pubs_tags = PipelineReplica[:production].get_clients_publications_tags
         clients_pubs_tags.reject! { |row| row['client_name'].eql?('Metric Media') }
 
+        pubs_ids_statewide = pubs_pl_ids_statewide
+
         clients_pubs_tags.flatten.each do |cl_pub_tags|
           client = update_client(cl_pub_tags)
-          publication = update_publication(client, cl_pub_tags)
+          publication = update_publication(client, cl_pub_tags, pubs_ids_statewide)
           update_tags(publication, cl_pub_tags)
         end
 
@@ -17,9 +19,20 @@ class ClientsPublicationsTagsJob < ApplicationJob
         mm_gen.save!
         mm_gen.touch
 
+        categories_all = Client.find_or_initialize_by(name: 'Client for categories all')
+        categories_all.save!
+        categories_all.touch
+
         blank_tag = Tag.find_or_initialize_by(name: '')
         blank_tag.save!
         blank_tag.touch
+
+        ['all publications', 'all local publications','all statewide publications'].each do |name|
+          pub = Publication.find_or_initialize_by(name: name)
+          pub.client = categories_all
+          pub.save!
+          pub.touch
+        end
 
         Client.all.each do |c|
           next if c.tags.exists?(blank_tag.id)
@@ -47,14 +60,19 @@ class ClientsPublicationsTagsJob < ApplicationJob
     client
   end
 
-  def update_publication(client, cl_pub_tags)
+  def update_publication(client, cl_pub_tags, pubs_ids_statewide)
     pub = client.publications.find_or_initialize_by(pl_identifier: cl_pub_tags['publication_id'])
     pub.name = cl_pub_tags['publication_name']
     pub.home_page = drop_ends_slash(cl_pub_tags['site_url'])
+    pub.statewide = pubs_ids_statewide.include? pub.pl_identifier
     pub.save!
     pub.touch
 
     pub
+  end
+
+  def pubs_pl_ids_statewide
+    MiniLokiC::Population::Publications.all_state_lvl.map { |pub| pub['id'] }
   end
 
   def drop_ends_slash(url)

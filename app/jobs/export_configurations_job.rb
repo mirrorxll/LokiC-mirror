@@ -42,6 +42,8 @@ class ExportConfigurationsJob < ApplicationJob
       exp_c.save!
     end
 
+    ExportConfiguration.where(story_type: story_type).each { |ex| puts ex.publication.name.to_s + ' ------- ' + ex.publication.client.name.to_s + ' ------- ' + ex.tag.name.to_s }
+
   rescue StandardError => e
     status = nil
     message = e
@@ -50,8 +52,7 @@ class ExportConfigurationsJob < ApplicationJob
 
     if manual
       send_to_action_cable(story_type.iteration, :properties, message)
-      puts message
-      # send_to_dev_slack(iteration, 'EXPORT CONFIGURATIONS', message)
+      send_to_dev_slack(iteration, 'EXPORT CONFIGURATIONS', message)
     end
   end
 
@@ -71,7 +72,7 @@ class ExportConfigurationsJob < ApplicationJob
 
     # st_cl_pubs all local publications and all statewide publications Metric Media and Metro Business Network
     return 4 if st_cl_pub_tg.client.name.in?(['Metric Media','Metro Business Network']) &&
-         st_cl_pub_tg.publication.name.in?(['all local publications','all statewide publications'])
+      st_cl_pub_tg.publication.name.in?(['all local publications','all statewide publications'])
 
     # all st_cl_pubs all publications Metric Media and Metro Business Network
     5 if st_cl_pub_tg.client.name.in?(['Metric Media','Metro Business Network']) &&
@@ -82,9 +83,9 @@ class ExportConfigurationsJob < ApplicationJob
     clients_publications_tags.to_a.find do |client_publication_tag|
       client = client_publication_tag.client
       publications = if client_publication_tag.publication.name == 'all statewide publications'
-                       client.publications && MiniLokiC::Population::Publications.all_state_lvl
+                       client.statewide_publications
                      elsif client_publication_tag.publication.name == 'all local publications'
-                       client.publications && (MiniLokiC::Population::Publications.all - MiniLokiC::Population::Publications.all_state_lvl)
+                       client.local_publications
                      else
                        client.publications
                      end
