@@ -166,11 +166,6 @@ function publicationsByClient(event) {
 function addPublicationsToSelectGroup(publicationsSelect, publications) {
     let option = null
 
-    option = document.createElement("option");
-    option.setAttribute("value", '');
-    option.text = 'all publications';
-    publicationsSelect.appendChild(option);
-
     for (let i = 0; i < publications.length; i++) {
         option = document.createElement("option");
         option.setAttribute("value", publications[i].id);

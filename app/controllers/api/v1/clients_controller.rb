@@ -16,7 +16,7 @@ module Api
       end
 
       def publications
-        @publications = Client.find(params[:client_id]).publications.order(:name)
+        @publications = Publication.where(name: ['all publications','all local publications','all statewide publications']) + Client.find(params[:client_id]).publications.order(:name)
 
         render json: { attached: @publications }
       end
