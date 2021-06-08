@@ -2,9 +2,7 @@ class DataSetsGrid
   include Datagrid
 
   # Scope
-  scope do
-    DataSet.includes(:state, :sheriff, :category)
-  end
+  scope { DataSet.includes(:state, :sheriff, :category) }
 
   # Filters
   # filter(:id, :string, multiple: ',')

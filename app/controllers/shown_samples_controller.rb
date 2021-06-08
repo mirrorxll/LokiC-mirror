@@ -6,7 +6,7 @@ class ShownSamplesController < ApplicationController
 
   def index
     @grid_params =
-      request.parameters[:shown_samples_grid] || { order: :id }
+      request.parameters[:shown_samples_grid] || {}
 
     @shown_samples_grid = ShownSamplesGrid.new(@grid_params)
   end

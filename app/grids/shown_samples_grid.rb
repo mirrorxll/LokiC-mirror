@@ -5,7 +5,8 @@ class ShownSamplesGrid
 
   # Scope
   scope do
-    StoryType.where.not(last_export: nil).includes(:developer, :editor, :clients, :tags, data_set: %i[state category])
+    StoryType.where.not(last_export: nil).order(id: :desc)
+             .includes(:developer, :editor, :clients, :tags, data_set: %i[state category])
   end
 
   # Filters

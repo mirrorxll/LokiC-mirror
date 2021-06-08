@@ -1,4 +1,4 @@
--report = @iteration.exported_story_type&.manager_post_export_report&.answers || {}
+-report = @iteration.exported&.manager_post_export_report&.answers || {}
 
 #manager_questions.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "manager_questions", role: "dialog", tabindex: "-1" }
   .modal-dialog.modal-dialog-centered.modal-xl.modal-dialog-scrollable

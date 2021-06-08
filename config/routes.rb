@@ -43,7 +43,10 @@ Rails.application.routes.draw do
   resources :story_types, except: %i[new create] do
     get   :properties
     get   :canceling_edit,  on: :member
+
     patch :update_sections, on: :member
+
+    patch :change_data_set, on: :member
 
     resources :templates, path: :template, only: %i[show edit update] do
       patch :save, on: :member
@@ -152,9 +155,9 @@ Rails.application.routes.draw do
       end
 
       resources :exports, path: 'export', only: [] do
-        post   :execute,        on: :collection
+        post   :execute,                 on: :collection
         delete :remove_exported_stories, on: :collection
-        get    :stories,        on: :collection
+        get    :stories,                 on: :collection
       end
 
       resources :exported_story_types, only: [] do
@@ -166,7 +169,9 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :shown_samples, only: :index
+  resources :shown_samples,        only: :index
+  resources :exported_story_types, only: :index
+  resources :production_removals,  only: :index
 
   resources :slack_accounts, only: %i[] do
     patch :sync
@@ -184,8 +189,6 @@ Rails.application.routes.draw do
     get    :dev_hours,     on: :collection
     post   :confirm,       on: :collection
   end
-
-  resources :exported_story_types, only: :index
 
   resources :developers_productions, only: [] do
     get :scores,          on: :collection

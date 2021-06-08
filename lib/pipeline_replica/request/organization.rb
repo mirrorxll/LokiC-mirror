@@ -5,6 +5,8 @@ module PipelineReplica
     # request return job or nil
     module Organization
       def get_active_organization_ids(ids)
+        return [] if ids.empty?
+
         stringify_ids = ids.join(',')
         org_ids_q = organizations_query(stringify_ids)
         @pl_replica.query(org_ids_q).to_a.map { |o| o['id'] }

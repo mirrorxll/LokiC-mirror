@@ -18,4 +18,13 @@ class Client < ApplicationRecord # :nodoc:
       Publication.where(client: self)
     end
   end
+
+  def statewide_publications
+    publications.where(statewide: true)
+  end
+
+  def local_publications
+    publications.where(statewide: false)
+  end
+
 end

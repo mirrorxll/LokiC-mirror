@@ -1,16 +1,18 @@
 # frozen_string_literal: true
 
-require_relative 'by_org_client_id/query.rb'
+require_relative 'query/by_org_client_id.rb'
 
 module MiniLokiC
   module Population
     module Publications
       # get publications by client id
       class ByOrgClientId < Publications::Base
+        include Query::ByOrgClientId
+
         def initialize(org_id, client_ids = [])
           super()
-          @client_ids = client_ids.join(',')
           @org_id = org_id
+          @client_ids = client_ids.join(',')
         end
 
         def pubs

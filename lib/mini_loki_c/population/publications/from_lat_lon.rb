@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
-require_relative 'from_lat_lon/query.rb'
+require_relative 'query/from_lat_lon.rb'
 
 module MiniLokiC
   module Population
     module Publications
       # get publications by lat/lon
-
       class FromLatLon < Publications::Base
+        include Query::FromLatLon
+
         TYPES = %w[
           city
           state
@@ -30,7 +31,7 @@ module MiniLokiC
 
         def pubs
           pub_ids = publication_ids
-          return if pub_ids.empty?
+          return [] if pub_ids.empty?
 
           get(pubs_query(pub_ids))
         end
