@@ -15,62 +15,38 @@
     .col-1.text-right
       total stories:
     .col-11
-      #{@all_samples.count}
+      #{@sample_counts[0] + @sample_counts[1]}
 
   -if @iteration.schedule
     .row
       .col-1.text-right
         main export:
       .col-11
-        #{@all_samples.where(backdated: 0).count}
+        #{@sample_counts[0]}
     .row
       .col-1.text-right
         backdated:
       .col-11
-        #{@all_samples.where(backdated: 1).count}
+        #{@sample_counts[1]}
+
+#filter_form.collapse
+  .row.mt-3.col-12
+    =datagrid_form_for @iteration_samples_grid, url: story_type_iteration_samples_path(@story_type, @iteration)
+
+=link_to('download as CSV', url_for(format: 'csv', iteration_samples_grid: @grid_params),
+  type: "button", id: '#save_as_csv_btn', class: 'btn btn-sm btn-outline-dark')
+=link_to('filter samples', '#filter_form', 'aria-controls' => 'filter_form',
+  'aria-expanded' => false, data: { toggle: "collapse", target: "#filter_form" },
+  type: "button", id: '#crt_upd_filter_btn', class: 'btn btn-sm btn-outline-dark')
 
 %hr.mt-1.mb-3/
-=paginate @paged_samples, window: 3
+=paginate @iteration_samples_grid.assets
 
-%table#exported_stories.table.table-striped.table-sm.small
-  %thead
-    %tr
-      %th#headline{ :scope => "col" }
-        headline
-      %th#pipeline{ :scope => "col" }
-        live
-      %th#pipeline{ :scope => "col" }
-        pipeline
-      %th#lokic{ :scope => "col" }
-        lokic
-      %th#client{ :scope => "col" }
-        client
-      %th#publication{ :scope => "col" }
-        publication
-      %th#published_at{ :scope => "col" }
-        published_at
-      %th#backdated{ :scope => "col" }
-        backdated
-    %tbody
-      -@paged_samples.each do |sample|
-        %tr.hovered_item
-          %td
-            =sample.headline
-          %td
-            =sample.link? && sample.published_at <= Date.today ? link_to('live', sample.live_link, target:'_blank') : '---'
-          %td
-            =sample.link? ? link_to('pipeline', sample.pl_link, target:'_blank') : '---'
-          %td
-            =link_to('lokic', story_type_iteration_sample_url(@story_type, @iteration, sample), target:'_blank')
-          %td
-            =sample.client_name
-          %td
-            =sample.publication_name
-          %td
-            =sample.published_at ? sample.published_at.strftime('%F') : '---'
-          %td
-            =sample.backdated ? 'yes' : 'no'
+.row.mt-3.small
+  #data_sets
+    #grid_wrapper
+      =datagrid_table @iteration_samples_grid
 
 %hr.mb-3/
-=paginate @paged_samples, window: 3
+=paginate @iteration_samples_grid.assets
 %hr/

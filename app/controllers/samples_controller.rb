@@ -4,11 +4,25 @@ class SamplesController < ApplicationController # :nodoc:
   before_action :find_sample, only: %i[show edit update]
 
   def index
-    @all_samples = @iteration.samples
-    @paged_samples = @all_samples.order(backdated: :asc).order(published_at: :asc)
-                                 .page(params[:page]).includes(:output, :publication)
-
+    @grid_params = request.parameters[:iteration_samples_grid] || {}
+    @iteration_samples_grid = IterationSamplesGrid.new(@grid_params.merge(client_ids: @story_type.clients.pluck(:name, :id))) do |scope|
+      scope.where(story_type_id: params[:story_type_id], iteration_id: params[:iteration_id])
+    end
+    @sample_counts = [@iteration.samples.scheduled, @iteration.samples.backdated]
     @tab_title = "LokiC::Samples ##{@story_type.id} #{@story_type.name}"
+    respond_to do |f|
+      f.html do
+        @iteration_samples_grid.scope do |scope|
+          scope.page(params[:page])
+        end
+      end
+      f.csv do
+        send_data @iteration_samples_grid.to_csv,
+                  type: 'text/csv',
+                  disposition: 'inline',
+                  filename: "LokiC_##{@story_type_id}_#{@story_type.name}_#{@iteration.name}_samples_#{Time.now}.csv"
+      end
+    end
   end
 
   def show
