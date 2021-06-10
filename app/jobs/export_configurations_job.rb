@@ -38,7 +38,6 @@ class ExportConfigurationsJob < ApplicationJob
       exp_c.save!
     end
   rescue StandardError => e
-    puts e.backtrace
     status = nil
     message = e
   ensure
