@@ -8,7 +8,7 @@ class SamplesController < ApplicationController # :nodoc:
     @iteration_samples_grid = IterationSamplesGrid.new(@grid_params.merge(client_ids: @story_type.clients.pluck(:name, :id))) do |scope|
       scope.where(story_type_id: params[:story_type_id], iteration_id: params[:iteration_id])
     end
-    @sample_counts = [@iteration.samples.scheduled, @iteration.samples.backdated]
+    @samples_count = [@iteration.samples.scheduled_count, @iteration.samples.backdated_count]
     @tab_title = "LokiC::Samples ##{@story_type.id} #{@story_type.name}"
     respond_to do |f|
       f.html do

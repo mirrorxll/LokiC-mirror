@@ -5,3 +5,14 @@
 .mouse-hover {
   cursor: pointer;
 }
+
+#samples_datagrid {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  max-width: 100%;
+  font-size: 80%;
+  table tr:hover {
+    background-color: rgba(128, 128, 128, 0.3) !important;
+  }
+}

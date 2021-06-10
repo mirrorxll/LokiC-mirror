@@ -6,8 +6,8 @@ class Sample < ApplicationRecord
 
   paginates_per 200
 
-  scope :backdated, -> { where(backdated: true).count }
-  scope :scheduled, -> { where(backdated: false).count }
+  scope :backdated_count, -> { where(backdated: true).count }
+  scope :scheduled_count, -> { where(backdated: false).count }
 
   belongs_to :story_type
   belongs_to :iteration

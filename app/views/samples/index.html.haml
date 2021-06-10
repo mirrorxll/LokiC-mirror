@@ -15,19 +15,19 @@
     .col-1.text-right
       total stories:
     .col-11
-      #{@sample_counts[0] + @sample_counts[1]}
+      #{@samples_count[0] + @samples_count[1]}
 
   -if @iteration.schedule
     .row
       .col-1.text-right
         main export:
       .col-11
-        #{@sample_counts[0]}
+        #{@samples_count[0]}
     .row
       .col-1.text-right
         backdated:
       .col-11
-        #{@sample_counts[1]}
+        #{@samples_count[1]}
 
 #filter_form.collapse
   .row.mt-3.col-12
@@ -42,10 +42,8 @@
 %hr.mt-1.mb-3/
 =paginate @iteration_samples_grid.assets
 
-.row.mt-3.small
-  #data_sets
-    #grid_wrapper
-      =datagrid_table @iteration_samples_grid
+#samples_datagrid
+  =datagrid_table(@iteration_samples_grid)
 
 %hr.mb-3/
 =paginate @iteration_samples_grid.assets
