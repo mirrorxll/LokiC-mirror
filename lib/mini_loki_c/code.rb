@@ -3,8 +3,16 @@
 module MiniLokiC
   # Execute uploaded stage population/story creation code
   class Code
-    def self.execute(iteration, method, options)
-      new(iteration, method, options).send(:exec)
+    def self.download(story_type)
+      new(story_type: story_type).send(:download)
+    end
+
+    def self.check_updates(story_type)
+      new(story_type: story_type).send(:check_updates)
+    end
+
+    def self.execute(story_type, method, options = {})
+      new(story_type: story_type, method: method, options: options).send(:exec)
       # thr = Thread.new { new(iteration, method, options).send(:exec) }
       # thr.abort_on_exception = true
       #
@@ -17,15 +25,11 @@ module MiniLokiC
       # end
     end
 
-    def self.download(iteration)
-      new(iteration).send(:download)
-    end
-
     private
 
-    def initialize(iteration, method = nil, options = {})
-      @story_type = iteration.story_type
-      @method = method.to_s
+    def initialize(story_type:, method: nil, options: nil)
+      @story_type = story_type
+      @method = method
 
       @options =
         case method
@@ -41,11 +45,14 @@ module MiniLokiC
 
     def download
       query = "SELECT file_blob b FROM hle_file_blobs WHERE story_type_id = #{@story_type.id};"
-      db05 = Connect::Mysql.on(DB02, 'loki_storycreator')
-      blob = db05.query(query).first
-      db05.close
+      blob = Connect::Mysql.exec_query(DB02, 'loki_storycreator', query).first
 
       blob && blob['b']
+    end
+
+    def check_updates
+      load file
+      Object.const_get("S#{@story_type.id}").new.send(:check_updates)
     end
 
     def exec
@@ -64,8 +71,6 @@ module MiniLokiC
     rescue StandardError, ScriptError => e
       raise "MiniLokiC::#{@method.capitalize}ExecutionError".constantize,
             "[ #{@method.capitalize}ExecutionError ] -> #{e.message} at #{e.backtrace.first}".gsub('`', "'")
-    ensure
-      Object.send(:remove_const, "S#{@story_type.id}") if Object.const_defined?("S#{@story_type.id}")
     end
 
     def file

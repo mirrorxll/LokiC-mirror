@@ -18,6 +18,8 @@ module Samples
       main_semaphore = Mutex.new
       exported = 0
 
+      puts samples_to_export.count
+
       threads = Array.new(threads_count) do
         Thread.new do
           loop do

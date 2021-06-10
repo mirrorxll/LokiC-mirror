@@ -15,7 +15,7 @@ class CreationJob < ApplicationJob
       Process.wait(
         fork do
           rd.close
-          MiniLokiC::Code.execute(iteration, :creation, options)
+          MiniLokiC::Code.execute(iteration.story_type, :creation, options)
         rescue StandardError, ScriptError => e
           wr.write({ e.class.to_s => e.message }.to_json)
         ensure

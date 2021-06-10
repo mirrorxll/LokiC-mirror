@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ClientsPublicationsTagsJob < ApplicationJob
   queue_as :lokic
 
@@ -27,7 +29,7 @@ class ClientsPublicationsTagsJob < ApplicationJob
         blank_tag.save!
         blank_tag.touch
 
-        ['all publications', 'all local publications','all statewide publications'].each do |name|
+        ['all publications', 'all local publications', 'all statewide publications'].each do |name|
           pub = Publication.find_or_initialize_by(name: name)
           pub.client = categories_all
           pub.save!

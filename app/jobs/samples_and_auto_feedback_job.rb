@@ -26,7 +26,7 @@ class SamplesAndAutoFeedbackJob < ApplicationJob
           end
 
         options = options.merge({ ids: ids.join(',') })
-        MiniLokiC::Code.execute(iteration, :creation, options)
+        MiniLokiC::Code.execute(iteration.story_type, :creation, options)
         iteration.samples.where(staging_row_id: ids).update_all(sampled: true)
 
         Samples.auto_feedback(iteration.story_type, options[:cron])
