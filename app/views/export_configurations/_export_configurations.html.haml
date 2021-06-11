@@ -10,4 +10,20 @@
       %a{ href: "#", onclick: "return false;" } [ ...in progress... ]
     -else
       =link_to('[ create/update ]', story_type_export_configurations_path(@story_type),
-               class: 'd-block', method: :post, remote: true)
+               method: :post, remote: true)
+
+      -if @story_type.configurations_no_tags.present?
+        =link_to('[ configs without tags ]', '#', "data-toggle" => "modal", "data-target" => "#configs_without_tags",
+                 class: 'text-danger d-inline-block ml-2', method: :post, remote: true)
+        #configs_without_tags.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "template",
+                                          role: "dialog", tabindex: "-1", 'data-backdrop' => 'static',
+                                          'data-keyboard' => "false" }
+          .modal-dialog.modal-dialog-centered.modal-xl
+            .modal-content
+              .modal-header
+                %h5.modal-title
+                  export configurations without tags
+                %button.close{"aria-label" => "Close", "data-dismiss" => "modal", type: "button"}
+                  %span{"aria-hidden" => "true"} ×
+              .modal-body
+                =render 'export_configurations/export_configurations_no_tags_form'
