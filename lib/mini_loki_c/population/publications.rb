@@ -53,14 +53,14 @@ module MiniLokiC
       end
 
       def mm_by_org_id(org_id, *states)
-        states = states.reject { |state| state.downcase.in?(['illinois', 'district of columbia']) }
+        states = states.flatten.reject { |state| state.downcase.in?(['illinois', 'district of columbia']) }
         return [] if states.empty?
 
         MetricMedia.new(org_id: org_id, states: states.flatten).pubs
       end
 
-      def mm_excluding_states(org_id, *states)
-        mm_by_org_id(org_id, *states)
+      def mm_excluding_states(org_id, states)
+        mm_by_org_id(org_id, states)
       end
 
       def mm_by_state(*states)
@@ -75,10 +75,10 @@ module MiniLokiC
       end
 
       def state_lvl_by(*states)
-        states = states.reject { |state| state.downcase.eql?('district of columbia') }
+        states = states.flatten.reject { |state| state.downcase.eql?('district of columbia') }
         return [] if states.empty?
 
-        StateLevel.new(states.flatten).pubs
+        StateLevel.new(states).pubs
       end
     end
   end
