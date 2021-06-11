@@ -44,7 +44,12 @@ module Samples
             sample = semaphore.synchronize { samples.shift }
             break if sample.nil?
 
-            @pl_client.delete_lead(sample[@pl_lead_id_key])
+            begin
+              @pl_client.delete_lead(sample[@pl_lead_id_key])
+            rescue Faraday::ResourceNotFound
+              true
+            end
+
             sample.update(@pl_lead_id_key => nil, @pl_story_id_key => nil)
           end
         end
