@@ -93,7 +93,7 @@ module Table
         cr_at_query = created_at_default_value_query(t_name)
         conn.exec_query(cr_at_query)
         upd_at_query = updated_at_default_value_query(t_name)
-        conn.connection.exec_query(upd_at_query)
+        conn.exec_query(upd_at_query)
       end
     end
   end
