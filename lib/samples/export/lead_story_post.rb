@@ -63,7 +63,7 @@ module Samples
         author = sample.publication.name
         client = sample.client
         publication = exp_config.publication
-        story_tag_ids = exp_config.tag.id.zero? ? [] : [exp_config.tag.pl_identifier]
+        story_tag_ids = exp_config.tag.name.eql?('_Blank') ? [] : [exp_config.tag.pl_identifier]
         photo_bucket_id = exp_config.photo_bucket.pl_identifier
         published_at = published_at(sample.published_at)
         story_section_ids = client.sections.map { |section| section[:pl_identifier] }
