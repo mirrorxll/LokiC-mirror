@@ -18,7 +18,7 @@ module Table # :nodoc:
   end
 
   def exists?(t_name)
-    p t_name = schema_table(t_name)
+    t_name = schema_table(t_name)
     loki_story_creator { |conn| p conn.table_exists?(t_name) }
   end
 
