@@ -1,4 +1,9 @@
 -if @story_type.creating_export_configurations
+  -if @story_type.configurations_no_tags.present?
+    .row.mb-3.configs_without_tags_msg
+      .col-10.offset-1.text-danger
+        At least one export configuration created without tag. Check this in the properties section
+
   -if !@story_type.iteration.eql?(@iteration)
     .row
       .col-10.offset-1

@@ -17,7 +17,7 @@ module Table
 
     def schema_table(t_name)
       curr_schema = schema
-      p data_location = "#{schema}.#{t_name}"
+      data_location = "#{schema}.#{t_name}"
       t_name.start_with?("#{curr_schema}.") ? t_name : data_location
     end
 

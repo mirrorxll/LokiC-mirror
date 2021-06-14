@@ -23,7 +23,7 @@ class ClientsPublicationsTagsJob < ApplicationJob
         categories_all.save!
         categories_all.touch
 
-        blank_tag = Tag.find_or_initialize_by(name: '')
+        blank_tag = Tag.find_or_initialize_by(name: '_Blank')
         blank_tag.save!
         blank_tag.touch
 

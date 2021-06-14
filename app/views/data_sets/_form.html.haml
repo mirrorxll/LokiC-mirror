@@ -39,7 +39,7 @@
         #clients_publications_tags
           -if @data_set.persisted?
             -@data_set.client_publication_tags.each do |row|
-              -puts row.publication ? row.publication.name : 'all publications'
+              -row.publication ? row.publication.name : 'all publications'
               -u_id = SecureRandom.hex(3)
               .row.mb-1{ id: u_id }
                 .col-4.pr-1
