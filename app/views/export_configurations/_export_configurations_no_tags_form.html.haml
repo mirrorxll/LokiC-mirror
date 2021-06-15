@@ -1,29 +1,34 @@
-.row
-  .col-10.offset-1
-    =form_with(url: update_tags_story_type_export_configurations_path(@story_type), method: :patch) do |f|
-      %table.table.table-borderless.table-sm.small
-        %thead
-          %tr
-            %th.text-center{scope: 'col', style: 'width: 5%;'}
-              skip?
-            %th{ scope: 'col', style: 'width: 40%;' }
-              client -- publication
-            %th{ scope: 'col', style: 'width: 50%;' }
-              tags
-        %tbody
-          -configs.each do |n_t|
-            %tr
-              %td.text-center{scope: 'col'}
-                =f.check_box "export_configurations[#{n_t.id}[skip]]", checked: (n_t.skipped)
-              %td
-                =f.label "export_configurations[#{n_t.id}[skip]]", "#{n_t.publication.client.name} -- #{n_t.publication.name}"
-              %td
-                .row.mb-3
-                  -n_t.publication.tags.order(name: :asc).each do |t|
-                    .col-6
-                      =f.radio_button "export_configurations[#{n_t.id}[tag_id]]]", t.id
-                      =f.label "export_configurations[#{n_t.id}[tag_id]]]_#{t.id}", (t.name.empty? ? 'Keep Blank' : t.name)
+-configs = @story_type.configurations_no_tags
 
-      .row
-        .col-12
-          =f.submit 'update export configurations', class: 'btn btn-sm btn-outline-dark'
+-if configs.count.positive?
+  =form_with(url: update_tags_story_type_export_configurations_path(@story_type), method: :patch) do |f|
+    .row
+      .col-10.offset-1
+    %table.table.table-borderless.table-sm.small
+      %thead
+        %tr
+          %th.text-center{scope: 'col', style: 'width: 5%;'}
+            skip?
+          %th{ scope: 'col', style: 'width: 40%;' }
+            client -- publication
+          %th{ scope: 'col', style: 'width: 50%;' }
+            tags
+      %tbody
+        -configs.each do |n_t|
+          %tr
+            %td.text-center{scope: 'col'}
+              =f.check_box "export_configurations[#{n_t.id}[skip]]", checked: (n_t.skipped)
+            %td
+              =f.label "export_configurations[#{n_t.id}[skip]]", "#{n_t.publication.client.name} -- #{n_t.publication.name}"
+            %td
+              .row.mb-3
+                -n_t.publication.tags.order(name: :asc).each do |t|
+                  .col-6
+                    =f.radio_button "export_configurations[#{n_t.id}[tag_id]]]", t.id
+                    =f.label "export_configurations[#{n_t.id}[tag_id]]]_#{t.id}", t.name
+    %hr/
+    .text-center
+      =f.submit 'update export configurations', class: 'btn btn-sm btn-outline-dark'
+
+-else
+  you have no export configuration without tags

@@ -220,7 +220,7 @@ module MiniLokiC
                               ALL_WEEKDAYS_TEXT[weekday]
                             else
                               ((ALL_WEEKDAYS_TEXT.include? weekday) ? weekday : HASH_WEEKDAYS_TEXT[weekday])
-end
+                            end
             date = Date.parse(date_to_parse)
             delta = date > Date.today ? 0 : 7
             date + delta

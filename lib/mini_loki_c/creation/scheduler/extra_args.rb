@@ -5,7 +5,7 @@ module MiniLokiC
     module Scheduler
       module ExtraArgs
         def self.stage_ids(staging_table, arg)
-          query = "SELECT id FROM `#{staging_table}` WHERE #{arg};"
+          query = "SELECT id FROM #{Table.schema_table(staging_table)} WHERE #{arg};"
           Table.loki_story_creator do
             ActiveRecord::Base.connection.exec_query(query).to_a.map { |row| row['id'] }
           end

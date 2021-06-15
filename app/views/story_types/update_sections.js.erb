@@ -1,5 +1,20 @@
 (function () {
-    $('#export_configs').html('<%= j render 'export_configurations/export_configurations' %>');
+    let expConfFlash = $('#story_type_properties .flash');
+    let expConfBody = $('#story_type_properties .card-body');
+
+    <% if flash.now[:properties] %>
+    expConfFlash.html(
+        `<div class="alert alert-<%= flash_color(flash.now[:properties]) %> text-center">
+          <%= flash.now[:properties].gsub('`', "'") %>
+        </div>`
+    )
+    <% else %>
+    expConfFlash.empty();
+    <% end %>
+    expConfBody.html('<%= j render 'story_types/properties'%>')
+
+
+    // $('#export_configs').html('<%= j render 'export_configurations/export_configurations' %>');
 
 
     let stFlash = $('#staging_table .flash');
