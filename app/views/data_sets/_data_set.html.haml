@@ -58,7 +58,7 @@
               .col-9
                 -@data_set.client_publication_tags.each do |row|
                   -if row.publication.nil?
-                    ="#{row.client.name}(all pubs) - #{row.tag.name}"
+                    ="#{row.client.name}(all publications) - #{row.tag.name}"
                   -else
                     ="#{row.client.name}(#{row.publication.name}) - #{row.tag.name}"
                   %br/

@@ -1,2 +1,2 @@
 =form_with(url: include_story_type_client_tags_path(@story_type, client_publication_tag.client, client_publication_tag: client_publication_tag), html: { onchange: "Rails.fire(this, 'submit')" }) do |form|
-  =form.collection_select :tag_id, client_publication_tag.client.tags.order(:name), :id, :name, { prompt: '' }, { name: :id }
+  =form.collection_select :id, client_publication_tag.client.tags.order(:name), :id, :name, { prompt: '' }

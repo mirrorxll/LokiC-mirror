@@ -19,6 +19,7 @@ class ClientsTagsJob < ApplicationJob
 
   def attach_tags_to(client)
     tags = client.publications.to_a.map { |pub| pub.tags.to_a }
+    puts tags.count
     tags.flatten.uniq.each { |t| client.tags << t unless client.tags.exists?(t.id) }
   end
 
