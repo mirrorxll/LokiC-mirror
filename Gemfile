@@ -13,6 +13,7 @@ gem 'activeadmin'
 gem 'devise'
 gem 'devise-bootstrap-views', '~> 1.0'
 gem 'font-awesome-sass', '~> 5.12.0'
+gem 'pretender'
 # background jobs
 gem 'sidekiq'
 gem 'sidekiq-scheduler'
