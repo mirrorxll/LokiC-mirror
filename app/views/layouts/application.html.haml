@@ -52,6 +52,11 @@
               #navbarDropdown.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
                 =current_account.name
               .dropdown-menu{"aria-labelledby" => "navbarDropdown"}
+                -if current_account.types.include?('manager')
+                  .dropdown-item
+                    =link_to('login as', accounts_path, class: 'nav-link')
+                - if current_account != true_account
+                  =link_to("back to #{true_account.name}", stop_impersonating_accounts_path, method: :post, class: 'nav-link')
                 .dropdown-item
                   =link_to('edit profile', edit_account_registration_path, class: 'nav-link')
                 .dropdown-item

@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_account!
   before_action :find_parent_story_type
   before_action :set_iteration
+  impersonates :account
 
   private
 

@@ -11,6 +11,11 @@ Rails.application.routes.draw do
     mount Sidekiq::Web => '/sidekiq'
   end
 
+  resources :accounts, only: [:index] do
+    post :impersonate, on: :member
+    post :stop_impersonating, on: :collection
+  end
+
   mount ActionCable.server, at: '/cable'
 
   namespace :api, constraints: { format: :json } do
