@@ -8,8 +8,10 @@ class AccountsController < ApplicationController
   end
 
   def impersonate
-    account = Account.find(params[:id])
-    impersonate_account(account)
+    if current_account.types.include?('manager')
+      account = Account.find(params[:id])
+      impersonate_account(account)
+    end
     redirect_to root_path
   end
 
