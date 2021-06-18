@@ -35,10 +35,18 @@ class RemoveFromPlJob < ApplicationJob
 
     iteration.exported&.destroy
     iteration.production_removals.last.update(status: true)
-
   rescue StandardError => e
     message = e.message
   ensure
+    story_type = iteration.story_type.reload
+    all_removed = iteration.samples.exported.count.zero?
+    last_iteration = story_type.iterations.last.eql?(iteration)
+    changeable_status = story_type.status.name.in?(['canceled', 'blocked', 'on cron'])
+
+    if all_removed && last_iteration && changeable_status
+      story_type.update(status: Status.find_by(name: 'in progress'))
+    end
+
     iteration.update(removing_from_pl: false)
     send_to_action_cable(iteration, :export, message)
     send_to_dev_slack(iteration, 'REMOVE FROM PL', message)

@@ -52,16 +52,24 @@ class ExportJob < ApplicationJob
     end
 
     exp_st.save!
-
   rescue StandardError => e
     status = nil
     message = e.message
   ensure
+    story_type = iteration.story_type.reload
+    all_exported = iteration.samples.not_exported.count.zero?
+
+    if all_exported && status && story_type.iterations.last.eql?(iteration)
+      unless story_type.status.name.in?(['canceled', 'blocked', 'on cron'])
+        story_type.update(status: Status.find_by(name: 'exported'))
+      end
+
+      send_rprt_to_editors_slack(iteration, url) if Rails.env.production? && url && !iteration.name.match?(/CT\d{8}/)
+    end
+
     iteration.reload.update(export: status)
     send_to_action_cable(iteration, :export, message)
     send_to_dev_slack(iteration, 'EXPORT', message)
-
-    send_rprt_to_editors_slack(iteration, url) if status && url && !iteration.name.match?(/CT\d{8}/)
 
     iteration.export
   end

@@ -1,19 +1,16 @@
 # frozen_string_literal: true
 
-class StatusesController < ApplicationController
+class ProgressStatusesController < ApplicationController
   before_action :render_400, if: :editor?
   before_action :find_status, only: :change
 
-  def form; end
-
   def change
-    @iteration.statuses.destroy_all
-    @iteration.statuses << @status
+    @story_type.update(status: @status)
   end
 
   private
 
   def find_status
-    @status = Status.find(params[:id])
+    @status = Status.find(params[:status_id])
   end
 end

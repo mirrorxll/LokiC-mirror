@@ -47,11 +47,14 @@ Rails.application.routes.draw do
 
   resources :story_types, except: %i[new create] do
     get   :properties
-    get   :canceling_edit,  on: :member
 
     patch :update_sections, on: :member
 
     patch :change_data_set, on: :member
+
+    patch '/change_progress_status', to: 'progress_statuses#change'
+
+    resources(:progress_statuses, only: []) { patch :change, on: :collection }
 
     resources :templates, path: :template, only: %i[show edit update] do
       patch :save, on: :member
@@ -126,11 +129,6 @@ Rails.application.routes.draw do
     resources :iterations, only: %i[create update] do
       patch :apply, on: :member
       delete :purge, on: :member
-
-      resources :statuses, only: [] do
-        get   :form,    on: :collection
-        patch :change,  on: :collection
-      end
 
       resources :populations, path: 'populate', only: [] do
         post   :execute, on: :collection

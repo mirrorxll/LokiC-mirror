@@ -3,52 +3,26 @@
 module MiniLokiC
   # Execute uploaded stage population/story creation code
   class Code
-    def self.execute(iteration, method, options)
-      new(iteration, method, options).send(:exec)
-      # thr = Thread.new { new(iteration, method, options).send(:exec) }
-      # thr.abort_on_exception = true
-      #
-      # if %i[population creation].include?(method.to_sym)
-      #   while thr.alive?
-      #     iteration.send("kill_#{method}?") ? Thread.kill(thr) : sleep(2)
-      #   end
-      # else
-      #   thr.join
-      # end
-    end
-
-    def self.download(iteration)
-      new(iteration).send(:download)
-    end
-
-    private
-
-    def initialize(iteration, method = nil, options = {})
-      @story_type = iteration.story_type
-      @method = method.to_s
-
-      @options =
-        case method
-        when :population
-          options_to_hash(options[:population_args])
-        when :creation
-          options[:iteration] = iteration
-          options
-        else
-          options
-        end
+    def self.[](story_type)
+      new(story_type)
     end
 
     def download
       query = "SELECT file_blob b FROM hle_file_blobs WHERE story_type_id = #{@story_type.id};"
-      db05 = Connect::Mysql.on(DB02, 'loki_storycreator')
-      blob = db05.query(query).first
-      db05.close
+      blob = Connect::Mysql.exec_query(DB02, 'loki_storycreator', query).first
 
       blob && blob['b']
     end
 
-    def exec
+    def check_updates
+      load file
+      story_type_class = Object.const_get("S#{@story_type.id}")
+      return unless story_type_class.respond_to?(:check_updates)
+
+      story_type_class.check_updates.to_s
+    end
+
+    def execute(method, options = {})
       load file
       story_type_class = Object.const_get("S#{@story_type.id}")
 
@@ -60,12 +34,10 @@ module MiniLokiC
         MiniLokiC::NoLog
       )
 
-      METHODS_TRACER.enable { story_type_class.new.send(@method, @options) }
+      METHODS_TRACER.enable { story_type_class.new.send(method, options) }
     rescue StandardError, ScriptError => e
-      raise "MiniLokiC::#{@method.capitalize}ExecutionError".constantize,
-            "[ #{@method.capitalize}ExecutionError ] -> #{e.message} at #{e.backtrace.first}".gsub('`', "'")
-    ensure
-      Object.send(:remove_const, "S#{@story_type.id}") if Object.const_defined?("S#{@story_type.id}")
+      raise "MiniLokiC::#{method.capitalize}ExecutionError".constantize,
+            "[ #{method.capitalize}ExecutionError ] -> #{e.message} at #{e.backtrace.first}".gsub('`', "'")
     end
 
     def file
@@ -75,13 +47,10 @@ module MiniLokiC
       file
     end
 
-    def options_to_hash(options)
-      options.split(' :: ').each_with_object({}) do |option, hash|
-        next unless option.match?(/=>/)
+    private
 
-        key, value = option.split('=>')
-        hash[key] = value
-      end
+    def initialize(story_type)
+      @story_type = story_type
     end
   end
 end
