@@ -3,44 +3,8 @@
 module MiniLokiC
   # Execute uploaded stage population/story creation code
   class Code
-    def self.download(story_type)
-      new(story_type: story_type).send(:download)
-    end
-
-    def self.check_updates(story_type)
-      new(story_type: story_type).send(:check_updates)
-    end
-
-    def self.execute(story_type, method, options = {})
-      new(story_type: story_type, method: method, options: options).send(:exec)
-      # thr = Thread.new { new(iteration, method, options).send(:exec) }
-      # thr.abort_on_exception = true
-      #
-      # if %i[population creation].include?(method.to_sym)
-      #   while thr.alive?
-      #     iteration.send("kill_#{method}?") ? Thread.kill(thr) : sleep(2)
-      #   end
-      # else
-      #   thr.join
-      # end
-    end
-
-    private
-
-    def initialize(story_type:, method: nil, options: nil)
-      @story_type = story_type
-      @method = method
-
-      @options =
-        case method
-        when :population
-          options_to_hash(options[:population_args])
-        when :creation
-          options[:iteration] = iteration
-          options
-        else
-          options
-        end
+    def self.[](story_type)
+      new(story_type)
     end
 
     def download
@@ -52,10 +16,13 @@ module MiniLokiC
 
     def check_updates
       load file
-      Object.const_get("S#{@story_type.id}").new.send(:check_updates)
+      story_type_class = Object.const_get("S#{@story_type.id}")
+      return unless story_type_class.respond_to?(:check_updates)
+
+      story_type_class.check_updates.to_s
     end
 
-    def exec
+    def execute(method, options = {})
       load file
       story_type_class = Object.const_get("S#{@story_type.id}")
 
@@ -67,10 +34,10 @@ module MiniLokiC
         MiniLokiC::NoLog
       )
 
-      METHODS_TRACER.enable { story_type_class.new.send(@method, @options) }
+      METHODS_TRACER.enable { story_type_class.new.send(method, options) }
     rescue StandardError, ScriptError => e
-      raise "MiniLokiC::#{@method.capitalize}ExecutionError".constantize,
-            "[ #{@method.capitalize}ExecutionError ] -> #{e.message} at #{e.backtrace.first}".gsub('`', "'")
+      raise "MiniLokiC::#{method.capitalize}ExecutionError".constantize,
+            "[ #{method.capitalize}ExecutionError ] -> #{e.message} at #{e.backtrace.first}".gsub('`', "'")
     end
 
     def file
@@ -80,13 +47,10 @@ module MiniLokiC
       file
     end
 
-    def options_to_hash(options)
-      options.split(' :: ').each_with_object({}) do |option, hash|
-        next unless option.match?(/=>/)
+    private
 
-        key, value = option.split('=>')
-        hash[key] = value
-      end
+    def initialize(story_type)
+      @story_type = story_type
     end
   end
 end

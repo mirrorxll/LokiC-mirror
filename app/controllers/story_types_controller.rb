@@ -39,8 +39,6 @@ class StoryTypesController < ApplicationController # :nodoc:
     @tab_title = "LokiC::##{@story_type.id} #{@story_type.name}"
   end
 
-  def canceling_edit; end
-
   def new
     @story_type = @data_set.story_types.build
   end
@@ -48,15 +46,8 @@ class StoryTypesController < ApplicationController # :nodoc:
   def create
     @story_type = @data_set.story_types.build(story_type_params)
     @story_type.editor = current_account
-    @story_type.photo_bucket = @data_set.photo_bucket
 
     if @story_type.save!
-      @data_set.client_publication_tags.each do |client_publication_tag|
-        @story_type.clients_publications_tags.build(client: client_publication_tag.client,
-                                                    publication: client_publication_tag.publication,
-                                                    tag: client_publication_tag.tag).save!
-      end
-
       redirect_to data_set_path(@data_set)
     else
       render :new
@@ -98,7 +89,13 @@ class StoryTypesController < ApplicationController # :nodoc:
   end
 
   def story_type_params
-    params.require(:story_type).permit(:name)
+    permitted = params.require(:story_type).permit(:name, :migrated)
+    status_name = permitted[:migrated].eql?('1') ? 'migrated' : 'not started'
+
+    {
+      name: permitted[:name],
+      status: Status.find_by(name: status_name)
+    }
   end
 
   def filter_params

@@ -1,12 +1,33 @@
 # frozen_string_literal: true
 
 class StoryType < ApplicationRecord
+  before_create do
+    build_template
+    build_fact_checking_doc
+    iterations.build(name: 'Initial')
+  end
+
+  after_create do
+    data_set.client_publication_tags.each do |client_publication_tag|
+      clients_publications_tags.create!(
+        client: client_publication_tag.client,
+        publication: client_publication_tag.publication,
+        tag: client_publication_tag.tag
+      )
+    end
+
+    update(current_iteration: iterations.first)
+  end
+
+  validates_uniqueness_of :name, case_sensitive: true
+
   belongs_to :editor,            class_name: 'Account'
   belongs_to :developer,         optional: true, class_name: 'Account'
   belongs_to :data_set,          counter_cache: true
   belongs_to :frequency,         optional: true
   belongs_to :photo_bucket,      optional: true
   belongs_to :current_iteration, optional: true, class_name: 'Iteration'
+  belongs_to :status,            optional: true
 
   has_one :staging_table
   has_one :template
@@ -23,16 +44,6 @@ class StoryType < ApplicationRecord
   has_many :tags, through: :clients_publications_tags
 
   has_one_attached :code
-
-  validates :name, uniqueness: true
-
-  before_create do
-    build_template
-    build_fact_checking_doc
-    iterations.build(name: 'Initial')
-  end
-
-  after_create { update(current_iteration: iterations.first) }
 
   def publications
     pub_ids = clients.map(&:publications).reduce(:|).map(&:id)
@@ -56,7 +67,7 @@ class StoryType < ApplicationRecord
   end
 
   def download_code_from_db
-    MiniLokiC::Code.download(iteration)
+    MiniLokiC::Code[self].download
   end
 
   def client_pl_ids

@@ -4,18 +4,22 @@ class Iteration < ApplicationRecord # :nodoc:
   serialize :story_sample_args, Hash
   serialize :schedule_counts, Hash
 
-  before_create { statuses << Status.first }
+  after_create do
+    if !name.eql?('Initial') && !story_type.status.name.in?(['canceled', 'blocked', 'on cron'])
+      story_type.update(status: Status.find_by(name: 'in progress'))
+    end
+  end
 
   belongs_to :story_type
 
   has_one :exported, dependent: :destroy, class_name: 'ExportedStoryType'
 
-  has_and_belongs_to_many :statuses
-
   has_many :samples
   has_many :auto_feedback_confirmations
   has_many :auto_feedback, through: :auto_feedback_confirmations
   has_many :production_removals
+
+  has_and_belongs_to_many :statuses
 
   def show_samples
     samples.where(show: true)

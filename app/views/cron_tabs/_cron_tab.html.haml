@@ -11,7 +11,7 @@
         [ execution frozen ]
       -else
         =link_to('[ edit ]', edit_story_type_cron_tab_path(@story_type, @story_type.cron_tab),
-               class: 'd-inline-block font-weight-normal', remote: true)
+               class: 'p-0 btn btn-sm btn-link d-inline-block font-weight-normal', remote: true)
 -else
   =link_to('[ setup ]', new_story_type_cron_tab_path(@story_type), remote: true)
 
