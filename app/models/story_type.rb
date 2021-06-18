@@ -5,6 +5,7 @@ class StoryType < ApplicationRecord
     build_template
     build_fact_checking_doc
     iterations.build(name: 'Initial')
+    self.photo_bucket = data_set.photo_bucket
   end
 
   after_create do
