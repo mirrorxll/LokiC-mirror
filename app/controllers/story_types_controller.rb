@@ -44,7 +44,7 @@ class StoryTypesController < ApplicationController # :nodoc:
   end
 
   def create
-    @story_type = @data_set.story_types.build(story_type_params)
+    @story_type = @data_set.story_types.build(new_story_type_params)
     @story_type.editor = current_account
 
     if @story_type.save!
@@ -57,7 +57,7 @@ class StoryTypesController < ApplicationController # :nodoc:
   def edit; end
 
   def update
-    @story_type.update!(story_type_params)
+    @story_type.update!(exist_story_type_params)
   end
 
   def properties; end
@@ -88,7 +88,7 @@ class StoryTypesController < ApplicationController # :nodoc:
     @story_type = StoryType.find(params[:id])
   end
 
-  def story_type_params
+  def new_story_type_params
     permitted = params.require(:story_type).permit(:name, :migrated)
     status_name = permitted[:migrated].eql?('1') ? 'migrated' : 'not started'
 
@@ -96,6 +96,10 @@ class StoryTypesController < ApplicationController # :nodoc:
       name: permitted[:name],
       status: Status.find_by(name: status_name)
     }
+  end
+
+  def exist_story_type_params
+    params.require(:story_type).permit(:name)
   end
 
   def filter_params

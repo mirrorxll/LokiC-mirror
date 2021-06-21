@@ -22,7 +22,7 @@
         -else
           =render 'developers/form', story_type: story_type
       .col-sm-2.col-lg-1.p-0
-        =story_type.iteration.statuses.first.name
+        =story_type.status.name
       .col-sm-1.col-lg-1.p-0{id: "story_type_#{story_type.id}_last_export"}
         -if story_type.last_export
           =story_type.last_export.strftime('%D')
@@ -42,7 +42,7 @@
       .col-3.p-0
         =story_type.developer ? story_type.developer.name : '---'
       .col-1.p-0
-        =story_type.iteration.statuses.first.name
+        =story_type.status.name
       .col-1.p-0{id: "story_type_#{story_type.id}_last_export"}
         -if story_type.last_export
           =story_type.last_export.strftime('%D')

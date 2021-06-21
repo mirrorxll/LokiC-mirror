@@ -5,6 +5,7 @@ class StoryType < ApplicationRecord
     build_template
     build_fact_checking_doc
     iterations.build(name: 'Initial')
+    self.photo_bucket = data_set.photo_bucket
   end
 
   after_create do
@@ -38,7 +39,6 @@ class StoryType < ApplicationRecord
   has_many :export_configurations
   has_many :configurations_no_tags, -> { where(tag: nil).or(where(skipped: true)) }, class_name: 'ExportConfiguration'
   has_many :samples
-
   has_many :clients_publications_tags, class_name: 'StoryTypeClientPublicationTag'
   has_many :clients, through: :clients_publications_tags
   has_many :tags, through: :clients_publications_tags
@@ -97,5 +97,15 @@ class StoryType < ApplicationRecord
   def third_show_sample
     smpls = show_samples.reverse
     smpls.count > 2 ? smpls.last : nil
+  end
+
+  def remind_blocked?
+    return false unless blocked_until
+
+    blocked_until >= Date.today
+  end
+
+  def updates?
+    updates
   end
 end

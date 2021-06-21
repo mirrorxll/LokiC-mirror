@@ -47,6 +47,7 @@ Rails.application.routes.draw do
 
   resources :story_types, except: %i[new create] do
     get   :properties
+    get   :canceling_edit,  on: :member
 
     patch :update_sections, on: :member
 
