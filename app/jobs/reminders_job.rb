@@ -18,6 +18,7 @@ class RemindersJob < ApplicationJob
         if !new_data_flag.in?([true, false])
           :method_missing
         elsif new_data_flag.eql?(true)
+          st_type.update(updates: true)
           :has_updates
         elsif new_data_flag.eql?(false)
           next
@@ -36,7 +37,7 @@ class RemindersJob < ApplicationJob
     message +=
       case type
       when :method_missing
-        '. Please develop check_updates method that has to return true '\
+        '. Please develop check_updates method that should return true '\
         'if the source has new data or if not - false'
       when :has_updates
         ' has updates. Please check data and confirm data suitability'
