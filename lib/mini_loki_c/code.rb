@@ -19,7 +19,7 @@ module MiniLokiC
       story_type_class = Object.const_get("S#{@story_type.id}")
       return unless story_type_class.respond_to?(:check_updates)
 
-      story_type_class.check_updates.to_s
+      story_type_class.new.check_updates
     end
 
     def execute(method, options = {})
@@ -40,17 +40,17 @@ module MiniLokiC
             "[ #{method.capitalize}ExecutionError ] -> #{e.message} at #{e.backtrace.first}".gsub('`', "'")
     end
 
+    private
+
+    def initialize(story_type)
+      @story_type = story_type
+    end
+
     def file
       file = "#{Rails.root}/public/ruby_code/s#{@story_type.id}.rb"
       File.open(file, 'wb') { |f| f.write(@story_type.code.download) }
 
       file
-    end
-
-    private
-
-    def initialize(story_type)
-      @story_type = story_type
     end
   end
 end
