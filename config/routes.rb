@@ -46,7 +46,7 @@ Rails.application.routes.draw do
   end
 
   resources :story_types, except: %i[new create] do
-    get   :properties
+    get   :properties_form
     get   :canceling_edit,  on: :member
 
     patch :update_sections, on: :member
@@ -170,6 +170,12 @@ Rails.application.routes.draw do
         post :submit_editor_report,  on: :collection
         post :submit_manager_report, on: :collection
       end
+    end
+
+    resource :reminder, only: [] do
+      patch :confirm
+      patch :disprove
+      patch :turn_off
     end
   end
 

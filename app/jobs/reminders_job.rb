@@ -5,7 +5,9 @@ class RemindersJob < ApplicationJob
 
   def perform(story_types = StoryType.all)
     story_types.all.each do |st_type|
-      next if st_type.cron_tab&.enabled || !st_type.code.attached? || st_type.remind_blocked?
+      story_types.reminder || story_types.create_reminder
+
+      next if st_type.cron_tab&.enabled || !st_type.code.attached? || st_type.reminder_off?
 
       if st_type.updates?
         message(st_type, :has_updates)

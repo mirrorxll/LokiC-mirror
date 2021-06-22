@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 class StoryTypesController < ApplicationController # :nodoc:
-  skip_before_action :find_parent_story_type, except: :properties
+  skip_before_action :find_parent_story_type, except: :properties_form
 
   before_action :redirect_to_separate_root, only: :index
   before_action :render_400_editor,         only: :show, if: :editor?
   before_action :render_400_developer,      only: %i[new create edit update properties destroy], if: :developer?
   before_action :find_data_set,             only: %i[new create]
-  before_action :find_story_type,           except: %i[index new create properties]
-  before_action :set_iteration,             except: %i[index new create properties change_data_set]
+  before_action :find_story_type,           except: %i[index new create properties_form]
+  before_action :set_iteration,             except: %i[index new create properties_form change_data_set]
   before_action :message,                   only: :update_sections
   before_action :find_current_data_set,     only: :change_data_set
 
@@ -20,15 +20,18 @@ class StoryTypesController < ApplicationController # :nodoc:
                    end
 
     @story_types_grid = StoryTypesGrid.new(@grid_params)
+
     respond_to do |f|
+
       f.html do
         @story_types_grid.scope { |scope| scope.page(params[:page]).per(50) }
       end
+
       f.csv do
-        send_data @story_types_grid.to_csv,
+        send_data(@story_types_grid.to_csv,
                   type: 'text/csv',
                   disposition: 'inline',
-                  filename: "LokiC_StoryTypes_#{Time.now}.csv"
+                  filename: "LokiC_StoryTypes_#{Time.now}.csv")
       end
     end
   end
@@ -60,7 +63,7 @@ class StoryTypesController < ApplicationController # :nodoc:
     @story_type.update!(exist_story_type_params)
   end
 
-  def properties; end
+  def properties_form; end
 
   def change_data_set
     @story_type.update(change_data_set_params)

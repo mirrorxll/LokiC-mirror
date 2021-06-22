@@ -2,10 +2,11 @@
 
 class StoryType < ApplicationRecord
   before_create do
+    self.photo_bucket = data_set.photo_bucket
     build_template
     build_fact_checking_doc
+    build_reminder
     iterations.build(name: 'Initial')
-    self.photo_bucket = data_set.photo_bucket
   end
 
   after_create do
@@ -34,6 +35,10 @@ class StoryType < ApplicationRecord
   has_one :template
   has_one :fact_checking_doc
   has_one :cron_tab
+  has_one :reminder
+  has_one :change_history, as: :historyable
+
+  has_one_attached :code
 
   has_many :iterations
   has_many :export_configurations
@@ -42,8 +47,7 @@ class StoryType < ApplicationRecord
   has_many :clients_publications_tags, class_name: 'StoryTypeClientPublicationTag'
   has_many :clients, through: :clients_publications_tags
   has_many :tags, through: :clients_publications_tags
-
-  has_one_attached :code
+  has_many :change_history
 
   def publications
     pub_ids = clients.map(&:publications).reduce(:|).map(&:id)
@@ -99,13 +103,17 @@ class StoryType < ApplicationRecord
     smpls.count > 2 ? smpls.last : nil
   end
 
-  def remind_blocked?
-    return false unless blocked_until
+  def reminder_off?
+    return false unless reminder&.turn_off_until
 
-    blocked_until >= Date.today
+    reminder.turn_off_until >= Date.today
   end
 
   def updates?
-    updates
+    reminder&.has_updates
+  end
+
+  def updates_confirmed?
+    reminder&.updates_confirmed
   end
 end

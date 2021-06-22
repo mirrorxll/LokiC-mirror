@@ -1,0 +1,36 @@
+.row
+  .col-10.offset-1
+    .text-danger
+      Story Type has updates!
+      -unless @story_type.updates_confirmed?
+        Please check source data set and confirm this
+        %br/
+        .text-dark.small
+          if you press [ disprove ] this will mean you have inaccuracies in your check_updates method and you should fix this as soon as possible
+
+    .row.mt-2
+      .col-12
+        -unless @story_type.updates_confirmed?
+          =link_to('[ confirm ]', confirm_story_type_reminder_path(@story_type),class: 'p-0 btn btn-sm btn-link',
+                   method: :patch, data: { confirm: "Are you CONFIRM new data in the story types' data set? It'll create new iteration" }, remote: true)
+          =link_to('[ disprove ]', disprove_story_type_reminder_path(@story_type), class: 'p-0 btn btn-sm btn-link',
+                   method: :patch, data: { confirm: "Are you DISPROVE that there is new data in the data set that can be used for new stories?" }, remote: true)
+        =link_to('[ turn reminders off until ]', '#', 'aria-controls' => 'turn_reminders_off_until',
+                 'aria-expanded' => false , data: { toggle: "collapse", target: "#turn_reminders_off_until" },
+                 class: 'p-0 ml-2 btn btn-sm btn-link text-dark', remote: true)
+
+    #turn_reminders_off_until.mt-3.small.collapse
+      =form_with(url: turn_off_story_type_reminder_path(@story_type), method: :patch) do |f|
+        .row
+          .col-3
+            .form-group
+              =f.label 'reminder[turn_off_until]', 'turn off until'
+              =f.date_field 'reminder[turn_off_until]', class: 'form-control', min: Date.tomorrow, required: true
+        .row
+          .col-6
+            .form-group
+              =f.label 'reminder[reasons]', :reasons
+              =f.text_area 'reminder[reasons]', class: 'form-control', required: true
+        .row
+          .col-3
+            =f.submit '[ TURN REMINDERS OFF ]', class: 'p-0 mt-2 mb-2 btn btn-sm btn-link text-dark'
