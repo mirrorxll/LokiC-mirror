@@ -93,10 +93,12 @@ class StoryTypesController < ApplicationController # :nodoc:
 
   def new_story_type_params
     permitted = params.require(:story_type).permit(:name, :migrated)
-    status_name = permitted[:migrated].eql?('1') ? 'migrated' : 'not started'
+    migrated = permitted[:migrated].eql?('1')
+    status_name = migrated ? 'migrated' : 'not started'
 
     {
       name: permitted[:name],
+      migrated: migrated,
       status: Status.find_by(name: status_name)
     }
   end

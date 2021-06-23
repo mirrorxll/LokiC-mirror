@@ -1,15 +1,18 @@
 # frozen_string_literal: true
 
-class RemindersJob < ApplicationJob
+class ReminderUpdatesJob < ApplicationJob
   queue_as :lokic
 
   def perform(story_types = StoryType.all)
     story_types.all.each do |st_type|
-      story_types.reminder || story_types.create_reminder
+      st_type.reminder || st_type.create_reminder
 
       next if st_type.cron_tab&.enabled || !st_type.code.attached? || st_type.reminder_off?
 
-      if st_type.updates?
+      if st_type.updates_confirmed?
+        message(st_type, :updates_confirmed)
+        next
+      elsif st_type.updates?
         message(st_type, :has_updates)
         next
       end
@@ -20,7 +23,7 @@ class RemindersJob < ApplicationJob
         if !new_data_flag.in?([true, false])
           :method_missing
         elsif new_data_flag.eql?(true)
-          st_type.update(updates: true)
+          st_type.reminder.update_column(:has_updates, true)
           :has_updates
         elsif new_data_flag.eql?(false)
           next
@@ -33,18 +36,17 @@ class RemindersJob < ApplicationJob
   private
 
   def message(story_type, type)
-    url = Rails.application.routes.url_helpers.story_type_url(story_type)
-    message = "<#{url}|Story type>"
-
-    message +=
+    message =
       case type
       when :method_missing
-        '. Please develop check_updates method that should return true '\
+        'Please develop *check_updates* method. It should return true '\
         'if the source has new data or if not - false'
       when :has_updates
-        ' has updates. Please check data and confirm data suitability'
+        'Story Type has updates! Please check source data set and confirm this'
+      when :updates_confirmed
+        "Story Type has updates! Let's make stories :)"
       end
 
-    send_to_dev_slack(story_type.iteration, :reminder, message)
+    send_to_dev_slack(story_type.iteration, 'REMINDER', message)
   end
 end

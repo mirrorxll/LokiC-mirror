@@ -18,6 +18,9 @@ class StoryType < ApplicationRecord
       )
     end
 
+    event = HistoryEvent.find_by(name: 'created')
+    change_history.create(history_event: event, notes: "created by #{editor.name}")
+
     update(current_iteration: iterations.first)
   end
 
@@ -36,7 +39,6 @@ class StoryType < ApplicationRecord
   has_one :fact_checking_doc
   has_one :cron_tab
   has_one :reminder
-  has_one :change_history, as: :historyable
 
   has_one_attached :code
 
@@ -47,7 +49,7 @@ class StoryType < ApplicationRecord
   has_many :clients_publications_tags, class_name: 'StoryTypeClientPublicationTag'
   has_many :clients, through: :clients_publications_tags
   has_many :tags, through: :clients_publications_tags
-  has_many :change_history
+  has_many :change_history, as: :historyable
 
   def publications
     pub_ids = clients.map(&:publications).reduce(:|).map(&:id)
@@ -106,7 +108,11 @@ class StoryType < ApplicationRecord
   def reminder_off?
     return false unless reminder&.turn_off_until
 
-    reminder.turn_off_until >= Date.today
+    reminder.turn_off_until > Date.today
+  end
+
+  def reminder_on?
+    !reminder_off?
   end
 
   def updates?
