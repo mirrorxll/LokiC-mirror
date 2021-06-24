@@ -1,0 +1,15 @@
+.row.mt-3
+  %table.table.table-hover
+    %thead
+      %tr
+        %th id
+        %th User
+        %th Role
+        %th Login
+    %tbody
+      - @accounts.each do |account|
+        %tr
+          %th #{account.id}
+          %td #{account.name}
+          %td #{account.account_types.map(&:name).join(',')}
+          %td Log in as #{link_to account.name, impersonate_account_path(account), method: :post}

@@ -7,16 +7,16 @@
       first...execute population
       %br/
     -elsif @story_type.creating_export_configurations.eql?(false)
-      %a{ href: "#", onclick: "return false;" } [ ...in progress... ]
+      %a.p-0.btn.btn-sm.btn-link{ href: "#", onclick: "return false;" } [ ...in progress... ]
     -else
       =link_to('[ create/update ]', story_type_export_configurations_path(@story_type),
-               method: :post, remote: true)
+               class: 'p-0 btn btn-sm btn-link',method: :post, remote: true)
 
       #configs_no_tags.d-inline-block
         -if @story_type.configurations_no_tags.present?
           .modal-trigger
-            =link_to('[ configs without tags ]', '#', "data-toggle" => "modal", "data-target" => "#configs_no_tags_modal",
-                     class: 'text-danger d-inline-block ml-2', method: :post, remote: true)
+            .btn.btn-sm.btn-link.text-danger.d-inline-block.ml-2{ "data-toggle" => "modal", "data-target" => "#configs_no_tags_modal" }
+              [ configs without tags ]
           #configs_no_tags_modal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "template",
                                              role: "dialog", tabindex: "-1", 'data-backdrop' => 'true',
                                              'data-keyboard' => "false" }

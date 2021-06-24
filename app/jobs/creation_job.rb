@@ -7,6 +7,7 @@ class CreationJob < ApplicationJob
     status = true
     message = 'Success. All samples have been created'
     client_ids = iteration.story_type.client_pl_ids.join(',')
+    options[:iteration] = iteration
     options[:client_ids] = client_ids
 
     loop do
@@ -15,7 +16,7 @@ class CreationJob < ApplicationJob
       Process.wait(
         fork do
           rd.close
-          MiniLokiC::Code.execute(iteration, :creation, options)
+          MiniLokiC::Code[iteration.story_type].execute(:creation, options)
         rescue StandardError, ScriptError => e
           wr.write({ e.class.to_s => e.message }.to_json)
         ensure

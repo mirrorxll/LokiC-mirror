@@ -6,53 +6,52 @@
   -ready_to_export = samples.where("pl_#{PL_TARGET}_story_id".to_sym => nil).count
   -recent_removal = @iteration.production_removals.last
 
-  .small
-    -if !@story_type.iteration.eql?(@iteration)
+  -if !@story_type.iteration.eql?(@iteration)
+    .row
+      .col-10.offset-1
+        total exported: #{exported} / #{samples.count}
+
+  -elsif @story_type.staging_table && @iteration.creation && @iteration.schedule
+
+    -if @iteration.export.eql?(true) && !@iteration.removing_from_pl.eql?(true)
       .row
         .col-10.offset-1
           total exported: #{exported} / #{samples.count}
-
-    -elsif @story_type.staging_table && @iteration.creation && @iteration.schedule
-
-      -if @iteration.export.eql?(true) && !@iteration.removing_from_pl.eql?(true)
-        .row
-          .col-10.offset-1
-            total exported: #{exported} / #{samples.count}
-        .row
-          .col-10.offset-1
-            -if exported < samples.count
-              =link_to('extra export!', execute_story_type_iteration_exports_path(@story_type, @iteration),
-                       class: 'mt-3 btn btn-sm btn-outline-dark',
-                       method: :post, remote: true)
-              .ml-3.d-inline-block
-
-            =link_to('exported stories', stories_story_type_iteration_exports_url(@story_type, @iteration),
-                     class: 'd-inline-block mr-3 mt-3 btn btn-sm btn-outline-dark', target: '_blank')
-
-
-            =link_to('remove exported stories', '#data_set_form', 'aria-controls' => 'remove_exported_stories_form',
-                     'aria-expanded' => false, data: { toggle: "collapse", target: "#remove_exported_stories_form" },
-                     type: "button", class: 'mt-3 btn btn-sm btn-outline-danger')
-
-        .row
-          .col-5.offset-1.mt-3
-            #remove_exported_stories_form.collapse
-              =form_with(url: remove_exported_stories_story_type_iteration_exports_path(@story_type, @iteration), method: :delete) do |f|
-                *** Why do you want to remove stories from production?
-                =f.text_area 'remove_exported_stories[reasons]', class: 'form-control form-control-sm', rows: 3,
-                             value: (recent_removal&.status.eql?(false) ? recent_removal.reasons : '' ), required: true
-                =f.submit 'remove stories from production', class: 'mt-1 btn btn-sm btn-outline-dark w-100'
-
-      -elsif @iteration.export.eql?(false)
-        =render 'story_types/spinner', description: 'export in progress'
-      -elsif @iteration.removing_from_pl.eql?(true)
-        =render 'story_types/spinner', description: 'removing from PL in progress'
-      -else
-        .row.mb-2
-          .col-10.offset-1
-            ready to export: #{ready_to_export}
-        .row
-          .col-10.offset-1
-            =link_to('export!', execute_story_type_iteration_exports_path(@story_type, @iteration),
+      .row
+        .col-10.offset-1
+          -if exported < samples.count
+            =link_to('extra export!', execute_story_type_iteration_exports_path(@story_type, @iteration),
                      class: 'mt-3 btn btn-sm btn-outline-dark',
                      method: :post, remote: true)
+            .ml-3.d-inline-block
+
+          =link_to('exported stories', stories_story_type_iteration_exports_url(@story_type, @iteration),
+                   class: 'd-inline-block mr-3 mt-3 btn btn-sm btn-outline-dark', target: '_blank')
+
+
+          =link_to('remove exported stories', '#', 'aria-controls' => 'remove_exported_stories_form',
+                   'aria-expanded' => false, data: { toggle: "collapse", target: "#remove_exported_stories_form" },
+                   type: "button", class: 'mt-3 btn btn-sm btn-outline-danger')
+
+      .row
+        .col-5.offset-1.mt-3
+          #remove_exported_stories_form.collapse
+            =form_with(url: remove_exported_stories_story_type_iteration_exports_path(@story_type, @iteration), method: :delete) do |f|
+              *** Why do you want to remove stories from production?
+              =f.text_area 'remove_exported_stories[reasons]', class: 'form-control form-control-sm', rows: 3,
+                           value: (recent_removal&.status.eql?(false) ? recent_removal.reasons : '' ), required: true
+              =f.submit 'remove stories from production', class: 'mt-1 btn btn-sm btn-outline-dark w-100'
+
+    -elsif @iteration.export.eql?(false)
+      =render 'story_types/spinner', description: 'export in progress'
+    -elsif @iteration.removing_from_pl.eql?(true)
+      =render 'story_types/spinner', description: 'removing from PL in progress'
+    -else
+      .row.mb-2
+        .col-10.offset-1
+          ready to export: #{ready_to_export}
+      .row
+        .col-10.offset-1
+          =link_to('export!', execute_story_type_iteration_exports_path(@story_type, @iteration),
+                   class: 'mt-3 btn btn-sm btn-outline-dark',
+                   method: :post, remote: true)

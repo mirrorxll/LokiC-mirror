@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-module StatusesHelper
+module ProgressStatusesHelper
   def status_color(name)
     case name
-    when 'not started'
+    when 'migrated', 'not started'
       'secondary text-white'
     when 'in progress'
       'primary text-white'
@@ -13,6 +13,8 @@ module StatusesHelper
       'warning'
     when 'blocked'
       'danger text-white'
+    else
+      ''
     end
   end
 

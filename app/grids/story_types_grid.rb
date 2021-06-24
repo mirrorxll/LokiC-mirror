@@ -54,7 +54,7 @@ class StoryTypesGrid
     end
   end
   column(:status, mandatory: true, order: 'statuses.name') do |record|
-    record.iteration.statuses.first&.name
+    record.status.name
   end
   column(:last_export, mandatory: true) do |record|
     record.last_export&.to_date

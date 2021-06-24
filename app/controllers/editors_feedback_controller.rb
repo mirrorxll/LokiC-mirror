@@ -6,6 +6,7 @@ class EditorsFeedbackController < ApplicationController
   before_action :find_fcd, only: %i[create confirm]
   before_action :find_feedback_collection, only: %i[create confirm]
   after_action  :send_notification_to_dev, only: :create
+  after_action  :fcd_approved_to_history,  only: :create
   after_action  :send_confirm_to_fc_channel, only: :confirm
 
   def new; end
@@ -47,7 +48,7 @@ class EditorsFeedbackController < ApplicationController
     developer_pm = @story_type.developer&.slack&.identifier
     return if developer_pm.nil?
 
-    message = "*[ LokiC ] STORY TYPE ##{@story_type.id} (#{@story_type.iteration.name}) | FCD*\n>"
+    message = "*[ LokiC ] <#{story_type_url(@story_type)}|STORY TYPE ##{@story_type.id}> (#{@story_type.iteration.name}) | FCD*\n>"
 
     if params[:commit].eql?('approve!')
       approvable = @fcd.approval_editors
@@ -77,5 +78,12 @@ class EditorsFeedbackController < ApplicationController
               "<#{story_type_fact_checking_doc_url(@story_type, @fcd)}|#{@story_type.name}>."
 
     SlackNotificationJob.perform_later(fc_channel, message)
+  end
+
+  def fcd_approved_to_history
+    return if @fcd.approval_editors < 2
+
+    notes = "fact checking doc approved by #{@fcd.approval_editors.map(&:name).join(', ')}"
+    record_to_change_history(@story_type, 'fact checking doc approved', notes)
   end
 end

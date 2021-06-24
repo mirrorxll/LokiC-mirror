@@ -36,7 +36,7 @@ def account
 end
 
 def status
-  statuses = ['not started', 'in progress', 'exported', 'on cron', 'blocked', 'migrated']
+  statuses = ['not started', 'in progress', 'exported', 'on cron', 'blocked', 'migrated', 'canceled']
   statuses.map { |st| { name: st } }
 end
 
