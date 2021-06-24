@@ -81,7 +81,7 @@ class EditorsFeedbackController < ApplicationController
   end
 
   def fcd_approved_to_history
-    return if @fcd.approval_editors < 2
+    return if @fcd.approval_editors.length < 2
 
     notes = "fact checking doc approved by #{@fcd.approval_editors.map(&:name).join(', ')}"
     record_to_change_history(@story_type, 'fact checking doc approved', notes)
