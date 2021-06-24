@@ -69,7 +69,7 @@ class ExportJob < ApplicationJob
         record_to_change_history(story_type, 'progress status changed', notes)
       end
 
-      send_rprt_to_editors_slack(iteration, url) if Rails.env.production? && url && !iteration.name.match?(/CT\d{8}/)
+      send_report_to_editors_slack(iteration, url) if Rails.env.production? && url && !iteration.name.match?(/CT\d{8}/)
     end
 
     iteration.reload.update(export: status)

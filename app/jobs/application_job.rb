@@ -11,13 +11,20 @@ class ApplicationJob < ActiveJob::Base
     StoryTypeChannel.broadcast_to(iteration.story_type, message_to_send)
   end
 
+  def generate_story_type_url(story_type)
+    host = Rails.env.production? ? 'https://lokic.locallabs.com' : 'http://localhost:3000'
+    "#{host}#{Rails.application.routes.url_helpers.story_type_path(story_type)}"
+  end
+
   def send_to_dev_slack(iteration, step, raw_message)
     story_type = iteration.story_type
-    url = (Rails.env.production? ? 'https://lokic.locallabs.com' : 'http://localhost:3000') +
-          Rails.application.routes.url_helpers.story_type_path(story_type)
+    url = generate_story_type_url(story_type)
+
     iteration_name = step.eql?(:reminder) ? '' : "(#{iteration.name}) "
-    developer_name = story_type.developer&.name || 'Not distributed'
-    message = "*[ LokiC ] <#{url}|STORY TYPE ##{story_type.id}> #{iteration_name}| #{step} | #{developer_name}*\n#{raw_message}".gsub("\n", "\n>")
+    developer_name = story_type.developer&.name || '<!@channel> This story type not distributed!'
+
+    message = "*[ LokiC ] <#{url}|STORY TYPE ##{story_type.id}> #{iteration_name}| #{step} "\
+              "| #{developer_name}*\n#{raw_message}".gsub("\n", "\n>")
 
     channel = Rails.env.production? ? 'hle_lokic_messages' : 'lokic_development_messages'
     SlackNotificationJob.perform_now(channel, message)
@@ -26,9 +33,11 @@ class ApplicationJob < ActiveJob::Base
 
     message = message.gsub(/#{Regexp.escape(" | #{developer_name}")}/, '')
     SlackNotificationJob.perform_now(story_type.developer.slack.identifier, message)
+
+    story_type.alerts.create(subtype: step.downcase, message: raw_message)
   end
 
-  def send_rprt_to_editors_slack(iteration, url)
+  def send_report_to_editors_slack(iteration, url)
     story_type = iteration.story_type
     return unless story_type.developer_fc_channel_name
 
