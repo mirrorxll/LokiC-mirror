@@ -17,14 +17,14 @@ class ApplicationJob < ActiveJob::Base
           Rails.application.routes.url_helpers.story_type_path(story_type)
     iteration_name = step.eql?(:reminder) ? '' : "(#{iteration.name}) "
     developer_name = story_type.developer&.name || 'Not distributed'
-    message = "*[ LokiC ] <#{url}|STORY TYPE ##{story_type.id}> #{iteration_name}| #{developer_name} | #{step}*\n#{raw_message}".gsub("\n", "\n>")
+    message = "*[ LokiC ] <#{url}|STORY TYPE ##{story_type.id}> #{iteration_name}| #{step} | #{developer_name}*\n#{raw_message}".gsub("\n", "\n>")
 
     channel = Rails.env.production? ? 'hle_lokic_messages' : 'lokic_development_messages'
     SlackNotificationJob.perform_now(channel, message)
 
     return unless story_type.developer_slack_id
 
-    message = message.gsub(/#{Regexp.escape(" #{developer_name} |")}/, '')
+    message = message.gsub(/#{Regexp.escape(" | #{developer_name}")}/, '')
     SlackNotificationJob.perform_now(story_type.developer.slack.identifier, message)
   end
 

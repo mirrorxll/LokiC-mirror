@@ -37,7 +37,7 @@ class RemoveFromPlJob < ApplicationJob
     iteration.exported&.destroy
     iteration.production_removals.last.update(status: true)
 
-    notes = "story(ies) related to `#{iteration.id}--#{iteration.name}` iteration removed from Pipeline"
+    notes = "story(ies) related to `#{iteration.id}|#{iteration.name}` iteration removed from Pipeline"
     record_to_change_history(story_type, 'removed from production', notes)
   rescue StandardError => e
     message = e.message

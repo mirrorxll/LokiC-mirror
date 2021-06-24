@@ -49,7 +49,7 @@ class StoryType < ApplicationRecord
   has_many :clients_publications_tags, class_name: 'StoryTypeClientPublicationTag'
   has_many :clients, through: :clients_publications_tags
   has_many :tags, through: :clients_publications_tags
-  has_many :change_history, as: :historyable
+  has_many :change_history, as: :history
 
   def publications
     pub_ids = clients.map(&:publications).reduce(:|).map(&:id)

@@ -8,4 +8,6 @@ class Reminder < ApplicationRecord
   end
 
   belongs_to :story_type
+
+  has_many :alerts, as: :alert
 end

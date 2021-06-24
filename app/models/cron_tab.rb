@@ -3,9 +3,21 @@
 class CronTab < ApplicationRecord
   serialize :setup, Hash
 
-  belongs_to :story_type
+  after_save do
+    name, notes =
+      if enabled && !freeze_execution
+        ['installed on cron', "installed on cron with pattern #{pattern}"]
+      else
+        ['cron turned off', 'cron execution disabled']
+      end
+
+    event = HistoryEvent.find_by(name: name)
+    story_type.change_history.create(history_event: event, notes: notes)
+  end
 
   validate :check_pattern
+
+  belongs_to :story_type
 
   def pattern
     cron = setup[:pattern]
