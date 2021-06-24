@@ -10,7 +10,7 @@ class CronTabInitializerJob < ApplicationJob
     Sidekiq.set_schedule(:photo_buckets, class: PhotoBucketsJob, cron: '30 0 * * *', queue: 'cron_tab')
     Sidekiq.set_schedule(:slack_accounts, class: SlackAccountsJob, cron: '40 0 * * *', queue: 'cron_tab')
     Sidekiq.set_schedule(:reminder_updates, class: ReminderUpdatesJob, cron: '0 5 * * *', queue: 'cron_tab')
-    Sidekiq.set_schedule(:reminder_progress, class: ReminderProgressJob, cron: '0 5 * * *', queue: 'cron_tab')
+    # Sidekiq.set_schedule(:reminder_progress, class: ReminderProgressJob, cron: '0 5 * * *', queue: 'cron_tab')
 
     CronTab.all.each do |tab|
       next unless tab.enabled
