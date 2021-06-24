@@ -1,2 +1,47 @@
-=form_with(url: include_story_type_client_tags_path(@story_type, client_publication_tag.client, client_publication_tag: client_publication_tag), html: { onchange: "Rails.fire(this, 'submit')" }) do |form|
-  =form.collection_select :id, client_publication_tag.client.tags.order(:name), :id, :name, { prompt: '' }
+-# - tags += client_publication_tag.client.tags.order(:name).map do |tag|
+-#         -puts tag.class
+-#         -puts tag.name
+-#         -html_attributes = {}
+-#         -html_attributes['style'] = 'background-color: #888888 ' if tag.id % 2 == 0
+-#         -[tag.name, tag.id, html_attributes]
+-#
+
+=form_with(url: include_story_type_client_tags_path(@story_type, client, client_publication_tag: client_publication_tag), html: { onchange: "Rails.fire(this, 'submit')" }) do |form|
+  =form.select :id, grouped_options_for_select( [ ['for all pubs', (client.tags.order(:name) & client.tags_for_all_pubs).map { |tag| [tag.name, tag.id] } ],
+                                                  ['not for all pubs', (client.tags.order(:name) - client.tags_for_all_pubs).map { |tag| [tag.name, tag.id] }] ]),
+                                                  { prompt: '' }
+-publication = client_publication_tag.publication
+-tags = {}
+-if publication.nil? || publication.name == 'all_publications'
+  -[ [ 'for all pubs', (client.tags.order(:name) & client.tags_for_all_pubs).map { |tag| [tag.name, tag.id] } ],
+     [ 'not for all pubs', (client.tags.order(:name) - client.tags_for_all_pubs).map { |tag| [tag.name, tag.id] } ] ]
+-elsif publication.name == 'all local publications'
+  -[ [ 'for all pubs', client.tags.order(:name) & client.tags_for_local_pubs ].map { |tag| [tag.name, tag.id] },
+     [ 'not for all pubs', client.tags.order(:name) - client.tags_for_local_pubs ].map { |tag| [tag.name, tag.id] } ]
+  -tags[:group_name] = 'for all local pubs'
+  -tags[:for_all_pubs] = client.tags.order(:name) & client.tags_for_local_pubs
+  -tags[:not_for_all] = client.tags.order(:name) - client.tags_for_local_pubs
+-elsif publication.name == 'all statewide publications'
+  -tags[:group_name] = 'for all statewide pubs'
+  -tags[:for_all_pubs] = client.tags.order(:name) & client.tags_for_statewide_pubs
+  -tags[:not_for_all] = client.tags.order(:name) - client.tags_for_statewide_pubs
+
+
+
+-#:javascript
+-#    var tag_select = $("[id='tag_select']");
+-#
+-#    var client_tags = #{raw client_publication_tag.client.tags.order(:name)}
+-#
+-#    $(tag_select).append(
+-#        `<select class="col-3" id="report_${hex}_type_of_work" name="report[${hex}[type_of_work]]">${buildSelect(client_tags)}</select>`
+-#    );
+-#
+-#  function buildSelect(options) {
+-#    var $select = $('');
+-#
+-#    for (var i = 0; i < options.length; i++) {
+-#      $select += ('<option value="' + options[i] + '">' + options[i] + '</option>');
+-#    }
+-#    return $select;
+-#  }

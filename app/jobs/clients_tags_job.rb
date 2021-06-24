@@ -11,15 +11,21 @@ class ClientsTagsJob < ApplicationJob
         mm_generic = Client.find_by(name: 'Metric Media')
         mm_by_state = Client.where('name LIKE :query', query: 'MM -%').to_a
         attach_tags_to_mm_generic(mm_generic, mm_by_state)
+        ClientsTag.all.each { |ct| update_tags_for_pubs(ct) }
       end
     )
   end
 
   private
 
+  def update_tags_for_pubs(ct)
+    ct.update(for_all_pubs: ct.client.publications.count == ct.tag.publications.where(client: ct.client).count,
+              for_local_pubs: ct.client.statewide_publications.count == ct.tag.publications.where(client: ct.client, statewide: true).count,
+              for_statewide_pubs: ct.client.statewide_publications.count == ct.tag.publications.where(client: ct.client, statewide: true).count)
+  end
+
   def attach_tags_to(client)
     tags = client.publications.to_a.map { |pub| pub.tags.to_a }
-    puts tags.count
     tags.flatten.uniq.each { |t| client.tags << t unless client.tags.exists?(t.id) }
   end
 
