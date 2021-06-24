@@ -54,8 +54,8 @@ class ExportJob < ApplicationJob
 
     exp_st.save!
 
-    notes = "exported #{exp_st.count_samples} story(ies) to Pipeline"
-    record_to_change_history(story_type, 'exported', notes)
+    notes = "#{MiniLokiC::Formatize::Numbers.to_text(exp_st.count_samples).capitalize} story(ies) exported to Pipeline"
+    record_to_change_history(story_type, 'exported to pipeline', notes)
   rescue StandardError => e
     status = nil
     message = e.message

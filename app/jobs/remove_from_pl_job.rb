@@ -37,8 +37,9 @@ class RemoveFromPlJob < ApplicationJob
     iteration.exported&.destroy
     iteration.production_removals.last.update(status: true)
 
-    notes = "story(ies) related to `#{iteration.id}|#{iteration.name}` iteration removed from Pipeline"
-    record_to_change_history(story_type, 'removed from production', notes)
+    notes = "#{MiniLokiC::Formatize::Numbers.to_text(iteration.samples.ready_to_export.count)} "\
+            'story(ies) removed from Pipeline'
+    record_to_change_history(story_type, 'removed from pipeline', notes)
   rescue StandardError => e
     message = e.message
   ensure
