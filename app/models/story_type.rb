@@ -50,6 +50,7 @@ class StoryType < ApplicationRecord
   has_many :clients, through: :clients_publications_tags
   has_many :tags, through: :clients_publications_tags
   has_many :change_history, as: :history
+  has_many :alerts, as: :alert
 
   def publications
     pub_ids = clients.map(&:publications).reduce(:|).map(&:id)

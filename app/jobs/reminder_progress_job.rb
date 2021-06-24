@@ -44,6 +44,6 @@ class ReminderProgressJob < ApplicationJob
       end
 
     send_to_dev_slack(story_type.iteration, 'REMINDER', message)
-    story_type.reminder.alerts.create(message: message)
+    story_type.alerts.create(message: message)
   end
 end

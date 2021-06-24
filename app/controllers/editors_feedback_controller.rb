@@ -62,8 +62,8 @@ class EditorsFeedbackController < ApplicationController
       message += "Approved by *#{editors}*. #{scheduling}."
     else
       message += "You received the *editors' feedback* by *#{current_account.name}*. "\
-                "<#{story_type_fact_checking_doc_url(@story_type, @story_type.fact_checking_doc)}"\
-                '#editors_feedback|Check it>.'
+                 "<#{story_type_fact_checking_doc_url(@story_type, @story_type.fact_checking_doc)}"\
+                 '#editors_feedback|Check it>.'
     end
 
     SlackNotificationJob.perform_later(developer_pm, message)
@@ -81,7 +81,7 @@ class EditorsFeedbackController < ApplicationController
   end
 
   def fcd_approved_to_history
-    return if @fcd.approval_editors < 2
+    return if @fcd.approval_editors.count < 2
 
     notes = "fact checking doc approved by #{@fcd.approval_editors.map(&:name).join(', ')}"
     record_to_change_history(@story_type, 'fact checking doc approved', notes)

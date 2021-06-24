@@ -5,7 +5,7 @@ class CodesController < ApplicationController # :nodoc:
 
   before_action :render_400, if: :editor?
   before_action :download_code, only: %i[attach reload]
-  after_action  :status_changed_to_history
+  after_action  :status_changed_to_history, only: :attach
 
   def show
     @ruby_code =
