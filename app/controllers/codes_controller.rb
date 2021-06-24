@@ -5,6 +5,7 @@ class CodesController < ApplicationController # :nodoc:
 
   before_action :render_400, if: :editor?
   before_action :download_code, only: %i[attach reload]
+  after_action  :status_changed_to_history
 
   def show
     @ruby_code =
@@ -15,7 +16,7 @@ class CodesController < ApplicationController # :nodoc:
     render_400 && return if @story_type.code.attached? || @code.nil?
 
     @story_type.code.attach(io: StringIO.new(@code), filename: "S#{@story_type.id}.rb")
-    @story_type.update(status: Status.find_by(name: 'in progress'))
+    @story_type.update(status: Status.find_by(name: 'in progress'), last_status_changed_at: DateTime.now)
   end
 
   def reload
@@ -29,5 +30,10 @@ class CodesController < ApplicationController # :nodoc:
 
   def download_code
     @code = @story_type.download_code_from_db
+  end
+
+  def status_changed_to_history
+    notes = "progress status changed to 'in progress'"
+    record_to_change_history(@story_type, 'progress status changed', notes)
   end
 end

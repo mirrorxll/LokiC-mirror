@@ -61,4 +61,9 @@ class ApplicationController < ActionController::Base
   def detached_or_delete
     'The Table for this story type has been renamed, detached or drop. Please update the page.'
   end
+
+  def record_to_change_history(story_type, event_name, notes = nil)
+    event = HistoryEvent.find_by(name: event_name)
+    story_type.change_history.create(history_event: event, notes: notes)
+  end
 end
