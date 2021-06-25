@@ -59,6 +59,14 @@
     .row
       .col-12
         =@iteration.id
+    -if @story_type.comment
+      %hr/
+      .row.mb-2.font-weight-bold
+        .col-12
+          comment
+      .row
+        .col-12
+          =@story_type.comment
   .col-5.border-left.ml-1
     .row.mb-2.font-weight-bold
       .col-12
@@ -66,21 +74,21 @@
     #story_type_code
       =render 'codes/section'
     %hr/
+    -unless current_account.types.eql?(['developer']) && @story_type.developer != current_account
+      .row.mb-2.font-weight-bold
+        .col-12
+          export configurations (manual execution)
+      #export_configs
+        =render 'export_configurations/export_configurations'
+      %hr/
 
-    .row.mb-2.font-weight-bold
-      .col-12
-        export configurations (manual execution)
-    #export_configs
-      =render 'export_configurations/export_configurations'
-    %hr/
+      .row.mb-2.font-weight-bold
+        .col-12
+          cron tab
 
-    .row.mb-2.font-weight-bold
-      .col-12
-        cron tab
-
-    #cron_tab_panel
-      =render 'cron_tabs/cron_tab'
-    %hr/
+      #cron_tab_panel
+        =render 'cron_tabs/cron_tab'
+      %hr/
 %hr/
 
 =render 'data_sets/modal_data_set'
