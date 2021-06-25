@@ -12,7 +12,8 @@ class CronTab < ApplicationRecord
       end
 
     event = HistoryEvent.find_by(name: name)
-    story_type.change_history.create(history_event: event, notes: notes)
+    note = Text.find_or_create_by!(text: notes)
+    story_type.change_history.create(history_event: event, note: note)
   end
 
   validate :check_pattern

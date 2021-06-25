@@ -7,7 +7,7 @@ class ReminderUpdatesJob < ApplicationJob
     story_types.all.each do |st_type|
       st_type.reminder || st_type.create_reminder
 
-      next if st_type.developer.nil?
+      next if st_type.developer.nil? || st_type.status.name.in?(%w[canceled migrated])
       next if st_type.cron_tab&.enabled || !st_type.code.attached? || st_type.reminder_off?
 
       if st_type.updates_confirmed?
@@ -49,6 +49,5 @@ class ReminderUpdatesJob < ApplicationJob
       end
 
     send_to_dev_slack(story_type.iteration, 'REMINDER', message)
-    story_type.alerts.create(subtype: 'reminder', message: message)
   end
 end
