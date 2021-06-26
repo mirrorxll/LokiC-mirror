@@ -5,7 +5,6 @@ class CreateAlerts < ActiveRecord::Migration[6.0]
     create_table :alerts do |t|
       t.references :alert, polymorphic: true
 
-      t.string :message
       t.timestamps
     end
   end

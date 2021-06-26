@@ -19,7 +19,7 @@ class StoryType < ApplicationRecord
     end
 
     event = HistoryEvent.find_by(name: 'created')
-    change_history.create(history_event: event, notes: "created by #{editor.name}")
+    change_history.create!(history_event: event, notes: "created by #{editor.name}")
 
     update(current_iteration: iterations.first)
   end

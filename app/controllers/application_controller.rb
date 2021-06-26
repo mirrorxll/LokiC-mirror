@@ -65,6 +65,6 @@ class ApplicationController < ActionController::Base
   def record_to_change_history(story_type, event_name, notes)
     event = HistoryEvent.find_or_create_by!(name: event_name)
     note = Text.find_or_create_by!(text: notes)
-    story_type.change_history.create(history_event: event, note: note)
+    story_type.change_history.create!(history_event: event, note: note)
   end
 end

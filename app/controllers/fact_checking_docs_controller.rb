@@ -34,7 +34,7 @@ class FactCheckingDocsController < ApplicationController
   end
 
   def send_to_reviewers_channel
-    channel = Rails.env.production? ? 'hle_reviews_queue' : 'lokic_development_messages'
+    channel = Rails.env.production? ? 'hle_reviews_queue' : 'hle_lokic_development_messages'
     response = SlackNotificationJob.perform_now(channel, message_to_slack)
     @fcd.update(slack_message_ts: response[:ts])
   end

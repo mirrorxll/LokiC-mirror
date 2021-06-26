@@ -3,7 +3,7 @@
 class CreateTexts < ActiveRecord::Migration[6.0]
   def change
     create_table :texts do |t|
-      t.string :text, limit: 500, index: true
+      t.string :text, limit: 2000
       t.timestamps
     end
   end
