@@ -25,7 +25,7 @@ class SchedulerJob < ApplicationJob
           MiniLokiC::Creation::Scheduler::FromCode.run_from_code(samples, options)
         end
 
-        notes = "executed #{type} scheduler with #{options}"
+        notes = "executed #{type} scheduler"
         record_to_change_history(iteration.story_type, 'scheduled', notes)
 
       rescue StandardError => e

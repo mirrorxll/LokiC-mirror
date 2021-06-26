@@ -63,8 +63,9 @@ class ApplicationController < ActionController::Base
   end
 
   def record_to_change_history(story_type, event_name, notes)
+    note_to_md5 = Digest::MD5.hexdigest(notes)
+    note = Text.find_or_create_by!(md5hash: note_to_md5) { |t| t.text = notes }
     event = HistoryEvent.find_or_create_by!(name: event_name)
-    note = Text.find_or_create_by!(text: notes)
     story_type.change_history.create!(history_event: event, note: note)
   end
 end

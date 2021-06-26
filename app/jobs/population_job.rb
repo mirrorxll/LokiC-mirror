@@ -8,9 +8,9 @@ class PopulationJob < ApplicationJob
     puts 'init'
     Process.wait(
       fork do
-        puts status = true
-        puts message = 'Success'
-        puts population_args = population_args_to_hash(options[:population_args])
+        status = true
+        message = 'Success'
+        population_args = population_args_to_hash(options[:population_args])
 
         MiniLokiC::Code[iteration.story_type].execute(:population, population_args)
         ExportConfigurationsJob.perform_now(iteration.story_type)
