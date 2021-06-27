@@ -3,6 +3,7 @@
 class StoryType < ApplicationRecord
   before_create do
     self.photo_bucket = data_set.photo_bucket
+    self.last_status_changed_at = Time.now.getlocal('-05:00')
     build_template
     build_fact_checking_doc
     build_reminder
