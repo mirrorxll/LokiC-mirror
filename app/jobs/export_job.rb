@@ -54,8 +54,8 @@ class ExportJob < ApplicationJob
 
     exp_st.save!
 
-    notes = "#{MiniLokiC::Formatize::Numbers.to_text(exp_st.count_samples).capitalize} story(ies) exported to Pipeline"
-    record_to_change_history(story_type, 'exported to pipeline', notes)
+    note = "#{MiniLokiC::Formatize::Numbers.to_text(exp_st.count_samples).capitalize} story(ies) exported to Pipeline"
+    record_to_change_history(story_type, 'exported to pipeline', note)
   rescue StandardError => e
     status = nil
     message = e.message
@@ -65,8 +65,8 @@ class ExportJob < ApplicationJob
     if all_exported && status && story_type.iterations.last.eql?(iteration)
       unless story_type.reload.status.name.in?(['canceled', 'blocked', 'on cron'])
         story_type.update(status: Status.find_by(name: 'exported'), last_status_changed_at: DateTime.now)
-        notes = "progress status changed to 'exported'"
-        record_to_change_history(story_type, 'progress status changed', notes)
+        note = "progress status changed to 'exported'"
+        record_to_change_history(story_type, 'progress status changed', note)
       end
 
       send_report_to_editors_slack(iteration, url) if Rails.env.production? && url && !iteration.name.match?(/CT\d{8}/)

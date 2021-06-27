@@ -31,12 +31,12 @@ class RemindersController < ApplicationController
   end
 
   def confirm_to_history
-    notes = "new data in data set confirmed by #{current_account.name}"
-    record_to_change_history(@story_type, 'has updates', notes)
+    note = "new data in data set confirmed by #{current_account.name}"
+    record_to_change_history(@story_type, 'has updates', note)
   end
 
   def turn_off_to_history
-    notes = "reminder turned off by #{current_account.name}, reasons #{@story_type.reminder.reasons}"
-    record_to_change_history(@story_type, 'reminder turned off', notes)
+    note = "reminder turned off by #{current_account.name}, reasons #{@story_type.reminder.reasons}"
+    record_to_change_history(@story_type, 'reminder turned off', note)
   end
 end

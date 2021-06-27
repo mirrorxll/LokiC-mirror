@@ -33,7 +33,7 @@ class CodesController < ApplicationController # :nodoc:
   end
 
   def status_changed_to_history
-    notes = "progress status changed to 'in progress'"
-    record_to_change_history(@story_type, 'progress status changed', notes)
+    note = "progress status changed to 'in progress'"
+    record_to_change_history(@story_type, 'progress status changed', note)
   end
 end

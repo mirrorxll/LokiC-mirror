@@ -24,8 +24,8 @@ class ReminderProgressJob < ApplicationJob
       next unless inactive
 
       st_type.update(status: Status.find_by(name: 'inactive'))
-      notes = "progress status changed to 'inactive'"
-      record_to_change_history(st_type, 'progress status changed', notes)
+      note = "progress status changed to 'inactive'"
+      record_to_change_history(st_type, 'progress status changed', note)
     end
   end
 

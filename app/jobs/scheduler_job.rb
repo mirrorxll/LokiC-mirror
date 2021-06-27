@@ -25,8 +25,8 @@ class SchedulerJob < ApplicationJob
           MiniLokiC::Creation::Scheduler::FromCode.run_from_code(samples, options)
         end
 
-        notes = "executed #{type} scheduler"
-        record_to_change_history(iteration.story_type, 'scheduled', notes)
+        note = "executed #{type} scheduler"
+        record_to_change_history(iteration.story_type, 'scheduled', note)
 
       rescue StandardError => e
         wr.write({ e.class.to_s => e.message }.to_json)

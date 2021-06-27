@@ -85,7 +85,7 @@ class ReviewersFeedbackController < ApplicationController
   def send_to_editors_to_history
     return unless params[:commit].eql?('approve!')
 
-    notes = 'fact checking doc sent to editors'
-    record_to_change_history(@story_type, 'fact checking doc sent to editors', notes)
+    note = 'fact checking doc sent to editors'
+    record_to_change_history(@story_type, 'fact checking doc sent to editors', note)
   end
 end

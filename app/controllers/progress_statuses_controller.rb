@@ -16,7 +16,7 @@ class ProgressStatusesController < ApplicationController
   end
 
   def status_changed_to_history
-    notes = "progress status changed to '#{@status.name}'"
-    record_to_change_history(@story_type, 'progress status changed', notes)
+    note = "progress status changed to '#{@status.name}'"
+    record_to_change_history(@story_type, 'progress status changed', note)
   end
 end

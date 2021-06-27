@@ -37,9 +37,9 @@ class RemoveFromPlJob < ApplicationJob
     iteration.exported&.destroy
     iteration.production_removals.last.update(status: true)
 
-    notes = "#{MiniLokiC::Formatize::Numbers.to_text(iteration.samples.ready_to_export.count)} "\
+    note = "#{MiniLokiC::Formatize::Numbers.to_text(iteration.samples.ready_to_export.count)} "\
             'story(ies) removed from Pipeline'
-    record_to_change_history(story_type, 'removed from pipeline', notes)
+    record_to_change_history(story_type, 'removed from pipeline', note)
   rescue StandardError => e
     message = e.message
   ensure
@@ -49,8 +49,8 @@ class RemoveFromPlJob < ApplicationJob
 
     if all_removed && last_iteration && changeable_status
       story_type.update(status: Status.find_by(name: 'in progress'), last_status_changed_at: DateTime.now)
-      notes = "progress status changed to 'in progress'"
-      record_to_change_history(story_type, 'progress status changed', notes)
+      note = "progress status changed to 'in progress'"
+      record_to_change_history(story_type, 'progress status changed', note)
     end
 
     iteration.update(removing_from_pl: false)
