@@ -9,7 +9,7 @@ class DevelopersController < ApplicationController
   def include
     render_400 && return if @story_type.developer
 
-    @story_type.update!(developer: @developer, distributed_at: DateTime.now)
+    @story_type.update!(developer: @developer, distributed_at: Time.now)
   end
 
   def exclude

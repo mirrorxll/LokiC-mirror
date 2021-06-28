@@ -5,16 +5,19 @@ class PopulationJob < ApplicationJob
   queue_as :story_type
 
   def perform(iteration, options = {})
-    puts 'init'
     Process.wait(
       fork do
         status = true
         message = 'Success'
+        story_type = iteration.story_type
         population_args = population_args_to_hash(options[:population_args])
 
-        MiniLokiC::Code[iteration.story_type].execute(:population, population_args)
-        ExportConfigurationsJob.perform_now(iteration.story_type)
+        MiniLokiC::Code[story_type].execute(:population, population_args)
 
+        note = "progress status changed to 'in progress'"
+        record_to_change_history(story_type, 'progress status changed', note)
+
+        ExportConfigurationsJob.perform_now(story_type)
       rescue StandardError, ScriptError => e
         status = nil
         message = e
