@@ -48,7 +48,7 @@ class RemoveFromPlJob < ApplicationJob
     changeable_status = !story_type.status.name.in?(['canceled', 'blocked', 'on cron'])
 
     if all_removed && last_iteration && changeable_status
-      story_type.update(status: Status.find_by(name: 'in progress'), last_status_changed_at: Date.now)
+      story_type.update(status: Status.find_by(name: 'in progress'), last_status_changed_at: Time.now)
       note = "progress status changed to 'in progress'"
       record_to_change_history(story_type, 'progress status changed', note)
     end
