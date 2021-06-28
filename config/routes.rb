@@ -11,6 +11,11 @@ Rails.application.routes.draw do
     mount Sidekiq::Web => '/sidekiq'
   end
 
+  resources :accounts, only: [:index] do
+    post :impersonate, on: :member
+    post :stop_impersonating, on: :collection
+  end
+
   mount ActionCable.server, at: '/cable'
 
   namespace :api, constraints: { format: :json } do
@@ -41,12 +46,16 @@ Rails.application.routes.draw do
   end
 
   resources :story_types, except: %i[new create] do
-    get   :properties
+    get   :properties_form
     get   :canceling_edit,  on: :member
 
     patch :update_sections, on: :member
 
     patch :change_data_set, on: :member
+
+    patch '/change_progress_status', to: 'progress_statuses#change'
+
+    resources(:progress_statuses, only: []) { patch :change, on: :collection }
 
     resources :templates, path: :template, only: %i[show edit update] do
       patch :save, on: :member
@@ -122,11 +131,6 @@ Rails.application.routes.draw do
       patch :apply, on: :member
       delete :purge, on: :member
 
-      resources :statuses, only: [] do
-        get   :form,    on: :collection
-        patch :change,  on: :collection
-      end
-
       resources :populations, path: 'populate', only: [] do
         post   :execute, on: :collection
         delete :purge,   on: :collection
@@ -166,6 +170,12 @@ Rails.application.routes.draw do
         post :submit_editor_report,  on: :collection
         post :submit_manager_report, on: :collection
       end
+    end
+
+    resource :reminder, only: [] do
+      patch :confirm
+      patch :disprove
+      patch :turn_off
     end
   end
 

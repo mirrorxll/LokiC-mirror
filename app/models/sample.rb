@@ -70,6 +70,10 @@ class Sample < ApplicationRecord
       .where.not(export_configurations: { tag: nil })
   end
 
+  def self.not_exported
+    where("pl_#{PL_TARGET}_story_id" => nil)
+  end
+
   def self.exported
     where.not("pl_#{PL_TARGET}_story_id" => nil)
   end

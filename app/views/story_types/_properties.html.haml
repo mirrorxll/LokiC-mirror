@@ -1,3 +1,8 @@
+#reminder_panel
+  -if @story_type.updates?
+    =render 'reminders/reminder'
+%hr/
+
 .row.small
   .col-5.offset-1.border-right.mr-1
     .row.mb-2.font-weight-bold
@@ -76,6 +81,7 @@
     #cron_tab_panel
       =render 'cron_tabs/cron_tab'
     %hr/
+%hr/
 
 =render 'data_sets/modal_data_set'
 =render 'codes/modal_ruby_code'

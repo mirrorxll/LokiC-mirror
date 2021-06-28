@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_account!
   before_action :find_parent_story_type
   before_action :set_iteration
+  impersonates :account
 
   private
 
@@ -59,5 +60,13 @@ class ApplicationController < ActionController::Base
 
   def detached_or_delete
     'The Table for this story type has been renamed, detached or drop. Please update the page.'
+  end
+
+  def record_to_change_history(story_type, event, note)
+    note_to_md5 = Digest::MD5.hexdigest(note)
+    text = Text.find_or_create_by!(md5hash: note_to_md5) { |t| t.text = note }
+    history_event = HistoryEvent.find_or_create_by!(name: event)
+
+    story_type.change_history.create!(history_event: history_event, note: text)
   end
 end

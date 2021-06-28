@@ -5,8 +5,8 @@ class ReviewersFeedbackController < ApplicationController
   before_action :find_fcd,                       only: %i[create confirm]
   before_action :find_feedback,                  only: %i[create confirm]
   after_action  :send_notifications,             only: :create
+  after_action  :send_to_editors_to_history,     only: :create
   after_action  :send_confirm_to_review_channel, only: :confirm
-
   def new; end
 
   def create
@@ -47,7 +47,7 @@ class ReviewersFeedbackController < ApplicationController
     developer_pm = @story_type.developer&.slack&.identifier
     return if developer_pm.nil? || fcd_channel.nil?
 
-    message_to_dev = "*[ LokiC ] STORY TYPE ##{@story_type.id} (#{@story_type.iteration.name}) | FCD*\n>"
+    message_to_dev = "*[ LokiC ] <#{story_type_url(@story_type)}|STORY TYPE ##{@story_type.id}> (#{@story_type.iteration.name}) | FCD*\n>"
 
     if params[:commit].eql?('approve!')
       note = ActionView::Base.full_sanitizer.sanitize(@feedback.body)
@@ -78,6 +78,14 @@ class ReviewersFeedbackController < ApplicationController
               "<#{story_type_fact_checking_doc_url(@story_type, @story_type.fact_checking_doc)}"\
               '#reviewers_feedback|Check it>.'
 
-    SlackNotificationJob.perform_later('hle_reviews_queue', message, @fcd.slack_message_ts)
+    channel = Rails.env.production? ? 'hle_reviews_queue' : 'hle_lokic_development_messages'
+    SlackNotificationJob.perform_later(channel, message, @fcd.slack_message_ts)
+  end
+
+  def send_to_editors_to_history
+    return unless params[:commit].eql?('approve!')
+
+    note = 'fact checking doc sent to editors'
+    record_to_change_history(@story_type, 'fact checking doc sent to editors', note)
   end
 end

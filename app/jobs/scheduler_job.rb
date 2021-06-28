@@ -25,6 +25,9 @@ class SchedulerJob < ApplicationJob
           MiniLokiC::Creation::Scheduler::FromCode.run_from_code(samples, options)
         end
 
+        note = "executed #{type} scheduler"
+        record_to_change_history(iteration.story_type, 'scheduled', note)
+
       rescue StandardError => e
         wr.write({ e.class.to_s => e.message }.to_json)
       ensure
@@ -41,7 +44,9 @@ class SchedulerJob < ApplicationJob
       raise Object.const_get(klass), message
     end
 
-    status = true unless iteration.reload.samples.where(published_at: nil).any?
+    if iteration.reload.samples.where(published_at: nil).none?
+      status = true
+    end
   rescue StandardError => e
     status = nil
     message = e

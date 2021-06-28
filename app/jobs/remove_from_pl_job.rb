@@ -5,6 +5,7 @@ class RemoveFromPlJob < ApplicationJob
 
   def perform(iteration)
     message = 'Success'
+    story_type = iteration.story_type
 
     loop do
       rd, wr = IO.pipe
@@ -36,9 +37,22 @@ class RemoveFromPlJob < ApplicationJob
     iteration.exported&.destroy
     iteration.production_removals.last.update(status: true)
 
+    note = "#{MiniLokiC::Formatize::Numbers.to_text(iteration.samples.ready_to_export.count)} "\
+            'story(ies) removed from Pipeline'
+    record_to_change_history(story_type, 'removed from pipeline', note)
   rescue StandardError => e
     message = e.message
   ensure
+    all_removed = iteration.samples.exported.count.zero?
+    last_iteration = story_type.reload.iterations.last.eql?(iteration)
+    changeable_status = !story_type.status.name.in?(['canceled', 'blocked', 'on cron'])
+
+    if all_removed && last_iteration && changeable_status
+      story_type.update(status: Status.find_by(name: 'in progress'), last_status_changed_at: DateTime.now)
+      note = "progress status changed to 'in progress'"
+      record_to_change_history(story_type, 'progress status changed', note)
+    end
+
     iteration.update(removing_from_pl: false)
     send_to_action_cable(iteration, :export, message)
     send_to_dev_slack(iteration, 'REMOVE FROM PL', message)
