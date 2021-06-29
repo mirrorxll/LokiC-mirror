@@ -2,13 +2,9 @@
   .col-4.client
     =render client_publication_tag.client, client_publication_tag: client_publication_tag
   .col-4.client_publication
-    -if client_publication_tag.publication
-      =render client_publication_tag.publication, client_publication_tag: client_publication_tag
-    -else
-      =render 'publications/form', client_publication_tag: client_publication_tag
-
+    =render 'publications/publication', client_publication_tag: client_publication_tag
   .col-4.client_tag
     -if client_publication_tag.tag
       =render client_publication_tag.tag, client_publication_tag: client_publication_tag
     -else
-      =render 'tags/form', client_publication_tag: client_publication_tag
+      =render 'tags/form', client_publication_tag: client_publication_tag, client: client_publication_tag.client
