@@ -64,7 +64,7 @@ class ExportJob < ApplicationJob
 
     if all_exported && status && story_type.iterations.last.eql?(iteration)
       unless story_type.reload.status.name.in?(['canceled', 'blocked', 'on cron'])
-        story_type.update(status: Status.find_by(name: 'exported'), last_status_changed_at: DateTime.now)
+        story_type.update(status: Status.find_by(name: 'exported'), last_status_changed_at: Time.now)
         note = "progress status changed to 'exported'"
         record_to_change_history(story_type, 'progress status changed', note)
       end
