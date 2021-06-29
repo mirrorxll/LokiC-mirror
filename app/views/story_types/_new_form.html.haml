@@ -1,14 +1,15 @@
 =form_with(model: [@data_set, @data_set.story_types.build], local: true) do |form|
   .row.small
-    .col-sm-10.col-form-label
-      .form-group
-        =form.text_field :name, placeholder: 'new story type name', class: 'form-control', required: true
-      .form-group
-        =form.text_area :comment, placeholder: 'comment', class: 'form-control'
-      .form-check
-        =form.check_box :migrated
-        =form.label :migrated, 'migrated from Loki'
-      .col-sm-2
-        =form.submit :create, class: 'w-100'
-    .col-sm-2
-      =link_to icon('fa', 'fa fa-times text-dark'), :back
+    .col-1
+    .col-7.pl-0
+      .row
+        .col-6.pr-0
+          =form.text_field :name, placeholder: 'new story type name', class: 'w-100', required: true
+        .col-2.p-0
+          =form.submit :create, class: 'w-100'
+        .col-2.ml-2.p-1
+          =link_to icon('fa', 'fa fa-times text-dark'), :back
+      .row.mt-2
+        .col-6
+          =form.check_box :migrated
+          =form.label :migrated, 'migrated from Loki'

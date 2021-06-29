@@ -37,6 +37,8 @@ class StoryTypesController < ApplicationController # :nodoc:
   end
 
   def show
+    render_400 and return if developer? && @story_type.developer != current_account
+
     @tab_title = "LokiC::##{@story_type.id} #{@story_type.name}"
   end
 
@@ -90,13 +92,12 @@ class StoryTypesController < ApplicationController # :nodoc:
   end
 
   def new_story_type_params
-    permitted = params.require(:story_type).permit(:name, :comment, :migrated)
+    permitted = params.require(:story_type).permit(:name, :migrated)
     migrated = permitted[:migrated].eql?('1')
     status_name = migrated ? 'migrated' : 'not started'
 
     {
       name: permitted[:name],
-      comment: permitted[:comment],
       migrated: migrated,
       status: Status.find_by(name: status_name)
     }

@@ -16,7 +16,7 @@ module TagsHelper
          (client.tags.order(:name) & client.tags_for_statewide_pubs).map { |tag| [tag.name, tag.id] },
          (client.tags.order(:name) - client.tags_for_statewide_pubs).map { |tag| [tag.name, tag.id] }]
       else
-        [ '', client.tags.order(:name).map { |tag| [tag.name, tag.id] } ]
+        [ "for #{publication.name}", publication.tags.order(:name).map { |tag| [tag.name, tag.id] } ]
       end
     group_tags(name_pubs, for_all, not_for_all)
   end
@@ -26,8 +26,8 @@ module TagsHelper
       [ [ 'not for all', not_for_all ] ]
     elsif not_for_all.blank?
       [ [ name_pubs, for_all ] ]
-    elsif name_pubs.blank?
-      [ [ for_all ] ]
+    elsif !['for all pubs', 'for all local pubs', 'for all statewide pubs'].include? name_pubs
+      [ [ name_pubs, for_all ] ]
     else
       [ [ name_pubs, for_all ], [ 'not for all', not_for_all ] ]
     end
