@@ -1,12 +1,2 @@
--# - tags += client_publication_tag.client.tags.order(:name).map do |tag|
--#         -puts tag.class
--#         -puts tag.name
--#         -html_attributes = {}
--#         -html_attributes['style'] = 'background-color: #888888 ' if tag.id % 2 == 0
--#         -[tag.name, tag.id, html_attributes]
--#
-
 =form_with(url: include_story_type_client_tags_path(@story_type, client, client_publication_tag: client_publication_tag), html: { onchange: "Rails.fire(this, 'submit')" }) do |form|
   =form.select :id, grouped_options_for_select(tags_for_publication(client_publication_tag.publication, client)), { prompt: '' }
-
-

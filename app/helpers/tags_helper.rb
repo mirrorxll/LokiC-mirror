@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TagsHelper
   def tags_for_publication(publication, client)
     name_pubs, for_all, not_for_all =
@@ -30,5 +32,4 @@ module TagsHelper
       [ [ name_pubs, for_all ], [ 'not for all', not_for_all ] ]
     end
   end
-
 end
