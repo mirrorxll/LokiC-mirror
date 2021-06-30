@@ -20,7 +20,7 @@ class PopulationJob < ApplicationJob
         ExportConfigurationsJob.perform_now(story_type)
       rescue StandardError, ScriptError => e
         status = nil
-        message = e
+        message = e.message
       ensure
         iteration.update(population: status)
         send_to_action_cable(iteration, :staging_table, message)

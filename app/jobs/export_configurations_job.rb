@@ -39,7 +39,7 @@ class ExportConfigurationsJob < ApplicationJob
     end
   rescue StandardError => e
     status = nil
-    message = e
+    message = e.message
   ensure
     story_type.update(creating_export_configurations: status)
 
