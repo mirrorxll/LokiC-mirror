@@ -43,9 +43,9 @@ class ClientsPublicationsTagsJob < ApplicationJob
           c.publications.each { |p| p.tags << blank_tag }
         end
 
-        Client.where('DATE(updated_at) < DATE(created_at)').delete_all
-        Publication.where('DATE(updated_at) < DATE(created_at)').delete_all
-        Tag.where('DATE(updated_at) < DATE(created_at)').delete_all
+        Client.where('DATE(updated_at) < DATE(created_at)').destroy_all
+        Publication.where('DATE(updated_at) < DATE(created_at)').destroy_all
+        Tag.where('DATE(updated_at) < DATE(created_at)').destroy_all
       end
     )
   end

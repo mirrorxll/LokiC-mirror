@@ -4,21 +4,31 @@ class ReminderUpdatesJob < ApplicationJob
   queue_as :lokic
 
   def perform(story_types = StoryType.all)
-    story_types.all.each do |st_type|
-      st_type.reminder || st_type.create_reminder
+    story_types.each do |st_type|
+      sleep(rand)
 
-      next if st_type.developer.nil?
+      next if st_type.developer.nil? || st_type.status.name.in?(['canceled', 'migrated', 'not started'])
       next if st_type.cron_tab&.enabled || !st_type.code.attached? || st_type.reminder_off?
 
-      if st_type.updates_confirmed?
-        message(st_type, :updates_confirmed)
-        next
-      elsif st_type.updates?
-        message(st_type, :has_updates)
+      type =
+        if st_type.updates_confirmed?
+          :updates_confirmed
+        elsif st_type.updates?
+          :has_updates
+        end
+
+      if type
+        send_message(st_type, type)
         next
       end
 
-      new_data_flag = MiniLokiC::Code[st_type].check_updates
+      begin
+        new_data_flag = MiniLokiC::Code[st_type].check_updates
+      rescue StandardError, ScriptError => e
+        msg = "[ CheckUpdatesExecutionError ] -> #{e.message} at #{e.backtrace.first}".gsub('`', "'")
+        send_to_dev_slack(st_type.iteration, 'REMINDER', msg)
+        next
+      end
 
       type =
         if !new_data_flag.in?([true, false])
@@ -30,13 +40,13 @@ class ReminderUpdatesJob < ApplicationJob
           next
         end
 
-      message(st_type, type)
+      send_message(st_type, type)
     end
   end
 
   private
 
-  def message(story_type, type)
+  def send_message(story_type, type)
     message =
       case type
       when :method_missing
@@ -49,6 +59,5 @@ class ReminderUpdatesJob < ApplicationJob
       end
 
     send_to_dev_slack(story_type.iteration, 'REMINDER', message)
-    story_type.reminder.alerts.create(message: message)
   end
 end

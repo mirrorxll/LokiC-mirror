@@ -25,7 +25,7 @@
     -@story_type.clients_publications_tags.each do |cl_t|
       .row
         .col-8
-          =cl_t.client.name + "(#{cl_t.publication ? cl_t.publication.name : 'all pubs'})"
+          =cl_t.client.name + "(#{cl_t.publication ? cl_t.publication.name : 'all publications'})"
         .col-4
           =cl_t.tag ? cl_t.tag.name : 'tag not set'
     %hr/
@@ -59,6 +59,14 @@
     .row
       .col-12
         =@iteration.id
+    -if @story_type.comment
+      %hr/
+      .row.mb-2.font-weight-bold
+        .col-12
+          comment
+      .row
+        .col-12
+          =@story_type.comment
   .col-5.border-left.ml-1
     .row.mb-2.font-weight-bold
       .col-12

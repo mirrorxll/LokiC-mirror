@@ -62,8 +62,11 @@ class ApplicationController < ActionController::Base
     'The Table for this story type has been renamed, detached or drop. Please update the page.'
   end
 
-  def record_to_change_history(story_type, event_name, notes = nil)
-    event = HistoryEvent.find_by(name: event_name)
-    story_type.change_history.create(history_event: event, notes: notes)
+  def record_to_change_history(story_type, event, note)
+    note_to_md5 = Digest::MD5.hexdigest(note)
+    text = Text.find_or_create_by!(md5hash: note_to_md5) { |t| t.text = note }
+    history_event = HistoryEvent.find_or_create_by!(name: event)
+
+    story_type.change_history.create!(history_event: history_event, note: text)
   end
 end

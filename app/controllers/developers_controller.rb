@@ -9,7 +9,7 @@ class DevelopersController < ApplicationController
   def include
     render_400 && return if @story_type.developer
 
-    @story_type.update!(developer: @developer, distributed_at: DateTime.now)
+    @story_type.update!(developer: @developer, distributed_at: Time.now)
   end
 
   def exclude
@@ -34,7 +34,7 @@ class DevelopersController < ApplicationController
   end
 
   def distributed_to_history
-    notes = "distributed to #{@developer.name}"
-    record_to_change_history(@story_type, 'distributed', notes)
+    note = "distributed to #{@developer.name}"
+    record_to_change_history(@story_type, 'distributed', note)
   end
 end

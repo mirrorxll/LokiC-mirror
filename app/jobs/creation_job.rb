@@ -40,7 +40,7 @@ class CreationJob < ApplicationJob
     iteration.update(schedule_counts: schedule_counts(iteration))
   rescue StandardError, ScriptError => e
     status = nil
-    message = e
+    message = e.message
   ensure
     iteration.update(creation: status)
     send_to_action_cable(iteration, :samples, message)

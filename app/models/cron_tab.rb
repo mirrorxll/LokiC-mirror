@@ -4,15 +4,14 @@ class CronTab < ApplicationRecord
   serialize :setup, Hash
 
   after_save do
-    name, notes =
+    event, note =
       if enabled && !freeze_execution
         ['installed on cron', "installed on cron with pattern #{pattern}"]
       else
         ['cron turned off', 'cron execution disabled']
       end
 
-    event = HistoryEvent.find_by(name: name)
-    story_type.change_history.create(history_event: event, notes: notes)
+    record_to_change_history(story_type, event, note)
   end
 
   validate :check_pattern

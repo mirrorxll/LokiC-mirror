@@ -54,4 +54,3 @@ class JobItem
     JSON.parse(response.body)['id']
   end
 end
-

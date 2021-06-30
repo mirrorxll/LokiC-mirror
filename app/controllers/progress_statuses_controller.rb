@@ -6,7 +6,7 @@ class ProgressStatusesController < ApplicationController
   after_action  :status_changed_to_history
 
   def change
-    @story_type.update(status: @status, last_status_changed_at: DateTime.now)
+    @story_type.update(status: @status, last_status_changed_at: Time.now)
   end
 
   private
@@ -16,7 +16,7 @@ class ProgressStatusesController < ApplicationController
   end
 
   def status_changed_to_history
-    notes = "progress status changed to '#{@status.name}'"
-    record_to_change_history(@story_type, 'progress status changed', notes)
+    note = "progress status changed to '#{@status.name}'"
+    record_to_change_history(@story_type, 'progress status changed', note)
   end
 end

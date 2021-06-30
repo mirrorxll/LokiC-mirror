@@ -6,7 +6,6 @@ class CreateChangeHistory < ActiveRecord::Migration[6.0]
       t.references :history, polymorphic: true
       t.belongs_to :history_event
 
-      t.string :notes, limit: 1000
       t.timestamps
     end
   end

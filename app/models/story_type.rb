@@ -3,6 +3,7 @@
 class StoryType < ApplicationRecord
   before_create do
     self.photo_bucket = data_set.photo_bucket
+    self.last_status_changed_at = Time.now.getlocal('-05:00')
     build_template
     build_fact_checking_doc
     build_reminder
@@ -18,8 +19,8 @@ class StoryType < ApplicationRecord
       )
     end
 
-    event = HistoryEvent.find_by(name: 'created')
-    change_history.create(history_event: event, notes: "created by #{editor.name}")
+    note = "created by #{editor.name}"
+    record_to_change_history(self, 'created', note)
 
     update(current_iteration: iterations.first)
   end
@@ -50,6 +51,7 @@ class StoryType < ApplicationRecord
   has_many :clients, through: :clients_publications_tags
   has_many :tags, through: :clients_publications_tags
   has_many :change_history, as: :history
+  has_many :alerts, as: :alert
 
   def publications
     pub_ids = clients.map(&:publications).reduce(:|).map(&:id)

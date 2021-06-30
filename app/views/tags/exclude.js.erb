@@ -1,1 +1,2 @@
-$(`#client_publication_tag_<%= @client_publication_tag.id%> .client_tag`).html('<%= j render 'tags/form', client_publication_tag: @client_publication_tag %>')
+$(`#client_publication_tag_<%= @client_publication_tag.id%> .client_tag`).html(
+    '<%= j render 'tags/form', client: @client_publication_tag.client, client_publication_tag: @client_publication_tag %>')

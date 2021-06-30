@@ -78,14 +78,14 @@ class ReviewersFeedbackController < ApplicationController
               "<#{story_type_fact_checking_doc_url(@story_type, @story_type.fact_checking_doc)}"\
               '#reviewers_feedback|Check it>.'
 
-    channel = Rails.env.production? ? 'hle_reviews_queue' : 'lokic_development_messages'
+    channel = Rails.env.production? ? 'hle_reviews_queue' : 'hle_lokic_development_messages'
     SlackNotificationJob.perform_later(channel, message, @fcd.slack_message_ts)
   end
 
   def send_to_editors_to_history
     return unless params[:commit].eql?('approve!')
 
-    notes = 'fact checking doc sent to editors'
-    record_to_change_history(@story_type, 'fact checking doc sent to editors', notes)
+    note = 'fact checking doc sent to editors'
+    record_to_change_history(@story_type, 'fact checking doc sent to editors', note)
   end
 end
