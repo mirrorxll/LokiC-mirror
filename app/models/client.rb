@@ -31,5 +31,4 @@ class Client < ApplicationRecord # :nodoc:
   def local_publications
     publications.where(statewide: false)
   end
-
 end
