@@ -42,10 +42,7 @@ class ApplicationJob < ActiveJob::Base
     message = message.gsub(/#{Regexp.escape(" | #{developer_name}")}/, '')
     SlackNotificationJob.perform_now(story_type.developer_slack_id, message)
 
-    note_to_md5 = Digest::MD5.hexdigest(raw_message)
-    text = Text.find_or_create_by!(md5hash: note_to_md5) { |t| t.text = raw_message }
-    subtype = AlertSubtype.find_or_create_by!(name: step.downcase)
-    story_type.alerts.create!(subtype: subtype, message: text)
+    record_to_alerts(story_type, step, raw_message)
   end
 
   def send_report_to_editors_slack(iteration, url)
@@ -63,5 +60,13 @@ class ApplicationJob < ActiveJob::Base
     history_event = HistoryEvent.find_or_create_by!(name: event)
 
     story_type.change_history.create!(history_event: history_event, note: text)
+  end
+
+  def record_to_alerts(story_type, subtype, message)
+    note_to_md5 = Digest::MD5.hexdigest(message)
+    text = Text.find_or_create_by!(md5hash: note_to_md5) { |t| t.text = message }
+    subtype = AlertSubtype.find_or_create_by!(name: subtype.downcase)
+
+    story_type.alerts.create!(subtype: subtype, message: text)
   end
 end

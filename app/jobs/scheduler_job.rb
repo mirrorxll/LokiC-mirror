@@ -49,7 +49,7 @@ class SchedulerJob < ApplicationJob
     end
   rescue StandardError => e
     status = nil
-    message = e
+    message = e.message
   ensure
     iteration.update(schedule: status)
     send_to_action_cable(iteration, :scheduler, message)

@@ -4,11 +4,11 @@ class ReminderProgressJob < ApplicationJob
   queue_as :lokic
 
   def perform(story_types = StoryType.all)
-    story_types.all.each do |st_type|
-      next if st_type.developer.nil?
+    story_types.each do |st_type|
+      sleep(rand)
+      next if st_type.developer.nil? || st_type.status.name.eql?('canceled')
 
       inactive = false
-
       distributed_gap = (Date.today - st_type.distributed_at.to_date).to_i
       last_status_change_gap = (Date.today - st_type.last_status_changed_at.to_date).to_i
       created_at_gap = (Date.today - st_type.created_at.to_date).to_i

@@ -40,7 +40,7 @@ class RemoveSamplesByLastIterationJob < ApplicationJob
       schedule_counts: nil
     )
   rescue StandardError => e
-    message = e
+    message = e.message
   ensure
     iteration.update(purge_all_samples: nil)
     send_to_action_cable(iteration, :samples, message)
