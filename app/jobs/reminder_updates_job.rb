@@ -7,7 +7,7 @@ class ReminderUpdatesJob < ApplicationJob
     story_types.each do |st_type|
       sleep(rand)
 
-      next if st_type.developer.nil? || st_type.status.name.in?(['canceled', 'migrated', 'not started'])
+      next if st_type.developer.nil? || st_type.status.name.in?(['canceled', 'migrated', 'not started', 'blocked'])
       next if st_type.cron_tab&.enabled || !st_type.code.attached? || st_type.reminder_off?
 
       type =

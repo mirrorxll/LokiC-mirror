@@ -25,6 +25,7 @@ class CronTabExecuteJob < ApplicationJob
 
     new_iteration.update(export: false)
     raise StandardError unless ExportJob.perform_now(new_iteration)
+
   rescue StandardError => e
     iter =
       if new_iteration.population.nil?

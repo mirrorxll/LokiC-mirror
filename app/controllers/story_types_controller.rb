@@ -3,14 +3,14 @@
 class StoryTypesController < ApplicationController # :nodoc:
   skip_before_action :find_parent_story_type, except: :properties_form
 
-  before_action :redirect_to_separate_root, only: :index
-  before_action :render_400_editor,         only: :show, if: :editor?
-  before_action :render_400_developer,      only: %i[new create edit update properties destroy], if: :developer?
-  before_action :find_data_set,             only: %i[new create]
-  before_action :find_story_type,           except: %i[index new create properties_form]
-  before_action :set_iteration,             except: %i[index new create properties_form change_data_set]
-  before_action :message,                   only: :update_sections
-  before_action :find_current_data_set,     only: :change_data_set
+  before_action :redirect_scrapers,     only: :index
+  before_action :render_400_editor,     only: :show, if: :editor?
+  before_action :render_400_developer,  only: %i[new create edit update properties destroy], if: :developer?
+  before_action :find_data_set,         only: %i[new create]
+  before_action :find_story_type,       except: %i[index new create properties_form]
+  before_action :set_iteration,         except: %i[index new create properties_form change_data_set]
+  before_action :message,               only: :update_sections
+  before_action :find_current_data_set, only: :change_data_set
 
   def index
     @grid_params = if request.parameters[:story_types_grid]
@@ -31,7 +31,7 @@ class StoryTypesController < ApplicationController # :nodoc:
         send_data(@story_types_grid.to_csv,
                   type: 'text/csv',
                   disposition: 'inline',
-                  filename: "LokiC_StoryTypes_#{Time.now}.csv")
+                  filename: "lokic_story_types_#{Time.now}.csv")
       end
     end
   end
@@ -73,10 +73,8 @@ class StoryTypesController < ApplicationController # :nodoc:
 
   private
 
-  def redirect_to_separate_root
-    return if manager?
-
-    redirect_to data_sets_path if editor?
+  def redirect_scrapers
+    redirect_to scrape_tasks_path if only_scraper?
   end
 
   def check_access

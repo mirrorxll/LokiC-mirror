@@ -13,7 +13,7 @@ set :rvm_custom_path, '/usr/local/rvm/'
 
 set :pty, true
 set :application, 'LokiC'
-set :repo_url,    'git@github.com:mirrorxll/LokiC-mirror.git'
+set :repo_url,    'git@github.com:localitylabs/LokiC.git'
 set :branch,      'deploy'
 
 set :deploy_via,              :remote_cache
@@ -102,8 +102,8 @@ namespace :deploy do
   desc 'Make sure local git is in sync with remote.'
   task :check_revision do
     on roles(:app) do
-      unless `git rev-parse HEAD` == `git rev-parse mirror/deploy`
-        puts 'WARNING: HEAD is not the same as mirror/deploy'
+      unless `git rev-parse HEAD` == `git rev-parse origin/deploy`
+        puts 'WARNING: HEAD is not the same as origin/deploy'
         puts 'Run `git push` to sync changes.'
         exit
       end

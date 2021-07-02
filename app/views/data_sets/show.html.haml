@@ -29,7 +29,7 @@
 %hr/
 
 #story_types
-  =render @story_types
+  =render partial: 'story_types/story_type', collection: @story_types
 
 #template.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "template",
                       role: "dialog", tabindex: "-1", 'data-backdrop' => 'static',  'data-keyboard' => "false" }

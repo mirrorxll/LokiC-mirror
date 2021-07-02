@@ -19,25 +19,22 @@ Rails.application.routes.draw do
   mount ActionCable.server, at: '/cable'
 
   namespace :api, constraints: { format: :json } do
-    namespace :v1 do
-      resources :clients, only: [] do
-        get :visible, on: :collection
-        get :tags
-        get :publications
-      end
-
-      resources :shown_samples, only: :update
+    resources :clients, only: [] do
+      get :visible, on: :collection
+      get :tags
+      get :publications
     end
+
+    resources :scrape_tasks, only: [] do
+      get :names, on: :collection
+    end
+
+    resources :shown_samples, only: :update
   end
 
   root 'story_types#index'
 
   get '/iterations/:id', to: 'iterations#show'
-
-  resources :images, only: :create, defaults: { format: :json } do
-    get    :show,    on: :collection, path: '/:name', name: /.*/
-    delete :destroy, on: :collection, path: '/:name', name: /.*/
-  end
 
   resources :data_sets, except: %i[new] do
     get :properties, on: :member
@@ -179,13 +176,11 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :scrape_tasks, except: :destroy
+
   resources :shown_samples,        only: :index
   resources :exported_story_types, only: :index
   resources :production_removals,  only: :index
-
-  resources :slack_accounts, only: %i[] do
-    patch :sync
-  end
 
   resources :tracking_hours, only: %i[new create update destroy index] do
     post   :submit_forms,  on: :collection
