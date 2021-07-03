@@ -16,6 +16,7 @@ class CreateScrapeTasks < ActiveRecord::Migration[6.0]
 
       # scrape
       t.boolean :scrapable
+      t.string  :gather_task_url
 
       # evaluation
       t.string :data_set_location

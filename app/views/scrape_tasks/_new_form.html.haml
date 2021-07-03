@@ -84,7 +84,7 @@
     }
   })
 
-  const onSubmit = (ev) => {
+  function onSubmit(ev) {
     ev.preventDefault();
     ev.stopPropagation();
 
@@ -111,5 +111,4 @@
       }
     })
   }
-
   document.querySelector('#newScrapeTaskForm').addEventListener('submit', onSubmit)
