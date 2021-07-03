@@ -19,7 +19,7 @@ class StoryTypesGrid
     scope.joins(:data_set).where('location like ?', "%#{value}%")
   end
   filter(:developer, :enum, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
-  filter(:frequency, :enum, left: true, select: Frequency.regular.pluck(:name, :id))
+  filter(:frequency, :enum, left: true, select: Frequency.pluck(:name, :id))
   filter(:photo_bucket, :enum, left: true, select: PhotoBucket.all.order(:name).pluck(:name, :id))
   filter(:status, :enum, left: true, select: Status.all.pluck(:name, :id)) do |value, scope|
     status = Status.find(value)
@@ -54,7 +54,7 @@ class StoryTypesGrid
       link_to value, record
     end
   end
-  column(:status, mandatory: true, order: 'statuses.name') do |record|
+  column(:status, mandatory: true, order: 'status.name') do |record|
     record.status.name
   end
   column(:last_export, mandatory: true) do |record|

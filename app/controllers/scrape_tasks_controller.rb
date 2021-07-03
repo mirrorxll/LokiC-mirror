@@ -23,6 +23,10 @@ class ScrapeTasksController < ApplicationController
     end
   end
 
+  def show
+
+  end
+
   def create
     @scrape_task = ScrapeTask.create!(new_scrape_task_params)
   end
@@ -42,6 +46,7 @@ class ScrapeTasksController < ApplicationController
 
   def new_scrape_task_params
     sc_task_params = params.require(:scrape_task).permit(:name, :datasource_url, :notes_on_datasource)
+    sc_task_params[:creator] = current_account
 
     if sc_task_params[:notes_on_datasource].present?
       sc_task_params[:notes_on_datasource] = Text.new(body: sc_task_params[:notes_on_datasource])

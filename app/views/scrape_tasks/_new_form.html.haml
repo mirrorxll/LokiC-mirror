@@ -19,7 +19,12 @@
           .row.mb-2
             .col-10.offset-1.small
               =f.text_field :datasource_url, placeholder: 'datasource url (https://example.com)',
-                            maxlength: 1000, class: 'form-control form-control-sm', required: true
+                            id: 'newScrapeTaskDataUrl', maxlength: 1000, class: 'form-control form-control-sm',
+                            required: true
+              #newScrapeTaskDataUrlLength
+                1000 /
+                %span
+                  0
           .row.small
             .col-10.offset-1
               =f.text_area :notes_on_datasource, placeholder: 'notes on datasource',
@@ -42,12 +47,12 @@
     return !names.find(el => lowName === el.toLowerCase());
   }
 
-  document.getElementById('newScrapeTaskName').addEventListener('input', delay(function () {
+  document.querySelector('#newScrapeTaskName').addEventListener('input', delay(() => {
     Rails.ajax({
       type: 'GET',
       dataType: 'json',
       url: `#{root_url}api/scrape_tasks/names`,
-      success: function (names) {
+      success: (names) => {
         let nameInput = document.querySelector('#newScrapeTaskName');
         let nameFeedback = document.querySelector('#newScrapeTaskNameFeedback');
         let submitButton = document.querySelector('#newScrapeTaskForm input[type="submit"]');
@@ -66,7 +71,20 @@
     })
   }, 500))
 
-  document.getElementById('newScrapeTaskForm').addEventListener('submit', function (ev) {
+  document.querySelector('#newScrapeTaskDataUrl').addEventListener('input', (ev) => {
+    let inputLength = ev.target.value.length;
+    let lengthMeter = document.querySelector('#newScrapeTaskDataUrlLength');
+
+    lengthMeter.querySelector('span').innerText = inputLength;
+
+    if(inputLength === 1000) {
+      lengthMeter.classList.add('text-danger');
+    } else {
+      lengthMeter.classList.remove('text-danger');
+    }
+  })
+
+  const onSubmit = (ev) => {
     ev.preventDefault();
     ev.stopPropagation();
 
@@ -79,12 +97,12 @@
       type: 'GET',
       dataType: 'json',
       url: `#{root_url}api/scrape_tasks/names`,
-      success: function (names) {
-        console.log(names);
+      success: (names) => {
         let nameIsUniq = isUniq(nameInput.value, names);
 
         if(nameIsUniq) {
-          form.submit();
+          form.removeEventListener('submit', onSubmit)
+          Rails.fire(form, 'submit')
         } else {
           nameInput.classList.add('border', 'border-danger');
           nameFeedback.classList.remove('d-none');
@@ -92,4 +110,6 @@
         }
       }
     })
-  })
+  }
+
+  document.querySelector('#newScrapeTaskForm').addEventListener('submit', onSubmit)

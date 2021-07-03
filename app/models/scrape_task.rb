@@ -9,6 +9,7 @@ class ScrapeTask < ApplicationRecord
   validates_uniqueness_of :name, case_sensitive: false
   validates :datasource_url, length: { maximum: 1000 }
 
+  belongs_to :creator,   optional: true, class_name: 'Account'
   belongs_to :scraper,   optional: true, class_name: 'Account'
   belongs_to :frequency, optional: true
   belongs_to :status,    optional: true

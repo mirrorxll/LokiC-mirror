@@ -3,6 +3,7 @@
 class CreateScrapeTasks < ActiveRecord::Migration[6.0]
   def change
     create_table :scrape_tasks do |t|
+      t.belongs_to :creator
       t.belongs_to :scraper
       t.belongs_to :status
       t.belongs_to :frequency
