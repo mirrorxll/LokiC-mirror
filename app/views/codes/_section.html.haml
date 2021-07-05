@@ -3,4 +3,5 @@
 -elsif @story_type.code.attached?
   =render 'codes/code'
 -else
-  =render 'codes/form'
+  -unless current_account.types.eql?(['developer']) && @story_type.developer != current_account
+    =render 'codes/form'

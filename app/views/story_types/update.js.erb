@@ -1,1 +1,3 @@
 $('#story_type_<%= @story_type.id %>').replaceWith('<%= j render @story_type %>')
+$('#story_type_<%= @story_type.id %>_gather_task_form').empty()
+$('#gather_task_link').replaceWith('<%= link_to("https://pipeline.locallabs.com/gather_tasks/#{@story_type.gather_task_id}", "https://pipeline.locallabs.com/gather_tasks/#{@story_type.gather_task_id}", target: '_blank', id: 'gather_task_link') %>')

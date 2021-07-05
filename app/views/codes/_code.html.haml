@@ -1,6 +1,7 @@
 .row
   .col-12
-    =link_to('[ reload ]', reload_story_type_codes_path(@story_type),
-             class: 'p-0 btn btn-sm btn-link', method: :put, data: { disable_with: '[ ... ]'}, remote: true)
+    -unless current_account.types.eql?(['developer']) && @story_type.developer != current_account
+      =link_to('[ reload ]', reload_story_type_codes_path(@story_type),
+               class: 'p-0 btn btn-sm btn-link', method: :put, data: { disable_with: '[ ... ]'}, remote: true)
     =link_to('[ download ]', url_for(@story_type.code), class: 'p-0 btn btn-sm btn-link')
     =link_to('[ show ]', story_type_codes_path(@story_type), class: 'p-0 btn btn-sm btn-link', remote: true)
