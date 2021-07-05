@@ -69,8 +69,8 @@
             =link_to(icon('fas', 'pen', class: ' fa-xs text-dark'), edit_story_type_path(@story_type), remote: true)
       .row.col-12
         .text-left{id: "story_type_#{@story_type.id}_gather_task_form"}
-        -if @story_type.gather_task_id
-          =link_to "https://pipeline.locallabs.com/gather_tasks/#{@story_type.gather_task_id}", "https://pipeline.locallabs.com/gather_tasks/#{@story_type.gather_task_id}", target: '_blank', id: 'gather_task_link'
+        -if @story_type.gather_task
+          =link_to "https://pipeline.locallabs.com/gather_tasks/#{@story_type.gather_task}", "https://pipeline.locallabs.com/gather_tasks/#{@story_type.gather_task}", target: '_blank', id: 'gather_task_link'
         -else
           %a#gather_task_link
       -if @story_type.comment

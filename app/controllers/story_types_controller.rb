@@ -90,21 +90,21 @@ class StoryTypesController < ApplicationController # :nodoc:
   end
 
   def new_story_type_params
-    permitted = params.require(:story_type).permit(:name, :comment, :gather_task_id, :migrated)
+    permitted = params.require(:story_type).permit(:name, :comment, :gather_task, :migrated)
     migrated = permitted[:migrated].eql?('1')
     status_name = migrated ? 'migrated' : 'not started'
 
     {
       name: permitted[:name],
       comment: permitted[:comment],
-      gather_task_id: permitted[:gather_task_id],
+      gather_task: permitted[:gather_task],
       migrated: migrated,
       status: Status.find_by(name: status_name)
     }
   end
 
   def exist_story_type_params
-    params.require(:story_type).permit(:name, :comment, :gather_task_id)
+    params.require(:story_type).permit(:name, :comment, :gather_task)
   end
 
   def filter_params
