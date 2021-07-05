@@ -48,6 +48,8 @@
                     =link_to('assembled 2020', assembleds_tracking_hours_path(week: current_week), class: 'nav-link')
             %li.nav-item.active
               =link_to('tracking hours', tracking_hours_path(week: current_week, developer: current_account), class: 'nav-link')
+            %li.nav-item.active
+              =link_to('tasks', tasks_path, class: 'nav-link')
             %li.nav-item.dropdown.ml-auto
               #navbarDropdown.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
                 =current_account.name

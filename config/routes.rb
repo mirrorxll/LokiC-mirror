@@ -205,4 +205,6 @@ Rails.application.routes.draw do
     get :show_hours,      on: :collection
     get :exported_counts, on: :collection
   end
+
+  resources :tasks
 end
