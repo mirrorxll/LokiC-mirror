@@ -72,7 +72,8 @@
         -if @story_type.gather_task
           =link_to "https://pipeline.locallabs.com/gather_tasks/#{@story_type.gather_task}", "https://pipeline.locallabs.com/gather_tasks/#{@story_type.gather_task}", target: '_blank', id: 'gather_task_link'
         -else
-          %a#gather_task_link
+          %a#gather_task_link{ href: 'https://pipeline.locallabs.com/gather_tasks/new', target: '_blank'}
+            https://pipeline.locallabs.com/gather_tasks/new
       -if @story_type.comment
         %hr/
         .row.mb-2.font-weight-bold.col-12

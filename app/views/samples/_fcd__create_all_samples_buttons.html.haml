@@ -7,14 +7,14 @@
                class: 'btn btn-sm btn-outline-dark', target: '_blank')
       -if @iteration.creation
         =render 'samples/samples_link'
-    -unless current_account.types.eql?(['developer']) && @story_type.developer != current_account
       -if @iteration.export.nil?
-        -if @iteration.creation.eql?(nil) && @story_type.fact_checking_doc.approval_editors.count > 1
-          =link_to('create samples from the last iteration',
-                    execute_story_type_iteration_creations_path(@story_type, @iteration),
-                    class: 'btn btn-sm btn-outline-dark', method: :post, remote: true)
-        -elsif @iteration.creation
-          =link_to('purge samples from the last iteration',
-                    purge_all_story_type_iteration_creations_path(@story_type, @iteration),
-                    id: 'purge_all_samples', class: 'btn btn-sm btn-outline-danger',
-                    method: :delete, remote: true)
+        -unless current_account.types.eql?(['developer']) && @story_type.developer != current_account
+          -if @iteration.creation.eql?(nil) && @story_type.fact_checking_doc.approval_editors.count > 1
+            =link_to('create samples from the last iteration',
+                      execute_story_type_iteration_creations_path(@story_type, @iteration),
+                      class: 'btn btn-sm btn-outline-dark', method: :post, remote: true)
+          -elsif @iteration.creation
+            =link_to('purge samples from the last iteration',
+                      purge_all_story_type_iteration_creations_path(@story_type, @iteration),
+                      id: 'purge_all_samples', class: 'btn btn-sm btn-outline-danger',
+                      method: :delete, remote: true)
