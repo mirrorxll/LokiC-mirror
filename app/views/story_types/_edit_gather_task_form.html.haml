@@ -1,0 +1,5 @@
+=form_with(model: @story_type, class: 'form-inline') do |form|
+  .form-group.mb-2.mr-sm-2
+    =form.text_field :gather_task, placeholder: @story_type.gather_task
+  .form-group.mb-2.mr-sm-2
+    =form.submit :edit
