@@ -30,11 +30,12 @@
     =render 'story_types/spinner', description: 'purge all samples in progress'
   -else
     -samples = @iteration.samples.where(sampled: true)
-    .row
-      .col-10.offset-1
-        #samples_form
-          =render 'samples/form', samples: samples
-        %hr/
+    -unless current_account.types.eql?(['developer']) && @story_type.developer != current_account
+      .row
+        .col-10.offset-1
+          #samples_form
+            =render 'samples/form', samples: samples
+          %hr/
     .row
       .col-10.offset-1
         #created_samples
