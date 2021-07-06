@@ -5,7 +5,7 @@ class StoryTypesController < ApplicationController # :nodoc:
 
   before_action :redirect_scrapers,     only: :index
   before_action :render_400_editor,     only: :show, if: :editor?
-  before_action :render_400_developer,  only: %i[new create edit update properties destroy], if: :developer?
+  before_action :render_400_developer,  only: %i[new create properties destroy], if: :developer?
   before_action :find_data_set,         only: %i[new create]
   before_action :find_story_type,       except: %i[index new create properties_form]
   before_action :set_iteration,         except: %i[index new create properties_form change_data_set]
@@ -37,8 +37,6 @@ class StoryTypesController < ApplicationController # :nodoc:
   end
 
   def show
-    render_400 and return if developer? && @story_type.developer != current_account
-
     @tab_title = "LokiC::##{@story_type.id} #{@story_type.name}"
   end
 
@@ -90,20 +88,21 @@ class StoryTypesController < ApplicationController # :nodoc:
   end
 
   def new_story_type_params
-    permitted = params.require(:story_type).permit(:name, :comment, :migrated)
+    permitted = params.require(:story_type).permit(:name, :comment, :gather_task, :migrated)
     migrated = permitted[:migrated].eql?('1')
     status_name = migrated ? 'migrated' : 'not started'
 
     {
       name: permitted[:name],
       comment: permitted[:comment],
+      gather_task: permitted[:gather_task],
       migrated: migrated,
       status: Status.find_by(name: status_name)
     }
   end
 
   def exist_story_type_params
-    params.require(:story_type).permit(:name)
+    params.require(:story_type).permit(:name, :comment, :gather_task)
   end
 
   def filter_params
