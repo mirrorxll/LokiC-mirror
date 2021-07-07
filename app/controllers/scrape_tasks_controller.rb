@@ -5,6 +5,7 @@ class ScrapeTasksController < ApplicationController
   skip_before_action :set_iteration
 
   before_action :grid, only: :index
+  before_action :find_scrape_task, only: :show
 
   def index
     respond_to do |f|
@@ -24,7 +25,7 @@ class ScrapeTasksController < ApplicationController
   end
 
   def show
-
+    puts 11111
   end
 
   def create
@@ -42,6 +43,10 @@ class ScrapeTasksController < ApplicationController
       end
 
     @grid = ScrapeTasksGrid.new(grid_params)
+  end
+
+  def find_scrape_task
+    @scrape_task = ScrapeTask.find(params[:id])
   end
 
   def new_scrape_task_params

@@ -1,0 +1,76 @@
+%div{ id: "scrape_task", scrape_task_id: @scrape_task.id }
+
+%hr/
+
+.row.align-items-center
+  .col-10
+    =@scrape_task.name
+  .col-2.text-right.small
+    =button_to('update scrape task', edit_scrape_task_path, data: { disable_with: '...'},
+               class: 'btn btn-sm btn-outline-dark', remote: true)
+
+%hr/
+
+.row
+  .col-12.text-right
+    status
+
+#data_set_info
+  .row.card-body
+    .col-12
+      .card.small
+        .card-header.p-2
+          datasource
+        .card-body
+          .row.mb-2
+            .col-2.pr-0.text-right.font-weight-bold
+              URL:
+            .col-10
+
+          .row.mb-2
+            .col-2.pr-0.text-right.font-weight-bold
+              preparation document:
+            .col-10
+
+          .row.mb-2
+            .col-2.pr-0.text-right.font-weight-bold
+              slack channel:
+            .col-10
+
+          .row.mb-2
+            .col-2.pr-0.text-right.font-weight-bold
+              sheriff:
+            .col-10
+
+          .row.mb-2
+            .col-2.pr-0.text-right.font-weight-bold
+              state:
+            .col-10
+
+          .row.mb-2
+            .col-2.pr-0.text-right.font-weight-bold
+              category:
+            .col-10
+
+          .row
+            .col-2.pr-0.text-right.font-weight-bold
+              comment:
+            .col-10
+
+
+-# #template.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "template",
+-#                       role: "dialog", tabindex: "-1", 'data-backdrop' => 'static',  'data-keyboard' => "false" }
+-#   .modal-dialog.modal-dialog-centered.modal-xl
+-#     .modal-content
+-#       .modal-header
+-#         %h5.modal-title
+-#       .modal-body
+-#
+-# #properties.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "properties", role: "dialog", :tabindex => "-1"}
+-#   .modal-dialog.modal-dialog-centered.modal-xl
+-#     .modal-content
+-#       .modal-header
+-#         %h5.modal-title
+-#         %button.close{"aria-label" => "Close", "data-dismiss" => "modal", type: "button"}
+-#           %span{"aria-hidden" => "true"} ×
+-#       .modal-body

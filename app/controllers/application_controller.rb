@@ -45,7 +45,6 @@ class ApplicationController < ActionController::Base
 
   def only_scraper?
     acc_types = current_account.types
-
     acc_types.count.eql?(1) && acc_types.first.eql?('scraper')
   end
 

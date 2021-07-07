@@ -30,7 +30,7 @@ class DataSetsController < ApplicationController # :nodoc:
     @story_types = @data_set.story_types.order(id: :desc)
 
     story_type_filter_params.each do |key, value|
-      @story_types = @story_types.public_send(key, value) if value.present?
+      @story_types = @story_types.where(key => value) if value.present?
     end
   end
 

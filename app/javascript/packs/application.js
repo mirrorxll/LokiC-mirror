@@ -21,6 +21,11 @@ window.$ = $;
 window.cronValidator = require('cron-validator')
 window.cronstrue = cronstrue
 
+
+window.froalaEditor = require('froala-editor');
+require('froala-editor/css/froala_editor.pkgd.min.css')
+require('froala-editor/js/froala_editor.pkgd.min')
+
 document.addEventListener('turbolinks:load', () => {
   $('[data-toggle="tooltip"]').tooltip()
   $('[data-toggle="popover"]').popover({sanitize: false})
