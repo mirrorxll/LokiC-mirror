@@ -2,6 +2,6 @@
 
 class Alert < ApplicationRecord
   belongs_to :alert, polymorphic: true
-  belongs_to :subtype, class_name: 'AlertSubtype'
+  belongs_to :alert_subtype, foreign_key: :subtype_id
   belongs_to :note
 end

@@ -25,7 +25,6 @@ class ScrapeTasksController < ApplicationController
   end
 
   def show
-    puts 11111
   end
 
   def create

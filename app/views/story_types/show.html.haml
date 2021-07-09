@@ -28,11 +28,11 @@
         new iteration
   .col-2.text-right
     #story_type_status
-      =render 'progress_statuses/status'
+      =render 'story_type_statuses/status'
 %hr/
 
 #story_type_template.accordion
-  .card
+  .card.small
     .card-header
       %div.text-center{"aria-controls" => "#template", "aria-expanded" => "true", "data-target" => "#template", "data-toggle" => "collapse", type: "button"}
         template

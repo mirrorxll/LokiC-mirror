@@ -45,14 +45,12 @@ Rails.application.routes.draw do
   resources :story_types, except: %i[new create] do
     get   :properties_form
     get   :canceling_edit,  on: :member
-
     patch :update_sections, on: :member
-
     patch :change_data_set, on: :member
 
-    patch '/change_progress_status', to: 'progress_statuses#change'
-
-    resources(:progress_statuses, only: []) { patch :change, on: :collection }
+    resources :progress_statuses, controller: 'story_type_statuses', only: [] do
+      patch :change, on: :collection
+    end
 
     resources :templates, path: :template, only: %i[show edit update] do
       patch :save, on: :member
@@ -176,7 +174,11 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :scrape_tasks, except: :destroy
+  resources :scrape_tasks, except: :destroy do
+    resources :progress_statuses, controller: 'scrape_task_statuses', only: [] do
+      patch :change, on: :collection
+    end
+  end
 
   resources :shown_samples,        only: :index
   resources :exported_story_types, only: :index

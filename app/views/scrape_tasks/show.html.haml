@@ -1,61 +1,97 @@
 %div{ id: "scrape_task", scrape_task_id: @scrape_task.id }
 
 %hr/
+=@scrape_task.name
+%hr.mb-0/
 
-.row.align-items-center
-  .col-10
-    =@scrape_task.name
-  .col-2.text-right.small
-    =button_to('update scrape task', edit_scrape_task_path, data: { disable_with: '...'},
-               class: 'btn btn-sm btn-outline-dark', remote: true)
+.text-right.text-secondary.mb-3.small
+  created at: #{@scrape_task.created_at}#{@scrape_task.updated_early? ? " | updated at: #{@scrape_task.updated_at}" : ""}
 
-%hr/
+#scrapping_info.mt-4.small
+  .card
+    .card-header.p-1
+      .d-flex.justify-content-between.align-items-center
+        main info
+        .d-inline-block
+          .d-inline-block.mr-2
+            =button_to('edit', edit_scrape_task_path(@scrape_task), class: 'border rounded')
+          #scrapeTaskStatus.d-inline-block
+            =render 'statuses'
 
-.row
-  .col-12.text-right
-    status
-
-#data_set_info
-  .row.card-body
-    .col-12
-      .card.small
-        .card-header.p-2
-          datasource
-        .card-body
-          .row.mb-2
+    .card-body
+      -status = @scrape_task.status.name
+      -if status.in?(%w[blocked canceled])
+        #scrapeTaskStatus
+          .row.mb-4
             .col-2.pr-0.text-right.font-weight-bold
-              URL:
+              scrape task has been #{status}. Why?
             .col-10
+              =@scrape_task.status_comment
 
-          .row.mb-2
-            .col-2.pr-0.text-right.font-weight-bold
-              preparation document:
-            .col-10
+      .row.mb-4
+        .col-2.pr-0.text-right.font-weight-bold
+          gather task:
+        .col-10
+          -link = @scrape_task.gather_task_link
+          -if link
+            =link_to('link', link)
+          -else
+            \---
+      .row.mb-2
+        .col-2.pr-0.text-right.font-weight-bold
+          scrapable?
+        .col-10
+          -if @scrape_task.scrapable
+            .font-weight-bold
+              +
+          -elsif @scrape_task.scrapable.eql?(false)
+            .font-weight-bold
+              -
+          -else
+            not checked
 
-          .row.mb-2
-            .col-2.pr-0.text-right.font-weight-bold
-              slack channel:
-            .col-10
+      .row.mb-4
+        .col-2.pr-0.text-right.font-weight-bold
+          comment on scrape ability:
+        .col-10
+          =@scrape_task.scrape_ability_comment
 
-          .row.mb-2
-            .col-2.pr-0.text-right.font-weight-bold
-              sheriff:
-            .col-10
+      .row.mb-2
+        .col-2.pr-0.text-right.font-weight-bold
+          URL:
+        .col-10
+          =@scrape_task.datasource_url
 
-          .row.mb-2
-            .col-2.pr-0.text-right.font-weight-bold
-              state:
-            .col-10
+      .row.mb-4
+        .col-2.pr-0.text-right.font-weight-bold
+          comment on datasource:
+        .col-10
+          =@scrape_task.datasource_comment
 
-          .row.mb-2
-            .col-2.pr-0.text-right.font-weight-bold
-              category:
-            .col-10
+      .row.mb-2
+        .col-2.pr-0.text-right.font-weight-bold
+          scraper:
+        .col-10
+          =@scrape_task.scraper&.name
 
-          .row
-            .col-2.pr-0.text-right.font-weight-bold
-              comment:
-            .col-10
+      .row.mb-2
+        .col-2.pr-0.text-right.font-weight-bold
+          scrape frequency:
+        .col-10
+          =@scrape_task.frequency&.name
+
+#scrape_instruction.mt-5.accordion.small
+  .card
+    .card-header.p-1
+      %div.d-flex.justify-content-between.align-items-center{ "aria-controls" => "#instruction", "aria-expanded" => "false",
+                                                              "data-target" => "#instruction", "data-toggle" => "collapse", type: "button"}
+        instruction
+        =button_to('edit', edit_scrape_task_path(@scrape_task))
+
+    #instruction.collapse{"data-parent" => "#scrape_instruction"}
+      .row
+        .col-10.offset-1
+          =@scrape_task.scrape_instruction
 
 
 -# #template.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "template",

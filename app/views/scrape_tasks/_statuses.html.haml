@@ -1,0 +1,38 @@
+.dropdown
+  %button#scrapeTaskStatusButton.dropdown-toggle.border.rounded{ class: "bg-#{status_color(@scrape_task.status.name)}", "aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :type => "button"}
+    =@scrape_task.status.name
+  .small.dropdown-menu.manual-dropdown-menu.dropdown-menu-right{"aria-labelledby" => "scrapeTaskStatusButton"}
+    -Status.scrape_task_dev_statuses.each do |s|
+      .dropdown-item.small{status_id: s.id, onclick: 'changeScrapeStatus(this);'}
+        =s.name
+
+:javascript
+  function changeScrapeStatus(status) {
+    let reasons = null;
+
+    console.log(status.innerText)
+    if(['blocked', 'canceled'].find((el) => { return el === status.innerText })) {
+      reasons = prompt(`Status '${status.innerText}' :(\nWhy?`);
+
+      if(!reasons) return false;
+    }
+
+    let statusId = status.getAttribute('status_id');
+    let statusDiv = document.querySelector('#scrapeTaskStatus')
+    let onLoading = document.createElement('div');
+    let onLoadingSnap = document.createElement('span');
+
+    onLoadingSnap.classList.add('sr-only');
+    onLoading.classList.add('spinner-border', 'spinner-border-sm');
+    onLoading.appendChild(onLoadingSnap);
+
+    statusDiv.innerHTML = ''
+    statusDiv.appendChild(onLoading)
+
+    Rails.ajax({
+      type: "PATCH",
+      dataType: 'script',
+      url: `#{change_scrape_task_progress_statuses_path(@scrape_task)}`,
+      data: `status_id=${statusId}` + (reasons ? `&reasons=${reasons}` : '')
+    })
+  }

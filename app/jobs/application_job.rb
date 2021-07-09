@@ -67,6 +67,6 @@ class ApplicationJob < ActiveJob::Base
     note = Note.find_or_create_by!(md5hash: note_to_md5) { |t| t.note = message }
     alert_subtype = AlertSubtype.find_or_create_by!(name: subtype.downcase)
 
-    story_type.alerts.create!(subtype: alert_subtype, note: note)
+    story_type.alerts.create!(alert_subtype: alert_subtype, note: note)
   end
 end

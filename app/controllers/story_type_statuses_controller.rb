@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-class ProgressStatusesController < ApplicationController
+class StoryTypeStatusesController < ApplicationController
   before_action :render_400, if: :editor?
-  before_action :find_status, only: :change
+  before_action :find_status
   after_action  :status_changed_to_history
 
   def change

@@ -14,17 +14,13 @@ import '../stylesheets/application'
 import './summernote'
 import Rails from "@rails/ujs";
 import cronstrue from 'cronstrue'
+import './froala'
 
 window.Rails = Rails;
 window.jQuery = $;
 window.$ = $;
 window.cronValidator = require('cron-validator')
 window.cronstrue = cronstrue
-
-
-window.froalaEditor = require('froala-editor');
-require('froala-editor/css/froala_editor.pkgd.min.css')
-require('froala-editor/js/froala_editor.pkgd.min')
 
 document.addEventListener('turbolinks:load', () => {
   $('[data-toggle="tooltip"]').tooltip()

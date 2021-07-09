@@ -14,9 +14,19 @@ class ScrapeTask < ApplicationRecord
   belongs_to :frequency, optional: true
   belongs_to :status,    optional: true
 
-  has_one :notes_on_datasource,   as: :text, class_name: 'Text'
-  has_one :notes_on_scrapability, as: :text, class_name: 'Text'
-  has_one :notes_on_status,       as: :text, class_name: 'Text'
-  has_one :instruction,           as: :text, class_name: 'Text'
-  has_one :evaluation_doc,        as: :text, class_name: 'Text'
+  has_one :scrape_instruction
+  has_one :scrape_evaluation_doc
+  has_one :scrape_ability_comment, -> { includes(:comment_subtype).where(comment_subtypes: { name: 'scrape_ability_comment' }) }, as: :commentable, class_name: 'Comment'
+  has_one :datasource_comment, -> { includes(:comment_subtype).where(comment_subtypes: { name: 'datasource comment' }) }, as: :commentable, class_name: 'Comment'
+  has_one :status_comment, -> { includes(:comment_subtype).where(comment_subtypes: { name: 'status comment' }) }, as: :commentable, class_name: 'Comment'
+
+  def updated_early?
+    updated_at > created_at
+  end
+
+  def gather_task_link
+    return unless gather_task
+
+    "https://pipeline.locallabs.com/gather_tasks/#{gather_task}"
+  end
 end

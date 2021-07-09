@@ -7,7 +7,7 @@
 .change_progress_status_form.d-none
   =form_with(url: change_story_type_progress_statuses_path(@story_type, @iteration),
              html: { class: 'd-inline', onchange: "Rails.fire(this, 'submit')" }, method: :patch) do |form|
-    =form.collection_select :status_id, Status.where.not(name: ['not started', 'migrated', 'inactive']), :id, :name, { prompt: '' }, selected: status.id
+    =form.collection_select :status_id, Status.story_type_dev_statuses, :id, :name, { prompt: '' }, selected: status.id
 
 :javascript
   document.querySelector('.current_progress_status a').addEventListener('click', function (evt) {

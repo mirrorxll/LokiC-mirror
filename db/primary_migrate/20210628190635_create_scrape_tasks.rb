@@ -10,17 +10,17 @@ class CreateScrapeTasks < ActiveRecord::Migration[6.0]
 
       # head
       t.string :name
+      t.string :gather_task
 
       # datasource
       t.string :datasource_url, limit: 1000
 
       # scrape
       t.boolean :scrapable
-      t.string  :gather_task_url
 
       # evaluation
       t.string :data_set_location
-      t.string :data_sample_spreadsheet_url
+      t.string :data_sample_url
 
       t.timestamps
     end
