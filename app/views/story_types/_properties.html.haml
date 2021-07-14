@@ -56,30 +56,7 @@
     %p
       %a.p-0.btn.btn-sm.btn-link.d-inline-block.font-weight-normal{"aria-controls" => "collapseProperties", "aria-expanded" => "false", "data-toggle" => "collapse", href: "#collapseProperties", role: "button"}
         [ additional properties ]
-    #collapseProperties.collapse
-      .row.mb-2.font-weight-bold.col-12
-        current iteration id
-      .row.col-12
-        =@iteration.id
-      %hr/
-      .row.mb-2.font-weight-bold.col-12
-        gather task id
-        -unless current_account.types.eql?(['developer']) && @story_type.developer != current_account
-          .col-1.p-0.text-center
-            =link_to(icon('fas', 'pen', class: ' fa-xs text-dark'), edit_story_type_path(@story_type), remote: true)
-      .row.col-12
-        .text-left{id: "story_type_#{@story_type.id}_gather_task_form"}
-        -if @story_type.gather_task
-          =link_to "https://pipeline.locallabs.com/gather_tasks/#{@story_type.gather_task}", "https://pipeline.locallabs.com/gather_tasks/#{@story_type.gather_task}", target: '_blank', id: 'gather_task_link'
-        -else
-          %a#gather_task_link{ href: 'https://pipeline.locallabs.com/gather_tasks/new', target: '_blank'}
-            https://pipeline.locallabs.com/gather_tasks/new
-      -if @story_type.comment
-        %hr/
-        .row.mb-2.font-weight-bold.col-12
-          comment
-        .row.col-12
-          =@story_type.comment
+    =render 'story_types/additional_properties'
   .col-5.border-left.ml-1
     .row.mb-2.font-weight-bold
       .col-12
@@ -87,7 +64,7 @@
     #story_type_code
       =render 'codes/section'
     %hr/
-    -unless current_account.types.eql?(['developer']) && @story_type.developer != current_account
+    -if correct_account?(@story_type)
       .row.mb-2.font-weight-bold
         .col-12
           export configurations (manual execution)

@@ -8,7 +8,7 @@
       -if @iteration.creation
         =render 'samples/samples_link'
       -if @iteration.export.nil?
-        -unless current_account.types.eql?(['developer']) && @story_type.developer != current_account
+        -if correct_account?(@story_type)
           -if @iteration.creation.eql?(nil) && @story_type.fact_checking_doc.approval_editors.count > 1
             =link_to('create samples from the last iteration',
                       execute_story_type_iteration_creations_path(@story_type, @iteration),

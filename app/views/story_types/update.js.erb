@@ -1,3 +1,4 @@
 $('#story_type_<%= @story_type.id %>').replaceWith('<%= j render @story_type %>')
-$('#story_type_<%= @story_type.id %>_gather_task_form').empty()
 $('#gather_task_link').replaceWith('<%= link_to("https://pipeline.locallabs.com/gather_tasks/#{@story_type.gather_task ? @story_type.gather_task : 'new'}", "https://pipeline.locallabs.com/gather_tasks/#{@story_type.gather_task ? @story_type.gather_task : 'new'}", target: '_blank', id: 'gather_task_link') %>')
+$('#commentForm').collapse('hide')
+$('#storyTypeComment').html('<%= @story_type.comment %>')
