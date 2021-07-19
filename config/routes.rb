@@ -206,5 +206,7 @@ Rails.application.routes.draw do
     get :exported_counts, on: :collection
   end
 
-  resources :tasks
+  resources :tasks do
+    patch :change_status
+  end
 end

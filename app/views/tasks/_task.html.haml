@@ -1,0 +1,10 @@
+.card{style: "cursor:pointer;", id: task.id}
+  .card-body.p-3
+    .row
+      .col-10.fw-bold
+        =task.title
+      .col-1
+        .current_progress_status
+          =link_to(task.status.name, '#', class: "badge badge-pill badge-#{status_color(task.status.name)}")
+      .col-1
+        =link_to 'show', task_path(task), remote: true
