@@ -29,6 +29,7 @@ module Table
     end
 
     def drop_uniq_index(t_name)
+      t_name = schema_table(t_name)
       loki_story_creator { |conn| conn.remove_index(t_name, name: :story_per_publication) }
 
       nil

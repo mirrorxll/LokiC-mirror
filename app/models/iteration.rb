@@ -9,6 +9,8 @@ class Iteration < ApplicationRecord # :nodoc:
       iteration_note = "created a new iteration with id|name `#{id}|#{name}`"
       record_to_change_history(story_type, 'new iteration created', iteration_note)
 
+      story_type.update(status: Status.find_by(name: 'in progress'))
+
       status_note = "progress status changed to 'in progress'"
       record_to_change_history(story_type, 'progress status changed', status_note)
     end

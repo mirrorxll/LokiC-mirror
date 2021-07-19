@@ -39,10 +39,20 @@ class ApplicationController < ActionController::Base
     current_account.types.eql?(['developer'])
   end
 
+  def scraper?
+    current_account.types.eql?(['scraper'])
+  end
+
+  def only_scraper?
+    acc_types = current_account.types
+    acc_types.count.eql?(1) && acc_types.first.eql?('scraper')
+  end
+
   def render_400
     render json: { error: 'Bad Request' }, status: 400
   end
   alias render_400_developer render_400
+  alias render_400_scraper   render_400
   alias render_400_editor    render_400
 
   def staging_table_action(&block)
@@ -62,11 +72,11 @@ class ApplicationController < ActionController::Base
     'The Table for this story type has been renamed, detached or drop. Please update the page.'
   end
 
-  def record_to_change_history(story_type, event, note)
-    note_to_md5 = Digest::MD5.hexdigest(note)
-    text = Text.find_or_create_by!(md5hash: note_to_md5) { |t| t.text = note }
+  def record_to_change_history(story_type, event, message)
+    note_to_md5 = Digest::MD5.hexdigest(message)
+    note = Note.find_or_create_by!(md5hash: note_to_md5) { |t| t.note = message }
     history_event = HistoryEvent.find_or_create_by!(name: event)
 
-    story_type.change_history.create!(history_event: history_event, note: text)
+    story_type.change_history.create!(history_event: history_event, note: note)
   end
 end
