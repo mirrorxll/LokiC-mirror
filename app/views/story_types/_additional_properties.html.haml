@@ -8,7 +8,7 @@
     gather task id
     -if correct_account?(@story_type)
       .col-1.p-0.text-center
-        =link_to(icon('fas', 'pen', class: ' fa-xs text-dark'), edit_story_type_path(@story_type), remote: true, "data-toggle": "collapse", role: "button", href: "#gatherTaskForm", "aria-expanded": "false", "aria-controls": "gatherTaskForm" )
+        =link_to(icon('fa', 'pencil', class: ' fa-xs text-dark'), edit_story_type_path(@story_type), remote: true, "data-toggle": "collapse", role: "button", href: "#gatherTaskForm", "aria-expanded": "false", "aria-controls": "gatherTaskForm" )
   .row.col-12
     #gatherTaskForm.text-left.collapse
       =form_with(model: @story_type, class: 'form-inline') do |form|
@@ -28,7 +28,7 @@
       comment
       -if correct_account?(@story_type) and ['blocked','canceled'].include?(@story_type.status.name)
         .col-1.p-0.text-center
-          =link_to(icon('fas', 'pen', class: ' fa-xs text-dark'), edit_story_type_path(@story_type), remote: true, "data-toggle": "collapse", role: "button", href: "#commentForm", "aria-expanded": "false", "aria-controls": "commentForm")
+          =link_to(icon('fa', 'pencil', class: ' fa-xs text-dark'), edit_story_type_path(@story_type), remote: true, "data-toggle": "collapse", role: "button", href: "#commentForm", "aria-expanded": "false", "aria-controls": "commentForm")
     .row.col-12
       #commentForm.text-left.collapse
         =form_with(model: @story_type, class: 'form') do |form|
