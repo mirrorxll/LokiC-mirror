@@ -55,6 +55,7 @@ module MiniLokiC
         )
         return export_config if export_config
 
+
         raise ArgumentError,
               'There is a publication in the staging table '\
               'for which no export configuration has been created. '\

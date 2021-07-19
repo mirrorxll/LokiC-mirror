@@ -6,9 +6,9 @@ class CreationJob < ApplicationJob
   def perform(iteration, options = {})
     status = true
     message = 'Success. All samples have been created'
-    client_ids = iteration.story_type.client_pl_ids.join(',')
+    publication_ids = iteration.story_type.publication_pl_ids.join(',')
     options[:iteration] = iteration
-    options[:client_ids] = client_ids
+    options[:publication_ids] = publication_ids
 
     loop do
       rd, wr = IO.pipe
@@ -34,7 +34,7 @@ class CreationJob < ApplicationJob
       end
 
       staging_table = iteration.story_type.staging_table.name
-      break if Table.all_created_by_last_iteration?(staging_table, client_ids)
+      break if Table.all_created_by_last_iteration?(staging_table, publication_ids)
     end
 
     iteration.update(schedule_counts: schedule_counts(iteration))

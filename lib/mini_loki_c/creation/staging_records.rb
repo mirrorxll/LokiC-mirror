@@ -21,7 +21,7 @@ module MiniLokiC
             Table.rows_by_last_iteration(@staging_table, @options)
           end
 
-        select.each { |row| yield(row) }
+        select.each { |row| yield(HashWithIndifferentAccess.new(row)) }
       end
 
       private
