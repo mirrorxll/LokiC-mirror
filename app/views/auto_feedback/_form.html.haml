@@ -8,7 +8,7 @@
           .row
             .col-1{class: "auto-fb-confirm_#{fb.id} text-center", onchange: 'confirmAutoFeedback(this.className);'}
               -if !@story_type.iteration.eql?(@iteration)
-                =fb.confirmed ? icon('fas','check') : icon('fas','times')
+                =fb.confirmed ? icon('fa','check') : icon('fa','times')
               -elsif fb.confirmed
                 =icon('fa','check')
               -else
