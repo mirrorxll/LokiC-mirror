@@ -3,7 +3,6 @@
   "private": true,
   "dependencies": {
     "@activeadmin/activeadmin": "^2.7.0",
-    "@fortawesome/fontawesome-free": "^5.14.0",
     "@rails/actioncable": "^6.0.0",
     "@rails/activestorage": "^6.0.0",
     "@rails/ujs": "^6.0.0",
@@ -12,6 +11,8 @@
     "codemirror": "^5.55.0",
     "cron-validator": "^1.2.0",
     "cronstrue": "^1.108.0",
+    "font-awesome": "^4.7.0",
+    "froala-editor": "2.9.8",
     "jquery": "^3.5.1",
     "popper.js": "^1.16.1",
     "stimulus": "^1.1.1",

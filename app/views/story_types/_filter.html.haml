@@ -7,7 +7,7 @@
       =form.label :developer
       =form.select 'filter[developer]', [['(not assigned)', 'null']] + Account.joins(:account_types).where(account_types: {name: %w(manager developer)}).collect { |p| [ p.name, p.id ] }.sort_by { |r| r[0] }, include_blank: '', selected: @filter_params['developer']
       =form.label :frequency
-      =form.collection_select 'filter[frequency]', Frequency.where.not(name: 'manual input'), :id, :name, include_blank: '', selected: @filter_params['frequency']
+      =form.collection_select 'filter[frequency]', Frequency.all, :id, :name, include_blank: '', selected: @filter_params['frequency']
       =form.label :dev_status
       =form.collection_select 'filter[status]', Status.all, :id, :name, include_blank: '', selected: @filter_params['status']
       =form.submit 'Find', class: 'ml-3'

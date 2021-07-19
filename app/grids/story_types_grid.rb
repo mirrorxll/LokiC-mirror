@@ -3,7 +3,7 @@ class StoryTypesGrid
 
   # Scope
   scope do
-    StoryType.includes(:frequency, :photo_bucket, :developer, :clients_publications_tags, :clients, :tags, data_set: %i[state category], current_iteration: [:statuses])
+    StoryType.includes(:status, :frequency, :photo_bucket, :developer, :clients_publications_tags, :clients, :tags, data_set: %i[state category])
   end
 
   # Filters
@@ -19,10 +19,11 @@ class StoryTypesGrid
     scope.joins(:data_set).where('location like ?', "%#{value}%")
   end
   filter(:developer, :enum, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
-  filter(:frequency, :enum, left: true, select: Frequency.regular.pluck(:name, :id))
+  filter(:frequency, :enum, left: true, select: Frequency.pluck(:name, :id))
   filter(:photo_bucket, :enum, left: true, select: PhotoBucket.all.order(:name).pluck(:name, :id))
   filter(:status, :enum, left: true, select: Status.all.pluck(:name, :id)) do |value, scope|
-    scope.joins(current_iteration: [:statuses]).where(['statuses.id = ?', value])
+    status = Status.find(value)
+    scope.where(status: status)
   end
   filter(:client, :enum, left: true, select: Client.where(hidden: false).order(:name).pluck(:name, :id)) do |value, scope|
     scope.joins(clients_publications_tags: [:client]).where(['clients.id = ?', value])
@@ -53,7 +54,7 @@ class StoryTypesGrid
       link_to value, record
     end
   end
-  column(:status, mandatory: true, order: 'statuses.name') do |record|
+  column(:status, mandatory: true, order: 'status.name') do |record|
     record.status.name
   end
   column(:last_export, mandatory: true) do |record|

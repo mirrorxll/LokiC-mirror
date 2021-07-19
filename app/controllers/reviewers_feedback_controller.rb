@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class ReviewersFeedbackController < ApplicationController
-  before_action :render_400,                     unless: :manager?
   before_action :find_fcd,                       only: %i[create confirm]
   before_action :find_feedback,                  only: %i[create confirm]
   after_action  :send_notifications,             only: :create

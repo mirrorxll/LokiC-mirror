@@ -56,6 +56,12 @@ class ExportJob < ApplicationJob
 
     note = "#{MiniLokiC::Formatize::Numbers.to_text(exp_st.count_samples).capitalize} story(ies) exported to Pipeline"
     record_to_change_history(story_type, 'exported to pipeline', note)
+
+    if story_type.iterations.last.eql?(iteration) && story_type.updates?
+      story_type.reminder.update_columns(updates_confirmed: nil, has_updates: false)
+    end
+
+    true
   rescue StandardError => e
     status = nil
     message = e.message
@@ -75,7 +81,5 @@ class ExportJob < ApplicationJob
     iteration.reload.update(export: status)
     send_to_action_cable(iteration, :export, message)
     send_to_dev_slack(iteration, 'EXPORT', message)
-
-    iteration.export
   end
 end

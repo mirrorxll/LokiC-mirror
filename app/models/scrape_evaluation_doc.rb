@@ -1,0 +1,2 @@
+class ScrapeEvaluationDoc < ApplicationRecord
+end

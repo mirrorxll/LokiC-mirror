@@ -1,0 +1,56 @@
+=form_with(url: scrape_task_path(@scrape_task), method: :patch) do |f|
+  .form-group.row.mb-5
+    .col-2.pr-0.text-right.font-weight-bold
+      gather task:
+    .col-10
+      =f.number_field 'scrape_task[gather_task]', class: 'w-25 border rounded', placeholder: 'id', value: @scrape_task.gather_task
+
+  .row.mb-2
+    .col-2.pr-0.text-right.font-weight-bold
+      URL:
+    .col-10
+      =f.text_field 'scrape_task[datasource_url]', class: 'w-50 border rounded', value: @scrape_task.datasource_url
+  .row.mb-5
+    .col-2.pr-0.text-right.font-weight-bold
+      comment on datasource:
+    .col-10
+      =f.text_area 'scrape_task[datasource_comment]', class: 'form-control form-control-sm w-50',
+                   rows: 5, value: @scrape_task.datasource_comment&.body
+
+  .row.mb-2
+    .col-2.pr-0.text-right.font-weight-bold
+      scrapable?
+    .col-10
+      =f.radio_button "scrape_task[scrapable]", true, checked: @scrape_task.scrapable.eql?(true)
+      =f.label 'yes', class: 'mr-2'
+      =f.radio_button "scrape_task[scrapable]", false, checked: @scrape_task.scrapable.eql?(false)
+      =f.label 'no'
+
+  .row.mb-5
+    .col-2.pr-0.text-right.font-weight-bold
+      comment on scrape ability:
+    .col-10
+      =f.text_area 'scrape_task[scrape_ability_comment]', class: 'form-control form-control-sm w-50',
+                   rows: 5, value: @scrape_task.scrape_ability_comment.body
+
+  .row.mb-2
+    .col-2.pr-0.text-right.font-weight-bold
+      scraper:
+    .col-10
+      =f.collection_select 'scrape_task[scraper_id]', Account.joins(:account_types).where(account_types: { name: 'scraper'}), :id, :name, { include_blank: true, selected: @scrape_task.scraper&.id }
+  .row.mb-5
+    .col-2.pr-0.text-right.font-weight-bold
+      scrape frequency:
+    .col-10
+      =f.collection_select 'scrape_task[frequency_id]',  Frequency.all, :id, :name, { include_blank: true, selected: @scrape_task.frequency&.id }
+
+  .row.mt-3
+    .col-2.pr-0.text-right.font-weight-bold
+      data set location:
+    .col-10
+      =f.text_field 'scrape_task[data_set_location]', class: 'w-50 border rounded', value: @scrape_task.data_set_location
+
+  .row.mt-3
+    .col-10.offset-2
+      =f.submit 'update'
+      =link_to('cancel', scrape_task_cancel_edit_path(@scrape_task), method: :get, remote: true, class: 'btn btn-sm btn-link')

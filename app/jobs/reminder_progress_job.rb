@@ -6,6 +6,7 @@ class ReminderProgressJob < ApplicationJob
   def perform(story_types = StoryType.all)
     story_types.each do |st_type|
       sleep(rand)
+
       next if st_type.developer.nil? || st_type.status.name.eql?('canceled')
 
       inactive = false
