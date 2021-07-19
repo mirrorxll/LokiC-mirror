@@ -11,6 +11,11 @@ Rails.application.routes.draw do
     mount Sidekiq::Web => '/sidekiq'
   end
 
+  resources :images, only: [] do
+    post :upload,   on: :collection
+    get  :download, on: :collection
+  end
+
   resources :accounts, only: [:index] do
     post :impersonate, on: :member
     post :stop_impersonating, on: :collection
@@ -175,8 +180,19 @@ Rails.application.routes.draw do
   end
 
   resources :scrape_tasks, except: :destroy do
+    get   :cancel_edit
+    patch :evaluate
+
     resources :progress_statuses, controller: 'scrape_task_statuses', only: [] do
       patch :change, on: :collection
+    end
+
+    resource :scrape_instruction, only: %i[edit update] do
+      get :cancel_edit
+    end
+
+    resource :scrape_evaluation_doc, only: %i[edit update] do
+      get :cancel_edit
     end
   end
 

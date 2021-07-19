@@ -1,4 +1,4 @@
-.dropdown
+.dropdown.p-1
   %button#scrapeTaskStatusButton.dropdown-toggle.border.rounded{ class: "bg-#{status_color(@scrape_task.status.name)}", "aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :type => "button"}
     =@scrape_task.status.name
   .small.dropdown-menu.manual-dropdown-menu.dropdown-menu-right{"aria-labelledby" => "scrapeTaskStatusButton"}

@@ -2,5 +2,5 @@
 
 class Comment < ApplicationRecord
   belongs_to :commentable, polymorphic: true
-  belongs_to :comment_subtype, foreign_key: :subtype_id
+  belongs_to :subtype, class_name: 'CommentSubtype'
 end

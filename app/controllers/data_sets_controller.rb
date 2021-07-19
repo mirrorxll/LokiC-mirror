@@ -4,7 +4,8 @@ class DataSetsController < ApplicationController # :nodoc:
   skip_before_action :find_parent_story_type
   skip_before_action :set_iteration
 
-  before_action :render_400, except: :properties, if: :developer?
+  before_action :render_400_developer, except: :properties, if: :developer?
+  before_action :render_400_scraper, except: :properties, if: :scraper?
   before_action :find_data_set, except: %i[index create]
   after_action  :set_default_props, only: %i[create update]
 
@@ -35,9 +36,12 @@ class DataSetsController < ApplicationController # :nodoc:
   end
 
   def create
-    @data_set = current_account.data_sets.build(data_set_params)
+    @data_set = current_account.data_sets.create!(data_set_params)
 
-    redirect_to @data_set if @data_set.save!
+    respond_to do |f|
+      f.html { redirect_to @data_set }
+      f.js   { render 'data_set_from_scrape_task' }
+    end
   end
 
   def edit; end
@@ -61,7 +65,8 @@ class DataSetsController < ApplicationController # :nodoc:
   def data_set_params
     params.require(:data_set).permit(
       :name, :location, :preparation_doc,
-      :slack_channel, :sheriff_id, :comment, :state_id, :category_id
+      :slack_channel, :sheriff_id, :comment,
+      :state_id, :category_id, :scrape_task_id
     )
   end
 

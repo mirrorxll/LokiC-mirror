@@ -7,6 +7,12 @@
         .card-body
           .row.mb-2
             .col-4.pr-0.text-right.font-weight-bold
+              scrape task:
+            .col-8
+              -if @data_set.scrape_task
+                =link_to(@data_set.scrape_task&.name, @data_set.scrape_task)
+          .row.mb-2
+            .col-4.pr-0.text-right.font-weight-bold
               location:
             .col-8
               =@data_set.location

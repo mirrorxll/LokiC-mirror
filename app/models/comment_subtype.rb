@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 class CommentSubtype < ApplicationRecord
-  belongs_to :comment
+  has_many :comments, foreign_key: :subtype_id
 end

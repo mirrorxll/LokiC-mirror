@@ -17,8 +17,8 @@ function setPlaceholder(block) {
     );
 }
 
-window.$('.sheriff, .photo_bucket, .state, .category').each(function() { setPlaceholder(window.$(this)); });
-window.$('.sheriff select, .photo_bucket select, .state select, .category select').on('change', function() { setPlaceholder(window.$(this).parent()) });
+window.$('.sheriff, .photo_bucket, .state, .category, .scrape_task').each(function() { setPlaceholder(window.$(this)); });
+window.$('.sheriff select, .photo_bucket select, .state select, .category select, .scrape_task select').on('change', function() { setPlaceholder(window.$(this).parent()) });
 
 let clients = []
 

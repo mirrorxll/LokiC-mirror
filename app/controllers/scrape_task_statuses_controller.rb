@@ -9,7 +9,7 @@ class ScrapeTaskStatusesController < ApplicationController
 
   def change
     @scrape_task.update(status: @status)
-    @scrape_task.status_comments.create!(body: params[:reasons]) if params[:reasons]
+    @scrape_task.status_comment.update(body: params[:reasons]) if params[:reasons]
   end
 
   private

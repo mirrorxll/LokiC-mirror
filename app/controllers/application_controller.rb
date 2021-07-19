@@ -52,6 +52,7 @@ class ApplicationController < ActionController::Base
     render json: { error: 'Bad Request' }, status: 400
   end
   alias render_400_developer render_400
+  alias render_400_scraper   render_400
   alias render_400_editor    render_400
 
   def staging_table_action(&block)

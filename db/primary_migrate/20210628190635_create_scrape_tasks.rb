@@ -19,8 +19,9 @@ class CreateScrapeTasks < ActiveRecord::Migration[6.0]
       t.boolean :scrapable
 
       # evaluation
-      t.string :data_set_location
-      t.string :data_sample_url
+      t.string  :data_set_location
+      t.boolean :evaluation, default: false
+      t.string  :data_sample_url
 
       t.timestamps
     end

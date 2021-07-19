@@ -66,7 +66,7 @@
         gather task id
         -unless current_account.types.eql?(['developer']) && @story_type.developer != current_account
           .col-1.p-0.text-center
-            =link_to(icon('fas', 'pen', class: ' fa-xs text-dark'), edit_story_type_path(@story_type), remote: true)
+            =link_to(icon('fa', 'pen', class: ' fa-xs text-dark'), edit_story_type_path(@story_type), remote: true)
       .row.col-12
         .text-left{id: "story_type_#{@story_type.id}_gather_task_form"}
         -if @story_type.gather_task

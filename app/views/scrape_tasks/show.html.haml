@@ -1,112 +1,64 @@
-%div{ id: "scrape_task", scrape_task_id: @scrape_task.id }
+%div{ id: "scrapeTask", scrape_task_id: @scrape_task.id }
 
 %hr/
-=@scrape_task.name
+.text-center.font-weight-bold
+  \##{@scrape_task.id} #{@scrape_task.name}
 %hr.mb-0/
 
 .text-right.text-secondary.mb-3.small
   created at: #{@scrape_task.created_at}#{@scrape_task.updated_early? ? " | updated at: #{@scrape_task.updated_at}" : ""}
 
-#scrapping_info.mt-4.small
+#scrappingInfo.mt-4.mb-5.small
   .card
     .card-header.p-1
       .d-flex.justify-content-between.align-items-center
         main info
         .d-inline-block
-          .d-inline-block.mr-2
-            =button_to('edit', edit_scrape_task_path(@scrape_task), class: 'border rounded')
+          #scrapeTaskEdit.d-inline-block.mr-2.small
+            =button_to('[ edit ]', edit_scrape_task_path(@scrape_task), method: :get, remote: true, class: 'p-0 pb-1 btn btn-sm btn-link ml-2', data: { disable_with: '...'})
           #scrapeTaskStatus.d-inline-block
             =render 'statuses'
-
     .card-body
-      -status = @scrape_task.status.name
-      -if status.in?(%w[blocked canceled])
-        #scrapeTaskStatus
-          .row.mb-4
-            .col-2.pr-0.text-right.font-weight-bold
-              scrape task has been #{status}. Why?
-            .col-10
-              =@scrape_task.status_comment
+      =render 'scrape_task_info'
 
-      .row.mb-4
-        .col-2.pr-0.text-right.font-weight-bold
-          gather task:
-        .col-10
-          -link = @scrape_task.gather_task_link
-          -if link
-            =link_to('link', link)
-          -else
-            \---
-      .row.mb-2
-        .col-2.pr-0.text-right.font-weight-bold
-          scrapable?
-        .col-10
-          -if @scrape_task.scrapable
-            .font-weight-bold
-              +
-          -elsif @scrape_task.scrapable.eql?(false)
-            .font-weight-bold
-              -
-          -else
-            not checked
+#scrapeInstructionAnchor
+#scrapeEvaluationDocAnchor
 
-      .row.mb-4
-        .col-2.pr-0.text-right.font-weight-bold
-          comment on scrape ability:
-        .col-10
-          =@scrape_task.scrape_ability_comment
+%ul#scrapeTaskTabs.nav.nav-tabs.small
+  %li.nav-item.text-center{ style: 'width: 33%' }
+    %a#scrapeInstructionTab.nav-link.active{"aria-selected" => "true", "data-toggle" => "tab", :href => "#scrapeInstruction", :role => "tab"} Instruction
+  %li.nav-item.text-center{ style: 'width: 33%' }
+    %a#scrapeEvaluationDocTab.nav-link{"aria-selected" => "false", "data-toggle" => "tab", :href => "#scrapeEvaluationDoc", :role => "tab"} Evaluation Document
+  %li.nav-item.text-center{ style: 'width: 33%' }
+    %a#dataSampleTab.nav-link.disabled{"aria-selected" => "false", "data-toggle" => "tab", :href => "#dataSample", :role => "tab"} Data Sample (TO DO)
 
-      .row.mb-2
-        .col-2.pr-0.text-right.font-weight-bold
-          URL:
-        .col-10
-          =@scrape_task.datasource_url
+#scrapeTaskTabsContent.tab-content
+  #scrapeInstruction.tab-pane.fade.show.active
+    .card.border-top-0.rounded-top-0.mb-5
+      #scrapeInstructionEdit.small
+        .row
+          .col-8.offset-2.p-0
+            %hr.mb-0.mt-3/
+            =button_to('[ edit ]', edit_scrape_task_scrape_instruction_path(@scrape_task), class: 'btn btn-sm btn-link', method: :get, remote: true)
+            %hr.mt-0/
+      #instruction.show{"data-parent" => "#scrapeInstruction"}
+        =render 'scrape_instructions/instruction'
 
-      .row.mb-4
-        .col-2.pr-0.text-right.font-weight-bold
-          comment on datasource:
-        .col-10
-          =@scrape_task.datasource_comment
+  #scrapeEvaluationDoc.tab-pane.fade.show
+    .card.border-top-0.rounded-top-0.mb-5
+      #scrapeEvaluationDocEdit.small
+        .row
+          .col-8.offset-2.p-0
+            %hr.mb-0.mt-3/
+            .d-inline-block
+              =button_to('[ edit ]', edit_scrape_task_scrape_evaluation_doc_path(@scrape_task), class: 'btn btn-sm btn-link', method: :get, remote: true, data: { disable_with: '...'})
+            -if !@scrape_task.evaluation && current_account.types.include?('manager')
+              .d-inline-block
+                =button_to('[ evaluate ]', scrape_task_evaluate_path(@scrape_task), method: :patch, remote: true,
+                            id: 'evaluateButton', class: 'btn btn-sm btn-link ml-1', data: { disable_with: '...'})
 
-      .row.mb-2
-        .col-2.pr-0.text-right.font-weight-bold
-          scraper:
-        .col-10
-          =@scrape_task.scraper&.name
+            %hr.mt-0/
+      #evaluationDoc.show{ "data-parent" => "#scrapeEvaluationDoc" }
+        =render 'scrape_evaluation_docs/evaluation_doc'
 
-      .row.mb-2
-        .col-2.pr-0.text-right.font-weight-bold
-          scrape frequency:
-        .col-10
-          =@scrape_task.frequency&.name
-
-#scrape_instruction.mt-5.accordion.small
-  .card
-    .card-header.p-1
-      %div.d-flex.justify-content-between.align-items-center{ "aria-controls" => "#instruction", "aria-expanded" => "false",
-                                                              "data-target" => "#instruction", "data-toggle" => "collapse", type: "button"}
-        instruction
-        =button_to('edit', edit_scrape_task_path(@scrape_task))
-
-    #instruction.collapse{"data-parent" => "#scrape_instruction"}
-      .row
-        .col-10.offset-1
-          =@scrape_task.scrape_instruction
-
-
--# #template.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "template",
--#                       role: "dialog", tabindex: "-1", 'data-backdrop' => 'static',  'data-keyboard' => "false" }
--#   .modal-dialog.modal-dialog-centered.modal-xl
--#     .modal-content
--#       .modal-header
--#         %h5.modal-title
--#       .modal-body
--#
--# #properties.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "properties", role: "dialog", :tabindex => "-1"}
--#   .modal-dialog.modal-dialog-centered.modal-xl
--#     .modal-content
--#       .modal-header
--#         %h5.modal-title
--#         %button.close{"aria-label" => "Close", "data-dismiss" => "modal", type: "button"}
--#           %span{"aria-hidden" => "true"} ×
--#       .modal-body
+  #dataSample.tab-pane

@@ -5,30 +5,33 @@ class ScrapeTasksController < ApplicationController
   skip_before_action :set_iteration
 
   before_action :grid, only: :index
-  before_action :find_scrape_task, only: :show
+  before_action :find_scrape_task, only: %i[show edit cancel_edit update evaluate]
+  before_action :find_data_set, only: %i[show edit cancel_edit update evaluate], if: :manager?
 
   def index
     respond_to do |f|
       f.html do
         @grid.scope { |scope| scope.page(params[:page]) }
       end
-
-      f.csv do
-        send_data(
-          @grid.to_csv,
-          type: 'text/csv',
-          disposition: 'inline',
-          filename: "scrape_tasks_#{Time.now}.csv"
-        )
-      end
     end
   end
 
-  def show
-  end
+  def show; end
 
   def create
-    @scrape_task = ScrapeTask.create!(new_scrape_task_params)
+    @scrape_task = ScrapeTask.create!(create_scrape_task_params)
+  end
+
+  def edit; end
+
+  def cancel_edit; end
+
+  def update
+    @scrape_task.update(update_scrape_task_params)
+  end
+
+  def evaluate
+    @scrape_task.update(evaluation: true)
   end
 
   private
@@ -45,18 +48,36 @@ class ScrapeTasksController < ApplicationController
   end
 
   def find_scrape_task
-    @scrape_task = ScrapeTask.find(params[:id])
+    @scrape_task = ScrapeTask.find(params[:id] || params[:scrape_task_id])
   end
 
-  def new_scrape_task_params
-    sc_task_params = params.require(:scrape_task).permit(:name, :datasource_url, :notes_on_datasource)
+  def find_data_set
+    @data_set = @scrape_task.data_set || DataSet.new
+  end
+
+  def create_scrape_task_params
+    sc_task_params = params.require(:scrape_task).permit(:name, :datasource_url, :datasource_comment).to_h
     sc_task_params[:creator] = current_account
 
-    if sc_task_params[:notes_on_datasource].present?
-      sc_task_params[:notes_on_datasource] = Text.new(body: sc_task_params[:notes_on_datasource])
-    else
-      sc_task_params.reject! { |k, _v| k.eql?('notes_on_datasource') }
-    end
+    subtype = CommentSubtype.find_or_create_by!(name: 'datasource comment')
+    sc_task_params[:datasource_comment] = Comment.new(body: sc_task_params[:datasource_comment], subtype: subtype)
+
+    sc_task_params
+  end
+
+  def update_scrape_task_params
+    sc_task_params = params.require(:scrape_task).permit(
+      :gather_task, :scrapable,
+      :scrape_ability_comment, :datasource_url,
+      :datasource_comment, :data_set_location,
+      :scraper_id, :frequency_id
+    ).to_h
+
+    datasource_comment = sc_task_params.delete(:datasource_comment)
+    @scrape_task.datasource_comment.update(body: datasource_comment) if datasource_comment.present?
+
+    scrape_ability_comment = sc_task_params.delete(:scrape_ability_comment)
+    @scrape_task.scrape_ability_comment.update(body: scrape_ability_comment) if scrape_ability_comment.present?
 
     sc_task_params
   end
