@@ -1,2 +1,2 @@
 =form_with(url: include_story_type_frequencies_path(@story_type), html: { onchange: "Rails.fire(this, 'submit')" }) do |form|
-  =form.collection_select :frequency_id, Frequency.where.not(name: 'manual input'), :id, :name, { prompt: '' }, { name: :id }
+  =form.collection_select :frequency_id, Frequency.all, :id, :name, { prompt: '' }, { name: :id }

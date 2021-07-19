@@ -23,8 +23,10 @@ class CronTabExecuteJob < ApplicationJob
     new_iteration.update(creation: false)
     raise StandardError unless CreationJob.perform_now(new_iteration)
 
+    new_iteration = story_type.iteration
     new_iteration.update(export: false)
     raise StandardError unless ExportJob.perform_now(new_iteration)
+
   rescue StandardError => e
     iter =
       if new_iteration.population.nil?

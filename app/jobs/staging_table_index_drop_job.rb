@@ -6,7 +6,7 @@ class StagingTableIndexDropJob < ApplicationJob
   def perform(staging_table)
     Process.wait(
       fork do
-        message = "Success. Staging table's main index droped"
+        message = "Success. Staging table's main index dropped"
         staging_table.index.drop
         staging_table.sync
 

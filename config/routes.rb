@@ -11,6 +11,11 @@ Rails.application.routes.draw do
     mount Sidekiq::Web => '/sidekiq'
   end
 
+  resources :images, only: [] do
+    post :upload,   on: :collection
+    get  :download, on: :collection
+  end
+
   resources :accounts, only: [:index] do
     post :impersonate, on: :member
     post :stop_impersonating, on: :collection
@@ -19,25 +24,22 @@ Rails.application.routes.draw do
   mount ActionCable.server, at: '/cable'
 
   namespace :api, constraints: { format: :json } do
-    namespace :v1 do
-      resources :clients, only: [] do
-        get :visible, on: :collection
-        get :tags
-        get :publications
-      end
-
-      resources :shown_samples, only: :update
+    resources :clients, only: [] do
+      get :visible, on: :collection
+      get :tags
+      get :publications
     end
+
+    resources :scrape_tasks, only: [] do
+      get :names, on: :collection
+    end
+
+    resources :shown_samples, only: :update
   end
 
   root 'story_types#index'
 
   get '/iterations/:id', to: 'iterations#show'
-
-  resources :images, only: :create, defaults: { format: :json } do
-    get    :show,    on: :collection, path: '/:name', name: /.*/
-    delete :destroy, on: :collection, path: '/:name', name: /.*/
-  end
 
   resources :data_sets, except: %i[new] do
     get :properties, on: :member
@@ -48,14 +50,12 @@ Rails.application.routes.draw do
   resources :story_types, except: %i[new create] do
     get   :properties_form
     get   :canceling_edit,  on: :member
-
     patch :update_sections, on: :member
-
     patch :change_data_set, on: :member
 
-    patch '/change_progress_status', to: 'progress_statuses#change'
-
-    resources(:progress_statuses, only: []) { patch :change, on: :collection }
+    resources :progress_statuses, controller: 'story_type_statuses', only: [] do
+      patch :change, on: :collection
+    end
 
     resources :templates, path: :template, only: %i[show edit update] do
       patch :save, on: :member
@@ -179,13 +179,26 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :scrape_tasks, except: :destroy do
+    get   :cancel_edit
+    patch :evaluate
+
+    resources :progress_statuses, controller: 'scrape_task_statuses', only: [] do
+      patch :change, on: :collection
+    end
+
+    resource :scrape_instruction, only: %i[edit update] do
+      get :cancel_edit
+    end
+
+    resource :scrape_evaluation_doc, only: %i[edit update] do
+      get :cancel_edit
+    end
+  end
+
   resources :shown_samples,        only: :index
   resources :exported_story_types, only: :index
   resources :production_removals,  only: :index
-
-  resources :slack_accounts, only: %i[] do
-    patch :sync
-  end
 
   resources :tracking_hours, only: %i[new create update destroy index] do
     post   :submit_forms,  on: :collection

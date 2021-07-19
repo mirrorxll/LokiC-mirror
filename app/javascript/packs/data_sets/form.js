@@ -17,8 +17,8 @@ function setPlaceholder(block) {
     );
 }
 
-window.$('.sheriff, .photo_bucket, .state, .category').each(function() { setPlaceholder(window.$(this)); });
-window.$('.sheriff select, .photo_bucket select, .state select, .category select').on('change', function() { setPlaceholder(window.$(this).parent()) });
+window.$('.sheriff, .photo_bucket, .state, .category, .scrape_task').each(function() { setPlaceholder(window.$(this)); });
+window.$('.sheriff select, .photo_bucket select, .state select, .category select, .scrape_task select').on('change', function() { setPlaceholder(window.$(this).parent()) });
 
 let clients = []
 
@@ -82,7 +82,7 @@ window.$('#add_client').on('click', (e)=> {
 
     if(clients.length === 0) {
         window.$.ajax({
-            url: `${window.location.origin}/api/v1/clients/visible`,
+            url: `${window.location.origin}/api/clients/visible`,
             dataType: 'json',
             success: (clients)=> { addClientsToSelectGroup(uId, clients.visible) }
         });
@@ -129,7 +129,7 @@ function tagsByClient(event) {
     }
 
     window.$.ajax({
-        url: `${window.location.origin}/api/v1/clients/${clientId}/tags`,
+        url: `${window.location.origin}/api/clients/${clientId}/tags`,
         dataType: 'json',
         success: (tags)=> { addTagsToSelectGroup(tagsSelect, tags.attached) }
     });
@@ -157,7 +157,7 @@ function publicationsByClient(event) {
     }
 
     window.$.ajax({
-        url: `${window.location.origin}/api/v1/clients/${clientId}/publications`,
+        url: `${window.location.origin}/api/clients/${clientId}/publications`,
         dataType: 'json',
         success: (publications)=> { addPublicationsToSelectGroup(publicationsSelect, publications.attached) }
     });

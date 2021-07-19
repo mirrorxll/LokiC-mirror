@@ -1,0 +1,5 @@
+$('#dataSetForm').on('hidden.bs.modal', (_e) => {
+    $('#scrapeTaskDataSetForm').html('<%= j render 'scrape_tasks/data_set'   %>')
+    window.open('<%= data_set_path(@data_set) %>', '_blank').focus();
+});
+$('#dataSetForm').modal('hide');

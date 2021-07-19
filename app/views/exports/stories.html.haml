@@ -176,7 +176,7 @@
       Rails.ajax({
         type: "PUT",
         dataType: 'json',
-        url: `#{root_url}api/v1/shown_samples/${lokicId}`,
+        url: `#{root_url}api/shown_samples/${lokicId}`,
         data: `commit=${commit}`,
         success: function (_data) {
           if (isCheckBox) {

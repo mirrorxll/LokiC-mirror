@@ -1,0 +1,43 @@
+=form_with(url: scrape_task_scrape_evaluation_doc_path(@scrape_task), method: :patch) do |f|
+  =f.text_area 'scrape_evaluation_doc[body]', id: 'scrapeEvaluationDocBody', value: @scrape_task.scrape_evaluation_doc.body
+
+  :javascript
+    $.FroalaEditor.DefineIcon('submitEvalDocEdit', { NAME: 'check' });
+    $.FroalaEditor.RegisterCommand('submitEvalDocEdit', {
+      title: 'Submit',
+      focus: false,
+      undo: false,
+      refreshAfterCallback: false,
+      callback: function () {
+        Rails.ajax({
+          type: "PATCH",
+          dataType: 'script',
+          url: `#{scrape_task_scrape_evaluation_doc_path(@scrape_task)}`,
+          data: `evaluation_doc[body]=${encodeURIComponent(this.html.get())}`
+        })
+      }
+    });
+
+    $.FroalaEditor.DefineIcon('cancelEvalDocEdit', {NAME: 'remove'});
+    $.FroalaEditor.RegisterCommand('cancelEvalDocEdit', {
+      title: 'Cancel Edit',
+      focus: false,
+      undo: false,
+      refreshAfterCallback: false,
+      callback: function () {
+        Rails.ajax({
+          type: "GET",
+          dataType: 'script',
+          url: `#{cancel_edit_scrape_task_scrape_evaluation_doc_path(@scrape_task)}`
+        })
+      }
+    });
+
+    $('#scrapeEvaluationDocBody').froalaEditor({
+      key: 'KfdolbcqsaA2wzA-13==',
+      toolbarSticky: true,
+      documentReady: true,
+      toolbarButtons: ['undo', 'redo' , '|', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'outdent', 'indent', 'clearFormatting', 'insertTable', 'html', '|', 'submitEvalDocEdit', 'cancelEvalDocEdit'],
+      imageUploadURL: '/images/upload',
+      imageUploadMethod: 'POST'
+    })
