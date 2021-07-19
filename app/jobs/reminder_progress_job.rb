@@ -9,7 +9,7 @@ class ReminderProgressJob < ApplicationJob
         story_types.each do |st_type|
           sleep(rand)
 
-          next if st_type.developer.nil? || st_type.status.name.eql?('canceled')
+          next if st_type.developer.nil? || st_type.status.name.in?(%w[canceled blocked done])
 
           inactive = false
           distributed_gap = (Date.today - st_type.distributed_at.to_date).to_i
