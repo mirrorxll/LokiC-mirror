@@ -3195,10 +3195,10 @@ fresh@0.5.2:
   resolved "https://registry.yarnpkg.com/fresh/-/fresh-0.5.2.tgz#3d8cadd90d976569fa835ab1f8e4b23a105605a7"
   integrity sha1-PYyt2Q2XZWn6g1qx+OSyOhBWBac=
 
-froala-editor@2.5.1:
-  version "2.5.1"
-  resolved "https://registry.yarnpkg.com/froala-editor/-/froala-editor-2.5.1.tgz#daf33fd5cbeac1f53952f0114449f921537e4d19"
-  integrity sha1-2vM/1cvqwfU5UvARREn5IVN+TRk=
+froala-editor@2.9.8:
+  version "2.9.8"
+  resolved "https://registry.yarnpkg.com/froala-editor/-/froala-editor-2.9.8.tgz#dd5d539921423538958332f3887ab54f5b3ba064"
+  integrity sha512-ebZb3duCqtt6/1LRDtVmhVxd+FLQfSWU1k1wo7IN+JNzdmxwiMZCNR/BYttFaYc7u1M1TcrqPG8G/KOU3RL+Zg==
   dependencies:
     font-awesome ">=4.4.0"
     jquery ">=1.11.0"
