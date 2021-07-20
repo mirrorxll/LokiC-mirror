@@ -1,5 +1,11 @@
 =form_with(url: scrape_task_path(@scrape_task), method: :patch) do |f|
-  .form-group.row.mb-4
+  .row.mb-4
+    .col-2.pr-0.text-right.font-weight-bold
+      name:
+    .col-10
+      =f.text_field 'scrape_task[name]', class: 'w-50 border rounded', placeholder: 'name', value: @scrape_task.name, required: true
+
+  .row.mb-4
     .col-2.pr-0.text-right.font-weight-bold
       gather task:
     .col-10
@@ -31,7 +37,7 @@
       comment on scrape ability:
     .col-10
       =f.text_area 'scrape_task[scrape_ability_comment]', class: 'form-control form-control-sm w-50',
-                   rows: 5, value: @scrape_task.scrape_ability_comment.body
+                   rows: 5, value: @scrape_task.scrape_ability_comment&.body
 
   .row.mb-2
     .col-2.pr-0.text-right.font-weight-bold

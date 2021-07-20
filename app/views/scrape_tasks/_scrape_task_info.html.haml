@@ -3,6 +3,12 @@
 
 .row.mb-4
   .col-2.pr-0.text-right.font-weight-bold
+    name:
+  .col-10
+    =@scrape_task.name
+
+.row.mb-4
+  .col-2.pr-0.text-right.font-weight-bold
     gather task:
   .col-10
     -link = @scrape_task.gather_task_link
@@ -44,7 +50,7 @@
   .col-2.pr-0.text-right.font-weight-bold
     comment on scrape ability:
   .col-10
-    =@scrape_task.scrape_ability_comment.body
+    =@scrape_task.scrape_ability_comment&.body
 
 .row.mb-2
   .col-2.pr-0.text-right.font-weight-bold
