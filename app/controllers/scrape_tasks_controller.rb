@@ -35,8 +35,8 @@ class ScrapeTasksController < ApplicationController
     end
 
     @scrape_task.data_set&.update(scrape_task: nil)
-    @data_set = DataSet.find_by(data_set_param)
-    @data_set.update(scrape_task: @scrape_task)
+    @data_set = DataSet.find_by(data_set_param) || DataSet.new
+    @data_set.update(scrape_task: @scrape_task) if @data_set.persisted?
   end
 
   def evaluate
