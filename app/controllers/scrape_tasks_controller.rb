@@ -6,7 +6,7 @@ class ScrapeTasksController < ApplicationController
 
   before_action :grid, only: :index
   before_action :find_scrape_task, only: %i[show edit cancel_edit update evaluate]
-  before_action :find_data_set, only: %i[show edit cancel_edit update evaluate], if: :manager?
+  before_action :find_data_set,    only: %i[show edit cancel_edit evaluate], if: :manager?
 
   def index
     respond_to do |f|
@@ -27,13 +27,16 @@ class ScrapeTasksController < ApplicationController
   def cancel_edit; end
 
   def update
-    sc_task_params = update_scrape_task_params
-
     @scrape_task.transaction do
-      @scrape_task.datasource_comment.update(body: sc_task_params.delete(:datasource_comment))
-      @scrape_task.scrape_ability_comment.update(body: sc_task_params.delete(:scrape_ability_comment))
-      @scrape_task.update!(sc_task_params)
+      @scrape_task.datasource_comment.update(datasource_comment_param)
+      @scrape_task.scrape_ability_comment.update(scrape_ability_comment_param)
+      @scrape_task.general_comment.update(general_comment_param)
+      @scrape_task.update!(update_scrape_task_params)
     end
+
+    @scrape_task.data_set&.update(scrape_task: nil)
+    @data_set = DataSet.find_by(data_set_param)
+    @data_set.update(scrape_task: @scrape_task)
   end
 
   def evaluate
@@ -62,21 +65,31 @@ class ScrapeTasksController < ApplicationController
   end
 
   def create_scrape_task_params
-    sc_task_params = params.require(:scrape_task).permit(:name, :datasource_url, :datasource_comment).to_h
+    sc_task_params = params.require(:scrape_task).permit(:name, :datasource_url)
     sc_task_params[:creator] = current_account
-
-    subtype = CommentSubtype.find_or_create_by!(name: 'datasource comment')
-    sc_task_params[:datasource_comment] = Comment.new(body: sc_task_params[:datasource_comment], subtype: subtype)
-
     sc_task_params
   end
 
   def update_scrape_task_params
     params.require(:scrape_task).permit(
-      :name, :gather_task, :scrapable,
-      :scrape_ability_comment, :datasource_url,
-      :datasource_comment, :data_set_location,
-      :scraper_id, :frequency_id
-    ).to_h
+      :name, :gather_task, :scrapable, :datasource_url,
+      :data_set_location, :scraper_id, :frequency_id
+    )
+  end
+
+  def scrape_ability_comment_param
+    params.require(:scrape_ability_comment).permit(:body)
+  end
+
+  def datasource_comment_param
+    params.require(:datasource_comment).permit(:body)
+  end
+
+  def general_comment_param
+    params.require(:general_comment).permit(:body)
+  end
+
+  def data_set_param
+    params.require(:data_set).permit(:id)
   end
 end

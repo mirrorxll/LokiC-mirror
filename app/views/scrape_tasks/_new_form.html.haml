@@ -2,7 +2,7 @@
   #newScrapeTaskModal.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "properties",
                                      role: "dialog", tabindex: "-1", 'data-backdrop' => 'static',
                                      'data-keyboard' => 'true'}
-    .modal-dialog.modal-md
+    .modal-dialog.modal-dialog-centered
       .modal-content
         .modal-header
           %h5.modal-title
@@ -16,7 +16,7 @@
               #newScrapeTaskNameFeedback.text-danger.d-none
                 Task with this name already exists. Let's use something else
 
-          .row.mb-2
+          .row
             .col-10.offset-1.small
               =f.text_field :datasource_url, placeholder: 'datasource url (https://example.com)',
                             id: 'newScrapeTaskDataUrl', maxlength: 1000, class: 'form-control form-control-sm',
@@ -25,10 +25,6 @@
                 1000 /
                 %span
                   0
-          .row.small
-            .col-10.offset-1
-              =f.text_area :datasource_comment, placeholder: 'notes on datasource',
-                           rows: '5', class: 'form-control form-control-sm'
 
         .modal-footer.justify-content-center
           =f.submit 'create scrape task', class: 'btn btn-sm btn-outline-dark'
