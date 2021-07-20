@@ -8,13 +8,7 @@ class ScrapeTasksController < ApplicationController
   before_action :find_scrape_task, only: %i[show edit cancel_edit update evaluate]
   before_action :find_data_set, only: %i[show edit cancel_edit update evaluate], if: :manager?
 
-  def index
-    respond_to do |f|
-      f.html do
-        @grid.scope { |scope| scope.page(params[:page]) }
-      end
-    end
-  end
+  def index; end
 
   def show; end
 
@@ -27,7 +21,13 @@ class ScrapeTasksController < ApplicationController
   def cancel_edit; end
 
   def update
-    @scrape_task.update(update_scrape_task_params)
+    sc_task_params = update_scrape_task_params
+
+    ActiveRecord::Base.transaction do
+      @scrape_task.datasource_comment.update(body: sc_task_params.delete(:datasource_comment))
+      @scrape_task.scrape_ability_comment.update(body: sc_task_params.delete(:scrape_ability_comment))
+      @scrape_task.update(sc_task_params)
+    end
   end
 
   def evaluate
@@ -66,19 +66,11 @@ class ScrapeTasksController < ApplicationController
   end
 
   def update_scrape_task_params
-    sc_task_params = params.require(:scrape_task).permit(
+    params.require(:scrape_task).permit(
       :gather_task, :scrapable,
       :scrape_ability_comment, :datasource_url,
       :datasource_comment, :data_set_location,
       :scraper_id, :frequency_id
     ).to_h
-
-    datasource_comment = sc_task_params.delete(:datasource_comment)
-    @scrape_task.datasource_comment.update(body: datasource_comment) if datasource_comment.present?
-
-    scrape_ability_comment = sc_task_params.delete(:scrape_ability_comment)
-    @scrape_task.scrape_ability_comment.update(body: scrape_ability_comment) if scrape_ability_comment.present?
-
-    sc_task_params
   end
 end

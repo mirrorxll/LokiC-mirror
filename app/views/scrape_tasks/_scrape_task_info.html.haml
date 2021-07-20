@@ -1,7 +1,7 @@
 #scrapeTaskStatusComment
   =render 'status_comment'
 
-.row.mb-5
+.row.mb-4
   .col-2.pr-0.text-right.font-weight-bold
     gather task:
   .col-10
@@ -21,7 +21,7 @@
     -else
       \---
 
-.row.mb-5
+.row.mb-4
   .col-2.pr-0.text-right.font-weight-bold
     comment on datasource:
   .col-10
@@ -40,7 +40,7 @@
     -else
       not checked
 
-.row.mb-5
+.row.mb-4
   .col-2.pr-0.text-right.font-weight-bold
     comment on scrape ability:
   .col-10
@@ -51,19 +51,13 @@
     scraper:
   .col-10
     =@scrape_task.scraper&.name
-.row.mb-2
+.row.mb-4
   .col-2.pr-0.text-right.font-weight-bold
     scrape frequency:
   .col-10
     =@scrape_task.frequency&.name
 
-.row.mt-5
-  .col-2.pr-0.text-right.font-weight-bold
-    data set location:
-  .col-10
-    =@scrape_task.data_set_location
-
-.row.mt-5
+.row
   .col-2.pr-0.text-right.font-weight-bold
     data set location:
   .col-10
