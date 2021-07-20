@@ -1,2 +1,3 @@
 $('#scrapeTaskEdit').toggleClass('d-inline-block').toggleClass('d-none');
+$('#scrapeTaskName').html('<%= "#{@scrape_task.id} #{@scrape_task.name}" %>')
 $('#scrappingInfo .card-body').html('<%= j render 'scrape_task_info' %>');
