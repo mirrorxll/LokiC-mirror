@@ -1,5 +1,5 @@
 %tr
   -grid.html_columns(*options[:columns]).each do |column|
     -value = datagrid_value(grid, column, asset)
-    %td{:class => "#{datagrid_column_classes(grid, column)} #{"bg-#{status_color(value)}"}"}
+    %td{class: "#{datagrid_column_classes(grid, column)} #{"bg-#{status_color(value)}"}"}
       =value

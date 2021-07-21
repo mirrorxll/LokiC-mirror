@@ -4,7 +4,7 @@ class ScrapeTasksGrid
   include Datagrid
 
   # Scope
-  scope { ScrapeTask.includes(:frequency).order(id: :desc) }
+  scope { ScrapeTask.includes(:status, :frequency, :scraper, :general_comment).order(id: :desc) }
 
   # Filters
   filter(:name, :string, header: 'Name(RLIKE)') do |value, scope|
@@ -26,14 +26,26 @@ class ScrapeTasksGrid
 
   frequency = Frequency.pluck(:name, :id)
   filter(:frequency, :enum, select: frequency) do |value, scope|
-    scope.where(frequency: { name: value })
+    scope.where(frequencies: { id: value })
   end
 
   # Columns
   column(:id, header: 'Task Id', mandatory: true, &:id)
 
-  column(:status, order: 'status.name', mandatory: true) do |s_task|
-    s_task.status.name
+  column(:status, order: 'statuses.name', scrape_status: true, html: true, mandatory: true) do |s_task|
+    attributes = { class: "bg-#{status_color(s_task.status.name)}" }
+
+    if s_task.status.name.in?(%w[blocked canceled])
+      attributes.merge!(
+        {
+          'data-toggle' => 'tooltip',
+          'data-placement' => 'right',
+          title: truncate(s_task.status_comment&.body, length: 50)
+        }
+      )
+    end
+
+    content_tag(:div, s_task.status.name, attributes)
   end
 
   column(:name, mandatory: true) do |s_task|
@@ -48,15 +60,15 @@ class ScrapeTasksGrid
     end
   end
 
-  column(:scrape_frequency, order: 'frequency.name', mandatory: true) do |s_task|
+  column(:scrape_frequency, order: 'frequencies.name', mandatory: true) do |s_task|
     s_task.frequency&.name
   end
 
-  column(:scraper, header: 'Assigned to', order: 'scraper&.name', mandatory: true) do |s_task|
+  column(:scraper, header: 'Assigned to', order: 'accounts.first_name, accounts.last_name', mandatory: true) do |s_task|
     s_task.scraper&.name
   end
 
-  column(:general_comment, header: 'General comment', order: 'general_comment&.body', mandatory: true) do |s_task|
-    format(s_task.general_comment&.body) { |body| truncate(body, length: 50)}
+  column(:general_comment, header: 'General comment', order: 'comments.body', mandatory: true) do |s_task|
+    format(s_task.general_comment&.body) { |body| truncate(body, length: 50) }
   end
 end

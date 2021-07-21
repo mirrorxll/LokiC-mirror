@@ -2,14 +2,11 @@
 #scrape-tasks-header.d-flex.justify-content-between.align-items-center
   Scrape Tasks
   .buttons
-    =link_to('filter', '#scrape_task_filter', 'aria-controls' => 'scrape_task_filter',
-             'aria-expanded' => false, data: { toggle: "collapse", target: "#scrape_task_filter" },
-             type: "button", class: 'btn btn-sm btn-outline-dark mr-2')
     %button.btn.btn-sm.btn-outline-dark{'data-target' => '#newScrapeTaskModal', 'data-toggle' => 'modal', type: "button"}
       new scrape task
 %hr/
 
-#scrape_task_filter.mt-3.mb-3{ class: (params[:scrape_tasks_grid] ? '' : 'collapse') }
+#scrape_task_filter.mt-3.mb-3
   =datagrid_form_for @grid, url: scrape_tasks_path
 
 .row

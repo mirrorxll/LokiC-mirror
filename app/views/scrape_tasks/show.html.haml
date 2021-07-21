@@ -39,7 +39,7 @@
         .row
           .col-8.offset-2.p-0
             %hr.mb-0.mt-3/
-            =button_to('[ edit ]', edit_scrape_task_scrape_instruction_path(@scrape_task), class: 'btn btn-sm btn-link', method: :get, remote: true)
+            =button_to('[ edit ]', edit_scrape_task_scrape_instruction_path(@scrape_task), class: 'btn btn-sm btn-link', method: :get, remote: true, data: { disable_with: '...'})
             %hr.mt-0/
       #instruction.show{"data-parent" => "#scrapeInstruction"}
         =render 'scrape_instructions/instruction'
