@@ -17,10 +17,10 @@ class ScrapeTasksGrid
   statuses = [
     ['not started',	1],
     ['in progress',	2],
-    ['on cron',	4],
     ['blocked',	5],
     ['canceled', 7],
-    ['inactive', 8]
+    ['inactive', 8],
+    ['done', 9]
   ]
   filter(:status, :enum, select: statuses)
 
@@ -54,5 +54,9 @@ class ScrapeTasksGrid
 
   column(:scraper, header: 'Assigned to', order: 'scraper&.name', mandatory: true) do |s_task|
     s_task.scraper&.name
+  end
+
+  column(:general_comment, header: 'General comment', order: 'general_comment&.body', mandatory: true) do |s_task|
+    format(s_task.general_comment&.body) { |body| truncate(body, length: 50)}
   end
 end
