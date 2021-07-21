@@ -9,7 +9,7 @@
       new scrape task
 %hr/
 
-#scrape_task_filter.mt-3.mb-3{ class: (params[:scrape_tasks_grid] ? '' : 'collapse') }
+#scrape_task_filter.mt-3.mb-3.collapse{ class: (params[:scrape_tasks_grid] ? 'show' : '') }
   =datagrid_form_for @grid, url: scrape_tasks_path
 
 .row

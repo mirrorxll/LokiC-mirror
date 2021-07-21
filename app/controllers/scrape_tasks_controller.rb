@@ -46,6 +46,7 @@ class ScrapeTasksController < ApplicationController
   private
 
   def grid
+
     grid_params =
       if params[:scrape_tasks_grid]
         params.require(:scrape_tasks_grid).permit!
