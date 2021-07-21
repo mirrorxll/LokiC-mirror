@@ -55,10 +55,11 @@ module MiniLokiC
         )
         return export_config if export_config
 
-        raise ArgumentError,
-              'There is a publication in the staging table '\
-              'for which no export configuration has been created. '\
-              'Please click [create export configurations]'
+        message = "STAGING TABLE ROW = #{@raw_sample['staging_row_id']} | "\
+                  'You are trying to create a story for client/publication '\
+                  'not specified in the properties section. Please check the '\
+                  'method you use for getting publications or contact the manager.'
+        raise ArgumentError, message
       end
 
       # wrap to HTML tags

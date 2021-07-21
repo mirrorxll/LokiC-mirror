@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 class Account < ApplicationRecord # :nodoc:
-  after_create do
-    account_types << AccountType.find_by(name: 'developer') if account_types.count.zero?
-  end
-
   attr_accessor :type_ids, :slack_id # it needs for formtastic-activeadmin-form
 
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
@@ -12,12 +8,12 @@ class Account < ApplicationRecord # :nodoc:
          :recoverable, :rememberable, :validatable
 
   has_and_belongs_to_many :account_types
-  has_and_belongs_to_many :sheriff_data_sets, class_name: 'DataSet', join_table: 'data_sets_sheriffs'
 
   has_one :slack, class_name: 'SlackAccount'
   has_one :fc_channel
 
   has_many :data_sets
+  has_many :sheriffs, foreign_key: :sheriff_id, class_name: 'DataSet'
   has_many :edit_story_types, foreign_key: :editor_id, class_name: 'StoryType'
   has_many :dev_story_types, foreign_key: :developer_id, class_name: 'StoryType'
   has_many :submitters, class_name: 'PostExportReport'

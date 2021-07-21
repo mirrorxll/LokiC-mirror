@@ -12,8 +12,14 @@
 #scrape_task_filter.mt-3.mb-3{ class: (params[:scrape_tasks_grid] ? '' : 'collapse') }
   =datagrid_form_for @grid, url: scrape_tasks_path
 
-.row.small
+.row
   .col-12
-    =datagrid_table(@grid)
+    #data_sets
+      #grid_wrapper
+        =datagrid_table(@grid)
+
+.row.mt-3.col-12
+  #pagination
+    =paginate @grid.assets
 
 =render 'scrape_tasks/new_form'

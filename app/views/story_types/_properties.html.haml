@@ -52,10 +52,7 @@
         =@story_type.editor.name
       .col-6
         =@story_type.developer ? @story_type.developer.name: '---'
-    %hr/
-    %p
-      %a.p-0.btn.btn-sm.btn-link.d-inline-block.font-weight-normal{"aria-controls" => "collapseProperties", "aria-expanded" => "false", "data-toggle" => "collapse", href: "#collapseProperties", role: "button"}
-        [ additional properties ]
+
     =render 'story_types/additional_properties'
   .col-5.border-left.ml-1
     .row.mb-2.font-weight-bold
