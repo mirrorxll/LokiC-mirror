@@ -20,6 +20,7 @@ class ScrapeTask < ApplicationRecord
   belongs_to :scraper,   optional: true, class_name: 'Account'
   belongs_to :frequency, optional: true
   belongs_to :status,    optional: true
+  belongs_to :state,     optional: true
 
   has_one :scrape_instruction
   has_one :scrape_evaluation_doc
@@ -28,8 +29,6 @@ class ScrapeTask < ApplicationRecord
   has_one :status_comment, -> { where(subtype: 'status comment') }, as: :commentable, class_name: 'Comment'
   has_one :general_comment, -> { where(subtype: 'general comment') }, as: :commentable, class_name: 'Comment'
   has_one :data_set
-
-  has_many :comments, as: :commentable
 
   def updated_early?
     updated_at > created_at

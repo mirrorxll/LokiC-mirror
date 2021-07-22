@@ -14,8 +14,9 @@
       .d-flex.justify-content-between.align-items-center
         main info
         .d-inline-block
-          #scrapeTaskEdit.d-inline-block.mr-2.small
-            =button_to('[ edit ]', edit_scrape_task_path(@scrape_task), method: :get, remote: true, class: 'p-0 pb-1 btn btn-sm btn-link ml-2', data: { disable_with: '...'})
+          -if current_account.eql?(@scrape_task.scraper) || current_account.types.include?('manager')
+            #scrapeTaskEdit.d-inline-block.mr-2.small
+              =button_to('[ edit ]', edit_scrape_task_path(@scrape_task), method: :get, remote: true, class: 'p-0 pb-1 btn btn-sm btn-link ml-2', data: { disable_with: '...'})
           #scrapeTaskStatus.d-inline-block
             =render 'statuses'
     .card-body
@@ -38,9 +39,12 @@
       #scrapeInstructionEdit.small
         .row
           .col-8.offset-2.p-0
-            %hr.mb-0.mt-3/
-            =button_to('[ edit ]', edit_scrape_task_scrape_instruction_path(@scrape_task), class: 'btn btn-sm btn-link', method: :get, remote: true, data: { disable_with: '...'})
-            %hr.mt-0/
+            -if current_account.types.include?('manager')
+              %hr.mb-0.mt-3/
+              =button_to('[ edit ]', edit_scrape_task_scrape_instruction_path(@scrape_task), class: 'btn btn-sm btn-link', method: :get, remote: true, data: { disable_with: '...'})
+              %hr.mt-0/
+            -else
+              %hr/
       #instruction.show{"data-parent" => "#scrapeInstruction"}
         =render 'scrape_instructions/instruction'
 
@@ -49,15 +53,17 @@
       #scrapeEvaluationDocEdit.small
         .row
           .col-8.offset-2.p-0
-            %hr.mb-0.mt-3/
-            .d-inline-block
-              =button_to('[ edit ]', edit_scrape_task_scrape_evaluation_doc_path(@scrape_task), class: 'btn btn-sm btn-link', method: :get, remote: true, data: { disable_with: '...'})
-            -if !@scrape_task.evaluation && current_account.types.include?('manager')
+            -if current_account.types.include?('manager')
+              %hr.mb-0.mt-3/
               .d-inline-block
-                =button_to('[ evaluate ]', scrape_task_evaluate_path(@scrape_task), method: :patch, remote: true,
-                            id: 'evaluateButton', class: 'btn btn-sm btn-link ml-1', data: { disable_with: '...'})
-
-            %hr.mt-0/
+                =button_to('[ edit ]', edit_scrape_task_scrape_evaluation_doc_path(@scrape_task), class: 'btn btn-sm btn-link', method: :get, remote: true, data: { disable_with: '...'})
+              -if !@scrape_task.evaluation
+                .d-inline-block
+                  =button_to('[ evaluate ]', scrape_task_evaluate_path(@scrape_task), method: :patch, remote: true,
+                              id: 'evaluateButton', class: 'btn btn-sm btn-link ml-1', data: { disable_with: '...'})
+              %hr.mt-0/
+            -else
+              %hr/
       #evaluationDoc.show{ "data-parent" => "#scrapeEvaluationDoc" }
         =render 'scrape_evaluation_docs/evaluation_doc'
 
