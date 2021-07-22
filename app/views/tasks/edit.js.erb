@@ -1,8 +1,7 @@
-$('#task .modal-body').html('<%= j render 'form' %>')
-$('#task .modal-header').html('<%= 'new task' %>')
+$('#task .modal-body').html('<%= j render 'edit_form' %>')
 
 $('[data-editor="summernote"]').summernote({
-    height: 300,
+    height: 400,
     toolbar: [
         ['style', ['style']],
         ['font', ['clear', 'bold', 'italic', 'underline', 'strikethrough']],

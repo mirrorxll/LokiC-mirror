@@ -220,6 +220,14 @@ Rails.application.routes.draw do
   end
 
   resources :tasks do
-    patch :change_status
+    resources :progress_statuses, controller: 'task_statuses', only: [] do
+      patch :change, on: :collection
+    end
+
+    resources :assignments, controller: 'task_assignments', only: [] do
+      get   :edit,   on: :collection
+      patch :update, on: :collection
+      get   :cancel, on: :collection
+    end
   end
 end

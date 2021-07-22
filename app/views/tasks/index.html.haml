@@ -1,20 +1,22 @@
-.row
-  .col-12
-    =link_to('create new task',
-             new_task_path,
-             class: 'btn btn-sm btn-outline-dark',
-             remote: true)
+.row.m-2.justify-content-between
+  =link_to('create new task',
+           new_task_path,
+           class: 'btn btn-sm btn-outline-dark',
+           remote: true)
 
-#tasks
-  -@tasks.each do |task|
-    =render 'task', task: task
+  =link_to('filter tasks', '#filter_form', 'aria-controls' => 'filter_form',
+           'aria-expanded' => false, data: { toggle: "collapse", target: "#filter_form" },
+            type: "button", class: 'btn btn-sm btn-outline-dark')
+%hr/
 
-#new_task.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "properties", role: "dialog", :tabindex => "-1"}
-  .modal-dialog.modal-dialog-centered.modal-xl
-    .modal-content
-      .modal-header
-        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", type: "button"}
-          %span{"aria-hidden" => "true"} ×
-      .modal-body
+#filter_form{ class: (params[:tasks_grid] ? '' : 'collapse') }
+  =datagrid_form_for @tasks_grid, url: tasks_path
 
-#task
+.row.small.justify-content-center
+  =datagrid_table(@tasks_grid)
+
+.row.mt-3.col-12
+  #pagination
+    =paginate @tasks_grid.assets
+
+=render 'tasks/task_modal'

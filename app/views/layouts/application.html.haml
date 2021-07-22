@@ -19,7 +19,6 @@
       #navbarNavDropdown.collapse.navbar-collapse
         %ul.navbar-nav.w-100
           -acc_types = current_account&.types
-
           -if acc_types
             -if acc_types.include?('manager')
               %li.nav-item.active.dropdown
@@ -34,7 +33,6 @@
                     =link_to('developers production', exported_counts_developers_productions_path, class: 'nav-link small')
                   .dropdown-item
                     =link_to('assembled 2020', assembleds_tracking_hours_path(week: current_week), class: 'nav-link small')
-
             -if (acc_types & %w[manager editor]).any?
               %li.nav-item.active.dropdown
                 #navbarDropdown.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
@@ -50,17 +48,14 @@
                     =link_to('shown samples', shown_samples_path, class: 'nav-link small')
                   .dropdown-item
                     =link_to('removals from PL', production_removals_path, class: 'nav-link small')
-
             -if (acc_types & %w[manager editor scraper]).any?
               %li.nav-item.active
                 =link_to('scrape tasks', scrape_tasks_path, class: 'nav-link')
-
             -unless acc_types.count.eql?(1) && acc_types.first.eql?('scraper')
               %li.nav-item.active
                 =link_to('tracking hours', tracking_hours_path(week: current_week, developer: current_account), class: 'nav-link')
               %li.nav-item.active
                 =link_to('tasks', tasks_path, class: 'nav-link')
-                
             %li.nav-item.dropdown.ml-auto
               #navbarDropdown.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
                 =current_account.name

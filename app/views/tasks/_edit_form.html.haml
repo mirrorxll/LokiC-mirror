@@ -1,12 +1,28 @@
-=form_with(model: @task) do |form|
-  .field.small{ "data-controller" => "summernote" }
-    =form.text_area :body, data: { editor: 'summernote' }
+=form_with(url: tasks_path(@task), action: :update) do |form|
+  .row.small
+    .col
+      .form-group
+        =form.text_field 'task[title]', placeholder: 'title', class: 'form-control', required: true, value: @task.title
+      .form-group
+        =form.text_area 'task[description]', class: 'form-control', data: { editor: 'summernote' }, value: @task.description
+  %hr/
+  .form-group.row.small.font-weight-bold.text-center
+    .col-6
+      reminder frequency:
+    .col-6
+      deadline:
+  .form-group.row.small.text-center
+    .col-6
+      =form.collection_select "task[reminder_frequency]", TaskReminderFrequency.all.order(:name), :id, :name, { selected: @task.reminder_frequency.id, prompt: '' }
+    .col-6
+      =form.date_field 'task[deadline]', value: @task.deadline
+  %hr/
   .modal-footer
     =link_to( 'close', '#', class: 'ml-auto btn btn-sm btn-outline-secondary',
               'data-dismiss' => 'modal', data: { confirm: 'All changes shall be lost. Close?'})
     =form.submit 'save changes', class: 'mr-auto btn btn-sm btn-outline-success'
 
 :javascript
-  $('#template').on('hidden.bs.modal', function () {
-    $('#template .modal-body').empty();
+  $('#task').on('hidden.bs.modal', function () {
+    $('#task .modal-body').empty();
   });

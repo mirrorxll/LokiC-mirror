@@ -1,0 +1,38 @@
+%hr/
+.row.justify-content-center.font-weight-bold
+  =@task.title
+%hr/
+
+.row
+  .col.small.font-weight-bold
+    assignment to:
+  .col#task_status.text-right
+    =render 'task_statuses/status', task: @task
+.row
+  .col
+    #assignments
+      =render 'task_assignments/assignments', task: @task
+  .col.text-right
+    =link_to '[ edit ]', edit_task_path(@task), remote: true
+
+.card.mt-3
+  .card-body
+    .row.small.font-weight-bold.text-center
+      .col-6
+        reminder frequency:
+      .col-6
+        deadline:
+    .row.small.text-center
+      .col-6
+        =@task.reminder_frequency.name
+      .col-6
+        =@task.deadline
+
+
+.card.mt-3
+  .card-body.overflow-auto
+    .row.small.mb-3
+      .col-10.offset-1
+        =@task.description&.html_safe
+
+=render 'tasks/task_modal'

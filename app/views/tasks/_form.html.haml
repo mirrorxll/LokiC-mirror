@@ -5,35 +5,52 @@
         =form.text_field 'task[title]', placeholder: 'title', class: 'form-control', required: true
       .form-group
         =form.text_area 'task[description]', class: 'form-control', data: { editor: 'summernote' }
-      .form-group.row
-        .col-2
-          =form.label 'assignment to'
-        .col-10.row.text-left
-          #assignments
-            =form.collection_select "task[assignment_to][]", Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '', class: 'form-control' }
-          #add_assignment.ml-2
-            =icon('fas', 'plus')
-  .row.small
-    .col
-      =form.submit :create, class: 'btn btn-sm btn-outline-dark'
+  %hr/
+  .form-group.row.small.font-weight-bold.text-center
+    .col-4
+      assignment to:
+      =icon('fa', 'plus', class: 'ml-3', id: 'add_assignment')
+      =icon('fa', 'minus', class: 'ml-2', id: 'delete_assignment')
+    .col-4
+      reminder frequency:
+    .col-2
+      deadline:
+  .form-group.row.small.text-center
+    .col-4#assignments
+      =form.collection_select "task[assignment_to][]", Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }, class: 'm-1'
+    .col-4
+      =form.collection_select "task[reminder_frequency]", TaskReminderFrequency.all.order(:name), :id, :name, { prompt: '' }
+    .col-2
+      =form.date_field 'task[deadline]', class: 'w-100'
+  %hr/
+  .row.small.justify-content-center
+    =form.submit :create, class: 'm-1 btn btn-sm btn-outline-dark'
 
 :javascript
-  var accounts = #{raw Account.all.order([:first_name, :last_name]).map{ |account| [account.first_name, account.last_name]} };
+  var accounts = #{raw Account.all.order([:first_name, :last_name]).map{ |account| [account.first_name.to_s + ' ' + account.last_name.to_s, account.id]} };
 
   $('#add_assignment').click(function () {
-
+    let assignments = document.getElementById('assignments')
+    assignments.classList.add("text-left")
     $('#assignments').append(
-        `<select id="task[assignment_to][]" name="task[assignment_to][]" class="mr-2 ml-2">${buildSelect(accounts)}</select>`
+        `<select id="task[assignment_to][]" name="task[assignment_to][]" class = "m-1">${buildSelect(accounts)}</select>`
     );
+  });
+
+  $('#delete_assignment').click(function () {
+    let assignments = document.getElementById('assignments')
+    assignments.removeChild(assignments.lastChild)
   });
 
   function buildSelect(options) {
     var $select = $('');
     $select += ('<option value="' + '' + '">' + '' + '</option>');
     for (var i = 0; i < options.length; i++) {
-      $select += ('<option value="' + options[i] + '">' + options[i] + '</option>');
+      $select += ('<option value="' + options[i][1] + '">' + options[i][0] + '</option>');
     }
     return $select;
   }
 
-
+  $('#task').on('hidden.bs.modal', function () {
+    $('#task .modal-body').empty();
+  });

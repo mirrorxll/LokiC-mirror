@@ -1,2 +1,1 @@
-$('#new_task').modal('hide');
-$(`#tasks`).append('<%= j render 'task', task: @task %>')
+window.location.replace("<%= task_path(@task) %>")
