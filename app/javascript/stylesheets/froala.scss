@@ -18,3 +18,9 @@
 @import '~froala-editor/css/third_party/embedly.min';
 @import '~froala-editor/css/third_party/image_tui.min';
 @import '~froala-editor/css/third_party/spell_checker.min';
+
+div.fr-wrapper>div>a {
+  font-size: 0px !important;
+  padding: 0px !important;
+  height: 0px !important;
+}
