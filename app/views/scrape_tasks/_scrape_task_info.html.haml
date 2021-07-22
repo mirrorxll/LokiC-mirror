@@ -16,6 +16,12 @@
     -else
       \---
 
+.row.mb-4
+  .col-2.pr-0.text-right.font-weight-bold
+    state:
+  .col-10
+    =@scrape_task.state&.name
+
 .row.mb-1
   .col-2.pr-0.text-right.font-weight-bold
     URL:

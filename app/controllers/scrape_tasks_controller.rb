@@ -74,7 +74,7 @@ class ScrapeTasksController < ApplicationController
   def update_scrape_task_params
     params.require(:scrape_task).permit(
       :name, :gather_task, :scrapable, :datasource_url,
-      :data_set_location, :scraper_id, :frequency_id
+      :data_set_location, :scraper_id, :frequency_id, :state_id
     )
   end
 

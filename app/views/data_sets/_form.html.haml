@@ -10,7 +10,7 @@
         =f.label :data, 'data:', class: 'small font-weight-bold mb-3'
         .scrape_task
           .select_placeholder.text-secondary.form-control.form-control-sm.border-right-0{ 'data-text' => 'scrape task: ' }
-          =f.collection_select :scrape_task_id, ScrapeTask.includes(:data_set).where(data_sets: { id: [nil, @data_set&.id] }), :id, :name,
+          =f.collection_select :scrape_task_id, ScrapeTask.includes(:data_set).where(data_sets: { id: [nil, @data_set&.id] }).order(:name), :id, :name,
                                { include_blank: true, selected: @scrape_task&.id || @data_set.scrape_task&.id },
                                { class: 'mb-1 form-control form-control-sm' }
 
