@@ -1,4 +1,4 @@
--disabled = (!current_account.slack || (current_account.types.eql?(['developer']) && @story_type.developer != current_account))
+-disabled = (!current_account.slack || !correct_account?(@story_type))
 
 .btn-group.w-100
   =link_to('edit FCD', edit_story_type_fact_checking_doc_path(@story_type, @fcd),

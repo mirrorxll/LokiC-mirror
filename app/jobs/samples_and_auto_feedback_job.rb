@@ -10,18 +10,18 @@ class SamplesAndAutoFeedbackJob < ApplicationJob
         message = "Success. FCD's samples have been created"
         sample_args = nil
         staging_table = iteration.story_type.staging_table
-        client_ids = iteration.story_type.client_pl_ids.join(',')
+        publication_ids = iteration.story_type.publication_pl_ids.join(',')
         options[:iteration] = iteration
-        options[:client_ids] = client_ids
+        options[:publication_ids] = publication_ids
         options[:sampled] = true
 
         ids =
           if options[:cron]
-            Table.select_edge_ids(staging_table.name, client_ids, [:id])
+            Table.select_edge_ids(staging_table.name, publication_ids, [:id])
           else
             column_names = staging_table.columns.ids_to_names(options[:columns])
             sample_args = { columns: column_names, ids: options[:row_ids] }
-            edge_ids = Table.select_edge_ids(staging_table.name, client_ids, column_names)
+            edge_ids = Table.select_edge_ids(staging_table.name, publication_ids, column_names)
             row_ids = options[:row_ids].delete(' ').split(',')
             edge_ids + row_ids
           end

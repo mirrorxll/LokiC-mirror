@@ -1,7 +1,12 @@
 #scrapeTaskStatusComment
   =render 'status_comment'
 
-.row.mb-5
+.row.mb-1
+  .col-2.pr-0.text-right.font-weight-bold
+    name:
+  .col-10
+    =@scrape_task.name
+.row.mb-4
   .col-2.pr-0.text-right.font-weight-bold
     gather task:
   .col-10
@@ -11,7 +16,13 @@
     -else
       \---
 
-.row.mb-2
+.row.mb-4
+  .col-2.pr-0.text-right.font-weight-bold
+    state:
+  .col-10
+    =@scrape_task.state&.name
+
+.row.mb-1
   .col-2.pr-0.text-right.font-weight-bold
     URL:
   .col-10
@@ -20,14 +31,13 @@
       =link_to(nil, link, target: '_blank')
     -else
       \---
-
-.row.mb-5
+.row.mb-4
   .col-2.pr-0.text-right.font-weight-bold
     comment on datasource:
   .col-10
     =@scrape_task.datasource_comment&.body
 
-.row.mb-2
+.row.mb-1
   .col-2.pr-0.text-right.font-weight-bold
     scrapable?
   .col-10
@@ -40,30 +50,29 @@
     -else
       not checked
 
-.row.mb-5
+.row.mb-4
   .col-2.pr-0.text-right.font-weight-bold
     comment on scrape ability:
   .col-10
-    =@scrape_task.scrape_ability_comment.body
+    =@scrape_task.scrape_ability_comment&.body
 
-.row.mb-2
+.row.mb-1
   .col-2.pr-0.text-right.font-weight-bold
     scraper:
   .col-10
     =@scrape_task.scraper&.name
-.row.mb-2
+.row.mb-1
   .col-2.pr-0.text-right.font-weight-bold
     scrape frequency:
   .col-10
     =@scrape_task.frequency&.name
-
-.row.mt-5
+.row.mb-4
   .col-2.pr-0.text-right.font-weight-bold
-    data set location:
+    general comment:
   .col-10
-    =@scrape_task.data_set_location
+    =@scrape_task.general_comment&.body
 
-.row.mt-5
+.row.mb-1
   .col-2.pr-0.text-right.font-weight-bold
     data set location:
   .col-10

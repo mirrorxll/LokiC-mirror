@@ -25,11 +25,13 @@
       undo: false,
       refreshAfterCallback: false,
       callback: function () {
-        Rails.ajax({
-          type: "GET",
-          dataType: 'script',
-          url: `#{cancel_edit_scrape_task_scrape_evaluation_doc_path(@scrape_task)}`
-        })
+        if(confirm('cancel edit evaluation doc?')) {
+          Rails.ajax({
+            type: "GET",
+            dataType: 'script',
+            url: `#{cancel_edit_scrape_task_scrape_evaluation_doc_path(@scrape_task)}`
+          })
+        }
       }
     });
 
@@ -37,7 +39,7 @@
       key: 'KfdolbcqsaA2wzA-13==',
       toolbarSticky: true,
       documentReady: true,
-      toolbarButtons: ['undo', 'redo' , '|', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'outdent', 'indent', 'clearFormatting', 'insertTable', 'html', '|', 'submitEvalDocEdit', 'cancelEvalDocEdit'],
+      toolbarButtons: ['fullscreen', 'undo', 'redo', '|', '|', 'submitEvalDocEdit', 'cancelEvalDocEdit', '|', '|', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineClass', 'inlineStyle', 'paragraphStyle', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', 'insertLink', 'insertImage', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'getPDF', 'help', 'html'],
       imageUploadURL: '/images/upload',
       imageUploadMethod: 'POST'
     })
