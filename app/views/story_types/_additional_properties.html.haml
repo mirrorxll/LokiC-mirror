@@ -4,7 +4,7 @@
     comment
     -if current_account.types.include?('manager') or (@story_type.developer == current_account and ['blocked','canceled'].include?(@story_type.status.name))
       .col-1.p-0.text-center
-        =link_to(icon('fa', 'pencil', class: ' fa-xs text-dark'), edit_story_type_path(@story_type), remote: true, "data-toggle": "collapse", role: "button", href: "#commentForm", "aria-expanded": "true", "aria-controls": "commentForm")
+        =link_to(icon('fa', 'pencil', class: ' fa-xs text-dark'), edit_story_type_path(@story_type), remote: true, "data-toggle": "collapse", role: "button", href: "#commentForm", "aria-expanded": "false", "aria-controls": "commentForm")
   .row.col-12
     #commentForm.text-left.collapse
       =form_with(model: @story_type, class: 'form') do |form|
