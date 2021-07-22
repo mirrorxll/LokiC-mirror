@@ -49,7 +49,7 @@
       .flash
       .card-body
         =render 'story_types/properties'
--unless current_account.types.eql?(['developer']) && @story_type.developer != current_account
+-if correct_account?(@story_type)
   -if @iteration.eql?(@story_type.iteration)
     #story_type_staging_table.accordion
       .card
@@ -71,7 +71,7 @@
       .card-body
         =render 'samples/samples'
 
--unless current_account.types.eql?(['developer']) && @story_type.developer != current_account
+-if correct_account?(@story_type)
   %div.accordion{id: "story_type_scheduler_#{@iteration.id}"}
     .card
       .card-header
