@@ -3195,10 +3195,10 @@ fresh@0.5.2:
   resolved "https://registry.yarnpkg.com/fresh/-/fresh-0.5.2.tgz#3d8cadd90d976569fa835ab1f8e4b23a105605a7"
   integrity sha1-PYyt2Q2XZWn6g1qx+OSyOhBWBac=
 
-froala-editor@2.9.8:
-  version "2.9.8"
-  resolved "https://registry.yarnpkg.com/froala-editor/-/froala-editor-2.9.8.tgz#dd5d539921423538958332f3887ab54f5b3ba064"
-  integrity sha512-ebZb3duCqtt6/1LRDtVmhVxd+FLQfSWU1k1wo7IN+JNzdmxwiMZCNR/BYttFaYc7u1M1TcrqPG8G/KOU3RL+Zg==
+froala-editor@2.9.1:
+  version "2.9.1"
+  resolved "https://registry.yarnpkg.com/froala-editor/-/froala-editor-2.9.1.tgz#6487b55ad1db9ef0379bfeaa58b35534b28ad589"
+  integrity sha512-ZEyBnZ/J5w87pjh6F8pNdI0owJ8w3fvwqfOnfcVqHblBQ2A1yjeOfOEIsCUM3QbFscHqY2ChArRCfpDpGxy/Vw==
   dependencies:
     font-awesome ">=4.4.0"
     jquery ">=1.11.0"
@@ -7120,11 +7120,6 @@ timsort@^0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/timsort/-/timsort-0.3.0.tgz#405411a8e7e6339fe64db9a234de11dc31e02bd4"
   integrity sha1-QFQRqOfmM5/mTbmiNN4R3DHgK9Q=
-
-tinymce@^5.8.2:
-  version "5.8.2"
-  resolved "https://registry.yarnpkg.com/tinymce/-/tinymce-5.8.2.tgz#54eb8160b697796c3b52282e648d9d12b1a7399a"
-  integrity sha512-qfWThBrSzbj4DoUk+lgGeDoP2GzLDSWrfvVUxf40HZhTzsG15X2nZ4N49IFqwaVgRl5AyFDtuWiEH/lCmiAcRA==
 
 to-arraybuffer@^1.0.0:
   version "1.0.1"
