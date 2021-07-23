@@ -54,15 +54,11 @@ class ApplicationJob < ActiveJob::Base
     SlackNotificationJob.perform_now(channel, message)
   end
 
-  def record_to_change_history(story_type, event, message)
-    story_type.change_history.create!(history_event: event, note: message)
+  def record_to_change_history(model, event, message)
+    model.change_history.create!(event: event, body: message)
   end
 
-  def record_to_alerts(story_type, subtype, message)
-    note_to_md5 = Digest::MD5.hexdigest(message)
-    note = Note.find_or_create_by!(md5hash: note_to_md5) { |t| t.note = message }
-    alert_subtype = AlertSubtype.find_or_create_by!(name: subtype.downcase)
-
-    story_type.alerts.create!(alert_subtype: alert_subtype, note: note)
+  def record_to_alerts(model, subtype, message)
+    model.alerts.create!(subtype: subtype.downcase, body: message)
   end
 end

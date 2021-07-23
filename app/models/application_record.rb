@@ -5,7 +5,7 @@ class ApplicationRecord < ActiveRecord::Base
 
   connects_to database: { writing: :primary, reading: :primary }
 
-  def record_to_change_history(story_type, event, message)
-    story_type.change_history.create!(history_event: event, note: message)
+  def record_to_change_history(model, event, message)
+    model.change_history.create!(event: event, body: message)
   end
 end

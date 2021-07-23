@@ -19,7 +19,9 @@ class ScrapeTasksController < ApplicationController
   def show; end
 
   def create
-    @scrape_task = ScrapeTask.create!(create_scrape_task_params)
+    @scrape_task = ScrapeTask.new(create_scrape_task_params)
+    @scrape_task.creator = current_account
+    @scrape_task.save!
   end
 
   def edit; end
@@ -27,12 +29,16 @@ class ScrapeTasksController < ApplicationController
   def cancel_edit; end
 
   def update
+    render_403 and return if !manager? && !@scrape_task.scraper.eql?(current_account)
+
     @scrape_task.transaction do
       @scrape_task.datasource_comment.update(datasource_comment_param)
       @scrape_task.scrape_ability_comment.update(scrape_ability_comment_param)
       @scrape_task.general_comment.update(general_comment_param)
       @scrape_task.update!(update_scrape_task_params)
     end
+
+    return unless manager?
 
     @scrape_task.data_set&.update(scrape_task: nil)
     @data_set = DataSet.find_by(data_set_param) || DataSet.new
@@ -46,7 +52,6 @@ class ScrapeTasksController < ApplicationController
   private
 
   def grid
-
     grid_params =
       if params[:scrape_tasks_grid]
         params.require(:scrape_tasks_grid).permit!
@@ -66,16 +71,22 @@ class ScrapeTasksController < ApplicationController
   end
 
   def create_scrape_task_params
-    sc_task_params = params.require(:scrape_task).permit(:name, :datasource_url)
-    sc_task_params[:creator] = current_account
-    sc_task_params
+    params.require(:scrape_task).permit(:name)
   end
 
   def update_scrape_task_params
-    params.require(:scrape_task).permit(
-      :name, :gather_task, :scrapable, :datasource_url,
-      :data_set_location, :scraper_id, :frequency_id, :state_id
-    )
+    if manager?
+      params.require(:scrape_task).permit(
+        :name, :gather_task, :state_id, :datasource_url,
+        :scrapable, :data_set_location, :scraper_id, :frequency_id
+      )
+    elsif @scrape_task.scraper.eql?(current_account)
+      params.require(:scrape_task).permit(
+        :gather_task, :datasource_url, :data_set_location
+      )
+    else
+      {}
+    end
   end
 
   def scrape_ability_comment_param

@@ -1,19 +1,19 @@
 # frozen_string_literal: true
 
 class DevelopersController < ApplicationController
-  before_action :render_400, if: :developer?
+  before_action :render_403, if: :developer?
   before_action :find_developer, only: :include
   after_action  :send_notification, only: :include
   after_action  :distributed_to_history, only: :include
 
   def include
-    render_400 && return if @story_type.developer
+    render_403 && return if @story_type.developer
 
     @story_type.update!(developer: @developer, distributed_at: Time.now)
   end
 
   def exclude
-    render_400 && return unless @story_type.developer
+    render_403 && return unless @story_type.developer
 
     @story_type.update(developer: nil, distributed_at: nil)
   end

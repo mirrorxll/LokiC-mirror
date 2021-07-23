@@ -9,10 +9,11 @@ class DataSet < ApplicationRecord # :nodoc:
 
   has_one :data_set_photo_bucket
   has_one :photo_bucket, through: :data_set_photo_bucket
-  has_one :change_history, as: :history
 
   has_many :story_types
   has_many :client_publication_tags, class_name: 'DataSetClientPublicationTag'
   has_many :clients, through: :client_publication_tags
   has_many :tags, through: :client_publication_tags
+  has_many :change_history, as: :history
+  has_many :alerts, as: :alert
 end

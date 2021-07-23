@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class EditorsFeedbackController < ApplicationController
-  before_action :render_400_developer, only: %i[new create], if: :developer?
-  before_action :render_400_editor, only: :confirm, if: :editor?
+  before_action :render_403_developer, only: %i[new create], if: :developer?
+  before_action :render_403_editor, only: :confirm, if: :editor?
   before_action :find_fcd, only: %i[create confirm]
   before_action :find_feedback_collection, only: %i[create confirm]
   after_action  :send_notification_to_dev, only: :create
@@ -25,7 +25,7 @@ class EditorsFeedbackController < ApplicationController
 
   def confirm
     @feedback = @feedback_collection.find(params[:id])
-    render_400 and return if @feedback.confirmed
+    render_403 and return if @feedback.confirmed
 
     @feedback.update(confirmed: true)
   end
