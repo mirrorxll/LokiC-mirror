@@ -10,21 +10,11 @@
           %button.close{"aria-label" => "Close", "data-dismiss" => "modal", type: "button"}
             %span{"aria-hidden" => "true"} ×
         .modal-body
-          .row.mb-2
+          .row
             .col-10.offset-1.small
               =f.text_field :name, placeholder: 'name', id: 'newScrapeTaskName', class: 'form-control form-control-sm', required: true
               #newScrapeTaskNameFeedback.text-danger.d-none
                 Task with this name already exists. Let's use something else
-
-          .row
-            .col-10.offset-1.small
-              =f.text_field :datasource_url, placeholder: 'datasource url (https://example.com)',
-                            id: 'newScrapeTaskDataUrl', maxlength: 1000, class: 'form-control form-control-sm',
-                            required: true
-              #newScrapeTaskDataUrlLength
-                1000 /
-                %span
-                  0
 
         .modal-footer.justify-content-center
           =f.submit 'create scrape task', class: 'btn btn-sm btn-outline-dark'
@@ -66,19 +56,6 @@
       }
     })
   }, 500))
-
-  document.querySelector('#newScrapeTaskDataUrl').addEventListener('input', (ev) => {
-    let inputLength = ev.target.value.length;
-    let lengthMeter = document.querySelector('#newScrapeTaskDataUrlLength');
-
-    lengthMeter.querySelector('span').innerText = inputLength;
-
-    if(inputLength === 1000) {
-      lengthMeter.classList.add('text-danger');
-    } else {
-      lengthMeter.classList.remove('text-danger');
-    }
-  })
 
   function onSubmit(ev) {
     ev.preventDefault();

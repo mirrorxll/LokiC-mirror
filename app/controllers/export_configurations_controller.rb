@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 class ExportConfigurationsController < ApplicationController
-  before_action :render_400, if: :editor?
+  before_action :render_403, if: :editor?
 
   def check; end
 
   def create
-    render_400 && return if @story_type.staging_table_attached.nil?
+    render_403 && return if @story_type.staging_table_attached.nil?
 
     @story_type.update(creating_export_configurations: false)
     ExportConfigurationsJob.perform_later(@story_type, true)

@@ -4,7 +4,7 @@ class IterationsController < ApplicationController
   skip_before_action :find_parent_story_type, only: :show
   skip_before_action :set_iteration
 
-  before_action :render_400, if: :editor?
+  before_action :render_403, if: :editor?
   before_action :find_iteration, only: %i[show update apply purge]
   before_action :find_staging_table, only: :purge
 

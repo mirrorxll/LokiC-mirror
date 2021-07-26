@@ -4,8 +4,8 @@ class StoryTypesController < ApplicationController # :nodoc:
   skip_before_action :find_parent_story_type, except: :properties_form
 
   before_action :redirect_scrapers,     only: :index
-  before_action :render_400_editor,     only: :show, if: :editor?
-  before_action :render_400_developer,  only: %i[new create properties destroy], if: :developer?
+  before_action :render_403_editor,     only: :show, if: :editor?
+  before_action :render_403_developer,  only: %i[new create properties destroy], if: :developer?
   before_action :find_data_set,         only: %i[new create]
   before_action :find_story_type,       except: %i[index new create properties_form]
   before_action :set_iteration,         except: %i[index new create properties_form change_data_set]

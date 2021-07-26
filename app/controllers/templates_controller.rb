@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class TemplatesController < ApplicationController
-  before_action :render_400, except: :show, if: :developer?
+  before_action :render_403, except: :show, if: :developer?
   before_action :update_template, only: %i[update save]
 
   def show; end

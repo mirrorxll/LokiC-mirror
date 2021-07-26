@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 class AutoFeedbackConfirmationsController < ApplicationController
-  before_action :render_400, if: :editor?
+  before_action :render_403, if: :editor?
   before_action :find_auto_feedback
 
   def confirm
-    render_400 and return if @auto_feedback_to_confirm.confirmed
+    render_403 and return if @auto_feedback_to_confirm.confirmed
 
     @auto_feedback_to_confirm.update(confirmed: true)
   end

@@ -1,10 +1,12 @@
+-disable_input = !current_account.types.include?('manager')
+
 =form_with(url: scrape_task_path(@scrape_task), method: :patch) do |f|
   .row.mb-1
     .col-2.pr-0.text-right.font-weight-bold
       name:
     .col-10
       =f.text_field 'scrape_task[name]', class: 'w-50 border rounded', placeholder: 'name',
-                    value: @scrape_task.name, required: true, disabled: !current_account.types.include?('manager')
+                    value: @scrape_task.name, required: true, disabled: disable_input, readonly: disable_input
   .row.mb-4
     .col-2.pr-0.text-right.font-weight-bold
       gather task:
@@ -17,7 +19,7 @@
     .col-10
       =f.collection_select 'scrape_task[state_id]', State.all, :id, :name,
                            { include_blank: true, selected: @scrape_task.state&.id },
-                           { disabled: !current_account.types.include?('manager') }
+                           { disabled: disable_input, readonly: disable_input }
 
   .row.mb-1
     .col-2.pr-0.text-right.font-weight-bold
@@ -35,9 +37,9 @@
     .col-2.pr-0.text-right.font-weight-bold
       scrapable?
     .col-10
-      =f.radio_button "scrape_task[scrapable]", true, checked: @scrape_task.scrapable.eql?(true), disabled: !current_account.types.include?('manager')
+      =f.radio_button "scrape_task[scrapable]", true, checked: @scrape_task.scrapable.eql?(true), disabled: disable_input, readonly: disable_input
       =f.label 'yes', class: 'mr-2'
-      =f.radio_button "scrape_task[scrapable]", false, checked: @scrape_task.scrapable.eql?(false), disabled: !current_account.types.include?('manager')
+      =f.radio_button "scrape_task[scrapable]", false, checked: @scrape_task.scrapable.eql?(false), disabled: disable_input, readonly: disable_input
       =f.label 'no'
   .row.mb-4
     .col-2.pr-0.text-right.font-weight-bold
@@ -52,14 +54,14 @@
     .col-10
       =f.collection_select 'scrape_task[scraper_id]', Account.joins(:account_types).where(account_types: { name: 'scraper'}), :id, :name,
                            { include_blank: true, selected: @scrape_task.scraper&.id },
-                           { disabled: !current_account.types.include?('manager') }
+                           { disabled: disable_input, readonly: disable_input }
   .row.mb-1
     .col-2.pr-0.text-right.font-weight-bold
       scrape frequency:
     .col-10
       =f.collection_select 'scrape_task[frequency_id]',  Frequency.all, :id, :name,
                            { include_blank: true, selected: @scrape_task.frequency&.id },
-                           { disabled: !current_account.types.include?('manager') }
+                           { disabled: disable_input, readonly: disable_input }
   .row.mb-4
     .col-2.pr-0.text-right.font-weight-bold
       general comment:
@@ -72,9 +74,9 @@
       data set location:
     .col-10
       =f.text_field 'scrape_task[data_set_location]', class: 'w-50 border rounded',
-                    value: @scrape_task.data_set_location, disabled: !current_account.types.include?('manager')
+                    value: @scrape_task.data_set_location
 
-  -if current_account.types.include?('manager')
+  -if !disable_input
     .row.mb-4
       .col-2.pr-0.text-right.font-weight-bold
         data set:
