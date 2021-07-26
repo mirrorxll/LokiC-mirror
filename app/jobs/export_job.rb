@@ -56,26 +56,36 @@ class ExportJob < ApplicationJob
 
     note = "#{MiniLokiC::Formatize::Numbers.to_text(exp_st.count_samples).capitalize} story(ies) exported to Pipeline"
     record_to_change_history(story_type, 'exported to pipeline', note)
+
+    if story_type.iterations.last.eql?(iteration) && story_type.updates?
+      story_type.reminder.update_columns(updates_confirmed: nil, has_updates: false)
+    end
+
+    true
   rescue StandardError => e
     status = nil
     message = e.message
   ensure
-    all_exported = iteration.samples.not_exported.count.zero?
+    Process.wait(
+      fork do
+        all_exported = iteration.samples.not_exported.count.zero?
 
-    if all_exported && status && story_type.iterations.last.eql?(iteration)
-      unless story_type.reload.status.name.in?(['canceled', 'blocked', 'on cron'])
-        story_type.update(status: Status.find_by(name: 'exported'), last_status_changed_at: Time.now)
-        note = "progress status changed to 'exported'"
-        record_to_change_history(story_type, 'progress status changed', note)
+        if all_exported && status && story_type.iterations.last.eql?(iteration)
+          unless story_type.reload.status.name.in?(['canceled', 'blocked', 'on cron'])
+            story_type.update(status: Status.find_by(name: 'exported'), last_status_changed_at: Time.now)
+            note = "progress status changed to 'exported'"
+            record_to_change_history(story_type, 'progress status changed', note)
+          end
+
+          if Rails.env.production? && url && !iteration.name.match?(/CT\d{8}/)
+            send_report_to_editors_slack(iteration, url)
+          end
+        end
+
+        iteration.reload.update(export: status)
+        send_to_action_cable(iteration, :export, message)
+        send_to_dev_slack(iteration, 'EXPORT', message)
       end
-
-      send_report_to_editors_slack(iteration, url) if Rails.env.production? && url && !iteration.name.match?(/CT\d{8}/)
-    end
-
-    iteration.reload.update(export: status)
-    send_to_action_cable(iteration, :export, message)
-    send_to_dev_slack(iteration, 'EXPORT', message)
-
-    iteration.export
+    )
   end
 end

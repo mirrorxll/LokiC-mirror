@@ -1,0 +1,2 @@
+module ScrapeTaskInstructionsHelper
+end

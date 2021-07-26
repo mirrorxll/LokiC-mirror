@@ -52,21 +52,8 @@
         =@story_type.editor.name
       .col-6
         =@story_type.developer ? @story_type.developer.name: '---'
-    %hr/
-    .row.mb-2.font-weight-bold
-      .col-12
-        current iteration id
-    .row
-      .col-12
-        =@iteration.id
-    -if @story_type.comment
-      %hr/
-      .row.mb-2.font-weight-bold
-        .col-12
-          comment
-      .row
-        .col-12
-          =@story_type.comment
+
+    =render 'story_types/additional_properties'
   .col-5.border-left.ml-1
     .row.mb-2.font-weight-bold
       .col-12
@@ -74,21 +61,21 @@
     #story_type_code
       =render 'codes/section'
     %hr/
+    -if correct_account?(@story_type)
+      .row.mb-2.font-weight-bold
+        .col-12
+          export configurations (manual execution)
+      #export_configs
+        =render 'export_configurations/export_configurations'
+      %hr/
 
-    .row.mb-2.font-weight-bold
-      .col-12
-        export configurations (manual execution)
-    #export_configs
-      =render 'export_configurations/export_configurations'
-    %hr/
+      .row.mb-2.font-weight-bold
+        .col-12
+          cron tab
 
-    .row.mb-2.font-weight-bold
-      .col-12
-        cron tab
-
-    #cron_tab_panel
-      =render 'cron_tabs/cron_tab'
-    %hr/
+      #cron_tab_panel
+        =render 'cron_tabs/cron_tab'
+      %hr/
 %hr/
 
 =render 'data_sets/modal_data_set'

@@ -1,18 +1,18 @@
 # frozen_string_literal: true
 
 class TagsController < ApplicationController # :nodoc:
-  before_action :render_400, if: :developer?
+  before_action :render_403, if: :developer?
   before_action :find_client_publication_tag
   before_action :find_tag, only: :include
 
   def include
-    render_400 && return if @client_publication_tag.tag.present?
+    render_403 && return if @client_publication_tag.tag.present?
 
     @client_publication_tag.update(tag: @tag)
   end
 
   def exclude
-    render_400 && return unless @client_publication_tag.tag.present?
+    render_403 && return unless @client_publication_tag.tag.present?
 
     @client_publication_tag.update(tag: nil)
   end

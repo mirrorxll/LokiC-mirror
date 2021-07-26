@@ -3,7 +3,7 @@
 class CodesController < ApplicationController # :nodoc:
   skip_before_action :set_iteration, only: :show
 
-  before_action :render_400, if: :editor?
+  before_action :render_403, if: :editor?
   before_action :download_code, only: %i[attach reload]
 
   def show
@@ -12,13 +12,13 @@ class CodesController < ApplicationController # :nodoc:
   end
 
   def attach
-    render_400 && return if @story_type.code.attached? || @code.nil?
+    render_403 && return if @story_type.code.attached? || @code.nil?
 
     @story_type.code.attach(io: StringIO.new(@code), filename: "S#{@story_type.id}.rb")
   end
 
   def reload
-    render_400 && return if @code.nil?
+    render_403 && return if @code.nil?
 
     @story_type.code.purge
     @story_type.code.attach(io: StringIO.new(@code), filename: "S#{@story_type.id}.rb")

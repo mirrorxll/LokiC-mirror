@@ -8,59 +8,70 @@
     =csp_meta_tag
     =stylesheet_pack_tag  'application', media: 'all', 'data-turbolinks-track': 'reload'
     =javascript_pack_tag  'application', 'data-turbolinks-track': 'reload'
+    -#%script{ src: "https://cdn.tiny.cloud/1/00qt8jxm8zjm1q1pmj9fz9vle8d4sxiqeglberbbsph8bjmq/tinymce/5/tinymce.min.js", referrerpolicy: "origin" }
   %body
-    %nav.navbar.navbar-expand-lg.navbar-light.bg-light
-      =link_to('LokiC', root_path, class: 'navbar-brand')
+    %nav.navbar.navbar-expand-lg.navbar-light.bg-light.small
+      .small
+        =link_to('LokiC', root_path, class: 'navbar-brand')
       %button.navbar-toggler{"aria-controls" => "navbarNavDropdown", "aria-expanded" => "false",
                              "aria-label" => "Toggle navigation", "data-target" => "#navbarNavDropdown",
                              "data-toggle" => "collapse", type: "button"}
         %span.navbar-toggler-icon
       #navbarNavDropdown.collapse.navbar-collapse
         %ul.navbar-nav.w-100
-          -if current_account
-            -if current_account.types.include?('manager')
-              %li.nav-item.active
-                =link_to('admin panel', admin_root_path, class: 'nav-link')
-            -if !current_account.types.eql?(['developer'])
-              %li.nav-item.active
-                =link_to('data sets', data_sets_path, class: 'nav-link')
+          -acc_types = current_account&.types
 
-            -if (current_account.types & %w[manager editor]).any?
+          -if acc_types
+            -if acc_types.include?('manager')
               %li.nav-item.active.dropdown
                 #navbarDropdown.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
-                  story types
+                  management
                 .dropdown-menu{"aria-labelledby" => "navbarDropdown"}
                   .dropdown-item
-                    =link_to('exported iterations', exported_story_types_path, class: 'nav-link')
+                    =link_to('admin panel', admin_root_path, class: 'nav-link small', target: '_blank')
                   .dropdown-item
-                    =link_to('shown samples', shown_samples_path, class: 'nav-link')
+                    =link_to('sidekiq panel', sidekiq_web_path, class: 'nav-link small', target: '_blank')
                   .dropdown-item
-                    =link_to('removals', production_removals_path, class: 'nav-link')
+                    =link_to('developers production', exported_counts_developers_productions_path, class: 'nav-link small')
+                  .dropdown-item
+                    =link_to('assembled 2020', assembleds_tracking_hours_path(week: current_week), class: 'nav-link small')
 
-            -if current_account.types.include?('manager')
+            -if (acc_types & %w[manager editor]).any?
               %li.nav-item.active.dropdown
                 #navbarDropdown.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
-                  reports
-                .dropdown-menu{"aria-labelledby" => "navbarDropdown"}
+                  HLE
+                .small.dropdown-menu{"aria-labelledby" => "navbarDropdown"}
                   .dropdown-item
-                    =link_to('developers production', exported_counts_developers_productions_path, class: 'nav-link')
+                    =link_to('data sets', data_sets_path, class: 'nav-link small')
                   .dropdown-item
-                    =link_to('assembled 2020', assembleds_tracking_hours_path(week: current_week), class: 'nav-link')
+                    =link_to('story types', story_types_path, class: 'nav-link small')
+                  .dropdown-item
+                    =link_to('exported iterations', exported_story_types_path, class: 'nav-link small')
+                  .dropdown-item
+                    =link_to('shown samples', shown_samples_path, class: 'nav-link small')
+                  .dropdown-item
+                    =link_to('removals from PL', production_removals_path, class: 'nav-link small')
+
+            -if (acc_types & %w[manager editor scraper]).any?
+              %li.nav-item.active
+                =link_to('scrape tasks', scrape_tasks_path, class: 'nav-link')
+
             %li.nav-item.active
               =link_to('tracking hours', tracking_hours_path(week: current_week, developer: current_account), class: 'nav-link')
+
             %li.nav-item.dropdown.ml-auto
               #navbarDropdown.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
                 =current_account.name
-              .dropdown-menu{"aria-labelledby" => "navbarDropdown"}
-                -if current_account.types.include?('manager')
+              .dropdown-menu.dropdown-menu-right{"aria-labelledby" => "navbarDropdown"}
+                -if acc_types.include?('manager')
                   .dropdown-item
-                    =link_to('login as', accounts_path, class: 'nav-link')
-                - if current_account != true_account
-                  =link_to("back to #{true_account.name}", stop_impersonating_accounts_path, method: :post, class: 'nav-link')
+                    =link_to('login as', accounts_path, class: 'nav-link small')
+                -if current_account != true_account
+                  =link_to("back to #{true_account.name}", stop_impersonating_accounts_path, method: :post, class: 'nav-link small')
                 .dropdown-item
-                  =link_to('edit profile', edit_account_registration_path, class: 'nav-link')
+                  =link_to('edit profile', edit_account_registration_path, class: 'nav-link small')
                 .dropdown-item
-                  =link_to('log out', destroy_account_session_path, class: 'nav-link', method: :delete)
+                  =link_to('log out', destroy_account_session_path, class: 'nav-link small', method: :delete)
 
     -if notice
       %p.alert.alert-success.text-center
@@ -69,4 +80,4 @@
       %p.alert.alert-danger.text-center
         =alert
     %div{ class: controller_name.in?(%w(samples data_sets story_types exports exported_story_types)) && action_name.in?(%w(index stories)) ? "container-fluid" : "container-xl" }
-      = yield
+      =yield

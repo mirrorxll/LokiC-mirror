@@ -10,4 +10,14 @@ module ApplicationHelper
   def current_week
     Week.where(begin: Date.today.beginning_of_week).first
   end
+
+  def correct_account?(record)
+    if (current_account.types & ['manager', 'editor']).any?
+      true
+    elsif record.developer == current_account
+      true
+    else
+      false
+    end
+  end
 end

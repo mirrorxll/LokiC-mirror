@@ -1,0 +1,46 @@
+#additionalProperties
+  %hr/
+  .row.mb-2.font-weight-bold.col-12
+    comment
+    -if current_account.types.include?('manager') or (@story_type.developer == current_account and ['blocked','canceled'].include?(@story_type.status.name))
+      .col-1.p-0.text-center
+        =link_to(icon('fa', 'pencil', class: ' fa-xs text-dark'), edit_story_type_path(@story_type), remote: true, "data-toggle": "collapse", role: "button", href: "#commentForm", "aria-expanded": "false", "aria-controls": "commentForm")
+  .row.col-12
+    #commentForm.text-left.collapse
+      =form_with(model: @story_type, class: 'form') do |form|
+        .form-group.mb-2.mr-sm-2
+          =form.text_area :comment, value: @story_type.comment, cols: 30, rows: 10
+        .form-group.mb-2.mr-sm-2
+          =form.submit :edit
+  .row.col-12
+    -if @story_type.comment
+      #storyTypeComment.text-left
+        = simple_format(h(@story_type.comment), {}, sanitize: false)
+  %hr/
+  %p
+    %a.p-0.btn.btn-sm.btn-link.d-inline-block.font-weight-normal{"aria-controls" => "collapseProperties", "aria-expanded" => "false", "data-toggle" => "collapse", href: "#collapseProperties", role: "button"}
+      [ additional properties ]
+  #collapseProperties.collapse
+    .row.mb-2.font-weight-bold.col-12
+      current iteration id
+    .row.col-12
+      =@iteration.id
+    %hr/
+    .row.mb-2.font-weight-bold.col-12
+      gather task id
+      -if correct_account?(@story_type)
+        .col-1.p-0.text-center
+          =link_to(icon('fa', 'pencil', class: ' fa-xs text-dark'), edit_story_type_path(@story_type), remote: true, "data-toggle": "collapse", role: "button", href: "#gatherTaskForm", "aria-expanded": "false", "aria-controls": "gatherTaskForm" )
+    .row.col-12
+      #gatherTaskForm.text-left.collapse
+        =form_with(model: @story_type, class: 'form-inline') do |form|
+          .form-group.mb-2.mr-sm-2
+            =form.text_field :gather_task, value: @story_type.gather_task
+          .form-group.mb-2.mr-sm-2
+            =form.submit :edit
+
+      -if @story_type.gather_task
+        =link_to "https://pipeline.locallabs.com/gather_tasks/#{@story_type.gather_task}", "https://pipeline.locallabs.com/gather_tasks/#{@story_type.gather_task}", target: '_blank', id: 'gather_task_link'
+      -else
+        %a#gather_task_link{ href: 'https://pipeline.locallabs.com/gather_tasks/new', target: '_blank'}
+          https://pipeline.locallabs.com/gather_tasks/new

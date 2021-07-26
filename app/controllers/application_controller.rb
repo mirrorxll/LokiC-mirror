@@ -39,11 +39,14 @@ class ApplicationController < ActionController::Base
     current_account.types.eql?(['developer'])
   end
 
-  def render_400
-    render json: { error: 'Bad Request' }, status: 400
+  def scraper?
+    current_account.types.eql?(['scraper'])
   end
-  alias render_400_developer render_400
-  alias render_400_editor    render_400
+
+  def only_scraper?
+    acc_types = current_account.types
+    acc_types.count.eql?(1) && acc_types.first.eql?('scraper')
+  end
 
   def staging_table_action(&block)
     flash.now[:staging_table] =
@@ -62,11 +65,22 @@ class ApplicationController < ActionController::Base
     'The Table for this story type has been renamed, detached or drop. Please update the page.'
   end
 
-  def record_to_change_history(story_type, event, note)
-    note_to_md5 = Digest::MD5.hexdigest(note)
-    text = Text.find_or_create_by!(md5hash: note_to_md5) { |t| t.text = note }
-    history_event = HistoryEvent.find_or_create_by!(name: event)
+  def record_to_change_history(model, event, message)
+    model.change_history.create!(event: event, body: message)
+  end
 
-    story_type.change_history.create!(history_event: history_event, note: text)
+  # this respond to methods like:
+  # render_400
+  # render_403_dev
+  # and render HTTP status
+  def method_missing(method_name, *arguments, &block)
+    super unless method_name.to_s[/render_([0-9]+)/]
+
+    code = method_name.to_s.match(/render_([0-9]+)/).captures.first.to_i
+    render json: Rack::Utils::HTTP_STATUS_CODES[code], status: code
+  end
+
+  def respond_to_missing?(method_name, include_private = false)
+    !!method_name.to_s[/render_([0-9]+)/] || super
   end
 end

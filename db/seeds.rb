@@ -41,7 +41,7 @@ def status
 end
 
 def frequency
-  frequencies = ['daily', 'weekly', 'monthly', 'quarterly', 'annually', 'manual input']
+  frequencies = %w[daily weekly monthly quarterly annually biannually irregularly]
   frequencies.map { |fr| { name: fr } }
 end
 

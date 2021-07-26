@@ -13,7 +13,7 @@ module MiniLokiC
       include Auto
 
       def self.run(staging_table, options, scheduling_rules)
-        return if options[:sampled] || !Table.all_created_by_last_iteration?(staging_table, options[:client_ids])
+        return if options[:sampled] || !Table.all_created_by_last_iteration?(staging_table, options[:publication_ids])
 
         options[:iteration].update(schedule: false)
         SchedulerJob.perform_now(options[:iteration], 'run-from-code', scheduling_rules)

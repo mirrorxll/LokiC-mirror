@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ColumnsController < ApplicationController
-  before_action :render_400, if: :editor?
+  before_action :render_403, if: :editor?
   before_action :staging_table
 
   def edit

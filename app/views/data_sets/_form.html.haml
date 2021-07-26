@@ -1,37 +1,49 @@
-%hr/
 .card.card-body
-  =form_with(model: @data_set, local: true) do |form|
+  =form_with(model: @data_set, local: controller_name.eql?('data_sets')) do |f|
     .row
       .col-6
-        =form.text_field :name, placeholder: 'name', class: 'mb-1 form-control form-control-sm', required: true
+        =f.text_field :name, placeholder: 'name', class: 'mb-1 form-control form-control-sm', required: true
     %hr/
 
     .row
       .col-6.border-right
-        =form.label :data_set, 'data:', class: 'small'
-        =form.text_field :location, placeholder: 'location', class: 'mb-1 form-control form-control-sm'
-        =form.text_field :preparation_doc, placeholder: "preparation document", class: 'mb-1 form-control form-control-sm'
-        =form.text_field :slack_channel, placeholder: "slack_channel", class: 'mb-1 form-control form-control-sm'
+        =f.label :data, 'data:', class: 'small font-weight-bold mb-3'
+        .scrape_task
+          .select_placeholder.text-secondary.form-control.form-control-sm.border-right-0{ 'data-text' => 'scrape task: ' }
+          =f.collection_select :scrape_task_id, ScrapeTask.includes(:data_set).where(data_sets: { id: [nil, @data_set&.id] }).order(:name), :id, :name,
+                               { include_blank: true, selected: @scrape_task&.id || @data_set.scrape_task&.id },
+                               { class: 'mb-1 form-control form-control-sm' }
+
+        =f.label :location, 'location', class: 'small mb-0 mt-2'
+        =f.text_field :location, placeholder: 'location', class: 'mb-1 form-control form-control-sm', value: @scrape_task ? @scrape_task.data_set_location : @data_set.location
+
+        =f.label :preparation_doc, 'preparation_doc', class: 'small mb-0 mt-2'
+        =f.text_field :preparation_doc, placeholder: "preparation document", class: 'mb-1 form-control form-control-sm'
+
+        =f.label :slack_channel, 'slack_channel', class: 'small mb-0 mb-0 mt-2'
+        =f.text_field :slack_channel, placeholder: "slack channel", class: 'mb-1 form-control form-control-sm'
+
         .sheriff
           .select_placeholder.text-secondary.form-control.form-control-sm.border-right-0{ 'data-text' => 'sheriff: ' }
-          =form.collection_select :sheriff_id, Account.all.sort_by(&:name), :id, :name,
-                                  { include_blank: true }, { class: 'mb-1 form-control form-control-sm' }
+          =f.collection_select :sheriff_id, Account.all.sort_by(&:name), :id, :name,
+                               { include_blank: true }, { class: 'mb-1 form-control form-control-sm' }
         .state
           .select_placeholder.text-secondary.form-control.form-control-sm.border-right-0{ 'data-text' => 'state: ' }
-          =form.collection_select :state_id, State.all, :id, :name,
-                                  { include_blank: true }, { class: 'mb-1 form-control form-control-sm' }
+          =f.collection_select :state_id, State.all, :id, :name,
+                               { include_blank: true }, { class: 'mb-1 form-control form-control-sm' }
         .category
           .select_placeholder.text-secondary.form-control.form-control-sm.border-right-0{ 'data-text' => 'category: ' }
-          =form.collection_select :category_id, DataSetCategory.all.sort_by(&:name), :id, :name,
+          =f.collection_select :category_id, DataSetCategory.all.sort_by(&:name), :id, :name,
                                   { include_blank: true }, { class: 'form-control form-control-sm' }
 
-        =form.text_area :comment, placeholder: 'comment', class: 'mb-1 mt-3 form-control form-control-sm'
+        =f.label :comment, 'comment', class: 'small mb-0 mt-3'
+        =f.text_area :comment, placeholder: 'comment', class: 'mb-1 form-control form-control-sm'
 
       .col-6
-        =form.label :data_set, 'default properties:', class: 'small'
+        =f.label :data_set, 'default properties:', class: 'small font-weight-bold mb-2'
         .photo_bucket
           .select_placeholder.text-secondary.form-control.form-control-sm.border-right-0{ 'data-text' => 'photo bucket: ' }
-          =form.collection_select :photo_bucket_id, PhotoBucket.all.order(:name), :id, :name,
+          =f.collection_select :photo_bucket_id, PhotoBucket.all.order(:name), :id, :name,
                                   { include_blank: true, selected: @data_set.new_record? ? false : @data_set.photo_bucket&.id },
                                   { name: 'default_props[photo_bucket_id]', class: 'form-control form-control-sm' }
         .text-secondary.small.mt-2.mb-2
@@ -42,16 +54,16 @@
               -u_id = SecureRandom.hex(3)
               .row.mb-1{ id: u_id }
                 .col-4.pr-1
-                  =form.collection_select :client_id, Client.where(hidden: false).sort_by(&:name), :id, :name,
+                  =f.collection_select :client_id, Client.where(hidden: false).sort_by(&:name), :id, :name,
                                           { include_blank: true, selected: row.client.id },
                                           { id: "data_set_default_#{u_id}_client_id", name: "default_props[client_tag_ids[#{u_id}[client_id]]]", class: 'form-control form-control-sm clients_select', required: true }
                 .col-4.pr-1
-                  =form.collection_select :publication_id, Publication.where(name: ['all publications','all local publications','all statewide publications']) + row.client.publications.sort_by(&:name), :id, :name,
+                  =f.collection_select :publication_id, Publication.where(name: ['all publications','all local publications','all statewide publications']) + row.client.publications.sort_by(&:name), :id, :name,
                                           { include_blank: true, selected: row.publication ? row.publication.id : Publication.where(name: 'all publications').first.id },
                                           { id: "data_set_default_#{u_id}_publication_id", name: "default_props[client_tag_ids[#{u_id}[publication_id]]]", class: 'form-control form-control-sm publications_select' }
 
                 .col-3.pl-1.pr-1
-                  =form.collection_select :tag_id, row.client.tags.sort_by(&:name), :id, :name,
+                  =f.collection_select :tag_id, row.client.tags.sort_by(&:name), :id, :name,
                                           { include_blank: true, selected: row.tag.id },
                                           { id: "data_set_default_#{u_id}_tag_id", name: "default_props[client_tag_ids[#{u_id}[tag_id]]]", class: 'form-control form-control-sm tags_select', required: true }
                 .col-1.pl-1.my-auto
@@ -59,12 +71,15 @@
                     x
     %hr.mb-2/
     .text-center
-      =form.submit @data_set.new_record? ? 'create' : 'update',
-                   class: 'btn btn-sm btn-outline-dark mt-2', data: { disable_with: "..." }
+      =f.submit @data_set.new_record? ? 'create' : 'update',
+                class: 'btn btn-sm btn-outline-dark mt-2', data: { disable_with: "..." }
       -if @data_set.new_record?
-        =link_to('cancel', '#data_set_form', 'aria-controls' => 'data_set_form',
-             'aria-expanded' => false, data: { toggle: "collapse", target: "#data_set_form" },
-             type: "button", id: '#crt_upd_data_set_btn', class: 'btn btn-sm btn-outline-dark mt-2')
+        -if !controller_name.eql?('scrape_tasks')
+          =link_to('cancel', '#dataSetForm', 'aria-controls' => 'data_set_form',
+                   'aria-expanded' => false, data: { toggle: "collapse", target: "#dataSetForm" },
+                   type: "button", id: '#crt_upd_data_set_btn', class: 'btn btn-sm btn-outline-dark mt-2')
+        -else
+          =link_to('cancel', '#', class: 'mt-2 ml-auto btn btn-sm btn-outline-secondary', 'data-dismiss' => 'modal',)
       -else
         =link_to 'cancel', data_set_path(@data_set), class: 'btn btn-sm btn-outline-dark mt-2'
 

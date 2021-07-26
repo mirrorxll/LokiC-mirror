@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class ReviewersFeedbackController < ApplicationController
-  before_action :render_400,                     unless: :manager?
   before_action :find_fcd,                       only: %i[create confirm]
   before_action :find_feedback,                  only: %i[create confirm]
   after_action  :send_notifications,             only: :create
@@ -23,7 +22,7 @@ class ReviewersFeedbackController < ApplicationController
 
   def confirm
     @feedback = @feedback_collection.find(params[:id])
-    render_400 and return if @feedback.confirmed
+    render_403 and return if @feedback.confirmed
 
     @feedback.update(confirmed: true)
   end

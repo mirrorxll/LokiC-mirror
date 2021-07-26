@@ -53,11 +53,6 @@ class StoryType < ApplicationRecord
   has_many :change_history, as: :history
   has_many :alerts, as: :alert
 
-  def publications
-    pub_ids = clients.map(&:publications).reduce(:|).map(&:id)
-    Publication.where(id: pub_ids)
-  end
-
   def number_name
     "##{id} #{name}"
   end
@@ -79,13 +74,35 @@ class StoryType < ApplicationRecord
   end
 
   def client_pl_ids
-    clients_publications_tags.flat_map do |cl_t|
-      if cl_t.client.name.eql?('Metric Media')
+    clients_publications_tags.flat_map do |cl_p_t|
+      if cl_p_t.client.name.eql?('Metric Media')
         Client.where('name LIKE :like', like: 'MM -%').map(&:pl_identifier)
       else
-        cl_t.client.pl_identifier
+        cl_p_t.client.pl_identifier
       end
     end
+  end
+
+  def publication_pl_ids
+    pubs = clients_publications_tags.flat_map do |cl_p_t|
+      cl = cl_p_t.client
+
+      cl_pubs =
+        case cl_p_t.publication&.name
+        when 'all local publications'
+          cl.publications.where(statewide: false)
+        when 'all statewide publications'
+          cl.publications.where(statewide: true)
+        when 'all publications', nil
+          cl.publications
+        else
+          [cl_p_t.publication]
+        end
+
+      cl_pubs.map(&:pl_identifier)
+    end
+
+    pubs.uniq
   end
 
   def show_samples
