@@ -1,0 +1,35 @@
+-#$('#datagrid').html('<%= j render 'datagrid', grid: @grid %>')
+
+
+.row.m-2
+  .col.text-left
+    =link_to('your tasks',
+             your_tasks_path(tasks_params: { assignment_to: current_account.id, title: '', creator: '', status: '', deadline: '' }),
+             class: 'btn btn-sm btn-outline-dark',
+             remote: true, id: 'your_task')
+    =link_to('tasks created by you',
+             tasks_path(tasks_grid: { assignment_to: '', title: '', creator: current_account.id, status: '', deadline: '' }),
+             class: 'btn btn-sm btn-outline-dark',
+             remote: true)
+
+  .col.text-right
+    =link_to('create new task',
+             new_task_path,
+             class: 'btn btn-sm btn-outline-dark',
+             remote: true)
+    =link_to('filter tasks', '#filter_form', 'aria-controls' => 'filter_form',
+             'aria-expanded' => false, data: { toggle: "collapse", target: "#filter_form" },
+              type: "button", class: 'btn btn-sm btn-outline-dark')
+%hr/
+
+
+
+#datagrid
+  =render 'datagrid', grid: @grid
+
+=render 'tasks/task_modal'
+
+:javascript
+  $('#your_task').click(function () {
+    $('#filter_form').submit()
+  });

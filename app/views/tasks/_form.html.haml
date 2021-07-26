@@ -4,7 +4,7 @@
       .form-group
         =form.text_field 'task[title]', placeholder: 'title', class: 'form-control', required: true
       .form-group
-        =form.text_area 'task[description]', class: 'form-control', data: { editor: 'summernote' }
+        =form.text_area 'task[description]', class: 'form-control', id: 'task_description'
   %hr/
   .form-group.row.small.font-weight-bold.text-center
     .col-4
@@ -23,8 +23,10 @@
     .col-2
       =form.date_field 'task[deadline]', class: 'w-100'
   %hr/
-  .row.small.justify-content-center
-    =form.submit :create, class: 'm-1 btn btn-sm btn-outline-dark'
+  .modal-footer
+    =link_to( 'close', '#', class: 'ml-auto btn btn-sm btn-outline-secondary',
+              'data-dismiss' => 'modal')
+    =form.submit :create, class: 'mr-auto btn btn-sm btn-outline-success'
 
 :javascript
   var accounts = #{raw Account.all.order([:first_name, :last_name]).map{ |account| [account.first_name.to_s + ' ' + account.last_name.to_s, account.id]} };

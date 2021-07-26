@@ -4,30 +4,39 @@
 %hr/
 
 .row
-  .col.small.font-weight-bold
-    assignment to:
+  .col#assignments
+    =render 'task_assignments/assignments', task: @task
+  .col.text-right.small
+    =link_to '[ edit ]', edit_task_path(@task), remote: true
   .col#task_status.text-right
     =render 'task_statuses/status', task: @task
-.row
-  .col
-    #assignments
-      =render 'task_assignments/assignments', task: @task
-  .col.text-right
-    =link_to '[ edit ]', edit_task_path(@task), remote: true
+
 
 .card.mt-3
   .card-body
-    .row.small.font-weight-bold.text-center
-      .col-6
+    .row.small.font-weight-bold
+      .col-4
         reminder frequency:
-      .col-6
+      .col-4
+        creator:
+      .col-4
         deadline:
-    .row.small.text-center
-      .col-6
-        =@task.reminder_frequency.name
-      .col-6
+    .row.small
+      .col-4
+        -if @task.reminder_frequency
+          =@task.reminder_frequency.name
+      .col-4
+        =@task.creator.first_name + ' ' + @task.creator.last_name
+      .col-4
         =@task.deadline
-
+    -if @task.status.name == 'done'
+      #done
+        .row.small.mt-3.font-weight-bold
+          .col
+            done on:
+        .row.small
+          .col
+            =@task.done_at.strftime('%Y-%m-%d')
 
 .card.mt-3
   .card-body.overflow-auto

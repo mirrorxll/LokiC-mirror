@@ -1,0 +1,9 @@
+#filter_form{ class: (params[:tasks_grid] ? '' : 'collapse') }
+  =datagrid_form_for grid, url: tasks_path
+
+.row.small.justify-content-center
+  =datagrid_table(grid)
+-puts grid.assets.class
+.row.mt-3.col-12
+  #pagination
+    =paginate grid.assets

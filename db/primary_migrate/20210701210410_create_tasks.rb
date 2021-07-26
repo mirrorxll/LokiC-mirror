@@ -10,7 +10,7 @@ class CreateTasks < ActiveRecord::Migration[6.0]
       t.string :title, limit: 1000
       t.text :description, limit: 16_777_215
       t.date :deadline
-      t.date :done_at
+      t.datetime :done_at
 
       t.timestamps
     end

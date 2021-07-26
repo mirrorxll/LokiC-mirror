@@ -1,22 +1,31 @@
-.row.m-2.justify-content-between
-  =link_to('create new task',
-           new_task_path,
-           class: 'btn btn-sm btn-outline-dark',
-           remote: true)
+.row.m-2
+  .col.text-left
+    =link_to 'all tasks',
+             url_for(@grid.to_param => { order: :id, descending: true }),
+             class: 'btn btn-sm btn-outline-dark', id: 'your_task'
+    =link_to 'your tasks',
+             url_for(@grid.to_param => { assignment_to: current_account, order: :id, descending: true }),
+             class: 'btn btn-sm btn-outline-dark'
+    =link_to('tasks created by you',
+             url_for(@grid.to_param => { creator: current_account, order: :id, descending: true }),
+             class: 'btn btn-sm btn-outline-dark')
 
-  =link_to('filter tasks', '#filter_form', 'aria-controls' => 'filter_form',
-           'aria-expanded' => false, data: { toggle: "collapse", target: "#filter_form" },
-            type: "button", class: 'btn btn-sm btn-outline-dark')
+  .col.text-right
+    =link_to('create new task',
+             new_task_path,
+             class: 'btn btn-sm btn-outline-dark',
+             remote: true)
+    =link_to('filter tasks', '#filter_form', 'aria-controls' => 'filter_form',
+             'aria-expanded' => false, data: { toggle: "collapse", target: "#filter_form" },
+              type: "button", class: 'btn btn-sm btn-outline-dark')
 %hr/
 
-#filter_form{ class: (params[:tasks_grid] ? '' : 'collapse') }
-  =datagrid_form_for @tasks_grid, url: tasks_path
-
-.row.small.justify-content-center
-  =datagrid_table(@tasks_grid)
-
-.row.mt-3.col-12
-  #pagination
-    =paginate @tasks_grid.assets
+#datagrid
+  =render 'datagrid', grid: @grid
 
 =render 'tasks/task_modal'
+
+:javascript
+  $('.no-collapsable').on('click', function (e) {
+    e.stopPropagation();
+  });

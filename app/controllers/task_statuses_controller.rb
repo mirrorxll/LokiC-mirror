@@ -9,6 +9,7 @@ class TaskStatusesController < ApplicationController
 
   def change
     @task.update(status: @status)
+    @task.update(done_at: Time.now) if @status.name == 'done'
   end
 
   private
@@ -22,12 +23,14 @@ class TaskStatusesController < ApplicationController
   end
 
   def send_notification
-    creator = @task.creator
-    return if creator.slack.nil? || creator.slack.deleted
+    accounts = (@task.assignment_to.to_a << @task.creator).uniq
+    accounts.each do |account|
+      next if account.slack.nil? || account.slack.deleted
 
-    message = "*[ LokiC ] <#{task_url(@task)}| TASK ##{@task.id}> | "\
-            "Status changed to #{@task.status.name}*\n>#{@task.title}"
+      message = "*[ LokiC ] <#{task_url(@task)}| TASK ##{@task.id}> | "\
+              "Status changed to #{@task.status.name}*\n>#{@task.title}"
 
-    SlackNotificationJob.perform_later(creator.slack.identifier, message)
+      SlackNotificationJob.perform_later(account.slack.identifier, message)
+    end
   end
 end
