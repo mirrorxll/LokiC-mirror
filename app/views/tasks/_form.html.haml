@@ -6,16 +6,15 @@
       .form-group
         =form.text_area 'task[description]', class: 'form-control', id: 'task_description'
   %hr/
-  .form-group.row.small.font-weight-bold.text-center
+  .form-group.row.small.font-weight-bold.justify-content-center
     .col-4
       assignment to:
       =icon('fa', 'plus', class: 'ml-3', id: 'add_assignment')
-      =icon('fa', 'minus', class: 'ml-2', id: 'delete_assignment')
     .col-4
       reminder frequency:
     .col-2
       deadline:
-  .form-group.row.small.text-center
+  .form-group.row.small.justify-content-center
     .col-4#assignments
       =form.collection_select "task[assignment_to][]", Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }, class: 'm-1'
     .col-4
@@ -23,19 +22,20 @@
     .col-2
       =form.date_field 'task[deadline]', class: 'w-100'
   %hr/
-  .modal-footer
-    =link_to( 'close', '#', class: 'ml-auto btn btn-sm btn-outline-secondary',
-              'data-dismiss' => 'modal')
-    =form.submit :create, class: 'mr-auto btn btn-sm btn-outline-success'
+  .modal-footer.justify-content-center
+    =form.submit :create, class: 'btn btn-sm btn-outline-success'
 
 :javascript
   var accounts = #{raw Account.all.order([:first_name, :last_name]).map{ |account| [account.first_name.to_s + ' ' + account.last_name.to_s, account.id]} };
 
   $('#add_assignment').click(function () {
-    let assignments = document.getElementById('assignments')
-    assignments.classList.add("text-left")
+    let hex = secureRandom(6);
+
     $('#assignments').append(
-        `<select id="task[assignment_to][]" name="task[assignment_to][]" class = "m-1">${buildSelect(accounts)}</select>`
+        `<div id="assignment_${hex}" class="row m-1">
+           <select id="task[assignment_to][]" name="task[assignment_to][]">${buildSelect(accounts)}</select>
+           <div class="ml-1" id="rm_assignment_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
+         </div>`
     );
   });
 
@@ -51,6 +51,18 @@
       $select += ('<option value="' + options[i][1] + '">' + options[i][0] + '</option>');
     }
     return $select;
+  }
+
+  function removeDate(elem) {
+    $(elem.parentNode).remove();
+  }
+
+  function secureRandom(n){
+    let result = '';
+    while (n--){
+      result += Math.floor(Math.random() * 16).toString(16);
+    }
+    return result;
   }
 
   $('#task').on('hidden.bs.modal', function () {

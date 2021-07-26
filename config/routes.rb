@@ -220,9 +220,6 @@ Rails.application.routes.draw do
   end
 
   resources :tasks do
-    get :your, on: :collection
-    get :created_by_you, on: :collection
-
     resources :progress_statuses, controller: 'task_statuses', only: [] do
       patch :change, on: :collection
     end

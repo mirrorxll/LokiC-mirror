@@ -5,5 +5,5 @@
   -task.assignment_to.each do |assignment|
     .badge.badge-info
       =assignment.first_name + ' ' + assignment.last_name
-
-=link_to '[ edit ]', edit_task_assignments_path(task), remote: true, class: 'small'
+-if current_account.eql?(@task.creator) || current_account.types.include?('manager')
+  =link_to '[ edit ]', edit_task_assignments_path(task), remote: true, class: 'small'

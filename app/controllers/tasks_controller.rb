@@ -46,7 +46,7 @@ class TasksController < ApplicationController # :nodoc:
       if params[:tasks_grid]
         params.require(:tasks_grid).permit!
       else
-        !manager? ? { developer: current_account.id } : { order: :id, descending: true }
+        !manager? ? { assignment_to: current_account.id, order: :id, descending: true } : { order: :id, descending: true }
       end
     @grid = TasksGrid.new(grid_params)
   end

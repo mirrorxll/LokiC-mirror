@@ -11,7 +11,6 @@ class TaskAssignmentsController < ApplicationController
 
   def update
     @task.assignment_to.delete_all
-
     @task.assignment_to << Account.find(assignments_params)
   end
 
