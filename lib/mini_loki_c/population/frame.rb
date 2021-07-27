@@ -13,6 +13,7 @@ module MiniLokiC
         when :quarterly then  "q:#{(date.month / 3.0).ceil}:#{date.year}"
         when :biannually then "b:#{date.month < 7 ? 1 : 2}:#{date.year}"
         when :annually then   date.year.to_s
+        when :biennially then "b:#{date.year - 1}-#{date.year}"
         else raise ArgumentError, 'The passed frame is not correct.'
         end
       end
