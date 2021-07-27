@@ -14,4 +14,5 @@ class Task < ApplicationRecord # :nodoc:
   has_many :tasks_assignments, class_name: 'TaskAssignment'
   has_many :assignment_to, through: :tasks_assignments, source: :account
 
+  has_one :status_comment, -> { where(subtype: 'status comment') }, as: :commentable, class_name: 'Comment'
 end
