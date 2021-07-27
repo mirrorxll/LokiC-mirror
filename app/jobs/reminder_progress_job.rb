@@ -11,7 +11,7 @@ class ReminderProgressJob < ApplicationJob
 
           next if st_type.developer.nil? || st_type.status.name.in?(%w[canceled blocked done])
 
-          inactive = false
+          active = true
           distributed_gap = (Date.today - st_type.distributed_at.to_date).to_i
           last_status_change_gap = (Date.today - st_type.last_status_changed_at.to_date).to_i
           created_at_gap = (Date.today - st_type.created_at.to_date).to_i
@@ -19,13 +19,13 @@ class ReminderProgressJob < ApplicationJob
           # not migrated story type not started more than seven days
           if st_type.status.name.in?(['not started']) && distributed_gap > 7 && !st_type.migrated
             message(st_type, :story_type_not_started)
-            inactive = true
+            active = false
           end
 
           # status not changed during two weeks or more
           if st_type.status.name.in?(['in progress']) && last_status_change_gap > 14
             message(st_type, :story_type_not_exported)
-            inactive = true
+            active = false
           end
 
           # not completed migration
@@ -33,11 +33,12 @@ class ReminderProgressJob < ApplicationJob
             message(st_type, :not_completed_migration)
           end
 
-          next unless inactive
+          next if active || old_status.eql?('inactive')
 
+          old_status = st_type.status.name
           st_type.update(status: Status.find_by(name: 'inactive'))
-          note = "progress status changed to 'inactive'"
-          record_to_change_history(st_type, 'progress status changed', note)
+          body = "#{old_status} -> inactive"
+          record_to_change_history(st_type, 'progress status changed', body, st_type.developer)
         end
       end
     )

@@ -8,8 +8,9 @@ class CronTabExecuteJob < ApplicationJob
     cron_tab = story_type.cron_tab
     return if cron_tab.freeze_execution
 
+    account = story_type.developer
     old_iteration = story_type.iteration
-    new_iteration = story_type.iterations.create(name: DateTime.now.strftime('CT%Y%m%d'))
+    new_iteration = story_type.iterations.create!(name: DateTime.now.strftime('CT%Y%m%d'), current_account: account)
 
     story_type.update(current_iteration: new_iteration)
     story_type.staging_table.default_iter_id

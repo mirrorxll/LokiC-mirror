@@ -54,8 +54,8 @@ class ApplicationJob < ActiveJob::Base
     SlackNotificationJob.perform_now(channel, message)
   end
 
-  def record_to_change_history(model, event, message)
-    model.change_history.create!(event: event, body: message)
+  def record_to_change_history(model, event, message, account)
+    model.change_history.create!(event: event, body: message, account: account)
   end
 
   def record_to_alerts(model, subtype, message)

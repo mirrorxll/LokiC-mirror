@@ -49,10 +49,10 @@ class ReviewersFeedbackController < ApplicationController
     message_to_dev = "*[ LokiC ] <#{story_type_url(@story_type)}|STORY TYPE ##{@story_type.id}> (#{@story_type.iteration.name}) | FCD*\n>"
 
     if params[:commit].eql?('approve!')
-      note = ActionView::Base.full_sanitizer.sanitize(@feedback.body)
+      body = ActionView::Base.full_sanitizer.sanitize(@feedback.body)
       message_to_fc_channel = "*FCD ##{@story_type.id}* "\
                               "<#{story_type_fact_checking_doc_url(@story_type, @fcd)}|#{@story_type.name}>.\n"\
-                              "#{@feedback.body.present? ? "*Reviewer's Note*: #{note}" : ''}"
+                              "#{@feedback.body.present? ? "*Reviewer's Note*: #{body}" : ''}"
       SlackNotificationJob.perform_later(fcd_channel, message_to_fc_channel)
 
       message_to_dev += "Approved by *#{current_account.name}* and sent to *#{fcd_channel}* channel"
@@ -84,7 +84,6 @@ class ReviewersFeedbackController < ApplicationController
   def send_to_editors_to_history
     return unless params[:commit].eql?('approve!')
 
-    note = 'fact checking doc sent to editors'
-    record_to_change_history(@story_type, 'fact checking doc sent to editors', note, current_account)
+    record_to_change_history(@story_type, 'fact checking doc sent to editors', '---', current_account)
   end
 end

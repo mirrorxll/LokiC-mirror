@@ -15,17 +15,30 @@ class StoryType < ApplicationRecord
       )
     end
 
-    record_to_change_history(self, 'created', '---', editor)
+    record_to_change_history(self, 'created', name, editor)
 
     iter = iterations.create!(name: 'Initial')
     update(current_iteration: iter)
   end
 
+  before_update do
+    changes = {}
+    changes['renamed'] = "#{name_change.first} -> #{name}" if name_changed?
+
+    if status_id_changed?
+      old_status = Status.find_by(id: status_id_change.first).name
+      new_status = status.name.in?(%w[blocked canceled]) ? "#{status.name}: #{status_comment&.body}" : status.name
+      changes['progress status changed'] = "#{old_status} -> #{new_status}"
+    end
+
+    changes.each { |ev, ch| record_to_change_history(self, ev, ch, current_account) }
+  end
+
   validates_uniqueness_of :name, case_sensitive: true
 
+  belongs_to :data_set,          counter_cache: true
   belongs_to :editor,            class_name: 'Account'
   belongs_to :developer,         optional: true, class_name: 'Account'
-  belongs_to :data_set,          counter_cache: true
   belongs_to :frequency,         optional: true
   belongs_to :photo_bucket,      optional: true
   belongs_to :current_iteration, optional: true, class_name: 'Iteration'

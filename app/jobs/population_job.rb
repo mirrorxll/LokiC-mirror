@@ -5,17 +5,21 @@ class PopulationJob < ApplicationJob
   queue_as :story_type
 
   def perform(iteration, options = {})
+    status = true
+    message = 'Success'
+    story_type = iteration.story_type
+    old_status = story_type.status.name
+    population_args = population_args_to_hash(options[:population_args])
+
     Process.wait(
       fork do
-        status = true
-        message = 'Success'
-        story_type = iteration.story_type
-        population_args = population_args_to_hash(options[:population_args])
-
         MiniLokiC::Code[story_type].execute(:population, population_args)
 
-        note = "progress status changed to 'in progress'"
-        record_to_change_history(story_type, 'progress status changed', note)
+        unless old_status.name.eql?('in progress')
+          story_type.update(status: Status.find_by(name: 'in progress'))
+          body = "#{old_status} -> in progress"
+          record_to_change_history(story_type, 'progress status changed', body, options[:account])
+        end
 
         ExportConfigurationsJob.perform_now(story_type)
       rescue StandardError, ScriptError => e
@@ -28,7 +32,7 @@ class PopulationJob < ApplicationJob
       end
     )
 
-    iteration.reload.population
+    true
   end
 
   private

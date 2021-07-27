@@ -38,6 +38,8 @@ class CreationJob < ApplicationJob
     end
 
     iteration.update!(schedule_counts: schedule_counts(iteration))
+
+    true
   rescue StandardError, ScriptError => e
     status = nil
     message = e.message
@@ -45,7 +47,6 @@ class CreationJob < ApplicationJob
     iteration.update!(creation: status)
     send_to_action_cable(iteration, :samples, message)
     send_to_dev_slack(iteration, 'CREATION', message)
-    iteration.creation
   end
 
   private
