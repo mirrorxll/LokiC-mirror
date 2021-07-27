@@ -2,10 +2,13 @@ class DataSetsGrid
   include Datagrid
 
   # Scope
-  scope { DataSet.includes(:state, :sheriff, :category) }
+  scope { DataSet.includes(:state, :sheriff, :category, :scrape_task) }
 
   # Filters
-  # filter(:id, :string, multiple: ',')
+  filter(:scrape_task, :xboolean, left: true) do |value, scope|
+    value ? scope.where.not(scrape_task: nil) : scope.where(scrape_task: nil)
+  end
+
   filter(:state, :enum, left: true, select: State.all.pluck(:short_name, :full_name, :id).map { |r| [r[0] + ' - ' + r[1], r[2]] })
   filter(:category, :enum, left: true, select: DataSetCategory.all.order(:name).pluck(:name, :id))
   filter(:sheriff, :enum, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
@@ -15,6 +18,13 @@ class DataSetsGrid
 
   # Columns
   column(:id, mandatory: true, header: 'ID')
+  column(:scrape_task) do |record|
+    if record.scrape_task
+      format(record.scrape_task) do |task|
+        link_to('link', task, target: '_blank')
+      end
+    end
+  end
   column(:state, mandatory: true, order: 'states.short_name') do |record|
     record.state&.short_name
   end
@@ -42,11 +52,4 @@ class DataSetsGrid
   column(:comment, mandatory: true) do |record|
     record.comment ? record.comment.gsub("\n", '<br>').html_safe : ''
   end
-  column(:created_at) do |record|
-    record.created_at&.to_date
-  end
-  column(:updated_at) do |record|
-    record.updated_at&.to_date
-  end
-
 end

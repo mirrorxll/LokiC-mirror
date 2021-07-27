@@ -17,7 +17,7 @@
     .col-2.pr-0.text-right.font-weight-bold
       state:
     .col-10
-      =f.collection_select 'scrape_task[state_id]', State.all.order(:full_name), :id, :name,
+      =f.collection_select 'scrape_task[state_id]', State.all, :id, :name,
                            { include_blank: true, selected: @scrape_task.state&.id },
                            { disabled: disable_input, readonly: disable_input }
 
