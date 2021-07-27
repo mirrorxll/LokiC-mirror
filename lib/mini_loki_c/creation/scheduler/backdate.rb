@@ -6,25 +6,34 @@ module MiniLokiC
       module Backdate # :nodoc:
         def self.backdate_scheduler(samples, backdated_data)
           schedule_args = {}
-          backdated_data = backdated_data.sort_by { |_date, arg| arg }.reverse
+          backdated_data = backdated_data.sort_by { |time_frame, _dates| time_frame }.reverse
 
-          backdated_data.each do |date, arg|
-            samples_backdated = samples.where(published_at: nil)
-            next if samples.empty?
+          backdated_data.each do |time_frame, dates|
+            samples_backdated = if time_frame.blank?
+                                  samples.where(published_at: nil)
+                                else
+                                  time_frame_ids = TimeFrame.where(frame: time_frame).ids
+                                  raise 'Error name of time frame' if time_frame_ids.blank?
+                                  samples.where(published_at: nil).where(time_frame: time_frame_ids)
+                                end
 
-            if arg.empty?
-              samples_backdated.find_in_batches do |samples_backdated_batch|
-                samples_backdated_batch.each { |smpl| smpl.update_attributes(published_at: date, backdated: true) }
+            next if samples_backdated.empty?
+
+            publications = samples_backdated.group(:publication_id).count
+            publication_dates = (dates[0]..dates[1]).to_a
+
+            publications.each do |publication_id, count|
+              limit = (count.to_f / publication_dates.length).ceil
+
+              puts 'LIMIttttt'
+              puts limit
+              samples_backdated.where(publication: publication_id).find_in_batches(batch_size: limit).with_index do |samples_batch, index|
+                puts 'loop'
+                puts samples_batch.length
+                puts index
+                puts publication_dates[index]
+                samples_batch.each { |sample| sample.update_attributes(published_at: publication_dates[index], backdated: true) }
               end
-              schedule_args[date.to_s] = ''
-            else
-              staging_table_name = samples_backdated.first.iteration.story_type.staging_table.name
-              stage_ids = ExtraArgs.stage_ids(staging_table_name, arg)
-
-              samples_backdated.where(staging_row_id: stage_ids).find_in_batches do |samples_backdated_batch|
-                samples_backdated_batch.each { |smpl| smpl.update_attributes(published_at: date, backdated: true) }
-              end
-              schedule_args[date.to_s] = arg
             end
           end
 

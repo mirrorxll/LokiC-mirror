@@ -34,8 +34,8 @@ class ApplicationJob < ActiveJob::Base
     message = "*[ LokiC ] <#{url}|STORY TYPE ##{story_type.id}> #{iteration_name}| #{step} "\
               "| #{developer_name}*\n#{raw_message}".gsub("\n", "\n>")
 
-    channel = channel(step)
-    SlackNotificationJob.perform_now(channel, message)
+    # channel = channel(step)
+    # SlackNotificationJob.perform_now(channel, message)
 
     return unless story_type.developer_slack_id
 
