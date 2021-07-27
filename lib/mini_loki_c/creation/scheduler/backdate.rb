@@ -24,14 +24,8 @@ module MiniLokiC
 
             publications.each do |publication_id, count|
               limit = (count.to_f / publication_dates.length).ceil
-
-              puts 'LIMIttttt'
-              puts limit
+              
               samples_backdated.where(publication: publication_id).find_in_batches(batch_size: limit).with_index do |samples_batch, index|
-                puts 'loop'
-                puts samples_batch.length
-                puts index
-                puts publication_dates[index]
                 samples_batch.each { |sample| sample.update_attributes(published_at: publication_dates[index], backdated: true) }
               end
             end
