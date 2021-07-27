@@ -53,7 +53,7 @@ class RemoveFromPlJob < ApplicationJob
       record_to_change_history(story_type, 'progress status changed', note)
     end
 
-    iteration.update(removing_from_pl: false)
+    iteration.update!(removing_from_pl: false)
     send_to_action_cable(iteration, :export, message)
     send_to_dev_slack(iteration, 'REMOVE FROM PL', message)
   end

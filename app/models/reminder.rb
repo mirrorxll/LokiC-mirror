@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 class Reminder < ApplicationRecord
-  after_update do
-    note = "reminders turned off until #{turn_off_until}; #{reasons}"
-    record_to_change_history(story_type, 'reminder turned off', note)
+  before_update do
+    if turn_off_until_changed?
+      message = "reminders turned off until #{turn_off_until}; #{reasons}"
+      record_to_change_history(story_type, 'reminder turned off', message, current_account)
+    end
   end
 
   belongs_to :story_type

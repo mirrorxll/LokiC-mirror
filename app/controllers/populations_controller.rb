@@ -16,7 +16,7 @@ class PopulationsController < ApplicationController # :nodoc:
 
     if flash.now[:error].nil?
       args = { population: false }.merge(population_params)
-      @iteration.update(args)
+      @iteration.update!(args)
       PopulationJob.perform_later(@iteration, args)
     end
 

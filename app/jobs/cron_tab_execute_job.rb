@@ -14,17 +14,17 @@ class CronTabExecuteJob < ApplicationJob
     story_type.update(current_iteration: new_iteration)
     story_type.staging_table.default_iter_id
 
-    new_iteration.update(population: false, population_args: cron_tab.population_params)
+    new_iteration.update!(population: false, population_args: cron_tab.population_params)
     raise StandardError unless PopulationJob.perform_now(new_iteration, population_args: cron_tab.population_params)
 
-    new_iteration.update(story_samples: false)
+    new_iteration.update!(story_samples: false)
     raise StandardError unless SamplesAndAutoFeedbackJob.perform_now(new_iteration, cron: true)
 
-    new_iteration.update(creation: false)
+    new_iteration.update!(creation: false)
     raise StandardError unless CreationJob.perform_now(new_iteration)
 
     new_iteration = story_type.iteration
-    new_iteration.update(export: false)
+    new_iteration.update!(export: false)
     raise StandardError unless ExportJob.perform_now(new_iteration)
 
   rescue StandardError => e

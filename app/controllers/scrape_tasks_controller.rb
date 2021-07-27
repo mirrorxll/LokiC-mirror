@@ -35,7 +35,7 @@ class ScrapeTasksController < ApplicationController
       @scrape_task.datasource_comment.update(datasource_comment_param)
       @scrape_task.scrape_ability_comment.update(scrape_ability_comment_param)
       @scrape_task.general_comment.update(general_comment_param)
-      @scrape_task.update!(update_scrape_task_params)
+      @scrape_task.update_with_acc!(current_account, update_scrape_task_params)
     end
 
     return unless manager?
@@ -46,7 +46,7 @@ class ScrapeTasksController < ApplicationController
   end
 
   def evaluate
-    @scrape_task.update(evaluation: true)
+    @scrape_task.update_with_acc!(current_account, evaluation: true)
   end
 
   private

@@ -37,12 +37,12 @@ class CreationJob < ApplicationJob
       break if Table.all_created_by_last_iteration?(staging_table, publication_ids)
     end
 
-    iteration.update(schedule_counts: schedule_counts(iteration))
+    iteration.update!(schedule_counts: schedule_counts(iteration))
   rescue StandardError, ScriptError => e
     status = nil
     message = e.message
   ensure
-    iteration.update(creation: status)
+    iteration.update!(creation: status)
     send_to_action_cable(iteration, :samples, message)
     send_to_dev_slack(iteration, 'CREATION', message)
     iteration.creation

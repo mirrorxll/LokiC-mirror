@@ -22,16 +22,17 @@ class StoryTypesController < ApplicationController # :nodoc:
     @story_types_grid = StoryTypesGrid.new(@grid_params)
 
     respond_to do |f|
-
       f.html do
         @story_types_grid.scope { |scope| scope.page(params[:page]).per(50) }
       end
 
       f.csv do
-        send_data(@story_types_grid.to_csv,
-                  type: 'text/csv',
-                  disposition: 'inline',
-                  filename: "lokic_story_types_#{Time.now}.csv")
+        send_data(
+          @story_types_grid.to_csv,
+          type: 'text/csv',
+          disposition: 'inline',
+          filename: "lokic_story_types_#{Time.now}.csv"
+        )
       end
     end
   end
@@ -46,7 +47,6 @@ class StoryTypesController < ApplicationController # :nodoc:
 
   def create
     @story_type = @data_set.story_types.build(new_story_type_params)
-    @story_type.editor = current_account
 
     if @story_type.save!
       redirect_to data_set_path(@data_set)
@@ -64,7 +64,7 @@ class StoryTypesController < ApplicationController # :nodoc:
   def properties_form; end
 
   def change_data_set
-    @story_type.update(change_data_set_params)
+    @story_type.update!(change_data_set_params)
   end
 
   def update_sections; end
@@ -93,11 +93,15 @@ class StoryTypesController < ApplicationController # :nodoc:
     status_name = migrated ? 'migrated' : 'not started'
 
     {
+      editor: current_account,
       name: permitted[:name],
       comment: permitted[:comment],
       gather_task: permitted[:gather_task],
       migrated: migrated,
-      status: Status.find_by(name: status_name)
+      status: Status.find_by(name: status_name),
+      photo_bucket: @data_set.photo_bucket,
+      last_status_changed_at: Time.now.getlocal('-05:00'),
+      current_account: current_account
     }
   end
 

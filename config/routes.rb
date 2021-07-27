@@ -125,7 +125,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :cron_tabs
+    resources :cron_tabs, only: %i[edit update]
 
     resources :iterations, only: %i[create update] do
       patch :apply, on: :member

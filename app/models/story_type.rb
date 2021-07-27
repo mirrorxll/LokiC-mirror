@@ -1,16 +1,12 @@
 # frozen_string_literal: true
 
 class StoryType < ApplicationRecord
-  before_create do
-    self.photo_bucket = data_set.photo_bucket
-    self.last_status_changed_at = Time.now.getlocal('-05:00')
-    build_template
-    build_fact_checking_doc
-    build_reminder
-    iterations.build(name: 'Initial')
-  end
-
   after_create do
+    create_template
+    create_fact_checking_doc
+    create_cron_tab
+    create_reminder
+
     data_set.client_publication_tags.each do |client_publication_tag|
       clients_publications_tags.create!(
         client: client_publication_tag.client,
@@ -19,10 +15,10 @@ class StoryType < ApplicationRecord
       )
     end
 
-    note = "created by #{editor.name}"
-    record_to_change_history(self, 'created', note)
+    record_to_change_history(self, 'created', '---', editor)
 
-    update(current_iteration: iterations.first)
+    iter = iterations.create!(name: 'Initial')
+    update(current_iteration: iter)
   end
 
   validates_uniqueness_of :name, case_sensitive: true

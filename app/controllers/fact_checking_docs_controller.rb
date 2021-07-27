@@ -63,6 +63,6 @@ class FactCheckingDocsController < ApplicationController
 
   def send_to_reviewers_to_history
     note = 'fact checking doc sent to reviewers'
-    record_to_change_history(@story_type, 'fact checking doc sent to reviewers', note)
+    record_to_change_history(@story_type, 'fact checking doc sent to reviewers', note, current_account)
   end
 end

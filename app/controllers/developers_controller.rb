@@ -35,6 +35,6 @@ class DevelopersController < ApplicationController
 
   def distributed_to_history
     note = "distributed to #{@developer.name}"
-    record_to_change_history(@story_type, 'distributed', note)
+    record_to_change_history(@story_type, 'distributed', note, current_account)
   end
 end

@@ -31,7 +31,7 @@ module Samples
       end
 
       threads.each(&:join)
-      iteration.update(last_export_batch_size: exported)
+      iteration.update!(last_export_batch_size: exported)
     end
 
     def remove!(iteration)
@@ -56,7 +56,7 @@ module Samples
       end
 
       threads.each(&:join)
-      iteration.update(export: nil)
+      iteration.update!(export: nil)
     end
   end
 end

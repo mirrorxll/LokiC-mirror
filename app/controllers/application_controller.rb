@@ -65,8 +65,8 @@ class ApplicationController < ActionController::Base
     'The Table for this story type has been renamed, detached or drop. Please update the page.'
   end
 
-  def record_to_change_history(model, event, message)
-    model.change_history.create!(event: event, body: message)
+  def record_to_change_history(model, event, message, account)
+    model.change_history.create!(event: event, body: message, account: account)
   end
 
   # this respond to methods like:

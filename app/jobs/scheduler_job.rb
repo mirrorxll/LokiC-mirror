@@ -51,7 +51,7 @@ class SchedulerJob < ApplicationJob
     status = nil
     message = e.message
   ensure
-    iteration.update(schedule: status)
+    iteration.update!(schedule: status)
     send_to_action_cable(iteration, :scheduler, message)
     send_to_dev_slack(iteration, "#{type.upcase}-SCHEDULING", message)
   end

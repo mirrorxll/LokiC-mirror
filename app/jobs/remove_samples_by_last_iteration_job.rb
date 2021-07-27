@@ -34,7 +34,7 @@ class RemoveSamplesByLastIterationJob < ApplicationJob
       break if iteration.samples.reload.blank?
     end
 
-    iteration.update(
+    iteration.update!(
       story_samples: nil, creation: nil,
       schedule: nil, schedule_args: nil,
       schedule_counts: nil
@@ -42,7 +42,7 @@ class RemoveSamplesByLastIterationJob < ApplicationJob
   rescue StandardError => e
     message = e.message
   ensure
-    iteration.update(purge_all_samples: nil)
+    iteration.update!(purge_all_samples: nil)
     send_to_action_cable(iteration, :samples, message)
     send_to_dev_slack(iteration, 'CREATION', message)
   end

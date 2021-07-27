@@ -8,8 +8,8 @@ class ScrapeTaskStatusesController < ApplicationController
   before_action :find_status
 
   def change
-    @scrape_task.update(status: @status)
-    @scrape_task.status_comment.update(body: params[:reasons]) if params[:reasons]
+    @scrape_task.update_with_acc!(current_account, status: @status)
+    @scrape_task.status_comment.update!(body: params[:reasons]) if params[:reasons]
   end
 
   private

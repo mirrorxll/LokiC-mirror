@@ -32,12 +32,12 @@ class SamplesAndAutoFeedbackJob < ApplicationJob
 
         Samples.auto_feedback(iteration.story_type, options[:cron])
 
-        iteration.update(story_sample_args: sample_args)
+        iteration.update!(story_sample_args: sample_args)
       rescue StandardError, ScriptError => e
         status = nil
         message = e.message
       ensure
-        iteration.update(story_samples: status)
+        iteration.update!(story_samples: status)
         send_to_action_cable(iteration, :samples, message)
       end
     )
