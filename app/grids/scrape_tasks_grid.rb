@@ -32,13 +32,13 @@ class ScrapeTasksGrid
     scope.where(frequencies: { id: value })
   end
 
-  filter(:without_data_location, :xboolean, header: 'Without data location?') do |value, scope|
+  filter(:with_data_location, :xboolean, header: 'With data location?') do |value, scope|
     values = [nil, '', ' ', '  ', '   ', '    ']
-    value ? scope.where(data_set_location: values) : scope.where.not(data_set_location: values)
+    value ? scope.where.not(data_set_location: values) : scope.where(data_set_location: values)
   end
 
-  filter(:without_dataset, :xboolean, header: 'Without dataset?') do |value, scope|
-    value ? scope.where(data_sets: { id: nil }) : scope.where.not(data_sets: { id: nil })
+  filter(:with_dataset, :xboolean, header: 'With dataset?') do |value, scope|
+    value ? scope.where.not(data_sets: { id: nil }) : scope.where(data_sets: { id: nil })
   end
 
   # Columns
