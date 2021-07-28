@@ -1,0 +1,54 @@
+=form_with(url: task_assignments_path(task), html: { class: 'd-inline' }, method: :patch) do |form|
+  .row.small.mb-1
+    .col
+      =icon('fa', 'plus', id: 'add_assignment')
+  .row.small
+    .col#forms_assignments
+      -task.assignment_to.each  do |assignment|
+        .row.col.mt-1
+          =form.collection_select 'assignment_to[]', Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' , selected: assignment.id, class: 'small'}
+          .delete_assignment.ml-1{ onclick: "removeDate(this)" }
+            =icon('fa', 'minus')
+  =form.submit 'update', class: 'small mt-1 btn btn-sm btn-outline-dark'
+  =link_to('cancel', cancel_task_assignments_path(task), method: :get, remote: true, class: 'small mt-1 btn btn-sm btn-outline-dark')
+
+:javascript
+  var accounts = #{raw Account.all.order([:first_name, :last_name]).map{ |account| [account.first_name.to_s + ' ' + account.last_name.to_s, account.id]} };
+
+  $('#add_assignment').click(function () {
+    let hex = secureRandom(6);
+
+    $('#forms_assignments').append(
+        `<div id="assignment_${hex}" class="row col mt-1">
+           <select id="assignment_to[]" name="assignment_to[]">${buildSelect(accounts)}</select>
+           <div class="ml-1" id="rm_assignment_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
+         </div>`
+    );
+  });
+
+  $('#delete_assignment').click(function () {
+    let assignments = document.getElementById('assignments')
+    assignments.removeChild(assignments.lastChild)
+
+  });
+
+  function buildSelect(options) {
+    var $select = $('');
+    $select += ('<option value="' + '' + '">' + '' + '</option>');
+    for (var i = 0; i < options.length; i++) {
+      $select += ('<option value="' + options[i][1] + '">' + options[i][0] + '</option>');
+    }
+    return $select;
+  }
+
+  function removeDate(elem) {
+    $(elem.parentNode).remove();
+  }
+
+  function secureRandom(n){
+    let result = '';
+    while (n--){
+      result += Math.floor(Math.random() * 16).toString(16);
+    }
+    return result;
+  }

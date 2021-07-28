@@ -1,0 +1,43 @@
+%hr/
+.row.justify-content-center.font-weight-bold
+  =@task.title
+%hr/
+
+.row
+  .col#assignments
+    =render 'task_assignments/assignments', task: @task
+  .col#task_status.text-right
+    =render 'task_statuses/status', task: @task
+
+.card.mt-3
+  .card-body
+    .row.small.font-weight-bold
+      .col-4
+        creator:
+      .col-4.text-center
+        deadline:
+      .col-4.text-right
+        reminder frequency:
+    .row.small
+      .col-4.text-nowrap
+        =@task.creator.first_name + ' ' + @task.creator.last_name
+      .col-4.text-center.text-nowrap
+        =@task.deadline ? @task.deadline : 'not set'
+      .col-4.text-right.text-nowrap
+        =@task.reminder_frequency ? @task.reminder_frequency.name : 'not set'
+    #done
+      =render 'done', task: @task
+    #comment
+      =render 'comment', task: @task
+
+.card.mt-3
+  .card-header.small.text-right
+    -if current_account.eql?(@task.creator) || current_account.types.include?('manager')
+      =link_to '[ edit task ]', edit_task_path(@task), remote: true
+  .card-body.overflow-auto{style: 'height: 600px'}
+    #body
+      .row.small.mb-3
+        .col-10.offset-1
+          =@task.description&.html_safe
+
+=render 'tasks/task_modal'

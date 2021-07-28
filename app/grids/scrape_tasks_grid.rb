@@ -4,7 +4,7 @@ class ScrapeTasksGrid
   include Datagrid
 
   # Scope
-  scope { ScrapeTask.includes(:status, :frequency, :scraper, :state, :general_comment).order(id: :desc) }
+  scope { ScrapeTask.includes(:data_set, :status, :frequency, :scraper, :state, :general_comment).order(id: :desc) }
 
   # Filters
   filter(:name, :string, header: 'Name(RLIKE)') do |value, scope|
@@ -30,6 +30,15 @@ class ScrapeTasksGrid
   frequency = Frequency.pluck(:name, :id)
   filter(:frequency, :enum, select: frequency) do |value, scope|
     scope.where(frequencies: { id: value })
+  end
+
+  filter(:with_data_location, :xboolean, header: 'With data location?') do |value, scope|
+    values = [nil, '', ' ', '  ', '   ', '    ']
+    value ? scope.where.not(data_set_location: values) : scope.where(data_set_location: values)
+  end
+
+  filter(:with_dataset, :xboolean, header: 'With dataset?') do |value, scope|
+    value ? scope.where.not(data_sets: { id: nil }) : scope.where(data_sets: { id: nil })
   end
 
   # Columns
