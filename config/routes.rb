@@ -225,7 +225,6 @@ Rails.application.routes.draw do
       patch :leave_comment, on: :collection
     end
 
-
     resources :assignments, controller: 'task_assignments', only: [] do
       get   :edit,   on: :collection
       patch :update, on: :collection
