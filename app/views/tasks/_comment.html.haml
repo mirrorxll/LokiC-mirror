@@ -1,0 +1,10 @@
+-if task.status.name.in?(['blocked','canceled'])
+  .row.small.mt-3.font-weight-bold
+    .col
+      comment:
+  .row.small
+    .col
+      -if task.status_comment.nil? || task.status_comment.body.blank?
+        ='---'
+      -else
+        =task.status_comment.body
