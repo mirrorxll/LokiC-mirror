@@ -1,0 +1,3 @@
+$('#task_status').html(`<%= j render 'task_statuses/status', task: @task %>`);
+$('#done').html(`<%= j render 'tasks/done', task: @task %>`);
+$('#comment').html(`<%= j render 'tasks/comment', task: @task %>`);

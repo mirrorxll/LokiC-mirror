@@ -218,4 +218,17 @@ Rails.application.routes.draw do
     get :show_hours,      on: :collection
     get :exported_counts, on: :collection
   end
+
+  resources :tasks do
+    resources :progress_statuses, controller: 'task_statuses', only: [] do
+      patch :change,        on: :collection
+      patch :leave_comment, on: :collection
+    end
+
+    resources :assignments, controller: 'task_assignments', only: [] do
+      get   :edit,   on: :collection
+      patch :update, on: :collection
+      get   :cancel, on: :collection
+    end
+  end
 end

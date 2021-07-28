@@ -166,6 +166,11 @@ def clients_report
   ]
 end
 
+def task_reminder_frequency
+  frequencies = ['each day', 'once a week', 'two times a week', 'three times a week']
+  frequencies.map { |fr| { name: fr } }
+end
+
 # ============ Initial filling DB ============
 puts 'Account Types'
 account_type.each { |obj| AccountType.create!(obj) }
@@ -179,6 +184,9 @@ puts 'Type of works'
 type_of_works.each { |obj| TypeOfWork.create!(obj) }
 puts 'Clients Report'
 clients_report.each { |obj| ClientsReport.create!(obj) }
+puts 'TaskReminderFrequency'
+task_reminder_frequency.each { |obj| TaskReminderFrequency.create!(obj) }
+
 
 puts 'Clients Publications Tags'
 ClientsPublicationsTagsJob.perform_now
