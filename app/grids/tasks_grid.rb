@@ -7,13 +7,12 @@ class TasksGrid
   scope { Task.includes(:tasks_assignments, :creator, :assignment_to) }
 
   # Filters
-
   filter(:title, :string, left: true, header: 'Title(RLIKE)') do |value, scope|
     scope.where('title RLIKE ?', value)
   end
 
   filter(:assignment_to, :enum, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] }) do |value, scope|
-    scope.joins(tasks_assignments: [:account]).where('account_id= ?', value)
+    scope.joins(tasks_assignments: [:account]).where('account_id= ?', value.id)
   end
 
   filter(:creator, :enum, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })

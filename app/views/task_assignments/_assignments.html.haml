@@ -1,9 +1,10 @@
--if task.assignment_to.empty?
+-assignment_to = task.assignment_to.reload
+-if assignment_to.empty?
   .font-weight-bold.small
     assignment to:
 -else
-  -task.assignment_to.each do |assignment|
+  -assignment_to.each do |assignment|
     .badge.badge-info
       =assignment.first_name + ' ' + assignment.last_name
--if current_account.eql?(@task.creator) || current_account.types.include?('manager')
+-if current_account.eql?(task.creator) || current_account.types.include?('manager')
   =link_to '[ edit ]', edit_task_assignments_path(task), remote: true, class: 'small'

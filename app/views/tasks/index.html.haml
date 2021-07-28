@@ -2,13 +2,13 @@
   .col.text-left
     -if current_account.types.include?('manager')
       =link_to 'all tasks',
-               url_for(@grid.to_param => { order: :id, descending: true }),
+               url_for(@grid.to_param => { order: :id, descending: true, collapse: true }),
                class: 'btn btn-sm btn-outline-dark'
     =link_to 'your tasks',
-             url_for(@grid.to_param => { assignment_to: current_account, order: :id, descending: true }),
+             url_for(@grid.to_param => { assignment_to: current_account, order: :id, descending: true, collapse: true }),
              class: 'btn btn-sm btn-outline-dark', id: 'your_task'
     =link_to('tasks created by you',
-             url_for(@grid.to_param => { creator: current_account, order: :id, descending: true }),
+             url_for(@grid.to_param => { creator: current_account, order: :id, descending: true, collapse: true }),
              class: 'btn btn-sm btn-outline-dark')
 
   .col.text-right
@@ -25,3 +25,8 @@
   =render 'datagrid', grid: @grid
 
 =render 'tasks/task_modal'
+
+:javascript
+  $("#your_task").click(function () {
+      $(".collapse").hide()
+  });

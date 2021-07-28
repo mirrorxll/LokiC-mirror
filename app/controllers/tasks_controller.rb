@@ -48,7 +48,7 @@ class TasksController < ApplicationController # :nodoc:
       else
         !manager? ? { assignment_to: current_account.id, order: :id, descending: true } : { order: :id, descending: true }
       end
-    @grid = TasksGrid.new(grid_params)
+    @grid = TasksGrid.new(grid_params.except(:collapse))
   end
 
   def find_task
@@ -60,7 +60,7 @@ class TasksController < ApplicationController # :nodoc:
       next if assignment.slack.nil? || assignment.slack.deleted
 
       message = "*[ LokiC ] <#{task_url(@task)}| TASK ##{@task.id}> | "\
-              "Assignment to you*\n>#{@task.title}"
+              "ASSIGNMENT TO YOU*\n>#{@task.title}"
 
       SlackNotificationJob.perform_later(assignment.slack.identifier, message)
     end

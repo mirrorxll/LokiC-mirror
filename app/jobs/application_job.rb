@@ -45,32 +45,6 @@ class ApplicationJob < ActiveJob::Base
     record_to_alerts(story_type, step, raw_message)
   end
 
-  def send_task_reminder(task)
-    title = task.title
-
-
-    url = generate_story_type_url(story_type)
-
-    message = "*[ LokiC ] <#{task_url(@task)}|Task ##{task.id}> REMINDER|"\
-              "| #{developer_name}*\n#{raw_message}".gsub("\n", "\n>")
-
-    task.assignment_to.each do |assignment|
-
-    end
-
-
-
-    channel = channel(step)
-    SlackNotificationJob.perform_now(channel, message)
-
-    return unless story_type.developer_slack_id
-
-    message = message.gsub(/#{Regexp.escape(" | #{developer_name}")}/, '')
-    SlackNotificationJob.perform_now(story_type.developer_slack_id, message)
-
-    record_to_alerts(story_type, step, raw_message)
-  end
-
   def send_report_to_editors_slack(iteration, url)
     story_type = iteration.story_type
     return unless story_type.developer_fc_channel_name

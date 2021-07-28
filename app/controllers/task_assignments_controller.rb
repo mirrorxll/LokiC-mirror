@@ -5,13 +5,10 @@ class TaskAssignmentsController < ApplicationController
   skip_before_action :set_iteration
   before_action :find_task
 
-  after_action  :send_notification, only: :update
-
   def edit; end
 
   def update
-    @task.assignment_to.delete_all
-    @task.assignment_to << Account.find(assignments_params)
+    update_assignments(@task, Account.find(assignments_params))
   end
 
   def cancel; end
@@ -26,8 +23,17 @@ class TaskAssignmentsController < ApplicationController
     @status = Status.find(params[:status_id])
   end
 
-  def send_notification
-    @task.assignment_to.each do |assignment|
+  def update_assignments(task, assignments)
+    old_assignments = TaskAssignment.where(task: task, account: (task.assignment_to - assignments))
+    old_assignments.destroy_all unless old_assignments.empty?
+
+    new_assignments = assignments - task.assignment_to
+    task.assignment_to << new_assignments
+    send_notification(new_assignments)
+  end
+
+  def send_notification(assignments)
+    assignments.each do |assignment|
       next if assignment.slack.nil? || assignment.slack.deleted
 
       message = "*[ LokiC ] <#{task_url(@task)}| TASK ##{@task.id}> | "\
@@ -38,6 +44,6 @@ class TaskAssignmentsController < ApplicationController
   end
 
   def assignments_params
-    params.require(:assignment_to).uniq.reject { |account| account.blank? }
+    params.has_key?(:assignment_to) ? params.require(:assignment_to).uniq.reject { |account| account.blank? } : []
   end
 end
