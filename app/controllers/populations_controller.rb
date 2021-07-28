@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 class PopulationsController < ApplicationController # :nodoc:
-  before_action :render_400, if: :editor?
+  before_action :render_403, if: :editor?
   before_action :staging_table
 
   def execute
-    render_400 && return if [true, false].include?(@iteration.population)
+    render_403 && return if [true, false].include?(@iteration.population)
 
     flash.now[:error] =
       if @staging_table.nil? || StagingTable.not_exists?(@staging_table.name)

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class StagingTablesController < ApplicationController # :nodoc:
-  before_action :render_400, if: :editor?
+  before_action :render_403, if: :editor?
   before_action :staging_table_name_from_params, only: :create
   before_action :staging_table
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class StoryTypesGrid
   include Datagrid
 
@@ -8,6 +10,11 @@ class StoryTypesGrid
 
   # Filters
   filter(:id, :string, left: true, multiple: ',')
+
+  filter(:gather_task, :xboolean, left: true) do |value, scope|
+    value ? scope.where.not(gather_task: nil) : scope.where(gather_task: nil)
+  end
+
   filter(:state, :enum, left: true, select: State.all.pluck(:short_name, :full_name, :id).map { |r| [r[0] + ' - ' + r[1], r[2]] }) do |value, scope|
     scope.joins(data_set: [:state]).where(['states.id = ?', value])
   end
@@ -34,6 +41,15 @@ class StoryTypesGrid
 
   # Columns
   column(:id, mandatory: true, header: 'ID')
+
+  column(:gather_task) do |record|
+    if record.gather_task
+      format(record.gather_task) do |id|
+        link_to('link', "https://pipeline.locallabs.com/gather_tasks/#{id}", target: '_blank')
+      end
+    end
+  end
+
   column(:state, order: 'states.short_name') do |record|
     record.data_set.state&.short_name
   end
@@ -79,5 +95,4 @@ class StoryTypesGrid
   column(:updated_at) do |record|
     record.updated_at&.to_date
   end
-
 end

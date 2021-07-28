@@ -4,8 +4,8 @@ class DataSetsController < ApplicationController # :nodoc:
   skip_before_action :find_parent_story_type
   skip_before_action :set_iteration
 
-  before_action :render_400_developer, except: :properties, if: :developer?
-  before_action :render_400_scraper, except: :properties, if: :scraper?
+  before_action :render_403_developer, except: :properties, if: :developer?
+  before_action :render_403_scraper, except: :properties, if: :scraper?
   before_action :find_data_set, except: %i[index create]
   after_action  :set_default_props, only: %i[create update]
 

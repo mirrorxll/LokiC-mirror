@@ -22,7 +22,7 @@ class ReviewersFeedbackController < ApplicationController
 
   def confirm
     @feedback = @feedback_collection.find(params[:id])
-    render_400 and return if @feedback.confirmed
+    render_403 and return if @feedback.confirmed
 
     @feedback.update(confirmed: true)
   end
