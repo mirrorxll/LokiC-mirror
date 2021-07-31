@@ -9,14 +9,18 @@
   .form-group.row.small.font-weight-bold.justify-content-center
     .col-4
       assignment to:
-      =icon('fa', 'plus', class: 'ml-3', id: 'add_assignment')
+      -if current_account.types.include?('manager')
+        =icon('fa', 'plus', class: 'ml-3', id: 'add_assignment')
     .col-4
       reminder frequency:
     .col-2
       deadline:
   .form-group.row.small.justify-content-center
     .col-4#assignments
-      =form.collection_select "task[assignment_to][]", Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }, class: 'm-1'
+      -if current_account.types.include?('manager')
+        =form.collection_select "task[assignment_to][]", Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }, class: 'm-1'
+      -else
+        =form.collection_select "task[assignment_to][]", [current_account], :id, :name, class: 'm-1'
     .col-4
       =form.collection_select "task[reminder_frequency]", TaskReminderFrequency.all.order(:name), :id, :name, { prompt: '' }
     .col-2
