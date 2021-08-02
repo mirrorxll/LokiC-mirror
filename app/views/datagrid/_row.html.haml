@@ -1,4 +1,4 @@
--if controller_name.eql?('scrape_tasks')
+-if controller_name.in?(%w[scrape_tasks tasks])
   =render 'datagrid/scrape_task_row', grid: grid, asset: asset, options: options
 -else
   %tr

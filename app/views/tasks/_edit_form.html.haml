@@ -2,7 +2,7 @@
   .row.small
     .col
       .form-group
-        =form.text_field 'task[title]', placeholder: 'title', class: 'form-control', required: true, value: @task.title
+        =form.text_field 'task[title]', placeholder: 'title', class: 'form-control', required: true, value: @task.title, maxlength: 500
       .form-group
         =form.text_area 'task[description]', id: 'task_description', value: @task.description
   %hr/
@@ -13,7 +13,7 @@
       deadline:
   .form-group.row.small.text-center
     .col-6
-      =form.collection_select "task[reminder_frequency]", TaskReminderFrequency.all.order(:name), :id, :name, { selected: @task.reminder_frequency.nil? ? '' : @task.reminder_frequency.id, prompt: '' }
+      =form.collection_select 'task[reminder_frequency]', TaskReminderFrequency.all.order(:name), :id, :name, { selected: @task.reminder_frequency.nil? ? '' : @task.reminder_frequency.id, prompt: '' }
     .col-6
       =form.date_field 'task[deadline]', value: @task.deadline
   %hr/

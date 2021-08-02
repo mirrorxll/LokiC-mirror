@@ -2,7 +2,6 @@
   =link_to(task.status.name, '#',
         class: "badge badge-pill badge-#{status_color(task.status.name)}")
 
--puts task.status.id
 .change_progress_status_form.d-none
   =form_with(url: change_task_progress_statuses_path(task),
              html: { class: 'd-inline', onchange: "Rails.fire(this, 'submit');" }, method: :patch) do |form|
@@ -10,17 +9,20 @@
 
 :javascript
   document.querySelector('.current_progress_status a').addEventListener('click', function (evt) {
+    var clickable = #{current_account.types.include?('manager') || current_account.in?(task.assignment_to)};
+    if (!clickable) return;
+
     evt.preventDefault();
     evt.target.parentNode.classList.add('d-none');
     document.getElementsByClassName('change_progress_status_form')[0].classList.remove('d-none');
     return false;
-  })
+  });
 
   document.getElementById('status_id').addEventListener('change', (event) => {
     status = event.target.options[event.target.selectedIndex].text
     if (['blocked', 'canceled'].includes(status)) {
       let comment = prompt(`Please, leave comment`);
-      console.log(comment)
+      console.log(comment);
 
       if (comment != null) {
         Rails.ajax({
@@ -31,4 +33,4 @@
         })
       }
     }
-  })
+  });

@@ -2,7 +2,7 @@
   .row.small
     .col
       .form-group
-        =form.text_field 'task[title]', placeholder: 'title', class: 'form-control', required: true
+        =form.text_field 'task[title]', placeholder: 'title', class: 'form-control', required: true, maxlength: 500
       .form-group
         =form.text_area 'task[description]', class: 'form-control', id: 'task_description'
   %hr/
@@ -16,9 +16,9 @@
       deadline:
   .form-group.row.small.justify-content-center
     .col-4#assignments
-      =form.collection_select "task[assignment_to][]", Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }, class: 'm-1'
+      =form.collection_select 'task[assignment_to][]', Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }, class: 'm-1'
     .col-4
-      =form.collection_select "task[reminder_frequency]", TaskReminderFrequency.all.order(:name), :id, :name, { prompt: '' }
+      =form.collection_select 'task[reminder_frequency]', TaskReminderFrequency.all.order(:name), :id, :name, { prompt: '' }
     .col-2
       =form.date_field 'task[deadline]', class: 'w-100'
   %hr/

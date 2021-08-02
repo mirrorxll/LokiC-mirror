@@ -13,6 +13,6 @@ class Status < ApplicationRecord
   end
 
   def self.multi_task_dev_statuses
-    where(name: ['not started','in progress','blocked','canceled','done'])
+    where(name: ['not started','in progress','blocked','canceled','done','deleted'])
   end
 end
