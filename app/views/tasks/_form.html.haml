@@ -7,20 +7,24 @@
         =form.text_area 'task[description]', class: 'form-control', id: 'task_description'
   %hr/
   .form-group.row.small.font-weight-bold.justify-content-center
-    .col-4
+    .col-3
       assignment to:
       =icon('fa', 'plus', class: 'ml-3', id: 'add_assignment')
-    .col-4
+    .col-3
       reminder frequency:
-    .col-2
+    .col-3
       deadline:
+    .col-3
+      gather_task:
   .form-group.row.small.justify-content-center
-    .col-4#assignments
-      =form.collection_select 'task[assignment_to][]', Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }, class: 'm-1'
-    .col-4
+    .col-3#assignments
+      =form.collection_select 'task[assignment_to][]', Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }, class: 'ml-1'
+    .col-3
       =form.collection_select 'task[reminder_frequency]', TaskReminderFrequency.all.order(:name), :id, :name, { prompt: '' }
-    .col-2
-      =form.date_field 'task[deadline]', class: 'w-100'
+    .col-3
+      =form.date_field 'task[deadline]', class: 'w-50'
+    .col-3
+      =form.text_field 'task[gather_task]', class: 'w-50'
   %hr/
   .modal-footer.justify-content-center
     =form.submit :create, class: 'btn btn-sm btn-outline-success'

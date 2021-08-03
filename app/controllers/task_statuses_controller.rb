@@ -12,12 +12,8 @@ class TaskStatusesController < ApplicationController
     @task.update(done_at: Time.now) if @status.name.eql?('done')
   end
 
-  def leave_comment
-    if @task.status_comment
-      @task.status_comment.update(body: params[:comment])
-    elsif
-      @task.build_status_comment(subtype: 'status comment', body: params[:comment]).save!
-    end
+  def comment
+    @task.comments.build(subtype: 'status comment', body: comment_params, commentator: current_account).save!
   end
 
   private
@@ -37,7 +33,6 @@ class TaskStatusesController < ApplicationController
   def send_notification
     accounts = (@task.assignment_to.to_a << @task.creator).uniq
     accounts.each do |account|
-      puts account.first_name + ' ' + account.last_name
       next if account.slack.nil? || account.slack.deleted
 
       message = "*[ LokiC ] <#{task_url(@task)}| TASK ##{@task.id}> | "\

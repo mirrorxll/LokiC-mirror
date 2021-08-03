@@ -19,16 +19,16 @@
   });
 
   document.getElementById('status_id').addEventListener('change', (event) => {
-    status = event.target.options[event.target.selectedIndex].text
+    status = event.target.options[event.target.selectedIndex].text;
     if (['blocked', 'canceled'].includes(status)) {
       let comment = prompt(`Please, leave comment`);
       console.log(comment);
 
       if (comment != null) {
         Rails.ajax({
-          type: "PATCH",
+          type: "POST",
           dataType: 'script',
-          url: `#{leave_comment_task_progress_statuses_path(@task)}`,
+          url: `#{comment_task_progress_statuses_path(@task)}`,
           data: `comment=${comment}`
         })
       }

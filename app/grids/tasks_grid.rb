@@ -31,11 +31,10 @@ class TasksGrid
         {
           'data-toggle' => 'tooltip',
           'data-placement' => 'right',
-          title: truncate(task.status_comment&.body, length: 150)
+          title: truncate(task.status_comment.body, length: 150)
         }
       )
     end
-
     content_tag(:div, task.status.name, attributes)
   end
 

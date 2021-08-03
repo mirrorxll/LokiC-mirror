@@ -3,7 +3,7 @@
 class TasksController < ApplicationController # :nodoc:
   skip_before_action :find_parent_story_type
   skip_before_action :set_iteration
-  before_action :find_task, only: [:show, :edit, :update]
+  before_action :find_task, only: [:show, :edit, :update, :comment]
   before_action :grid, only: [:index]
   after_action  :send_notification, only: :create
 
@@ -17,6 +17,7 @@ class TasksController < ApplicationController # :nodoc:
 
   def show
     @task = Task.find(params[:id])
+    @comments = @task.comments
   end
 
   def new
@@ -28,6 +29,7 @@ class TasksController < ApplicationController # :nodoc:
                      description: task_params[:description],
                      reminder_frequency: task_params[:reminder_frequency],
                      deadline: task_params[:deadline],
+                     gather_task: task_params[:gather_task],
                      creator: current_account)
 
     @task.assignment_to << Account.find(task_params[:assignment_to]) if @task.save!
@@ -37,6 +39,10 @@ class TasksController < ApplicationController # :nodoc:
 
   def update
     @task.update(update_task_params)
+  end
+
+  def comment
+    @task.comments.build(subtype: 'task comment', body: comment_params, commentator: current_account).save!
   end
 
   private
@@ -67,15 +73,19 @@ class TasksController < ApplicationController # :nodoc:
   end
 
   def task_params
-    task_params = params.require(:task).permit(:title, :description, :deadline, :reminder_frequency, assignment_to: [])
+    task_params = params.require(:task).permit(:title, :description, :deadline, :reminder_frequency, :gather_task, assignment_to: [])
     task_params[:reminder_frequency] = task_params[:reminder_frequency].blank? ? nil : TaskReminderFrequency.find(task_params[:reminder_frequency])
     task_params[:assignment_to] = task_params[:assignment_to].uniq.reject { |account| account.blank? }
     task_params
   end
 
   def update_task_params
-    up_task_params = params.require(:task).permit(:title, :description, :deadline, :reminder_frequency)
+    up_task_params = params.require(:task).permit(:title, :description, :deadline, :reminder_frequency, :gather_task)
     up_task_params[:reminder_frequency] = up_task_params[:reminder_frequency].blank? ? nil : TaskReminderFrequency.find(up_task_params[:reminder_frequency])
     up_task_params
+  end
+
+  def comment_params
+    params.require(:comment)
   end
 end

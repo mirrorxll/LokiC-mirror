@@ -1,0 +1,11 @@
+.card{style: 'height: 300px;'}
+  .card-header.p-1
+    .d-flex.justify-content-between.small
+      comments
+  .card-body
+    #comments.align-top.overflow-auto{style: 'height: 200px;'}
+      -@comments.each do |comment|
+        .row.small
+          =comment.body
+    #comment_form
+      =render 'comment_form'

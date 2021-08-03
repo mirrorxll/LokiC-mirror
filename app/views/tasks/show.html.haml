@@ -11,43 +11,15 @@
 
 .row.mt-3
   .col-5
-    .card{style: 'height: 300px;'}
-      .card-header.p-1
-        .d-flex.justify-content-between.small
-          main info
-      .card-body.small
-        .row.mb-2
-          .col.font-weight-bold
-            creator:
-          .col
-            =@task.creator.first_name + ' ' + @task.creator.last_name
-        .row.mb-2
-          .col.font-weight-bold
-            deadline:
-          .col
-            =@task.deadline ? @task.deadline : 'not set'
-        .row.mb-2
-          .col.font-weight-bold
-            reminder frequency:
-          .col
-            =@task.reminder_frequency ? @task.reminder_frequency.name : 'not set'
-        #done
-          =render 'done', task: @task
-        #comment
-          =render 'comment', task: @task
+    =render 'task_info'
   .col-7
-    .card
-      .card-header.p-1
-        .d-flex.justify-content-between.small
-          history
-      .card-body.small
-
+    =render 'comments', comments: @comments
 
 .card.mt-3
   .card-header.small.text-right
     -if current_account.eql?(@task.creator) || current_account.types.include?('manager')
       =link_to '[ edit task ]', edit_task_path(@task), remote: true
-  .card-body.overflow-auto{style: 'height: 600px'}
+  .card-body.overflow-auton{style: 'height: 600px'}
     #body
       .row.small.mb-3
         .col-10.offset-1
