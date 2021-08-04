@@ -3,9 +3,10 @@
 class TasksController < ApplicationController # :nodoc:
   skip_before_action :find_parent_story_type
   skip_before_action :set_iteration
-  before_action :find_task, only: [:show, :edit, :update, :comment]
+  before_action :find_task, only: [:show, :edit, :update]
   before_action :grid, only: [:index]
   after_action  :send_notification, only: :create
+  after_action  :comment, only: :create
 
   def index
     respond_to do |f|
@@ -17,7 +18,7 @@ class TasksController < ApplicationController # :nodoc:
 
   def show
     @task = Task.find(params[:id])
-    @comments = @task.comments
+    @comments = @task.comments.order(created_at: :desc)
   end
 
   def new
@@ -41,11 +42,12 @@ class TasksController < ApplicationController # :nodoc:
     @task.update(update_task_params)
   end
 
-  def comment
-    @task.comments.build(subtype: 'task comment', body: comment_params, commentator: current_account).save!
-  end
 
   private
+
+  def comment
+    @task.comments.build(subtype: 'task comment', body: "##{@task.id} Task created. Assignment to #{@task.assignment_to.map { |assignment| assignment.name }.to_sentence}", commentator: current_account).save!
+  end
 
   def grid
     grid_params =

@@ -5,8 +5,6 @@ class Task < ApplicationRecord # :nodoc:
     self.status = Status.find_by(name: 'not started')
   end
 
-  # has_rich_text :comment
-
   validates :title, length: { maximum: 500 }
   validates :title, uniqueness: { scope: :creator }
 
@@ -29,5 +27,4 @@ class Task < ApplicationRecord # :nodoc:
 
     "https://pipeline.locallabs.com/gather_tasks/#{gather_task}"
   end
-
 end

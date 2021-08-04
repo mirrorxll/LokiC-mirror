@@ -1,6 +1,0 @@
-=form_with(url: comment_tasks_path(id: @task.id), class: 'align-bottom') do |form|
-  .row
-    .col-10.small
-      =form.text_area 'comment', class: 'form-control', required: true, cols: 90, rows: 1
-    .col-2.small
-      =form.submit :send, class: 'btn btn-sm btn-outline-dark mt-2'

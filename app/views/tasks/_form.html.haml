@@ -6,19 +6,20 @@
       .form-group
         =form.text_area 'task[description]', class: 'form-control', id: 'task_description'
   %hr/
-  .form-group.row.small.font-weight-bold.justify-content-center
+  .form-group.row.small.font-weight-bold.text-center
     .col-3
       assignment to:
-      =icon('fa', 'plus', class: 'ml-3', id: 'add_assignment')
+      =icon('fa', 'plus', class: 'ml-2', id: 'add_assignment')
     .col-3
       reminder frequency:
     .col-3
       deadline:
     .col-3
       gather_task:
-  .form-group.row.small.justify-content-center
+  .form-group.row.small.text-center
     .col-3#assignments
-      =form.collection_select 'task[assignment_to][]', Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }, class: 'ml-1'
+      .row.mt-1.justify-content-center
+        =form.collection_select 'task[assignment_to][]', Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }
     .col-3
       =form.collection_select 'task[reminder_frequency]', TaskReminderFrequency.all.order(:name), :id, :name, { prompt: '' }
     .col-3
@@ -36,8 +37,8 @@
     let hex = secureRandom(6);
 
     $('#assignments').append(
-        `<div id="assignment_${hex}" class="row m-1">
-           <select id="task[assignment_to][]" name="task[assignment_to][]">${buildSelect(accounts)}</select>
+        `<div id="assignment_${hex}" class="row mt-1 ml-1 justify-content-center">
+           <select id="task[assignment_to][]" class="mr-1" name="task[assignment_to][]">${buildSelect(accounts)}</select>
            <div class="ml-1" id="rm_assignment_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
          </div>`
     );

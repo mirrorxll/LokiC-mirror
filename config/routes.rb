@@ -224,7 +224,8 @@ Rails.application.routes.draw do
       patch :change,        on: :collection
       post :comment,        on: :collection
     end
-    post :comment, on: :collection
+
+    resources :comments, controller: 'task_comments', only: %i[new create show]
 
     resources :assignments, controller: 'task_assignments', only: [] do
       get   :edit,   on: :collection

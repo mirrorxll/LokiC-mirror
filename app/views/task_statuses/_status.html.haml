@@ -21,16 +21,12 @@
   document.getElementById('status_id').addEventListener('change', (event) => {
     status = event.target.options[event.target.selectedIndex].text;
     if (['blocked', 'canceled'].includes(status)) {
-      let comment = prompt(`Please, leave comment`);
-      console.log(comment);
 
-      if (comment != null) {
-        Rails.ajax({
-          type: "POST",
-          dataType: 'script',
-          url: `#{comment_task_progress_statuses_path(@task)}`,
-          data: `comment=${comment}`
-        })
-      }
+      Rails.ajax({
+      type: "GET",
+      dataType: 'script',
+      url: `#{new_task_comment_path(task)}`,
+      data: `task_id=${task.id}`
+      })
     }
   });
