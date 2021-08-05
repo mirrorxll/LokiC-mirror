@@ -24,18 +24,17 @@ class TasksGrid
   column(:id, mandatory: true, header: 'ID')
 
   column(:status, mandatory: true, order: 'status_id', html: true) do |task|
-    attributes = { class: "bg-#{status_color(task.status.name)} " }
+    attributes = { class: "bg-#{status_color(task.status.name)}" }
 
     if task.status.name.in?(%w[blocked canceled])
       attributes.merge!(
         {
           'data-toggle' => 'tooltip',
           'data-placement' => 'right',
-          title: truncate(task.status_comment&.body, length: 150)
+          title: truncate(task.status_comment.body, length: 150)
         }
       )
     end
-
     content_tag(:div, task.status.name, attributes)
   end
 

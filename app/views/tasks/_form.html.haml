@@ -1,30 +1,32 @@
+
 =form_with(url: tasks_path, id: 'form_new_task') do |form|
   .row.small
     .col
       .form-group
-        =form.text_field 'task[title]', placeholder: 'title', class: 'form-control', required: true
+        =form.text_field 'task[title]', placeholder: 'title', class: 'form-control', required: true, maxlength: 500
       .form-group
         =form.text_area 'task[description]', class: 'form-control', id: 'task_description'
   %hr/
-  .form-group.row.small.font-weight-bold.justify-content-center
-    .col-4
+  .form-group.row.small.font-weight-bold.text-center
+    .col-3
       assignment to:
-      -if current_account.types.include?('manager')
-        =icon('fa', 'plus', class: 'ml-3', id: 'add_assignment')
-    .col-4
+      =icon('fa', 'plus', class: 'ml-2', id: 'add_assignment')
+    .col-3
       reminder frequency:
-    .col-2
+    .col-3
       deadline:
-  .form-group.row.small.justify-content-center
-    .col-4#assignments
-      -if current_account.types.include?('manager')
-        =form.collection_select "task[assignment_to][]", Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }, class: 'm-1'
-      -else
-        =form.collection_select "task[assignment_to][]", [current_account], :id, :name, class: 'm-1'
-    .col-4
-      =form.collection_select "task[reminder_frequency]", TaskReminderFrequency.all.order(:name), :id, :name, { prompt: '' }
-    .col-2
-      =form.date_field 'task[deadline]', class: 'w-100'
+    .col-3
+      gather_task:
+  .form-group.row.small.text-center
+    .col-3#assignments
+      .row.mt-1.justify-content-center
+        =form.collection_select 'task[assignment_to][]', Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }
+    .col-3
+      =form.collection_select 'task[reminder_frequency]', TaskReminderFrequency.all.order(:name), :id, :name, { prompt: '' }
+    .col-3
+      =form.date_field 'task[deadline]', class: 'w-50'
+    .col-3
+      =form.text_field 'task[gather_task]', class: 'w-50'
   %hr/
   .modal-footer.justify-content-center
     =form.submit :create, class: 'btn btn-sm btn-outline-success'
@@ -36,8 +38,8 @@
     let hex = secureRandom(6);
 
     $('#assignments').append(
-        `<div id="assignment_${hex}" class="row m-1">
-           <select id="task[assignment_to][]" name="task[assignment_to][]">${buildSelect(accounts)}</select>
+        `<div id="assignment_${hex}" class="row mt-1 ml-1 justify-content-center">
+           <select id="task[assignment_to][]" class="mr-1" name="task[assignment_to][]">${buildSelect(accounts)}</select>
            <div class="ml-1" id="rm_assignment_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
          </div>`
     );
