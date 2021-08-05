@@ -21,8 +21,18 @@
            remote: true)
 %hr/
 
-#datagrid
-  =render 'datagrid', grid: @grid
+#filter_form{ class: collapse(params[:tasks_grid])}
+  =datagrid_form_for @grid, url: tasks_path
+
+.row
+  .col-12
+    #data_sets
+      #grid_wrapper
+        =datagrid_table(@grid)
+
+.row.mt-3.col-12
+  #pagination
+    =paginate @grid.assets
 
 =render 'tasks/task_modal'
 
