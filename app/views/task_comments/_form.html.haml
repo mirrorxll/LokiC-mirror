@@ -1,11 +1,7 @@
-=form_with(model: @comment, url: task_comments_path(subtype: 'task comment')) do |form|
+=form_with(model: @comment, url: task_comments_path) do |form|
   .row
     .col.small
-      =form.rich_text_area :body, class: 'form-control overflow-auto', required: true, style: 'min-height: 150px;'
+      =hidden_field_tag 'comment[subtype]', params[:subtype]
+      =form.rich_text_area :body, class: 'form-control overflow-auto', required: true, style: 'min-height: 150px;', :input_html => {:minlength => 10}
   .modal-footer.justify-content-center
     =form.submit :send, class: 'btn btn-sm btn-outline-success'
-
-:javascript
-  $('#comment').on('hidden.bs.modal', function () {
-    $('#comment .modal-body').empty();
-  });

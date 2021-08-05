@@ -225,7 +225,7 @@ Rails.application.routes.draw do
       post :comment,        on: :collection
     end
 
-    resources :comments, controller: 'task_comments', only: %i[new create show]
+    resources :comments, controller: 'task_comments', only: %i[new create]
 
     resources :assignments, controller: 'task_assignments', only: [] do
       get   :edit,   on: :collection

@@ -4,6 +4,6 @@
   &nbsp
   =comment.created_at.strftime('%F %R %Z')
   &nbsp
-.row.col-12.small
+.row.col-12.small{ class: comment.subtype == 'status comment' ? 'text-danger' : ''}
   =comment.body&.html_safe
 %hr.mt-3.mb-3/

@@ -1,0 +1,12 @@
+.card{style: 'height: 350px;'}
+  .card-header.p-1
+    .d-flex.justify-content-between.small
+      comments
+  .card-body
+    #comments.align-top.overflow-auto{style: 'height: 250px;'}
+      -@comments.each do |comment|
+        =render 'task_comments/comment', comment: comment
+    #comment_form.align-bottom.mb-1.mt-2.row.small.justify-content-center
+      =link_to('[ add comment ]',
+             new_task_comment_path(@task, subtype: 'task comment'),
+             remote: true)

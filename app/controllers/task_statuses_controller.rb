@@ -12,10 +12,6 @@ class TaskStatusesController < ApplicationController
     @task.update(done_at: Time.now) if @status.name.eql?('done')
   end
 
-  def comment
-    @task.comments.build(subtype: 'status comment', body: comment_params, commentator: current_account).save!
-  end
-
   private
 
   def find_task
@@ -26,8 +22,12 @@ class TaskStatusesController < ApplicationController
     @status = Status.find(params[:status_id])
   end
 
-  def comment_params
-    params.require(:comment)
+  def comment
+    @task.comments.build(
+      subtype: 'task comment',
+      body: "Status changed to #{@task.status.name}.",
+      commentator: current_account
+    ).save!
   end
 
   def send_notification
@@ -36,7 +36,7 @@ class TaskStatusesController < ApplicationController
       next if account.slack.nil? || account.slack.deleted
 
       message = "*[ LokiC ] <#{task_url(@task)}| TASK ##{@task.id}> | "\
-              "STATUS CHANGED TO #{@task.status.name.upcase}*\n>#{@task.title}"
+                "STATUS CHANGED TO #{@task.status.name.upcase}*\n>#{@task.title}"
 
       SlackNotificationJob.perform_later(account.slack.identifier, message)
     end

@@ -26,12 +26,14 @@ class TasksController < ApplicationController # :nodoc:
   end
 
   def create
-    @task = Task.new(title: task_params[:title],
-                     description: task_params[:description],
-                     reminder_frequency: task_params[:reminder_frequency],
-                     deadline: task_params[:deadline],
-                     gather_task: task_params[:gather_task],
-                     creator: current_account)
+    @task = Task.new(
+      title: task_params[:title],
+      description: task_params[:description],
+      reminder_frequency: task_params[:reminder_frequency],
+      deadline: task_params[:deadline],
+      gather_task: task_params[:gather_task],
+      creator: current_account
+    )
 
     @task.assignment_to << Account.find(task_params[:assignment_to]) if @task.save!
   end
@@ -42,11 +44,14 @@ class TasksController < ApplicationController # :nodoc:
     @task.update(update_task_params)
   end
 
-
   private
 
   def comment
-    @task.comments.build(subtype: 'task comment', body: "##{@task.id} Task created. Assignment to #{@task.assignment_to.map { |assignment| assignment.name }.to_sentence}", commentator: current_account).save!
+    @task.comments.build(
+      subtype: 'task comment',
+      body: "##{@task.id} Task created. Assignment to #{@task.assignment_to.map { |assignment| assignment.name }.to_sentence}.",
+      commentator: current_account
+    ).save!
   end
 
   def grid
