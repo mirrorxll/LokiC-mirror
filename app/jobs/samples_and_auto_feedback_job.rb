@@ -3,18 +3,18 @@
 class SamplesAndAutoFeedbackJob < ApplicationJob
   queue_as :story_type
 
-  def perform(iteration, options = {})
-    status = true
-    message = "Success. FCD's samples have been created"
-    sample_args = nil
-    staging_table = iteration.story_type.staging_table
-    publication_ids = iteration.story_type.publication_pl_ids.join(',')
-    options[:iteration] = iteration
-    options[:publication_ids] = publication_ids
-    options[:sampled] = true
-
+  def perform(iteration, account, options = {})
     Process.wait(
       fork do
+        status = true
+        message = "Success. FCD's samples have been created"
+        sample_args = nil
+        staging_table = iteration.story_type.staging_table
+        publication_ids = iteration.story_type.publication_pl_ids.join(',')
+        options[:iteration] = iteration
+        options[:publication_ids] = publication_ids
+        options[:sampled] = true
+
         ids =
           if options[:cron]
             Table.select_edge_ids(staging_table.name, publication_ids, [:id])
@@ -32,12 +32,12 @@ class SamplesAndAutoFeedbackJob < ApplicationJob
 
         Samples.auto_feedback(iteration.story_type, options[:cron])
 
-        iteration.update!(story_sample_args: sample_args)
+        iteration.update!(story_sample_args: sample_args, current_account: account)
       rescue StandardError, ScriptError => e
         status = nil
         message = e.message
       ensure
-        iteration.update!(story_samples: status)
+        iteration.update!(story_samples: status, current_account: account)
         send_to_action_cable(iteration, :samples, message)
       end
     )

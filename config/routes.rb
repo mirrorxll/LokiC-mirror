@@ -137,7 +137,7 @@ Rails.application.routes.draw do
       end
 
       resources :samples, only: %i[index show] do
-        post   :create_and_generate_auto_feedback, on: :collection
+        post   :create_and_gen_auto_feedback, on: :collection
         delete :purge_sampled,                     on: :collection
       end
 

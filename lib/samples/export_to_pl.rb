@@ -56,7 +56,6 @@ module Samples
       end
 
       threads.each(&:join)
-      iteration.update!(export: nil)
     end
   end
 end

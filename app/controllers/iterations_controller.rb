@@ -17,7 +17,7 @@ class IterationsController < ApplicationController
   def create
     @iteration = @story_type.iterations.create!(iteration_params)
 
-    @story_type.update(current_iteration: @iteration)
+    @story_type.update!(current_iteration: @iteration, current_account: current_account)
     @story_type.staging_table&.default_iter_id
 
     redirect_to @story_type
@@ -28,7 +28,7 @@ class IterationsController < ApplicationController
   end
 
   def apply
-    @story_type.update(current_iteration: @iteration)
+    @story_type.update!(current_iteration: @iteration, current_account: current_account)
     @story_type.staging_table&.default_iter_id
 
     redirect_to @story_type
@@ -38,13 +38,14 @@ class IterationsController < ApplicationController
     staging_table_action { @staging_table.purge }
 
     if flash.now[:error].nil?
-      @story_type.update(creating_export_configurations: nil)
+      @story_type.update!(export_configurations_created: nil, current_account: current_account)
       @iteration.samples.destroy_all
       @iteration.auto_feedback.destroy_all
 
       @iteration.update!(
         population: nil, story_samples: nil,
-        creation: nil, schedule: nil, export: nil
+        creation: nil, schedule: nil, export: nil,
+        current_account: current_account
       )
     end
 

@@ -6,7 +6,7 @@
     -elsif @iteration.population.eql?(nil)
       first...execute population
       %br/
-    -elsif @story_type.creating_export_configurations.eql?(false)
+    -elsif @story_type.export_configurations_created.eql?(false)
       %a.p-0.btn.btn-sm.btn-link{ href: "#", onclick: "return false;" } [ ...in progress... ]
     -else
       =link_to('[ create/update ]', story_type_export_configurations_path(@story_type),

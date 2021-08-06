@@ -35,7 +35,7 @@ class ScrapeTasksController < ApplicationController
       @scrape_task.datasource_comment.update(datasource_comment_param)
       @scrape_task.scrape_ability_comment.update(scrape_ability_comment_param)
       @scrape_task.general_comment.update(general_comment_param)
-      @scrape_task.update_with_acc!(current_account, update_scrape_task_params)
+      @scrape_task.update(update_scrape_task_params)
     end
 
     return unless manager?
@@ -46,7 +46,7 @@ class ScrapeTasksController < ApplicationController
   end
 
   def evaluate
-    @scrape_task.update_with_acc!(current_account, evaluation: true)
+    @scrape_task.update!(current_account: current_account, evaluation: true)
   end
 
   private
@@ -75,18 +75,22 @@ class ScrapeTasksController < ApplicationController
   end
 
   def update_scrape_task_params
-    if manager?
-      params.require(:scrape_task).permit(
-        :name, :gather_task, :state_id, :datasource_url,
-        :scrapable, :data_set_location, :scraper_id, :frequency_id
-      )
-    elsif @scrape_task.scraper.eql?(current_account)
-      params.require(:scrape_task).permit(
-        :gather_task, :datasource_url, :data_set_location
-      )
-    else
-      {}
-    end
+    attrs =
+      if manager?
+        params.require(:scrape_task).permit(
+          :name, :gather_task, :state_id, :datasource_url,
+          :scrapable, :data_set_location, :scraper_id, :frequency_id
+        )
+      elsif @scrape_task.scraper.eql?(current_account)
+        params.require(:scrape_task).permit(
+          :gather_task, :datasource_url, :data_set_location
+        )
+      else
+        {}
+      end
+
+    attrs[:current_account] = current_account
+    attrs
   end
 
   def scrape_ability_comment_param

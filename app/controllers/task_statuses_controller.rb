@@ -13,11 +13,9 @@ class TaskStatusesController < ApplicationController
   end
 
   def leave_comment
-    if @task.status_comment
-      @task.status_comment.update(body: params[:comment])
-    elsif
-      @task.build_status_comment(subtype: 'status comment', body: params[:comment]).save!
-    end
+    @task.status_comment&.update(body: params[:comment]) && return
+
+    @task.build_status_comment(subtype: 'status comment', body: params[:comment]).save!
   end
 
   private

@@ -5,7 +5,7 @@ class StoryTypeStatusesController < ApplicationController
   before_action :find_status
 
   def change
-    @story_type.update(status: @status, last_status_changed_at: Time.now)
+    @story_type.update!(status: @status, last_status_changed_at: Time.now, current_account: current_account)
   end
 
   private

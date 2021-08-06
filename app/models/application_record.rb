@@ -7,12 +7,7 @@ class ApplicationRecord < ActiveRecord::Base
 
   connects_to database: { writing: :primary, reading: :primary }
 
-  def update_with_acc!(account, attributes)
-    self.current_account = account
-    update!(attributes)
-  end
-
-  def record_to_change_history(model, event, message, account)
-    model.change_history.create!(event: event, body: message, account: account)
+  def record_to_change_history(model, event, note, account)
+    model.change_history.create!(event: event, note: note, account: account)
   end
 end

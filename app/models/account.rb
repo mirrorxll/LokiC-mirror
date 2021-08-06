@@ -10,7 +10,7 @@ class Account < ApplicationRecord # :nodoc:
   has_and_belongs_to_many :account_types
 
   has_one :slack, class_name: 'SlackAccount'
-  has_one :fc_channel
+  has_one :fact_checking_channel
 
   has_many :data_sets
   has_many :sheriffs, foreign_key: :sheriff_id, class_name: 'DataSet'
@@ -26,5 +26,9 @@ class Account < ApplicationRecord # :nodoc:
 
   def types
     account_types.map(&:name)
+  end
+
+  def slack_identifier
+    slack&.identifier
   end
 end

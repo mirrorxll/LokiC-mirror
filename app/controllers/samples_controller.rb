@@ -34,9 +34,9 @@ class SamplesController < ApplicationController # :nodoc:
     end
   end
 
-  def create_and_generate_auto_feedback
-    @iteration.update!(story_samples: false)
-    SamplesAndAutoFeedbackJob.perform_later(@iteration, samples_params)
+  def create_and_gen_auto_feedback
+    @iteration.update!(story_samples: false, current_account: current_account)
+    SamplesAndAutoFeedbackJob.perform_later(@iteration, current_account, samples_params)
 
     render 'creations/execute'
   end
@@ -45,7 +45,7 @@ class SamplesController < ApplicationController # :nodoc:
     @iteration.samples.where(sampled: true).destroy_all
     @iteration.auto_feedback_confirmations.destroy_all
 
-    @iteration.update!(story_samples: nil)
+    @iteration.update!(story_samples: nil, current_account: current_account)
     flash.now[:message] = 'samples deleted'
   end
 

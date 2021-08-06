@@ -55,17 +55,17 @@
               .row.mb-1{ id: u_id }
                 .col-4.pr-1
                   =f.collection_select :client_id, Client.where(hidden: false).sort_by(&:name), :id, :name,
-                                          { include_blank: true, selected: row.client.id },
-                                          { id: "data_set_default_#{u_id}_client_id", name: "default_props[client_tag_ids[#{u_id}[client_id]]]", class: 'form-control form-control-sm clients_select', required: true }
+                                       { include_blank: true, selected: row.client.id },
+                                       { id: "data_set_default_#{u_id}_client_id", name: "default_props[client_tag_ids[#{u_id}[client_id]]]", class: 'form-control form-control-sm clients_select', required: true }
                 .col-4.pr-1
-                  =f.collection_select :publication_id, Publication.where(name: ['all publications','all local publications','all statewide publications']) + row.client.publications.sort_by(&:name), :id, :name,
-                                          { include_blank: true, selected: row.publication ? row.publication.id : Publication.where(name: 'all publications').first.id },
-                                          { id: "data_set_default_#{u_id}_publication_id", name: "default_props[client_tag_ids[#{u_id}[publication_id]]]", class: 'form-control form-control-sm publications_select' }
+                  =f.collection_select :publication_id, Publication.where(name: ['all local publications', 'all statewide publications', 'all publications']) + row.client.publications.sort_by(&:name), :id, :name,
+                                       { include_blank: true, selected: row.publication ? row.publication.id : Publication.where(name: 'all publications').first.id },
+                                       { id: "data_set_default_#{u_id}_publication_id", name: "default_props[client_tag_ids[#{u_id}[publication_id]]]", class: 'form-control form-control-sm publications_select' }
 
                 .col-3.pl-1.pr-1
                   =f.collection_select :tag_id, row.client.tags.sort_by(&:name), :id, :name,
-                                          { include_blank: true, selected: row.tag.id },
-                                          { id: "data_set_default_#{u_id}_tag_id", name: "default_props[client_tag_ids[#{u_id}[tag_id]]]", class: 'form-control form-control-sm tags_select', required: true }
+                                       { include_blank: true, selected: row.tag.id },
+                                       { id: "data_set_default_#{u_id}_tag_id", name: "default_props[client_tag_ids[#{u_id}[tag_id]]]", class: 'form-control form-control-sm tags_select', required: true }
                 .col-1.pl-1.my-auto
                   %strong.remove_x
                     x

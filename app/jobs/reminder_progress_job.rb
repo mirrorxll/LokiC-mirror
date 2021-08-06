@@ -12,6 +12,7 @@ class ReminderProgressJob < ApplicationJob
           next if st_type.developer.nil? || st_type.status.name.in?(%w[canceled blocked done])
 
           active = true
+          old_status = st_type.status.name
           distributed_gap = (Date.today - st_type.distributed_at.to_date).to_i
           last_status_change_gap = (Date.today - st_type.last_status_changed_at.to_date).to_i
           created_at_gap = (Date.today - st_type.created_at.to_date).to_i
@@ -35,10 +36,7 @@ class ReminderProgressJob < ApplicationJob
 
           next if active || old_status.eql?('inactive')
 
-          old_status = st_type.status.name
-          st_type.update(status: Status.find_by(name: 'inactive'))
-          body = "#{old_status} -> inactive"
-          record_to_change_history(st_type, 'progress status changed', body, st_type.developer)
+          st_type.update!(status: Status.find_by(name: 'inactive'))
         end
       end
     )
@@ -64,6 +62,6 @@ class ReminderProgressJob < ApplicationJob
         "and attach this to the story type along with the staging table#{last_sentence}"
       end
 
-    send_to_dev_slack(story_type.iteration, 'REMINDER', message)
+    SlackReminderNotificationJob.perform_now(story_type, message)
   end
 end

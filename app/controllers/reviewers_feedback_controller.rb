@@ -4,8 +4,8 @@ class ReviewersFeedbackController < ApplicationController
   before_action :find_fcd,                       only: %i[create confirm]
   before_action :find_feedback,                  only: %i[create confirm]
   after_action  :send_notifications,             only: :create
-  after_action  :send_to_editors_to_history,     only: :create
   after_action  :send_confirm_to_review_channel, only: :confirm
+
   def new; end
 
   def create
@@ -49,10 +49,10 @@ class ReviewersFeedbackController < ApplicationController
     message_to_dev = "*[ LokiC ] <#{story_type_url(@story_type)}|STORY TYPE ##{@story_type.id}> (#{@story_type.iteration.name}) | FCD*\n>"
 
     if params[:commit].eql?('approve!')
-      body = ActionView::Base.full_sanitizer.sanitize(@feedback.body)
+      note = ActionView::Base.full_sanitizer.sanitize(@feedback.body)
       message_to_fc_channel = "*FCD ##{@story_type.id}* "\
                               "<#{story_type_fact_checking_doc_url(@story_type, @fcd)}|#{@story_type.name}>.\n"\
-                              "#{@feedback.body.present? ? "*Reviewer's Note*: #{body}" : ''}"
+                              "#{@feedback.body.present? ? "*Reviewer's Note*: #{note}" : ''}"
       SlackNotificationJob.perform_later(fcd_channel, message_to_fc_channel)
 
       message_to_dev += "Approved by *#{current_account.name}* and sent to *#{fcd_channel}* channel"
@@ -79,11 +79,5 @@ class ReviewersFeedbackController < ApplicationController
 
     channel = Rails.env.production? ? 'hle_reviews_queue' : 'hle_lokic_development_messages'
     SlackNotificationJob.perform_later(channel, message, @fcd.slack_message_ts)
-  end
-
-  def send_to_editors_to_history
-    return unless params[:commit].eql?('approve!')
-
-    record_to_change_history(@story_type, 'fact checking doc sent to editors', '---', current_account)
   end
 end

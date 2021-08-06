@@ -8,8 +8,8 @@ class ExportConfigurationsController < ApplicationController
   def create
     render_403 && return if @story_type.staging_table_attached.nil?
 
-    @story_type.update(creating_export_configurations: false)
-    ExportConfigurationsJob.perform_later(@story_type, true)
+    @story_type.update!(export_configurations_created: false, current_account: current_account)
+    ExportConfigurationsJob.perform_later(@story_type, current_account, true)
   end
 
   def update_tags

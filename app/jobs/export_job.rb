@@ -47,7 +47,7 @@ class ExportJob < ApplicationJob
     exp_st.count_samples = iteration.samples.count
 
     if exp_st.new_record?
-      story_type.update(last_export: DateTime.now)
+      story_type.update!(last_export: DateTime.now, current_account: account)
 
       exp_st.week = Week.where(begin: Date.today - (Date.today.wday - 1)).first
       exp_st.date_export = Date.today
@@ -57,20 +57,16 @@ class ExportJob < ApplicationJob
 
     Process.wait(
       fork do
-        body = MiniLokiC::Formatize::Numbers.to_text(exp_st.count_samples).capitalize
-        record_to_change_history(story_type, 'exported to pipeline', body, account)
+        note = MiniLokiC::Formatize::Numbers.to_text(exp_st.count_samples).capitalize
+        record_to_change_history(story_type, 'exported to pipeline', note, account)
 
         if story_type.iterations.last.eql?(iteration)
           if story_type.updates?
-            story_type.reminder.update_columns(
-              updates_confirmed: nil, has_updates: false
-            )
+            story_type.reminder.update!(updates_confirmed: false, has_updates: false, current_account: account)
           end
 
           unless story_type.reload.status.name.in?(['canceled', 'blocked', 'on cron', 'exported'])
-            story_type.update(status: Status.find_by(name: 'exported'), last_status_changed_at: Time.now)
-            body = "#{old_status} -> exported"
-            record_to_change_history(story_type, 'progress status changed', body, account)
+            story_type.update!(status: Status.find_by(name: 'exported'), last_status_changed_at: Time.now, current_account: account)
           end
 
           if Rails.env.production? && url && !iteration.name.match?(/CT\d{8}/)
@@ -87,6 +83,6 @@ class ExportJob < ApplicationJob
   ensure
     iteration.reload.update(export: status)
     send_to_action_cable(iteration, :export, message)
-    send_to_dev_slack(iteration, 'EXPORT', message)
+    SlackStoryTypeNotificationJob.perform_now(iteration, 'export', message)
   end
 end

@@ -51,7 +51,7 @@ class ApplicationController < ActionController::Base
   def staging_table_action(&block)
     flash.now[:staging_table] =
       if @staging_table.nil? || StagingTable.not_exists?(@staging_table.name)
-        @story_type.update(staging_table_attached: nil)
+        @story_type.update!(staging_table_attached: nil, current_account: current_account)
         @staging_table&.destroy
         detached_or_delete
       else
@@ -65,8 +65,12 @@ class ApplicationController < ActionController::Base
     'The Table for this story type has been renamed, detached or drop. Please update the page.'
   end
 
-  def record_to_change_history(model, event, message, account)
-    model.change_history.create!(event: event, body: message, account: account)
+  def record_to_change_history(model, event, note, account)
+    model.change_history.create!(event: event, note: note, account: account)
+  end
+
+  def record_to_alerts(model, subtype, message)
+    model.alerts.create!(subtype: subtype.downcase, message: message)
   end
 
   # this respond to methods like:

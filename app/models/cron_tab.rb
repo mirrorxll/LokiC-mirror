@@ -7,9 +7,9 @@ class CronTab < ApplicationRecord
     if enabled_changed?
       event, message =
         if enabled
-          ['installed on cron', "installed on cron with #{pattern}"]
+          ['installed on cron', pattern]
         else
-          ['cron turned off', 'cron execution disabled']
+          ['cron turned off', '---']
         end
 
       record_to_change_history(story_type, event, message, current_account)
@@ -19,7 +19,6 @@ class CronTab < ApplicationRecord
   validate :check_pattern, on: :update
 
   belongs_to :story_type
-  belongs_to :adjuster, class_name: 'Account'
 
   def pattern
     cron = setup[:pattern]

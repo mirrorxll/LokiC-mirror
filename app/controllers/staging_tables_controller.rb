@@ -8,6 +8,7 @@ class StagingTablesController < ApplicationController # :nodoc:
   def create
     flash.now[:error] =
       if @staging_table.present?
+        @story_type.update!(staging_table_attached: true, current_account: current_account)
         'Table for this story type already exist. Please update the page.'
       elsif StagingTable.find_by(name: @staging_table_name)
         "Table with name '#{@staging_table_name}' already attached to another story type."
@@ -15,7 +16,7 @@ class StagingTablesController < ApplicationController # :nodoc:
         "Table with name '#{@staging_table_name}' not exists."
       else
         StagingTableAttachingJob.perform_later(@story_type, @staging_table_name)
-        @story_type.update(staging_table_attached: false)
+        @story_type.update!(staging_table_attached: false, current_account: current_account)
         nil
       end
 
@@ -25,7 +26,7 @@ class StagingTablesController < ApplicationController # :nodoc:
   def detach
     staging_table_action do
       messages = @staging_table.destroy.errors.full_messages
-      @story_type.update(staging_table_attached: nil)
+      @story_type.update!(staging_table_attached: nil, current_account: current_account)
       messages.any? ? messages.join(' | ') : nil
     end
 

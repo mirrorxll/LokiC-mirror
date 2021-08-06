@@ -106,7 +106,9 @@ class StoryTypesController < ApplicationController # :nodoc:
   end
 
   def exist_story_type_params
-    params.require(:story_type).permit(:name, :comment, :gather_task)
+    attrs = params.require(:story_type).permit(:name, :comment, :gather_task)
+    attrs[:current_account] = current_account
+    attrs
   end
 
   def filter_params
@@ -116,7 +118,9 @@ class StoryTypesController < ApplicationController # :nodoc:
   end
 
   def change_data_set_params
-    params.require(:story_type).permit(:data_set_id)
+    attrs = params.require(:story_type).permit(:data_set_id)
+    attrs[:current_account] = current_account
+    attrs
   end
 
   def find_current_data_set

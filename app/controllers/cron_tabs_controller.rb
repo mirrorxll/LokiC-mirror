@@ -9,7 +9,7 @@ class CronTabsController < ApplicationController
   end
 
   def update
-    @cron_tab.update_with_acc!(current_account, cron_tab_params)
+    @cron_tab.update!(cron_tab_params)
     render 'cron_tab'
   end
 
@@ -21,7 +21,7 @@ class CronTabsController < ApplicationController
 
   def cron_tab_params
     attributes = params.require(:cron_tab).permit(:enabled, setup: {})
-    attributes[:adjuster] = current_account
+    attributes[:current_account] = current_account
     attributes
   end
 
