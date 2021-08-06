@@ -36,7 +36,7 @@ class TasksController < ApplicationController # :nodoc:
   def edit; end
 
   def update
-    @task.update(update_task_params)
+    @task.update!(update_task_params)
   end
 
   private

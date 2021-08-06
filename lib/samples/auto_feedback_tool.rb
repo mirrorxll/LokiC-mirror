@@ -35,7 +35,7 @@ module Samples
 
           unless @iteration.auto_feedback.exists?(fb.id)
             @iteration.auto_feedback << fb
-            @iteration.auto_feedback_confirmations.last.update(
+            @iteration.auto_feedback_confirmations.last.update!(
               sample: sample,
               sample_part: part_txt[0].to_s.singularize,
               sample_txt_part: part_txt[1],

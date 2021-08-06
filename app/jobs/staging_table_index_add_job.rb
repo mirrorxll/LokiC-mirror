@@ -13,7 +13,7 @@ class StagingTableIndexAddJob < ApplicationJob
       rescue StandardError, ScriptError => e
         message = e.message
       ensure
-        staging_table.update(indices_modifying: false)
+        staging_table.update!(indices_modifying: false)
         send_to_action_cable(staging_table.story_type.iteration, :staging_table, message)
       end
     )

@@ -21,7 +21,7 @@ class ClientsTagsJob < ApplicationJob
   def update_tags_for_pubs(ct, mm_by_state)
     client = ct.client.name == 'Metric Media' ? mm_by_state : ct.client
 
-    ct.update(for_all_pubs: ct.client.publications - ct.tag.publications.where(client: client) == [],
+    ct.update!(for_all_pubs: ct.client.publications - ct.tag.publications.where(client: client) == [],
               for_local_pubs: ct.client.local_publications - ct.tag.publications.where(client: client, statewide: false) == [],
               for_statewide_pubs: ct.client.statewide_publications - ct.tag.publications.where(client: client, statewide: true) == [])
   end
