@@ -23,13 +23,10 @@
             =link_to(nil, link, target: '_blank')
           -else
             \---
-
       .row.mb-2
         .col-3.font-weight-bold
           reminder:
         .col-9
           =@task.reminder_frequency ? @task.reminder_frequency.name : 'not set'
       #done
-      -#  =render 'done', task: @task
-      -##comment
-      -#  =render 'comment', task: @task
+        =render 'done', task: @task

@@ -6,10 +6,19 @@ class TaskStatusesController < ApplicationController
   before_action :find_task
   before_action :find_status, only: :change
   after_action  :send_notification, only: :change
+  after_action  :comment, only: :change
 
   def change
     @task.update(status: @status)
     @task.update(done_at: Time.now) if @status.name.eql?('done')
+    unless %w(blocked canceled).include? @task.status.name
+      @comment = @task.comments.build(
+        subtype: 'task comment',
+        body: "Status changed to #{@task.status.name}.",
+        commentator: current_account
+      )
+      @comment.save!
+    end
   end
 
   private
@@ -23,11 +32,7 @@ class TaskStatusesController < ApplicationController
   end
 
   def comment
-    @task.comments.build(
-      subtype: 'task comment',
-      body: "Status changed to #{@task.status.name}.",
-      commentator: current_account
-    ).save!
+
   end
 
   def send_notification

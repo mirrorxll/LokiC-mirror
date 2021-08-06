@@ -35,7 +35,7 @@ class TaskCommentsController < ApplicationController
       next if account.slack.nil? || account.slack.deleted
 
       message = "*[ LokiC ] <#{task_url(@task)}| TASK ##{@task.id}> | "\
-              "#{@comment.commentator.name} add comment*\n>#{@task.title}"
+              "#{@comment.commentator.name} ADD COMMENT*\n>#{@task.title}"
 
       SlackNotificationJob.perform_later(account.slack.identifier, message)
     end
