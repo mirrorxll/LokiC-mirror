@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-class FcChannel < ApplicationRecord
+class FactCheckingChannel < ApplicationRecord
   belongs_to :account, optional: true
 end

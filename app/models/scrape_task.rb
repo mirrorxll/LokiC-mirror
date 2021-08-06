@@ -12,11 +12,8 @@ class ScrapeTask < ApplicationRecord
     build_scrape_evaluation_doc
   end
 
-  after_create do
-    record_to_change_history(self, 'created', name)
-  end
-
-  before_update :track_changes
+  after_create { record_to_change_history(self, 'created', name, creator) }
+  before_update :tracking_changes
 
   validates_presence_of   :name
   validates_uniqueness_of :name, case_sensitive: false
@@ -49,64 +46,65 @@ class ScrapeTask < ApplicationRecord
     "https://pipeline.locallabs.com/gather_tasks/#{gather_task}"
   end
 
+  def scraper_slack_id
+    scraper&.slack&.identifier
+  end
+
   private
 
-  def track_changes
-    record_to_change_history(self, 'datasource url changed', datasource_url) if datasource_url_changed?
-    record_to_change_history(self, 'scrapable status changed', scrapable.to_s) if scrapable_changed?
-    record_to_change_history(self, 'evaluated', evaluation.to_s) if evaluation_changed?
+  def tracking_changes
+    changes = {}
+    changes['renamed'] = "#{name_change.first} -> #{name}" if name_changed?
+    changes['evaluated'] = "#{evaluation_change.first} -> #{evaluation}" if evaluation_changed?
+    changes['datasource url changed'] = "#{datasource_url_change.first} -> #{datasource_url}" if datasource_url_changed?
 
-    if name_changed?
-      changes = "#{name_change.first} -> #{name}"
-      record_to_change_history(self, 'renamed', changes)
+    if scrapable_changed?
+      scrapable_changes = scrapable_change.first.nil? ? 'not checked' : "#{scrapable_change.first} -> #{scrapable}"
+      changes['scrapable status changed'] = scrapable_changes
     end
 
     if scraper_id_changed?
-      old_scraper = Account.find_by(id: scraper_id_change.first)&.name || 'not distributed'
-      new_scraper = scraper&.name || 'not distributed'
+      old_scraper = Account.find_by(id: scraper_id_change.first)
+      new_scraper = scraper
 
-      changes = "#{old_scraper} -> #{new_scraper}"
-      record_to_change_history(self, 'scraper changed', changes)
+      old_scraper_name = old_scraper&.name || 'not distributed'
+      new_scraper_name = new_scraper&.name || 'not distributed'
+      changes['distributed'] = "#{old_scraper_name} -> #{new_scraper_name}"
+
+      SlackScrapeTaskNotificationJob.perform_now(self, 'scraper', 'Unpinned') if old_scraper
+      SlackScrapeTaskNotificationJob.perform_now(self, 'scraper', 'Distributed to you') if new_scraper
     end
 
     if status_id_changed?
-      old_status = Status.find_by(id: status_id_change.first).name
-      new_status = status.name.in?(%w[blocked canceled]) ? "#{status.name}: #{status_comment&.body}" : status.name
-
-      changes = "#{old_status} -> #{new_status}"
-      record_to_change_history(self, 'status changed', changes)
+      old_status_name = Status.find_by(id: status_id_change.first).name
+      new_status_name = status.name.in?(%w[blocked canceled]) ? "#{status.name}: #{status_comment&.body}" : status.name
+      changes['progress status changed'] = "#{old_status_name} -> #{new_status_name}"
     end
 
     if frequency_id_changed?
-      old_frequency = Frequency.find_by(id: frequency_id_change.first)&.name || 'not selected'
-      new_frequency = frequency&.name || 'not selected'
-
-      changes = "#{old_frequency} -> #{new_frequency}"
-      record_to_change_history(self, 'frequency changed', changes)
+      old_frequency_name = Frequency.find_by(id: frequency_id_change.first)&.name || 'not selected'
+      new_frequency_name = frequency&.name || 'not selected'
+      changes['frequency changed'] = "#{old_frequency_name} -> #{new_frequency_name}"
     end
 
     if state_id_changed?
-      old_state = State.find_by(id: state_id_change.first)&.name || 'not selected'
-      new_state = state&.name || 'not selected'
-
-      changes = "#{old_state} -> #{new_state}"
-      record_to_change_history(self, 'state changed', changes)
+      old_state_name = State.find_by(id: state_id_change.first)&.name || 'not selected'
+      new_state_name = state&.name || 'not selected'
+      changes['state changed'] = "#{old_state_name} -> #{new_state_name}"
     end
 
     if gather_task_changed?
-      old_gather_task = gather_task_change.first || 'not attached'
-      new_gather_task = gather_task || 'not attached'
-
-      changes = "#{old_gather_task} -> #{new_gather_task}"
-      record_to_change_history(self, 'gather task changed', changes)
+      old_gather_task_name = gather_task_change.first || 'not attached'
+      new_gather_task_name = gather_task || 'not attached'
+      changes['gather task changed'] = "#{old_gather_task_name} -> #{new_gather_task_name}"
     end
 
     if data_set_location_changed?
       old_location = data_set_location_change.first.present? ? data_set_location_change.first : 'not attached'
       new_location = data_set_location.present? ? data_set_location : 'not attached'
-
-      changes = "#{old_location} -> #{new_location}"
-      record_to_change_history(self, 'data set location changed', changes)
+      changes['data set location changed'] = "#{old_location} -> #{new_location}"
     end
+
+    changes.each { |ev, ch| record_to_change_history(self, ev, ch, current_account) }
   end
 end

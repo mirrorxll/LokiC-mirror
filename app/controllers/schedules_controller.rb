@@ -4,26 +4,26 @@ class SchedulesController < ApplicationController # :nodoc:
   before_action :render_403, if: :editor?
 
   def manual
-    @iteration.update(schedule: false)
-    SchedulerJob.perform_later(@iteration, 'manual', manual_params)
+    @iteration.update!(schedule: false, current_account: current_account)
+    SchedulerJob.perform_later(@iteration, 'manual', manual_params, current_account)
     render 'hide_section'
   end
 
   def backdate
-    @iteration.update(schedule: false)
-    SchedulerJob.perform_later(@iteration, 'backdate', backdated_params)
+    @iteration.update!(schedule: false, current_account: current_account)
+    SchedulerJob.perform_later(@iteration, 'backdate', backdated_params, current_account)
     render 'hide_section'
   end
 
   def auto
-    @iteration.update(schedule: false)
-    SchedulerJob.perform_later(@iteration, 'auto', auto_params)
+    @iteration.update!(schedule: false, current_account: current_account)
+    SchedulerJob.perform_later(@iteration, 'auto', auto_params, current_account)
     render 'hide_section'
   end
 
   def purge
     @iteration.samples.update_all(published_at: nil, backdated: 0)
-    @iteration.update(schedule: nil, schedule_args: nil)
+    @iteration.update!(schedule: nil, schedule_args: nil, current_account: current_account)
     flash.now[:message] = 'scheduling purged'
   end
 

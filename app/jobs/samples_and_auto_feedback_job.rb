@@ -3,7 +3,7 @@
 class SamplesAndAutoFeedbackJob < ApplicationJob
   queue_as :story_type
 
-  def perform(iteration, options = {})
+  def perform(iteration, account, options = {})
     Process.wait(
       fork do
         status = true
@@ -32,16 +32,16 @@ class SamplesAndAutoFeedbackJob < ApplicationJob
 
         Samples.auto_feedback(iteration.story_type, options[:cron])
 
-        iteration.update(story_sample_args: sample_args)
+        iteration.update!(story_sample_args: sample_args, current_account: account)
       rescue StandardError, ScriptError => e
         status = nil
         message = e.message
       ensure
-        iteration.update(story_samples: status)
+        iteration.update!(story_samples: status, current_account: account)
         send_to_action_cable(iteration, :samples, message)
       end
     )
 
-    iteration.reload.story_samples
+    true
   end
 end

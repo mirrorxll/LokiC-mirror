@@ -1,5 +1,4 @@
 :dynamic: true
-
 :concurrency: 50
 
 :queues:
@@ -8,6 +7,7 @@
   - lokic
   - story_type
   - cron_tab
+  - scrape_task
 
 :schedule:
   initial:

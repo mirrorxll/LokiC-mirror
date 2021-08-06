@@ -5,13 +5,13 @@ class ClientsController < ApplicationController # :nodoc:
 
   before_action :render_403, if: :developer?
   before_action :find_client
-  before_action :all_publications, only: :include
+  before_action :all_local_publications, only: :include
 
   def include
-    render_403 && return unless @story_type.clients_publications_tags.find_by(client: @client, publication: [nil, all_publications]).nil?
+    render_403 && return unless @story_type.clients_publications_tags.find_by(client: @client, publication: [nil, all_local_publications]).nil?
 
-    StoryTypeClientPublicationTag.create(story_type: @story_type, client: @client, publication: all_publications)
-    @client_publication_tag = @story_type.clients_publications_tags.find_by(client: @client, publication: all_publications)
+    StoryTypeClientPublicationTag.create(story_type: @story_type, client: @client, publication: all_local_publications)
+    @client_publication_tag = @story_type.clients_publications_tags.find_by(client: @client, publication: all_local_publications)
   end
 
   def exclude
@@ -25,7 +25,7 @@ class ClientsController < ApplicationController # :nodoc:
     @client = Client.find(params[:id])
   end
 
-  def all_publications
-    @all_publications = Publication.find_by(name: 'all publications')
+  def all_local_publications
+    @all_publications = Publication.find_by(name: 'all local publications')
   end
 end

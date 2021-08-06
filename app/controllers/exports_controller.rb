@@ -7,15 +7,15 @@ class ExportsController < ApplicationController
   before_action :removal, only: :remove_exported_stories
 
   def execute
-    @iteration.update(export: false)
+    @iteration.update!(export: false, current_account: current_account)
     url = stories_story_type_iteration_exports_url(params[:story_type_id], params[:iteration_id])
-    ExportJob.perform_later(@iteration, url)
+    ExportJob.perform_later(@iteration, current_account, url)
   end
 
   def remove_exported_stories
-    @iteration.update(removing_from_pl: true)
+    @iteration.update!(removing_from_pl: true, current_account: current_account)
     @removal.update(removal_params)
-    RemoveFromPlJob.perform_later(@iteration)
+    RemoveFromPlJob.perform_later(@iteration, current_account)
   end
 
   def stories

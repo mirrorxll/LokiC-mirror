@@ -125,7 +125,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :cron_tabs
+    resources :cron_tabs, only: %i[edit update]
 
     resources :iterations, only: %i[create update] do
       patch :apply, on: :member
@@ -137,7 +137,7 @@ Rails.application.routes.draw do
       end
 
       resources :samples, only: %i[index show] do
-        post   :create_and_generate_auto_feedback, on: :collection
+        post   :create_and_gen_auto_feedback, on: :collection
         delete :purge_sampled,                     on: :collection
       end
 
