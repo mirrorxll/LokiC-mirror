@@ -11,7 +11,7 @@ class ScrapeInstructionsController < ApplicationController
   def cancel_edit; end
 
   def update
-    @scrape_task.scrape_instruction.update(instruction_params)
+    @scrape_task.scrape_instruction.update!(instruction_params)
   end
 
   private

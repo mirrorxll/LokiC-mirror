@@ -8,13 +8,13 @@ class TagsController < ApplicationController # :nodoc:
   def include
     render_403 && return if @client_publication_tag.tag.present?
 
-    @client_publication_tag.update(tag: @tag)
+    @client_publication_tag.update!(tag: @tag)
   end
 
   def exclude
     render_403 && return unless @client_publication_tag.tag.present?
 
-    @client_publication_tag.update(tag: nil)
+    @client_publication_tag.update!(tag: nil)
   end
 
   private

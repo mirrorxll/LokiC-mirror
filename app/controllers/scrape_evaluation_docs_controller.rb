@@ -11,7 +11,7 @@ class ScrapeEvaluationDocsController < ApplicationController
   def cancel_edit; end
 
   def update
-    @scrape_task.scrape_evaluation_doc.update(evaluation_doc_params)
+    @scrape_task.scrape_evaluation_doc.update!(evaluation_doc_params)
   end
 
   private

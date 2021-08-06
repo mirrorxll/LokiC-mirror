@@ -7,7 +7,7 @@ class AutoFeedbackConfirmationsController < ApplicationController
   def confirm
     render_403 and return if @auto_feedback_to_confirm.confirmed
 
-    @auto_feedback_to_confirm.update(confirmed: true)
+    @auto_feedback_to_confirm.update!(confirmed: true)
   end
 
   private

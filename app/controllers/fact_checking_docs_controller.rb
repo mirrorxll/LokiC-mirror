@@ -10,11 +10,11 @@ class FactCheckingDocsController < ApplicationController
   def edit; end
 
   def save
-    @fcd.update(fcd_params)
+    @fcd.update!(fcd_params)
   end
 
   def update
-    @fcd.update(fcd_params)
+    @fcd.update!(fcd_params)
 
     if @fcd.errors.any?
       render :edit
@@ -35,7 +35,7 @@ class FactCheckingDocsController < ApplicationController
   def send_to_reviewers_channel
     channel = Rails.env.production? ? 'hle_reviews_queue' : 'hle_lokic_development_messages'
     response = SlackNotificationJob.perform_now(channel, message_to_slack)
-    @fcd.update(slack_message_ts: response[:ts])
+    @fcd.update!(slack_message_ts: response[:ts])
   end
 
   private

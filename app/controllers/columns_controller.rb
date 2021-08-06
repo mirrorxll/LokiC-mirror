@@ -10,7 +10,7 @@ class ColumnsController < ApplicationController
 
   def update
     staging_table_action do
-      @staging_table.update(columns_modifying: true)
+      @staging_table.update!(columns_modifying: true)
       StagingTableColumnsJob.perform_later(@staging_table, columns_front_params)
       nil
     end

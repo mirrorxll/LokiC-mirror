@@ -81,7 +81,7 @@ class ExportJob < ApplicationJob
     status = nil
     message = e.message
   ensure
-    iteration.reload.update(export: status)
+    iteration.reload.update!(export: status)
     send_to_action_cable(iteration, :export, message)
     SlackStoryTypeNotificationJob.perform_now(iteration, 'export', message)
   end

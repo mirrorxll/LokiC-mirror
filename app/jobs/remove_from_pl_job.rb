@@ -37,7 +37,7 @@ class RemoveFromPlJob < ApplicationJob
     Process.wait(
       fork do
         iteration.exported&.destroy
-        iteration.production_removals.last.update(status: true)
+        iteration.production_removals.last.update!(status: true)
 
         note = MiniLokiC::Formatize::Numbers.to_text(iteration.samples.ready_to_export.count)
         record_to_change_history(story_type, 'removed from pipeline', note, account)

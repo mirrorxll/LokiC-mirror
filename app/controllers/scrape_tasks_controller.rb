@@ -32,17 +32,17 @@ class ScrapeTasksController < ApplicationController
     render_403 and return if !manager? && !@scrape_task.scraper.eql?(current_account)
 
     @scrape_task.transaction do
-      @scrape_task.datasource_comment.update(datasource_comment_param)
-      @scrape_task.scrape_ability_comment.update(scrape_ability_comment_param)
-      @scrape_task.general_comment.update(general_comment_param)
-      @scrape_task.update(update_scrape_task_params)
+      @scrape_task.datasource_comment.update!(datasource_comment_param)
+      @scrape_task.scrape_ability_comment.update!(scrape_ability_comment_param)
+      @scrape_task.general_comment.update!(general_comment_param)
+      @scrape_task.update!(update_scrape_task_params)
     end
 
     return unless manager?
 
-    @scrape_task.data_set&.update(scrape_task: nil)
+    @scrape_task.data_set&.update!(scrape_task: nil)
     @data_set = DataSet.find_by(data_set_param) || DataSet.new
-    @data_set.update(scrape_task: @scrape_task) if @data_set.persisted?
+    @data_set.update!(scrape_task: @scrape_task) if @data_set.persisted?
   end
 
   def evaluate

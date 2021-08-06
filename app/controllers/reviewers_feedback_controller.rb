@@ -24,7 +24,7 @@ class ReviewersFeedbackController < ApplicationController
     @feedback = @feedback_collection.find(params[:id])
     render_403 and return if @feedback.confirmed
 
-    @feedback.update(confirmed: true)
+    @feedback.update!(confirmed: true)
   end
 
   private

@@ -8,12 +8,12 @@ class TaskStatusesController < ApplicationController
   after_action  :send_notification, only: :change
 
   def change
-    @task.update(status: @status)
-    @task.update(done_at: Time.now) if @status.name.eql?('done')
+    @task.update!(status: @status)
+    @task.update!(done_at: Time.now) if @status.name.eql?('done')
   end
 
   def leave_comment
-    @task.status_comment&.update(body: params[:comment]) && return
+    @task.status_comment&.update!(body: params[:comment]) && return
 
     @task.build_status_comment(subtype: 'status comment', body: params[:comment]).save!
   end

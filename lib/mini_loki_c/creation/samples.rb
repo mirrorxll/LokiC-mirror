@@ -55,7 +55,7 @@ module MiniLokiC
         )
         return export_config if export_config
 
-        message = "STAGING TABLE ROW = #{@raw_sample[:staging_row_id]} | "\
+        message = "Staging Table Row ID = *#{@raw_sample[:staging_row_id]}"\
                   'You are trying to create a story for client/publication '\
                   'not specified in the properties section. Please check the '\
                   'method you use for getting publications or contact the manager.'
