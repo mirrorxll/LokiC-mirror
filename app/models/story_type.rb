@@ -2,10 +2,10 @@
 
 class StoryType < ApplicationRecord
   after_create do
-    create_template
-    create_fact_checking_doc
-    create_cron_tab
-    create_reminder
+    build_template
+    build_fact_checking_doc
+    build_cron_tab
+    build_reminder
 
     data_set.client_publication_tags.each do |client_publication_tag|
       clients_publications_tags.create!(
