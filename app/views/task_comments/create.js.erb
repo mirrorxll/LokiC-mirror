@@ -1,2 +1,9 @@
 $('#comment').modal('hide');
 $('#comments').prepend(`<%= j render 'task_comments/comment', comment: @comment %>`);
+<%-if @comment.subtype == 'status comment'%>
+  <%-if ActionController::Base.helpers.strip_tags(@comment.body).length >= 5 %>
+    Rails.fire($('#status_form'), 'submit')
+  <%-else %>
+
+  <%-end %>
+<%-end %>

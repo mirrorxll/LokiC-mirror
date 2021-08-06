@@ -5,6 +5,8 @@ class TaskCommentsController < ApplicationController
   skip_before_action :set_iteration
   before_action :find_task
   after_action  :send_notification, only: :create
+  before_action :check_subtype, only: :create
+
 
   def new
     @comment = Comment.new
@@ -20,6 +22,14 @@ class TaskCommentsController < ApplicationController
 
   def find_task
     @task = Task.find(params[:task_id])
+  end
+
+  def check_subtype
+    puts 'checcccccc'
+    puts params[:comment][:subtype]
+    if params[:comment][:subtype] == 'status comment'
+      flash[:error] = "Action failed"
+    end
   end
 
   def comment_params
