@@ -2,10 +2,10 @@
 
 class StoryType < ApplicationRecord
   after_create do
-    build_template
-    build_fact_checking_doc
-    build_cron_tab
-    build_reminder
+    create_template
+    create_fact_checking_doc
+    create_cron_tab
+    create_reminder
 
     data_set.client_publication_tags.each do |client_publication_tag|
       clients_publications_tags.create!(
@@ -171,7 +171,7 @@ class StoryType < ApplicationRecord
       changes['photo bucked changed'] = "#{old_photo_bucked_name} -> #{new_photo_bucked_name}"
     end
 
-    if current_iteration_id_changed?
+    if current_iteration_id_changed? && !current_iteration_id_change.first.nil?
       old_iteration = Iteration.find_by(id: current_iteration_id_change.first)
       new_iteration = iteration
 
