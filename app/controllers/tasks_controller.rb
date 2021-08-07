@@ -47,9 +47,15 @@ class TasksController < ApplicationController # :nodoc:
   private
 
   def comment
+    body = "##{@task.id} Task created. "
+    body += if @task.assignment_to.empty?
+              "Not assigned."
+            else
+              "Assignment to #{@task.assignment_to.map { |assignment| assignment.name }.to_sentence}."
+            end
     @task.comments.build(
       subtype: 'task comment',
-      body: "##{@task.id} Task created. Assignment to #{@task.assignment_to.map { |assignment| assignment.name }.to_sentence}.",
+      body: body,
       commentator: current_account
     ).save!
   end
@@ -61,6 +67,7 @@ class TasksController < ApplicationController # :nodoc:
       else
         !manager? ? { assignment_to: current_account.id, order: :id, descending: true } : { order: :id, descending: true }
       end
+    grid_params[:status] = Status.multi_task_statuses_for_grid if grid_params[:deleted_tasks] != 'YES'
     @grid = TasksGrid.new(grid_params.except(:collapse))
   end
 

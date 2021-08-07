@@ -14,12 +14,11 @@ class Task < ApplicationRecord # :nodoc:
 
   has_many :tasks_assignments, class_name: 'TaskAssignment'
   has_many :assignment_to, through: :tasks_assignments, source: :account
-  has_many :comments, -> { where(subtype: ['task comment','status comment']) }, as: :commentable, class_name: 'Comment'
-
-  # has_one :status_comment, -> { where(subtype: 'status comment') }, as: :commentable, class_name: 'Comment'
+  has_many :comments, -> { where(subtype: ['task comment','status comment','status comment blocked', 'status comment canceled' ]) }, as: :commentable, class_name: 'Comment'
 
   def status_comment
-    comments.where(subtype: 'status comment').last
+    ActionView::Base.full_sanitizer.sanitize(comments.where(subtype: 'status comment').last.body)
+                    .gsub('Status changed to blocked.', '').gsub('Status changed to canceled.', '')
   end
 
   def gather_task_link

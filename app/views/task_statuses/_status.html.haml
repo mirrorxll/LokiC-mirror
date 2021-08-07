@@ -26,17 +26,12 @@
     if(status == 'deleted'){
       message = confirm("Are you sure you want to delete the task?");
       if (!message){
-        $('#task_status').html("#{ j render 'task_statuses/status', task: @task }");
-        return ;
+        return;
        } else { submit(status_form); }
     }
     else if (['blocked', 'canceled'].includes(status)) {
-      Rails.ajax({
-      type: "GET",
-      dataType: 'script',
-      url: `#{new_task_comment_path(task)}`,
-      data: `subtype=status comment`
-      })
+      $('#comment .modal-body').html("#{ j render 'task_statuses/comment_form' }");
+      $('#comment').modal('show');
     }
     else {
       submit(status_form);

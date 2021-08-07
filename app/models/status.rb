@@ -15,4 +15,8 @@ class Status < ApplicationRecord
   def self.multi_task_dev_statuses
     where(name: ['not started','in progress','blocked','canceled','done','deleted'])
   end
+
+  def self.multi_task_statuses_for_grid
+    where(name: ['not started','in progress','blocked','canceled','done'])
+  end
 end

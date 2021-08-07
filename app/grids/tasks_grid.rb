@@ -20,6 +20,12 @@ class TasksGrid
   filter(:status, :enum, select: Status.where(name: ['not started','in progress','blocked','canceled','done']).pluck(:name, :id).map { |r| [r[0], r[1]] })
   filter(:deadline,:datetime, header: 'Deadline >= ?', multiple: ',')
 
+
+  filter(:deleted_tasks, :xboolean, left: true) do |value, scope|
+    status_deleted = Status.find_by(name: 'deleted')
+    value ? scope.where(status: status_deleted) : scope.where.not(status: status_deleted)
+  end
+
   # Columns
   column(:id, mandatory: true, header: 'ID')
 
@@ -31,7 +37,7 @@ class TasksGrid
         {
           'data-toggle' => 'tooltip',
           'data-placement' => 'right',
-          title: truncate(task.status_comment.body, length: 150)
+          title: truncate(task.status_comment, length: 150)
         }
       )
     end
