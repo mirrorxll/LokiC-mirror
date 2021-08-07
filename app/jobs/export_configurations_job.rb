@@ -3,18 +3,18 @@
 class ExportConfigurationsJob < ApplicationJob
   queue_as :story_type
 
-  def perform(story_type, manual = false)
+  def perform(story_type, account, manual = false)
     if manual
-      pid = fork { create_update_export_config(story_type, manual) }
+      pid = fork { create_update_export_config(story_type, account, manual) }
       Process.wait(pid)
     else
-      create_update_export_config(story_type, manual)
+      create_update_export_config(story_type, account, manual)
     end
   end
 
   private
 
-  def create_update_export_config(story_type, manual)
+  def create_update_export_config(story_type, account, manual)
     status = true
     message = 'Success. Export configurations created'
     exp_config_counts = {}
@@ -41,18 +41,18 @@ class ExportConfigurationsJob < ApplicationJob
     status = nil
     message = e.message
   ensure
-    story_type.update(creating_export_configurations: status)
+    story_type.update!(export_configurations_created: status, current_account: account)
 
     if manual
       send_to_action_cable(story_type.iteration, :properties, message)
-      send_to_dev_slack(iteration, 'EXPORT CONFIGURATIONS', message)
+      SlackStoryTypeNotificationJob.perform_now(iteration, 'export configurations', message)
     end
   end
 
   def sort_weight(st_cl_pub_tg)
     # st_cl_pubs with pub
     return 1 if !st_cl_pub_tg.publication.nil? &&
-                !st_cl_pub_tg.publication.name.in?(['all publications', 'all local publications', 'all statewide publications'])
+                !st_cl_pub_tg.publication.name.in?(['all local publications', 'all statewide publications', 'all publications'])
 
     # st_cl_pubs all local publications and all statewide publications except Metric Media and Metro Business Network
     return 2 if !st_cl_pub_tg.client.name.in?(['Metric Media', 'Metro Business Network']) &&
@@ -85,7 +85,7 @@ class ExportConfigurationsJob < ApplicationJob
                        client.publications
                      end
 
-      client_publication_tag.publication.nil? || client_publication_tag.publication.name.in?(['all publications', 'all local publications', 'all statewide publications']) ? publications.exists?(publication.id) : client_publication_tag.publication == publication
+      client_publication_tag.publication.nil? || client_publication_tag.publication.name.in?(['all local publications', 'all statewide publications', 'all publications']) ? publications.exists?(publication.id) : client_publication_tag.publication == publication
     end
   end
 end

@@ -22,11 +22,11 @@ class ExportedStoryTypesController < ApplicationController # :nodoc:
   end
 
   def submit_editor_report
-    @report.update(editor_report_params)
+    @report.update!(editor_report_params)
   end
 
   def submit_manager_report
-    @report.update(manager_report_params)
+    @report.update!(manager_report_params)
   end
 
   private

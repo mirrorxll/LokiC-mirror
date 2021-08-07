@@ -1,7 +1,7 @@
 class StagingTableAttachingJob < ApplicationJob
   queue_as :story_type
 
-  def perform(story_type, staging_table_name)
+  def perform(story_type, account, staging_table_name)
     Process.wait(
       fork do
         status = true
@@ -12,7 +12,7 @@ class StagingTableAttachingJob < ApplicationJob
         status = nil
         message = e.message
       ensure
-        story_type.update(staging_table_attached: status)
+        story_type.update!(staging_table_attached: status, current_account: account)
         send_to_action_cable(story_type.iteration, :staging_table, message)
       end
     )

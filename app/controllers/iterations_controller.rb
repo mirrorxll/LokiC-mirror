@@ -15,22 +15,20 @@ class IterationsController < ApplicationController
   end
 
   def create
-    @iteration = @story_type.iterations.build(iteration_params)
+    @iteration = @story_type.iterations.create!(iteration_params)
 
-    if @iteration.save
-      @story_type.update(current_iteration: @iteration)
-      @story_type.staging_table&.default_iter_id
-    end
+    @story_type.update!(current_iteration: @iteration, current_account: current_account)
+    @story_type.staging_table&.default_iter_id
 
     redirect_to @story_type
   end
 
   def update
-    @iteration.update(iteration_params)
+    @iteration.update!(iteration_params)
   end
 
   def apply
-    @story_type.update(current_iteration: @iteration)
+    @story_type.update!(current_iteration: @iteration, current_account: current_account)
     @story_type.staging_table&.default_iter_id
 
     redirect_to @story_type
@@ -40,13 +38,14 @@ class IterationsController < ApplicationController
     staging_table_action { @staging_table.purge }
 
     if flash.now[:error].nil?
-      @story_type.update(creating_export_configurations: nil)
+      @story_type.update!(export_configurations_created: nil, current_account: current_account)
       @iteration.samples.destroy_all
       @iteration.auto_feedback.destroy_all
 
-      @iteration.update(
+      @iteration.update!(
         population: nil, story_samples: nil,
-        creation: nil, schedule: nil, export: nil
+        creation: nil, schedule: nil, export: nil,
+        current_account: current_account
       )
     end
 
@@ -64,6 +63,11 @@ class IterationsController < ApplicationController
   end
 
   def iteration_params
-    params.require(:iteration).permit(:name)
+    permitted = params.require(:iteration).permit(:name)
+
+    {
+      name: permitted[:name],
+      current_account: current_account
+    }
   end
 end

@@ -20,7 +20,7 @@ class ExportConfiguration < ApplicationRecord # :nodoc:
     return if params.empty?
 
     params.each do |exp_cfg_id, tag|
-      find(exp_cfg_id).update(
+      find(exp_cfg_id).update!(
         skipped: tag[:skip],
         tag_id: tag[:tag_id]
       )

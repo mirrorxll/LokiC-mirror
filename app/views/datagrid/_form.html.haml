@@ -7,6 +7,7 @@
             .col-3.mb-3
               =f.datagrid_label filter
               =f.datagrid_filter filter, class: 'form-control form-control-sm'
+
         .text-center
           =f.submit 'apply', class: "btn btn-sm btn-outline-dark"
           =link_to 'reset', url_for(grid.to_param => {}), class: "btn btn-sm btn-outline-dark2"

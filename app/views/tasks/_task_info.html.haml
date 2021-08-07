@@ -1,0 +1,32 @@
+#taskInfo
+  .card.overflow-auto{style: 'height: 350px;'}
+    .card-header.p-1
+      .d-flex.justify-content-between.small
+        main info
+    .card-body.small
+      .row.mb-2
+        .col-3.font-weight-bold
+          creator:
+        .col-9
+          =@task.creator.first_name + ' ' + @task.creator.last_name
+      .row.mb-2
+        .col-3.font-weight-bold
+          deadline:
+        .col-9
+          =@task.deadline ? @task.deadline : 'not set'
+      .row.mb-2
+        .col-3.font-weight-bold
+          gather task:
+        .col-9
+          -link = @task.gather_task_link
+          -if link
+            =link_to(nil, link, target: '_blank')
+          -else
+            \---
+      .row.mb-2
+        .col-3.font-weight-bold
+          reminder:
+        .col-9
+          =@task.reminder_frequency ? @task.reminder_frequency.name : 'not set'
+      #done
+        =render 'done', task: @task

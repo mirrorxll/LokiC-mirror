@@ -78,9 +78,9 @@ ActiveAdmin.register Account do
 
       if slack_id.present?
         slack_account = SlackAccount.find(slack_id)
-        slack_account.update(account: @account)
+        slack_account.update!(account: @account)
       else
-        @account.slack&.update(account_id: nil)
+        @account.slack&.update!(account_id: nil)
       end
 
       @account.account_types.clear

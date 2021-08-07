@@ -1,0 +1,16 @@
+=form_with(url: change_task_progress_statuses_path(@task), method: :patch, id: 'status_comment_form') do |form|
+  .row
+    .col.small
+      =hidden_field_tag :status
+      =form.rich_text_area :body, class: 'form-control overflow-auto', required: true, style: 'min-height: 150px;'
+  .modal-footer.justify-content-center
+    =form.submit :send, class: 'btn btn-sm btn-outline-success'
+
+
+
+:javascript
+  document.getElementById('status_comment_form').addEventListener('submit', function (evt) {
+    let select = document.getElementById('status_id');
+    let status = select.options[select.selectedIndex].text;
+    document.getElementById('status').value = status
+  });

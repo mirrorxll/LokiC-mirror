@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# # frozen_string_literal: true
-
 def account_type
   %w[manager editor developer].map { |type| { name: type } }
 end

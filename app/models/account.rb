@@ -10,7 +10,7 @@ class Account < ApplicationRecord # :nodoc:
   has_and_belongs_to_many :account_types
 
   has_one :slack, class_name: 'SlackAccount'
-  has_one :fc_channel
+  has_one :fact_checking_channel
 
   has_many :data_sets
   has_many :sheriffs, foreign_key: :sheriff_id, class_name: 'DataSet'
@@ -19,6 +19,7 @@ class Account < ApplicationRecord # :nodoc:
   has_many :submitters, class_name: 'PostExportReport'
   has_many :production_removals
   has_many :scrape_tasks
+  has_many :comments, foreign_key: :commentator_id
 
   def name
     "#{first_name} #{last_name}"
@@ -26,5 +27,9 @@ class Account < ApplicationRecord # :nodoc:
 
   def types
     account_types.map(&:name)
+  end
+
+  def slack_identifier
+    slack&.identifier
   end
 end
