@@ -19,7 +19,7 @@
   .form-group.row.small.text-center
     .col-3#assignments
       .row.mt-1.justify-content-center
-        =form.collection_select 'task[assignment_to][]', Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }
+        =form.collection_select 'task[assignment_to][]', current_account.types.include?('developer') ? [current_account] : Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }
     .col-3
       =form.collection_select 'task[reminder_frequency]', TaskReminderFrequency.all.order(:name), :id, :name, { prompt: '' }
     .col-3
