@@ -5,7 +5,6 @@ class TaskStatusesController < ApplicationController
   skip_before_action :set_iteration
   before_action :find_task
   before_action :find_status, only: :change
-  # after_action  :comment, only: :change
 
   def change
     if @status.name.in?(%w(blocked canceled)) && ActionController::Base.helpers.strip_tags(params[:body]).length < 5
