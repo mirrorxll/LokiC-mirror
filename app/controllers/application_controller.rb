@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
+require 'action_text'
+
 class ApplicationController < ActionController::Base
+  helper ActionText::Engine.helpers
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :authenticate_account!
   before_action :find_parent_story_type
