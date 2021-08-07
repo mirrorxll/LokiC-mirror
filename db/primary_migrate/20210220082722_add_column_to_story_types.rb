@@ -10,7 +10,7 @@ class AddColumnToStoryTypes < ActiveRecord::Migration[6.0]
     StoryType.all.each do |st|
       next if st.staging_table.blank?
 
-      st.update(staging_table_attached: true)
+      st.update!(staging_table_attached: true)
     end
   end
 end

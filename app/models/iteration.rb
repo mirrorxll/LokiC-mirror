@@ -6,13 +6,9 @@ class Iteration < ApplicationRecord # :nodoc:
 
   after_create do
     if !name.eql?('Initial') && !story_type.status.name.in?(['canceled', 'blocked', 'on cron'])
-      iteration_note = "created a new iteration with id|name `#{id}|#{name}`"
-      record_to_change_history(story_type, 'new iteration created', iteration_note)
+      story_type.update!(status: Status.find_by(name: 'in progress'), current_account: current_account)
 
-      story_type.update(status: Status.find_by(name: 'in progress'))
-
-      status_note = "progress status changed to 'in progress'"
-      record_to_change_history(story_type, 'progress status changed', status_note)
+      record_to_change_history(story_type, 'new iteration created', "`#{id}|#{name}`", current_account)
     end
   end
 

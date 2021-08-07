@@ -3,7 +3,7 @@
 class CreationJob < ApplicationJob
   queue_as :story_type
 
-  def perform(iteration, options = {})
+  def perform(iteration, account, options = {})
     status = true
     message = 'Success. All samples have been created'
     publication_ids = iteration.story_type.publication_pl_ids.join(',')
@@ -37,15 +37,16 @@ class CreationJob < ApplicationJob
       break if Table.all_created_by_last_iteration?(staging_table, publication_ids)
     end
 
-    iteration.update(schedule_counts: schedule_counts(iteration))
+    iteration.update!(schedule_counts: schedule_counts(iteration), current_account: account)
+
+    true
   rescue StandardError, ScriptError => e
     status = nil
     message = e.message
   ensure
-    iteration.update(creation: status)
+    iteration.update!(creation: status, current_account: account)
     send_to_action_cable(iteration, :samples, message)
-    send_to_dev_slack(iteration, 'CREATION', message)
-    iteration.creation
+    SlackStoryTypeNotificationJob.perform_now(iteration, 'creation', message)
   end
 
   private

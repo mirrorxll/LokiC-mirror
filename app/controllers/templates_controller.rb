@@ -15,7 +15,7 @@ class TemplatesController < ApplicationController
   private
 
   def update_template
-    Template.find(params[:id]).update(template_params)
+    Template.find(params[:id]).update!(template_params)
   end
 
   def template_params

@@ -3,9 +3,11 @@
 class SchedulerJob < ApplicationJob
   queue_as :story_type
 
-  def perform(iteration, type, options = {})
+  def perform(iteration, type, options = {}, account = nil)
     status = nil
     message = 'Success'
+    story_type = iteration.story_type
+    account ||= story_type.developer
 
     rd, wr = IO.pipe
 
@@ -25,9 +27,7 @@ class SchedulerJob < ApplicationJob
           MiniLokiC::Creation::Scheduler::FromCode.run_from_code(samples, options)
         end
 
-        note = "executed #{type} scheduler"
-        record_to_change_history(iteration.story_type, 'scheduled', note)
-
+        record_to_change_history(story_type, 'scheduled', type, account)
       rescue StandardError => e
         wr.write({ e.class.to_s => e.message }.to_json)
       ensure
@@ -44,16 +44,16 @@ class SchedulerJob < ApplicationJob
       raise Object.const_get(klass), message
     end
 
-    if iteration.reload.samples.where(published_at: nil).none?
-      status = true
-    end
+    status = true if iteration.reload.samples.where(published_at: nil).none?
+
+    true
   rescue StandardError => e
     status = nil
     message = e.message
   ensure
-    iteration.update(schedule: status)
+    iteration.update!(schedule: status)
     send_to_action_cable(iteration, :scheduler, message)
-    send_to_dev_slack(iteration, "#{type.upcase}-SCHEDULING", message)
+    SlackStoryTypeNotificationJob.perform_now(iteration, "#{type}-scheduling", message)
   end
 
   private

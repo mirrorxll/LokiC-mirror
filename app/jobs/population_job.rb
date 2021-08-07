@@ -4,7 +4,7 @@
 class PopulationJob < ApplicationJob
   queue_as :story_type
 
-  def perform(iteration, options = {})
+  def perform(iteration, account, options = {})
     Process.wait(
       fork do
         status = true
@@ -14,21 +14,22 @@ class PopulationJob < ApplicationJob
 
         MiniLokiC::Code[story_type].execute(:population, population_args)
 
-        note = "progress status changed to 'in progress'"
-        record_to_change_history(story_type, 'progress status changed', note)
+        unless story_type.status.name.eql?('in progress')
+          story_type.update!(status: Status.find_by(name: 'in progress'), current_account: account)
+        end
 
-        ExportConfigurationsJob.perform_now(story_type)
+        ExportConfigurationsJob.perform_now(story_type, account)
       rescue StandardError, ScriptError => e
         status = nil
         message = e.message
       ensure
-        iteration.update(population: status)
+        iteration.update!(population: status, current_account: account)
         send_to_action_cable(iteration, :staging_table, message)
-        send_to_dev_slack(iteration, 'POPULATION', message)
+        SlackStoryTypeNotificationJob.perform_now(iteration, 'population', message)
       end
     )
 
-    iteration.reload.population
+    true
   end
 
   private

@@ -1,3 +1,2 @@
 =form_with(url: include_story_type_client_publications_path(@story_type, client_publication_tag.client, client_publication_tag: client_publication_tag), html: { onchange: "Rails.fire(this, 'submit')" }) do |form|
-  =form.collection_select :publication_id, Publication.where(name: ['all local publications','all statewide publications','all publications']) + client_publication_tag.client.publications.order(:name), :id, :name, { include_blank: true }, { name: :id }
-
+  =form.collection_select :publication_id, Publication.where(name: ['all local publications', 'all publications','all statewide publications']) + client_publication_tag.client.publications.order(:name), :id, :name, { include_blank: true }, { name: :id }

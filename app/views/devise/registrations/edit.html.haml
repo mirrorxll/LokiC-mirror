@@ -34,7 +34,7 @@
               =f.label :fack_checking_channel, 'Fact Checking channel'
               %br/
               =select_tag 'fcd_channel[id]',
-                          options_from_collection_for_select(FcChannel.order(:name).where(account: nil), :id, :name),
+                          options_from_collection_for_select(FactCheckingChannel.order(:name).where(account: nil), :id, :name),
                           {  include_blank: true, class: 'form-control form-control-sm' }
               -if current_account.fc_channel
                 %small.form-text.text-muted

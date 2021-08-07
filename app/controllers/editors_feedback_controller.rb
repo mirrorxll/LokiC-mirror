@@ -6,7 +6,6 @@ class EditorsFeedbackController < ApplicationController
   before_action :find_fcd, only: %i[create confirm]
   before_action :find_feedback_collection, only: %i[create confirm]
   after_action  :send_notification_to_dev, only: :create
-  after_action  :fcd_approved_to_history,  only: :create
   after_action  :send_confirm_to_fc_channel, only: :confirm
 
   def new; end
@@ -27,7 +26,7 @@ class EditorsFeedbackController < ApplicationController
     @feedback = @feedback_collection.find(params[:id])
     render_403 and return if @feedback.confirmed
 
-    @feedback.update(confirmed: true)
+    @feedback.update!(confirmed: true)
   end
 
   private
@@ -71,19 +70,11 @@ class EditorsFeedbackController < ApplicationController
 
   def send_confirm_to_fc_channel
     fc_channel = @story_type.developer&.fc_channel&.name
-    return unless fc_channel
-    return unless @feedback_collection.where(approvable: false).all?(&:confirmed)
+    return unless fc_channel || @feedback_collection.where(approvable: false).all?(&:confirmed)
 
     message = "*Updated FCD* ##{@story_type.id} "\
               "<#{story_type_fact_checking_doc_url(@story_type, @fcd)}|#{@story_type.name}>."
 
     SlackNotificationJob.perform_later(fc_channel, message)
-  end
-
-  def fcd_approved_to_history
-    return if @fcd.approval_editors.count < 2
-
-    note = "fact checking doc approved by #{@fcd.approval_editors.map(&:name).join(', ')}"
-    record_to_change_history(@story_type, 'fact checking doc approved', note)
   end
 end

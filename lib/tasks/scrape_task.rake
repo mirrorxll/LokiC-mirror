@@ -7,7 +7,7 @@ namespace :lokic do
       body = Note.find(ch_h[:note_id]).note
       event = HistoryEvent.find(ch_h[:history_event_id]).name
 
-      ch_h.update(body: body, event: event)
+      ch_h.update!(body: body, event: event)
       print '.'
     end
 
@@ -20,7 +20,7 @@ namespace :lokic do
       body = Note.find(al[:note_id]).note
       subtype = AlertSubtype.find(al[:subtype_id]).name
 
-      al.update(body: body, subtype: subtype)
+      al.update!(body: body, subtype: subtype)
       print '.'
     end
 

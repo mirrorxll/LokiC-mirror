@@ -29,7 +29,7 @@ class ClientsPublicationsTagsJob < ApplicationJob
         blank_tag.save!
         blank_tag.touch
 
-        ['all publications', 'all local publications', 'all statewide publications'].each do |name|
+        ['all local publications', 'all statewide publications', 'all publications'].each do |name|
           pub = Publication.find_or_initialize_by(name: name)
           pub.client = categories_all
           pub.save!

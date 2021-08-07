@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
-class RemoveSamplesByLastIterationJob < ApplicationJob
+class RemoveSamplesByIterationJob < ApplicationJob
   queue_as :story_type
 
-  def perform(iteration)
-    sleep(20)
+  def perform(iteration, account)
     message = 'Success. All samples have been removed'
 
     loop do
@@ -34,16 +33,16 @@ class RemoveSamplesByLastIterationJob < ApplicationJob
       break if iteration.samples.reload.blank?
     end
 
-    iteration.update(
+    iteration.update!(
       story_samples: nil, creation: nil,
       schedule: nil, schedule_args: nil,
-      schedule_counts: nil
+      schedule_counts: nil, current_account: account
     )
   rescue StandardError => e
     message = e.message
   ensure
-    iteration.update(purge_all_samples: nil)
+    iteration.update!(purge_all_samples: nil, current_account: account)
     send_to_action_cable(iteration, :samples, message)
-    send_to_dev_slack(iteration, 'CREATION', message)
+    SlackStoryTypeNotificationJob.perform_now(iteration, 'creation', message)
   end
 end

@@ -15,7 +15,7 @@ class IndicesController < ApplicationController
 
   def create
     staging_table_action do
-      @staging_table.update(indices_modifying: true)
+      @staging_table.update!(indices_modifying: true)
       StagingTableIndexAddJob.perform_later(@staging_table, uniq_index_params)
       nil
     end
@@ -25,7 +25,7 @@ class IndicesController < ApplicationController
 
   def destroy
     staging_table_action do
-      @staging_table.update(indices_modifying: true)
+      @staging_table.update!(indices_modifying: true)
       StagingTableIndexDropJob.perform_later(@staging_table)
       nil
     end

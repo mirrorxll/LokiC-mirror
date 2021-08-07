@@ -1,7 +1,7 @@
--if controller_name.in?(%w[scrape_tasks tasks])
-  =render 'datagrid/scrape_task_row', grid: grid, asset: asset, options: options
--else
-  %tr
-    -grid.html_columns(*options[:columns]).each do |column|
-      %td{class: "#{datagrid_column_classes(grid, column)}"}
-        =datagrid_value(grid, column, asset)
+%tr
+  -grid.html_columns(*options[:columns]).each do |column|
+    -klass = datagrid_column_classes(grid, column)
+    -value = datagrid_value(grid, column, asset)
+    -background_color = column.header.eql?('Status') ? "bg-#{status_color(ActionView::Base.full_sanitizer.sanitize(value))}" : ''
+    %td{ class: "#{klass} #{background_color}" }
+      =value

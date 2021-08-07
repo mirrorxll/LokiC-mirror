@@ -8,13 +8,13 @@ class PublicationsController < ApplicationController # :nodoc:
   def include
     render_403 && return if @story_type.clients_publications_tags.find_by(client: @client_publication_tag.client, publication: @publication).present?
 
-    @client_publication_tag.update(publication: @publication, tag: nil)
+    @client_publication_tag.update!(publication: @publication, tag: nil)
   end
 
   def exclude
     render_403 && return unless @client_publication_tag.publication.present?
 
-    @client_publication_tag.update(publication: nil, tag: nil)
+    @client_publication_tag.update!(publication: nil, tag: nil)
   end
 
   private

@@ -26,9 +26,9 @@ class StagingTable < ApplicationRecord # :nodoc:
 
   def sync
     columns = Table.columns(name)
-    Columns.find_or_create_by(staging_table: self).update(list: columns)
+    Columns.find_or_create_by(staging_table: self).update!(list: columns)
     index = Table.index(name)
-    Index.find_or_create_by(staging_table: self).update(list: index)
+    Index.find_or_create_by(staging_table: self).update!(list: index)
 
     nil
   end

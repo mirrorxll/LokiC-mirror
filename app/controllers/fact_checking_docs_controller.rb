@@ -2,7 +2,6 @@
 
 class FactCheckingDocsController < ApplicationController
   before_action :find_fcd, except: :template
-  after_action :send_to_reviewers_to_history, only: :send_to_reviewers_channel
 
   def show
     @tab_title = "LokiC::FCD ##{@story_type.id} #{@story_type.name}"
@@ -11,11 +10,11 @@ class FactCheckingDocsController < ApplicationController
   def edit; end
 
   def save
-    @fcd.update(fcd_params)
+    @fcd.update!(fcd_params)
   end
 
   def update
-    @fcd.update(fcd_params)
+    @fcd.update!(fcd_params)
 
     if @fcd.errors.any?
       render :edit
@@ -36,7 +35,7 @@ class FactCheckingDocsController < ApplicationController
   def send_to_reviewers_channel
     channel = Rails.env.production? ? 'hle_reviews_queue' : 'hle_lokic_development_messages'
     response = SlackNotificationJob.perform_now(channel, message_to_slack)
-    @fcd.update(slack_message_ts: response[:ts])
+    @fcd.update!(slack_message_ts: response[:ts])
   end
 
   private
@@ -59,10 +58,5 @@ class FactCheckingDocsController < ApplicationController
     "*FCD* ##{@story_type.id} <#{story_type_fact_checking_doc_url(@story_type, @fcd)}|#{@story_type.name}>.\n"\
     "*Developer:* #{@story_type.developer.name}.\n"\
     "#{info[:note].present? ? "*Note*: #{info[:note]}" : ''}"
-  end
-
-  def send_to_reviewers_to_history
-    note = 'fact checking doc sent to reviewers'
-    record_to_change_history(@story_type, 'fact checking doc sent to reviewers', note)
   end
 end
