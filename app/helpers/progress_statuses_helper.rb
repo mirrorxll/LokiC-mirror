@@ -7,7 +7,7 @@ module ProgressStatusesHelper
       'secondary text-white'
     when 'in progress'
       'primary text-white'
-    when 'exported', 'done'
+    when 'exported', 'done', 'deleted'
       'dark text-white'
     when 'on cron'
       'warning'

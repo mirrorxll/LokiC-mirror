@@ -20,11 +20,28 @@ class TasksGrid
   filter(:status, :enum, select: Status.where(name: ['not started','in progress','blocked','canceled','done']).pluck(:name, :id).map { |r| [r[0], r[1]] })
   filter(:deadline,:datetime, header: 'Deadline >= ?', multiple: ',')
 
+
+  filter(:deleted_tasks, :xboolean, left: true) do |value, scope|
+    status_deleted = Status.find_by(name: 'deleted')
+    value ? scope.where(status: status_deleted) : scope.where.not(status: status_deleted)
+  end
+
   # Columns
   column(:id, mandatory: true, header: 'ID')
 
-  column(:status, mandatory: true, order: 'status_id') do |task|
-    task.status.name
+  column(:status, mandatory: true, order: 'status_id', html: true) do |task|
+    attributes = { class: "bg-#{status_color(task.status.name)}" }
+
+    if task.status.name.in?(%w[blocked canceled])
+      attributes.merge!(
+        {
+          'data-toggle' => 'tooltip',
+          'data-placement' => 'right',
+          title: truncate(task.status_comment, length: 150)
+        }
+      )
+    end
+    content_tag(:div, task.status.name, attributes)
   end
 
   column(:creator, order: 'accounts.first_name, accounts.last_name', mandatory: true) do |task|
