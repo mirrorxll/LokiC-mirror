@@ -55,11 +55,13 @@ module MiniLokiC
         )
         return export_config if export_config
 
-        message = "Staging Table Row ID = #{@raw_sample[:staging_row_id]}\n"\
-                  '1. You are trying to create a story for client/publication '\
-                  'not specified in the properties section. Please check the '\
-                  "method you use for getting publications or contact the manager\n"\
-                  '2. Please press [ create/update ] export configurations button'
+        message =
+          "LokiC has blocked story creation for staging table row ID = #{@raw_sample[:staging_row_id]}\n"\
+          "Reasons why you see this message:\n"\
+          "1. You are trying to create a story for client/publication not specified in the properties section.\n"\
+          "2. You didn't press [ create/update ] export configurations button.\n"\
+          "Please check these or contact with the manager\n---\n"
+
         raise ArgumentError, message
       end
 
