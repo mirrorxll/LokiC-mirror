@@ -171,7 +171,7 @@ class StoryType < ApplicationRecord
       changes['photo bucked changed'] = "#{old_photo_bucked_name} -> #{new_photo_bucked_name}"
     end
 
-    if current_iteration_id_changed?
+    if current_iteration_id_changed? && !current_iteration_id_change.first.nil?
       old_iteration = Iteration.find_by(id: current_iteration_id_change.first)
       new_iteration = iteration
 

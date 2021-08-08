@@ -222,8 +222,10 @@ Rails.application.routes.draw do
   resources :tasks do
     resources :progress_statuses, controller: 'task_statuses', only: [] do
       patch :change,        on: :collection
-      patch :leave_comment, on: :collection
+      post :comment,        on: :collection
     end
+
+    resources :comments, controller: 'task_comments', only: %i[new create]
 
     resources :assignments, controller: 'task_assignments', only: [] do
       get   :edit,   on: :collection
