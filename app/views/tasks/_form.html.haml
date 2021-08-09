@@ -2,7 +2,9 @@
   .row.small
     .col
       .form-group
-        =form.text_field 'task[title]', placeholder: 'title', class: 'form-control', required: true, maxlength: 500
+        =form.text_field 'task[title]', placeholder: 'title', id: 'newTaskName', class: 'form-control', required: true, maxlength: 500
+        #newTaskNameFeedback.text-danger.text-center.d-none
+          Task with this title already created by you. Let's use something else
       .form-group
         =form.text_area 'task[description]', class: 'form-control', id: 'task_description'
   %hr/
@@ -32,6 +34,7 @@
 
 :javascript
   var accounts = #{raw Account.all.order([:first_name, :last_name]).map{ |account| [account.first_name.to_s + ' ' + account.last_name.to_s, account.id]} };
+  var current_account_id = #{raw current_account.id}
 
   $('#add_assignment').click(function () {
     let hex = secureRandom(6);
@@ -73,3 +76,71 @@
   $('#task').on('hidden.bs.modal', function () {
     $('#task .modal-body').empty();
   });
+
+  function delay(fn, ms) {
+    let timer = 0;
+    return function(...args) {
+      clearTimeout(timer);
+      timer = setTimeout(fn.bind(this, ...args), ms || 0)
+    }
+  }
+
+  function isUniq(name, names) {
+    let lowName = name.toLowerCase();
+    return !names.find(el => lowName === el.toLowerCase());
+  }
+
+  document.querySelector('#newTaskName').addEventListener('input', delay(() => {
+    Rails.ajax({
+      type: 'GET',
+      dataType: 'json',
+      url: `#{root_url}api/tasks/titles`,
+      data: `creator_id=${current_account_id}`,
+      success: (names) => {
+        let nameInput = document.querySelector('#newTaskName');
+        let nameFeedback = document.querySelector('#newTaskNameFeedback');
+        let submitButton = document.querySelector('#form_new_task input[type="submit"]');
+        let nameIsUniq = isUniq(nameInput.value, names);
+
+        if(nameIsUniq === true) {
+          nameInput.classList.remove('border', 'border-danger');
+          nameFeedback.classList.add('d-none');
+          submitButton.disabled = false;
+        } else {
+          nameInput.classList.add('border', 'border-danger');
+          nameFeedback.classList.remove('d-none');
+          submitButton.disabled = true;
+        }
+      }
+    })
+  }, 500));
+
+  function onSubmit(ev) {
+    ev.preventDefault();
+    ev.stopPropagation();
+
+    let form = ev.target;
+    let nameInput = form.querySelector('#newTaskName');
+    let nameFeedback = form.querySelector('#newTaskNameFeedback');
+    let submitButton = form.querySelector('input[type="submit"]');
+
+    Rails.ajax({
+      type: 'GET',
+      dataType: 'json',
+      url: `#{root_url}api/tasks/titles`,
+      data: `creator_id=${current_account_id}`,
+      success: (names) => {
+        let nameIsUniq = isUniq(nameInput.value, names);
+
+        if(nameIsUniq) {
+          form.removeEventListener('submit', onSubmit)
+          Rails.fire(form, 'submit')
+        } else {
+          nameInput.classList.add('border', 'border-danger');
+          nameFeedback.classList.remove('d-none');
+          submitButton.disabled = true;
+        }
+      }
+    })
+  }
+  document.querySelector('#form_new_task').addEventListener('submit', onSubmit)

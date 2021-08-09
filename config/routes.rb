@@ -34,6 +34,10 @@ Rails.application.routes.draw do
       get :names, on: :collection
     end
 
+    resources :tasks, only: [] do
+      get :titles, on: :collection
+    end
+
     resources :shown_samples, only: :update
   end
 
