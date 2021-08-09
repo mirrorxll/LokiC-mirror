@@ -23,15 +23,10 @@
     let nameFeedback = form.querySelector('#commentFeedback');
     let submitButton = form.querySelector('input[type="submit"]');
 
-
     if(nameInput.innerText.length >= 5) {
-      console.log(nameInput.innerText.length);
-      console.log('more');
       form.removeEventListener('submit', onSubmit);
       Rails.fire(form, 'submit');
     } else {
-      console.log(nameInput.innerText.length);
-      console.log('less');
       nameFeedback.classList.remove('d-none');
       ev.stopPropagation();
     }
