@@ -1,0 +1,9 @@
+.row.col-12.small.font-weight-bold
+  -unless comment.commentator.nil?
+    =comment.commentator.name
+  &nbsp
+  =comment.created_at.strftime('%F %R %Z')
+  &nbsp
+.row.col-12.small
+  =comment.body&.html_safe
+%hr.mt-3.mb-3/

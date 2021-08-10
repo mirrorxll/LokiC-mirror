@@ -13,8 +13,6 @@ class ReminderTasksJob< ApplicationJob
         two_times_a_week = TaskReminderFrequency.find_by(name: 'two times a week')
         three_times_a_week = TaskReminderFrequency.find_by(name: 'three times a week')
 
-        dmitriy_buzina = Account.find_by(first_name: 'Dmitriy', last_name: 'Buzina')
-
         tasks = case day_of_week
                 when 'Monday'
                   Task.where(reminder_frequency: [each_day, three_times_a_week, once_a_week, two_times_a_week])
@@ -35,21 +33,45 @@ class ReminderTasksJob< ApplicationJob
                 end
 
         tasks.each do |task|
-          sleep(rand)
-
-          next if task.assignment_to.empty? || task.status.name.in?(%w(canceled done)) || task.reminder_frequency.nil?
+          next if task.assignment_to.empty? || task.status.name.in?(%w(canceled done deleted)) || task.reminder_frequency.nil?
 
           task.assignment_to.each do |assignment|
             next if assignment.slack.nil? || assignment.slack.deleted
 
-            raw_message = 'You have an unfinished task'
-            raw_message += task.deadline.blank? ? "!" : " with a deadline #{task.deadline.strftime('%Y-%m-%d')}!"
-
-            message = "*[ LokiC ] <#{generate_task_url(task)}|Task ##{task.id}> REMINDER|"\
-              "| #{assignment.first_name + " " + assignment.last_name}*\n*#{raw_message}*\n" \
+            message = "*[ LokiC ] Unfinished <#{generate_task_url(task)}|Task ##{task.id}> | REMINDER | "\
+              "#{assignment.name}*\n" \
               "#{task.title}".gsub("\n", "\n>")
             SlackNotificationJob.perform_now(assignment.slack.identifier, message)
-            SlackNotificationJob.perform_now(dmitriy_buzina.slack.identifier, message)
+            SlackNotificationJob.perform_now('hle_lokic_task_reminders', message)
+          end
+        end
+
+        tasks_with_deadlines = Task.where.not(deadline: nil)
+        tasks_with_deadlines.each do |task|
+          next if task.status.name.in?(%w(canceled done deleted))
+
+          deadline = task.deadline
+          deadline_message = if deadline - 5.days == Date.today
+                               'Deadline after 5 days'
+                             elsif deadline - 1.days == Date.today
+                               'Deadline tomorrow'
+                             elsif deadline == Date.today
+                               'Deadline today'
+                             elsif deadline < Date.today
+                               'Deadline passed'
+                             else
+                               next
+                             end
+
+          accounts = (task.assignment_to.to_a << task.creator).uniq
+          accounts.each do |account|
+            next if account.slack.nil? || account.slack.deleted
+
+            message = "*[ LokiC ] #{deadline_message} | <#{generate_task_url(task)}|Task ##{task.id}> | "\
+                    "#{account.name}*\n" \
+                    "#{task.title}".gsub("\n", "\n>")
+            SlackNotificationJob.perform_now(account.slack.identifier, message)
+            SlackNotificationJob.perform_now('hle_lokic_task_reminders', message)
           end
         end
       end
