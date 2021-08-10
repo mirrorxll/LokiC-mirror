@@ -69,7 +69,7 @@ class EditorsFeedbackController < ApplicationController
   end
 
   def send_confirm_to_fc_channel
-    fc_channel = @story_type.developer&.fc_channel&.name
+    fc_channel = @story_type.developer&.fact_checking_channel&.name
     return unless fc_channel || @feedback_collection.where(approvable: false).all?(&:confirmed)
 
     message = "*Updated FCD* ##{@story_type.id} "\
