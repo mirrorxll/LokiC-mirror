@@ -9,13 +9,15 @@ module Api
     end
 
     def publications
-      pub_names = ['all local publications', 'all statewide publications', 'all publications']
-      publications = Publication.where(name: pub_names) + Client.find(params[:client_id]).publications.order(:name)
+      publications = Publication.where(name: ['all local publications', 'all statewide publications', 'all publications']) +
+        Client.find(params[:client_id]).publications.order(:name)
 
       render json: { attached: publications }
     end
 
     def tags
+      client = Client.find(params[:client_id])
+        tags_for_publication
       tags = Client.find(params[:client_id]).tags.order(:name)
 
       render json: { attached: tags }
