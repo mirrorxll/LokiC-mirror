@@ -2,7 +2,7 @@
 
 module MiniLokiC
   module Creation
-    # insert created samples to samples table
+    # insert created stories to stories table
     class Samples
       def initialize(staging_table, options)
         @staging_table = staging_table
@@ -14,7 +14,7 @@ module MiniLokiC
 
       def insert(sample)
         @raw_sample = sample
-        @iteration.samples.create!(sample_params)
+        @iteration.stories.create!(sample_params)
       end
 
       private

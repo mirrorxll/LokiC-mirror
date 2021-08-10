@@ -34,7 +34,7 @@ class RemoveSamplesByIterationJob < ApplicationJob
     end
 
     iteration.update!(
-      story_samples: nil, creation: nil,
+      samples: nil, creation: nil,
       schedule: nil, schedule_args: nil,
       schedule_counts: nil, current_account: account
     )

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class StagingTableAttachingJob < ApplicationJob
   queue_as :story_type
 

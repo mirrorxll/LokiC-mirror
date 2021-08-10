@@ -4,16 +4,6 @@ class ArticleType < ApplicationRecord
   after_create do
     create_template
     create_fact_checking_doc
-    create_cron_tab
-    create_reminder
-
-    data_set.client_publication_tags.each do |client_publication_tag|
-      clients_publications_tags.create!(
-        client: client_publication_tag.client,
-        publication: client_publication_tag.publication,
-        tag: client_publication_tag.tag
-      )
-    end
 
     record_to_change_history(self, 'created', name, editor)
 
@@ -30,7 +20,7 @@ class ArticleType < ApplicationRecord
   belongs_to :developer,         optional: true, class_name: 'Account'
   belongs_to :frequency,         optional: true
   belongs_to :photo_bucket,      optional: true
-  belongs_to :current_iteration, optional: true, class_name: 'Iteration'
+  belongs_to :current_iteration, optional: true, class_name: 'StoryTypeIteration'
   belongs_to :status,            optional: true
 
   has_one :staging_table
@@ -41,10 +31,10 @@ class ArticleType < ApplicationRecord
 
   has_one_attached :code
 
-  has_many :iterations
+  has_many :iterations, class_name: 'ArticleTypeIteration'
   has_many :export_configurations
   has_many :configurations_no_tags, -> { where(tag: nil).or(where(skipped: true)) }, class_name: 'ExportConfiguration'
-  has_many :samples
+  has_many :articles
   has_many :clients_publications_tags, class_name: 'StoryTypeClientPublicationTag'
   has_many :clients, through: :clients_publications_tags
   has_many :tags, through: :clients_publications_tags
@@ -172,7 +162,7 @@ class ArticleType < ApplicationRecord
     end
 
     if current_iteration_id_changed? && !current_iteration_id_change.first.nil?
-      old_iteration = Iteration.find_by(id: current_iteration_id_change.first)
+      old_iteration = StoryTypeIteration.find_by(id: current_iteration_id_change.first)
       new_iteration = iteration
 
       old_iteration_id_name = "#{old_iteration.id}|#{old_iteration.name}"

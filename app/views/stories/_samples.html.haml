@@ -7,10 +7,10 @@
   -if !@story_type.iteration.eql?(@iteration)
     .row
       .col-10.offset-1
-        #created_samples
-          -samples = @iteration.samples.where(sampled: true)
-          -if samples.count.positive?
-            =render samples
+        #created_stories
+          -stories = @iteration.stories.where(sampled: true)
+          -if stories.count.positive?
+            =render stories
           -else
             .small
               Samples were not created.
@@ -22,23 +22,23 @@
     .row
       .col-10.offset-1
         %hr/
-        =render 'samples/samples_link'
+        =render 'stories/stories_link'
 
-  -elsif @iteration.story_samples.eql?(false) || @iteration.creation.eql?(false)
-    =render 'story_types/spinner', description: 'samples creation in the process'
-  -elsif @iteration.purge_all_samples.eql?(true)
-    =render 'story_types/spinner', description: 'purge all samples in progress'
+  -elsif @iteration.samples.eql?(false) || @iteration.creation.eql?(false)
+    =render 'story_types/spinner', description: 'stories creation in the process'
+  -elsif @iteration.purge_stories.eql?(true)
+    =render 'story_types/spinner', description: 'purge all stories in progress'
   -else
-    -samples = @iteration.samples.where(sampled: true)
+    - samples = @iteration.stories.where(sampled: true)
     -if correct_account?(@story_type)
       .row
         .col-10.offset-1
-          #samples_form
-            =render 'samples/form', samples: samples
+          #stories_form
+            =render 'stories/form', samples: samples
           %hr/
     .row
       .col-10.offset-1
-        #created_samples
+        #created_stories
           -if samples.count.positive?
             =render samples
           -else
@@ -49,11 +49,11 @@
             .mt-4
               =render 'auto_feedback/form', auto_feedback: @iteration.auto_feedback_confirmations
             .small.mt-3
-              ***Please confirm all auto-feedback. After that you can go to FCD and create all the samples.
+              ***Please confirm all auto-feedback. After that you can go to FCD and create all the stories.
           -else
             .small
               No generated auto-feedback.
         %hr/
 
-    #fcd__create_destroy_all_samples
-      =render 'samples/fcd__create_all_samples_buttons', samples: samples
+    #fcd__create_destroy_all_stories
+      =render 'stories/fcd_create_stories_buttons', samples: samples

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Sample < ApplicationRecord
+class Story < ApplicationRecord
   before_create { Table.sample_set_as_created(staging_table.name, staging_row_id) }
   after_destroy { Table.sample_set_as_not_created(staging_table.name, staging_row_id) }
 
@@ -10,7 +10,7 @@ class Sample < ApplicationRecord
   scope :scheduled_count, -> { where(backdated: false).count }
 
   belongs_to :story_type
-  belongs_to :iteration
+  belongs_to :iteration, class_name: 'StoryTypeIteration'
   belongs_to :export_configuration
   belongs_to :client
   belongs_to :publication

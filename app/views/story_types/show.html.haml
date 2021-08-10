@@ -18,13 +18,13 @@
 .row
   .col-10
     #story_type_iterations
-      =render @story_type.iterations, curr_iteration: @story_type.iteration
+      =render @story_type.iterations, current_iteration: @story_type.iteration
 
       .badge.badge-pill.badge-light{'data-container' => 'body',
                                     'data-toggle' => 'popover',
                                     'data-placement' => 'top',
                                     'data-html' => 'true',
-                                    'data-content' => "#{render 'iterations/new_form'}" }
+                                    'data-content' => "#{render 'story_type_iterations/new_form'}" }
         new iteration
   .col-2.text-right
     #story_type_status
@@ -69,7 +69,7 @@
     #samples.collapse.show{"data-parent" => "#story_type_samples_#{@iteration.id}"}
       .flash
       .card-body
-        =render 'samples/samples'
+        =render 'stories/samples'
 
 -if correct_account?(@story_type)
   %div.accordion{id: "story_type_scheduler_#{@iteration.id}"}

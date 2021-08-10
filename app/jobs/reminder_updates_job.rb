@@ -29,7 +29,7 @@ class ReminderUpdatesJob < ApplicationJob
             new_data_flag = MiniLokiC::Code[st_type].check_updates
           rescue StandardError, ScriptError => e
             msg = "[ CheckUpdatesExecutionError ] -> #{e.message} at #{e.backtrace.first}".gsub('`', "'")
-            SlackStoryTypeNotificationJob.perform_now(st_type.iteration, 'REMINDER', msg)
+            SlackReminderNotificationJob.perform_now(st_type.iteration, 'reminder', msg)
             next
           end
 

@@ -19,15 +19,15 @@ class ExportsController < ApplicationController
   end
 
   def stories
-    @samples =
+    @stories =
       if params[:backdated]
-        @iteration.samples.exported
+        @iteration.stories.exported
       else
-        @iteration.samples.exported_without_backdate
+        @iteration.stories.exported_without_backdate
       end
 
-    @samples =
-      @samples.order(backdated: :asc, published_at: :asc).page(params[:page]).per(25)
+    @stories =
+      @stories.order(backdated: :asc, published_at: :asc).page(params[:page]).per(25)
               .includes(:output, :publication)
   end
 
@@ -50,6 +50,6 @@ class ExportsController < ApplicationController
 
   def show_sample_ids
     @show_sample_ids = {}
-    @iteration.show_samples.map { |smpl| @show_sample_ids[smpl.pl_story_id] = smpl.id }
+    @iteration.show_stories.map { |smpl| @show_sample_ids[smpl.pl_story_id] = smpl.id }
   end
 end

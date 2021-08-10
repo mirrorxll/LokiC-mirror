@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Iteration < ApplicationRecord # :nodoc:
+class StoryTypeIteration < ApplicationRecord # :nodoc:
   serialize :story_sample_args, Hash
   serialize :schedule_counts, Hash
 
@@ -16,15 +16,15 @@ class Iteration < ApplicationRecord # :nodoc:
 
   has_one :exported, dependent: :destroy, class_name: 'ExportedStoryType'
 
-  has_many :samples
+  has_many :stories
   has_many :auto_feedback_confirmations
   has_many :auto_feedback, through: :auto_feedback_confirmations
   has_many :production_removals
 
   has_and_belongs_to_many :statuses
 
-  def show_samples
-    samples.where(show: true)
+  def show_stories
+    stories.where(show: true)
   end
 
   def kill_population?
@@ -33,7 +33,7 @@ class Iteration < ApplicationRecord # :nodoc:
 
   def kill_creation?
     reload
-    kill_story_samples || kill_creation
+    kill_samples || kill_creation
   end
 
   def kill_scheduling?

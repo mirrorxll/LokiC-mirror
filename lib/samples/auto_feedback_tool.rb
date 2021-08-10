@@ -14,7 +14,7 @@ module Samples
 
     def initialize(story_type, confirmed)
       @iteration = story_type.iteration
-      @samples = @iteration.samples.where(sampled: true).joins(:output)
+      @stories = @iteration.stories.where(sampled: true).joins(:output)
       @feedback_rules = AutoFeedback.all.to_a
       @confirmed = confirmed
 
@@ -26,7 +26,7 @@ module Samples
     end
 
     def generate!
-      @samples.each do |sample|
+      @stories.each do |sample|
         sample_obj = prepare(sample)
 
         confirmed_rules = @feedback_rules.each_with_object([]) do |fb, confirmed|

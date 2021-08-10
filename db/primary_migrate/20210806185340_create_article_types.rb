@@ -10,9 +10,6 @@ class CreateArticleTypes < ActiveRecord::Migration[6.0]
 
       t.string :name
       t.integer :gather_task
-      t.datetime :distributed_at
-      t.datetime :last_status_changed_at
-      t.date :last_export
       t.boolean :staging_table_attached, default: false
       t.timestamps
     end

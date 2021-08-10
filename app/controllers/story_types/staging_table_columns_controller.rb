@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ColumnsController < ApplicationController
+class StagingTableColumnsController < ApplicationController
   before_action :render_403, if: :editor?
   before_action :staging_table
 

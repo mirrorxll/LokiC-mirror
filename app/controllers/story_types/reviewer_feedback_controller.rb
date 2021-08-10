@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ReviewersFeedbackController < ApplicationController
+class ReviewerFeedbackController < ApplicationController
   before_action :find_fcd,                       only: %i[create confirm]
   before_action :find_feedback,                  only: %i[create confirm]
   after_action  :send_notifications,             only: :create

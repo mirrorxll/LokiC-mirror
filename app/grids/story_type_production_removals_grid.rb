@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ProductionRemovalsGrid
+class StoryTypeProductionRemovalsGrid
   include Datagrid
 
   # Scope

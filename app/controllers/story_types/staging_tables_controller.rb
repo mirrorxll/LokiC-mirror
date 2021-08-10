@@ -15,7 +15,7 @@ class StagingTablesController < ApplicationController # :nodoc:
       elsif @staging_table_name.present? && StagingTable.not_exists?(@staging_table_name)
         "Table with name '#{@staging_table_name}' not exists."
       else
-        StagingTableAttachingJob.perform_later(@story_type, @staging_table_name)
+        StagingTableAttachingJob.perform_later(@story_type, current_account, @staging_table_name)
         @story_type.update!(staging_table_attached: false, current_account: current_account)
         nil
       end

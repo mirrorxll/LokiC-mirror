@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ShownSamplesGrid
+class StoryTypeShownSamplesGrid
   include Datagrid
 
   # Scope

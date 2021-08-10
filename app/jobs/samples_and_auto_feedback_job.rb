@@ -7,7 +7,7 @@ class SamplesAndAutoFeedbackJob < ApplicationJob
     Process.wait(
       fork do
         status = true
-        message = "Success. FCD's samples have been created"
+        message = "Success. FCD's stories have been created"
         sample_args = nil
         staging_table = iteration.story_type.staging_table
         publication_ids = iteration.story_type.publication_pl_ids.join(',')
@@ -28,7 +28,7 @@ class SamplesAndAutoFeedbackJob < ApplicationJob
 
         options = options.merge({ ids: ids.join(',') })
         MiniLokiC::Code[iteration.story_type].execute(:creation, options)
-        iteration.samples.where(staging_row_id: ids).update_all(sampled: true)
+        iteration.stories.where(staging_row_id: ids).update_all(sampled: true)
 
         Samples.auto_feedback(iteration.story_type, options[:cron])
 
@@ -37,8 +37,8 @@ class SamplesAndAutoFeedbackJob < ApplicationJob
         status = nil
         message = e.message
       ensure
-        iteration.update!(story_samples: status, current_account: account)
-        send_to_action_cable(iteration, :samples, message)
+        iteration.update!(samples: status, current_account: account)
+        send_to_action_cable(iteration, :stories, message)
       end
     )
 

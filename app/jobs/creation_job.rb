@@ -5,7 +5,7 @@ class CreationJob < ApplicationJob
 
   def perform(iteration, account, options = {})
     status = true
-    message = 'Success. All samples have been created'
+    message = 'Success. All stories have been created'
     publication_ids = iteration.story_type.publication_pl_ids.join(',')
     options[:iteration] = iteration
     options[:publication_ids] = publication_ids
@@ -45,7 +45,7 @@ class CreationJob < ApplicationJob
     message = e.message
   ensure
     iteration.update!(creation: status, current_account: account)
-    send_to_action_cable(iteration, :samples, message)
+    send_to_action_cable(iteration, :stories, message)
     SlackStoryTypeNotificationJob.perform_now(iteration, 'creation', message)
   end
 
@@ -53,13 +53,13 @@ class CreationJob < ApplicationJob
 
   def schedule_counts(iteration)
     counts = {}
-    counts[:total] = iteration.samples.count
+    counts[:total] = iteration.stories.count
     return counts if counts[:total].zero?
 
     iteration.story_type.clients_publications_tags.each_with_object(counts) do |row, obj|
       client = row.client
       pubs = client.publications
-      counts = pubs.joins(:samples).where(samples: { iteration: iteration })
+      counts = pubs.joins(:stories).where(stories: { iteration: iteration })
                    .group(:publication_id).order('count(publication_id) desc')
                    .count(:publication_id)
       next if counts.empty?

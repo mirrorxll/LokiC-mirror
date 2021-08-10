@@ -43,7 +43,7 @@ class IterationsController < ApplicationController
       @iteration.auto_feedback.destroy_all
 
       @iteration.update!(
-        population: nil, story_samples: nil,
+        population: nil, samples: nil,
         creation: nil, schedule: nil, export: nil,
         current_account: current_account
       )
@@ -55,7 +55,7 @@ class IterationsController < ApplicationController
   private
 
   def find_iteration
-    @iteration = Iteration.find(params[:id])
+    @iteration = StoryTypeIteration.find(params[:id])
   end
 
   def find_staging_table

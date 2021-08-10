@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 module SamplesHelper
-  def samples_alert(message)
+  def stories_alert(message)
     messages = [
-      "Success. FCD's samples have been created",
-      'Success. All samples have been created',
-      'Success. All samples have been removed'
+      "Success. FCD's stories have been created",
+      'Success. All stories have been created',
+      'Success. All stories have been removed'
     ]
 
     messages.include?(message) ? 'success' : 'danger'

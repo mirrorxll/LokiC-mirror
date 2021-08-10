@@ -8,6 +8,6 @@ class ShownSamplesController < ApplicationController
     @grid_params =
       request.parameters[:shown_samples_grid] || {}
 
-    @shown_samples_grid = ShownSamplesGrid.new(@grid_params)
+    @shown_samples_grid = StoryTypeShownSamplesGrid.new(@grid_params)
   end
 end

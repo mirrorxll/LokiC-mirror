@@ -7,7 +7,6 @@ class ExportJob < ApplicationJob
     status = true
     message = 'Success. Make sure that all stories are exported'
     story_type = iteration.story_type
-    old_status = story_type.status.name
     threads_count = (iteration.samples.count / 75_000.0).ceil + 1
     threads_count = threads_count > 20 ? 20 : threads_count
 
@@ -55,26 +54,24 @@ class ExportJob < ApplicationJob
 
     exp_st.save!
 
-    Process.wait(
-      fork do
-        note = MiniLokiC::Formatize::Numbers.to_text(exp_st.count_samples).capitalize
-        record_to_change_history(story_type, 'exported to pipeline', note, account)
+    note = MiniLokiC::Formatize::Numbers.to_text(exp_st.count_samples).capitalize
+    record_to_change_history(story_type, 'exported to pipeline', note, account)
 
-        if story_type.iterations.last.eql?(iteration)
-          if story_type.updates?
-            story_type.reminder.update!(updates_confirmed: false, has_updates: false, current_account: account)
-          end
-
-          unless story_type.reload.status.name.in?(['canceled', 'blocked', 'on cron', 'exported'])
-            story_type.update!(status: Status.find_by(name: 'exported'), last_status_changed_at: Time.now, current_account: account)
-          end
-
-          if Rails.env.production? && url && !iteration.name.match?(/CT\d{8}/)
-            send_report_to_editors_slack(iteration, url)
-          end
-        end
+    if story_type.iterations.last.eql?(iteration)
+      if story_type.updates?
+        story_type.reminder.update!(updates_confirmed: false, has_updates: false, current_account: account)
       end
-    )
+
+      unless story_type.reload.status.name.in?(['canceled', 'blocked', 'on cron', 'exported'])
+        story_type.update!(
+          status: Status.find_by(name: 'exported'),
+          last_status_changed_at: Time.now,
+          current_account: account
+        )
+      end
+
+      send_report_to_editors_slack(iteration, url) if Rails.env.production? && url && !iteration.name.match?(/CT\d{8}/)
+    end
 
     true
   rescue StandardError => e

@@ -53,7 +53,7 @@ Rails.application.routes.draw do
     patch :update_sections, on: :member
     patch :change_data_set, on: :member
 
-    resources :progress_statuses, controller: 'story_type_statuses', only: [] do
+    resources :progress_statuses, controller: :story_type_statuses, only: [] do
       patch :change, on: :collection
     end
 
@@ -127,18 +127,18 @@ Rails.application.routes.draw do
 
     resources :cron_tabs, only: %i[edit update]
 
-    resources :iterations, only: %i[create update] do
+    resources :iterations, controller: :iterations, only: %i[create update] do
       patch :apply, on: :member
       delete :purge, on: :member
 
-      resources :populations, path: 'populate', only: [] do
+      resources :populations, controller: :populations, path: :populate, only: [] do
         post   :execute, on: :collection
         delete :purge,   on: :collection
       end
 
-      resources :samples, only: %i[index show] do
+      resources :samples, controller: :story_type_samples, only: %i[index show] do
         post   :create_and_gen_auto_feedback, on: :collection
-        delete :purge_sampled,                     on: :collection
+        delete :purge_sampled, on: :collection
       end
 
       resources :auto_feedback_confirmations, only: [] do
@@ -150,7 +150,7 @@ Rails.application.routes.draw do
         delete :purge_all, on: :collection
       end
 
-      resources :schedules, path: 'schedule', only: [] do
+      resources :schedules, path: :schedule, only: [] do
         post  :manual,    on: :collection
         post  :backdate,  on: :collection
         post  :auto,      on: :collection
@@ -158,7 +158,7 @@ Rails.application.routes.draw do
         get   :show_form, on: :collection
       end
 
-      resources :exports, path: 'export', only: [] do
+      resources :exports, path: :export, only: [] do
         post   :execute,                 on: :collection
         delete :remove_exported_stories, on: :collection
         get    :stories,                 on: :collection
@@ -183,7 +183,7 @@ Rails.application.routes.draw do
     get   :cancel_edit
     patch :evaluate
 
-    resources :progress_statuses, controller: 'scrape_task_statuses', only: [] do
+    resources :progress_statuses, controller: :scrape_task_statuses, only: [] do
       patch :change, on: :collection
     end
 

@@ -22,7 +22,7 @@ class SchedulesController < ApplicationController # :nodoc:
   end
 
   def purge
-    @iteration.samples.update_all(published_at: nil, backdated: 0)
+    @iteration.stories.update_all(published_at: nil, backdated: 0)
     @iteration.update!(schedule: nil, schedule_args: nil, current_account: current_account)
     flash.now[:message] = 'scheduling purged'
   end

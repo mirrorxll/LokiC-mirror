@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class StoryTypeStatusesController < ApplicationController
+class StatusesController < ApplicationController
   before_action :render_403, if: :editor?
   before_action :find_status
 

@@ -6,7 +6,7 @@ class ProductionRemovalsController < ApplicationController
 
   def index
     @grid_params = request.parameters[:exported_story_types_grid] || {}
-    @removals_grid = ProductionRemovalsGrid.new(@grid_params)
+    @removals_grid = StoryTypeProductionRemovalsGrid.new(@grid_params)
     @removals_grid.scope { |scope| scope.page(params[:page]).per(50) }
   end
 end
