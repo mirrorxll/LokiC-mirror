@@ -41,7 +41,7 @@ class ReminderTasksJob< ApplicationJob
             message = "*[ LokiC ] Unfinished <#{generate_task_url(task)}|Task ##{task.id}> | REMINDER | "\
               "#{assignment.name}*\n" \
               "#{task.title}".gsub("\n", "\n>")
-            # SlackNotificationJob.perform_now(assignment.slack.identifier, message)
+            SlackNotificationJob.perform_now(assignment.slack.identifier, message)
             SlackNotificationJob.perform_now('hle_lokic_task_reminders', message)
           end
         end
@@ -70,7 +70,7 @@ class ReminderTasksJob< ApplicationJob
             message = "*[ LokiC ] #{deadline_message} | <#{generate_task_url(task)}|Task ##{task.id}> | "\
                     "#{account.name}*\n" \
                     "#{task.title}".gsub("\n", "\n>")
-            # SlackNotificationJob.perform_now(account.slack.identifier, message)
+            SlackNotificationJob.perform_now(account.slack.identifier, message)
             SlackNotificationJob.perform_now('hle_lokic_task_reminders', message)
           end
         end
