@@ -2,6 +2,8 @@
 
 module Api
   class ClientsController < ApiController
+    include TasksHelper
+
     def visible
       visible = Client.where(hidden: false).order(:name)
 
@@ -17,7 +19,7 @@ module Api
 
     def tags
       client = Client.find(params[:client_id])
-        tags_for_publication
+
       tags = Client.find(params[:client_id]).tags.order(:name)
 
       render json: { attached: tags }
