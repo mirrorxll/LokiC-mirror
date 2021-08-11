@@ -8,8 +8,7 @@ class TasksController < ApplicationController # :nodoc:
 
   after_action  :send_notification, only: :create
   after_action  :comment, only: :create
-
-
+  
   def index
     respond_to do |f|
       f.html do
