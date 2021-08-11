@@ -1,24 +1,26 @@
 # frozen_string_literal: true
 
-class TemplatesController < ApplicationController
-  before_action :render_403, except: :show, if: :developer?
-  before_action :update_template, only: %i[update save]
+module StoryTypes
+  class TemplatesController < ApplicationController
+    before_action :render_403, except: :show, if: :developer?
+    before_action :update_template, only: %i[update save]
 
-  def show; end
+    def show; end
 
-  def edit; end
+    def edit; end
 
-  def update; end
+    def update; end
 
-  def save; end
+    def save; end
 
-  private
+    private
 
-  def update_template
-    Template.find(params[:id]).update!(template_params)
-  end
+    def update_template
+      Template.find(params[:id]).update!(template_params)
+    end
 
-  def template_params
-    params.require(:template).permit(:body)
+    def template_params
+      params.require(:template).permit(:body)
+    end
   end
 end

@@ -1,37 +1,39 @@
 # frozen_string_literal: true
 
-class StagingTableColumnsController < ApplicationController
-  before_action :render_403, if: :editor?
-  before_action :staging_table
+module StoryTypes
+  class StagingTableColumnsController < ApplicationController
+    before_action :render_403, if: :editor?
+    before_action :staging_table
 
-  def edit
-    staging_table_action { @staging_table.sync }
-  end
-
-  def update
-    staging_table_action do
-      @staging_table.update!(columns_modifying: true)
-      StagingTableColumnsJob.perform_later(@staging_table, columns_front_params)
-      nil
+    def edit
+      staging_table_action { @staging_table.sync }
     end
 
-    render 'staging_tables/show'
-  end
-
-  private
-
-  def columns_front_params
-    columns =
-      if params[:columns]
-        params.require(:columns).permit!
-      else
-        {}
+    def update
+      staging_table_action do
+        @staging_table.update!(columns_modifying: true)
+        StagingTableColumnsJob.perform_later(@staging_table, columns_front_params)
+        nil
       end
 
-    Table.columns_transform(columns, :front)
-  end
+      render 'story_types/staging_tables/show'
+    end
 
-  def staging_table
-    @staging_table = @story_type.staging_table
+    private
+
+    def columns_front_params
+      columns =
+        if params[:columns]
+          params.require(:columns).permit!
+        else
+          {}
+        end
+
+      Table.columns_transform(columns, :front)
+    end
+
+    def staging_table
+      @staging_table = @story_type.staging_table
+    end
   end
 end

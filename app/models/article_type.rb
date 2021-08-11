@@ -46,7 +46,7 @@ class ArticleType < ApplicationRecord
   end
 
   def developer_fc_channel_name
-    developer&.fc_channel&.name
+    developer&.fact_checking_channel&.name
   end
 
   def iteration

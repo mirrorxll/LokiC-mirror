@@ -95,8 +95,8 @@ module Table
         frontend_transform(columns)
       when :back
         backend_transform(columns)
-      when :stories
-        transform_for_stories(columns)
+      when :samples
+        transform_for_samples(columns)
       end
     end
 
@@ -148,7 +148,7 @@ module Table
       options_to_hash
     end
 
-    def transform_for_stories(columns)
+    def transform_for_samples(columns)
       columns.select! { |_key, value| value.eql?('1') }
       columns.keys.map(&:to_sym)
     end

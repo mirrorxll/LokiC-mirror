@@ -18,7 +18,7 @@ module Api
     private
 
     def find_sample
-      @sample = Sample.find(params[:id])
+      @sample = Story.find(params[:id])
     end
 
     def show_samples_count

@@ -7,10 +7,10 @@ class SamplesAndAutoFeedbackJob < ApplicationJob
     Process.wait(
       fork do
         status = true
-        message = "Success. FCD's stories have been created"
-        sample_args = nil
+        sample_args = {}
         staging_table = iteration.story_type.staging_table
         publication_ids = iteration.story_type.publication_pl_ids.join(',')
+
         options[:iteration] = iteration
         options[:publication_ids] = publication_ids
         options[:sampled] = true
@@ -26,22 +26,31 @@ class SamplesAndAutoFeedbackJob < ApplicationJob
             edge_ids + row_ids
           end
 
+        iteration.update!(sample_args: sample_args, current_account: account)
+
+        sampled_before = iteration.stories.where(sampled: true).count
+
         options = options.merge({ ids: ids.join(',') })
         MiniLokiC::Code[iteration.story_type].execute(:creation, options)
+        Samples.auto_feedback(iteration, options[:cron])
+
         iteration.stories.where(staging_row_id: ids).update_all(sampled: true)
 
-        Samples.auto_feedback(iteration.story_type, options[:cron])
-
-        iteration.update!(story_sample_args: sample_args, current_account: account)
+        sampled_after = iteration.stories.where(sampled: true).count
+        message =
+          if sampled_before.eql?(sampled_after)
+            "Samples haven't been created by passed params. Check it!"
+          else
+            'Success. Samples have been created'
+          end
       rescue StandardError, ScriptError => e
         status = nil
+        pp e.full_message
         message = e.message
       ensure
-        iteration.update!(samples: status, current_account: account)
-        send_to_action_cable(iteration, :stories, message)
+        iteration.update!(samples_creation: status, current_account: account)
+        send_to_action_cable(iteration, :samples, message)
       end
     )
-
-    true
   end
 end

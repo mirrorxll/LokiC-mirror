@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class StoryTypeIteration < ApplicationRecord # :nodoc:
-  serialize :story_sample_args, Hash
+  serialize :sample_args, Hash
   serialize :schedule_counts, Hash
 
   after_create do
@@ -14,16 +14,17 @@ class StoryTypeIteration < ApplicationRecord # :nodoc:
 
   belongs_to :story_type
 
-  has_one :exported, dependent: :destroy, class_name: 'ExportedStoryType'
+  has_one :exported, dependent: :destroy, class_name: 'ExportedStoryType', foreign_key: :iteration_id
 
-  has_many :stories
+  has_many :samples, -> { where(sampled: true) }, class_name: 'Story'
   has_many :auto_feedback_confirmations
   has_many :auto_feedback, through: :auto_feedback_confirmations
+  has_many :stories
   has_many :production_removals
 
   has_and_belongs_to_many :statuses
 
-  def show_stories
+  def show_samples
     stories.where(show: true)
   end
 

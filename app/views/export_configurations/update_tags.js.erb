@@ -1,6 +1,0 @@
-$('#configs_no_tags .modal-body').html(`<%= render 'export_configurations/export_configurations_no_tags_form' %>`)
-
-<% if @story_type.configurations_no_tags.present? %>
-  $('#configs_no_tags .modal-trigger').empty();
-  $('.configs_without_tags_msg').remove();
-<% end %>

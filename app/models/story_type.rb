@@ -56,7 +56,7 @@ class StoryType < ApplicationRecord
   end
 
   def developer_fc_channel_name
-    developer&.fc_channel&.name
+    developer&.fact_checking_channel&.name
   end
 
   def iteration
@@ -100,7 +100,7 @@ class StoryType < ApplicationRecord
   end
 
   def show_samples
-    samples.where(show: true)
+    stories.where(show: true)
   end
 
   def first_show_sample

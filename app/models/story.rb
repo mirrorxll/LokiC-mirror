@@ -10,14 +10,14 @@ class Story < ApplicationRecord
   scope :scheduled_count, -> { where(backdated: false).count }
 
   belongs_to :story_type
-  belongs_to :iteration, class_name: 'StoryTypeIteration'
+  belongs_to :iteration, class_name: 'StoryTypeIteration', foreign_key: :story_type_iteration_id
   belongs_to :export_configuration
   belongs_to :client
   belongs_to :publication
   belongs_to :output, dependent: :destroy
   belongs_to :time_frame
 
-  has_many   :auto_feedback_confirmations, dependent: :destroy
+  has_many   :auto_feedback_confirmations, foreign_key: :sample_id, dependent: :destroy
   has_many   :fixes, class_name: 'SampleFix'
 
   def staging_table

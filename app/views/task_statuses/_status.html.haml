@@ -2,7 +2,6 @@
   =link_to(task.status.name, '#',
         class: "badge badge-pill badge-#{status_color(task.status.name)}")
 
--puts task.status.id
 .change_progress_status_form.d-none
   =form_with(url: change_task_progress_statuses_path(task),
              html: { class: 'd-inline', onchange: "Rails.fire(this, 'submit');" }, method: :patch) do |form|

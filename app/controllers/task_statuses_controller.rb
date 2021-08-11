@@ -35,7 +35,7 @@ class TaskStatusesController < ApplicationController
   def send_notification
     accounts = (@task.assignment_to.to_a << @task.creator).uniq
     accounts.each do |account|
-      puts account.first_name + ' ' + account.last_name
+      account.first_name + ' ' + account.last_name
       next if account.slack.nil? || account.slack.deleted
 
       message = "*[ LokiC ] <#{task_url(@task)}| TASK ##{@task.id}> | "\

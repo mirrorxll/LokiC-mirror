@@ -6,15 +6,17 @@ module MiniLokiC
     class Samples
       def initialize(staging_table, options)
         @staging_table = staging_table
-        @sampled = !!options[:sampled]
+        @sampled = options[:sampled]
         @iteration = options[:iteration]
         @story_type = @iteration.story_type
         @export_configs = @story_type.export_configurations.joins(:publication)
       end
 
       def insert(sample)
+        raise ArgumentError, "time_frame can't be blank!" if sample[:time_frame].nil?
+
         @raw_sample = sample
-        @iteration.stories.create!(sample_params)
+        Story.create!(sample_params)
       end
 
       private
@@ -22,12 +24,13 @@ module MiniLokiC
       # prepare sample to inserting
       def sample_params
         config = export_config
-        time_frame = TimeFrame.find_by(frame: @raw_sample[:time_frame].downcase)
+        time_frame = TimeFrame.find_or_create_by!(frame: @raw_sample[:time_frame].downcase)
         publication = config.publication
         client = publication.client
 
         {
           story_type: @story_type,
+          iteration: @iteration,
           output: output,
           staging_row_id: @raw_sample[:staging_row_id],
           client: client,

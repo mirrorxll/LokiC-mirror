@@ -7,7 +7,7 @@ class ExportJob < ApplicationJob
     status = true
     message = 'Success. Make sure that all stories are exported'
     story_type = iteration.story_type
-    threads_count = (iteration.samples.count / 75_000.0).ceil + 1
+    threads_count = (iteration.stories.count / 75_000.0).ceil + 1
     threads_count = threads_count > 20 ? 20 : threads_count
 
     iteration.update!(last_export_batch_size: nil)
@@ -43,7 +43,7 @@ class ExportJob < ApplicationJob
     exp_st.story_type = story_type
     exp_st.developer = story_type.developer
     exp_st.first_export = iteration.name.eql?('Initial')
-    exp_st.count_samples = iteration.samples.count
+    exp_st.count_samples = iteration.stories.count
 
     if exp_st.new_record?
       story_type.update!(last_export: DateTime.now, current_account: account)

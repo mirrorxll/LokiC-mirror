@@ -18,9 +18,9 @@
         =link_to(icon('fa', 'sliders', class: 'fa-lg text-dark'), story_type_properties_form_path(story_type), remote: true)
       .col-sm-2.col-lg-2.p-0
         -if story_type.developer
-          =render 'developers/developer', story_type: story_type
+          =render 'story_types/developers/developer', story_type: story_type
         -else
-          =render 'developers/form', story_type: story_type
+          =render 'story_types/developers/form', story_type: story_type
       .col-sm-2.col-lg-1.p-0
         =story_type.status.name
       .col-sm-1.col-lg-1.p-0{id: "story_type_#{story_type.id}_last_export"}

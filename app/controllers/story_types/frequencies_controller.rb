@@ -1,24 +1,26 @@
 # frozen_string_literal: true
 
-class FrequenciesController < ApplicationController # :nodoc:
-  before_action :render_403, if: :developer?
-  before_action :find_frequency, only: :include
+module StoryTypes
+  class FrequenciesController < ApplicationController # :nodoc:
+    before_action :render_403, if: :developer?
+    before_action :find_frequency, only: :include
 
-  def include
-    render_403 && return if @story_type.frequency
+    def include
+      render_403 && return if @story_type.frequency
 
-    @story_type.update!(frequency: @frequency, current_account: current_account)
-  end
+      @story_type.update!(frequency: @frequency, current_account: current_account)
+    end
 
-  def exclude
-    render_403 && return unless @story_type.frequency
+    def exclude
+      render_403 && return unless @story_type.frequency
 
-    @story_type.update!(frequency: nil, current_account: current_account)
-  end
+      @story_type.update!(frequency: nil, current_account: current_account)
+    end
 
-  private
+    private
 
-  def find_frequency
-    @frequency = Frequency.find(params[:id])
+    def find_frequency
+      @frequency = Frequency.find(params[:id])
+    end
   end
 end

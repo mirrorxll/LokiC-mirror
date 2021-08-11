@@ -3,9 +3,9 @@
 module SamplesHelper
   def stories_alert(message)
     messages = [
-      "Success. FCD's stories have been created",
-      'Success. All stories have been created',
-      'Success. All stories have been removed'
+      'Success. Samples have been created',
+      'Success. Stories have been created',
+      'Success. Stories have been removed'
     ]
 
     messages.include?(message) ? 'success' : 'danger'

@@ -12,8 +12,8 @@ module Samples
     include AutoFeedbackGenerator::SampleToHash
     include AutoFeedbackGenerator::Rules
 
-    def initialize(story_type, confirmed)
-      @iteration = story_type.iteration
+    def initialize(iteration, confirmed)
+      @iteration = iteration
       @stories = @iteration.stories.where(sampled: true).joins(:output)
       @feedback_rules = AutoFeedback.all.to_a
       @confirmed = confirmed
