@@ -42,7 +42,7 @@ class ReviewersFeedbackController < ApplicationController
   end
 
   def send_notifications
-    fcd_channel = @story_type.developer&.fc_channel&.name
+    fcd_channel = @story_type.developer&.fact_checking_channel&.name
     developer_pm = @story_type.developer&.slack&.identifier
     return if developer_pm.nil? || fcd_channel.nil?
 

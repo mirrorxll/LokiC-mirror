@@ -26,4 +26,9 @@ class Task < ApplicationRecord # :nodoc:
 
     "https://pipeline.locallabs.com/gather_tasks/#{gather_task}"
   end
+
+  def assignment_to_or_creator?(account)
+    account.in?(assignment_to) || account == creator
+  end
+
 end
