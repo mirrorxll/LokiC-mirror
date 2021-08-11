@@ -4,9 +4,11 @@ class TasksController < ApplicationController # :nodoc:
   skip_before_action :find_parent_story_type
   skip_before_action :set_iteration
   before_action :find_task, only: [:show, :edit, :update]
-  before_action :grid, only: [:index]
+  before_action :grid, only: :index
+
   after_action  :send_notification, only: :create
   after_action  :comment, only: :create
+
 
   def index
     respond_to do |f|
@@ -17,7 +19,8 @@ class TasksController < ApplicationController # :nodoc:
   end
 
   def show
-    @task = Task.find(params[:id])
+    render_401 if !manager? && !@task.assignment_to_or_creator?(current_account)
+
     @comments = @task.comments.order(created_at: :desc)
   end
 
