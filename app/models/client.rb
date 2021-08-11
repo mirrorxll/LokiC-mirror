@@ -28,4 +28,29 @@ class Client < ApplicationRecord # :nodoc:
   def local_publications
     publications.where(statewide: false)
   end
+
+  def tags_for(publication)
+    if publication.nil? || publication.name == 'all publications'
+      (tags.order(:name) & tags_for_all_pubs).map { |tag| [tag.name, tag.id] }
+    elsif publication.name == 'all local publications'
+      (tags.order(:name) & tags_for_local_pubs).map { |tag| [tag.name, tag.id] }
+    elsif publication.name == 'all statewide publications'
+      (tags.order(:name) & tags_for_statewide_pubs).map { |tag| [tag.name, tag.id] }
+    else
+      publication.tags.order(:name).map { |tag| [tag.name, tag.id] }
+    end
+  end
+
+  def tags_not_for(publication)
+    if publication.nil? || publication.name == 'all publications'
+      (tags.order(:name) - tags_for_all_pubs).map { |tag| [tag.name, tag.id] }
+    elsif publication.name == 'all local publications'
+      (tags.order(:name) - tags_for_local_pubs).map { |tag| [tag.name, tag.id] }
+    elsif publication.name == 'all statewide publications'
+      (tags.order(:name) - tags_for_statewide_pubs).map { |tag| [tag.name, tag.id] }
+    else
+      publication.tags.order(:name).map { |tag| [tag.name, tag.id] }
+    end
+  end
+
 end
