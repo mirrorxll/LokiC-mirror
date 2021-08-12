@@ -2,11 +2,13 @@
 
 module Api
   class PublicationsController < ApiController
+    include TagsHelper
+
     def tags
       client = Client.find(params[:client_id])
-      publication = Publication(params[:publication_id])
+      publication = Publication.find(params[:publication_id])
 
-      tags = Client.find(params[:client_id]).tags.order(:name)
+      tags = tags_for_publication(publication, client)
 
       render json: { attached: tags }
     end

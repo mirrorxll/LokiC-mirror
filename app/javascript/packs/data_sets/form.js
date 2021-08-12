@@ -1,7 +1,7 @@
 let clientsSelect = document.getElementsByClassName('clients_select')
 for(let i = 0; i < clientsSelect.length; i++) {
     clientsSelect[i].addEventListener('change', publicationsByClient)
-    clientsSelect[i].addEventListener('change', tagsByClient)
+    // clientsSelect[i].addEventListener('change', tagsByPublication)
 }
 
 let removeX = document.getElementsByClassName('remove_x')
@@ -33,8 +33,8 @@ window.$('#add_client').on('click', (e)=> {
     clientsSelect.name = `default_props[client_tag_ids[${uId}[client_id]]]`
     clientsSelect.className = 'form-control form-control-sm clients_select'
     clientsSelect.required = true
-    clientsSelect.addEventListener('change', tagsByClient)
     clientsSelect.addEventListener('change', publicationsByClient)
+    // clientsSelect.addEventListener('change', tagsByPublication)
 
     let tagsSelect = document.createElement('select')
     tagsSelect.appendChild(document.createElement('option'))
@@ -48,6 +48,7 @@ window.$('#add_client').on('click', (e)=> {
     publicationsSelect.id = `data_set_default_${uId}_publication_id`
     publicationsSelect.name = `default_props[client_tag_ids[${uId}[publication_id]]]`
     publicationsSelect.className = 'form-control form-control-sm publications_select'
+    publicationsSelect.addEventListener('change', tagsByPublication)
 
     let clientsCol = document.createElement('div')
     clientsCol.className = 'col-4 pr-1'
@@ -105,7 +106,7 @@ function addClientsToSelectGroup(uId, clientsFromApi = null) {
 
     if(clients.length > 0) {
         let select = document.getElementById(uId).getElementsByClassName('clients_select')[0]
-        let option = null
+        let option = null;
 
         for (let i = 0; i < clients.length; i++) {
             option = document.createElement("option");
@@ -118,9 +119,12 @@ function addClientsToSelectGroup(uId, clientsFromApi = null) {
     }
 }
 
-function tagsByClient(event) {
-    let clientId = event.target.value
-    if(clientId === '') return false;
+function tagsByPublication(event) {
+    let publicationId = event.target.parentNode.parentNode.getElementsByClassName('publications_select')[0].value;
+    let clientId = event.target.parentNode.parentNode.getElementsByClassName('clients_select')[0].value;
+
+    console.log('///////////')
+    if(clientId === '' || publicationId === '') return false;
 
     let tagsSelect = event.target.parentNode.parentNode.getElementsByClassName('tags_select')[0]
 
@@ -129,25 +133,35 @@ function tagsByClient(event) {
     }
 
     window.$.ajax({
-        url: `${window.location.origin}/api/clients/${clientId}/tags`,
+        url: `${window.location.origin}/api/clients/${clientId}/publications/${publicationId}/tags`,
         dataType: 'json',
         success: (tags)=> { addTagsToSelectGroup(tagsSelect, tags.attached) }
     });
 }
 
 function addTagsToSelectGroup(tagsSelect, tags) {
-    let option = null
+    let option = null;
 
-    for (let i = 0; i < tags.length; i++) {
-        option = document.createElement("option");
-        option.setAttribute("value", tags[i].id);
-        option.text = tags[i].name;
-        tagsSelect.appendChild(option);
+    for(let i = 0; i < tags.length; i++) {
+        let pub_name = tags[i][0];
+        let tags_for_pub = tags[i][1];
+
+        optGroup = document.createElement("optgroup");
+        optGroup.setAttribute("label", pub_name);
+
+        tagsSelect.appendChild(optGroup);
+
+        for(let i = 0; i < tags_for_pub.length; i++) {
+            option = document.createElement("option");
+            option.setAttribute("value", tags_for_pub[i][1]);
+            option.text = tags_for_pub[i][0];
+            optGroup.appendChild(option);
+        }
     }
 }
 
 function publicationsByClient(event) {
-    let clientId = event.target.value
+    let clientId = event.target.value;
     if(clientId === '') return false;
 
     let publicationsSelect = event.target.parentNode.parentNode.getElementsByClassName('publications_select')[0]
