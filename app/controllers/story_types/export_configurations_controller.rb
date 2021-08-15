@@ -2,6 +2,9 @@
 
 module StoryTypes
   class ExportConfigurationsController < ApplicationController
+    skip_before_action :find_parent_article_type
+    skip_before_action :set_article_type_iteration
+
     before_action :render_403, if: :editor?
 
     def check; end

@@ -1,0 +1,14 @@
+(function () {
+    let flash = $('#staging_table .flash')
+
+    <% if flash.now[:error] %>
+      flash.html(`
+        <div class="alert alert-danger text-center">
+          <%= flash.now[:error].gsub('`', "'") %>
+        </div>`
+      )
+    <% else %>
+      flash.empty();
+      $('#staging_table .card-body').html('<%= j render 'story_types/staging_tables/staging_table'%>')
+    <% end %>
+}())

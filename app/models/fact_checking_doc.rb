@@ -3,7 +3,7 @@
 class FactCheckingDoc < ApplicationRecord
   before_save :drop_negative_margins
 
-  belongs_to :story_type
+  belongs_to :fcd, polymorphic: true
 
   has_many :reviewers_feedback
   has_many :editors_feedback

@@ -1,0 +1,54 @@
+-if @article_type.iteration.population
+  -if !@article_type.iteration.eql?(@iteration)
+    .row
+      .col-10.offset-1
+        #created_stories
+          -stories = @iteration.stories.where(sampled: true)
+          -if stories.count.positive?
+            =render partial: 'article_types/samples/sample', collection: stories
+          -else
+            .small
+              Samples were not created.
+          %hr/
+          -if @iteration.auto_feedback_confirmations.any?
+            .mt-4
+              =render 'article_types/auto_feedback/form', auto_feedback: @iteration.auto_feedback_confirmations
+
+    .row
+      .col-10.offset-1
+        %hr/
+        =render 'article_types/samples/stories_link'
+
+  -elsif @iteration.samples_creation.eql?(false) || @iteration.creation.eql?(false)
+    =render 'article_types/spinner', description: 'creation in the process'
+  -elsif @iteration.purge_stories.eql?(true)
+    =render 'article_types/spinner', description: 'purging in progress'
+  -else
+    - samples = @iteration.stories.where(sampled: true)
+    -if correct_account?(@article_type)
+      .row
+        .col-10.offset-1
+          #stories_form
+            =render 'article_types/samples/form', samples: samples
+          %hr/
+    .row
+      .col-10.offset-1
+        #created_stories
+          -if samples.count.positive?
+            =render partial: 'article_types/samples/sample', collection: samples
+          -else
+            .small
+              Samples were not created.
+          %hr/
+          -if @iteration.auto_feedback_confirmations.any?
+            .mt-4
+              =render 'article_types/auto_feedback/form', auto_feedback: @iteration.auto_feedback_confirmations
+            .small.mt-3
+              ***Please confirm all auto-feedback. After that you can go to FCD and create all the stories.
+          -else
+            .small
+              No generated auto-feedback.
+        %hr/
+
+    #fcd__create_destroy_all_stories
+      =render 'article_types/samples/fcd_create_stories_buttons', samples: samples

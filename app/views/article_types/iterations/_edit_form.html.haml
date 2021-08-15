@@ -1,0 +1,7 @@
+.small
+  .d-flex.flex-row
+    =form_with(url: article_type_iteration_path(@article_type, iteration), method: :patch) do |form|
+      =form.text_field 'name', placeholder: 'new name', required: true
+      =form.submit :rename
+    -if @article_type.iteration != iteration
+      =button_to('apply', apply_article_type_iteration_path(@story_type, iteration), method: :patch)

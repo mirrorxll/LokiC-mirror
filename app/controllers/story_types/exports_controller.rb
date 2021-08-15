@@ -2,6 +2,9 @@
 
 module StoryTypes
   class ExportsController < ApplicationController
+    skip_before_action :find_parent_article_type
+    skip_before_action :set_article_type_iteration
+
     before_action :render_403_editor, except: :stories, if: :editor?
     before_action :render_403_developer, only: %i[stories submit_editor_report submit_manager_report], if: :developer?
     before_action :show_sample_ids, only: :stories

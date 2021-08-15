@@ -34,8 +34,8 @@ class StoryType < ApplicationRecord
   belongs_to :status,            optional: true
 
   has_one :staging_table
-  has_one :template
-  has_one :fact_checking_doc
+  has_one :template, as: :template
+  has_one :fact_checking_doc, as: :fcd
   has_one :cron_tab
   has_one :reminder
 

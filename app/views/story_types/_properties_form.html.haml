@@ -24,12 +24,12 @@
     .row
       .col-4.frequency
         -if @story_type.frequency
-          =render @story_type.frequency
+          =render 'story_types/frequencies/frequency', frequency: @story_type.frequency
         -else
           =render 'story_types/frequencies/form'
       .col-4.photo_bucket
         -if @story_type.photo_bucket
-          =render @story_type.photo_bucket
+          =render 'story_types/photo_buckets/photo_bucket', photo_bucket: @story_type.photo_bucket
         -else
           =render 'story_types/photo_buckets/form'
 %hr/

@@ -1,9 +1,9 @@
 -if %w[show update canceling_edit change_data_set].include?(action_name)
-  .text-center.small{id: "story_type_#{story_type.id}"}
-    .row
-      .col-sm-1.col-lg-1
+  .text-center.small{ id: "story_type_#{story_type.id}" }
+    .row.on-hover-bg.pt-2.pb-2
+      .col-1
         =story_type.id
-      .col-sm-4.col-lg-5.pl-0.text-left{id: "story_type_#{story_type.id}_name"}
+      .col-5.pl-0.text-left{id: "story_type_#{story_type.id}_name"}
         .row
           .col-11.pr-0
             -if current_account.types.include?('editor')
@@ -12,24 +12,22 @@
               =link_to(story_type.name, story_type_path(story_type))
           .col-1.p-0.text-center
             =link_to(icon('fa', 'pencil', class: ' fa-xs text-dark'), edit_story_type_path(story_type), remote: true)
-      .col-sm-1.col-lg-1.p-0{id: "story_type_#{story_type.id}_template"}
+      .col-1.p-0{id: "story_type_#{story_type.id}_template"}
         =link_to(icon('fa', 'file-o', class: 'fa-lg text-dark'), edit_story_type_template_path(story_type, story_type.template), remote: true)
-      .col-sm-1.col-lg-1.p-0{id: "story_type_#{story_type.id}_properties"}
+      .col-1.p-0{id: "story_type_#{story_type.id}_properties"}
         =link_to(icon('fa', 'sliders', class: 'fa-lg text-dark'), story_type_properties_form_path(story_type), remote: true)
-      .col-sm-2.col-lg-2.p-0
+      .col-2.p-0
         -if story_type.developer
           =render 'story_types/developers/developer', story_type: story_type
         -else
           =render 'story_types/developers/form', story_type: story_type
-      .col-sm-2.col-lg-1.p-0
+      .col-1.p-0
         =story_type.status.name
-      .col-sm-1.col-lg-1.p-0{id: "story_type_#{story_type.id}_last_export"}
+      .col-1{id: "story_type_#{story_type.id}_last_export"}
         -if story_type.last_export
           =story_type.last_export.strftime('%D')
         -else
-          :escaped
-            ---
-    %hr/
+          \---
 -else
   .text-center{id: "story_type_#{story_type.id}"}
     .row

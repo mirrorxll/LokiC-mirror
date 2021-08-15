@@ -10,7 +10,7 @@ class CreateArticleTypes < ActiveRecord::Migration[6.0]
 
       t.string :name
       t.integer :gather_task
-      t.boolean :staging_table_attached, default: false
+      t.boolean :staging_table_attached
       t.timestamps
     end
   end

@@ -1,0 +1,10 @@
+-if @article_type.code.attached?
+  -if @iteration.population.nil?
+    =form_with(url: execute_article_type_iteration_populations_path(@article_type, @iteration)) do |form|
+      .row
+        .col-sm-8.col-lg-9.pr-1
+          =form.text_field 'population[args]', class: 'form-control w-100 h-100', value: @iteration.population_args
+        .col-sm-4.col-lg-3.pl-0
+          =form.submit 'populate', class: 'btn btn-outline-dark btn-sm w-100 border-dark'
+  -else
+    population success

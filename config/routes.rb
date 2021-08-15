@@ -45,7 +45,130 @@ Rails.application.routes.draw do
     get :properties, on: :member
 
     resources :story_types, only: %i[new create]
+    resources :article_types, only: %i[new create]
   end
+
+  resources :article_types, except: %i[new create] do
+    get   :properties_form
+    get   :canceling_rename,  on: :member
+    patch :update_sections,   on: :member
+    patch :change_data_set,   on: :member
+
+    scope module: :article_types do
+      resources :templates, path: :template, only: %i[show edit update] do
+        patch :save, on: :member
+      end
+
+      resources :progress_statuses, only: [] do
+        patch :change, on: :collection
+      end
+
+      resources :frequencies, path: :frequency, only: [] do
+        post   :include, on: :collection
+        delete :exclude, on: :member
+      end
+
+      resources :developers, only: [] do
+        patch   :include, on: :collection
+        delete  :exclude, on: :member
+      end
+
+      resources :staging_tables, only: %i[show create destroy] do
+        post    :attach,         on: :collection
+        delete  :detach,         on: :member
+        patch   :sync,           on: :member
+        get     :canceling_edit, on: :collection
+
+        resources :columns, controller: :staging_table_columns, only: %i[edit update]
+        resources :indices, controller: :staging_table_indices, only: %i[new create destroy]
+      end
+
+      resources :codes, only: [] do
+        get    :show,   on: :collection
+        post   :attach, on: :collection
+        put    :reload, on: :collection
+      end
+
+      resources :fact_checking_docs do
+        get   :template
+        post  :send_to_reviewers_channel
+        patch :save, on: :member
+
+        resources :reviewers_feedback, only: %i[new create] do
+          patch :confirm, on: :member
+        end
+
+        resources :editors_feedback, only: %i[new create] do
+          patch :confirm, on: :member
+        end
+      end
+
+      resources :iterations, controller: :iterations, only: %i[create update] do
+        patch :apply, on: :member
+        delete :purge, on: :member
+
+        resources :populations, controller: :populations, path: :populate, only: [] do
+          post   :execute, on: :collection
+          delete :purge,   on: :collection
+        end
+
+        resources :samples, only: %i[index show] do
+          post   :create_and_gen_auto_feedback, on: :collection
+          delete :purge_sampled, on: :collection
+        end
+
+        resources :auto_feedback_confirmations, only: [] do
+          patch :confirm, on: :member
+        end
+
+        resources :creations, only: [] do
+          post   :execute,   on: :collection
+          delete :purge, on: :collection
+        end
+      end
+    end
+  end
+
+  resources :scrape_tasks, except: :destroy do
+    get   :cancel_edit
+    patch :evaluate
+
+    resources :progress_statuses, controller: :scrape_task_statuses, only: [] do
+      patch :change, on: :collection
+    end
+
+    resource :scrape_instruction, only: %i[edit update] do
+      get :cancel_edit
+    end
+
+    resource :scrape_evaluation_doc, only: %i[edit update] do
+      get :cancel_edit
+    end
+  end
+
+  resources :shown_samples,        controller: 'story_types/shown_samples',        only: :index
+  resources :exported_story_types, controller: 'story_types/exported_story_types', only: :index
+  resources :production_removals,  only: :index
+
+  resources :tracking_hours, only: %i[new create update destroy index] do
+    post   :submit_forms,  on: :collection
+    delete :exclude_row,   on: :member
+
+    post   :add_form,      on: :collection
+    get    :assembleds,    on: :collection
+    post   :google_sheets, on: :collection
+    post   :properties,    on: :collection
+    post   :import_data,   on: :collection
+    get    :dev_hours,     on: :collection
+    post   :confirm,       on: :collection
+  end
+
+  resources :developers_productions, only: [] do
+    get :scores,          on: :collection
+    get :show_hours,      on: :collection
+    get :exported_counts, on: :collection
+  end
+
 
   resources :story_types, except: %i[new create] do
     get   :properties_form
@@ -179,46 +302,6 @@ Rails.application.routes.draw do
         patch :turn_off
       end
     end
-  end
-
-  resources :scrape_tasks, except: :destroy do
-    get   :cancel_edit
-    patch :evaluate
-
-    resources :progress_statuses, controller: :scrape_task_statuses, only: [] do
-      patch :change, on: :collection
-    end
-
-    resource :scrape_instruction, only: %i[edit update] do
-      get :cancel_edit
-    end
-
-    resource :scrape_evaluation_doc, only: %i[edit update] do
-      get :cancel_edit
-    end
-  end
-
-  resources :shown_samples,        controller: 'story_types/shown_samples',        only: :index
-  resources :exported_story_types, controller: 'story_types/exported_story_types', only: :index
-  resources :production_removals,  only: :index
-
-  resources :tracking_hours, only: %i[new create update destroy index] do
-    post   :submit_forms,  on: :collection
-    delete :exclude_row,   on: :member
-
-    post   :add_form,      on: :collection
-    get    :assembleds,    on: :collection
-    post   :google_sheets, on: :collection
-    post   :properties,    on: :collection
-    post   :import_data,   on: :collection
-    get    :dev_hours,     on: :collection
-    post   :confirm,       on: :collection
-  end
-
-  resources :developers_productions, only: [] do
-    get :scores,          on: :collection
-    get :show_hours,      on: :collection
-    get :exported_counts, on: :collection
   end
 
   resources :tasks do

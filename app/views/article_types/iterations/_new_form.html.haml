@@ -1,0 +1,4 @@
+.small
+  =form_with(url: article_type_iterations_path(@article_type), local: true) do |form|
+    =form.text_field 'iteration[name]', placeholder: 'new iteration name', required: true
+    =form.submit :create

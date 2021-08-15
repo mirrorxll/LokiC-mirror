@@ -1,0 +1,22 @@
+-report = @iteration.exported&.manager_post_export_report&.answers || {}
+
+#manager_questions.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "manager_questions", role: "dialog", tabindex: "-1" }
+  .modal-dialog.modal-dialog-centered.modal-xl.modal-dialog-scrollable
+    .modal-content
+      .modal-header
+        %h5.modal-title
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", type: "button"}
+          %span{"aria-hidden" => "true"} ×
+      .modal-body
+        =form_with(url: submit_manager_report_story_type_iteration_exported_story_types_path(@story_type, @iteration)) do |form|
+          -manager_questions.each do |q_id, question|
+            .ml-2.mb-2
+              .mb-2
+                =question
+              -if q_id.in?(%w[q8 q9])
+                =form.text_area "answers[#{q_id}]", class: 'w-75', rows: '4', required: true, value: report[q_id]
+              -else
+                =form.text_field "answers[#{q_id}]", required: true, value: report[q_id]
+              %br/
+          .modal-footer
+            =form.submit 'submit report'

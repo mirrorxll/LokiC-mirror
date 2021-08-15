@@ -2,6 +2,9 @@
 
 module StoryTypes
   class EditorsFeedbackController < ApplicationController
+    skip_before_action :find_parent_article_type
+    skip_before_action :set_article_type_iteration
+
     before_action :render_403_developer, only: %i[new create], if: :developer?
     before_action :render_403_editor, only: :confirm, if: :editor?
     before_action :find_fcd, only: %i[create confirm]

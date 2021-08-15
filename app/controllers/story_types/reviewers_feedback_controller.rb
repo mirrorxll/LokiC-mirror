@@ -2,6 +2,9 @@
 
 module StoryTypes
   class ReviewersFeedbackController < ApplicationController
+    skip_before_action :find_parent_article_type
+    skip_before_action :set_article_type_iteration
+
     before_action :find_fcd,                       only: %i[create confirm]
     before_action :find_feedback,                  only: %i[create confirm]
     after_action  :send_notifications,             only: :create

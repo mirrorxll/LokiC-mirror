@@ -1,0 +1,28 @@
+-report = @iteration.exported&.editor_post_export_report&.answers || {}
+
+#editor_questions.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "editor_questions", role: "dialog", tabindex: "-1" }
+  .modal-dialog.modal-dialog-centered.modal-xl.modal-dialog-scrollable
+    .modal-content
+      .modal-header
+        %h5.modal-title
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", type: "button"}
+          %span{"aria-hidden" => "true"} ×
+      .modal-body
+        =form_with(url: submit_editor_report_story_type_iteration_exported_story_types_path(@story_type, @iteration)) do |form|
+          -editor_questions.each do |q_id, question|
+            .ml-2.mb-2
+              .mb-2
+                ="#{q_id[1..-1]}. #{question}"
+              =form.radio_button "answers[#{q_id}]", true, checked: report[q_id].eql?(true), required: true
+              =form.label q_id, 'yes', class: 'mr-2'
+              =form.radio_button "answers[#{q_id}]", false, checked: report[q_id].eql?(false), required: true
+              =form.label q_id, 'no'
+              %br/
+          %hr/
+          .ml-2.mb-2
+            .mb-2
+              =form.label :comment, 'Comment:'
+              %br/
+              =form.text_area "answers[comment]", class: 'mr-2 w-50', rows: 4, value: report['comment']
+          .modal-footer
+            =form.submit 'submit report'

@@ -1,0 +1,50 @@
+#info.small.pt-3.pb-3
+  .row
+    .col-1.text-right
+      developer:
+    .col-11
+      #{@story_type.developer.name}
+
+  .row
+    .col-1.text-right
+      iteration:
+    .col-11
+      #{@iteration.name}
+
+  .row
+    .col-1.text-right
+      total stories:
+    .col-11
+      #{@stories_count[0] + @stories_count[1]}
+
+  -if @iteration.schedule
+    .row
+      .col-1.text-right
+        main export:
+      .col-11
+        #{@stories_count[0]}
+    .row
+      .col-1.text-right
+        backdated:
+      .col-11
+        #{@stories_count[1]}
+
+#filter_form.collapse
+  .row.mt-3.col-12
+    =datagrid_form_for @iteration_stories_grid, url: story_type_iteration_samples_path(@story_type, @iteration)
+
+=link_to('download as CSV', url_for(format: 'csv', iteration_stories_grid: @grid_params),
+  type: "button", id: '#save_as_csv_btn', class: 'btn btn-sm btn-outline-dark')
+=link_to('filter samples', '#filter_form', 'aria-controls' => 'filter_form',
+  'aria-expanded' => false, data: { toggle: "collapse", target: "#filter_form" },
+  type: "button", id: '#crt_upd_filter_btn', class: 'btn btn-sm btn-outline-dark')
+
+%hr.mt-1.mb-3/
+=paginate @iteration_stories_grid.assets
+
+#samples_datagrid
+  =datagrid_table(@iteration_stories_grid)
+
+%hr.mb-3/
+=paginate @iteration_stories_grid.assets
+%hr/

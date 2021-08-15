@@ -1,11 +1,16 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
+  impersonates :account
+
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :authenticate_account!
+
   before_action :find_parent_story_type
-  before_action :set_iteration
-  impersonates :account
+  before_action :set_story_type_iteration
+
+  before_action :find_parent_article_type
+  before_action :set_article_type_iteration
 
   private
 
@@ -18,12 +23,25 @@ class ApplicationController < ActionController::Base
     @story_type = StoryType.find(params[:story_type_id])
   end
 
-  def set_iteration
+  def find_parent_article_type
+    @article_type = ArticleType.find(params[:article_type_id])
+  end
+
+  def set_story_type_iteration
     @iteration =
       if params[:iteration_id]
         StoryTypeIteration.find(params[:iteration_id])
       else
         @story_type.iteration
+      end
+  end
+
+  def set_article_type_iteration
+    @iteration =
+      if params[:iteration_id]
+        ArticleTypeIteration.find(params[:iteration_id])
+      else
+        @article_type.iteration
       end
   end
 

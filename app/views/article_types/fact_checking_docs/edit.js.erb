@@ -1,0 +1,43 @@
+(() => {
+    document.getElementById('fcd_control').classList.add('d-none')
+    let body = document.getElementById('fcd_body');
+    let fcd = body.innerHTML;
+
+    body.innerHTML = `<%= j render 'form' %>`
+
+    let fcdEditor = $('#fcd_editable [data-editor="summernote"]')
+    fcdEditor.summernote({
+        height: 700,
+        toolbar: [
+            ['style', ['style']],
+            ['font', ['clear', 'bold', 'italic', 'underline', 'strikethrough']],
+            ['fontname', ['fontname', 'fontsize']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['table', ['table']],
+            ['insert', ['link', 'picture', 'video']],
+            ['view', ['fullscreen', 'codeview', 'help']],
+        ]
+    });
+    fcdEditor.summernote('code', fcd);
+
+    sessionStorage['fcdSaverId'] = setInterval(fcdSaver, 30000);
+}).call();
+
+function fcdSaver() {
+    let fcdHTML = document.querySelector('#fcd_editable .note-editable').children;
+    let reducer = (acc, curr)=>{ return acc + curr.outerHTML};
+    let fcdStr = Array.from(fcdHTML).reduce(reducer, '');
+
+    $.ajax({
+        url: '<%= save_story_type_fact_checking_doc_url(@story_type, @fcd) %>',
+        data: { fact_checking_doc: { body: fcdStr } },
+        method: 'patch',
+        dataType: 'script'
+    });
+}
+
+function stopFcdSaver() {
+    clearInterval(sessionStorage['fcdSaverId'])
+    sessionStorage.removeItem('fcdSaverId')
+}

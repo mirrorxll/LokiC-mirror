@@ -3,7 +3,9 @@
 ActiveAdmin.setup do |config|
   config.use_webpacker = true
   config.skip_before_action :find_parent_story_type
-  config.skip_before_action :set_iteration
+  config.skip_before_action :set_story_type_iteration
+  config.skip_before_action :find_parent_article_type
+  config.skip_before_action :set_article_type_iteration
   # == Site Title
   # Set the title that is displayed on the main layout
   # for each of the active admin pages.

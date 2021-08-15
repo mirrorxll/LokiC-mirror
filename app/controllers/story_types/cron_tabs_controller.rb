@@ -2,6 +2,9 @@
 
 module StoryTypes
   class CronTabsController < ApplicationController
+    skip_before_action :find_parent_article_type
+    skip_before_action :set_article_type_iteration
+
     before_action :cron_tab
     after_action :setup_cron_tab, only: %i[create update]
 
