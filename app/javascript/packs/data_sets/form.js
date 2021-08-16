@@ -1,7 +1,7 @@
 let clientsSelect = document.getElementsByClassName('clients_select')
 for(let i = 0; i < clientsSelect.length; i++) {
     clientsSelect[i].addEventListener('change', publicationsByClient)
-    // clientsSelect[i].addEventListener('change', tagsByPublication)
+    clientsSelect[i].addEventListener('change', tagsByPublication)
 }
 
 let removeX = document.getElementsByClassName('remove_x')
@@ -34,7 +34,7 @@ window.$('#add_client').on('click', (e)=> {
     clientsSelect.className = 'form-control form-control-sm clients_select'
     clientsSelect.required = true
     clientsSelect.addEventListener('change', publicationsByClient)
-    // clientsSelect.addEventListener('change', tagsByPublication)
+    clientsSelect.addEventListener('change', tagsByPublication)
 
     let tagsSelect = document.createElement('select')
     tagsSelect.appendChild(document.createElement('option'))
@@ -97,7 +97,6 @@ function secureRandom(n){
     while (n--){
         result += Math.floor(Math.random() * 16).toString(16);
     }
-
     return result;
 }
 
@@ -120,11 +119,19 @@ function addClientsToSelectGroup(uId, clientsFromApi = null) {
 }
 
 function tagsByPublication(event) {
-    let publicationId = event.target.parentNode.parentNode.getElementsByClassName('publications_select')[0].value;
+    var publicationId = event.target.parentNode.parentNode.getElementsByClassName('publications_select')[0].value;
     let clientId = event.target.parentNode.parentNode.getElementsByClassName('clients_select')[0].value;
 
-    console.log('///////////')
-    if(clientId === '' || publicationId === '') return false;
+    if(publicationId === ''){
+        window.$.ajax({
+            url: `${window.location.origin}/api/clients/local_publication`,
+            dataType: 'json',
+            async: false,
+            success: (local_publication_id)=> { publicationId = local_publication_id.attached }
+        });
+    }
+
+    if(clientId === '') return false;
 
     let tagsSelect = event.target.parentNode.parentNode.getElementsByClassName('tags_select')[0]
 
@@ -178,7 +185,7 @@ function publicationsByClient(event) {
 }
 
 function addPublicationsToSelectGroup(publicationsSelect, publications) {
-    let option = null
+    let option = null;
 
     for (let i = 0; i < publications.length; i++) {
         option = document.createElement("option");
@@ -186,9 +193,7 @@ function addPublicationsToSelectGroup(publicationsSelect, publications) {
         option.text = publications[i].name;
         publicationsSelect.appendChild(option);
     }
-
 }
-
 
 function removeClientTag(e) {
     e.target.parentNode.parentNode.remove();
