@@ -60,8 +60,9 @@ class SchedulerJob < ApplicationJob
 
   def backdate_params(options)
     options.each_with_object({}) do |(_key, schedule), hash|
-      date = schedule[:date]
-      hash[date] = schedule[:where]
+      time_frame = schedule[:time_frame]
+      schedule[:end_date] = schedule[:begin_date] if schedule[:end_date].blank?
+      hash[time_frame] = [schedule[:begin_date], schedule[:end_date]]
     end
   end
 
@@ -77,6 +78,9 @@ class SchedulerJob < ApplicationJob
 
   def manual_params(options)
     options.each_with_object([]) do |(_key, schedule), array|
+      time_frame_ids = TimeFrame.where(frame: schedule[:time_frame]).ids
+      raise 'Error name of time frame' if time_frame_ids.blank? && !schedule[:time_frame].blank?
+      schedule[:time_frame] = time_frame_ids
       array << schedule
     end
   end

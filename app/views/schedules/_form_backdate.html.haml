@@ -7,7 +7,6 @@
       #add_date.btn.btn-sm.btn-outline-dark.ml-2
         =icon('fa', 'plus')
 
-
 :javascript
   var editable_block = $('#dates_editable');
   $('#add_date').click(function () {
@@ -15,9 +14,10 @@
 
     $(editable_block).append(
         `<div id="date_${hex}" class="mb-1">
-            <div class="remove_date d-inline-block" id="rm_date_${hex}" onclick="removeDate(this)"><i class="fas fa-minus"></i></div>
-            <input id="dates_${hex}_name" required="required" type="date" name="backdate[${hex}[date]]">
-            <input placeholder="staging table where:" id="arg_${hex}_name" type="name" name="backdate[${hex}[where]]">
+            <div class="remove_date d-inline-block" id="rm_date_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
+            <input placeholder="begin date:" id="begin_date_${hex}_name" required="required" type="date" name="backdate[${hex}[begin_date]]">
+            <input placeholder="end date:" id="end_date_${hex}_name" required="required" type="date" name="backdate[${hex}[end_date]]">
+            <input placeholder="time_frame:" id="arg_${hex}_name" type="name" name="backdate[${hex}[time_frame]]">
         </div>`
     );
   });

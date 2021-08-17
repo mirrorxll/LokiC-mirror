@@ -35,8 +35,9 @@ module MiniLokiC
           array_options.each { |options| old_scheduler(samples, options) }
         end
 
-        def self.get_samples(samples, extra_args)
-          if extra_args == '' || extra_args.nil?
+        def self.get_samples(samples, extra_args, time_frame)
+          samples = samples.where(time_frame: time_frame) unless time_frame.blank?
+          if extra_args.blank?
             samples = samples.where(published_at: nil)
           else
             stage_ids = ExtraArgs.stage_ids(samples.first.iteration.story_type.staging_table.name, extra_args)
@@ -48,7 +49,8 @@ module MiniLokiC
         def self.old_scheduler(samples, options)
           options = check_and_define_args(options)
           iteration = samples.first.iteration
-          samples = get_samples(samples, options[:extra_args])
+
+          samples = get_samples(samples, options[:extra_args], options[:time_frame])
 
           publications = samples.group(:publication_id).count
 
