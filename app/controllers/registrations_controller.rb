@@ -17,10 +17,10 @@ class RegistrationsController < Devise::RegistrationsController # :nodoc:
       slack_account.update!(account: current_account)
     end
 
-    fc_channel = FactCheckingChannel.find_by(fc_channel_params)
-    if fc_channel
-      current_account.fc_channel&.update!(account: nil)
-      fc_channel.update!(account: current_account)
+    fact_checking_channel = FactCheckingChannel.find_by(fc_channel_params)
+    if fact_checking_channel
+      current_account.fact_checking_channel&.update!(account: nil)
+      fact_checking_channel.update!(account: current_account)
     end
   end
 
