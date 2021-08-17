@@ -121,13 +121,11 @@ module MiniLokiC
 
         # Set default values if args have not been passed
         def self.check_and_define_args(args)
-          unless args[:limit] || args[:end_date] || args[:total_days_till_end]
+          unless args[:limit] || args[:total_days_till_end]
             raise ArgumentError, 'you need to provide limit and/or end_date/total days till end date args!'
           end
 
           args[:start_date] = Date.parse(args[:start_date]) if args[:start_date]
-          args[:end_date] = Date.parse(args[:end_date]) if args[:end_date]
-          args[:start_date] = Date.today unless args[:start_date]
 
           if args[:start_date] < Date.today && args[:previous_date].to_i.zero?
             raise ArgumentError, 'invalid start_date - should be >= today! (correct format: yyyy-mm-dd)'
@@ -139,51 +137,17 @@ module MiniLokiC
             raise ArgumentError, 'invalid limit (needs to be an int value, > 0)'
           end
 
-          unless args[:total_days_till_end].to_s.empty?
-            if args[:end_date]
-              raise ArgumentError, "invalid options - total_days_till_end_date can't be used with end_date - choose one"
-            elsif args[:total_days_till_end].to_i < 1
-              raise ArgumentError, 'invalid total_days_till_end_date - should be integer > 0'
-            end
+          if args[:total_days_till_end].to_s.empty?
+            raise ArgumentError, 'invalid options - total_days_till_end_date need'
+          end
+
+          if args[:total_days_till_end].to_i < 1
+            raise ArgumentError, 'invalid total_days_till_end_date - should be integer > 0'
           end
 
           if args[:total_days_till_end].to_i > 0
             args[:end_date] = args[:start_date] + args[:total_days_till_end].to_i - 1
           end
-          if args[:weekdays]
-            weekdays = args[:weekdays].split(/[ ,]+/) if /[ ,]+/.match(args[:weekdays])
-            if weekdays&.is_a?(Array) && !(weekdays & ALL_WEEKDAYS).empty?
-              args[:weekdays] = weekdays
-            else
-              raise ArgumentError, 'invalid weekdays (needs to be comma and/or space separated; possible values are: m tu w th f sa su)'
-            end
-          end
-
-          if args[:frequency]
-            unless POSSIBLE_FREQUENCY.include? args[:frequency]
-              raise ArgumentError, 'invalid frequency (only accepts: weekly, monthly or quarterly)'
-            end
-          end
-
-          args[:weekdays] = ALL_WEEKDAYS unless args[:weekdays]
-          args[:frequency] = 'weekly' unless args[:frequency]
-
-          args[:end_date] = false unless args[:end_date]
-
-          if args[:overwrite] && (args[:overwrite] != 'true' && args[:overwrite] != 'force' && args[:overwrite] != 'false' && args[:overwrite] != 0.to_s && args[:overwrite] != 1.to_s)
-            raise ArgumentError, 'invalid overwrite arg (needs to be force, true, false, 0 or 1)'
-          end
-
-          if args[:overwrite] && (args[:overwrite] == 'true' || args[:overwrite] == 1.to_s)
-            args[:overwrite] = true
-          elsif args[:overwrite] != 'force'
-            args[:overwrite] = false
-          end
-
-          if args[:end_date] && args[:end_date] < args[:start_date]
-            raise ArgumentError, 'invalid end_date - should be >= start_date! (correct format: yyyy-mm-dd)'
-          end
-
           args
         end
 

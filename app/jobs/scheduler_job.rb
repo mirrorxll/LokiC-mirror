@@ -17,13 +17,13 @@ class SchedulerJob < ApplicationJob
         samples = iteration.samples
 
         case type
-        when 'manual'
+        when :manual
           MiniLokiC::Creation::Scheduler::Base.run_schedule(samples, manual_params(options))
-        when 'backdate'
+        when :backdate
           MiniLokiC::Creation::Scheduler::Backdate.backdate_scheduler(samples, backdate_params(options))
-        when 'auto'
+        when :auto
           MiniLokiC::Creation::Scheduler::Auto.run_auto(samples, auto_params(options))
-        when 'run-from-code'
+        when :run_from_code
           MiniLokiC::Creation::Scheduler::FromCode.run_from_code(samples, options)
         end
 

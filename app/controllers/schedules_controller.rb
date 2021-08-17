@@ -5,19 +5,19 @@ class SchedulesController < ApplicationController # :nodoc:
 
   def manual
     @iteration.update!(schedule: false, current_account: current_account)
-    SchedulerJob.perform_later(@iteration, 'manual', manual_params, current_account)
+    SchedulerJob.perform_later(@iteration, :manual, manual_params, current_account)
     render 'hide_section'
   end
 
   def backdate
     @iteration.update!(schedule: false, current_account: current_account)
-    SchedulerJob.perform_later(@iteration, 'backdate', backdated_params, current_account)
+    SchedulerJob.perform_later(@iteration, :backdate, backdated_params, current_account)
     render 'hide_section'
   end
 
   def auto
     @iteration.update!(schedule: false, current_account: current_account)
-    SchedulerJob.perform_later(@iteration, 'auto', auto_params, current_account)
+    SchedulerJob.perform_later(@iteration, :auto, auto_params, current_account)
     render 'hide_section'
   end
 
@@ -42,7 +42,7 @@ class SchedulesController < ApplicationController # :nodoc:
   end
 
   def type_params
-    params.permit(:type)
+    params.permit(:type, :story_type_id, :iteration_id)
   end
 
   def auto_params
