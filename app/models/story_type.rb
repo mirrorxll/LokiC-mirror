@@ -33,9 +33,9 @@ class StoryType < ApplicationRecord
   belongs_to :current_iteration, optional: true, class_name: 'StoryTypeIteration'
   belongs_to :status,            optional: true
 
-  has_one :staging_table
-  has_one :template, as: :template
-  has_one :fact_checking_doc, as: :fcd
+  has_one :staging_table, as: :staging_tableable
+  has_one :template, as: :templateable
+  has_one :fact_checking_doc, as: :fcdable
   has_one :cron_tab
   has_one :reminder
 
@@ -64,7 +64,7 @@ class StoryType < ApplicationRecord
   end
 
   def download_code_from_db
-    MiniLokiC::Code[self].download
+    MiniLokiC::StoryTypeCode[self].download
   end
 
   def client_pl_ids

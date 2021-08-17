@@ -6,7 +6,6 @@ module ArticleTypes
     skip_before_action :set_story_type_iteration
     skip_before_action :set_article_type_iteration
 
-    before_action :render_403, if: :developer?
     before_action :find_developer, only: :include
 
     def include

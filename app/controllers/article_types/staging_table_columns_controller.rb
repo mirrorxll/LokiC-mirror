@@ -19,7 +19,7 @@ module ArticleTypes
         nil
       end
 
-      render 'story_types/staging_tables/show'
+      render 'article_types/staging_tables/show'
     end
 
     private
@@ -36,7 +36,7 @@ module ArticleTypes
     end
 
     def staging_table
-      @staging_table = @story_type.staging_table
+      @staging_table = @article_type.staging_table
     end
   end
 end

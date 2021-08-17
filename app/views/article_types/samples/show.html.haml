@@ -8,51 +8,9 @@
     .col-10.offset-1
       =link_to("article type's code", article_type_codes_path(@article_type),
                class: 'btn btn-sm btn-outline-dark', remote: true)
-      =link_to("auto-feedback", "#autoFeedbackCollapse", "aria-controls" => "autoFeedbackCollapse", "aria-expanded" => "false",
-               "data-toggle" => "collapse", role: "button", class: 'btn btn-sm btn-outline-dark', onclick: 'hideAllPopovers();')
 %hr/
-#autoFeedbackCollapse.row.collapse
-  .col-10.offset-1
-    =render 'article_types/auto_feedback/form', auto_feedback: @iteration.auto_feedback_confirmations
 %hr/
 #article_sample
-  .row.small
-    .col-1.p-0.text-right.font-weight-bold
-      author:
-    .col-10
-      =@sample.publication.name
-
-  .row.small
-    .col-1.p-0.text-right.font-weight-bold
-      client:
-    .col-10
-      =@sample.client.name
-
-  .row.small
-    .col-1.p-0.text-right.font-weight-bold
-      publication:
-    .col-10
-      =@sample.publication.name
-
-  .row.small
-    .col-1.p-0.text-right.font-weight-bold
-      photo buckets:
-    .col-10
-      -photo_bucket = @sample.iteration.article_type.photo_bucket
-      =link_to("#{photo_bucket.name}", "https://pipeline.locallabs.com/media/buckets/#{photo_bucket.id}", target: '_blank')
-  %hr/
-
-  .row.mb-2.small
-    .col-1.p-0.text-right.font-weight-bold
-      headline:
-    .col-10
-      =@sample.output.headline
-  .row.mb-2.small
-    .col-1.p-0.text-right.font-weight-bold
-      teaser:
-    .col-10
-      =@sample.output.teaser
-
   .row.small
     .col-1.p-0.text-right.font-weight-bold
       body:
@@ -69,11 +27,3 @@
       svgTags[i].parentNode.classList.add(`svg_graph_lokic_${i}`)
     }
   })();
-
-  function hideAllPopovers() {
-    let fbOutputs = document.querySelectorAll('[id^="feedback_output_"]');
-
-    Array.from(fbOutputs).forEach((output)=> {
-      $(output).popover('hide')
-    });
-  }

@@ -9,7 +9,7 @@ module StoryTypes
 
     def execute
       @iteration.update!(creation: false, current_account: current_account)
-      CreationJob.perform_later(@iteration, current_account: current_account)
+      CreationJob.perform_later(@iteration, current_account)
     end
 
     def purge

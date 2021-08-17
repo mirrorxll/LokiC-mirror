@@ -26,7 +26,12 @@ module ArticleTypes
         @iteration.update!(iteration_args)
       end
 
-      render 'story_types/staging_tables/show'
+      render 'article_types/staging_tables/show'
+    end
+
+    def purge
+      @iteration.update!(purge_population: false, current_account: current_account)
+      PurgePopulationJob.perform_later(@staging_table, @iteration, current_account)
     end
 
     private
@@ -39,7 +44,7 @@ module ArticleTypes
     end
 
     def staging_table
-      @staging_table = @story_type.staging_table
+      @staging_table = @article_type.staging_table
     end
   end
 end

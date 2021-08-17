@@ -1,8 +1,7 @@
 -status = @story_type.status
 
 .current_progress_status
-  =link_to(status.name, '#',
-        class: "badge badge-pill badge-#{status_color(status.name)}")
+  =link_to(status.name, '#', class: "badge badge-pill badge-#{status_color(status.name)}")
 
 .change_progress_status_form.d-none
   =form_with(url: change_story_type_progress_statuses_path(@story_type, @iteration),

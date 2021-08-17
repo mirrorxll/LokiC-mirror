@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ApplicationHelper
   def tab_title
     @tab_title || 'LokiC'
@@ -12,12 +14,10 @@ module ApplicationHelper
   end
 
   def correct_account?(record)
-    if (current_account.types & ['manager', 'editor']).any?
-      true
-    elsif record.developer == current_account
+    if (current_account.types & ['manager']).any?
       true
     else
-      false
+      record.developer == current_account
     end
   end
 end

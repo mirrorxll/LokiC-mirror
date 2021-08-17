@@ -16,7 +16,7 @@ class PopulationJob < ApplicationJob
       fork do
         rd.close
 
-        MiniLokiC::Code[story_type].execute(:population, population_args)
+        MiniLokiC::StoryTypeCode[story_type].execute(:population, population_args)
 
         unless story_type.status.name.eql?('in progress')
           story_type.update!(status: Status.find_by(name: 'in progress'), current_account: account)

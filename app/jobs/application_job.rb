@@ -5,10 +5,9 @@ class ApplicationJob < ActiveJob::Base
 
   private
 
-  def send_to_action_cable(iteration, section, message)
+  def send_to_action_cable(story_type, section, message)
     message_to_send = { iteration_id: iteration.id, message: { key: section, section => message } }
-
-    IterationChannel.broadcast_to(iteration, message_to_send)
+    StoryTypeChannel.broadcast_to(story_type, message_to_send)
   end
 
   def generate_url(model)

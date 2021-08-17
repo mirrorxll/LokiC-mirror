@@ -17,9 +17,9 @@ class ArticleType < ApplicationRecord
   belongs_to :status,            optional: true
   belongs_to :current_iteration, optional: true, class_name: 'ArticleTypeIteration'
 
-  has_one :staging_table
-  has_one :template, as: :template
-  has_one :fact_checking_doc, as: :fcd
+  has_one :staging_table, as: :staging_tableable
+  has_one :template, as: :templateable
+  has_one :fact_checking_doc, as: :fcdable
 
   has_one_attached :code
 
@@ -39,6 +39,6 @@ class ArticleType < ApplicationRecord
   end
 
   def download_code_from_db
-    MiniLokiC::Code[self].download
+    MiniLokiC::ArticleTypeCode[self].download
   end
 end

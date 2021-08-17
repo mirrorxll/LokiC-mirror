@@ -7,7 +7,7 @@ class StagingTableIndexDropJob < ApplicationJob
     Process.wait(
       fork do
         message = "Success. Staging table's main index dropped"
-        staging_table.index.drop
+        staging_table.index.drop(:story_per_publication)
         staging_table.sync
 
       rescue StandardError, ScriptError => e

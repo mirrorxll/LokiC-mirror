@@ -1,4 +1,4 @@
--if @article_type.code.attached?
+-if @article_type.code.attached? && @article_type.staging_table.index.list.present?
   -if @iteration.population.nil?
     =form_with(url: execute_article_type_iteration_populations_path(@article_type, @iteration)) do |form|
       .row

@@ -24,7 +24,7 @@
     .card.border-top-0.rounded-0.mb-5
       .row
         .col-10.offset-1
-          %hr/
+          %hr.mb-1/
           #newStoryType
             .row
               .col-1
@@ -32,7 +32,7 @@
                 =button_to('[ create a new story type ]', new_data_set_story_type_path(@data_set),
                            method: :get, remote: true, class: 'p-0 pb-1 btn btn-sm btn-link ml-2',
                            data: { disable_with: '...'})
-          %hr/
+          %hr.mt-1/
       .mt-4
       =render partial: 'story_types/story_type', collection: @story_types
       .mt-4
@@ -40,7 +40,7 @@
     .card.border-top-0.rounded-top-0.mb-5
       .row
         .col-10.offset-1
-          %hr/
+          %hr.mb-1/
           #newArticleType
             .row
               .col-1
@@ -48,7 +48,7 @@
                 =button_to('[ create a new article type ]', new_data_set_article_type_path(@data_set),
                            method: :get, remote: true, class: 'p-0 pb-1 btn btn-sm btn-link ml-2',
                            data: { disable_with: '...'})
-          %hr/
+          %hr.mt-1/
 
       .mt-4
       =render partial: 'article_types/article_type', collection: @article_types

@@ -25,9 +25,11 @@
         .col-6#manipulate
           .btn-group
             -if @iteration.population.eql?(true)
-              =link_to('purge current iteration', purge_article_type_iteration_path(@article_type, @iteration),
+              =link_to('purge staging table', purge_article_type_iteration_populations_path(@article_type, @iteration),
                         class: 'btn btn-sm btn-outline-danger', method: :delete,  remote: true,
                         data: { confirm: 'PURGE CURRENT ITERATION: You sure?' })
+              .d-inline-flex.ml-3.align-items-end
+                ***will purge rows related to current iteration
             -elsif @iteration.created_at.to_s.eql?(@iteration.updated_at.to_s)
               =link_to('detach', detach_article_type_staging_table_path(@article_type, staging_table),
                         class: 'btn btn-sm btn-outline-danger', method: :delete,  remote: true,
@@ -44,11 +46,11 @@
                        class: 'btn btn-sm btn-outline-dark', remote: true)
             #edit_index.mb-2.ml-2
               -if staging_table.index.list.empty?
-                =link_to("add unique 'article per publication' index",
+                =link_to("add unique index",
                          new_article_type_staging_table_index_path(@article_type, staging_table),
                          class: "btn btn-sm btn-outline-dark #{columns.empty? ? 'disabled': ''}", remote: true)
-              -else
-                =link_to("drop unique 'article per publication' index",
+              -elsif !@iteration.population
+                =link_to("drop unique index",
                          article_type_staging_table_index_path(@article_type, staging_table, staging_table.index),
                          class: 'btn btn-sm btn-outline-dark', method: :delete, remote: true)
           %br
@@ -66,7 +68,7 @@
           %hr.mt-0/
           .row
             .col-6
-              %p article per publication uniq index: #{'index is empty or not set' unless uniq_index.present?}
+              %p article uniq index: #{'index is empty or not set' unless uniq_index.present?}
             .col-6
               -uniq_index.each do |index|
                 =index

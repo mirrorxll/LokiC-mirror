@@ -10,7 +10,7 @@ module StoryTypes
 
     def new
       staging_table_action do
-        @staging_table.index.drop
+        @staging_table.index.drop(:story_per_publication)
         @staging_table.sync
         @columns = @staging_table.reload.columns.names_ids
         nil
@@ -20,7 +20,7 @@ module StoryTypes
     def create
       staging_table_action do
         @staging_table.update!(indices_modifying: true)
-        StagingTableIndexAddJob.perform_later(@staging_table, uniq_index_params)
+        StagingTableIndexAddJob.perform_later(@staging_table, uniq_index_column_ids)
         nil
       end
 
@@ -39,7 +39,7 @@ module StoryTypes
 
     private
 
-    def uniq_index_params
+    def uniq_index_column_ids
       if params[:index]
         params.require(:index).permit(column_ids: [])[:column_ids].map!(&:to_sym)
       else

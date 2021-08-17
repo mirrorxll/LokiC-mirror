@@ -14,6 +14,7 @@ module MiniLokiC
 
       def insert(sample)
         raise ArgumentError, "time_frame can't be blank!" if sample[:time_frame].nil?
+        raise ArgumentError, "staging_row_id can't be blank!" if sample[:staging_row_id].nil?
 
         @raw_sample = sample
         Story.create!(sample_params)

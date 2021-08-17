@@ -1,13 +1,10 @@
--disabled = (!current_account.slack || !correct_account?(@story_type))
+-disabled = (!current_account.slack || !correct_account?(@article_type))
 
 .btn-group.w-100
-  =link_to('edit FCD', edit_story_type_fact_checking_doc_path(@story_type, @fcd),
+  =link_to('edit FCD', edit_article_type_fact_checking_doc_path(@article_type, @fcd),
            class: "btn btn-sm btn-light text-dark #{disabled ? 'disabled' : ''}", remote: true)
-  =link_to('template', story_type_fact_checking_doc_template_path(@story_type, @fcd),
+  =link_to('template', article_type_fact_checking_doc_template_path(@article_type, @fcd),
            class: 'btn btn-sm btn-light text-dark', remote: true)
-  =link_to('auto-feedback', '#autoFeedbackCollapse', "aria-controls" => "feedbackCollapse", 'aria-expanded' => 'false',
-           'data-target' => '#autoFeedbackCollapse', 'data-toggle' => 'collapse', onclick: 'hideAllPopovers();',
-           class: 'btn btn-sm btn-light text-dark')
   =button_tag('send FCD to reviewers', 'data-toggle'=>'modal', 'data-target'=>'#sendFCD',
               disabled: disabled, class: 'btn btn-sm btn-light text-dark', onclick: 'hideAllPopovers();')
 
@@ -20,7 +17,7 @@
           %b send FCD to hle_reviews_queue channel
         %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
           %span{"aria-hidden" => "true"} ×
-      =form_with(url: story_type_fact_checking_doc_send_to_reviewers_channel_path(@story_type, @fcd)) do |f|
+      =form_with(url: article_type_fact_checking_doc_send_to_reviewers_channel_path(@article_type, @fcd)) do |f|
         .modal-body
           .channel
           =f.hidden_field 'slack_message[channel]'

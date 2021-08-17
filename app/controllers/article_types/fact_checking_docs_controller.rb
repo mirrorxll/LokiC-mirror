@@ -8,7 +8,7 @@ module ArticleTypes
     before_action :find_fcd, except: :template
 
     def show
-      @tab_title = "LokiC::FCD ##{@story_type.id} #{@story_type.name}"
+      @tab_title = "LokiC::FCD ##{@article_type.id} #{@article_type.name}"
     end
 
     def edit; end
@@ -23,29 +23,29 @@ module ArticleTypes
       if @fcd.errors.any?
         render :edit
       else
-        redirect_to story_type_fact_checking_doc_path(@story_type, @fcd)
+        redirect_to article_type_fact_checking_doc_path(@article_type, @fcd)
       end
     end
 
     def template
-      @template = @story_type.template
+      @template = @article_type.template
 
       respond_to do |format|
         format.js { render 'template' }
-        format.html { redirect_to story_type_template_path(@story_type, @template) }
+        format.html { redirect_to article_type_template_path(@article_type, @template) }
       end
     end
 
     def send_to_reviewers_channel
       channel = Rails.env.production? ? 'hle_reviews_queue' : 'hle_lokic_development_messages'
-      response = SlackNotificationJob.perform_now(channel, message_to_slack)
+      response = ::SlackNotificationJob.perform_now(channel, message_to_slack)
       @fcd.update!(slack_message_ts: response[:ts])
     end
 
     private
 
     def find_fcd
-      @fcd = @story_type.fact_checking_doc
+      @fcd = @article_type.fact_checking_doc
     end
 
     def fcd_params
@@ -59,8 +59,8 @@ module ArticleTypes
     def message_to_slack
       info = send_to_reviewers_params
 
-      "*FCD* ##{@story_type.id} <#{story_type_fact_checking_doc_url(@story_type, @fcd)}|#{@story_type.name}>.\n"\
-      "*Developer:* #{@story_type.developer.name}.\n"\
+      "*Article Type FCD* ##{@article_type.id} <#{article_type_fact_checking_doc_url(@article_type, @fcd)}|#{@article_type.name}>.\n"\
+      "*Developer:* #{@article_type.developer.name}.\n"\
       "#{info[:note].present? ? "*Note*: #{info[:note]}" : ''}"
     end
   end

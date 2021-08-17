@@ -5,7 +5,6 @@ module ArticleTypes
     skip_before_action :find_parent_story_type
     skip_before_action :set_story_type_iteration
 
-    before_action :render_403, if: :editor?
     before_action :staging_table_name_from_params, only: :create
     before_action :staging_table
 

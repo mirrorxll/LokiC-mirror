@@ -17,11 +17,11 @@ class SamplesAndAutoFeedbackJob < ApplicationJob
 
         ids =
           if options[:cron]
-            Table.select_edge_ids(staging_table.name, publication_ids, [:id])
+            Table.select_edge_ids(staging_table.name, [:id], *publication_ids)
           else
             column_names = staging_table.columns.ids_to_names(options[:columns])
             sample_args = { columns: column_names, ids: options[:row_ids] }
-            edge_ids = Table.select_edge_ids(staging_table.name, publication_ids, column_names)
+            edge_ids = Table.select_edge_ids(staging_table.name, column_names, *publication_ids)
             row_ids = options[:row_ids].delete(' ').split(',')
             edge_ids + row_ids
           end
@@ -30,8 +30,8 @@ class SamplesAndAutoFeedbackJob < ApplicationJob
 
         sampled_before = iteration.stories.where(sampled: true).count
 
-        options = options.merge({ ids: ids.join(',') })
-        MiniLokiC::Code[iteration.story_type].execute(:creation, options)
+        options = options.merge({ ids: ids.join(','), type: 'story' })
+        MiniLokiC::StoryTypeCode[iteration.story_type].execute(:creation, options)
         Samples.auto_feedback(iteration, options[:cron])
 
         iteration.stories.where(staging_row_id: ids).update_all(sampled: true)
@@ -39,13 +39,12 @@ class SamplesAndAutoFeedbackJob < ApplicationJob
         sampled_after = iteration.stories.where(sampled: true).count
         message =
           if sampled_before.eql?(sampled_after)
-            "Samples haven't been created by passed params. Check it!"
+            "New samples haven't been created by passed params. Check it!"
           else
             'Success. Samples have been created'
           end
       rescue StandardError, ScriptError => e
         status = nil
-        pp e.full_message
         message = e.message
       ensure
         iteration.update!(samples_creation: status, current_account: account)

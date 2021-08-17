@@ -76,7 +76,7 @@ module StoryTypes
       fact_checking_channel = @story_type.developer&.fact_checking_channel&.name
       return unless fact_checking_channel || @feedback_collection.where(approvable: false).all?(&:confirmed)
 
-      message = "*Updated FCD* ##{@story_type.id} "\
+      message = "*Updated Story Type FCD* ##{@story_type.id} "\
                 "<#{story_type_fact_checking_doc_url(@story_type, @fcd)}|#{@story_type.name}>."
 
       SlackNotificationJob.perform_later(fact_checking_channel, message)

@@ -1,7 +1,7 @@
-=form_with(url: story_type_fact_checking_doc_path(@story_type, @fcd), method: :put, local: true) do |form|
+=form_with(url: article_type_fact_checking_doc_path(@article_type, @fcd), method: :put, local: true) do |form|
   =form.submit 'save', class: 'btn btn-sm btn-outline-dark', onclick: 'stopFcdSaver();'
   .btn-group.ml-3
-    =link_to('template', story_type_fact_checking_doc_template_path(@story_type, @fcd),
+    =link_to('template', article_type_fact_checking_doc_template_path(@article_type, @fcd),
              class: 'btn btn-sm btn-outline-dark', remote: true)
     =link_to('auto-feedback', '#autoFeedbackCollapse', "aria-controls" => "feedbackCollapse", "aria-expanded" => "false",
              "data-target" => "#autoFeedbackCollapse", "data-toggle" => "collapse", type: "button",

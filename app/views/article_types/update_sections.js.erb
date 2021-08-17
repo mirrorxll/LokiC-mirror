@@ -1,19 +1,19 @@
 (function () {
-    $('#story_type_status').html(`<%= j render 'story_types/progress_statuses/status' %>`);
+    $('#article_type_status').html(`<%= j render 'article_types/progress_statuses/status' %>`);
 
-    let expConfFlash = $('#story_type_properties .flash');
-    let expConfBody = $('#story_type_properties .card-body');
+    let expConfFlash = $('#article_type_properties .flash');
+    let expConfBody = $('#article_type_properties .card-body');
 
     <% if flash.now[:properties] %>
-    expConfFlash.html(
-        `<div class="alert alert-<%= flash_color(flash.now[:properties]) %> text-center">
-          <%= flash.now[:properties].gsub('`', "'") %>
-        </div>`
-    )
+      expConfFlash.html(
+          `<div class="alert alert-<%= flash_color(flash.now[:properties]) %> text-center">
+            <%= flash.now[:properties].gsub('`', "'") %>
+          </div>`
+      )
     <% else %>
-    expConfFlash.empty();
+      expConfFlash.empty();
     <% end %>
-    expConfBody.html('<%= j render 'story_types/properties'%>')
+    expConfBody.html('<%= j render 'article_types/properties' %>')
 
 
     let stFlash = $('#staging_table .flash');
@@ -28,7 +28,7 @@
     <% else %>
       stFlash.empty();
     <% end %>
-    stBody.html('<%= j render 'story_types/staging_tables/staging_table'%>')
+    stBody.html('<%= j render 'article_types/staging_tables/staging_table'%>')
 
 
     let samplesFlash = $('#samples .flash');
@@ -43,22 +43,7 @@
     <% else %>
       samplesFlash.empty();
     <% end %>
-    samplesBody.html('<%= j render 'story_types/samples/samples' %>')
-
-
-    let scheduleFlash = $('#scheduler .flash');
-    let scheduleBody = $('#scheduler .card-body');
-
-    <% if flash.now[:scheduler] %>
-      scheduleFlash.html(
-        `<div class="alert alert-<%= flash_color(flash.now[:scheduler]) %> text-center">
-          <%= flash.now[:scheduler].gsub('`', "'") %>
-        </div>`
-    )
-    <% else %>
-      scheduleFlash.empty();
-    <% end %>
-    scheduleBody.html('<%= j render 'story_types/schedules/scheduler'%>')
+    samplesBody.html('<%= j render 'article_types/samples/samples' %>')
 
 
     let exportFlash = $('#export .flash');
@@ -73,5 +58,5 @@
     <% else %>
       exportFlash.empty();
     <% end %>
-    exportBody.html('<%= j render 'story_types/exports/export' %>')
-})()
+    exportBody.html('<%= j render 'article_types/exports/export' %>')
+})();

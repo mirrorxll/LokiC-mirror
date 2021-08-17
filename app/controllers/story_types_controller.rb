@@ -6,15 +6,12 @@ class StoryTypesController < ApplicationController # :nodoc:
   skip_before_action :set_story_type_iteration
   skip_before_action :set_article_type_iteration
 
-
-  before_action :redirect_scrapers,     only: :index
-  before_action :render_403_editor,     only: :show, if: :editor?
-  before_action :render_403_developer,  only: %i[new create properties destroy], if: :developer?
-  before_action :find_data_set,         only: %i[new create]
-  before_action :find_story_type,       except: %i[index new create properties_form]
-  before_action :set_story_type_iteration,         except: %i[index new create properties_form change_data_set]
-  before_action :message,               only: :update_sections
-  before_action :find_current_data_set, only: :change_data_set
+  before_action :redirect_scrapers,        only: :index
+  before_action :find_data_set,            only: %i[new create]
+  before_action :find_story_type,          except: %i[index new create properties_form]
+  before_action :set_story_type_iteration, except: %i[index new create properties_form change_data_set]
+  before_action :message,                  only: :update_sections
+  before_action :find_current_data_set,    only: :change_data_set
 
   def index
     @grid_params = if request.parameters[:story_types_grid]

@@ -7,7 +7,7 @@ class AddForeignKeyStoryTypeToSamples < ActiveRecord::Migration[6.0]
     end
 
     StoryTypeIteration.all.each do |iter|
-      Sample.where(iteration: iter).update_all(story_type_id: iter.story_type.id)
+      Story.where(iteration: iter).update_all(story_type_id: iter.story_type.id)
     end
   end
 end

@@ -2,27 +2,27 @@
 
 module ArticleTypes
   class IterationsController < ApplicationController
-    skip_before_action :find_parent_story_type, only: :show
-    skip_before_action :find_parent_article_type
-    skip_before_action :set_iteration
+    skip_before_action :find_parent_story_type
+    skip_before_action :set_story_type_iteration
+    skip_before_action :set_article_type_iteration
 
     before_action :render_403, if: :editor?
     before_action :find_iteration, only: %i[show update apply purge]
     before_action :find_staging_table, only: :purge
 
     def show
-      @story_type = @iteration.story_type
+      @article_type = @iteration.article_type
 
-      render 'story_types/show'
+      render 'article_types/show'
     end
 
     def create
-      @iteration = @story_type.iterations.create!(iteration_params)
+      @iteration = @article_type.iterations.create!(iteration_params)
 
-      @story_type.update!(current_iteration: @iteration, current_account: current_account)
-      @story_type.staging_table&.default_iter_id
+      @article_type.update!(current_iteration: @iteration, current_account: current_account)
+      @article_type.staging_table&.default_iter_id
 
-      redirect_to @story_type
+      redirect_to @article_type
     end
 
     def update
@@ -30,10 +30,10 @@ module ArticleTypes
     end
 
     def apply
-      @story_type.update!(current_iteration: @iteration, current_account: current_account)
-      @story_type.staging_table&.default_iter_id
+      @article_type.update!(current_iteration: @iteration, current_account: current_account)
+      @article_type.staging_table&.default_iter_id
 
-      redirect_to @story_type
+      redirect_to @article_type
     end
 
     def purge
@@ -51,13 +51,13 @@ module ArticleTypes
         )
       end
 
-      render 'story_types/update_sections'
+      render 'article_types/show'
     end
 
     private
 
     def find_iteration
-      @iteration = StoryTypeIteration.find(params[:id])
+      @iteration = ArticleTypeIteration.find(params[:id])
     end
 
     def find_staging_table

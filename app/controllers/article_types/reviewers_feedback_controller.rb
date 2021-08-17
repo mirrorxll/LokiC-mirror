@@ -18,7 +18,7 @@ module ArticleTypes
       @feedback.approvable = params[:commit].eql?('approve!')
 
       if @feedback.save
-        redirect_to "#{story_type_fact_checking_doc_path(@story_type, @fcd)}#reviewers_feedback"
+        redirect_to "#{article_type_fact_checking_doc_path(@article_type, @fcd)}#reviewers_feedback"
       else
         flash.now[:message] = ''
       end
@@ -34,7 +34,7 @@ module ArticleTypes
     private
 
     def find_fcd
-      @fcd = @story_type.fact_checking_doc
+      @fcd = @article_type.fact_checking_doc
     end
 
     def find_feedback
@@ -46,23 +46,23 @@ module ArticleTypes
     end
 
     def send_notifications
-      fcd_channel = @story_type.developer&.fact_checking_channel&.name
-      developer_pm = @story_type.developer&.slack&.identifier
+      fcd_channel = @article_type.developer&.fact_checking_channel&.name
+      developer_pm = @article_type.developer&.slack&.identifier
       return if developer_pm.nil? || fcd_channel.nil?
 
-      message_to_dev = "*[ LokiC ] <#{story_type_url(@story_type)}|STORY TYPE ##{@story_type.id}> (#{@story_type.iteration.name}) | FCD*\n>"
+      message_to_dev = "*[ LokiC ] <#{article_type_url(@article_type)}|Article Type ##{@article_type.id}> (#{@article_type.iteration.name}) | FCD*\n>"
 
       if params[:commit].eql?('approve!')
         note = ActionView::Base.full_sanitizer.sanitize(@feedback.body)
-        message_to_fc_channel = "*FCD ##{@story_type.id}* "\
-                                "<#{story_type_fact_checking_doc_url(@story_type, @fcd)}|#{@story_type.name}>.\n"\
+        message_to_fc_channel = "*FCD ##{@article_type.id}* "\
+                                "<#{article_type_fact_checking_doc_url(@article_type, @fcd)}|#{@article_type.name}>.\n"\
                                 "#{@feedback.body.present? ? "*Reviewer's Note*: #{note}" : ''}"
         SlackNotificationJob.perform_later(fcd_channel, message_to_fc_channel)
 
         message_to_dev += "Approved by *#{current_account.name}* and sent to *#{fcd_channel}* channel"
       else
         message_to_dev += "You received the *reviewers' feedback* by *#{current_account.name}*. "\
-                         "<#{story_type_fact_checking_doc_url(@story_type, @story_type.fact_checking_doc)}"\
+                         "<#{article_type_fact_checking_doc_url(@article_type, @article_type.fact_checking_doc)}"\
                          '#reviewers_feedback|Check it>.'
       end
 
@@ -78,7 +78,7 @@ module ArticleTypes
         end
 
       message = "#{reviewer} the developer confirms your feedback. "\
-                "<#{story_type_fact_checking_doc_url(@story_type, @story_type.fact_checking_doc)}"\
+                "<#{article_type_fact_checking_doc_url(@article_type, @article_type.fact_checking_doc)}"\
                 '#reviewers_feedback|Check it>.'
 
       channel = Rails.env.production? ? 'hle_reviews_queue' : 'hle_lokic_development_messages'

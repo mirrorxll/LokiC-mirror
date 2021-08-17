@@ -2,7 +2,7 @@
 
 module MiniLokiC
   # Execute uploaded stage population/story creation code
-  class Code
+  class StoryTypeCode
     def self.[](story_type)
       new(story_type)
     end

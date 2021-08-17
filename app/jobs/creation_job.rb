@@ -9,6 +9,7 @@ class CreationJob < ApplicationJob
     publication_ids = iteration.story_type.publication_pl_ids.join(',')
     options[:iteration] = iteration
     options[:publication_ids] = publication_ids
+    options[:type] = 'article'
 
     loop do
       rd, wr = IO.pipe
@@ -16,7 +17,7 @@ class CreationJob < ApplicationJob
       Process.wait(
         fork do
           rd.close
-          MiniLokiC::Code[iteration.story_type].execute(:creation, options)
+          MiniLokiC::StoryTypeCode[iteration.story_type].execute(:creation, options)
         rescue StandardError, ScriptError => e
           wr.write({ e.class.to_s => e.message }.to_json)
         ensure
@@ -34,7 +35,7 @@ class CreationJob < ApplicationJob
       end
 
       staging_table = iteration.story_type.staging_table.name
-      break if Table.all_created_by_last_iteration?(staging_table, publication_ids)
+      break if Table.all_stories_created_by_iteration?(staging_table, publication_ids)
     end
 
     iteration.update!(schedule_counts: schedule_counts(iteration), current_account: account)

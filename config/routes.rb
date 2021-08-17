@@ -103,27 +103,24 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :iterations, controller: :iterations, only: %i[create update] do
+      resources :iterations, only: %i[create update] do
         patch :apply, on: :member
-        delete :purge, on: :member
 
-        resources :populations, controller: :populations, path: :populate, only: [] do
+        resources :populations, path: :populate, only: [] do
           post   :execute, on: :collection
           delete :purge,   on: :collection
         end
 
         resources :samples, only: %i[index show] do
-          post   :create_and_gen_auto_feedback, on: :collection
-          delete :purge_sampled, on: :collection
+          post   :generate, on: :collection
+          delete :purge,    on: :collection
         end
 
-        resources :auto_feedback_confirmations, only: [] do
-          patch :confirm, on: :member
-        end
+        resources :articles, only: :index
 
         resources :creations, only: [] do
-          post   :execute,   on: :collection
-          delete :purge, on: :collection
+          post   :execute, on: :collection
+          delete :purge,   on: :collection
         end
       end
     end

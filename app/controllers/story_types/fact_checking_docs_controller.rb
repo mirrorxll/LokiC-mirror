@@ -59,7 +59,7 @@ module StoryTypes
     def message_to_slack
       info = send_to_reviewers_params
 
-      "*FCD* ##{@story_type.id} <#{story_type_fact_checking_doc_url(@story_type, @fcd)}|#{@story_type.name}>.\n"\
+      "*Story Type FCD* ##{@story_type.id} <#{story_type_fact_checking_doc_url(@story_type, @fcd)}|#{@story_type.name}>.\n"\
       "*Developer:* #{@story_type.developer.name}.\n"\
       "#{info[:note].present? ? "*Note*: #{info[:note]}" : ''}"
     end

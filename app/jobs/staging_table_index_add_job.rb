@@ -3,11 +3,11 @@
 class StagingTableIndexAddJob < ApplicationJob
   queue_as :story_type
 
-  def perform(staging_table, index)
+  def perform(staging_table, column_ids)
     Process.wait(
       fork do
         message = "Success. Staging table's main index added"
-        staging_table.index.add(index)
+        staging_table.index.add(:story_per_publication, column_ids)
         staging_table.sync
 
       rescue StandardError, ScriptError => e

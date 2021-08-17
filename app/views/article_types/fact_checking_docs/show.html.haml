@@ -1,154 +1,143 @@
--if @iteration.auto_feedback_confirmations.all?(&:confirmed)
-  -account_types = current_account.types
-  -reviewers_feedback = @fcd.reviewers_feedback
-  -editors_feedback = @fcd.editors_feedback
-  %hr/
-  .row
-    .col-12.text-center
-      %b FCD ##{@story_type.id} #{@story_type.name} -- #{@story_type.developer.name}
-  %hr/
+-account_types = current_account.types
+-reviewers_feedback = @fcd.reviewers_feedback
+-editors_feedback = @fcd.editors_feedback
+%hr/
+.row
+  .col-12.text-center
+    %b FCD ##{@article_type.id} #{@article_type.name} -- #{@article_type.developer.name}
+%hr/
 
-  -unless current_account.types.include?('editor')
-    .row
-      .col-10.offset-1
-        %nav{ 'area-label' => 'breadcrumb' }
-          %ov.breadcrumb.mb-0
-            %li.breadcrumb-item
-              =link_to('home', root_url)
-            %li.breadcrumb-item
-              =link_to('story type', story_type_path(@story_type))
-            %li.breadcrumb-item.active{ 'area-current' => 'page' }
-              FCD
-  %hr/
-
+-unless current_account.types.include?('editor')
   .row
     .col-10.offset-1
-      #fcd_control.small
-        =render 'fcd_buttons', account_types: account_types
-  %hr/
-  .row
-    .col-10.offset-1
-      #autoFeedbackCollapse.collapse.show
-        =render 'story_types/auto_feedback/form', auto_feedback: @iteration.auto_feedback_confirmations
+      %nav{ 'area-label' => 'breadcrumb' }
+        %ov.breadcrumb.mb-0
+          %li.breadcrumb-item
+            =link_to('home', root_url)
+          %li.breadcrumb-item
+            =link_to('article type', article_type_path(@article_type))
+          %li.breadcrumb-item.active{ 'area-current' => 'page' }
+            FCD
+%hr/
 
-  %hr#reviewers_feedback/
-  .row.small
-    .col-10.offset-1
-      .card
-        .card-header.d-flex.justify-content-between.align-items-center
-          reviewers feedback
-          .btn-group
-            -if account_types.include?('manager')
-              =link_to("add feedback", new_story_type_fact_checking_doc_reviewers_feedback_path(@story_type, @fcd),
-                       'data-toggle'=>'modal', 'data-target'=>'#manual_feedback_modal',
-                       class: "btn btn-sm btn-light text-dark", onclick: 'hideAllPopovers();', remote: true)
+.row
+  .col-10.offset-1
+    #fcd_control.small
+      =render 'fcd_buttons', account_types: account_types
 
-        .card-body
-          #reviewers_feedback_body
-            -reviewers_feedback.each_with_index do |r_fb, index|
-              %div{ id: "r_fb_#{r_fb.id}" }
-                .manual_feedback.border
-                  .reviewers_fb_info
-                    =r_fb.reviewer.name
-                    &nbsp
-                    =r_fb.created_at.strftime('%F %R %Z')
-                    &nbsp
-                    -if r_fb.approvable
-                      .font-weight-bold.d-inline
-                        Approved!
-                    -elsif r_fb.confirmed
-                      =icon('fa', 'check')
-                  .row
-                    -if r_fb.approvable || r_fb.confirmed
-                      .col-12
-                        =r_fb.body&.html_safe
-                    -else
-                      .col-1.d-flex.justify-content-center.align-items-center{ onchange: "confirmFeedback(this, 'reviewers', #{r_fb.id});" }
-                        %input{ type: :checkbox }
-                      .col-11.pl-0
-                        =r_fb.body&.html_safe
-                -if index != (reviewers_feedback.count - 1)
-                  %hr.mt-4.mb-4/
+%hr#reviewers_feedback/
+.row.small
+  .col-10.offset-1
+    .card
+      .card-header.d-flex.justify-content-between.align-items-center
+        reviewers feedback
+        .btn-group
+          -if account_types.include?('manager')
+            =link_to("add feedback", new_article_type_fact_checking_doc_reviewers_feedback_path(@article_type, @fcd),
+                     'data-toggle'=>'modal', 'data-target'=>'#manual_feedback_modal',
+                     class: "btn btn-sm btn-light text-dark", onclick: 'hideAllPopovers();', remote: true)
 
-  %hr#editors_feedback/
-  .row.small
-    .col-10.offset-1
-      .card
-        .card-header.d-flex.justify-content-between.align-items-center
-          editors feedback
-
-          .btn-group
-            -if !account_types.include?('developer')
-              =link_to("add feedback", new_story_type_fact_checking_doc_editors_feedback_path(@story_type, @fcd),
-                       'data-toggle'=>'modal', 'data-target'=>'#manual_feedback_modal',
-                       class: "btn btn-sm btn-light text-dark", onclick: 'hideAllPopovers();', remote: true)
-
-        .card-body
-          #editors_feedback_body
-            -editors_feedback.each_with_index do |e_fb, index|
+      .card-body
+        #reviewers_feedback_body
+          -reviewers_feedback.each_with_index do |r_fb, index|
+            %div{ id: "r_fb_#{r_fb.id}" }
               .manual_feedback.border
-                .editors_fb_info
-                  =e_fb.editor.name
+                .reviewers_fb_info
+                  =r_fb.reviewer.name
                   &nbsp
-                  =e_fb.created_at.strftime('%F %R %Z')
+                  =r_fb.created_at.strftime('%F %R %Z')
                   &nbsp
-                  -if e_fb.approvable
+                  -if r_fb.approvable
                     .font-weight-bold.d-inline
                       Approved!
-                  -elsif e_fb.confirmed
+                  -elsif r_fb.confirmed
                     =icon('fa', 'check')
                 .row
-                  -if e_fb.approvable || e_fb.confirmed
+                  -if r_fb.approvable || r_fb.confirmed
                     .col-12
-                      =e_fb.body&.html_safe
+                      =r_fb.body&.html_safe
                   -else
-                    .col-1.d-flex.justify-content-center.align-items-center{ onchange: "confirmFeedback(this, 'editors', #{e_fb.id});" }
+                    .col-1.d-flex.justify-content-center.align-items-center{ onchange: "confirmFeedback(this, 'reviewers', #{r_fb.id});" }
                       %input{ type: :checkbox }
                     .col-11.pl-0
-                      =e_fb.body&.html_safe
-              -if index != (editors_feedback.count - 1)
+                      =r_fb.body&.html_safe
+              -if index != (reviewers_feedback.count - 1)
                 %hr.mt-4.mb-4/
 
+%hr#editors_feedback/
+.row.small
+  .col-10.offset-1
+    .card
+      .card-header.d-flex.justify-content-between.align-items-center
+        editors feedback
 
-  =render 'story_types/fact_checking_docs/confirm_feedback'
-  %hr/
-  .row.small
-    .col-10.offset-1
-      #fcd_body
-        =@fcd.body&.html_safe
+        .btn-group
+          -if !account_types.include?('developer')
+            =link_to("add feedback", new_article_type_fact_checking_doc_editors_feedback_path(@article_type, @fcd),
+                     'data-toggle'=>'modal', 'data-target'=>'#manual_feedback_modal',
+                     class: "btn btn-sm btn-light text-dark", onclick: 'hideAllPopovers();', remote: true)
 
-  #template_modal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "template_modal_label",
-                              role: "dialog", tabindex: "-1" }
-    .modal-dialog.modal-dialog-centered.modal-xl.modal-dialog-scrollable
-      .modal-content
-        .modal-header
-          #template_modal_label.modal-title.small
-            %b
-              =@story_type.name
-          %button.close{"aria-label" => "Close", "data-dismiss" => "modal", type: "button"}
-            %span{"aria-hidden" => "true"} ×
-        .modal-body
+      .card-body
+        #editors_feedback_body
+          -editors_feedback.each_with_index do |e_fb, index|
+            .manual_feedback.border
+              .editors_fb_info
+                =e_fb.editor.name
+                &nbsp
+                =e_fb.created_at.strftime('%F %R %Z')
+                &nbsp
+                -if e_fb.approvable
+                  .font-weight-bold.d-inline
+                    Approved!
+                -elsif e_fb.confirmed
+                  =icon('fa', 'check')
+              .row
+                -if e_fb.approvable || e_fb.confirmed
+                  .col-12
+                    =e_fb.body&.html_safe
+                -else
+                  .col-1.d-flex.justify-content-center.align-items-center{ onchange: "confirmFeedback(this, 'editors', #{e_fb.id});" }
+                    %input{ type: :checkbox }
+                  .col-11.pl-0
+                    =e_fb.body&.html_safe
+            -if index != (editors_feedback.count - 1)
+              %hr.mt-4.mb-4/
 
-  #manual_feedback_modal.modal.fade.pr-0{ "aria-hidden" => "true", "aria-labelledby" => "manual_feedback_modal_label",
-                                          role: "dialog", tabindex: "-1" }
-    .modal-dialog.modal-dialog-centered.modal-full.modal-dialog-scrollable
-      .modal-content
-        .modal-header
-          .modal-title#manual_feedback_modal_label
-          %button.close{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
-            %span{ "aria-hidden" => "true" } ×
-        .modal-body.small
-          %ul#manual_feedback_tabs.nav.nav-tabs.w-60{role: "tablist"}
-            %li.nav-item{role: "presentation"}
-              %a#fcd-tab.nav-link.active{"aria-controls" => "fcd", "aria-selected" => "true", "data-toggle" => "tab", href: "#fcd", role: "tab"} FCD
 
-          .d-inline-block.fc_scrollable.w-60
-            #manual_feedback_tabs_content.tab-content
-              #fcd.tab-pane.fade.show.active{"aria-labelledby" => "fcd-tab", role: "tabpanel"}
+=render 'article_types/fact_checking_docs/confirm_feedback'
+%hr/
+.row.small
+  .col-10.offset-1
+    #fcd_body
+      =@fcd.body&.html_safe
 
-          .d-inline-flex.flex-column.align-top.w-39.h-90
--else
-  %hr/
-  .row
-    .col-12.text-center.alert.alert-danger
-      First...confirm all auto-feedback.
+#template_modal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "template_modal_label",
+                            role: "dialog", tabindex: "-1" }
+  .modal-dialog.modal-dialog-centered.modal-xl.modal-dialog-scrollable
+    .modal-content
+      .modal-header
+        #template_modal_label.modal-title.small
+          %b
+            =@article_type.name
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", type: "button"}
+          %span{"aria-hidden" => "true"} ×
+      .modal-body
+
+#manual_feedback_modal.modal.fade.pr-0{ "aria-hidden" => "true", "aria-labelledby" => "manual_feedback_modal_label",
+                                        role: "dialog", tabindex: "-1" }
+  .modal-dialog.modal-dialog-centered.modal-full.modal-dialog-scrollable
+    .modal-content
+      .modal-header
+        .modal-title#manual_feedback_modal_label
+        %button.close{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+          %span{ "aria-hidden" => "true" } ×
+      .modal-body.small
+        %ul#manual_feedback_tabs.nav.nav-tabs.w-60{role: "tablist"}
+          %li.nav-item{role: "presentation"}
+            %a#fcd-tab.nav-link.active{"aria-controls" => "fcd", "aria-selected" => "true", "data-toggle" => "tab", href: "#fcd", role: "tab"} FCD
+
+        .d-inline-block.fc_scrollable.w-60
+          #manual_feedback_tabs_content.tab-content
+            #fcd.tab-pane.fade.show.active{"aria-labelledby" => "fcd-tab", role: "tabpanel"}
+
+        .d-inline-flex.flex-column.align-top.w-39.h-90
