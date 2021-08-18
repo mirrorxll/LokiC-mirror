@@ -10,6 +10,9 @@ class TasksController < ApplicationController # :nodoc:
   before_action :grid, only: [:index]
   after_action  :send_notification, only: :create
 
+  after_action  :send_notification, only: :create
+  after_action  :comment, only: :create
+  
   def index
     respond_to do |f|
       f.html do
@@ -19,7 +22,9 @@ class TasksController < ApplicationController # :nodoc:
   end
 
   def show
-    @task = Task.find(params[:id])
+    render_401 if !manager? && !@task.assignment_to_or_creator?(current_account)
+
+    @comments = @task.comments.order(created_at: :desc)
   end
 
   def new
@@ -27,11 +32,14 @@ class TasksController < ApplicationController # :nodoc:
   end
 
   def create
-    @task = Task.new(title: task_params[:title],
-                     description: task_params[:description],
-                     reminder_frequency: task_params[:reminder_frequency],
-                     deadline: task_params[:deadline],
-                     creator: current_account)
+    @task = Task.new(
+      title: task_params[:title],
+      description: task_params[:description],
+      reminder_frequency: task_params[:reminder_frequency],
+      deadline: task_params[:deadline],
+      gather_task: task_params[:gather_task],
+      creator: current_account
+    )
 
     @task.assignment_to << Account.find(task_params[:assignment_to]) if @task.save!
   end
@@ -44,6 +52,20 @@ class TasksController < ApplicationController # :nodoc:
 
   private
 
+  def comment
+    body = "##{@task.id} Task created. "
+    body += if @task.assignment_to.empty?
+              "Not assigned."
+            else
+              "Assignment to #{@task.assignment_to.map { |assignment| assignment.name }.to_sentence}."
+            end
+    @task.comments.build(
+      subtype: 'task comment',
+      body: body,
+      commentator: current_account
+    ).save!
+  end
+
   def grid
     grid_params =
       if params[:tasks_grid]
@@ -51,6 +73,7 @@ class TasksController < ApplicationController # :nodoc:
       else
         !manager? ? { assignment_to: current_account.id, order: :id, descending: true } : { order: :id, descending: true }
       end
+    grid_params[:status] = Status.multi_task_statuses_for_grid if grid_params[:deleted_tasks] != 'YES'
     @grid = TasksGrid.new(grid_params.except(:collapse))
   end
 
@@ -66,19 +89,24 @@ class TasksController < ApplicationController # :nodoc:
               "ASSIGNMENT TO YOU*\n>#{@task.title}"
 
       SlackNotificationJob.perform_later(assignment.slack.identifier, message)
+      SlackNotificationJob.perform_later(Rails.env.production? ? 'hle_lokic_task_reminders' : 'hle_lokic_development_messages', message)
     end
   end
 
   def task_params
-    task_params = params.require(:task).permit(:title, :description, :deadline, :reminder_frequency, assignment_to: [])
+    task_params = params.require(:task).permit(:title, :description, :deadline, :reminder_frequency, :gather_task, assignment_to: [])
     task_params[:reminder_frequency] = task_params[:reminder_frequency].blank? ? nil : TaskReminderFrequency.find(task_params[:reminder_frequency])
     task_params[:assignment_to] = task_params[:assignment_to].uniq.reject(&:blank?)
     task_params
   end
 
   def update_task_params
-    up_task_params = params.require(:task).permit(:title, :description, :deadline, :reminder_frequency)
+    up_task_params = params.require(:task).permit(:title, :description, :deadline, :reminder_frequency, :gather_task)
     up_task_params[:reminder_frequency] = up_task_params[:reminder_frequency].blank? ? nil : TaskReminderFrequency.find(up_task_params[:reminder_frequency])
     up_task_params
+  end
+
+  def comment_params
+    params.require(:comment)
   end
 end

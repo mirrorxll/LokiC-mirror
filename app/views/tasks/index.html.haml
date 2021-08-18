@@ -1,5 +1,5 @@
-.row.m-2
-  .col.text-left
+.row.m-2.justify-content-between
+  .text-left
     -if current_account.types.include?('manager')
       =link_to 'all tasks',
                url_for(@grid.to_param => { order: :id, descending: true, collapse: true }),
@@ -11,7 +11,7 @@
              url_for(@grid.to_param => { creator: current_account, order: :id, descending: true, collapse: true }),
              class: 'btn btn-sm btn-outline-dark')
 
-  .col.text-right
+  .text-right
     =link_to('filter tasks', '#filter_form', 'aria-controls' => 'filter_form',
              'aria-expanded' => false, data: { toggle: "collapse", target: "#filter_form" },
               type: "button", class: 'btn btn-sm btn-outline-dark')
@@ -21,8 +21,18 @@
            remote: true)
 %hr/
 
-#datagrid
-  =render 'datagrid', grid: @grid
+#filter_form{ class: collapse(params[:tasks_grid])}
+  =datagrid_form_for @grid, url: tasks_path
+
+.row
+  .col-12
+    #data_sets
+      #grid_wrapper
+        =datagrid_table(@grid)
+
+.row.mt-3.col-12
+  #pagination
+    =paginate @grid.assets
 
 =render 'tasks/task_modal'
 

@@ -21,6 +21,7 @@ class Account < ApplicationRecord # :nodoc:
   has_many :submitters, class_name: 'PostExportReport'
   has_many :production_removals
   has_many :scrape_tasks
+  has_many :comments, foreign_key: :commentator_id
 
   def name
     "#{first_name} #{last_name}"

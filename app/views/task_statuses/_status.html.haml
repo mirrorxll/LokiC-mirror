@@ -3,31 +3,41 @@
         class: "badge badge-pill badge-#{status_color(task.status.name)}")
 
 .change_progress_status_form.d-none
-  =form_with(url: change_task_progress_statuses_path(task),
-             html: { class: 'd-inline', onchange: "Rails.fire(this, 'submit');" }, method: :patch) do |form|
-    =form.collection_select :status_id, Status.multi_task_dev_statuses, :id, :name, { prompt: '' , selected: task.status.id}
+  =form_with(url: change_task_progress_statuses_path(task), id: 'status_form',
+             html: { class: 'd-inline', onchange: "statusSubmit();" }, method: :patch) do |form|
+    =form.collection_select :status_id, Status.multi_task_dev_statuses, :id, :name, { prompt: '' , selected: task.status.id},
+    data: { confirm: 'Are you sure you want to delete the task?' }
 
 :javascript
   document.querySelector('.current_progress_status a').addEventListener('click', function (evt) {
+    var clickable = #{!task.assignment_to.empty? && (current_account.types.include?('manager') || current_account.in?(task.assignment_to))};
+    if (!clickable) return;
+
     evt.preventDefault();
     evt.target.parentNode.classList.add('d-none');
     document.getElementsByClassName('change_progress_status_form')[0].classList.remove('d-none');
     return false;
-  })
+  });
 
-  document.getElementById('status_id').addEventListener('change', (event) => {
-    status = event.target.options[event.target.selectedIndex].text
-    if (['blocked', 'canceled'].includes(status)) {
-      let comment = prompt(`Please, leave comment`);
-      console.log(comment)
-
-      if (comment != null) {
-        Rails.ajax({
-          type: "PATCH",
-          dataType: 'script',
-          url: `#{leave_comment_task_progress_statuses_path(@task)}`,
-          data: `comment=${comment}`
-        })
-      }
+  function statusSubmit() {
+    let select = document.getElementById('status_id');
+    let status = select.options[select.selectedIndex].text;
+    let status_form = document.getElementById('status_form')
+    if(status == 'deleted'){
+      message = confirm("Are you sure you want to delete the task?");
+      if (!message){
+        return;
+       } else { submit(status_form); }
     }
-  })
+    else if (['blocked', 'canceled'].includes(status)) {
+      $('#comment .modal-body').html("#{ j render 'task_statuses/comment_form' }");
+      $('#comment').modal('show');
+    }
+    else {
+      submit(status_form);
+    }
+  };
+
+  function  submit(form) {
+    Rails.fire(form, 'submit');
+  }
