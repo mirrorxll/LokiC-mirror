@@ -258,7 +258,7 @@ end_date = Date.parse('2020/01/12 23/59/59')
   end_date += 7
 end
 
-# ============ FeedBack rules for samples ============
+# ============ FeedBack rules for stories ============
 rules = {
   'capital_letters' => {
     'Four or more capital letters in row' => 'Show the capitalized sequence of characters and recommend a discussion with John about whether normalization of the words or phrases in that variable spot should be performed.'

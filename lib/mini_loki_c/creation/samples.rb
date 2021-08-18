@@ -2,19 +2,22 @@
 
 module MiniLokiC
   module Creation
-    # insert created samples to samples table
+    # insert created stories to stories table
     class Samples
       def initialize(staging_table, options)
         @staging_table = staging_table
-        @sampled = !!options[:sampled]
+        @sampled = options[:sampled]
         @iteration = options[:iteration]
         @story_type = @iteration.story_type
         @export_configs = @story_type.export_configurations.joins(:publication)
       end
 
       def insert(sample)
+        raise ArgumentError, "time_frame can't be blank!" if sample[:time_frame].nil?
+        raise ArgumentError, "staging_row_id can't be blank!" if sample[:staging_row_id].nil?
+
         @raw_sample = sample
-        @iteration.samples.create!(sample_params)
+        Story.create!(sample_params)
       end
 
       private
@@ -22,12 +25,13 @@ module MiniLokiC
       # prepare sample to inserting
       def sample_params
         config = export_config
-        time_frame = TimeFrame.find_by(frame: @raw_sample[:time_frame].downcase)
+        time_frame = TimeFrame.find_or_create_by!(frame: @raw_sample[:time_frame].downcase)
         publication = config.publication
         client = publication.client
 
         {
           story_type: @story_type,
+          iteration: @iteration,
           output: output,
           staging_row_id: @raw_sample[:staging_row_id],
           client: client,
@@ -55,11 +59,13 @@ module MiniLokiC
         )
         return export_config if export_config
 
-        message = "Staging Table Row ID = #{@raw_sample[:staging_row_id]}\n"\
-                  '1. You are trying to create a story for client/publication '\
-                  'not specified in the properties section. Please check the '\
-                  "method you use for getting publications or contact the manager\n"\
-                  '2. Please press [ create/update ] export configurations button'
+        message =
+          "LokiC has blocked story creation for staging table row ID = #{@raw_sample[:staging_row_id]}\n"\
+          "Reasons why you see this message:\n"\
+          "1. You are trying to create a story for client/publication not specified in the properties section.\n"\
+          "2. You didn't press [ create/update ] export configurations button.\n"\
+          "Please check these or contact with the manager\n---\n"
+
         raise ArgumentError, message
       end
 

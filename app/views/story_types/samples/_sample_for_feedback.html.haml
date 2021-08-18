@@ -1,0 +1,16 @@
+%div{ style: 'height: 99%;'}
+  .row.mb-2.mt-2
+    .col-1.text-center
+      H
+    .col-10
+      =@sample.output.headline
+  .row.mb-2
+    .col-1.text-center
+      T
+    .col-10
+      =@sample.output.teaser
+  .row
+    .col-1.text-center
+      B
+    .col-10
+      =@sample.output.body.html_safe

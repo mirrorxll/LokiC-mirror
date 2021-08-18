@@ -8,7 +8,7 @@ class ExportedStoryTypesGrid
 
   # Filters
   filter(:cron_export, :enum, select: [['yes', 1], ['no', 0]]) do |value, scope|
-    iteration_ids = Iteration.where("name #{value.eql?('1') ? '' : 'NOT'} RLIKE 'CT[0-9]{8}'").ids
+    iteration_ids = StoryTypeIteration.where("name #{value.eql?('1') ? '' : 'NOT'} RLIKE 'CT[0-9]{8}'").ids
     scope.where(iteration_id: iteration_ids)
   end
 

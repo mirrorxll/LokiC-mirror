@@ -1,0 +1,3 @@
+<% if @confirmations.count.positive? && @confirmations.all?(&:confirmed) %>
+  $("#fcd__create_destroy_all_stories").html('<%= j render 'story_types/samples/fcd_create_stories_buttons' %>')
+<% end %>

@@ -1,0 +1,43 @@
+-if %w[show update canceling_edit change_data_set].include?(action_name)
+  .text-center.small{ id: "article_type_#{article_type.id}" }
+    .row.on-hover-bg.pt-2.pb-2
+      .col-1
+        =article_type.id
+      .col-5.pl-0.text-left{id: "article_type_#{article_type.id}_name"}
+        .row
+          .col-11.pr-0
+            -if current_account.types.include?('editor')
+              =article_type.name
+            -else
+              =link_to(article_type.name, article_type_path(article_type))
+          .col-1.p-0.text-center
+            =link_to(icon('fa', 'pencil', class: ' fa-xs text-dark'), edit_article_type_path(article_type), remote: true)
+      .col-1.p-0{id: "article_type_#{article_type.id}_template"}
+        =link_to(icon('fa', 'file-o', class: 'fa-lg text-dark'), edit_article_type_template_path(article_type, article_type.template), remote: true)
+      .col-3
+        -if article_type.developer
+          =render 'article_types/developers/developer', article_type: article_type
+        -else
+          =render 'article_types/developers/form', article_type: article_type
+      .col-2.p-0
+        =article_type.status.name
+-else
+  .text-center{id: "article_type_#{article_type.id}"}
+    .row
+      .col-1
+        =article_type.id
+      .col-6.pl-0.text-left{id: "article_type_#{article_type.id}_name"}
+        .row
+          .col-12.pr-0
+            =link_to(article_type.name, article_type_path(article_type))
+      .col-3.p-0
+        =article_type.developer ? article_type.developer.name : '---'
+      .col-1.p-0
+        =article_type.status.name
+      .col-1.p-0{id: "article_type_#{article_type.id}_last_export"}
+        -if article_type.last_export
+          =article_type.last_export.strftime('%D')
+        -else
+          :escaped
+              ---
+    %hr/

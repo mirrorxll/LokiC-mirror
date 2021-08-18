@@ -2,9 +2,13 @@
 
 class TasksController < ApplicationController # :nodoc:
   skip_before_action :find_parent_story_type
-  skip_before_action :set_iteration
-  before_action :find_task, only: [:show, :edit, :update]
-  before_action :grid, only: :index
+  skip_before_action :find_parent_article_type
+  skip_before_action :set_story_type_iteration
+  skip_before_action :set_article_type_iteration
+
+  before_action :find_task, only: %i[show edit update]
+  before_action :grid, only: [:index]
+  after_action  :send_notification, only: :create
 
   after_action  :send_notification, only: :create
   after_action  :comment, only: :create
@@ -92,7 +96,7 @@ class TasksController < ApplicationController # :nodoc:
   def task_params
     task_params = params.require(:task).permit(:title, :description, :deadline, :reminder_frequency, :gather_task, assignment_to: [])
     task_params[:reminder_frequency] = task_params[:reminder_frequency].blank? ? nil : TaskReminderFrequency.find(task_params[:reminder_frequency])
-    task_params[:assignment_to] = task_params[:assignment_to].uniq.reject { |account| account.blank? }
+    task_params[:assignment_to] = task_params[:assignment_to].uniq.reject(&:blank?)
     task_params
   end
 

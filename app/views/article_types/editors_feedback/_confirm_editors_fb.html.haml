@@ -1,0 +1,11 @@
+:javascript
+  function confirmEditorsFeedback(elem, fb_id) {
+    let changeFeedbackStatus = (elem) => { elem.innerHTML = `<i class="fa fa-check"></i>`; }
+
+    $.ajax({
+      url: `#{root_url}story_types/#{@story_type.id}/fact_checking_docs/#{@fcd.id}/editors_feedback/${fb_id}/confirm`,
+      success: changeFeedbackStatus(elem),
+      method: 'patch',
+      dataType: 'script'
+    });
+  }

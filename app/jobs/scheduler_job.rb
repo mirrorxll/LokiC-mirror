@@ -14,7 +14,7 @@ class SchedulerJob < ApplicationJob
     Process.wait(
       fork do
         rd.close
-        samples = iteration.samples
+        samples = iteration.stories
 
         case type
         when 'manual'
@@ -44,7 +44,7 @@ class SchedulerJob < ApplicationJob
       raise Object.const_get(klass), message
     end
 
-    status = true if iteration.reload.samples.where(published_at: nil).none?
+    status = true if iteration.reload.stories.where(published_at: nil).none?
 
     true
   rescue StandardError => e
@@ -52,7 +52,7 @@ class SchedulerJob < ApplicationJob
     message = e.message
   ensure
     iteration.update!(schedule: status)
-    send_to_action_cable(iteration, :scheduler, message)
+    send_to_action_cable(iteration.story_type, :scheduler, message)
     SlackStoryTypeNotificationJob.perform_now(iteration, "#{type}-scheduling", message)
   end
 

@@ -8,15 +8,19 @@ class Status < ApplicationRecord
     where.not(name: ['not started', 'migrated', 'inactive'])
   end
 
+  def self.article_type_dev_statuses
+    where.not(name: ['not started', 'inactive'])
+  end
+
   def self.scrape_task_dev_statuses
     where.not(name: ['not started', 'migrated', 'inactive', 'migrated', 'exported', 'on cron'])
   end
 
   def self.multi_task_dev_statuses
-    where(name: ['not started','in progress','blocked','canceled','done','deleted'])
+    where(name: ['not started', 'in progress', 'blocked', 'canceled', 'done', 'deleted'])
   end
 
   def self.multi_task_statuses_for_grid
-    where(name: ['not started','in progress','blocked','canceled','done'])
+    where(name: ['not started', 'in progress', 'blocked', 'canceled', 'done'])
   end
 end
