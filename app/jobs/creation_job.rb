@@ -6,10 +6,10 @@ class CreationJob < ApplicationJob
   def perform(iteration, account, options = {})
     status = true
     message = 'Success. All stories have been created'
-    publication_ids = iteration.story_type.publication_pl_ids.join(',')
+    publication_ids = iteration.story_type.publication_pl_ids
     options[:iteration] = iteration
     options[:publication_ids] = publication_ids
-    options[:type] = 'article'
+    options[:type] = 'story'
 
     loop do
       rd, wr = IO.pipe

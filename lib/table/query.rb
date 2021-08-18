@@ -22,7 +22,7 @@ module Table
     end
 
     def and_publication_ids(ids)
-      ids.empty? ? '' : "AND publication_id IN (#{ids})"
+      ids.empty? ? '' : "AND publication_id IN (#{ids.join(',')})"
     end
 
     # return publication ids, grouped by a client id.

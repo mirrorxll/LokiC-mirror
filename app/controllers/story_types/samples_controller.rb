@@ -11,7 +11,7 @@ module StoryTypes
       @grid_params = request.parameters[:iteration_stories_grid] || {}
 
       @iteration_stories_grid = StoryTypeIterationStoriesGrid.new(@grid_params.merge(client_ids: @story_type.clients.pluck(:name, :id))) do |scope|
-        scope.where(story_type_id: params[:story_type_id], iteration_id: params[:iteration_id])
+        scope.where(story_type_id: params[:story_type_id], story_type_iteration_id: params[:iteration_id])
       end
 
       @stories_count = [@iteration.stories.scheduled_count, @iteration.stories.backdated_count]

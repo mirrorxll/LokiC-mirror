@@ -34,6 +34,7 @@ module Samples
           next unless part_txt
 
           unless @iteration.auto_feedback.exists?(fb.id)
+
             @iteration.auto_feedback << fb
             @iteration.auto_feedback_confirmations.last.update!(
               sample: sample,

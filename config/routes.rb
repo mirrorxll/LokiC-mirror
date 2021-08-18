@@ -201,6 +201,11 @@ Rails.application.routes.draw do
         patch :change, on: :collection
       end
 
+      resources :levels, path: :level, only: [] do
+        post   :include, on: :collection
+        delete :exclude, on: :member
+      end
+
       resources :frequencies, path: :frequency, only: [] do
         post   :include, on: :collection
         delete :exclude, on: :member

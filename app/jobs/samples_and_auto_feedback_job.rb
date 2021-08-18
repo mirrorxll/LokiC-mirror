@@ -9,7 +9,7 @@ class SamplesAndAutoFeedbackJob < ApplicationJob
         status = true
         sample_args = {}
         staging_table = iteration.story_type.staging_table
-        publication_ids = iteration.story_type.publication_pl_ids.join(',')
+        publication_ids = iteration.story_type.publication_pl_ids
 
         options[:iteration] = iteration
         options[:publication_ids] = publication_ids
@@ -45,6 +45,7 @@ class SamplesAndAutoFeedbackJob < ApplicationJob
           end
       rescue StandardError, ScriptError => e
         status = nil
+        pp e.full_message
         message = e.message
       ensure
         iteration.update!(samples_creation: status, current_account: account)

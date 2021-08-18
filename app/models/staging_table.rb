@@ -40,7 +40,7 @@ class StagingTable < ApplicationRecord # :nodoc:
   end
 
   def publication_ids
-    pub_ids = staging_tableable.publication_pl_ids.join(',')
+    pub_ids = staging_tableable.publication_pl_ids
     Table.publication_ids(name, pub_ids)
   end
 

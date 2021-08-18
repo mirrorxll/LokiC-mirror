@@ -15,13 +15,20 @@
 %hr/
 
 .row.small
-  #frequency__photo_bucket.col-10.offset-1
+  #level__frequency__photo_bucket.col-10.offset-1
     .row.font-weight-bold
+      .col-4
+        level
       .col-4
         frequency
       .col-4
         photo bucket
     .row
+      .col-4.level
+        -if @story_type.level
+          =render 'story_types/levels/level', level: @story_type.level
+        -else
+          =render 'story_types/levels/form'
       .col-4.frequency
         -if @story_type.frequency
           =render 'story_types/frequencies/frequency', frequency: @story_type.frequency
