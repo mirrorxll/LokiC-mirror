@@ -5,7 +5,7 @@ class SamplesController < ApplicationController # :nodoc:
 
   def index
     @grid_params = request.parameters[:iteration_samples_grid] || {}
-    @iteration_samples_grid = IterationSamplesGrid.new(@grid_params.merge(client_ids: @story_type.clients.pluck(:name, :id))) do |scope|
+    @iteration_samples_grid = IterationSamplesGrid.new(@grid_params.merge(client_ids: @story_type.clients.pluck(:name, :id), exported: @iteration.export)) do |scope|
       scope.where(story_type_id: params[:story_type_id], iteration_id: params[:iteration_id])
     end
     @samples_count = [@iteration.samples.scheduled_count, @iteration.samples.backdated_count]
