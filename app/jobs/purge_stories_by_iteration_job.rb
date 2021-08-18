@@ -42,7 +42,7 @@ class PurgeStoriesByIterationJob < ApplicationJob
     message = e.message
   ensure
     iteration.update!(purge_stories: nil, current_account: account)
-    send_to_action_cable(iteration, :samples, message)
+    send_to_action_cable(iteration.story_type, :samples, message)
     SlackStoryTypeNotificationJob.perform_now(iteration, 'creation', message)
   end
 end

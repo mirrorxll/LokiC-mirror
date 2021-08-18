@@ -55,7 +55,7 @@ class RemoveFromPlJob < ApplicationJob
     message = e.message
   ensure
     iteration.update!(removing_from_pl: false)
-    send_to_action_cable(iteration, :export, message)
+    send_to_action_cable(iteration.story_type, :export, message)
     SlackStoryTypeNotificationJob.perform_now(iteration, 'remove from pl', message)
   end
 end

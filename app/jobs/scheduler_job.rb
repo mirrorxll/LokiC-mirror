@@ -52,7 +52,7 @@ class SchedulerJob < ApplicationJob
     message = e.message
   ensure
     iteration.update!(schedule: status)
-    send_to_action_cable(iteration, :scheduler, message)
+    send_to_action_cable(iteration.story_type, :scheduler, message)
     SlackStoryTypeNotificationJob.perform_now(iteration, "#{type}-scheduling", message)
   end
 

@@ -46,7 +46,7 @@ class CreationJob < ApplicationJob
     message = e.message
   ensure
     iteration.update!(creation: status, current_account: account)
-    send_to_action_cable(iteration, :stories, message)
+    send_to_action_cable(iteration.story_type, :stories, message)
     SlackStoryTypeNotificationJob.perform_now(iteration, 'creation', message)
   end
 

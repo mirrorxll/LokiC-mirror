@@ -48,7 +48,7 @@ class SamplesAndAutoFeedbackJob < ApplicationJob
         message = e.message
       ensure
         iteration.update!(samples_creation: status, current_account: account)
-        send_to_action_cable(iteration, :samples, message)
+        send_to_action_cable(iteration.story_type, :samples, message)
       end
     )
   end
