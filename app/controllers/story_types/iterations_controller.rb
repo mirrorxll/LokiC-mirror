@@ -46,7 +46,7 @@ module StoryTypes
         @iteration.auto_feedback.destroy_all
 
         @iteration.update!(
-          population: nil, samples: nil,
+          population: nil, samples_creation: nil,
           creation: nil, schedule: nil, export: nil,
           current_account: current_account
         )
