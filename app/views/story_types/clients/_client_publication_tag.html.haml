@@ -1,0 +1,10 @@
+.row.mb-1{ id: "client_publication_tag_#{client_publication_tag.id}" }
+  .col-4.client
+    =render 'story_types/clients/client', client: client_publication_tag.client, client_publication_tag: client_publication_tag
+  .col-4.client_publication
+    =render 'story_types/publications/publication', client_publication_tag: client_publication_tag
+  .col-4.client_tag
+    -if client_publication_tag.tag
+      =render 'story_types/tags/tag', tag: client_publication_tag.tag, client_publication_tag: client_publication_tag
+    -else
+      =render 'story_types/tags/form', client_publication_tag: client_publication_tag, client: client_publication_tag.client

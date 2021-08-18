@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class StagingTableAttachingJob < ApplicationJob
   queue_as :story_type
 
@@ -13,7 +15,7 @@ class StagingTableAttachingJob < ApplicationJob
         message = e.message
       ensure
         story_type.update!(staging_table_attached: status, current_account: account)
-        send_to_action_cable(story_type.iteration, :staging_table, message)
+        send_to_action_cable(story_type, :staging_table, message)
       end
     )
   end

@@ -31,7 +31,7 @@ class RemoveFromPlJob < ApplicationJob
         raise Object.const_get(klass), message
       end
 
-      break if iteration.samples.reload.exported.count.zero?
+      break if iteration.stories.reload.exported.count.zero?
     end
 
     Process.wait(
@@ -39,7 +39,7 @@ class RemoveFromPlJob < ApplicationJob
         iteration.exported&.destroy
         iteration.production_removals.last.update!(status: true)
 
-        note = MiniLokiC::Formatize::Numbers.to_text(iteration.samples.ready_to_export.count)
+        note = MiniLokiC::Formatize::Numbers.to_text(iteration.stories.ready_to_export.count)
         record_to_change_history(story_type, 'removed from pipeline', note, account)
 
         old_status = story_type.status.name
@@ -55,7 +55,7 @@ class RemoveFromPlJob < ApplicationJob
     message = e.message
   ensure
     iteration.update!(removing_from_pl: false)
-    send_to_action_cable(iteration, :export, message)
+    send_to_action_cable(iteration.story_type, :export, message)
     SlackStoryTypeNotificationJob.perform_now(iteration, 'remove from pl', message)
   end
 end

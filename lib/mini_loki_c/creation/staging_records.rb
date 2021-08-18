@@ -18,7 +18,7 @@ module MiniLokiC
           if @options[:ids]
             Table.rows_by_ids(@staging_table, @options)
           else
-            Table.rows_by_last_iteration(@staging_table, @options)
+            Table.rows_by_iteration(@staging_table, @options)
           end
 
         select.each { |row| yield(HashWithIndifferentAccess.new(row)) }

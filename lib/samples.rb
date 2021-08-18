@@ -14,7 +14,7 @@ module Samples
     Samples::ExportToPl.new(environment)
   end
 
-  def self.auto_feedback(story_type, confirmed = false)
-    Samples::AutoFeedbackTool.new(story_type, confirmed).generate!
+  def self.auto_feedback(iteration, confirmed = false)
+    Samples::AutoFeedbackTool.new(iteration, confirmed).generate!
   end
 end

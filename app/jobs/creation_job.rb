@@ -5,10 +5,11 @@ class CreationJob < ApplicationJob
 
   def perform(iteration, account, options = {})
     status = true
-    message = 'Success. All samples have been created'
-    publication_ids = iteration.story_type.publication_pl_ids.join(',')
+    message = 'Success. All stories have been created'
+    publication_ids = iteration.story_type.publication_pl_ids
     options[:iteration] = iteration
     options[:publication_ids] = publication_ids
+    options[:type] = 'story'
 
     loop do
       rd, wr = IO.pipe
@@ -16,7 +17,7 @@ class CreationJob < ApplicationJob
       Process.wait(
         fork do
           rd.close
-          MiniLokiC::Code[iteration.story_type].execute(:creation, options)
+          MiniLokiC::StoryTypeCode[iteration.story_type].execute(:creation, options)
         rescue StandardError, ScriptError => e
           wr.write({ e.class.to_s => e.message }.to_json)
         ensure
@@ -34,7 +35,7 @@ class CreationJob < ApplicationJob
       end
 
       staging_table = iteration.story_type.staging_table.name
-      break if Table.all_created_by_last_iteration?(staging_table, publication_ids)
+      break if Table.all_stories_created_by_iteration?(staging_table, publication_ids)
     end
 
     iteration.update!(schedule_counts: schedule_counts(iteration), current_account: account)
@@ -45,7 +46,7 @@ class CreationJob < ApplicationJob
     message = e.message
   ensure
     iteration.update!(creation: status, current_account: account)
-    send_to_action_cable(iteration, :samples, message)
+    send_to_action_cable(iteration.story_type, :stories, message)
     SlackStoryTypeNotificationJob.perform_now(iteration, 'creation', message)
   end
 
@@ -53,13 +54,13 @@ class CreationJob < ApplicationJob
 
   def schedule_counts(iteration)
     counts = {}
-    counts[:total] = iteration.samples.count
+    counts[:total] = iteration.stories.count
     return counts if counts[:total].zero?
 
     iteration.story_type.clients_publications_tags.each_with_object(counts) do |row, obj|
       client = row.client
       pubs = client.publications
-      counts = pubs.joins(:samples).where(samples: { iteration: iteration })
+      counts = pubs.joins(:stories).where(stories: { iteration: iteration })
                    .group(:publication_id).order('count(publication_id) desc')
                    .count(:publication_id)
       next if counts.empty?

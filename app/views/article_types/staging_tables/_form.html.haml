@@ -1,0 +1,5 @@
+.row
+  .col-10.offset-1
+    =form_with(url: article_type_staging_tables_path(@article_type)) do |form|
+      =form.text_field 'staging_table[name]', placeholder: 'existing staging table name'
+      =form.submit 'create or attach table'

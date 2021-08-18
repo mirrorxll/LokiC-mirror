@@ -1,7 +1,0 @@
--if !@story_type.iteration.eql?(@iteration)
-  \---
--elsif @story_type.code.attached?
-  =render 'codes/code'
--else
-  -if correct_account?(@story_type)
-    =render 'codes/form'

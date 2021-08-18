@@ -14,14 +14,14 @@ module Samples
     end
 
     def export!(iteration, threads_count)
-      samples_to_export = iteration.samples.ready_to_export.limit(10_000).to_a
+      stories_to_export = iteration.stories.ready_to_export.limit(10_000).to_a
       main_semaphore = Mutex.new
       exported = 0
 
       threads = Array.new(threads_count) do
         Thread.new do
           loop do
-            sample = main_semaphore.synchronize { samples_to_export.shift }
+            sample = main_semaphore.synchronize { stories_to_export.shift }
             break if sample.nil?
 
             lead_story_post(sample)
@@ -36,12 +36,12 @@ module Samples
 
     def remove!(iteration)
       semaphore = Mutex.new
-      samples = iteration.samples.exported.limit(10_000).to_a
+      stories = iteration.stories.exported.limit(10_000).to_a
 
       threads = Array.new(5) do
         Thread.new do
           loop do
-            sample = semaphore.synchronize { samples.shift }
+            sample = semaphore.synchronize { stories.shift }
             break if sample.nil?
 
             begin

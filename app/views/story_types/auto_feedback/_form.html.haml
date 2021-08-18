@@ -1,0 +1,53 @@
+.small
+  .accordion
+    .card
+      .card-header{}
+        auto-feedback
+      .card-body
+        -auto_feedback.each_with_index do |fb, index|
+          .row
+            .col-1{class: "auto-fb-confirm_#{fb.id} text-center", onchange: 'confirmAutoFeedback(this.className);'}
+              -if !@story_type.iteration.eql?(@iteration)
+                =fb.confirmed ? icon('fa','check') : icon('fa','times')
+              -elsif fb.confirmed
+                =icon('fa','check')
+              -else
+                =check_box_tag :auto_feedback_confirm, fb.confirmed
+            -fb.auto_feedback.output.each do |rule, output|
+              .col-2.p-0
+                =rule
+              .col-9{ id: "feedback_output_#{fb.id}", onclick: 'hideOtherPopovers(this);',
+                      'data-container' => 'body', 'data-toggle' => 'popover', 'data-placement' => 'top',
+                      'title'=> "#{fb.sample.id} - #{fb.sample_part}", 'data-content'=> fb.sample_txt_part }
+                =output
+          -if (auto_feedback.count - 1) > index
+            %hr
+
+:javascript
+  $(function () {
+    $('[data-toggle="popover"]').popover()
+  });
+
+  function hideOtherPopovers(elem) {
+    let fbOutputs = document.querySelectorAll('[id^="feedback_output_"]');
+
+    Array.from(fbOutputs).forEach((output)=> {
+      if(elem !== output) {
+        $(output).popover('hide')
+      }
+    });
+  }
+
+  function confirmAutoFeedback(elem) {
+    let feedback = document.getElementsByClassName(elem)[0];
+    let feedbackConfirmId = elem.split(' ').find((className) => className.match(/auto-fb-confirm/)).split('_')[1];
+    let changeAutoFeedbackStatus = (elem) => { elem.innerHTML = `<i class="fa fa-check"></i>`; }
+
+    $.ajax({
+      url: `#{root_url}story_types/#{@story_type.id}/iterations/#{@iteration.id}/auto_feedback_confirmations/${feedbackConfirmId}/confirm`,
+      success: changeAutoFeedbackStatus(feedback),
+      method: 'patch',
+      dataType: 'script'
+    });
+  }
+

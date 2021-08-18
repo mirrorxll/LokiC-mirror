@@ -1,0 +1,35 @@
+.col-12
+  .ml-3
+    =form_with(url: article_type_staging_table_indices_path(@article_type, @article_type.staging_table, @article_type.staging_table.index)) do |form|
+      #add_column_to_index.mb-2
+        =icon('fa', 'plus')
+      %div#index_editable
+
+      =form.submit :create, class: 'mt-3 ml-3'
+      =link_to('cancel', canceling_edit_article_type_staging_tables_path(@article_type), class: 'ml-3', remote: true)
+
+:javascript
+  var columns = #{raw @columns};
+  var options = columns.map(function(col) {
+    return `<option value="${col[1]}">${col[0]}</option>`
+  });
+
+  $('#add_column_to_index').click(function () {
+    var editable_block = $('#index_editable');
+    var count = editable_block.children().length;
+
+    $(editable_block).append(
+      `<div id="col_${count + 1}" class="mb-1">
+        <div class="remove_column d-inline-block mr-1" id="rm_col_${count + 1}" onclick="removeColumn(this)">
+          <i class="fas fa-minus"></i>
+        </div>
+        <select name="index[column_ids][]" id="index_${count + 1}">
+          ${options.join()}
+        </select>
+      </div>`
+    );
+  });
+
+  function removeColumn(elem) {
+    $(elem.parentNode).remove();
+  };
