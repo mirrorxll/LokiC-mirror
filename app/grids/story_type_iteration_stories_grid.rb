@@ -2,10 +2,10 @@
 
 class StoryTypeIterationStoriesGrid
   include Datagrid
-  attr_accessor :client_ids
+  attr_accessor :client_ids, :exported
 
   scope do
-    Story.includes(:output, publication: :client).order(backdated: :asc, published_at: :asc)
+    Story.includes(:story_type, :iteration, :output, publication: :client).order(backdated: :asc, published_at: :asc)
   end
 
   filter(:output, :string, header: 'Headline', left: true) do |value|
@@ -27,24 +27,31 @@ class StoryTypeIterationStoriesGrid
   # column(:id, header: "id", mandatory: true)
   column(:headline, order: 'outputs.headline, samples.id', mandatory: true)
 
-  column(:pl_staging_story_id, header: 'Live', mandatory: true) do |model|
-    format(model) do |record|
-      record.link? && record.published_at <= Date.today ? link_to('live', record.live_link, target: '_blank') : '---'
+  column(:live, header: "Live", mandatory: true) do |model|
+    cond = model.link? && model.published_at <= Date.today
+    link = cond ?  "#{model.publication.home_page}/stories/#{model.pl_story_id}" : '---'
+    format(link) do
+      cond ? link_to('live', model.live_link, target:'_blank') : '---'
     end
   end
-  column(:pl_staging_story_id, header: 'Pipeline', mandatory: true) do |model|
-    format(model) do |record|
-      record.link? ? link_to('pipeline', record.pl_link, target: '_blank') : '---'
+
+  column(:pl_link, header: "Pipeline", mandatory: true) do |model|
+    link = model.link? ? "https://pipeline.locallabs.com/stories/#{model.pl_story_id}" : '---'
+    format(link) do
+      model.link? ? link_to('pipeline', model.pl_link, target:'_blank') : '---'
     end
   end
-  column(:id, header: 'LokiC', mandatory: true) do |model|
-    format(model) do |record|
-      link_to('lokic', story_type_iteration_sample_url(@story_type, @iteration, record), target: '_blank')
+
+  column(:lokic_link, header: "LokiC", mandatory: true) do |model|
+    link = "https://lokic.locallabs.com/story_types/#{model.story_type.id}/iterations/#{model.iteration.id}/samples/#{model.id}"
+    format(link) do
+      link_to('lokic', story_type_iteration_sample_url(@story_type, @iteration, model), target:'_blank')
     end
   end
   column(:client_name, order: 'clients.name, samples.id', mandatory: true)
   column(:publication_name, order: 'publications.name, samples.id', mandatory: true)
   column(:published_at, order: 'published_at, samples.id', mandatory: true)
+  column(:pl_story_id, header: "Pipeline Story id", mandatory: true, if: :exported)
   column(:backdated, order: 'samples.backdated, samples.id', mandatory: true)
 
   def pubs_select
