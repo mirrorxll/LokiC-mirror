@@ -1,0 +1,36 @@
+(()=> {
+    let hex = secureRandom(6);
+
+    let tab_li = document.createElement('li');
+    tab_li.classList.add('nav-item');
+    tab_li.setAttribute('role', 'presentation')
+
+    let tab_a = tab_li.appendChild(document.createElement('a'));
+    tab_a.classList.add('nav-link');
+    tab_a.setAttribute('id', `tab_${hex}`);
+    tab_a.setAttribute('aria-controls', `t${hex}`);
+    tab_a.setAttribute('aria-selected', 'false');
+    tab_a.setAttribute('data-toggle', 'tab');
+    tab_a.setAttribute('href', `#t${hex}`);
+    tab_a.setAttribute('role', `tab`);
+    tab_a.innerText = 'Sample'
+
+    let tab_content = document.createElement('div')
+    tab_content.classList.add('tab-pane', 'fade', 'w-97')
+    tab_content.setAttribute('id', `t${hex}`)
+    tab_content.setAttribute('aria-labelledby', `tab_${hex}`)
+    tab_content.setAttribute('role', 'tabpanel')
+    tab_content.innerHTML = '<%= j render 'sample_for_feedback' %>'
+
+    document.getElementById('manual_feedback_tabs').appendChild(tab_li)
+    document.getElementById('manual_feedback_tabs_content').appendChild(tab_content)
+}).call();
+
+function secureRandom(n){
+    let result = '';
+    while (n--){
+        result += Math.floor(Math.random() * 16).toString(16);
+    }
+
+    return result;
+}

@@ -1,0 +1,38 @@
+#info.small.pt-3.pb-3
+  .row
+    .col-1.text-right
+      developer:
+    .col-11
+      #{@article_type.developer.name}
+
+  .row
+    .col-1.text-right
+      iteration:
+    .col-11
+      #{@iteration.name}
+
+  .row
+    .col-1.text-right
+      total articles:
+    .col-11
+      =@iteration.articles.count
+
+#filter_form.collapse
+  .row.mt-3.col-12
+    =datagrid_form_for @iteration_articles_grid, url: article_type_iteration_articles_path(@article_type, @iteration)
+
+=link_to('download as CSV', url_for(format: 'csv', iteration_stories_grid: @grid_params),
+  type: "button", id: '#save_as_csv_btn', class: 'btn btn-sm btn-outline-dark')
+=link_to('filter articles', '#filter_form', 'aria-controls' => 'filter_form',
+  'aria-expanded' => false, data: { toggle: "collapse", target: "#filter_form" },
+  type: "button", id: '#crt_upd_filter_btn', class: 'btn btn-sm btn-outline-dark')
+
+%hr.mt-1.mb-3/
+=paginate @iteration_articles_grid.assets
+
+#article_datagrid.small
+  =datagrid_table(@iteration_articles_grid)
+
+%hr.mb-3/
+=paginate @iteration_articles_grid.assets
+%hr/

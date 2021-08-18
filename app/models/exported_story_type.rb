@@ -3,7 +3,7 @@
 class ExportedStoryType < SecondaryRecord
   belongs_to :developer, class_name: 'Account'
   belongs_to :story_type
-  belongs_to :iteration
+  belongs_to :iteration, class_name: 'StoryTypeIteration'
   belongs_to :week
 
   has_one :editor_post_export_report,  -> { where(report_type: 'editor') },

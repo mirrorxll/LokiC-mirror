@@ -8,6 +8,7 @@
   - story_type
   - cron_tab
   - scrape_task
+  - article_type
 
 :schedule:
   initial:

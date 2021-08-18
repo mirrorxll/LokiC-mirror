@@ -2,11 +2,11 @@
   .row
     .col.small
       =hidden_field_tag :status
-      =form.rich_text_area :body, class: 'form-control overflow-auto', required: true, style: 'min-height: 150px;'
+      =form.rich_text_area :body, id: 'commentArea', class: 'form-control overflow-auto', required: true, style: 'min-height: 150px;'
+      #commentFeedback.text-danger.text-center.d-none
+        The comment must be at least five characters
   .modal-footer.justify-content-center
     =form.submit :send, class: 'btn btn-sm btn-outline-success'
-
-
 
 :javascript
   document.getElementById('status_comment_form').addEventListener('submit', function (evt) {
@@ -14,3 +14,21 @@
     let status = select.options[select.selectedIndex].text;
     document.getElementById('status').value = status
   });
+
+  function onSubmit(ev) {
+    ev.preventDefault();
+
+    let form = ev.target;
+    let nameInput = form.querySelector('#commentArea');
+    let nameFeedback = form.querySelector('#commentFeedback');
+    let submitButton = form.querySelector('input[type="submit"]');
+
+    if(nameInput.innerText.length >= 5) {
+      form.removeEventListener('submit', onSubmit);
+      Rails.fire(form, 'submit');
+    } else {
+      nameFeedback.classList.remove('d-none');
+      ev.stopPropagation();
+    }
+  }
+  document.querySelector('#status_comment_form').addEventListener('submit', onSubmit)

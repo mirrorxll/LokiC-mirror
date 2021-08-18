@@ -2,12 +2,17 @@
 
 class TasksController < ApplicationController # :nodoc:
   skip_before_action :find_parent_story_type
-  skip_before_action :set_iteration
-  before_action :find_task, only: [:show, :edit, :update]
+  skip_before_action :find_parent_article_type
+  skip_before_action :set_story_type_iteration
+  skip_before_action :set_article_type_iteration
+
+  before_action :find_task, only: %i[show edit update]
   before_action :grid, only: [:index]
   after_action  :send_notification, only: :create
-  after_action  :comment, only: :create
 
+  after_action  :send_notification, only: :create
+  after_action  :comment, only: :create
+  
   def index
     respond_to do |f|
       f.html do
@@ -17,7 +22,8 @@ class TasksController < ApplicationController # :nodoc:
   end
 
   def show
-    @task = Task.find(params[:id])
+    render_401 if !manager? && !@task.assignment_to_or_creator?(current_account)
+
     @comments = @task.comments.order(created_at: :desc)
   end
 
@@ -83,13 +89,14 @@ class TasksController < ApplicationController # :nodoc:
               "ASSIGNMENT TO YOU*\n>#{@task.title}"
 
       SlackNotificationJob.perform_later(assignment.slack.identifier, message)
+      SlackNotificationJob.perform_later(Rails.env.production? ? 'hle_lokic_task_reminders' : 'hle_lokic_development_messages', message)
     end
   end
 
   def task_params
     task_params = params.require(:task).permit(:title, :description, :deadline, :reminder_frequency, :gather_task, assignment_to: [])
     task_params[:reminder_frequency] = task_params[:reminder_frequency].blank? ? nil : TaskReminderFrequency.find(task_params[:reminder_frequency])
-    task_params[:assignment_to] = task_params[:assignment_to].uniq.reject { |account| account.blank? }
+    task_params[:assignment_to] = task_params[:assignment_to].uniq.reject(&:blank?)
     task_params
   end
 

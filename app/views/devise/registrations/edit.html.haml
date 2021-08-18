@@ -36,9 +36,9 @@
               =select_tag 'fcd_channel[id]',
                           options_from_collection_for_select(FactCheckingChannel.order(:name).where(account: nil), :id, :name),
                           {  include_blank: true, class: 'form-control form-control-sm' }
-              -if current_account.fc_channel
+              -if current_account.fact_checking_channel
                 %small.form-text.text-muted
-                  attached: #{current_account.fc_channel.name}
+                  attached: #{current_account.fact_checking_channel.name}
 
       .form-group
         .row

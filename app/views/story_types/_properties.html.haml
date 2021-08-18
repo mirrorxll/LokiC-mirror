@@ -1,6 +1,6 @@
 #reminder_panel
   -if @story_type.updates?
-    =render 'reminders/reminder'
+    =render 'story_types/reminders/reminder'
 %hr/
 
 .row.small
@@ -59,14 +59,14 @@
       .col-12
         story type's code
     #story_type_code
-      =render 'codes/section'
+      =render 'story_types/codes/section'
     %hr/
     -if correct_account?(@story_type)
       .row.mb-2.font-weight-bold
         .col-12
           export configurations (manual execution)
       #export_configs
-        =render 'export_configurations/export_configurations'
+        =render 'story_types/export_configurations/export_configurations'
       %hr/
 
       .row.mb-2.font-weight-bold
@@ -74,9 +74,9 @@
           cron tab
 
       #cron_tab_panel
-        =render 'cron_tabs/cron_tab'
+        =render 'story_types/cron_tabs/cron_tab'
       %hr/
 %hr/
 
 =render 'data_sets/modal_data_set'
-=render 'codes/modal_ruby_code'
+=render 'story_types/codes/modal_ruby_code'

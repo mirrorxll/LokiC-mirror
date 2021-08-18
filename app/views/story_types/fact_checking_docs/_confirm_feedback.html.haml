@@ -1,0 +1,19 @@
+:javascript
+  function confirmFeedback(elem, fb_type, fb_id) {
+    let changeFeedbackStatus = (elem) => {
+      let row = elem.parentNode
+      let checked = document.createElement('i')
+      checked.className = 'fa fa-check'
+
+      row.querySelector('.col-1').remove();
+      row.querySelector('.col-11').className = 'col-12'
+      row.parentNode.querySelector(`.${fb_type}_fb_info`).appendChild(checked)
+    }
+
+    $.ajax({
+      url: `#{root_url}story_types/#{@story_type.id}/fact_checking_docs/#{@fcd.id}/${fb_type}_feedback/${fb_id}/confirm`,
+      success: changeFeedbackStatus(elem),
+      method: 'patch',
+      dataType: 'script'
+    });
+  }

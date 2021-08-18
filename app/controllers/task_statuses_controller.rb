@@ -2,7 +2,10 @@
 
 class TaskStatusesController < ApplicationController
   skip_before_action :find_parent_story_type
-  skip_before_action :set_iteration
+  skip_before_action :find_parent_article_type
+  skip_before_action :set_story_type_iteration
+  skip_before_action :set_article_type_iteration
+
   before_action :find_task
   before_action :find_status, only: :change
 
@@ -52,6 +55,7 @@ class TaskStatusesController < ApplicationController
                 "Status changed to #{@task.status.name}*\n>#{@task.title}"
 
       SlackNotificationJob.perform_later(account.slack.identifier, message)
+      SlackNotificationJob.perform_later(Rails.env.production? ? 'hle_lokic_task_reminders' : 'hle_lokic_development_messages', message)
     end
   end
 end

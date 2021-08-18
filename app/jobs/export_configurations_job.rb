@@ -39,12 +39,13 @@ class ExportConfigurationsJob < ApplicationJob
     end
   rescue StandardError => e
     status = nil
+    pp e.full_message
     message = e.message
   ensure
     story_type.update!(export_configurations_created: status, current_account: account)
 
     if manual
-      send_to_action_cable(story_type.iteration, :properties, message)
+      send_to_action_cable(story_type, :properties, message)
       SlackStoryTypeNotificationJob.perform_now(iteration, 'export configurations', message)
     end
   end
