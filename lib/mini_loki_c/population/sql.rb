@@ -42,20 +42,20 @@ module MiniLokiC
       end
 
       def prepare_value(val)
-        case val
-        when String
-          val.dump
-        when TrueClass
-          1
-        when FalseClass
-          0
-        when NilClass
-          'NULL'
-        when Array, Hash
-          val.to_json.dump
-        else
-          val.to_json
-        end
+        raw_val =
+          if val.is_a?(Date) || val.is_a?(Time)
+            val.to_s
+          elsif val.is_a?(String)
+            val
+          elsif val.is_a?(TrueClass)
+            1
+          elsif val.is_a?(FalseClass)
+            0
+          else
+            val.to_json
+          end
+
+        val.nil? ? 'NULL' : "'#{Mysql2::Client.escape(raw_val.to_s)}'"
       end
     end
   end
