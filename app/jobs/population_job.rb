@@ -45,7 +45,6 @@ class PopulationJob < ApplicationJob
     message = e.message
   ensure
     iteration.update!(population: status, current_account: account)
-    status.class, iteration.population.class
     send_to_action_cable(story_type, :staging_table, message)
     SlackStoryTypeNotificationJob.perform_now(iteration, 'population', message)
   end
