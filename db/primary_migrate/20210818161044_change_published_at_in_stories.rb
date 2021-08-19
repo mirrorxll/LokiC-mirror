@@ -2,6 +2,6 @@
 
 class ChangePublishedAtInStories < ActiveRecord::Migration[6.0]
   def change
-    change_column :stories, :published_at, :datetime
+    # change_column :stories, :published_at, :datetime
   end
 end
