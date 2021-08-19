@@ -23,7 +23,7 @@ class PopulationJob < ApplicationJob
         end
 
         ExportConfigurationsJob.perform_now(story_type, account)
-      rescue StandardError => e
+      rescue StandardError, ScriptError => e
         wr.write({ e.class.to_s => e.message }.to_json)
       ensure
         wr.close

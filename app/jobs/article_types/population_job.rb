@@ -20,7 +20,7 @@ module ArticleTypes
           unless article_type.status.name.eql?('in progress')
             article_type.update!(status: Status.find_by(name: 'in progress'), current_account: account)
           end
-        rescue StandardError => e
+        rescue StandardError, ScriptError => e
           wr.write({ e.class.to_s => e.message }.to_json)
         ensure
           wr.close

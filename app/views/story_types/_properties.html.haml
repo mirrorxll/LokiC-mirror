@@ -10,11 +10,11 @@
         data set
     .row
       .col-12
-        -if current_account.types.include?('manager')
+        -if (current_account.types & %w[manager editor]).any?
           =link_to @story_type.data_set.name, data_set_path(@story_type.data_set), class: 'no-link'
         -else
           =@story_type.data_set.name
-        =link_to icon('fa', 'fa fa-info-circle'), properties_data_set_path(@story_type.data_set), remote: true
+        =link_to icon('fa', 'info-circle'), properties_data_set_path(@story_type.data_set), remote: true
     %hr/
 
     .row.mb-2.font-weight-bold
@@ -31,26 +31,30 @@
     %hr/
 
     .row.mb-2.font-weight-bold
-      .col-6
+      .col-4
+        level
+      .col-4
         frequency
-      .col-6
+      .col-4
         photo bucket
     .row
-      .col-6
+      .col-4
+        =@story_type&.level&.name
+      .col-4
         =@story_type&.frequency&.name
-      .col-6
+      .col-4
         =@story_type&.photo_bucket&.name
     %hr/
 
     .row.mb-2.font-weight-bold
-      .col-6
+      .col-4
         editor
-      .col-6
+      .col-4
         developer
     .row
-      .col-6
+      .col-4
         =@story_type.editor.name
-      .col-6
+      .col-4
         =@story_type.developer ? @story_type.developer.name: '---'
 
     =render 'story_types/additional_properties'

@@ -183,7 +183,7 @@ class StoryType < ApplicationRecord
 
     if status_id_changed?
       old_status = Status.find_by(id: status_id_change.first).name
-      new_status = status.name.in?(%w[blocked canceled]) ? "#{status.name}: #{status_comment&.body}" : status.name
+      new_status = status.name
       changes['progress status changed'] = "#{old_status} -> #{new_status}"
     end
 
