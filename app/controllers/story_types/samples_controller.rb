@@ -37,7 +37,7 @@ module StoryTypes
     end
 
     def create_and_gen_auto_feedback
-      @iteration.update!(samples_creation: false, current_account: current_account)
+      @iteration.update!(samples: false, current_account: current_account)
       SamplesAndAutoFeedbackJob.perform_later(@iteration, current_account, stories_params)
 
       render 'story_types/creations/execute'

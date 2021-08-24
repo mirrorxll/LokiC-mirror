@@ -1,4 +1,4 @@
--if @story_type.export_configurations_created
+-if @iteration.population && @story_type.export_configurations_created
   -if @story_type.configurations_no_tags.present?
     .row.mb-3.configs_without_tags_msg
       .col-10.offset-1.text-danger
@@ -24,9 +24,9 @@
         %hr/
         =render 'story_types/samples/stories_link'
 
-  -elsif @iteration.samples_creation.eql?(false) || @iteration.creation.eql?(false)
+  -elsif @iteration.samples.eql?(false) || @iteration.creation.eql?(false)
     =render 'story_types/spinner', description: 'creation in the process'
-  -elsif @iteration.purge_stories.eql?(true)
+  -elsif @iteration.purge_creation.eql?(true)
     =render 'story_types/spinner', description: 'purging in progress'
   -else
     - samples = @iteration.stories.where(sampled: true)

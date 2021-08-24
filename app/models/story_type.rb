@@ -150,8 +150,8 @@ class StoryType < ApplicationRecord
       new_developer_name = developer&.name || 'not distributed'
       changes['distributed'] = "#{old_developer_name} -> #{new_developer_name}"
 
-      SlackStoryTypeNotificationJob.perform_later(iteration, 'developer', 'Unpinned', old_developer) if old_developer
-      SlackStoryTypeNotificationJob.perform_later(iteration, 'developer', 'Distributed to you', developer) if developer
+      StoryTypes::SlackNotificationJob.perform_later(iteration, 'developer', 'Unpinned', old_developer) if old_developer
+      StoryTypes::SlackNotificationJob.perform_later(iteration, 'developer', 'Distributed to you', developer) if developer
     end
 
     if data_set_id_changed?
