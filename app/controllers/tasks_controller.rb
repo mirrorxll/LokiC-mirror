@@ -47,8 +47,6 @@ class TasksController < ApplicationController # :nodoc:
   def edit; end
 
   def update
-    puts update_task_params
-    puts '1111111111111111'
     @task.update!(update_task_params)
   end
 
@@ -103,8 +101,6 @@ class TasksController < ApplicationController # :nodoc:
   end
 
   def update_task_params
-    puts params
-    puts '/////////////////'
     up_task_params = params.require(:task).permit(:title, :description, :deadline, :reminder_frequency, :gather_task)
     up_task_params[:reminder_frequency] = up_task_params[:reminder_frequency].blank? ? nil : TaskReminderFrequency.find(up_task_params[:reminder_frequency])
     up_task_params
