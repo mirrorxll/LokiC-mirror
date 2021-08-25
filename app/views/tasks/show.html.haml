@@ -19,11 +19,12 @@
   .card-header.small.text-right
     -if current_account.eql?(@task.creator) || current_account.types.include?('manager')
       =link_to '[ edit task ]', edit_task_path(@task), remote: true
-  .card-body.overflow-auton{style: 'height: 600px'}
+  .card-body
     #body
       .row.small.mb-3
         .col-10.offset-1
-          =@task.description&.html_safe
+          .fr-view
+            =@task.description.html_safe
 
 =render 'tasks/task_modal'
 =render 'task_comments/comment_modal'

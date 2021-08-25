@@ -32,7 +32,6 @@ class TaskCommentsController < ApplicationController
     return unless @comment
     accounts = ((@task.assignment_to.to_a << @task.creator) - [@comment.commentator]).uniq
     accounts.each do |account|
-      puts account.name
       next if account.slack.nil? || account.slack.deleted
 
       message = "*[ LokiC ] <#{task_url(@task)}| TASK ##{@task.id}> | "\
