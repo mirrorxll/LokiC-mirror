@@ -16,7 +16,7 @@ module MiniLokiC
         return if options[:sampled] || !Table.all_stories_created_by_iteration?(staging_table, options[:publication_ids])
 
         options[:iteration].update!(schedule: false)
-        SchedulerJob.perform_now(options[:iteration], 'run-from-code', scheduling_rules)
+        StoryTypes::SchedulerJob.perform_now(options[:iteration], 'run-from-code', scheduling_rules)
       end
     end
   end
