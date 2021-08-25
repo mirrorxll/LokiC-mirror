@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 # Execute population method on sidekiq backend
-module ArticleTypes
-  class PopulationJob < ArticleTypeJob
-    def perform(iteration, account, options)
+module StoryTypes
+  class PopulationJob < StoryTypeJob
+    def perform(iteration, account, options = {})
       status = true
       message = 'Success'
-      article_type = iteration.article_type
+      story_type = iteration.story_type
       population_args = population_args_to_hash(options[:population_args])
 
       rd, wr = IO.pipe
@@ -15,11 +15,13 @@ module ArticleTypes
         fork do
           rd.close
 
-          MiniLokiC::ArticleTypeCode[article_type].execute(:population, population_args)
+          MiniLokiC::StoryTypeCode[story_type].execute(:population, population_args)
 
-          unless article_type.status.name.eql?('in progress')
-            article_type.update!(status: Status.find_by(name: 'in progress'), current_account: account)
+          unless story_type.status.name.eql?('in progress')
+            story_type.update!(status: Status.find_by(name: 'in progress'), current_account: account)
           end
+
+          ExportConfigurationsJob.perform_now(story_type, account)
         rescue StandardError, ScriptError => e
           wr.write({ e.class.to_s => e.message }.to_json)
         ensure
@@ -42,8 +44,8 @@ module ArticleTypes
       message = e.message
     ensure
       iteration.update!(population: status, current_account: account)
-      send_to_action_cable(article_type, :staging_table, message)
-      SlackNotificationJob.perform_now(iteration.article_type, iteration, 'population', message)
+      send_to_action_cable(story_type, :staging_table, message)
+      StoryTypes::SlackNotificationJob.perform_now(iteration, 'population', message)
     end
 
     private

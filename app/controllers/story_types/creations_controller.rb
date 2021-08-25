@@ -16,8 +16,8 @@ module StoryTypes
       if @iteration.stories.where.not("pl_#{PL_TARGET}_story_id" => nil).present?
         flash.now[:error] = 'At least one story from this iteration has already exported to PL'
       else
-        @iteration.update!(purge_stories: true, current_account: current_account)
-        PurgeStoriesByIterationJob.perform_later(@iteration, current_account)
+        @iteration.update!(purge_creation: true, current_account: current_account)
+        PurgeCreationJob.perform_later(@iteration, current_account)
       end
     end
   end

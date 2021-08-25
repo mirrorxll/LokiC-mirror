@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ReminderTasksJob< ApplicationJob
+class ReminderTasksJob < ApplicationJob
   queue_as :lokic
 
   def perform
