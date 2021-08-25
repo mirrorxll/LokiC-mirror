@@ -15,7 +15,7 @@
       gather_task:
   .form-group.row.small.text-center
     .col-4
-      =form.collection_select 'task[reminder_frequency]', TaskReminderFrequency.all.order(:name), :id, :name, { selected: @task.reminder_frequency.nil? ? '' : @task.reminder_frequency.id, prompt: '' }
+      =form.collection_select 'task[reminder_frequency]', sorted_reminder_frequencies, :id, :name, { selected: @task.reminder_frequency.nil? ? '' : @task.reminder_frequency.id, prompt: '' }
     .col-4
       =form.date_field 'task[deadline]', value: @task.deadline
     .col-4

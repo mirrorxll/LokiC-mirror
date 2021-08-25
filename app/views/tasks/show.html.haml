@@ -23,7 +23,8 @@
     #body
       .row.small.mb-3
         .col-10.offset-1
-          =@task.description&.html_safe
+          .fr-view
+            =@task.description.html_safe
 
 =render 'tasks/task_modal'
 =render 'task_comments/comment_modal'

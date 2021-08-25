@@ -3,7 +3,8 @@
     .row.mb-3.configs_without_tags_msg
       .col-10.offset-1.text-danger
         At least one export configuration created without tag. Check this in the properties section
-
+  -puts @iteration.samples.eql?(false)
+  -puts @iteration.creation.eql?(false)
   -if !@story_type.iteration.eql?(@iteration)
     .row
       .col-10.offset-1
