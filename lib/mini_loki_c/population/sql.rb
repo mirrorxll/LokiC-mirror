@@ -6,14 +6,14 @@ module MiniLokiC
     module SQL
       module_function
 
-      def insert_on_duplicate_key(table, data = {})
+      def insert_on_duplicate_key(table, data = {}, route = nil)
         keys = []
         values = []
         updates = []
 
         data.map do |(k, val)|
           key = "`#{k}`"
-          value = prepare_value(val)
+          value = prepare_value(val, route)
 
           keys << key
           values << value
@@ -25,13 +25,13 @@ module MiniLokiC
         "ON DUPLICATE KEY UPDATE #{updates.join(', ')};"
       end
 
-      def insert_ignore(table, data = {})
+      def insert_ignore(table, data = {}, route = nil)
         keys = []
         values = []
 
         data.map do |(k, val)|
           key = "`#{k}`"
-          value = prepare_value(val)
+          value = prepare_value(val, route)
 
           keys << key
           values << value
@@ -41,21 +41,21 @@ module MiniLokiC
         "VALUES (#{values.join(', ')});"
       end
 
-      def prepare_value(val)
-        case val
-        when String
-          val.dump
-        when TrueClass
-          1
-        when FalseClass
-          0
-        when NilClass
-          'NULL'
-        when Array, Hash
-          val.to_json.dump
-        else
-          val.to_json
-        end
+      def prepare_value(val, route)
+        raw_val =
+          case val
+          when Date, Time, BigDecimal
+            val.to_s
+          when TrueClass, FalseClass
+            val ? 1 : 0
+          when String
+            val
+          else
+            val.to_json
+          end
+
+        client = route || Mysql2::Client
+        val.nil? ? 'NULL' : "'#{client.escape(raw_val.to_s)}'"
       end
     end
   end

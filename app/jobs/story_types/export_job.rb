@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-module ArticleTypes
-  class ExportJob < ArticleTypeJob
-    def perform(iteration, staging_table, account, url = nil)
+module StoryTypes
+  class ExportJob < StoryTypeJob
+    def perform(iteration, account, url = nil)
       status = true
       message = 'Success. Make sure that all stories are exported'
       story_type = iteration.story_type
@@ -80,7 +80,7 @@ module ArticleTypes
       message = e.message
     ensure
       iteration.reload.update!(export: status)
-      send_to_action_cable(iteration.article_type, :export, message)
+      send_to_action_cable(story_type, :export, message)
       StoryTypes::SlackNotificationJob.perform_now(iteration, 'export', message)
     end
   end
