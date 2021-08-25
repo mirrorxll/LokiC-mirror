@@ -4,7 +4,7 @@ module Table
   module Create
     def create(t_name)
       t_name = schema_table(t_name)
-      loki_story_creator { |conn| conn.create_table(t_name) }
+      loki_story_creator { |conn| conn.create_table(t_name, options: 'DEFAULT CHARSET="utf8mb4" COLLATE="utf8mb4_unicode_520_ci"') }
       nil
     end
 

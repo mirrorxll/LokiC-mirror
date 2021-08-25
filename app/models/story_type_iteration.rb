@@ -16,7 +16,6 @@ class StoryTypeIteration < ApplicationRecord # :nodoc:
 
   has_one :exported, dependent: :destroy, class_name: 'ExportedStoryType', foreign_key: :iteration_id
 
-  has_many :samples, -> { where(sampled: true) }, class_name: 'Story'
   has_many :auto_feedback_confirmations
   has_many :auto_feedback, through: :auto_feedback_confirmations
   has_many :stories

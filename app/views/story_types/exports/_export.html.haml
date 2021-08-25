@@ -10,7 +10,7 @@
 
   -elsif @story_type.staging_table && @iteration.creation && @iteration.schedule
 
-    -if @iteration.export.eql?(true) && !@iteration.removing_from_pl.eql?(true)
+    -if @iteration.export.eql?(true) && !@iteration.purge_export.eql?(true)
       .row
         .col-10.offset-1
           total exported: #{exported} / #{stories.count}
@@ -41,7 +41,7 @@
 
     -elsif @iteration.export.eql?(false)
       =render 'story_types/spinner', description: 'export in progress'
-    -elsif @iteration.removing_from_pl.eql?(true)
+    -elsif @iteration.purge_export.eql?(true)
       =render 'story_types/spinner', description: 'removing from PL in progress'
     -else
       .row.mb-2

@@ -20,10 +20,10 @@ module StoryTypes
 
       if flash.now[:error].nil?
         population_args = population_params
-        PopulationJob.perform_later(@iteration, current_account, population_args)
-
         iteration_args = population_args.merge(current_account: current_account)
         @iteration.update!(iteration_args)
+
+        PopulationJob.perform_later(@iteration, current_account, population_args)
       end
 
       render 'story_types/staging_tables/show'

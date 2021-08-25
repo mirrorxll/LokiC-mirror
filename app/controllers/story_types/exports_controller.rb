@@ -17,9 +17,9 @@ module StoryTypes
     end
 
     def remove_exported_stories
-      @iteration.update!(removing_from_pl: true, current_account: current_account)
+      @iteration.update!(purge_export: true, current_account: current_account)
       @removal.update!(removal_params)
-      RemoveFromPlJob.perform_later(@iteration, current_account)
+      PurgeExportJob.perform_later(@iteration, current_account)
     end
 
     def stories

@@ -13,8 +13,7 @@ module MiniLokiC
           Mysql2::Client.new(
             host: host, database: database,
             username: username, password: password,
-            connect_timeout: 180, reconnect: true,
-            encoding: 'utf8'
+            connect_timeout: 180, reconnect: true
           )
         rescue Mysql2::Error => e
           raise Mysql2::Error, e if fallen > 3
