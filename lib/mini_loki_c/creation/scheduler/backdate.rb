@@ -4,23 +4,17 @@ module MiniLokiC
   module Creation
     module Scheduler
       module Backdate # :nodoc:
-        def self.backdate_scheduler(samples, backdated_data)
+        def self.backdate_scheduler(samples, backdated_rules)
           schedule_args = {}
-          backdated_data = backdated_data.sort_by { |time_frame, _dates| time_frame }.reverse
+          backdated_rules = backdated_rules.sort_by { |rule| [rule[:time_frame_ids], rule[:where]] }.reverse
 
-          backdated_data.each do |time_frame, dates|
-            samples_backdated = if time_frame.blank?
-                                  samples.where(published_at: nil)
-                                else
-                                  time_frame_ids = TimeFrame.where(frame: time_frame).ids
-                                  raise 'Error name of time frame' if time_frame_ids.blank?
-                                  samples.where(published_at: nil).where(time_frame: time_frame_ids)
-                                end
+          backdated_rules.each do |rule|
+            samples_backdated = samples_backdated(samples, rule)
 
             next if samples_backdated.empty?
 
             publications = samples_backdated.group(:publication_id).count
-            publication_dates = (dates[0]..dates[1]).to_a
+            publication_dates = (rule[:begin_date]..rule[:end_date]).to_a
 
             publications.each do |publication_id, count|
               limit = (count.to_f / publication_dates.length).ceil
@@ -35,6 +29,21 @@ module MiniLokiC
           iteration.update_attribute(:schedule, true) if samples.where(published_at: nil).empty?
           schedule_args = schedule_args.to_json
           iteration.update_attribute(:schedule_args, iteration.schedule_args.nil? ? schedule_args : iteration.schedule_args += schedule_args)
+        end
+
+        private
+
+        def samples_backdated(samples, rule)
+          samples = samples.where(published_at: nil)
+          return samples if rule[:time_frame_ids].blank? && rule[:where].blank?
+
+          samples = samples.where(time_frame: rule[:time_frame_ids]) unless rule[:time_frame_ids].blank?
+
+          unless rule[:where].blank?
+            stage_ids = ExtraArgs.stage_ids(samples.first.iteration.story_type.staging_table.name, rule[:where])
+            samples = samples.where(staging_row_id: stage_ids)
+          end
+          samples
         end
       end
     end
