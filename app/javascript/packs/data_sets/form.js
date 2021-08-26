@@ -124,7 +124,6 @@ function addClientsToSelectGroup(uId, clientsFromApi = null) {
 }
 
 function tagsByPublication(event) {
-    console.log('qqqqqqqqqqqqqqqqqqqqq')
     var publicationId = event.target.parentNode.parentNode.getElementsByClassName('publications_select')[0].value;
     let clientId = event.target.parentNode.parentNode.getElementsByClassName('clients_select')[0].value;
 
