@@ -11,7 +11,7 @@ module Api
 
     def publications
       publications = Publication.where(name: ['all local publications', 'all publications','all statewide publications']).order(Arel.sql"name in ('all local publications') DESC, name DESC") +
-        Client.find(params[:client_id]).publications.order(:name)
+      Client.find(params[:client_id]).publications.order(:name)
 
       render json: { attached: publications }
     end
