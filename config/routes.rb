@@ -25,9 +25,14 @@ Rails.application.routes.draw do
 
   namespace :api, constraints: { format: :json } do
     resources :clients, only: [] do
-      get :visible, on: :collection
-      get :tags
+      get :visible,           on: :collection
+      get :local_publication, on: :collection
       get :publications
+      get :tags
+
+      resources :publications, only: [] do
+        get :tags
+      end
     end
 
     resources :scrape_tasks, only: [] do
