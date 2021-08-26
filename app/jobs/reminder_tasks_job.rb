@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ReminderTasksJob< ApplicationJob
+class ReminderTasksJob < ApplicationJob
   queue_as :lokic
 
   def perform
@@ -12,22 +12,29 @@ class ReminderTasksJob< ApplicationJob
         once_a_week = TaskReminderFrequency.find_by(name: 'once a week')
         two_times_a_week = TaskReminderFrequency.find_by(name: 'two times a week')
         three_times_a_week = TaskReminderFrequency.find_by(name: 'three times a week')
+        monday = TaskReminderFrequency.find_by(name: 'each Monday')
+        tuesday = TaskReminderFrequency.find_by(name: 'each Tuesday')
+        wednesday = TaskReminderFrequency.find_by(name: 'each Wednesday')
+        thursday = TaskReminderFrequency.find_by(name: 'each Thursday')
+        friday = TaskReminderFrequency.find_by(name: 'each Friday')
+        saturday = TaskReminderFrequency.find_by(name: 'each Saturday')
+        sunday = TaskReminderFrequency.find_by(name: 'each Sunday')
 
         tasks = case day_of_week
                 when 'Monday'
-                  Task.where(reminder_frequency: [each_day, three_times_a_week, once_a_week, two_times_a_week])
+                  Task.where(reminder_frequency: [each_day, three_times_a_week, once_a_week, two_times_a_week, monday])
                 when 'Tuesday'
-                  Task.where(reminder_frequency: each_day)
+                  Task.where(reminder_frequency: [each_day, tuesday])
                 when 'Wednesday'
-                  Task.where(reminder_frequency: [each_day, three_times_a_week, two_times_a_week])
+                  Task.where(reminder_frequency: [each_day, three_times_a_week, two_times_a_week, wednesday])
                 when 'Thursday'
-                  Task.where(reminder_frequency: each_day)
+                  Task.where(reminder_frequency: [each_day, thursday])
                 when 'Friday'
-                  Task.where(reminder_frequency: [each_day, three_times_a_week])
+                  Task.where(reminder_frequency: [each_day, three_times_a_week, friday])
                 when 'Saturday'
-                  Task.where(reminder_frequency: each_day)
+                  Task.where(reminder_frequency: [each_day, saturday])
                 when 'Sunday'
-                  Task.where(reminder_frequency: each_day)
+                  Task.where(reminder_frequency: [each_day, sunday])
                 else
                   raise 'Incorrect date'
                 end

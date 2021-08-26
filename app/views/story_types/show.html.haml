@@ -18,17 +18,17 @@
 .row
   .col-10
     #story_type_iterations
-      =render @story_type.iterations, curr_iteration: @story_type.iteration
+      =render partial: 'story_types/iterations/iteration', collection: @story_type.iterations, current_iteration: @story_type.iteration
 
       .badge.badge-pill.badge-light{'data-container' => 'body',
                                     'data-toggle' => 'popover',
                                     'data-placement' => 'top',
                                     'data-html' => 'true',
-                                    'data-content' => "#{render 'iterations/new_form'}" }
+                                    'data-content' => "#{ render 'story_types/iterations/new_form' }" }
         new iteration
   .col-2.text-right
     #story_type_status
-      =render 'story_type_statuses/status'
+      =render 'story_types/progress_statuses/status'
 %hr/
 
 #story_type_template.accordion
@@ -49,6 +49,7 @@
       .flash
       .card-body
         =render 'story_types/properties'
+
 -if correct_account?(@story_type)
   -if @iteration.eql?(@story_type.iteration)
     #story_type_staging_table.accordion
@@ -59,7 +60,7 @@
         #staging_table.collapse.show{"data-parent" => "#story_type_staging_table"}
           .flash
           .card-body
-            =render 'staging_tables/staging_table'
+            =render 'story_types/staging_tables/staging_table'
 
 %div.accordion{id: "story_type_samples_#{@iteration.id}"}
   .card
@@ -69,7 +70,7 @@
     #samples.collapse.show{"data-parent" => "#story_type_samples_#{@iteration.id}"}
       .flash
       .card-body
-        =render 'samples/samples'
+        =render 'story_types/samples/samples'
 
 -if correct_account?(@story_type)
   %div.accordion{id: "story_type_scheduler_#{@iteration.id}"}
@@ -80,7 +81,7 @@
       #scheduler.collapse.show{"data-parent" => "#story_type_scheduler_#{@iteration.id}"}
         .flash
         .card-body
-          =render 'schedules/scheduler'
+          =render 'story_types/schedules/scheduler'
 
   %div.accordion{id: "story_type_export_#{@iteration.id}"}
     .card
@@ -89,5 +90,5 @@
           export (iteration: #{@iteration.name})
       #export.collapse.show{"data-parent" => "#story_type_export_#{@iteration.id}"}
         .card-body.small
-          =render 'exports/export'
+          =render 'story_types/exports/export'
 %hr.mb-5/

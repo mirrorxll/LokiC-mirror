@@ -1,0 +1,75 @@
+%div{ id: "article_type", article_type_id: @article_type.id }
+
+%hr
+.row
+  .col-12.text-center
+    #article_type_name
+      %b ##{@article_type.id} #{@article_type.name}
+%hr/
+
+%nav{ 'area-label' => 'breadcrumb' }
+  %ov.breadcrumb
+    %li.breadcrumb-item
+      =link_to('home', root_url)
+    %li.breadcrumb-item.active{ 'area-current' => 'page' }
+      article type
+%hr/
+
+.row
+  .col-10
+    #article_type_iterations
+      =render partial: 'article_types/iterations/iteration', collection: @article_type.iterations, current_iteration: @article_type.iteration
+
+      .badge.badge-pill.badge-light{'data-container' => 'body',
+                                    'data-toggle' => 'popover',
+                                    'data-placement' => 'top',
+                                    'data-html' => 'true',
+                                    'data-content' => "#{ render 'article_types/iterations/new_form' }" }
+        new iteration
+  .col-2.text-right
+    #article_type_status
+      =render 'article_types/progress_statuses/status'
+%hr/
+
+#article_type_template.accordion
+  .card.small
+    .card-header
+      %div.text-center{"aria-controls" => "#template", "aria-expanded" => "true", "data-target" => "#template", "data-toggle" => "collapse", type: "button"}
+        template
+    #template.collapse.show{"data-parent" => "#article_type_template"}
+      .card-body.small
+        =render 'article_types/template'
+
+#article_type_properties.accordion
+  .card
+    .card-header
+      %div.text-center{"aria-controls" => "#properties", "aria-expanded" => "false", "data-target" => "#properties", "data-toggle" => "collapse", type: "button"}
+        properties
+    #properties.collapse.show{"data-parent" => "#article_type_properties"}
+      .flash
+      .card-body
+        =render 'article_types/properties'
+
+-if correct_account?(@article_type)
+  -if @iteration.eql?(@article_type.iteration)
+    #article_type_staging_table.accordion
+      .card
+        .card-header
+          %div.text-center{"aria-controls" => "#staging_table", "aria-expanded" => "false", "data-target" => "#staging_table", "data-toggle" => "collapse", type: "button"}
+            staging table
+        #staging_table.collapse.show{"data-parent" => "#article_type_staging_table"}
+          .flash
+          .card-body
+            =render 'article_types/staging_tables/staging_table'
+
+%div.accordion{id: "article_type_samples_#{@iteration.id}"}
+  .card
+    .card-header
+      %div.text-center{"aria-controls" => "#samles", "aria-expanded" => "false", "data-target" => "#samples", "data-toggle" => "collapse", type: "button"}
+        samples (iteration: #{@iteration.name})
+    #samples.collapse.show{"data-parent" => "#article_type_samples_#{@iteration.id}"}
+      .flash
+      .card-body
+        =render 'article_types/samples/samples'
+
+%hr.mb-5/

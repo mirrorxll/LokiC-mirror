@@ -12,24 +12,48 @@
 
 =render 'data_set'
 
-%hr/
+%ul#dataSetTabs.nav.nav-tabs.small
+  %li.nav-item.text-center{ style: 'width: 50%' }
+    %a#storyTypesTab.nav-link{ onclick: 'saveActiveTab(this);', "aria-controls" => "storyTypes", "aria-selected" => "true", "data-toggle" => "tab", :href => "#storyTypes" }
+      story types (#{@story_types.count})
+  %li.nav-item.text-center{ style: 'width: 50%' }
+    %a#articleTypesTab.nav-link{onclick: 'saveActiveTab(this);', "aria-controls" => "articleTypes", "aria-selected" => "false", "data-toggle" => "tab", :href => "#articleTypes" }
+      article types (#{@article_types.count})
+#dataSetTabsContent.tab-content
+  #storyTypes.tab-pane.fade{ "aria-labelledby" => "storyTypesTab" }
+    .card.border-top-0.rounded-0.mb-5
+      .row
+        .col-10.offset-1
+          %hr.mb-1/
+          #newStoryType
+            .row
+              .col-1
+              .col-5.pl-0
+                =button_to('[ create a new story type ]', new_data_set_story_type_path(@data_set),
+                           method: :get, remote: true, class: 'p-0 pb-1 btn btn-sm btn-link ml-2',
+                           data: { disable_with: '...'})
+          %hr.mt-1/
+      .mt-4
+      =render partial: 'story_types/story_type', collection: @story_types
+      .mt-4
+  #articleTypes.tab-pane.fade{ "aria-labelledby" => "articleTypesTab" }
+    .card.border-top-0.rounded-top-0.mb-5
+      .row
+        .col-10.offset-1
+          %hr.mb-1/
+          #newArticleType
+            .row
+              .col-1
+              .col-5.pl-0
+                =button_to('[ create a new article type ]', new_data_set_article_type_path(@data_set),
+                           method: :get, remote: true, class: 'p-0 pb-1 btn btn-sm btn-link ml-2',
+                           data: { disable_with: '...'})
+          %hr.mt-1/
 
-#story_types_filter
-  =render 'data_sets/story_types_filter'
-%hr/
+      .mt-4
+      =render partial: 'article_types/article_type', collection: @article_types
+      .mt-4
 
-#new_story_type
-  .row
-    .col-1
-    .col-5.pl-0
-      =link_to('new story type',
-               new_data_set_story_type_path(@data_set),
-               class: 'btn btn-sm btn-outline-dark',
-               remote: true)
-%hr/
-
-#story_types
-  =render partial: 'story_types/story_type', collection: @story_types
 
 #template.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "template",
                       role: "dialog", tabindex: "-1", 'data-backdrop' => 'static',  'data-keyboard' => "false" }
@@ -47,3 +71,18 @@
         %button.close{"aria-label" => "Close", "data-dismiss" => "modal", type: "button"}
           %span{"aria-hidden" => "true"} ×
       .modal-body
+
+:javascript
+  (() => {
+    if(!sessionStorage['dataSetActiveTab'])
+      sessionStorage['dataSetActiveTab'] = '#storyTypesTab';
+  })();
+
+  (() => {
+    document.querySelector(sessionStorage['dataSetActiveTab']).classList.add('active');
+    document.querySelector(sessionStorage['dataSetActiveTab'].replace('Tab', '')).classList.add('active', 'show');
+  })();
+
+  function saveActiveTab(elem) {
+    sessionStorage['dataSetActiveTab'] = '#' + `${elem.id}`;
+  }

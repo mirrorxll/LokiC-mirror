@@ -1,15 +1,17 @@
 # frozen_string_literal: true
 
 class StagingTable < ApplicationRecord # :nodoc:
-  before_create   :generate_table_name, if: :noname?
-  before_create   :create_table,        if: :not_exists?
-  before_create   :default_iter_id
-  before_create   :default_hle_columns
-  before_create   :delete_useless_columns
-  before_create   :timestamps
-  after_create    :sync
+  before_create :generate_table_name,        if: :noname?
+  before_create :create_table,               if: :not_exists?
+  before_create :default_iter_id
+  before_create :default_story_type_columns, if: :story_type?
+  before_create :delete_useless_columns,     if: :story_type?
+  before_create :add_story_created,          if: :story_type?
+  before_create :add_article_created,        if: :article_type?
+  before_create :timestamps
+  after_create  :sync
 
-  belongs_to :story_type
+  belongs_to :staging_tableable, polymorphic: true
 
   has_one :columns, dependent: :delete
   has_one :index,   dependent: :delete
@@ -34,11 +36,11 @@ class StagingTable < ApplicationRecord # :nodoc:
   end
 
   def default_iter_id
-    Table.iter_id_column(name, story_type.iteration.id)
+    Table.iter_id_column(name, staging_tableable.iteration.id)
   end
 
   def publication_ids
-    pub_ids = story_type.publication_pl_ids.join(',')
+    pub_ids = staging_tableable.publication_pl_ids
     Table.publication_ids(name, pub_ids)
   end
 
@@ -47,6 +49,14 @@ class StagingTable < ApplicationRecord # :nodoc:
   end
 
   private
+
+  def story_type?
+    staging_tableable.class.to_s.eql?('StoryType')
+  end
+
+  def article_type?
+    staging_tableable.class.to_s.eql?('ArticleType')
+  end
 
   def noname?
     name.nil? || name.empty?
@@ -57,19 +67,27 @@ class StagingTable < ApplicationRecord # :nodoc:
   end
 
   def generate_table_name
-    self.name = "s#{story_type.id}_staging"
+    self.name = "#{staging_tableable.class.to_s.underscore}_#{staging_tableable.id.to_s.rjust(5, '0')}_staging"
   end
 
   def create_table
     Table.create(name)
   end
 
-  def default_hle_columns
-    Table.add_default_columns(name)
+  def default_story_type_columns
+    Table.add_default_story_type_columns(name)
   end
 
   def delete_useless_columns
     Table.delete_useless_columns(name)
+  end
+
+  def add_story_created
+    Table.add_story_created(name)
+  end
+
+  def add_article_created
+    Table.add_article_created(name)
   end
 
   def timestamps

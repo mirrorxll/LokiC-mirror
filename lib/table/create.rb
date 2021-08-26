@@ -4,11 +4,11 @@ module Table
   module Create
     def create(t_name)
       t_name = schema_table(t_name)
-      loki_story_creator { |conn| conn.create_table(t_name) }
+      loki_story_creator { |conn| conn.create_table(t_name, options: 'DEFAULT CHARSET="utf8mb4" COLLATE="utf8mb4_unicode_520_ci"') }
       nil
     end
 
-    def add_default_columns(t_name)
+    def add_default_story_type_columns(t_name)
       t_name = schema_table(t_name)
 
       loki_story_creator do |conn|
@@ -30,16 +30,16 @@ module Table
           conn.add_column(t_name, :publication_name, :string, after: :publication_id)
         end
 
+        unless columns.find { |c| c.name.eql?('time_frame') }
+          conn.add_column(t_name, :time_frame, :string,   null: true, after: :publication_name)
+        end
+
         if columns.find { |c| c.name.eql?('organization_id') }
           conn.rename_column(t_name, :organization_id, :organization_ids)
         elsif !columns.find { |c| c.name.eql?('organization_ids') }
           conn.add_column(t_name, :organization_ids, :string)
         end
         conn.change_column(t_name, :organization_ids, :string, limit: 2000, after: :publication_name)
-
-        unless columns.find { |c| c.name.eql?('story_created') }
-          conn.add_column(t_name, :story_created, :boolean, default: false, after: :organization_ids)
-        end
       end
     end
 
@@ -76,6 +76,26 @@ module Table
       end
     end
 
+    def add_story_created(t_name)
+      t_name = schema_table(t_name)
+
+      loki_story_creator do |conn|
+        unless conn.column_exists?(t_name, :story_created)
+          conn.add_column(t_name, :story_created, :boolean, default: false, after: :organization_ids)
+        end
+      end
+    end
+
+    def add_article_created(t_name)
+      t_name = schema_table(t_name)
+
+      loki_story_creator do |conn|
+        unless conn.column_exists?(t_name, :article_created)
+          conn.add_column(t_name, :article_created, :boolean, default: false, after: :iter_id)
+        end
+      end
+    end
+
     def timestamps(t_name)
       t_name = schema_table(t_name)
 
@@ -85,9 +105,6 @@ module Table
         end
         unless conn.column_exists?(t_name, :updated_at)
           conn.add_column(t_name, :updated_at, :datetime, null: true, after: :created_at)
-        end
-        unless conn.column_exists?(t_name, :time_frame)
-          conn.add_column(t_name, :time_frame, :string,   null: true, after: :publication_name)
         end
 
         cr_at_query = created_at_default_value_query(t_name)

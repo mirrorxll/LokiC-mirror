@@ -2,7 +2,9 @@
 
 class TaskCommentsController < ApplicationController
   skip_before_action :find_parent_story_type
-  skip_before_action :set_iteration
+  skip_before_action :find_parent_article_type
+  skip_before_action :set_article_type_iteration
+  skip_before_action :set_story_type_iteration
   before_action :find_task
   after_action  :send_notification, only: :create
 
@@ -30,7 +32,6 @@ class TaskCommentsController < ApplicationController
     return unless @comment
     accounts = ((@task.assignment_to.to_a << @task.creator) - [@comment.commentator]).uniq
     accounts.each do |account|
-      puts account.name
       next if account.slack.nil? || account.slack.deleted
 
       message = "*[ LokiC ] <#{task_url(@task)}| TASK ##{@task.id}> | "\

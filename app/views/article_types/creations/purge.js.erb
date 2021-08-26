@@ -1,0 +1,3 @@
+$('#article_type_samples_<%= @iteration.id %> .flash').empty();
+$('#article_type_samples_<%= @iteration.id %> .card-body')
+    .html('<%= j render 'article_types/spinner', description: 'purging in the process' %>');

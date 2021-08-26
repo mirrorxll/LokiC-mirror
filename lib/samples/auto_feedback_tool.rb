@@ -12,9 +12,9 @@ module Samples
     include AutoFeedbackGenerator::SampleToHash
     include AutoFeedbackGenerator::Rules
 
-    def initialize(story_type, confirmed)
-      @iteration = story_type.iteration
-      @samples = @iteration.samples.where(sampled: true).joins(:output)
+    def initialize(iteration, confirmed)
+      @iteration = iteration
+      @stories = @iteration.stories.where(sampled: true).joins(:output)
       @feedback_rules = AutoFeedback.all.to_a
       @confirmed = confirmed
 
@@ -26,7 +26,7 @@ module Samples
     end
 
     def generate!
-      @samples.each do |sample|
+      @stories.each do |sample|
         sample_obj = prepare(sample)
 
         confirmed_rules = @feedback_rules.each_with_object([]) do |fb, confirmed|
@@ -34,6 +34,7 @@ module Samples
           next unless part_txt
 
           unless @iteration.auto_feedback.exists?(fb.id)
+
             @iteration.auto_feedback << fb
             @iteration.auto_feedback_confirmations.last.update!(
               sample: sample,

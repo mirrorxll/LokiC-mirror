@@ -2,7 +2,10 @@
 
 class DataSetsController < ApplicationController # :nodoc:
   skip_before_action :find_parent_story_type
-  skip_before_action :set_iteration
+  skip_before_action :find_parent_article_type
+
+  skip_before_action :set_story_type_iteration
+  skip_before_action :set_article_type_iteration
 
   before_action :render_403_developer, except: :properties, if: :developer?
   before_action :render_403_scraper, except: :properties, if: :scraper?
@@ -29,10 +32,7 @@ class DataSetsController < ApplicationController # :nodoc:
   def show
     @tab_title = @data_set.name
     @story_types = @data_set.story_types.order(id: :desc)
-
-    story_type_filter_params.each do |key, value|
-      @story_types = @story_types.where(key => value) if value.present?
-    end
+    @article_types = @data_set.article_types.order(id: :desc)
   end
 
   def create

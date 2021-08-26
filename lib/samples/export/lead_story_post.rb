@@ -98,6 +98,7 @@ module Samples
           response = @pl_client.post_story(params)
         end
 
+        sample.update!(published_at: published_at)
         JSON.parse(response.body)['id']
       rescue StandardError => e
         @pl_client.delete_lead(lead_id)
