@@ -4,6 +4,11 @@ for(let i = 0; i < clientsSelect.length; i++) {
     clientsSelect[i].addEventListener('change', tagsByPublication)
 }
 
+let publicationsSelect = document.getElementsByClassName('publications_select')
+for(let i = 0; i < clientsSelect.length; i++) {
+    publicationsSelect[i].addEventListener('change', tagsByPublication)
+}
+
 let removeX = document.getElementsByClassName('remove_x')
 for(let i = 0; i < removeX.length; i++)
     removeX[i].addEventListener('click', removeClientTag )
@@ -119,6 +124,7 @@ function addClientsToSelectGroup(uId, clientsFromApi = null) {
 }
 
 function tagsByPublication(event) {
+    console.log('qqqqqqqqqqqqqqqqqqqqq')
     var publicationId = event.target.parentNode.parentNode.getElementsByClassName('publications_select')[0].value;
     let clientId = event.target.parentNode.parentNode.getElementsByClassName('clients_select')[0].value;
 
