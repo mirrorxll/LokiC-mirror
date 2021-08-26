@@ -6,7 +6,7 @@ class Task < ApplicationRecord # :nodoc:
   end
 
   validates :title, length: { maximum: 500 }
-  validates :title, uniqueness: { scope: :creator }
+  validates :title, uniqueness: { scope: :creator }, case_sensitive: false
 
   belongs_to :creator, class_name: 'Account'
   belongs_to :status, optional: true

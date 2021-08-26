@@ -1,0 +1,37 @@
+.row.small
+  .col-5.offset-1.border-right.mr-1
+    .row.mb-2.font-weight-bold
+      .col-12
+        data set
+    .row
+      .col-12
+        -if current_account.types.include?('manager')
+          =link_to @article_type.data_set.name, data_set_path(@article_type.data_set), class: 'no-link'
+        -else
+          =@article_type.data_set.name
+        =link_to icon('fa', 'fa fa-info-circle'), properties_data_set_path(@article_type.data_set), remote: true
+    %hr/
+
+    .row.mb-2.font-weight-bold
+      .col-6
+        editor
+      .col-6
+        developer
+    .row
+      .col-6
+        =@article_type.editor.name
+      .col-6
+        =@article_type.developer ? @article_type.developer.name: '---'
+
+    =render 'article_types/additional_properties'
+  .col-5.border-left.ml-1
+    .row.mb-2.font-weight-bold
+      .col-12
+        article type's code
+    #article_type_code
+      =render 'article_types/codes/section'
+    %hr/
+%hr/
+
+=render 'data_sets/modal_data_set'
+=render 'article_types/codes/modal_ruby_code'

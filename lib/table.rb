@@ -22,34 +22,34 @@ module Table # :nodoc:
     loki_story_creator { |conn| p conn.table_exists?(t_name) }
   end
 
-  def last_iter_id(t_name)
-    last_iter_query = iter_id_value_query(t_name)
-    loki_story_creator { |conn| conn.exec_query(last_iter_query).first['default_value'] }
+  def curr_iter_id(t_name)
+    curr_iter_query = iter_id_value_query(t_name)
+    loki_story_creator { |conn| conn.exec_query(curr_iter_query).first['default_value'] }
   end
 
   def publication_ids(t_name, publication_ids)
-    last_iter_id = last_iter_id(t_name)
-    p_ids_query = publication_ids_query(t_name, last_iter_id, publication_ids)
+    curr_iter_id = curr_iter_id(t_name)
+    p_ids_query = publication_ids_query(t_name, curr_iter_id, publication_ids)
     p_ids = loki_story_creator { |conn| conn.exec_query(p_ids_query).to_a }
     p_ids.map { |row| row['p_id'] }.compact
   end
 
   # purge rows that were inserted to staging table
   def purge_last_iteration(t_name)
-    last_iter = last_iter_id(t_name)
-    del_query = delete_query(t_name, last_iter)
+    curr_iter = curr_iter_id(t_name)
+    del_query = delete_query(t_name, curr_iter)
     loki_story_creator { |conn| conn.exec_query(del_query) }
 
     nil
   end
 
   # select edge staging table rows by columns
-  def select_edge_ids(t_name, publication_ids, column_names)
-    last_iter = last_iter_id(t_name)
+  def select_edge_ids(t_name, column_names, *publication_ids)
+    curr_iter = curr_iter_id(t_name)
 
     column_names.each_with_object([]) do |col_name, selected|
-      min_query = select_minmax_id_query(t_name, last_iter, publication_ids, col_name, :MIN)
-      max_query = select_minmax_id_query(t_name, last_iter, publication_ids, col_name, :MAX)
+      min_query = select_minmax_id_query(t_name, curr_iter, col_name, :MIN, *publication_ids)
+      max_query = select_minmax_id_query(t_name, curr_iter, col_name, :MAX, *publication_ids)
 
       loki_story_creator do |conn|
         min = conn.exec_query(min_query).first
@@ -61,32 +61,52 @@ module Table # :nodoc:
   end
 
   def rows_by_ids(t_name, options)
-    last_iter = last_iter_id(t_name)
-    rows_query = rows_by_ids_query(t_name, last_iter, options)
+    curr_iter = curr_iter_id(t_name)
+    rows_query = rows_by_ids_query(t_name, curr_iter, options)
     loki_story_creator { |conn| conn.exec_query(rows_query).to_a }
   end
 
-  def rows_by_last_iteration(t_name, options)
-    last_iter = last_iter_id(t_name)
-    rows_query = rows_by_last_iteration_query(t_name, last_iter, options)
+  def rows_by_iteration(t_name, options)
+    curr_iter = curr_iter_id(t_name)
+    rows_query = rows_by_iteration_query(t_name, curr_iter, options)
     loki_story_creator { |conn| conn.exec_query(rows_query).to_a }
   end
 
-  def all_created_by_last_iteration?(t_name, publication_ids)
-    last_iter = last_iter_id(t_name)
-    rows_query = all_created_by_last_iteration_query(t_name, last_iter, publication_ids)
+  def all_stories_created_by_iteration?(t_name, publication_ids)
+    curr_iter = curr_iter_id(t_name)
+    rows_query = all_stories_created_by_iteration_query(t_name, curr_iter, publication_ids)
     loki_story_creator { |conn| conn.exec_query(rows_query).first.nil? }
   end
 
-  def sample_set_as_created(t_name, id)
-    upd_query = sample_created_update_query(t_name, id)
+  def all_articles_created_by_iteration?(t_name)
+    curr_iter = curr_iter_id(t_name)
+    rows_query = all_articles_created_by_iteration_query(t_name, curr_iter)
+    loki_story_creator { |conn| conn.exec_query(rows_query).first.nil? }
+  end
+
+  def story_set_as_created(t_name, id)
+    upd_query = story_created_update_query(t_name, id)
     loki_story_creator { |conn| conn.exec_query(upd_query) }
 
     nil
   end
 
-  def sample_set_as_not_created(t_name, id)
-    upd_query = sample_not_created_update_query(t_name, id)
+  def story_set_as_not_created(t_name, id)
+    upd_query = story_not_created_update_query(t_name, id)
+    loki_story_creator { |conn| conn.exec_query(upd_query) }
+
+    nil
+  end
+
+  def article_set_as_created(t_name, id)
+    upd_query = article_created_update_query(t_name, id)
+    loki_story_creator { |conn| conn.exec_query(upd_query) }
+
+    nil
+  end
+
+  def article_set_as_not_created(t_name, id)
+    upd_query = article_not_created_update_query(t_name, id)
     loki_story_creator { |conn| conn.exec_query(upd_query) }
 
     nil

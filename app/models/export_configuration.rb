@@ -8,7 +8,7 @@ class ExportConfiguration < ApplicationRecord # :nodoc:
   belongs_to :tag,          optional: true
   belongs_to :photo_bucket, optional: true
 
-  has_many :samples
+  has_many :stories
 
   validates_uniqueness_of :publication_id, scope: [:story_type_id]
 

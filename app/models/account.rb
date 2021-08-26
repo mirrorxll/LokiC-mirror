@@ -15,7 +15,9 @@ class Account < ApplicationRecord # :nodoc:
   has_many :data_sets
   has_many :sheriffs, foreign_key: :sheriff_id, class_name: 'DataSet'
   has_many :edit_story_types, foreign_key: :editor_id, class_name: 'StoryType'
+  has_many :edit_article_types, foreign_key: :editor_id, class_name: 'ArticleType'
   has_many :dev_story_types, foreign_key: :developer_id, class_name: 'StoryType'
+  has_many :dev_article_types, foreign_key: :developer_id, class_name: 'ArticleType'
   has_many :submitters, class_name: 'PostExportReport'
   has_many :production_removals
   has_many :scrape_tasks

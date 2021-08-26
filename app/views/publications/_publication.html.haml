@@ -1,7 +1,0 @@
--publication = client_publication_tag.publication
--if publication.nil?
-  all publications
-  =link_to('x', 'javascript:;', onclick: "$(this.parentElement).html(`#{ raw render 'publications/form', client_publication_tag: client_publication_tag }`)")
--else
-  =publication.name
-  =link_to('x', exclude_story_type_client_publication_path(@story_type, client_publication_tag.client, publication, client_publication_tag: client_publication_tag), method: :delete, remote: true)

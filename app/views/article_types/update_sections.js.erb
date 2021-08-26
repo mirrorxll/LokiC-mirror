@@ -1,0 +1,62 @@
+(function () {
+    $('#article_type_status').html(`<%= j render 'article_types/progress_statuses/status' %>`);
+
+    let expConfFlash = $('#article_type_properties .flash');
+    let expConfBody = $('#article_type_properties .card-body');
+
+    <% if flash.now[:properties] %>
+      expConfFlash.html(
+          `<div class="alert alert-<%= flash_color(flash.now[:properties]) %> text-center">
+            <%= flash.now[:properties].gsub('`', "'") %>
+          </div>`
+      )
+    <% else %>
+      expConfFlash.empty();
+    <% end %>
+    expConfBody.html('<%= j render 'article_types/properties' %>')
+
+
+    let stFlash = $('#staging_table .flash');
+    let stBody = $('#staging_table .card-body');
+
+    <% if flash.now[:staging_table] %>
+      stFlash.html(
+        `<div class="alert alert-<%= flash_color(flash.now[:staging_table]) %> text-center">
+          <%= flash.now[:staging_table].gsub('`', "'") %>
+        </div>`
+      )
+    <% else %>
+      stFlash.empty();
+    <% end %>
+    stBody.html('<%= j render 'article_types/staging_tables/staging_table'%>')
+
+
+    let samplesFlash = $('#samples .flash');
+    let samplesBody = $('#samples .card-body');
+
+    <% if flash.now[:samples] %>
+      samplesFlash.html(
+        `<div class="alert alert-<%= flash_color(flash.now[:samples]) %> text-center">
+          <%= flash.now[:samples].gsub('`', "'") %>
+        </div>`
+      )
+    <% else %>
+      samplesFlash.empty();
+    <% end %>
+    samplesBody.html('<%= j render 'article_types/samples/samples' %>')
+
+
+    let exportFlash = $('#export .flash');
+    let exportBody = $('#export .card-body');
+
+    <% if flash.now[:export] %>
+      exportFlash.html(
+        `<div class="alert alert-<%= flash_color(flash.now[:export]) %> text-center">
+            <%= flash.now[:export].gsub('`', "'") %>
+        </div>`
+    )
+    <% else %>
+      exportFlash.empty();
+    <% end %>
+    exportBody.html('<%= j render 'article_types/exports/export' %>')
+})();

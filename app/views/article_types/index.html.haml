@@ -1,0 +1,24 @@
+.row.mt-3
+  #total.col-8
+    Total:
+    =@article_types_grid.assets.total_count
+
+  #additional_menu.col-4.text-right
+    =link_to('download in CSV', url_for(format: 'csv', article_types_grid: @grid_params),
+             type: "button", id: '#save_as_csv_btn', class: 'btn btn-sm btn-outline-dark')
+    -# =link_to('filter article types', '#filter_form', 'aria-controls' => 'filter_form',
+    -#          'aria-expanded' => false, data: { toggle: "collapse", target: "#filter_form" },
+    -#          type: "button", id: '#crt_upd_filter_btn', class: 'btn btn-sm btn-outline-dark')
+
+-##filter_form.collapse
+-#  .row.mt-3.col-12
+-#    =datagrid_form_for @article_types_grid, url: article_types_path
+
+.row.mt-3.col-12
+  #data_sets
+    #grid_wrapper
+      =datagrid_table(@article_types_grid)
+
+.row.mt-3.col-12
+  #pagination
+    =paginate @article_types_grid.assets

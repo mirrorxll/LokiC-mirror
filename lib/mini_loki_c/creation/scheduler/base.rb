@@ -104,7 +104,7 @@ module MiniLokiC
             end
           end
 
-          samples_for_iteration = Sample.where(iteration: iteration).where(published_at: nil)
+          samples_for_iteration = Story.where(iteration: iteration).where(published_at: nil)
           iteration.update_attribute(:schedule, true) if samples_for_iteration.where(published_at: nil).empty?
           schedule_args = schedule_args_to_hash(options)
           iteration.update_attribute(:schedule_args, iteration.schedule_args.nil? ? schedule_args : iteration.schedule_args += schedule_args)

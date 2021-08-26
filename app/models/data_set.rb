@@ -16,4 +16,5 @@ class DataSet < ApplicationRecord # :nodoc:
   has_many :tags, through: :client_publication_tags
   has_many :change_history, as: :history
   has_many :alerts, as: :alert
+  has_many :article_types
 end

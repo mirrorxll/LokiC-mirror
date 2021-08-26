@@ -1,0 +1,34 @@
+.row
+  .col-12
+    -if !@story_type.iteration.eql?(@iteration)
+      \---
+      %br/
+    -elsif @iteration.population.eql?(nil)
+      first...execute population
+      %br/
+    -elsif @story_type.export_configurations_created.eql?(false)
+      %a.p-0.btn.btn-sm.btn-link{ href: "#", onclick: "return false;" } [ ...in progress... ]
+    -else
+      =link_to('[ create/update ]', story_type_export_configurations_path(@story_type),
+               class: 'p-0 btn btn-sm btn-link',method: :post, remote: true)
+
+      #configs_no_tags.d-inline-block
+        -if @story_type.configurations_no_tags.present?
+          .modal-trigger
+            .btn.btn-sm.btn-link.text-danger.d-inline-block.ml-2{ "data-toggle" => "modal", "data-target" => "#configs_no_tags_modal" }
+              [ configs without tags ]
+          #configs_no_tags_modal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "template",
+                                             role: "dialog", tabindex: "-1", 'data-backdrop' => 'true',
+                                             'data-keyboard' => "false" }
+            .modal-dialog.modal-dialog-scrollable.modal-xl
+              .modal-content
+                .modal-header
+                  %h5.modal-title
+                    export configurations without tags
+                  %button.close{"aria-label" => "Close", "data-dismiss" => "modal", type: "button"}
+                    %span{"aria-hidden" => "true"} ×
+                .modal-body
+                  =render 'story_types/export_configurations/export_configurations_no_tags_form'
+                .modal-footer
+                  %button{ type: "button", class: "btn btn-sm btn-secondary", "data-dismiss" => "modal" }
+                    Close
