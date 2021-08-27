@@ -14,7 +14,7 @@ class StoryTypesGrid
   filter(:gather_task, :xboolean, left: true) do |value, scope|
     value ? scope.where.not(gather_task: nil) : scope.where(gather_task: nil)
   end
-
+  filter(:level_id, :enum, select: Level.all.pluck(:name, :id), left: true)
   filter(:state, :enum, left: true, select: State.all.pluck(:short_name, :full_name, :id).map { |r| [r[0] + ' - ' + r[1], r[2]] }) do |value, scope|
     scope.joins(data_set: [:state]).where(['states.id = ?', value])
   end
@@ -38,7 +38,11 @@ class StoryTypesGrid
   filter(:condition1, :dynamic, left: false, header: 'Dynamic condition 1')
   filter(:condition2, :dynamic, left: false, header: 'Dynamic condition 2')
   column_names_filter(header: 'Extra Columns', left: false, checkboxes: false)
-
+  dynamic do
+    column(:level, preload: :level, header: 'Level') do |record|
+      record.level&.name
+    end
+  end
   # Columns
   column(:id, mandatory: true, header: 'ID')
 
