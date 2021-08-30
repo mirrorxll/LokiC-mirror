@@ -4,8 +4,6 @@
       .card-header{}
         auto-feedback
       .card-body
-        -puts auto_feedback.first
-        -puts '//////////////'
         -auto_feedback.each_with_index do |fb, index|
           .row
             .col-1{class: "auto-fb-confirm_#{fb.id} text-center", onchange: 'confirmAutoFeedback(this.className);'}

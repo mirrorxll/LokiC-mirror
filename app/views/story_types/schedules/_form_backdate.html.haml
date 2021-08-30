@@ -15,7 +15,7 @@
     $(editable_block).append(
         `<div id="date_${hex}" class="d-flex mb-1">
             <div class="remove_date d-inline-block mr-1" id="rm_date_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
-            <input placeholder="begin date:" id="begin_date_${hex}_name" required="required" type="date" name="backdate[${hex}[begin_date]]" class="mr-1" style="min-width: 110px;">
+            <input placeholder="begin date:" id="start_date_${hex}_name" required="required" type="date" name="backdate[${hex}[start_date]]" class="mr-1" style="min-width: 110px;">
             <input placeholder="end date:" id="end_date_${hex}_name" required="required" type="date" name="backdate[${hex}[end_date]]" class="mr-1" style="min-width: 110px;">
             <input placeholder="time_frame:" id="arg_${hex}_name" type="name" name="backdate[${hex}[time_frame]]" class="mr-1 mw-10"">
             <input placeholder="where:" id="arg_${hex}_name" type="name" name="backdate[${hex}[where]]" class="mr-1">

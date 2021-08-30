@@ -58,36 +58,21 @@ module StoryTypes
     private
 
     def backdate_params(options)
-      options.each_with_object([]) do |(_key, schedule), array|
-        schedule[:time_frame_ids] = time_frame_ids(schedule[:time_frame])
-        array << schedule
-      end
+      options.each_with_object([]) { |(_key, schedule), array| array << schedule }
     end
 
     def auto_params(options)
       options.each_with_object({}) do |(_key, schedule), hash|
         date = schedule[:date]
         time_frame_ids = TimeFrame.where(frame: schedule[:time_frame]).ids
-        raise 'Error name of time frame' if time_frame_ids.blank? && !schedule[:time_frame].blank?
+        raise 'Error name in time frame' if time_frame_ids.blank? && !schedule[:time_frame].blank?
 
         hash[date] = time_frame_ids
       end
     end
 
     def manual_params(options)
-      options.each_with_object([]) do |(_key, schedule), array|
-        schedule[:time_frame] = time_frame_ids(schedule[:time_frame])
-        array << schedule
-      end
+      options.each_with_object([]) { |(_key, schedule), array| array << schedule }
     end
-
-    def time_frame_ids(time_frame)
-      return [] if time_frame.blank?
-
-      time_frame_ids = TimeFrame.where(frame: time_frame).ids
-      raise 'Error name of time frame' if time_frame_ids.blank?
-      time_frame_ids
-    end
-
   end
 end
