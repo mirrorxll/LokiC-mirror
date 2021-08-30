@@ -2,6 +2,7 @@
 
 module Api
   class ClientsController < ApiController
+
     def visible
       visible = Client.where(hidden: false).order(:name)
 
@@ -9,8 +10,8 @@ module Api
     end
 
     def publications
-      pub_names = ['all local publications', 'all statewide publications', 'all publications']
-      publications = Publication.where(name: pub_names) + Client.find(params[:client_id]).publications.order(:name)
+      publications = Publication.where(name: ['all local publications', 'all publications','all statewide publications']).order(Arel.sql"name in ('all local publications') DESC, name DESC") +
+        Client.find(params[:client_id]).publications.order(:name)
 
       render json: { attached: publications }
     end
@@ -19,6 +20,10 @@ module Api
       tags = Client.find(params[:client_id]).tags.order(:name)
 
       render json: { attached: tags }
+    end
+
+    def local_publication
+      render json: {  attached: Publication.find_by(name: 'all local publications').id }
     end
   end
 end
