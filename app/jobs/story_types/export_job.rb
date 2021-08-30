@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module StoryTypes
-  class ExportJob < StoryTypeJob
+  class ExportJob < StoryTypesJob
     def perform(iteration, account, url = nil)
       status = true
       message = 'Success. Make sure that all stories are exported'
@@ -18,7 +18,7 @@ module StoryTypes
           fork do
             rd.close
             Samples[PL_TARGET].export!(iteration, threads_count)
-          rescue StandardError => e
+          rescue StandardError, ScriptError => e
             wr.write({ e.class.to_s => e.message }.to_json)
           ensure
             wr.close
@@ -75,7 +75,7 @@ module StoryTypes
       end
 
       true
-    rescue StandardError => e
+    rescue StandardError, ScriptError => e
       status = nil
       message = e.message
     ensure

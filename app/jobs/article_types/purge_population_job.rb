@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 module ArticleTypes
-  class PurgePopulationJob < ArticleTypeJob
+  class PurgePopulationJob < ArticleTypesJob
     def perform(staging_table, iteration, account)
       message = 'Success. Staging Table Rows for current iteration purged'
 
       Process.wait(fork { staging_table.purge })
-    rescue StandardError => e
+    rescue StandardError, ScriptError => e
       message = e.message
     ensure
       iteration.update!(population: nil, purge_population: nil, current_account: account)

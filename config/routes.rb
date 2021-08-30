@@ -134,16 +134,20 @@ Rails.application.routes.draw do
     get   :cancel_edit
     patch :evaluate
 
-    resources :progress_statuses, controller: :scrape_task_statuses, only: [] do
-      patch :change, on: :collection
-    end
+    scope module: 'scrape_tasks' do
+      resources :progress_statuses, only: [] do
+        patch :change, on: :collection
+      end
 
-    resource :scrape_instruction, only: %i[edit update] do
-      get :cancel_edit
-    end
+      resource :instruction, only: %i[edit update] do
+        get   :cancel_edit
+        patch :autosave
+      end
 
-    resource :scrape_evaluation_doc, only: %i[edit update] do
-      get :cancel_edit
+      resource :evaluation_doc, only: %i[edit update] do
+        get   :cancel_edit
+        patch :autosave
+      end
     end
   end
 

@@ -4,15 +4,15 @@ class Status < ApplicationRecord
   has_many :story_types
 
   def self.story_type_dev_statuses
-    where.not(name: ['not started', 'migrated', 'inactive'])
+    where.not(name: ['not started', 'migrated', 'inactive', 'deleted'])
   end
 
   def self.article_type_dev_statuses
-    where.not(name: ['not started', 'inactive'])
+    where.not(name: ['not started', 'inactive', 'deleted'])
   end
 
   def self.scrape_task_dev_statuses
-    where.not(name: ['not started', 'migrated', 'inactive', 'migrated', 'exported', 'on cron'])
+    where.not(name: ['not started', 'migrated', 'inactive', 'exported', 'on cron', 'deleted'])
   end
 
   def self.multi_task_dev_statuses

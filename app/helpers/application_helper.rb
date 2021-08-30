@@ -16,8 +16,10 @@ module ApplicationHelper
   def correct_account?(record)
     if (current_account.types & ['manager']).any?
       true
-    else
-      record.developer == current_account
+    elsif record.respond_to?('developer')
+      record.developer.eql?(current_account)
+    elsif record.respond_to?('scraper')
+      record.scraper.eql?(current_account)
     end
   end
 end

@@ -57,7 +57,7 @@ module ArticleTypes
         message_to_fc_channel = "*FCD ##{@article_type.id}* "\
                                 "<#{article_type_fact_checking_doc_url(@article_type, @fcd)}|#{@article_type.name}>.\n"\
                                 "#{@feedback.body.present? ? "*Reviewer's Note*: #{note}" : ''}"
-        SlackNotificationJob.perform_later(fcd_channel, message_to_fc_channel)
+        ::SlackNotificationJob.perform_later(fcd_channel, message_to_fc_channel)
 
         message_to_dev += "Approved by *#{current_account.name}* and sent to *#{fcd_channel}* channel"
       else
@@ -66,7 +66,7 @@ module ArticleTypes
                          '#reviewers_feedback|Check it>.'
       end
 
-      SlackNotificationJob.perform_later(developer_pm, message_to_dev)
+      ::SlackNotificationJob.perform_later(developer_pm, message_to_dev)
     end
 
     def send_confirm_to_review_channel
@@ -82,7 +82,7 @@ module ArticleTypes
                 '#reviewers_feedback|Check it>.'
 
       channel = Rails.env.production? ? 'hle_reviews_queue' : 'hle_lokic_development_messages'
-      SlackNotificationJob.perform_later(channel, message, @fcd.slack_message_ts)
+      ::SlackNotificationJob.perform_later(channel, message, @fcd.slack_message_ts)
     end
   end
 end

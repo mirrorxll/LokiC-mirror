@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ArticleTypes
-  class PurgeCreationJob < ArticleTypeJob
+  class PurgeCreationJob < ArticleTypesJob
     def perform(iteration, account)
       message = 'Success. All articles have been removed'
 
@@ -13,7 +13,7 @@ module ArticleTypes
             rd.close
 
             iteration.articles.limit(10_000).destroy_all
-          rescue StandardError => e
+          rescue StandardError, ScriptError => e
             wr.write({ e.class.to_s => e.message }.to_json)
           ensure
             wr.close
@@ -33,7 +33,7 @@ module ArticleTypes
       end
 
       iteration.update!(samples: nil, creation: nil, current_account: account)
-    rescue StandardError => e
+    rescue StandardError, ScriptError => e
       message = e.message
     ensure
       iteration.update!(purge_creation: nil, current_account: account)

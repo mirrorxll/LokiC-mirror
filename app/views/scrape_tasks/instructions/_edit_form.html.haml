@@ -1,5 +1,5 @@
-=form_with(url: scrape_task_scrape_instruction_path(@scrape_task), method: :patch) do |f|
-  =f.text_area 'scrape_instruction[body]', id: 'scrapeInstructionBody', value: @scrape_task.scrape_instruction.body
+=form_with(url: scrape_task_instruction_path(@scrape_task), method: :patch) do |f|
+  =f.text_area 'instruction[body]', id: 'scrapeInstructionBody', value: @scrape_task.scrape_instruction.body
 
   :javascript
     $.FroalaEditor.DefineIcon('submitInstructionEdit', { NAME: 'check' });
@@ -13,8 +13,8 @@
         Rails.ajax({
           type: "PATCH",
           dataType: 'script',
-          url: `#{scrape_task_scrape_instruction_path(@scrape_task)}`,
-          data: `scrape_instruction[body]=${encodeURIComponent(this.html.get())}`
+          url: `#{scrape_task_instruction_path(@scrape_task)}`,
+          data: `instruction[body]=${encodeURIComponent(this.html.get())}`
         })
       }
     });
@@ -30,7 +30,7 @@
           Rails.ajax({
             type: "GET",
             dataType: 'script',
-            url: `#{cancel_edit_scrape_task_scrape_instruction_path(@scrape_task)}`
+            url: `#{cancel_edit_scrape_task_instruction_path(@scrape_task)}`
           })
         }
       }
@@ -42,5 +42,9 @@
       documentReady: true,
       toolbarButtons: ['fullscreen', 'undo', 'redo', '|', 'submitInstructionEdit', 'cancelInstructionEdit', '|', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineClass', 'inlineStyle', 'paragraphStyle', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', 'insertLink', 'insertImage', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'getPDF', 'help', 'html'],
       imageUploadURL: '/images/upload',
-      imageUploadMethod: 'POST'
+      imageUploadMethod: 'POST',
+      saveInterval: 1500,
+      saveParam: 'scrape_instruction[body]',
+      saveURL: `${window.location.origin}/scrape_tasks/#{@scrape_task.id}/instruction/autosave`,
+      saveMethod: 'PATCH'
     })
