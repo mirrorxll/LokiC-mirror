@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ArticleTypes
-  class StagingTableAttachingJob < ArticleTypeJob
+  class StagingTableAttachingJob < ArticleTypesJob
     def perform(article_type, account, staging_table_name)
       Process.wait(
         fork do
@@ -9,7 +9,7 @@ module ArticleTypes
           message = 'Success. Staging table attached'
 
           article_type.create_staging_table(name: staging_table_name)
-        rescue StandardError => e
+        rescue StandardError, ScriptError => e
           status = nil
           message = e.message
         ensure

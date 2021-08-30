@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class StoryTypeJob < ApplicationJob
+class StoryTypesJob < ApplicationJob
   queue_as :story_type
 
   private

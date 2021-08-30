@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module StoryTypes
-  class SamplesAndAutoFeedbackJob < StoryTypeJob
+  class SamplesAndAutoFeedbackJob < StoryTypesJob
     def perform(iteration, account, options = {})
       Process.wait(
         fork do

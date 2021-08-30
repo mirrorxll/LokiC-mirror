@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module StoryTypes
-  class StagingTableIndexDropJob < StoryTypeJob
+  class StagingTableIndexDropJob < StoryTypesJob
     def perform(staging_table)
       Process.wait(
         fork do

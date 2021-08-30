@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module StoryTypes
-  class SchedulerJob < StoryTypeJob
+  class SchedulerJob < StoryTypesJob
     def perform(iteration, type, options = {}, account = nil)
       status = nil
       message = 'Success'
@@ -27,7 +27,7 @@ module StoryTypes
           end
 
           record_to_change_history(story_type, 'scheduled', type, account)
-        rescue StandardError => e
+        rescue StandardError, ScriptError => e
           wr.write({ e.class.to_s => e.message }.to_json)
         ensure
           wr.close
@@ -46,7 +46,7 @@ module StoryTypes
       status = true if iteration.reload.stories.where(published_at: nil).none?
 
       true
-    rescue StandardError => e
+    rescue StandardError, ScriptError => e
       status = nil
       message = e.message
     ensure

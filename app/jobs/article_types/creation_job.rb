@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ArticleTypes
-  class CreationJob < ArticleTypeJob
+  class CreationJob < ArticleTypesJob
     def perform(iteration, account, options = {})
       options[:iteration] = iteration
       options[:type] = 'article'

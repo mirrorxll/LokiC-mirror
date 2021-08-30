@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 module StoryTypes
-  class ReminderUpdatesJob < StoryTypeJob
+  class ReminderUpdatesJob < StoryTypesJob
     def perform(story_types = StoryType.all)
       Process.wait(
         fork do
+          account = Account.find_by(email: 'main@lokic.loc')
+
           story_types.each do |st_type|
             sleep(rand)
 
@@ -36,7 +38,7 @@ module StoryTypes
               if !new_data_flag.in?([true, false])
                 :method_missing
               elsif new_data_flag.eql?(true)
-                st_type.reminder.update!(has_updates: true, current_account: st_type.developer)
+                st_type.reminder.update!(has_updates: true, current_account: account)
                 :has_updates
               elsif new_data_flag.eql?(false)
                 next

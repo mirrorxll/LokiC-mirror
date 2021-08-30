@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 module StoryTypes
-  class ReminderProgressJob < StoryTypeJob
+  class ReminderProgressJob < StoryTypesJob
     def perform(story_types = StoryType.all)
       Process.wait(
         fork do
+          account = Account.find_by(email: 'main@lokic.loc')
+
           story_types.each do |st_type|
             sleep(rand)
 
@@ -35,7 +37,7 @@ module StoryTypes
 
             next if active || old_status.eql?('inactive')
 
-            st_type.update!(status: Status.find_by(name: 'inactive'))
+            st_type.update!(status: Status.find_by(name: 'inactive'), current_account: account)
           end
         end
       )

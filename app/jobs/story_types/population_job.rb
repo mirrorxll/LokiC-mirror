@@ -2,7 +2,7 @@
 
 # Execute population method on sidekiq backend
 module StoryTypes
-  class PopulationJob < StoryTypeJob
+  class PopulationJob < StoryTypesJob
     def perform(iteration, account, options = {})
       status = true
       message = 'Success'

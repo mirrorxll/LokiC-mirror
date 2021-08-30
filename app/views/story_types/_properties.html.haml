@@ -1,61 +1,24 @@
-#reminder_panel
+#reminderPanel
   -if @story_type.updates?
     =render 'story_types/reminders/reminder'
 %hr/
 
 .row.small
   .col-5.offset-1.border-right.mr-1
-    .row.mb-2.font-weight-bold
-      .col-12
-        data set
-    .row
-      .col-12
-        -if (current_account.types & %w[manager editor]).any?
-          =link_to @story_type.data_set.name, data_set_path(@story_type.data_set), class: 'no-link'
-        -else
-          =@story_type.data_set.name
-        =link_to icon('fa', 'info-circle'), properties_data_set_path(@story_type.data_set), remote: true
+    #currentDataSet
+      =render 'story_types/properties/current_data_set'
     %hr/
 
-    .row.mb-2.font-weight-bold
-      .col-8
-        client
-      .col-4
-        tag
-    -@story_type.clients_publications_tags.each do |cl_t|
-      .row
-        .col-8
-          =cl_t.client.name + "(#{cl_t.publication ? cl_t.publication.name : 'all publications'})"
-        .col-4
-          =cl_t.tag ? cl_t.tag.name : 'tag not set'
+    #clientsPublicationsTags
+      =render 'story_types/properties/clients_publications_tags'
     %hr/
 
-    .row.mb-2.font-weight-bold
-      .col-4
-        level
-      .col-4
-        frequency
-      .col-4
-        photo bucket
-    .row
-      .col-4
-        =@story_type&.level&.name
-      .col-4
-        =@story_type&.frequency&.name
-      .col-4
-        =@story_type&.photo_bucket&.name
+    #levelFrequencyPBucket
+      =render 'story_types/properties/level_frequency_photo_bucket'
     %hr/
 
-    .row.mb-2.font-weight-bold
-      .col-4
-        editor
-      .col-4
-        developer
-    .row
-      .col-4
-        =@story_type.editor.name
-      .col-4
-        =@story_type.developer ? @story_type.developer.name: '---'
+    #editorDeveloper
+      =render 'story_types/properties/editor_developer'
 
     =render 'story_types/additional_properties'
   .col-5.border-left.ml-1
@@ -84,3 +47,4 @@
 
 =render 'data_sets/modal_data_set'
 =render 'story_types/codes/modal_ruby_code'
+=render 'data_sets/story_type_properties_from'
