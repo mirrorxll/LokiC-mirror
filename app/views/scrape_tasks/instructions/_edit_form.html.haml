@@ -1,5 +1,5 @@
 =form_with(url: scrape_task_instruction_path(@scrape_task), method: :patch) do |f|
-  =f.text_area 'instruction[body]', id: 'scrapeInstructionBody', value: @scrape_task.scrape_instruction.body
+  =f.text_area 'instruction[body]', id: 'scrapeInstructionBody', value: @scrape_task.instruction.body
 
   :javascript
     $.FroalaEditor.DefineIcon('submitInstructionEdit', { NAME: 'check' });
@@ -44,7 +44,7 @@
       imageUploadURL: '/images/upload',
       imageUploadMethod: 'POST',
       saveInterval: 1500,
-      saveParam: 'scrape_instruction[body]',
+      saveParam: 'instruction[body]',
       saveURL: `${window.location.origin}/scrape_tasks/#{@scrape_task.id}/instruction/autosave`,
       saveMethod: 'PATCH'
     })

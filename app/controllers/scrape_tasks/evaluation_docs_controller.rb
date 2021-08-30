@@ -19,7 +19,7 @@ module ScrapeTasks
     def update; end
 
     def autosave
-      render status: :ok
+      head :ok
     end
 
     private
@@ -33,7 +33,7 @@ module ScrapeTasks
     end
 
     def update_eval_doc
-      @scrape_task.scrape_evaluation_doc.update!(evaluation_doc_params)
+      @scrape_task.evaluation_doc.update!(evaluation_doc_params)
     end
   end
 end

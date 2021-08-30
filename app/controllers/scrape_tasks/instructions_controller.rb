@@ -33,7 +33,8 @@ module ScrapeTasks
     end
 
     def update_instruction
-      @scrape_task.scrape_instruction.update!(instruction_params)
+      puts instruction_params
+      @scrape_task.instruction.update!(instruction_params)
     end
   end
 end

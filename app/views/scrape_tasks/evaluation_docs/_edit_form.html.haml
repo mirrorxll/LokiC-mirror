@@ -1,5 +1,5 @@
 =form_with(url: scrape_task_evaluation_doc_path(@scrape_task), method: :patch) do |f|
-  =f.text_area 'evaluation_doc[body]', id: 'scrapeEvaluationDocBody', value: @scrape_task.scrape_evaluation_doc.body
+  =f.text_area 'evaluation_doc[body]', id: 'scrapeEvaluationDocBody', value: @scrape_task.evaluation_doc.body
 
   :javascript
     $.FroalaEditor.DefineIcon('submitEvalDocEdit', { NAME: 'check' });

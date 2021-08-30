@@ -8,8 +8,8 @@ class ScrapeTask < ApplicationRecord
     build_scrape_ability_comment(subtype: 'scrape ability comment')
     build_status_comment(subtype: 'status comment')
     build_general_comment(subtype: 'general comment')
-    build_scrape_instruction
-    build_scrape_evaluation_doc
+    build_instruction
+    build_evaluation_doc
   end
 
   after_create { record_to_change_history(self, 'created', name, creator) }
@@ -25,8 +25,8 @@ class ScrapeTask < ApplicationRecord
   belongs_to :status,    optional: true
   belongs_to :state,     optional: true
 
-  has_one :scrape_instruction
-  has_one :scrape_evaluation_doc
+  has_one :instruction, class_name: 'ScrapeInstruction'
+  has_one :evaluation_doc, class_name: 'ScrapeEvaluationDoc'
   has_one :scrape_ability_comment, -> { where(subtype: 'scrape ability comment') }, as: :commentable, class_name: 'Comment'
   has_one :datasource_comment, -> { where(subtype: 'datasource comment') }, as: :commentable, class_name: 'Comment'
   has_one :status_comment, -> { where(subtype: 'status comment') }, as: :commentable, class_name: 'Comment'
