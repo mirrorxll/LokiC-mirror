@@ -12,7 +12,7 @@ class Status < ApplicationRecord
   end
 
   def self.scrape_task_dev_statuses
-    where.not(name: ['not started', 'migrated', 'inactive', 'exported', 'on cron', 'deleted', 'on checking'])
+    where.not(name: ['not started', 'migrated', 'inactive', 'exported', 'on cron', 'deleted'])
   end
 
   def self.multi_task_dev_statuses

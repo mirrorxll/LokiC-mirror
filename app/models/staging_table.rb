@@ -35,8 +35,9 @@ class StagingTable < ApplicationRecord # :nodoc:
     nil
   end
 
-  def default_iter_id
-    Table.iter_id_column(name, staging_tableable.iteration.id)
+  def default_iter_id(id = nil)
+    iter_id = id || staging_tableable.iteration.id
+    Table.iter_id_column(name, iter_id)
   end
 
   def publication_ids

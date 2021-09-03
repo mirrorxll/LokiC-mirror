@@ -50,9 +50,9 @@
     .col-2.pr-0.text-right.font-weight-bold
       scrapable?
     .col-10
-      =f.radio_button "scrape_task[scrapable]", true, checked: @scrape_task.scrapable.eql?(1), disabled: disable_input, readonly: disable_input
+      =f.radio_button "scrape_task[scrapable]", 1, checked: @scrape_task.scrapable.eql?(1), disabled: disable_input, readonly: disable_input
       =f.label 'yes', class: 'mr-2'
-      =f.radio_button "scrape_task[scrapable]", false, checked: @scrape_task.scrapable.eql?(0), disabled: disable_input, readonly: disable_input
+      =f.radio_button "scrape_task[scrapable]", 0, checked: @scrape_task.scrapable.eql?(0), disabled: disable_input, readonly: disable_input
       =f.label 'no'
   .row.mb-4
     .col-2.pr-0.text-right.font-weight-bold
