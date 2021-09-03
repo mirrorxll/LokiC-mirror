@@ -74,7 +74,7 @@ class StoryTypesGrid
       link_to value, record
     end
   end
-  column(:status, mandatory: true, order: 'status.name') do |record|
+  column(:status, mandatory: true, order: 'statuses.name') do |record|
     record.status.name
   end
   column(:last_export, mandatory: true) do |record|

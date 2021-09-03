@@ -11,6 +11,15 @@ class ScrapeTasksGrid
     scope.where('name RLIKE ?', value)
   end
 
+  filter(:data_set_location, :string, header: 'Data Location(RLIKE)') do |value, scope|
+    scope.where('data_set_location RLIKE ?', value)
+  end
+
+  filter(:general_comment, :string, header: 'Comment(RLIKE)') do |value, scope|
+    ids = Comment.where(commentable_type: 'ScrapeTask', subtype: 'general comment').where('body RLIKE ?', value).ids
+    scope.where(comments: { id: ids })
+  end
+
   states = State.all.map { |r| [r.name, r.id] }
   filter(:state, :enum, select: states)
 
