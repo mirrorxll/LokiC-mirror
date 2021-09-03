@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-namespace :lokic do
+namespace :scrape_task do
   desc 'update change_history'
   task change_history: :environment do
     ChangeHistory.all.each do |ch_h|

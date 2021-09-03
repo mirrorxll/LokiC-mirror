@@ -67,7 +67,7 @@ module ArticleTypes
                    '#editors_feedback|Check it>.'
       end
 
-      SlackNotificationJob.perform_later(developer_pm, message)
+      ::SlackNotificationJob.perform_later(developer_pm, message)
     end
 
     def send_confirm_to_fc_channel
@@ -77,7 +77,7 @@ module ArticleTypes
       message = "*Updated Article Type FCD* ##{@article_type.id} "\
                 "<#{article_type_fact_checking_doc_url(@article_type, @fcd)}|#{@article_type.name}>."
 
-      SlackNotificationJob.perform_later(fact_checking_channel, message)
+      ::SlackNotificationJob.perform_later(fact_checking_channel, message)
     end
   end
 end

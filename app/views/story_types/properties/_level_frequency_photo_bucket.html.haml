@@ -1,0 +1,14 @@
+.row.mb-2.font-weight-bold
+  .col-4
+    level
+  .col-4
+    frequency
+  .col-4
+    photo bucket
+.row
+  .col-4
+    =@story_type&.level&.name
+  .col-4
+    =@story_type&.frequency&.name
+  .col-4
+    =@story_type&.photo_bucket&.name

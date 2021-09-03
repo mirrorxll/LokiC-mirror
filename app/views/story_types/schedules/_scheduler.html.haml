@@ -23,7 +23,7 @@
     .col-2
       -# =link_to 'auto schedule', show_form_story_type_iteration_schedules_path(@story_type, @iteration, type: 'auto'), class: 'btn btn-sm btn-outline-dark', remote: true
     .col-2
-      -# =link_to 'backdate schedule', show_form_story_type_iteration_schedules_path(@story_type, @iteration, type: 'backdate'), class: 'btn btn-sm btn-outline-dark', remote: true
+      =link_to 'backdate schedule', show_form_story_type_iteration_schedules_path(@story_type, @iteration, type: 'backdate'), class: 'btn btn-sm btn-outline-dark', remote: true
     .col-4.offset-1
       =render 'story_types/schedules/results_scheduling', scheduled: false
   .row.small

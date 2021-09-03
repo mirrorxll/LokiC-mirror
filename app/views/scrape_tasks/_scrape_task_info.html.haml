@@ -1,11 +1,17 @@
 #scrapeTaskStatusComment
   =render 'status_comment'
 
-.row.mb-1
+.row.mb-4
   .col-2.pr-0.text-right.font-weight-bold
     name:
   .col-10
     =@scrape_task.name
+
+.row.mb-1
+  .col-2.pr-0.text-right.font-weight-bold
+    data requester:
+  .col-10
+    =@scrape_task.data_requester
 .row.mb-4
   .col-2.pr-0.text-right.font-weight-bold
     gather task:
@@ -15,6 +21,12 @@
       =link_to(nil, link, target: '_blank')
     -else
       \---
+
+.row.mb-4
+  .col-2.pr-0.text-right.font-weight-bold
+    deadline:
+  .col-10
+    =@scrape_task.deadline.to_s
 
 .row.mb-4
   .col-2.pr-0.text-right.font-weight-bold
@@ -41,10 +53,10 @@
   .col-2.pr-0.text-right.font-weight-bold
     scrapable?
   .col-10
-    -if @scrape_task.scrapable
+    -if @scrape_task.scrapable.eql?(1)
       .font-weight-bold
         yes
-    -elsif @scrape_task.scrapable.eql?(false)
+    -elsif @scrape_task.scrapable.eql?(0)
       .font-weight-bold
         no
     -else
@@ -61,7 +73,7 @@
     scraper:
   .col-10
     =@scrape_task.scraper&.name
-.row.mb-1
+.row.mb-4
   .col-2.pr-0.text-right.font-weight-bold
     scrape frequency:
   .col-10

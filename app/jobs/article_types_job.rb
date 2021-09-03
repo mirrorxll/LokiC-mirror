@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ArticleTypeJob < ApplicationJob
+class ArticleTypesJob < ApplicationJob
   queue_as :article_type
 
   private

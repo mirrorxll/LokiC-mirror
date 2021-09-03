@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module StoryTypes
-  class PurgeCreationJob < StoryTypeJob
+  class PurgeCreationJob < StoryTypesJob
     def perform(iteration, account)
       message = 'Success. All stories have been removed'
 
@@ -13,7 +13,7 @@ module StoryTypes
             rd.close
 
             iteration.stories.limit(10_000).destroy_all
-          rescue StandardError => e
+          rescue StandardError, ScriptError => e
             wr.write({ e.class.to_s => e.message }.to_json)
           ensure
             wr.close
@@ -37,7 +37,7 @@ module StoryTypes
         schedule: nil, schedule_args: nil,
         schedule_counts: nil, current_account: account
       )
-    rescue StandardError => e
+    rescue StandardError, ScriptError => e
       message = e.message
     ensure
       iteration.update!(purge_creation: nil, current_account: account)

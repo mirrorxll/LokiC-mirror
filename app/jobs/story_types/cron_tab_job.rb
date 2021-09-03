@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module StoryTypes
-  class CronTabJob < StoryTypeJob
+  class CronTabJob < StoryTypesJob
     def perform(story_type_id)
       story_type = StoryType.find(story_type_id)
       cron_tab = story_type.cron_tab

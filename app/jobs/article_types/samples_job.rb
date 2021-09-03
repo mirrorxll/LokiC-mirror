@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ArticleTypes
-  class SamplesJob < ArticleTypeJob
+  class SamplesJob < ArticleTypesJob
     def perform(iteration, account, options = {})
       options[:iteration] = iteration
       options[:sampled] = true

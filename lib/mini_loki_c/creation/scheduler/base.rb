@@ -4,6 +4,8 @@ module MiniLokiC
   module Creation
     module Scheduler
       module Base # :nodoc:
+        extend self
+
         FOUR_WEEKS_IN_DAYS = 4 * 7
         POSSIBLE_FREQUENCY = %w[weekly monthly quarterly].freeze
 
@@ -31,12 +33,13 @@ module MiniLokiC
           'su' => 'Sunday'
         }.freeze
 
-        def self.run_schedule(samples, array_options)
+        def run_schedule(samples, array_options)
           array_options.each { |options| old_scheduler(samples, options) }
         end
 
-        def self.get_samples(samples, extra_args)
-          if extra_args == '' || extra_args.nil?
+        def get_samples(samples, extra_args, time_frame)
+          samples = samples.where(time_frame: time_frame) unless time_frame.blank?
+          if extra_args.blank?
             samples = samples.where(published_at: nil)
           else
             stage_ids = ExtraArgs.stage_ids(samples.first.iteration.story_type.staging_table.name, extra_args)
@@ -45,17 +48,21 @@ module MiniLokiC
           samples
         end
 
-        def self.old_scheduler(samples, options)
+        def old_scheduler(samples, options)
           options = check_and_define_args(options)
           iteration = samples.first.iteration
-          samples = get_samples(samples, options[:extra_args])
+
+          time_frame_ids = time_frame_ids(options[:time_frame])
+          samples = get_samples(samples, options[:extra_args], time_frame_ids)
 
           publications = samples.group(:publication_id).count
 
           publications.each do |publication_id, count|
+
             if options[:limit] && options[:end_date] === false
               tmp_end_date = calculate_end_date(options[:weekdays], options[:frequency], options[:limit], options[:start_date], count)
             end
+
             publication_dates = all_publication_dates(options[:weekdays], options[:frequency], options[:start_date], tmp_end_date || options[:end_date])
 
             number_of_stories_per_date = (count.to_f / publication_dates.length).ceil
@@ -68,7 +75,6 @@ module MiniLokiC
             max_repeats = limit_repeats_counter && (publication_dates.length > limit_repeats_counter || options[:end_date] === false) ? limit_repeats_counter : publication_dates.length
 
             stories = samples.select(:id).where(publication_id: publication_id)
-
             if (stories.count.to_f / max_repeats).ceil >= 1 && (stories.count.to_f / max_repeats).ceil <= number_of_stories_per_date
               number_of_days_with_more_stories = stories.count % max_repeats
             end
@@ -108,7 +114,15 @@ module MiniLokiC
           iteration.update_attribute(:schedule_args, iteration.schedule_args.nil? ? schedule_args : iteration.schedule_args += schedule_args)
         end
 
-        def self.schedule_args_to_hash(options)
+        def time_frame_ids(time_frame)
+          return [] if time_frame.blank?
+
+          time_frame_ids = TimeFrame.where(frame: time_frame).ids
+          raise 'Error name of time frame' if time_frame_ids.blank?
+          time_frame_ids
+        end
+
+        def schedule_args_to_hash(options)
           hash = {}
           hash[:st] = options[:start_date]
           hash[:lm] = options[:limit]
@@ -118,7 +132,7 @@ module MiniLokiC
         end
 
         # Set default values if args have not been passed
-        def self.check_and_define_args(args)
+        def check_and_define_args(args)
           unless args[:limit] || args[:end_date] || args[:total_days_till_end]
             raise ArgumentError, 'you need to provide limit and/or end_date/total days till end date args!'
           end
@@ -186,7 +200,7 @@ module MiniLokiC
         end
 
         # Returns array with all days that match args [Dates]
-        def self.all_publication_dates(weekdays, frequency, start_date, end_date)
+        def all_publication_dates(weekdays, frequency, start_date, end_date)
           if frequency == 'weekly'
             all_days_weekly_till_end_date(weekdays, start_date, end_date)
           else
@@ -195,7 +209,7 @@ module MiniLokiC
         end
 
         # Returns approximate end_date considering args
-        def self.calculate_end_date(weekdays, frequency, limit, start_date, count)
+        def calculate_end_date(weekdays, frequency, limit, start_date, count)
           export_days = (count.to_f / limit).ceil
           weeks = (export_days.to_f / weekdays.length).ceil
           days_till_end_of_week = 6 - start_date.wday
@@ -214,7 +228,7 @@ module MiniLokiC
         # param day accepts:  m tu w th f sa su
         #                     Monday Tuesday Wednesday Thursday Friday Saturday Sunday
         #                     0-6
-        def self.date_of_next(weekday)
+        def date_of_next(weekday)
           if ALL_WEEKDAYS_TEXT.include?(weekday) || HASH_WEEKDAYS_TEXT[weekday] || (0..6).to_a.include?(weekday)
             date_to_parse = if (0..6).to_a.include? weekday
                               ALL_WEEKDAYS_TEXT[weekday]
@@ -230,7 +244,7 @@ module MiniLokiC
         end
 
         # Returns next day in a period of months with same weekday of date in param
-        def self.future_month_same_weekday(date, period_in_months = 1)
+        def future_month_same_weekday(date, period_in_months = 1)
           date_next_month = date + period_in_months * FOUR_WEEKS_IN_DAYS
 
           if date_next_month.mon == (date >> period_in_months).mon
@@ -241,13 +255,13 @@ module MiniLokiC
         end
 
         # Returns next day in a quarter with same weekday of date in param
-        def self.future_quarter_same_weekday(date)
+        def future_quarter_same_weekday(date)
           future_month_same_weekday(date, 3)
         end
 
         # Returns all days of weekdays in param from start_date till end_date
         # param day: accepts: m tu w th f sa su
-        def self.all_days_weekly_till_end_date(weekdays, start_date = Date.today, end_date)
+        def all_days_weekly_till_end_date(weekdays, start_date = Date.today, end_date)
           wk_days = []
           weekdays.each { |k| wk_days << HASH_WEEKDAYS[k] }
           (start_date..end_date).to_a.select { |k| wk_days.include?(k.wday) }
@@ -255,9 +269,8 @@ module MiniLokiC
 
         # Returns days of weekdays in param from start_date till end_date by each month or quarter
         # param day: accepts: m tu w th f sa su
-        def self.all_days_monthly_or_quarterly_till_end_date(weekdays, frequency = 'monthly', start_date = Date.today, end_date)
+        def all_days_monthly_or_quarterly_till_end_date(weekdays, frequency = 'monthly', start_date = Date.today, end_date)
           method_to_call = frequency == 'quarterly' ? 'future_quarter_same_weekday' : 'future_month_same_weekday'
-
           wk_days = []
           weekdays.each { |k| wk_days << HASH_WEEKDAYS[k] }
 

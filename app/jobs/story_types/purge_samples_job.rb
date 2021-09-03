@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 module StoryTypes
-  class PurgeSamplesJob < StoryTypeJob
-    queue_as :story_type
-
+  class PurgeSamplesJob < StoryTypesJob
     def perform(iteration, account)
       message = 'Success. samples have been removed'
 
@@ -15,7 +13,7 @@ module StoryTypes
 
           iteration.stories.where(sampled: true).destroy_all
           iteration.auto_feedback_confirmations.destroy_all
-        rescue StandardError => e
+        rescue StandardError, ScriptError => e
           wr.write({ e.class.to_s => e.message }.to_json)
         ensure
           wr.close
@@ -30,7 +28,7 @@ module StoryTypes
         klass, message = JSON.parse(exception).to_a.first
         raise Object.const_get(klass), message
       end
-    rescue StandardError => e
+    rescue StandardError, ScriptError => e
       message = e.message
     ensure
       iteration.update!(samples: nil, current_account: account)

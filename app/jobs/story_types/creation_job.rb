@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module StoryTypes
-  class CreationJob < StoryTypeJob
+  class CreationJob < StoryTypesJob
     def perform(iteration, account, options = {})
       status = true
       message = 'Success. All stories have been created'

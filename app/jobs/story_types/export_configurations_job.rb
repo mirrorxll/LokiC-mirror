@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module StoryTypes
-  class ExportConfigurationsJob < StoryTypeJob
+  class ExportConfigurationsJob < StoryTypesJob
     def perform(story_type, account, manual = false)
       if manual
         pid = fork { create_update_export_config(story_type, account, manual) }
@@ -36,7 +36,7 @@ module StoryTypes
         exp_c.tag = (cl_pub_tg.tag && publication.tag?(cl_pub_tg.tag) ? cl_pub_tg.tag : nil)
         exp_c.save!
       end
-    rescue StandardError => e
+    rescue StandardError, ScriptError => e
       status = nil
       pp e.full_message
       message = e.message
