@@ -38,6 +38,7 @@ class StoryType < ApplicationRecord
   has_one :template, as: :templateable
   has_one :fact_checking_doc, as: :fcdable
   has_one :cron_tab
+  has_one :cron_tab_iteration, -> { where(cron_tab: true) }, class_name: 'StoryTypeIteration'
   has_one :reminder
 
   has_one_attached :code

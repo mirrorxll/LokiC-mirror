@@ -25,6 +25,11 @@ module Table
       ids.empty? ? '' : "AND publication_id IN (#{ids.join(',')})"
     end
 
+    # return number of rows for passed iteration
+    def count_rows_by_iter_query(t_name, iter_id)
+      "SELECT COUNT(*) count FROM #{schema_table(t_name)} WHERE iter_id = #{iter_id};"
+    end
+
     # return publication ids, grouped by a client id.
     def publication_ids_query(t_name, iter_id, publication_ids)
       "SELECT distinct publication_id p_id FROM #{schema_table(t_name)} "\
