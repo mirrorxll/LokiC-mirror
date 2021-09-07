@@ -7,30 +7,61 @@ module StoryTypes
       cron_tab = story_type.cron_tab
       return if cron_tab.freeze_execution
 
-      account = Account.find_by(email: 'main@lokic.loc')
+      account = story_type.developer || Account.find_by(email: 'main@lokic.loc')
       iteration = story_type.cron_tab_iteration || story_type.create_cron_tab_iteration!
       staging_table = story_type.staging_table
 
       staging_table.default_iter_id(iteration.id)
       iteration.update!(population: false, population_args: cron_tab.population_params, current_account: account)
-      PopulationJob.perform_now(iteration, account, population_args: cron_tab.population_params)
+      population_raise = PopulationJob.perform_now(iteration, account, population_args: cron_tab.population_params)
 
-      unless Table.rows_present?(staging_table.name, iteration.id)
-        message = "Population didn't add new rows to staging table"
-        SlackNotificationJob.perform_now(iteration, 'crontab', message, account)
+      if population_raise
+        Table.purge_last_iteration(staging_table.name)
+        staging_table.default_iter_id(story_type.iteration.id)
         return
       end
 
-      story_type.update!(current_iteration: iteration, current_account: account)
-      iteration.update!(name: DateTime.now.strftime('CT%Y%m%d')) if iteration.name.blank?
+      if Table.rows_absent?(staging_table.name, iteration.id)
+        staging_table.default_iter_id(story_type.iteration.id)
+        message = "Population didn't add new rows to staging table. "\
+                  "New iteration didn't create. CronTab execution was stopped"
+        SlackNotificationJob.perform_now(iteration, 'crontab', message)
+        return
+      else
+        story_type.update!(current_iteration: iteration, current_account: account)
+        iteration.update!(cron_tab: false)
+        iteration.update!(name: DateTime.now.strftime('CT%Y%m%d')) if iteration.name.blank?
+      end
 
       iteration.update!(samples: false, current_account: account)
-      return unless SamplesAndAutoFeedbackJob.perform_now(iteration, account, cron: true)
+      creation_raise = SamplesAndAutoFeedbackJob.perform_now(iteration, account, cron: true)
+
+      return if creation_raise
 
       iteration.update!(creation: false, current_account: account)
-      return unless CreationJob.perform_now(iteration, account)
+      creation_raise = CreationJob.perform_now(iteration, account)
 
-      iteration = story_type.iteration
+      return if creation_raise
+
+      rd, wr = IO.pipe
+      Process.wait(
+        fork do
+          rd.close
+
+          wr.write({ 'scheduling' => iteration.stories.complete_scheduling? }.to_json)
+          wr.close
+        end
+      )
+      wr.close
+      scheduling = JSON.parse(rd.read)['scheduling']
+      rd.close
+
+      unless scheduling
+        message = "Scheduling didn't complete. Please check passed params to it"
+        SlackNotificationJob.perform_now(iteration, 'crontab', message)
+        return
+      end
+
       iteration.update!(export: false, current_account: account)
       ExportJob.perform_now(iteration, account)
     end

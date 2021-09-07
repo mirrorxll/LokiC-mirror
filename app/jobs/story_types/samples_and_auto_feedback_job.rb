@@ -3,9 +3,13 @@
 module StoryTypes
   class SamplesAndAutoFeedbackJob < StoryTypesJob
     def perform(iteration, account, options = {})
+      status = true
+      rd, wr = IO.pipe
+
       Process.wait(
         fork do
-          status = true
+          rd.close
+
           sample_args = {}
           staging_table = iteration.story_type.staging_table
           publication_ids = iteration.story_type.publication_pl_ids
@@ -42,14 +46,36 @@ module StoryTypes
             else
               'Success. Samples have been created'
             end
+
+          wr.write(message.to_json)
         rescue StandardError, ScriptError => e
-          status = nil
-          message = e.message
+          wr.write({ e.class.to_s => e.message }.to_json)
         ensure
-          iteration.update!(samples: status, current_account: account)
-          send_to_action_cable(iteration.story_type, :samples, message)
+          wr.close
         end
       )
+
+      wr.close
+      forked_res = JSON.parse(rd.read)
+      rd.close
+
+      if forked_res.is_a?(Hash)
+        klass, message = forked_res.to_a.first
+        raise Object.const_get(klass), message
+      else
+        message = forked_res
+      end
+
+      false
+    rescue StandardError, ScriptError => e
+      status = nil
+      message = e.message
+      true
+    ensure
+      iteration.update!(samples: status, current_account: account)
+      send_to_action_cable(iteration.story_type, :samples, message)
+
+      StoryTypes::SlackNotificationJob.perform_now(iteration, 'samples', message) if options[:cron] && status.nil?
     end
   end
 end

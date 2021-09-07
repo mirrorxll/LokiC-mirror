@@ -8,9 +8,9 @@ module StoryTypes
       channel = Rails.env.production? ? 'lokic_story_type_messages' : 'hle_lokic_development_messages'
 
       url = generate_url(story_type)
-      progress_step = step.in?(%w[developer crontab]) ? '' : "| #{step.capitalize}"
+      progress_step = step.in?(%w[developer]) ? '' : "| #{step.capitalize}"
       developer_name = story_type_dev.name
-      message = "*<#{url}|Story Type ##{story_type.id}> (#{iteration.name}) #{progress_step}"\
+      message = "*<#{url}|Story Type ##{story_type.id}> #{iteration.name.nil? ? '' : " (#{iteration.name})"} #{progress_step}"\
                 " | #{developer_name}*\n#{raw_message}".gsub("\n", "\n>")
 
       record_to_alerts(story_type, step, raw_message)

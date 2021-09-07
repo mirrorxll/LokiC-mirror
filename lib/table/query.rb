@@ -27,7 +27,7 @@ module Table
 
     # return number of rows for passed iteration
     def count_rows_by_iter_query(t_name, iter_id)
-      "SELECT COUNT(*) FROM #{schema_table(t_name)} WHERE iter_id = #{iter_id};"
+      "SELECT COUNT(*) count FROM #{schema_table(t_name)} WHERE iter_id = #{iter_id};"
     end
 
     # return publication ids, grouped by a client id.

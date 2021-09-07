@@ -34,10 +34,10 @@ module Table # :nodoc:
     p_ids.map { |row| row['p_id'] }.compact
   end
 
-  # return number of rows for passed iteration
-  def rows_present?(t_name, iteration_id)
+  # return true if number of rows for passed iteration is zero, opposite - false
+  def rows_absent?(t_name, iteration_id)
     count_query = count_rows_by_iter_query(t_name, iteration_id)
-    loki_story_creator { |conn| conn.exec_query(count_query).first['count'].positive? }
+    loki_story_creator { |conn| conn.exec_query(count_query).first['count'].zero? }
   end
 
   # purge rows that were inserted to staging table

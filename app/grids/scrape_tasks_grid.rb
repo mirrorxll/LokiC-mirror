@@ -18,12 +18,11 @@ class ScrapeTasksGrid
   filter(:scraper, :enum, select: accounts.map { |r| [r.name, r.id] }.sort)
 
   statuses = [
-    ['not started',	1],
     ['in progress',	2],
+    ['on checking',	11],
+    ['done', 9],
     ['blocked',	5],
-    ['canceled', 7],
-    ['inactive', 8],
-    ['done', 9]
+    ['canceled', 7]
   ]
   filter(:status, :enum, select: statuses)
 

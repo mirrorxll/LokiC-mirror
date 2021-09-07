@@ -19,7 +19,9 @@
 .row
   .col-10
     #story_type_iterations
-      =render partial: 'story_types/iterations/iteration', collection: @story_type.iterations, current_iteration: @story_type.iteration
+      =render partial: 'story_types/iterations/iteration',
+              collection: @story_type.iterations.where(cron_tab: [nil, false]),
+              current_iteration: @story_type.iteration
 
       .badge.badge-pill.badge-light{'data-container' => 'body',
                                     'data-toggle' => 'popover',

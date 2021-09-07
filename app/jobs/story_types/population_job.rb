@@ -38,11 +38,11 @@ module StoryTypes
         raise Object.const_get(klass), message
       end
 
-      true
+      false
     rescue StandardError, ScriptError => e
       status = nil
       message = e.message
-      false
+      true
     ensure
       iteration.update!(population: status, current_account: account)
       send_to_action_cable(story_type, :staging_table, message)

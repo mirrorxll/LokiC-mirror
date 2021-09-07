@@ -39,10 +39,11 @@ module StoryTypes
 
       iteration.update!(schedule_counts: schedule_counts(iteration), current_account: account)
 
-      true
+      false
     rescue StandardError, ScriptError => e
       status = nil
       message = e.message
+      true
     ensure
       iteration.update!(creation: status, current_account: account)
       send_to_action_cable(iteration.story_type, :stories, message)
