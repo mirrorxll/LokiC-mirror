@@ -12,7 +12,8 @@ class Status < ApplicationRecord
   end
 
   def self.scrape_task_dev_statuses
-    where.not(name: ['not started', 'migrated', 'inactive', 'exported', 'on cron', 'deleted'])
+    statuses = ['in progress', 'on checking', 'done', 'blocked', 'canceled']
+    where(name: statuses).order("FIELD(name, '#{statuses.join("', '")}')")
   end
 
   def self.multi_task_dev_statuses
