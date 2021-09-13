@@ -17,7 +17,7 @@ module StoryTypes
 
           MiniLokiC::StoryTypeCode[story_type].execute(:population, population_args)
 
-          unless story_type.status.name.eql?('in progress')
+          unless story_type.status.name.in?(['in progress', 'on cron'])
             story_type.update!(status: Status.find_by(name: 'in progress'), current_account: account)
           end
 
