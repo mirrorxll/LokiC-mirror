@@ -4,6 +4,8 @@ class SlackNotificationJob < ApplicationJob
   queue_as :lokic
 
   def perform(identifier, msg, thread_ts = nil)
+    retry_counter = 0
+
     params = {
       channel: identifier,
       text: msg,
@@ -11,6 +13,15 @@ class SlackNotificationJob < ApplicationJob
       thread_ts: thread_ts
     }
 
-    Slack::Web::Client.new.chat_postMessage(params)
+    begin
+      Slack::Web::Client.new.chat_postMessage(params)
+    rescue Slack::Web::Api::Errors::TimeoutError
+      retry_counter += 1
+
+      if retry_counter <= 3
+        sleep(retry_counter**2)
+        retry
+      end
+    end
   end
 end
