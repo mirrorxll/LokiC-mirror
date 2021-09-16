@@ -153,6 +153,11 @@ Rails.application.routes.draw do
         get   :cancel_edit
         patch :autosave
       end
+
+      resources :tags, only: [] do
+        post :include, on: :collection
+        delete :exclude
+      end
     end
   end
 
