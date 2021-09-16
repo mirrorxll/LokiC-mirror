@@ -36,6 +36,8 @@ class ScrapeTask < ApplicationRecord
   has_many :change_history, as: :history
   has_many :alerts, as: :alert
 
+  has_and_belongs_to_many :tags, class_name: 'ScrapeTaskTag'
+
   def updated_early?
     updated_at > created_at
   end
