@@ -4,10 +4,10 @@ require 'sidekiq/web'
 require 'sidekiq-scheduler/web'
 
 Rails.application.routes.draw do
-  mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
   devise_for :accounts, controllers: { registrations: 'registrations', sessions: 'sessions' }
 
   authenticate :account, ->(u) { u.types.include?('manager') } do
+    mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
     mount Sidekiq::Web => '/sidekiq'
   end
 
