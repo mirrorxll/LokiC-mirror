@@ -7,7 +7,7 @@ ruby '2.7.1'
 
 gem 'dotenv-rails'
 
-gem 'rails_admin', '2.2.1'
+gem 'rails_admin'
 
 # front-end
 gem 'devise'
@@ -37,7 +37,7 @@ gem 'datagrid'
 gem 'svg-graph', '2.2.0' # don't change version as long as it is possible! :)
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 6.0.4'
+gem 'rails', '~> 6.0.3'
 # Use mysql as the database for Active Record
 gem 'mysql2', '>= 0.4.4'
 # Use Puma as the app server
@@ -78,12 +78,3 @@ group :development do
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
-
-gem 'public_suffix'
-gem 'addressable'
-gem 'ast'
-gem 'xpath'
-gem 'bindex'
-gem 'backport'
-gem 'regexp_parser'
-gem 'sprockets'
