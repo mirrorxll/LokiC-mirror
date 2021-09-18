@@ -11,8 +11,10 @@ class Status < ApplicationRecord
     where.not(name: ['not started', 'inactive', 'deleted', 'on checking'])
   end
 
-  def self.scrape_task_dev_statuses
+  def self.scrape_task_dev_statuses(manager)
     statuses = ['in progress', 'on checking', 'done', 'blocked', 'canceled']
+    statuses.delete('done') unless manager
+
     where(name: statuses).order("FIELD(name, '#{statuses.join("', '")}')")
   end
 
