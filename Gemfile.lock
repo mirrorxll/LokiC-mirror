@@ -64,6 +64,8 @@ GEM
       public_suffix (>= 2.0.2, < 5.0)
     airbrussh (1.4.0)
       sshkit (>= 1.6.1, != 1.7.0)
+    ast (2.4.2)
+    backport (1.2.0)
     bcrypt (3.1.16)
     bcrypt_pbkdf (1.1.0)
     bindex (0.8.1)
@@ -236,6 +238,7 @@ GEM
     method_source (1.0.0)
     mini_magick (4.11.0)
     mini_mime (1.1.1)
+    mini_portile2 (2.6.1)
     minitest (5.14.4)
     msgpack (1.4.2)
     multi_json (1.15.0)
@@ -246,7 +249,8 @@ GEM
       net-ssh (>= 2.6.5, < 7.0.0)
     net-ssh (6.1.0)
     nio4r (2.5.8)
-    nokogiri (1.12.4-x86_64-linux)
+    nokogiri (1.12.4)
+      mini_portile2 (~> 2.6.1)
       racc (~> 1.4)
     orm_adapter (0.5.0)
     os (1.1.1)
@@ -308,6 +312,7 @@ GEM
     rb-inotify (0.10.1)
       ffi (~> 1.0)
     redis (4.4.0)
+    regexp_parser (2.1.1)
     remotipart (1.4.4)
     representable (3.1.1)
       declarative (< 0.1.0)
@@ -404,13 +409,19 @@ GEM
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
+    xpath (3.2.0)
+      nokogiri (~> 1.8)
     zeitwerk (2.4.2)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  addressable
+  ast
+  backport
   bcrypt_pbkdf (>= 1.0, < 2.0)
+  bindex
   bootsnap (>= 1.4.2)
   byebug
   capistrano (~> 3.14.1)
@@ -435,10 +446,12 @@ DEPENDENCIES
   listen (~> 3.2)
   mysql2 (>= 0.4.4)
   pretender
+  public_suffix
   puma (~> 4.1)
   rails (~> 6.0.4)
   rails_admin (= 2.2.1)
   redis (~> 4.0)
+  regexp_parser
   rubyXL
   sass-rails (>= 6)
   sidekiq
@@ -446,9 +459,11 @@ DEPENDENCIES
   slack-ruby-client
   spring
   spring-watcher-listen (~> 2.0.0)
+  sprockets
   svg-graph (= 2.2.0)
   web-console (>= 3.3.0)
   webpacker (~> 5.0.0)
+  xpath
 
 RUBY VERSION
    ruby 2.7.1p83
