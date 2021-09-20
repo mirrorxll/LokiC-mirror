@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   devise_for :accounts, controllers: { registrations: 'registrations', sessions: 'sessions' }
 
   authenticate :account, ->(u) { u.types.include?('manager') } do
-    ActiveAdmin.routes(self)
+    mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
     mount Sidekiq::Web => '/sidekiq'
   end
 

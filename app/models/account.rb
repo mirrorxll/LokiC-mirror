@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class Account < ApplicationRecord # :nodoc:
-  attr_accessor :type_ids, :slack_id # it needs for formtastic-activeadmin-form
-
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
