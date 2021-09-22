@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 RailsAdmin.config do |config|
-  config.main_app_name = Proc.new { |c| [ "LokiC", c.params[:action].try(:titleize) ] }
+  config.main_app_name = proc { |c| ['LokiC', c.params[:action].try(:titleize)] }
   ### Popular gems integration
 
   ## == Devise ==
