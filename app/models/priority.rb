@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-class RequestedWorkPriority < ApplicationRecord
+class Priority < ApplicationRecord
   has_many :work_requests
 end

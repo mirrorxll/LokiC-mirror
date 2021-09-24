@@ -32,7 +32,7 @@ class StoryTypeProductionRemovalsGrid
     scope.where(iterations: { story_types: { data_sets: { states: { id: value } } } })
   end
 
-  clients = Client.where(hidden: false).order(:name)
+  clients = Client.where(hidden_for_story_type: false).order(:name)
   filter(:client, :enum, select: clients.pluck(:name, :id)) do |value, scope|
     scope.where(iterations: { story_types: { story_type_client_publication_tags: { client_id: value } } })
   end

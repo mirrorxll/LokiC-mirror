@@ -194,7 +194,7 @@ frequency.each { |obj| Frequency.create!(obj) }
 puts 'Statuses'
 status.each { |obj| Status.create!(obj) }
 puts 'Type of works'
-types_of_work.each { |obj| TypeOfWork.create!(obj) }
+types_of_work.each { |obj| WorkType.create!(obj) }
 puts 'Clients Report'
 clients_report.each { |obj| ClientsReport.create!(obj) }
 puts 'TaskReminderFrequency'
@@ -214,7 +214,7 @@ SlackAccountsJob.perform_now
 
 hidden = Client.where('name LIKE :like OR name IN (:mm, :mb)',
                       like: 'MM -%', mm: 'Metric Media', mb: 'Metro Business Network')
-hidden.update_all(hidden: false)
+hidden.update_all(hidden_for_story_type: false)
 
 # ============ Time Frames for staging tables ============
 puts 'Time Frames'

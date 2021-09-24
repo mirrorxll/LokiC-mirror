@@ -13,7 +13,7 @@
           =render partial: 'scrape_tasks/tags/tag', collection: @scrape_task.tags, locals: { display: false }
 
         #tagInputBlock.collapse
-          %input.tag-input{ list: 'tagsDatalist', onkeypress: 'onEnterPostTag(event, this.value);' }
+          %input.underline-input{ list: 'tagsDatalist', onkeypress: 'onEnterPostTag(event, this.value);' }
           %datalist#tagsDatalist
             -ScrapeTaskTag.all.each do |tag|
               %option{ value: "#{tag.name}" }

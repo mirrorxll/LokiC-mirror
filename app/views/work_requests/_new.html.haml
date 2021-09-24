@@ -1,0 +1,343 @@
+=form_with(url: work_requests_path) do |f|
+  .modal-body
+    %span.font-weight-bold.text-danger
+      *
+    \- required fields
+    .pt-0
+      %hr/
+      #typesOfWork.card.mb-3
+        .card-body
+          .font-weight-bold.mb-2
+            Types of work
+            %span.text-danger
+              *
+          .types
+            -work_types = WorkType.where(work: :work_request)
+            -work_types.where(hidden: false).each do |tw|
+              .row.mb-2.align-items-center{ class: "work-type-#{tw.id}"}
+                .col-1.text-right
+                  =f.check_box "work_request[work_types[#{tw.id}]][]", { required: true }
+                .col-11.pl-0.text-left
+                  =f.label "work_request[work_types[#{tw.id}]][]", tw.name, class: 'm-0'
+          .row.loadingSpinner.mb-2.d-none
+            .col-1.text-right
+              .spinner-border.spinner-border-sm.text-secondary
+                %span.sr-only
+          .other-types
+            Other:
+            %input.underline-input.w-80.p-0{ list: 'otherTypesOfWork', onkeypress: 'typeOfWorkByEnterPress(event, this)' }
+            %datalist#otherTypesOfWork
+              -work_types.where(hidden: true).each do |type|
+                %option{ value: "#{type.name}" }
+            .arrow-up.d-inline-block.ml-1
+              .mouse-hover{ onclick: 'typeOfWorkByArrowClick();' }
+                =icon('fa', 'arrow-up')
+        :javascript
+          function typeOfWorkByEnterPress(event, input) {
+            if(event.keyCode !== 13 || input.value.trim().length === 0) return false;
+
+            postTypeOfWorkIfNotExist(input);
+          }
+
+          function typeOfWorkByArrowClick() {
+            let input = document.querySelector('#typesOfWork input.underline-input');
+
+            if(input.value.trim().length === 0) return false;
+
+            postTypeOfWorkIfNotExist(input);
+          }
+
+          function postTypeOfWorkIfNotExist(input) {
+            let spinner = document.querySelector('#typesOfWork .loadingSpinner');
+
+            spinner.classList.remove('d-none');
+
+            Rails.ajax({
+              type: "POST",
+              dataType: 'script',
+              url: `#{find_or_create_api_work_types_path}`,
+              data: `type_of_work[name]=${encodeURIComponent(input.value)}`,
+              success: (data) => {
+                input.value = '';
+                spinner.classList.add('d-none');
+
+                if(document.querySelector(`.work-type-${data['work_id']}`)) return false;
+
+                document.querySelector('#typesOfWork .types').insertAdjacentHTML(
+                  'beforeend',
+                  `<div class="row mb-2 align-items-center work-type-${data['work_id']}">
+                    <div class="col-1 text-right">
+                      <input name="work_request[work_types[${data['work_id']}]][]" type="hidden" value="0">
+                      <input type="checkbox" value="1" name="work_request[work_types[${data['work_id']}]][]" id="work_request[work_types[${data['work_id']}]][]" checked>
+                    </div>
+                    <div class="col-11 pl-0 text-left">
+                      <label class="m-0" for="work_request[work_types[${data['work_id']}]][]">${data['work_name']}</label>
+                    </div>
+                  </div>`
+                )
+              }
+            });
+          }
+
+
+
+      #clients.card.mb-3
+        .card-body
+          .font-weight-bold.mb-2
+            Client
+            %span.text-danger
+              *
+          .list
+            -Client.where(hidden_for_work_request: false).each do |cl|
+              .row.mb-2.align-items-center{ class: "client-#{cl.id}"}
+                .col-1.text-right
+                  =f.check_box "work_request[clients[#{cl.id}]][]", {}
+                .col-11.pl-0.text-left
+                  =f.label "work_request[clients[#{cl.id}]][]", cl.name, class: 'm-0'
+          .row.processingOther.mb-2.align-items-center.d-none
+            .col-1.text-right
+              .loadingSpinner.spinner-border.spinner-border-sm.text-secondary
+                %span.sr-only
+            .col-11.pl-0.small
+              .client-not-found.text-danger
+                Client not found!
+          .other-clients
+            Other:
+            %input.underline-input.w-50.p-0{ list: 'otherClients', onkeypress: 'clientByEnterPress(event, this)', oninput: 'hideClientNone();' }
+            %datalist#otherClients
+              -Client.where(hidden_for_work_request: true).each do |cl|
+                %option{ value: "#{cl.name}" }
+            .arrow-up.d-inline-block.ml-1
+              .mouse-hover{ onclick: 'clientByArrowClick();' }
+                =icon('fa', 'arrow-up')
+        :javascript
+          function clientByEnterPress(event, input) {
+            if(event.keyCode !== 13 || input.value.trim().length === 0) return false;
+
+            addClient(input);
+          }
+
+          function clientByArrowClick() {
+            let input = document.querySelector('#clients input.underline-input');
+
+            if(input.value.trim().length === 0) return false;
+
+            addClient(input);
+          }
+
+          function addClient(input) {
+            let spinner = document.querySelector('#clients .loadingSpinner');
+            let client404 = document.querySelector('#clients .client-not-found');
+            let processing = document.querySelector('#clients .processingOther');
+
+            client404.classList.add('d-none');
+            processing.classList.remove('d-none');
+
+            Rails.ajax({
+              type: "GET",
+              dataType: 'script',
+              url: `#{find_api_clients_path}`,
+              data: `client[name]=${encodeURIComponent(input.value)}`,
+              success: (data) => {
+                input.value = '';
+                spinner.classList.add('d-none');
+
+                if(data === 404) {
+                  client404.classList.remove('d-none');
+                  return false;
+                } else if(document.querySelector(`.client-${data['client_id']}`)) {
+                  processing.classList.add('d-none');
+                  return false;
+                }
+
+                document.querySelector('#clients .list').insertAdjacentHTML(
+                  'beforeend',
+                  `<div class="row mb-2 align-items-center client-${data['client_id']}">
+                    <div class="col-1 text-right">
+                      <input name="work_request[clients[${data['client_id']}]][]" type="hidden" value="0">
+                      <input type="checkbox" value="1" name="work_request[clients[${data['client_id']}]][]" id="work_request[clients[${data['client_id']}]][]" checked>
+                    </div>
+                    <div class="col-11 pl-0 text-left">
+                      <label class="m-0" for="work_request[clients[${data['client_id']}]][]">${data['client_name']}</label>
+                    </div>
+                  </div>`
+                )
+              }
+            });
+          }
+
+          function hideClientNone() {
+            document.querySelector('#clients .processingOther').classList.add('d-none');
+            document.querySelector('#clients .loadingSpinner').classList.remove('d-none');
+            document.querySelector('#clients .client-not-found').classList.remove('d-none');
+          }
+
+
+
+      #underwritingProject.card.mb-3
+        .card-body
+          .font-weight-bold.mb-2
+            Underwriting Project
+          .projects
+            -UnderwritingProject.where(hidden: false).each do |up|
+              .row.mb-2.align-items-center{ class: "underwriting-project-#{up.id}"}
+                .col-1.text-right
+                  =f.radio_button "work_request[project]", up.id
+                .col-11.pl-0.text-left
+                  =f.label "work_request[project]", up.name, value: up.id, class: 'm-0'
+          .row.loadingSpinner.mb-2.d-none
+            .col-1.text-right
+              .spinner-border.spinner-border-sm.text-secondary
+                %span.sr-only
+          .other-projects
+            Other:
+            %input.underline-input.w-50.p-0{ list: 'otherProjects', onkeypress: 'projectByEnterPress(event, this)' }
+            %datalist#otherProjects
+              -UnderwritingProject.where(hidden: true).each do |up|
+                %option{ value: "#{up.name}" }
+            .arrow-up.d-inline-block.ml-1
+              .mouse-hover{ onclick: 'projectByArrowClick();' }
+                =icon('fa', 'arrow-up')
+        :javascript
+          function projectByEnterPress(event, input) {
+            if(event.keyCode !== 13 || input.value.trim().length === 0) return false;
+
+            postProjectIfNotExist(input);
+          }
+
+          function projectByArrowClick() {
+            let input = document.querySelector('#underwritingProject input.underline-input');
+
+            if(input.value.trim().length === 0) return false;
+
+            postProjectIfNotExist(input);
+          }
+
+          function postProjectIfNotExist(input) {
+            let spinner = document.querySelector('#underwritingProject .loadingSpinner');
+
+            spinner.classList.remove('d-none');
+
+            Rails.ajax({
+              type: "POST",
+              dataType: 'script',
+              url: `#{find_or_create_api_underwriting_projects_path}`,
+              data: `project[name]=${encodeURIComponent(input.value)}`,
+              success: (data) => {
+                input.value = '';
+                spinner.classList.add('d-none');
+
+                if(document.querySelector(`.underwriting-project-${data['project_id']}`)) return false;
+
+                document.querySelector('#underwritingProject .projects').insertAdjacentHTML(
+                  'beforeend',
+                  `<div class="row mb-2 align-items-center underwriting-project-${data['project_id']}">
+                    <div class="col-1 text-right">
+                      <input type="radio" value="${data['project_id']}" name="work_request[project]" id="work_request[project]_${data['project_id']}" checked>
+                    </div>
+                    <div class="col-11 pl-0 text-left">
+                      <label class="m-0" for="work_request[project]_${data['project_id']}" value="${data['project_id']}">${data['project_name']}</label>
+                    </div>
+                  </div>`
+                )
+              }
+            });
+          }
+
+
+
+      #revenueType.card.mb-3
+        .card-body
+          .font-weight-bold.mb-2
+            What Revenue Type is this?
+            %span.text-danger
+              *
+          .types
+            -RevenueType.where(hidden: false).each do |rt|
+              .row.mb-2.align-items-center{ class: "revenue-type-#{rt.id}"}
+                .col-1.text-right
+                  =f.check_box "work_request[revenue_types[#{rt.id}]][]", {}
+                .col-11.pl-0.text-left
+                  =f.label "work_request[revenue_types[#{rt.id}]][]", rt.name, class: 'm-0'
+
+
+
+      #projectOrderName.card.mb-3
+        .card-body
+          .font-weight-bold.mb-2
+            Project Order Name (the short way to refer to the project)
+            %span.text-danger
+              *
+          =f.text_field "work_request[project_order_name]", class: 'form-control form-control-sm w-50', required: true
+
+
+
+      #projectOrderDetails.card.mb-3
+        .card-body
+          .font-weight-bold.mb-2
+            Project Order Details (What do we need to do?)
+            %span.text-danger
+              *
+          =f.text_area "work_request[project_order_details]", class: 'form-control form-control-sm w-50', required: true
+
+
+
+      #mostWorriedDetails.card.mb-3
+        .card-body
+          .font-weight-bold.mb-2
+            What are you most worried about us missing or not doing on this task?
+          =f.text_area "work_request[most_worried_details]", class: 'form-control form-control-sm w-50'
+
+
+
+      #goalDeadline.card.mb-3
+        .card-body
+          .font-weight-bold.mb-2
+            Goal deadline
+          =f.date_field "work_request[goal_deadline]", class: 'form-control form-control-sm w-50'
+
+
+
+      #finalDeadline.card.mb-3
+        .card-body
+          .font-weight-bold.mb-2
+            Final deadline
+            %span.text-danger
+              *
+          =f.date_field "work_request[final_deadline]", class: 'form-control form-control-sm w-50', required: true
+
+
+
+      #budgetForProject.card.mb-3
+        .card-body
+          .font-weight-bold.mb-2
+            Budget for Project
+            %span.text-danger
+              *
+          =f.date_field "work_request[final_deadline]", class: 'form-control form-control-sm w-50', required: true
+
+
+
+      #priority.card.mb-3
+        .card-body
+          .font-weight-bold.mb-2
+            Priority
+            %span.text-danger
+              *
+          .priorities
+            -Priority.all.each do |rt|
+              .row.mb-2.align-items-center{ class: "revenue-type-#{rt.id}"}
+                .col-1.text-right
+                  =f.radio_button "work_request[priority]", rt.id, required: true
+                .col-11.pl-0.text-left
+                  =f.label "work_request[priority]", rt.name, value: rt.id, class: 'm-0'
+
+  -if modal
+    .modal-footer.justify-content-center
+      %button.btn.btn-sm.btn-secondary{"data-dismiss" => "modal", :type => "button"} Close
+      =f.submit 'Submit', class: 'btn btn-sm btn-secondary'
+
+  :javascript
+    document.querySelector('#requestWorkForm').addEventListener('scroll', () => {
+      document.querySelectorAll('input[list]').forEach(el => { el.blur();  })
+    }, false)

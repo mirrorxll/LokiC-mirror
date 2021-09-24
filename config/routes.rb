@@ -4,24 +4,21 @@ require 'sidekiq/web'
 require 'sidekiq-scheduler/web'
 
 Rails.application.routes.draw do
+  root 'root#index'
+
   devise_for :accounts, controllers: { registrations: 'registrations', sessions: 'sessions' }
+
+  mount ActionCable.server, at: '/cable'
 
   authenticate :account, ->(u) { u.types.include?('manager') } do
     mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
     mount Sidekiq::Web => '/sidekiq'
   end
 
-  resources :images, only: [] do
-    post :upload,   on: :collection
-    get  :download, on: :collection
-  end
-
   resources :accounts, only: [:index] do
-    post :impersonate, on: :member
+    post :impersonate,        on: :member
     post :stop_impersonating, on: :collection
   end
-
-  mount ActionCable.server, at: '/cable'
 
   namespace :api, constraints: { format: :json } do
     resources :clients, only: [] do
@@ -44,13 +41,23 @@ Rails.application.routes.draw do
     end
 
     resources :shown_samples, only: :update
+
+    scope module: :work_requests do
+      resources :work_types, only: [] do
+        post :find_or_create, on: :collection
+      end
+
+      resources :clients, only: [] do
+        get :find, on: :collection
+      end
+
+      resources :underwriting_projects, only: [] do
+        post :find_or_create, on: :collection
+      end
+    end
   end
 
-  root 'story_types#index'
-
-  get '/iterations/:id', to: 'story_types/iterations#show'
-
-  resources :work_requests, except: %i[new destroy] do
+  resources :work_requests, except: :destroy do
 
   end
 
@@ -340,5 +347,10 @@ Rails.application.routes.draw do
     post   :import_data,   on: :collection
     get    :dev_hours,     on: :collection
     post   :confirm,       on: :collection
+  end
+
+  resources :images, only: [] do
+    post :upload,   on: :collection
+    get  :download, on: :collection
   end
 end
