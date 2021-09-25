@@ -9,7 +9,9 @@ class WorkRequest < ApplicationRecord
   end
 
   belongs_to :underwriting_project
-  belongs_to :requested_work_priority
+  belongs_to :priority
+  belongs_to :invoice_type
+  belongs_to :invoice_frequency
 
   has_one :project_order_name, -> { where(subtype: 'project order name') }, as: :commentable, class_name: 'Comment'
   has_one :project_order_details, -> { where(subtype: 'project order details') }, as: :commentable, class_name: 'Comment'

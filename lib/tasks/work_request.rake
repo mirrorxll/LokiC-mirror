@@ -21,8 +21,8 @@ namespace :work_request do
 
 
     projects = [
-      { name: 'RAE news on vote fraud', hidden: false },
-      { name: 'RPAC news in six states', hidden: false }
+      { hidden: false, name: 'RAE news on vote fraud' },
+      { hidden: false, name: 'RPAC news in six states' }
     ]
     projects.each { |row| UnderwritingProject.find_or_create_by!(row) }
 
@@ -48,6 +48,28 @@ namespace :work_request do
       { hidden: false, name: 'Search Services - 901 - (SPC) (SEO, Search Consulting, Rep Management)' }
     ]
     types.each { |row| RevenueType.find_or_create_by!(row) }
+
+
+
+    types = [
+      { hidden: false, name: 'Fixed price' },
+      { hidden: false, name: 'COGs dependent' }
+    ]
+    types.each { |row| InvoiceType.find_or_create_by!(row) }
+
+
+
+    frequencies = [
+      { hidden: false, name: 'Weekly' },
+      { hidden: false, name: 'Semi-monthly' },
+      { hidden: false, name: 'Monthly' },
+      { hidden: false, name: 'Quarterly' },
+      { hidden: false, name: 'Semi-annually' },
+      { hidden: false, name: 'Annually' },
+      { hidden: false, name: 'Completion of work' },
+    ]
+    frequencies.each { |row| InvoiceFrequency.find_or_create_by!(row) }
+
 
 
     priorities = [

@@ -21,7 +21,7 @@ class WorkRequestsController < ApplicationController
   end
 
   def create
-
+    puts params
   end
 
   def edit

@@ -16,6 +16,6 @@ class CreateWorkTypes < ActiveRecord::Migration[6.0]
   end
 
   def down
-    drop_table :types_of_work
+    drop_table :work_types
   end
 end
