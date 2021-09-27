@@ -1,25 +1,21 @@
 %hr/
 .row.m-2.justify-content-between
   .text-left
-    -if current_account.types.include?('manager')
-      =link_to 'all requested work',
-               url_for(@grid.to_param => { order: :id, descending: true, collapse: true }),
+    -if (current_account.types & ['outside manager', 'manager']).any?
+      =link_to 'all requested work', work_requests_path,
                class: 'btn btn-sm btn-outline-dark'
-    =link_to('requested work by you',
-             url_for(@grid.to_param => { requester: current_account, order: :id, descending: true, collapse: true }),
-             class: 'btn btn-sm btn-outline-dark')
+      =link_to('requested work by you',
+               url_for(@grid.to_param => { requester: current_account.id }),
+               class: 'btn btn-sm btn-outline-dark')
 
   .text-right
     %button.btn.btn-sm.btn-outline-dark{ "data-target" => "#requestWorkForm", "data-toggle" => "modal" }
       request work
 %hr/
 
-#filter_form{ class: collapse(params[:work_request_grid])}
-  =datagrid_form_for @grid, url: work_requests_path
-
 .row
   .col-12
-    #data_sets
+    #data_sets.align-items-center
       #grid_wrapper
         =datagrid_table(@grid)
 

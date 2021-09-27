@@ -19,6 +19,7 @@ class CreateWorkRequests < ActiveRecord::Migration[6.0]
       t.boolean :billed_for_entire_project?
       t.integer :r_val
       t.integer :f_val
+      t.timestamps
     end
   end
 end

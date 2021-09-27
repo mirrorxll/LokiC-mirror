@@ -7,35 +7,37 @@ class WorkRequestsController < ApplicationController
   skip_before_action :set_article_type_iteration
 
   before_action :generate_grid, only: :index
+  before_action :find_work_request, only: %i[show edit update]
 
   def index
     @grid.scope { |sc| sc.page(params[:page]).per(50) }
   end
 
-  def show
+  def show; end
 
-  end
-
-  def new
-
-  end
+  def new; end
 
   def create
-    puts params
+    @request = WorkRequestObjectCreator.create_from!(current_account, work_request_params)
   end
 
-  def edit
+  def edit; end
 
-  end
-
-  def update
-
-  end
+  def update; end
 
   private
 
   def generate_grid
-    @grid = request.parameters[:work_request_grid] || {}
+    default = manager? || outside_manager? ? {} : { requester: current_account.id }
+    @grid = request.parameters[:work_requests_grid] || default
     @grid = WorkRequestsGrid.new(@grid)
+  end
+
+  def work_request_params
+    params.require(:work_request).permit!
+  end
+
+  def find_work_request
+    @work_request = WorkRequest.find(params[:id])
   end
 end

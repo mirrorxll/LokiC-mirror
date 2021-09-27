@@ -26,13 +26,18 @@
                 =link_to('work requesting', work_requests_path, class: 'nav-link')
               %li.nav-item.active
                 =link_to('multi tasks', tasks_path, class: 'nav-link')
-              #navbarDropdown0.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
-                reports
-              .dropdown-menu{"aria-labelledby" => "navbarDropdown0"}
-                .dropdown-item
-                  =link_to('developers production', exported_counts_developers_productions_path, class: 'nav-link small')
-                .dropdown-item
-                  =link_to('assembled 2020', assembleds_tracking_hours_path(week: current_week), class: 'nav-link small')
+              %li.nav-item.active.dropdown
+                #navbarDropdown.nav-link.dropdown-toggle{ "aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button" }
+                  reports
+                .dropdown-menu{"aria-labelledby" => "navbarDropdown"}
+                  .dropdown-item
+                    =link_to('developers production', exported_counts_developers_productions_path, class: 'nav-link small')
+                  .dropdown-item
+                    =link_to('assembled 2020', assembleds_tracking_hours_path(week: current_week), class: 'nav-link small')
+
+            -elsif acc_types.include?('client')
+              %li.nav-item.active
+                =link_to('work requesting', work_requests_path, class: 'nav-link')
 
             -else
               -if acc_types.include?('manager')
