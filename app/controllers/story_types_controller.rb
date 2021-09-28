@@ -6,7 +6,6 @@ class StoryTypesController < ApplicationController # :nodoc:
   skip_before_action :set_story_type_iteration
   skip_before_action :set_article_type_iteration
 
-  before_action :redirect_scrapers,        only: :index
   before_action :find_data_set,            only: %i[new create]
   before_action :find_story_type,          except: %i[index new create properties_form]
   before_action :set_story_type_iteration, except: %i[index new create properties_form change_data_set]
@@ -71,10 +70,6 @@ class StoryTypesController < ApplicationController # :nodoc:
   def update_sections; end
 
   private
-
-  def redirect_scrapers
-    redirect_to scrape_tasks_path if only_scraper?
-  end
 
   def check_access
     redirect_to root_path

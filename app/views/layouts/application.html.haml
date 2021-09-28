@@ -21,51 +21,69 @@
           -acc_types = current_account&.types
 
           -if acc_types
-            -if acc_types.include?('manager')
+            -if acc_types.include?('outside manager')
+              %li.nav-item.active
+                =link_to('work requesting', work_requests_path, class: 'nav-link')
+              %li.nav-item.active
+                =link_to('multi tasks', tasks_path, class: 'nav-link')
               %li.nav-item.active.dropdown
-                #navbarDropdown.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
-                  management
+                #navbarDropdown.nav-link.dropdown-toggle{ "aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button" }
+                  reports
                 .dropdown-menu{"aria-labelledby" => "navbarDropdown"}
-                  .dropdown-item
-                    =link_to('admin panel', rails_admin_path, class: 'nav-link small', target: '_blank')
-                  .dropdown-item
-                    =link_to('sidekiq panel', sidekiq_web_path, class: 'nav-link small', target: '_blank')
                   .dropdown-item
                     =link_to('developers production', exported_counts_developers_productions_path, class: 'nav-link small')
                   .dropdown-item
                     =link_to('assembled 2020', assembleds_tracking_hours_path(week: current_week), class: 'nav-link small')
 
-            -if (acc_types & %w[manager editor developer]).any?
-              %li.nav-item.active.dropdown
-                #navbarDropdown.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
-                  HLE
-                .small.dropdown-menu{"aria-labelledby" => "navbarDropdown"}
-                  -if (acc_types & %w[manager editor]).any?
-                    .dropdown-item
-                      =link_to('data sets', data_sets_path, class: 'nav-link small')
-                  .dropdown-item
-                    =link_to('story types', story_types_path, class: 'nav-link small')
-                  .dropdown-item
-                    =link_to('article types', article_types_path, class: 'nav-link small')
-                  -if (acc_types & %w[manager editor]).any?
-                    .dropdown-item
-                      =link_to('exported iterations', exported_story_types_path, class: 'nav-link small')
-                    .dropdown-item
-                      =link_to('shown stories', shown_samples_path, class: 'nav-link small')
-                    .dropdown-item
-                      =link_to('removals from PL', production_removals_path, class: 'nav-link small')
-
-            -if (acc_types & %w[manager editor scraper]).any?
+            -elsif acc_types.include?('client')
               %li.nav-item.active
-                =link_to('scrape tasks', scrape_tasks_path, class: 'nav-link')
+                =link_to('work requesting', work_requests_path, class: 'nav-link')
 
-            %li.nav-item.active
-              =link_to('multi tasks', tasks_path, class: 'nav-link')
-            %li.nav-item.active
-              =link_to('tracking hours', tracking_hours_path(week: current_week, developer: current_account), class: 'nav-link')
+            -else
+              -if acc_types.include?('manager')
+                %li.nav-item.active.dropdown
+                  #navbarDropdown1.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
+                    management
+                  .dropdown-menu{"aria-labelledby" => "navbarDropdown1"}
+                    .dropdown-item
+                      =link_to('requested work', work_requests_path, class: 'nav-link small')
+                    .dropdown-item
+                      =link_to('admin panel', rails_admin_path, class: 'nav-link small', target: '_blank')
+                    .dropdown-item
+                      =link_to('sidekiq panel', sidekiq_web_path, class: 'nav-link small', target: '_blank')
+                    .dropdown-item
+                      =link_to('developers production', exported_counts_developers_productions_path, class: 'nav-link small')
+                    .dropdown-item
+                      =link_to('assembled 2020', assembleds_tracking_hours_path(week: current_week), class: 'nav-link small')
+
+              -if (acc_types & %w[manager editor developer]).any?
+                %li.nav-item.active.dropdown
+                  #navbarDropdown2.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
+                    HLE
+                  .small.dropdown-menu{"aria-labelledby" => "navbarDropdown2  "}
+                    -if (acc_types & %w[manager editor]).any?
+                      .dropdown-item
+                        =link_to('data sets', data_sets_path, class: 'nav-link small')
+                    .dropdown-item
+                      =link_to('story types', story_types_path, class: 'nav-link small')
+                    .dropdown-item
+                      =link_to('article types', article_types_path, class: 'nav-link small')
+                    -if (acc_types & %w[manager editor]).any?
+                      .dropdown-item
+                        =link_to('removals from PL', production_removals_path, class: 'nav-link small')
+
+              -if (acc_types & %w[manager editor scraper]).any?
+                %li.nav-item.active
+                  =link_to('scrape tasks', scrape_tasks_path, class: 'nav-link')
+
+              %li.nav-item.active
+                =link_to('multi tasks', tasks_path, class: 'nav-link')
+
+              %li.nav-item.active
+                =link_to('tracking hours', tracking_hours_path(week: current_week, developer: current_account), class: 'nav-link')
 
             %li.nav-item.dropdown.ml-auto
-              #navbarDropdown.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
+              #navbarDropdown3.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
                 =current_account.name
               .dropdown-menu.dropdown-menu-right{"aria-labelledby" => "navbarDropdown"}
                 -if acc_types.include?('manager')

@@ -4,26 +4,47 @@ require 'sidekiq/web'
 require 'sidekiq-scheduler/web'
 
 Rails.application.routes.draw do
+  root 'root#index'
+
   devise_for :accounts, controllers: { registrations: 'registrations', sessions: 'sessions' }
+
+  mount ActionCable.server, at: '/cable'
 
   authenticate :account, ->(u) { u.types.include?('manager') } do
     mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
     mount Sidekiq::Web => '/sidekiq'
   end
 
-  resources :images, only: [] do
-    post :upload,   on: :collection
-    get  :download, on: :collection
-  end
-
   resources :accounts, only: [:index] do
-    post :impersonate, on: :member
+    post :impersonate,        on: :member
     post :stop_impersonating, on: :collection
   end
 
-  mount ActionCable.server, at: '/cable'
-
   namespace :api, constraints: { format: :json } do
+    scope module: :work_requests do
+      resources :work_types, only: [] do
+        post :find_or_create, on: :collection
+      end
+
+      resources :clients, only: [] do
+        get :find, on: :collection
+      end
+
+      resources :underwriting_projects, only: [] do
+        post :find_or_create, on: :collection
+      end
+
+      resources :invoice_types, only: [] do
+        post :find_or_create, on: :collection
+      end
+
+      resources :invoice_frequencies, only: [] do
+        post :find_or_create, on: :collection
+      end
+    end
+
+    resources :work_requests, only: :update
+
     resources :clients, only: [] do
       get :visible,           on: :collection
       get :local_publication, on: :collection
@@ -46,9 +67,9 @@ Rails.application.routes.draw do
     resources :shown_samples, only: :update
   end
 
-  root 'story_types#index'
+  resources :work_requests, except: :destroy do
 
-  get '/iterations/:id', to: 'story_types/iterations#show'
+  end
 
   resources :data_sets, except: %i[new] do
     get :properties, on: :member
@@ -56,134 +77,6 @@ Rails.application.routes.draw do
     resources :story_types, only: %i[new create]
     resources :article_types, only: %i[new create]
   end
-
-  resources :article_types, except: %i[new create] do
-    get   :properties_form
-    get   :canceling_rename,  on: :member
-    patch :update_sections,   on: :member
-    patch :change_data_set,   on: :member
-
-    scope module: :article_types do
-      resources :templates, path: :template, only: %i[show edit update] do
-        patch :save, on: :member
-      end
-
-      resources :progress_statuses, only: [] do
-        patch :change, on: :collection
-      end
-
-      resources :frequencies, path: :frequency, only: [] do
-        post   :include, on: :collection
-        delete :exclude, on: :member
-      end
-
-      resources :developers, only: [] do
-        patch   :include, on: :collection
-        delete  :exclude, on: :member
-      end
-
-      resources :staging_tables, only: %i[show create destroy] do
-        post    :attach,         on: :collection
-        delete  :detach,         on: :member
-        patch   :sync,           on: :member
-        get     :canceling_edit, on: :collection
-
-        resources :columns, controller: :staging_table_columns, only: %i[edit update]
-        resources :indices, controller: :staging_table_indices, only: %i[new create destroy]
-      end
-
-      resources :codes, only: [] do
-        get    :show,   on: :collection
-        post   :attach, on: :collection
-        put    :reload, on: :collection
-      end
-
-      resources :fact_checking_docs do
-        get   :template
-        post  :send_to_reviewers_channel
-        patch :save, on: :member
-
-        resources :reviewers_feedback, only: %i[new create] do
-          patch :confirm, on: :member
-        end
-
-        resources :editors_feedback, only: %i[new create] do
-          patch :confirm, on: :member
-        end
-      end
-
-      resources :iterations, only: %i[create update] do
-        patch :apply, on: :member
-
-        resources :populations, path: :populate, only: [] do
-          post   :execute, on: :collection
-          delete :purge,   on: :collection
-        end
-
-        resources :samples, only: %i[index show] do
-          post   :generate, on: :collection
-          delete :purge,    on: :collection
-        end
-
-        resources :articles, only: :index
-
-        resources :creations, only: [] do
-          post   :execute, on: :collection
-          delete :purge,   on: :collection
-        end
-      end
-    end
-  end
-
-  resources :scrape_tasks, except: :destroy do
-    get   :cancel_edit
-    patch :evaluate
-
-    scope module: 'scrape_tasks' do
-      resources :progress_statuses, only: [] do
-        patch :change, on: :collection
-      end
-
-      resource :instruction, only: %i[edit update] do
-        get   :cancel_edit
-        patch :autosave
-      end
-
-      resource :evaluation_doc, only: %i[edit update] do
-        get   :cancel_edit
-        patch :autosave
-      end
-
-      resources :tags, only: [] do
-        post :include, on: :collection
-        delete :exclude
-      end
-    end
-  end
-
-  resources :shown_samples,        controller: 'story_types/shown_samples',        only: :index
-  resources :exported_story_types, controller: 'story_types/exported_story_types', only: :index
-  resources :production_removals,  only: :index
-
-  resources :tracking_hours, only: %i[new create update destroy index] do
-    post   :submit_forms,  on: :collection
-    delete :exclude_row,   on: :member
-
-    post   :add_form,      on: :collection
-    get    :assembleds,    on: :collection
-    post   :google_sheets, on: :collection
-    post   :properties,    on: :collection
-    post   :import_data,   on: :collection
-    get    :dev_hours,     on: :collection
-    post   :confirm,       on: :collection
-  end
-
-  resources :developers_productions, only: [] do
-    get :scores,          on: :collection
-    get :show_hours,      on: :collection
-    get :exported_counts, on: :collection
-  end
-
 
   resources :story_types, except: %i[new create] do
     get   :properties_form
@@ -324,6 +217,110 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :article_types, except: %i[new create] do
+    get   :properties_form
+    get   :canceling_rename,  on: :member
+    patch :update_sections,   on: :member
+    patch :change_data_set,   on: :member
+
+    scope module: :article_types do
+      resources :templates, path: :template, only: %i[show edit update] do
+        patch :save, on: :member
+      end
+
+      resources :progress_statuses, only: [] do
+        patch :change, on: :collection
+      end
+
+      resources :frequencies, path: :frequency, only: [] do
+        post   :include, on: :collection
+        delete :exclude, on: :member
+      end
+
+      resources :developers, only: [] do
+        patch   :include, on: :collection
+        delete  :exclude, on: :member
+      end
+
+      resources :staging_tables, only: %i[show create destroy] do
+        post    :attach,         on: :collection
+        delete  :detach,         on: :member
+        patch   :sync,           on: :member
+        get     :canceling_edit, on: :collection
+
+        resources :columns, controller: :staging_table_columns, only: %i[edit update]
+        resources :indices, controller: :staging_table_indices, only: %i[new create destroy]
+      end
+
+      resources :codes, only: [] do
+        get    :show,   on: :collection
+        post   :attach, on: :collection
+        put    :reload, on: :collection
+      end
+
+      resources :fact_checking_docs do
+        get   :template
+        post  :send_to_reviewers_channel
+        patch :save, on: :member
+
+        resources :reviewers_feedback, only: %i[new create] do
+          patch :confirm, on: :member
+        end
+
+        resources :editors_feedback, only: %i[new create] do
+          patch :confirm, on: :member
+        end
+      end
+
+      resources :iterations, only: %i[create update] do
+        patch :apply, on: :member
+
+        resources :populations, path: :populate, only: [] do
+          post   :execute, on: :collection
+          delete :purge,   on: :collection
+        end
+
+        resources :samples, only: %i[index show] do
+          post   :generate, on: :collection
+          delete :purge,    on: :collection
+        end
+
+        resources :articles, only: :index
+
+        resources :creations, only: [] do
+          post   :execute, on: :collection
+          delete :purge,   on: :collection
+        end
+      end
+    end
+  end
+
+  resources :scrape_tasks, except: :destroy do
+    get   :cancel_edit
+    patch :evaluate
+
+    scope module: 'scrape_tasks' do
+      resources :progress_statuses, only: [] do
+        patch :change, on: :collection
+      end
+
+      resource :instruction, only: %i[edit update] do
+        get   :cancel_edit
+        patch :autosave
+      end
+
+      resource :evaluation_doc, only: %i[edit update] do
+        get   :cancel_edit
+        patch :autosave
+      end
+
+      resources :tags, only: [] do
+        post :include, on: :collection
+        delete :exclude
+      end
+    end
+  end
+
   resources :tasks do
     resources :progress_statuses, controller: 'task_statuses', only: [] do
       patch :change,        on: :collection
@@ -337,5 +334,33 @@ Rails.application.routes.draw do
       patch :update, on: :collection
       get   :cancel, on: :collection
     end
+  end
+
+  resources :shown_samples,        controller: 'story_types/shown_samples',        only: :index
+  resources :exported_story_types, controller: 'story_types/exported_story_types', only: :index
+  resources :production_removals,  only: :index
+
+  resources :developers_productions, only: [] do
+    get :scores,          on: :collection
+    get :show_hours,      on: :collection
+    get :exported_counts, on: :collection
+  end
+
+  resources :tracking_hours, only: %i[new create update destroy index] do
+    post   :submit_forms,  on: :collection
+    delete :exclude_row,   on: :member
+
+    post   :add_form,      on: :collection
+    get    :assembleds,    on: :collection
+    post   :google_sheets, on: :collection
+    post   :properties,    on: :collection
+    post   :import_data,   on: :collection
+    get    :dev_hours,     on: :collection
+    post   :confirm,       on: :collection
+  end
+
+  resources :images, only: [] do
+    post :upload,   on: :collection
+    get  :download, on: :collection
   end
 end

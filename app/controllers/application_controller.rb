@@ -12,7 +12,6 @@ class ApplicationController < ActionController::Base
 
   before_action :find_parent_story_type
   before_action :set_story_type_iteration
-
   before_action :find_parent_article_type
   before_action :set_article_type_iteration
 
@@ -58,16 +57,32 @@ class ApplicationController < ActionController::Base
   end
 
   def developer?
-    current_account.types.eql?(['developer'])
+    current_account.types.include?('developer')
   end
 
   def scraper?
-    current_account.types.eql?(['scraper'])
+    current_account.types.include?('scraper')
   end
 
   def only_scraper?
     acc_types = current_account.types
     acc_types.count.eql?(1) && acc_types.first.eql?('scraper')
+  end
+
+  def outside_manager?
+    current_account.types.include?('outside manager')
+  end
+
+  def client?
+    current_account.types.include?('client')
+  end
+
+  def guest_1?
+    current_account.types.include?('guest-1')
+  end
+
+  def guest_2?
+    current_account.types.include?('guest-2')
   end
 
   def staging_table_action(&block)

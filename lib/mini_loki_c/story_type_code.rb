@@ -27,7 +27,6 @@ module MiniLokiC
       path = e.backtrace.first
       at = path[/s#{@story_type.id}/] ? " at #{path}" : ''
 
-      pp e.backtrace
       raise "#{method.capitalize}ExecutionError".constantize,
             "[ #{method.capitalize}ExecutionError ] -> #{e.message}#{at}".gsub('`', "'")
     end

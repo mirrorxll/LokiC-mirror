@@ -32,7 +32,7 @@ class StoryTypesGrid
     status = Status.find(value)
     scope.where(status: status)
   end
-  filter(:client, :enum, left: true, select: Client.where(hidden: false).order(:name).pluck(:name, :id)) do |value, scope|
+  filter(:client, :enum, left: true, select: Client.where(hidden_for_story_type: false).order(:name).pluck(:name, :id)) do |value, scope|
     scope.joins(clients_publications_tags: [:client]).where(['clients.id = ?', value])
   end
   filter(:condition1, :dynamic, left: false, header: 'Dynamic condition 1')

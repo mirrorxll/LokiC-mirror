@@ -21,7 +21,7 @@ module Reports
 
         next if date > week.end || date < week.begin
 
-        type_of_work = TypeOfWork.find_by(name: ws["#{letters[1]}#{i}"])
+        type_of_work = WorkType.find_by(work: 0, name: ws["#{letters[1]}#{i}"])
         client_report = ClientsReport.find_by(name: ws["#{letters[2]}#{i}"])
         next if type_of_work.nil? || client_report.nil?
 
@@ -41,7 +41,7 @@ module Reports
         {
           id: dev_hours.id,
           hours: dev_hours.hours,
-          type_of_work: TypeOfWork.find(dev_hours.type_of_work_id).name,
+          type_of_work: WorkType.find(dev_hours.type_of_work_id).name,
           client: ClientsReport.find(dev_hours.client_id).name,
           date: dev_hours.date,
           comment: dev_hours.comment

@@ -4,7 +4,7 @@ module Api
   class ClientsController < ApiController
 
     def visible
-      visible = Client.where(hidden: false).order(:name)
+      visible = Client.where(hidden_for_story_type: false).order(:name)
 
       render json: { visible: visible }
     end

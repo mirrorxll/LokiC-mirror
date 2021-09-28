@@ -11,7 +11,7 @@ class Client < ApplicationRecord # :nodoc:
   has_many :tags_for_statewide_pubs, -> { where('for_statewide_pubs = ?', true) }, through: :clients_tags, source: :tag
 
   has_and_belongs_to_many :sections
-
+  has_and_belongs_to_many :work_requests
   def publications
     if name.eql?('Metric Media')
       mm = Client.where('name LIKE :like', like: 'MM -%')
