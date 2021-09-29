@@ -8,6 +8,9 @@ class TasksController < ApplicationController # :nodoc:
 
   before_action :find_task, only: %i[show edit update]
   before_action :grid, only: :index
+  before_action :receipt, only: :show
+  before_action :task_receipts, only: :show
+
   after_action  :send_notification, only: :create
 
   after_action  :send_notification, only: :create
@@ -113,4 +116,13 @@ class TasksController < ApplicationController # :nodoc:
   def comment_params
     params.require(:comment)
   end
+
+  def receipt
+    @receipt = TaskReceipt.find_by(task: @task, assignment: current_account)
+  end
+
+  def task_receipts
+    @task_receipts = TaskReceipt.where(task: @task)
+  end
+
 end

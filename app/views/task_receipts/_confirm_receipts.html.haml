@@ -1,0 +1,13 @@
+#confirmReceipt.pb-1
+  .card.overflow-auto{style: 'height: 125px;'}
+    .card-header.p-1
+      .d-flex.justify-content-between.small
+        confirm receipt
+    #confirms.small.overflow-auto
+      -if (@receipt.nil? || @receipt.confirmed) && (current_account.types.include?('manager') || @task.creator?(current_account))
+        =render 'task_receipts/confirms', task_receipts: @task_receipts
+      -elsif @receipt.nil?
+      -elsif @receipt.confirmed.eql?(false)
+        =render 'task_receipts/form'
+      -elsif @receipt.confirmed
+        =render 'task_receipts/confirmed'

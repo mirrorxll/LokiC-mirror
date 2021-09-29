@@ -11,7 +11,9 @@
 
 .row.mt-3
   .col-5
-    =render 'task_info'
+    .mb-1
+      =render 'task_info'
+      =render 'task_receipts/confirm_receipts'
   .col-7
     =render 'task_comments', comments: @comments
 
