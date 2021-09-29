@@ -1,0 +1,15 @@
+=form_with(url: api_work_request_path(work_request), method: :patch, html: { onsubmit: 'submitFormOnBlur(event);' }) do |f|
+  =f.number_field "work_request[#{key}]", style: 'width: 50px;', onblur: 'Rails.fire(this, "submit");', class: 'underline-input rounded-0 p-0', value: work_request.send(key)
+
+:javascript
+  function submitFormOnBlur(event) {
+    event.preventDefault();
+
+    let form = event.target;
+    let value = event.target.querySelector('input[type="number"]').value;
+    event.target.parentNode.querySelector('u').value(value);
+
+    form.removeEventListener('submit', submitFormOnBlur);
+    Rails.fire(form, 'submit');
+    form.addEventListener('submit', submitFormOnBlur);
+  }

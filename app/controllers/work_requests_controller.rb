@@ -10,7 +10,7 @@ class WorkRequestsController < ApplicationController
   before_action :find_work_request, only: %i[show edit update]
 
   def index
-    @grid.scope { |sc| sc.page(params[:page]).per(50) }
+    @grid.scope { |sc| sc.page(params[:page]).per(100) }
   end
 
   def show; end

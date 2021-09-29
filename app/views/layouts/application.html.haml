@@ -102,5 +102,5 @@
     -if alert
       %p.alert.alert-danger.text-center
         =alert
-    %div{ class: controller_name.in?(%w(samples data_sets story_types exports exported_story_types)) && action_name.in?(%w(index stories)) ? "container-fluid" : "container-xl" }
+    %div{ class: controller_name.in?(%w(data_sets story_types samples exports exported_story_types work_requests)) && action_name.in?(%w(index stories)) ? "container-fluid" : "container" }
       =yield

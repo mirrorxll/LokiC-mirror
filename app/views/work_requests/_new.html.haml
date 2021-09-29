@@ -1,5 +1,5 @@
 =form_with(url: work_requests_path, html: { onkeypress: "return event.keyCode !== 13;" } ) do |f|
-  .modal-body.pt-0
+  .modal-body
     #workTypesAnchor.mb-3
     #workTypes.card
       .card-body
@@ -327,6 +327,8 @@
       .card-body
         .font-weight-bold.mb-2
           Invoice Type
+          %span.small.text-danger
+            *required
         .types
           -InvoiceType.where(hidden: false).each do |it|
             .row.mb-2.align-items-center{ class: "invoice-type-#{it.id}"}
@@ -402,6 +404,8 @@
       .card-body
         .font-weight-bold.mb-2
           Invoice Frequency
+          %span.small.text-danger
+            *required
         .frequencies
           -InvoiceFrequency.where(hidden: false).each do |it|
             .row.mb-2.align-items-center{ class: "invoice-frequency-#{it.id}"}
@@ -472,12 +476,14 @@
 
 
 
-    #expectedFirstInvoiceAnchor.mb-3
-    #expectedFirstInvoice.card
+    #firstInvoiceAnchor.mb-3
+    #firstInvoice.card
       .card-body
         .font-weight-bold.mb-2
           Expected First Invoice Date
-        =f.date_field "work_request[expected_first_invoice]", class: 'form-control form-control-sm w-50'
+          %span.small.text-danger
+            *required
+        =f.date_field "work_request[first_invoice]", class: 'form-control form-control-sm w-50'
 
 
 
@@ -541,7 +547,18 @@
       event.stopPropagation();
 
       let cards = document.querySelectorAll(
-        "#workTypes, #clients, #revenueTypes, #priority, #projectOrderName, #sow, #projectOrderDetails, #budgetForProject, #finalDeadline"
+        `#workTypes,
+         #clients,
+         #revenueTypes,
+         #projectOrderName,
+         #sow,
+         #projectOrderDetails,
+         #budgetForProject,
+         #invoiceType,
+         #invoiceFrequency,
+         #firstInvoice,
+         #finalDeadline,
+         #priority`
       );
       [...cards].forEach((el) => { el.classList.remove('border-danger') })
 
@@ -591,6 +608,24 @@
         return false;
       }
 
+      let invoiceType = [...document.querySelectorAll('#invoiceType input[type="radio"]')].some((el) => { return el.checked; } );
+      if(!invoiceType) {
+        scrollToCard('#invoiceType')
+        return false;
+      }
+
+      let invoiceFrequency = [...document.querySelectorAll('#invoiceFrequency input[type="radio"]')].some((el) => { return el.checked; } );
+      if(!invoiceFrequency) {
+        scrollToCard('#invoiceFrequency')
+        return false;
+      }
+
+      let expectedFirstInvoice = document.querySelector('#firstInvoice input').value.length > 0
+      if(!expectedFirstInvoice) {
+        scrollToCard('#firstInvoice')
+        return false;
+      }
+
       let finalDeadline = document.querySelector('#finalDeadline input').value.length > 0
       if(!finalDeadline) {
         scrollToCard('#finalDeadline')
@@ -612,7 +647,10 @@
     }, false)
 
     function scrollToCard(id) {
-      document.querySelector(id).classList.add('border-danger')
+      let required = document.querySelector(id);
+
+      required.addEventListener('animationend', (ev) => { ev.target.classList.remove('touch-required-field') })
+      document.querySelector(id).classList.add('border-danger', 'touch-required-field')
       document.querySelector(`${id}Anchor`).scrollIntoView();
     }
 

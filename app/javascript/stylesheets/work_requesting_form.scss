@@ -1,0 +1,9 @@
+.touch-required-field {
+  animation-name: required-field;
+  animation-duration: 0.5s;
+}
+
+@keyframes required-field {
+  from {background-color: #fab4b2;}
+  to {background-color: white;}
+}
