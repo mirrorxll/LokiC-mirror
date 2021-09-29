@@ -15,7 +15,7 @@ module MiniLokiC
             next if samples_backdated.empty?
 
             publications = samples_backdated.group(:publication_id).count
-            publication_dates = (rule[:start_date]..rule[:end_date]).to_a
+            publication_dates = (Date.parse(rule[:start_date])..Date.parse(rule[:end_date])).to_a
 
             publications.each do |publication_id, count|
               limit = (count.to_f / publication_dates.length).ceil

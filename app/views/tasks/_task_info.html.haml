@@ -1,9 +1,20 @@
-#taskInfo
+#taskInfo.pb-1
   .card.overflow-auto{style: 'height: 350px;'}
     .card-header.p-1
       .d-flex.justify-content-between.small
         main info
     .card-body.small
+      -if @task.parent
+        .row.mb-2
+          .col-3.font-weight-bold
+            main task:
+          .col-9
+            =link_to parent_title(@task.parent.title), task_path(@task.parent), title: @task.parent.title
+      .row.mb-2
+        .col-3.font-weight-bold
+          client:
+        .col-9
+          =@task.client ? @task.client.name : 'not set'
       .row.mb-2
         .col-3.font-weight-bold
           creator:

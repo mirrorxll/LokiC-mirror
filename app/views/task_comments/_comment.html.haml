@@ -1,9 +1,9 @@
-.row.col-12.small.font-weight-bold
+.row.small.col.justify-content-between
   -unless comment.commentator.nil?
-    =comment.commentator.name
-  &nbsp
-  =comment.created_at.strftime('%F %R %Z')
-  &nbsp
+    .font-weight-bold
+      =comment.commentator.name
+  .text-secondary.font-italic.small
+    =comment.created_at.strftime('%F %R %Z')
 .row.col-12.small
   =comment.body&.html_safe
 %hr.mt-3.mb-3/

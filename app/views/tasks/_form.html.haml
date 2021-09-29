@@ -7,27 +7,45 @@
           Task with this title already created by you. Let's use something else
       .form-group
         =form.text_area 'task[description]', class: 'form-control', id: 'task_description'
+      .form-group
+        =form.hidden_field 'task[parent]', value: params[:parent_task]
   %hr/
-  .form-group.row.small.font-weight-bold.text-center
-    .col-3
+  .form-group.row.small.font-weight-bold.text-center.justify-content-between
+    .col
       assignment to:
       =icon('fa', 'plus', class: 'ml-2', id: 'add_assignment')
-    .col-3
+      #assignments_form
+        .row.mt-1.justify-content-center
+          =form.collection_select 'task[assignment_to][]', current_account.types.include?('developer') ? [current_account] : Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }
+    .col
       reminder frequency:
-    .col-3
+      .mt-1.mw-50
+        =form.collection_select 'task[reminder_frequency]', sorted_reminder_frequencies, :id, :name, { prompt: '' }
+    .col
+      client:
+      .mt-1
+        =form.collection_select 'task[client_id]', ClientsReport.all.order(:name), :id, :name, { prompt: '' }, style: "width:150px"
+    .col
       deadline:
-    .col-3
+      .mt-1
+        =form.date_field 'task[deadline]', class: 'w-10'
+    .col
       gather_task:
+      .mt-1
+        =form.text_field 'task[gather_task]', class: 'w-70'
+
   .form-group.row.small.text-center
-    .col-3#assignments
-      .row.mt-1.justify-content-center
-        =form.collection_select 'task[assignment_to][]', current_account.types.include?('developer') ? [current_account] : Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }
-    .col-3
-      =form.collection_select 'task[reminder_frequency]', sorted_reminder_frequencies, :id, :name, { prompt: '' }
-    .col-3
-      =form.date_field 'task[deadline]', class: 'w-50'
-    .col-3
-      =form.text_field 'task[gather_task]', class: 'w-50'
+    -#.col-4#assignments_form
+    -#  .row.mt-1.justify-content-center
+    -#    =form.collection_select 'task[assignment_to][]', current_account.types.include?('developer') ? [current_account] : Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }
+    -#.row.col-4
+    -#  .col-6
+    -#    =form.collection_select 'task[reminder_frequency]', sorted_reminder_frequencies, :id, :name, { prompt: '' }
+    -#  .col-6
+    -#    =form.date_field 'task[deadline]', class: 'w-50'
+    -#.row
+    -#  .col-4
+    -#    =form.text_field 'task[gather_task]', class: 'w-50'
   %hr/
   .modal-footer.justify-content-center
     =form.submit :create, class: 'btn btn-sm btn-outline-success'
@@ -39,7 +57,7 @@
   $('#add_assignment').click(function () {
     let hex = secureRandom(6);
 
-    $('#assignments').append(
+    $('#assignments_form').append(
         `<div id="assignment_${hex}" class="row mt-1 ml-1 justify-content-center">
            <select id="task[assignment_to][]" class="mr-1" name="task[assignment_to][]">${buildSelect(accounts)}</select>
            <div class="ml-1" id="rm_assignment_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>

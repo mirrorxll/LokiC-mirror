@@ -2,12 +2,13 @@
   .card-header.p-1
     .d-flex.justify-content-between.small
       comments
+      -if current_account.eql?(@task.creator) || current_account.types.include?('manager') || current_account.in?(@task.assignment_to)
+        #comment_form
+          =link_to('[ add comment ]',
+                   new_task_comment_path(@task, subtype: 'task comment'),
+                   remote: true)
   .card-body
-    #comments.align-top.overflow-auto{style: 'height: 250px;'}
+    #comments.align-top.overflow-auto{style: 'height: 300px;'}
       -@comments.each do |comment|
         =render 'task_comments/comment', comment: comment
-    -if current_account.eql?(@task.creator) || current_account.types.include?('manager') || current_account.in?(@task.assignment_to)
-      #comment_form.align-bottom.mb-1.mt-2.row.small.justify-content-center
-        =link_to('[ add comment ]',
-               new_task_comment_path(@task, subtype: 'task comment'),
-               remote: true)
+

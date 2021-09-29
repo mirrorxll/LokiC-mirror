@@ -7,7 +7,7 @@ class TasksController < ApplicationController # :nodoc:
   skip_before_action :set_article_type_iteration
 
   before_action :find_task, only: %i[show edit update]
-  before_action :grid, only: [:index]
+  before_action :grid, only: :index
   after_action  :send_notification, only: :create
 
   after_action  :send_notification, only: :create
@@ -38,9 +38,10 @@ class TasksController < ApplicationController # :nodoc:
       reminder_frequency: task_params[:reminder_frequency],
       deadline: task_params[:deadline],
       gather_task: task_params[:gather_task],
+      parent: task_params[:parent],
+      client: task_params[:client],
       creator: current_account
     )
-
     @task.assignment_to << Account.find(task_params[:assignment_to]) if @task.save!
   end
 
@@ -94,15 +95,18 @@ class TasksController < ApplicationController # :nodoc:
   end
 
   def task_params
-    task_params = params.require(:task).permit(:title, :description, :deadline, :reminder_frequency, :gather_task, assignment_to: [])
+    task_params = params.require(:task).permit(:title, :description, :parent, :deadline, :client_id, :reminder_frequency, :gather_task, assignment_to: [])
     task_params[:reminder_frequency] = task_params[:reminder_frequency].blank? ? nil : TaskReminderFrequency.find(task_params[:reminder_frequency])
     task_params[:assignment_to] = task_params[:assignment_to].uniq.reject(&:blank?)
+    task_params[:parent] = task_params[:parent].blank? ? nil : Task.find(task_params[:parent])
+    task_params[:client] = task_params[:parent].blank? ? nil : ClientsReport.find(task_params[:client_id])
     task_params
   end
 
   def update_task_params
-    up_task_params = params.require(:task).permit(:title, :description, :deadline, :reminder_frequency, :gather_task)
+    up_task_params = params.require(:task).permit(:title, :description, :deadline, :client_id, :reminder_frequency, :gather_task)
     up_task_params[:reminder_frequency] = up_task_params[:reminder_frequency].blank? ? nil : TaskReminderFrequency.find(up_task_params[:reminder_frequency])
+    up_task_params[:client] = up_task_params[:client_id].blank? ? nil : ClientsReport.find(up_task_params[:client_id])
     up_task_params
   end
 
