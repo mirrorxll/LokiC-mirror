@@ -99,7 +99,7 @@ class TasksController < ApplicationController # :nodoc:
     task_params[:reminder_frequency] = task_params[:reminder_frequency].blank? ? nil : TaskReminderFrequency.find(task_params[:reminder_frequency])
     task_params[:assignment_to] = task_params[:assignment_to].uniq.reject(&:blank?)
     task_params[:parent] = task_params[:parent].blank? ? nil : Task.find(task_params[:parent])
-    task_params[:client] = task_params[:parent].blank? ? nil : ClientsReport.find(task_params[:client_id])
+    task_params[:client] = task_params[:client_id].blank? ? nil : ClientsReport.find(task_params[:client_id])
     task_params
   end
 

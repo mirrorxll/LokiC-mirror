@@ -28,24 +28,11 @@
     .col
       deadline:
       .mt-1
-        =form.date_field 'task[deadline]', class: 'w-10'
+        =form.date_field 'task[deadline]'
     .col
       gather_task:
       .mt-1
         =form.text_field 'task[gather_task]', class: 'w-70'
-
-  .form-group.row.small.text-center
-    -#.col-4#assignments_form
-    -#  .row.mt-1.justify-content-center
-    -#    =form.collection_select 'task[assignment_to][]', current_account.types.include?('developer') ? [current_account] : Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }
-    -#.row.col-4
-    -#  .col-6
-    -#    =form.collection_select 'task[reminder_frequency]', sorted_reminder_frequencies, :id, :name, { prompt: '' }
-    -#  .col-6
-    -#    =form.date_field 'task[deadline]', class: 'w-50'
-    -#.row
-    -#  .col-4
-    -#    =form.text_field 'task[gather_task]', class: 'w-50'
   %hr/
   .modal-footer.justify-content-center
     =form.submit :create, class: 'btn btn-sm btn-outline-success'
