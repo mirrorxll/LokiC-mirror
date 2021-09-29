@@ -35,5 +35,32 @@
 
 :javascript
   $('.mouse-hover').click(function(){
-      $('.mouse-hover').not(this).popover('hide'); //all but this
+      $('.mouse-hover').not(this).popover('hide');
   });
+
+  function submitForm(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    let form = event.target;
+    let input = form.querySelector('input[type="number"], input[type="date"]');
+
+    let target = input.id.split('__');
+    let valueType = target.at(0);
+    let valueId = target.at(-1);
+    let value = form.querySelector(`input[type="${input.type}"]`).value
+
+    if(value.length === 0) {
+      if(input.type === 'number') {
+        value = '**'
+      } else {
+        value = '****-**-**'
+      }
+    }
+
+    document.querySelector(`\#${valueType}${valueId} u`).innerText = value;
+
+    form.removeEventListener('submit', submitForm);
+    Rails.fire(form, 'submit');
+    form.addEventListener('submit', submitForm)
+  }

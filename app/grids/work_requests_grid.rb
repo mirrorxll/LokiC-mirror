@@ -12,8 +12,10 @@ class WorkRequestsGrid
   end
 
   # Columns
+  priorities = {}
+  Priority.all.each.with_index(1) { |p, i| priorities[p.name] = i }
   column(:priority, mandatory: true) do |req|
-    req.priority.name.split(' - ').first
+    priorities[req.priority.name]
   end
 
   column(:work_types, mandatory: true) do |req|
@@ -74,7 +76,7 @@ class WorkRequestsGrid
 
   column(:r_val, header: 'R Value', mandatory: true) do |req|
     format(req) do |r|
-      content_tag(:div, class: 'text-center value-form') do
+      content_tag(:div, id: "r_val#{r.id}", class: 'text-center') do
         content_tag(
           :u, r.r_val || '**',
           'class' => 'mouse-hover',
@@ -90,7 +92,7 @@ class WorkRequestsGrid
 
   column(:f_val, header: 'F Value', mandatory: true) do |req|
     format(req) do |r|
-      content_tag(:div, class: 'text-center value-form') do
+      content_tag(:div, id: "f_val#{r.id}", class: 'text-center') do
         content_tag(
           :u, r.f_val || '**',
           'class' => 'mouse-hover',
@@ -108,10 +110,17 @@ class WorkRequestsGrid
   column(:final_invoice, header: 'Final invoice due', mandatory: true)
   column(:last_invoice, mandatory: true) do |req|
     format(req) do |r|
-      content_tag(
-        :div, "<u>#{r.last_invoice || '****-**-**'}<u/>".html_safe,
-        id: "last_invoice__#{req.id}", class: 'mouse-hover', onclick: ''
-      )
+      content_tag(:div, id: "last_invoice#{r.id}", class: 'text-center') do
+        content_tag(
+          :u, r.last_invoice || '****-**-**',
+          'class' => 'mouse-hover',
+          'data-container' => 'body',
+          'data-toggle' => 'popover',
+          'data-placement' => 'top',
+          'data-html' => 'true',
+          'data-content' => (render 'work_requests/date_form', work_request: r, key: 'last_invoice').to_s
+        )
+      end
     end
   end
 end

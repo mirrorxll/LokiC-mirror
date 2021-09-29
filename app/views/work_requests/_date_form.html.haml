@@ -1,6 +1,6 @@
 =form_with(url: api_work_request_path(work_request), method: :patch, ) do |f|
-  =f.number_field "work_request[#{key}]", id: "#{key}__#{work_request.id}",
-                  style: 'width: 50px;', class: 'underline-input rounded-0 p-0'
+  =f.date_field "work_request[#{key}]", id: "#{key}__#{work_request.id}",
+                  style: 'width: 120px;', class: 'underline-input rounded-0 p-0'
   =button_tag class: 'btn p-0' do
     =icon('fa', 'pencil')
 :javascript
