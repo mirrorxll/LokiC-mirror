@@ -61,7 +61,8 @@ Rails.application.routes.draw do
     end
 
     resources :tasks, only: [] do
-      get :titles, on: :collection
+      get :titles,   on: :collection
+      get :subtasks, on: :member
     end
 
     resources :shown_samples, only: :update
@@ -324,7 +325,8 @@ Rails.application.routes.draw do
   resources :tasks do
     resources :progress_statuses, controller: 'task_statuses', only: [] do
       patch :change,        on: :collection
-      post :comment,        on: :collection
+      post  :comment,        on: :collection
+      patch :subtasks,      on: :collection
     end
 
     resources :comments, controller: 'task_comments', only: %i[new create]

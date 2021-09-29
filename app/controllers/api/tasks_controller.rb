@@ -7,5 +7,11 @@ module Api
 
       render json: task_titles
     end
+
+    def subtasks
+      task = Task.find(params[:id])
+
+      render json: { subtasks: task.subtasks }
+    end
   end
 end

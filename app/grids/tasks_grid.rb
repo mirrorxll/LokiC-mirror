@@ -59,4 +59,8 @@ class TasksGrid
   column(:deadline, order: 'deadline', mandatory: true) do |task|
     task.deadline
   end
+
+  column(:parent_task_id, header: 'Main task', order: 'parent_task_id', mandatory: true) do |task|
+    format("#" + task.parent.id.to_s) { |parent_id| link_to parent_id, task.parent } unless task.parent.nil?
+  end
 end
