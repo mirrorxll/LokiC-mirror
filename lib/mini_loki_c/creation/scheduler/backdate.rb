@@ -16,7 +16,7 @@ module MiniLokiC
 
             publications = samples_backdated.group(:publication_id).count
             publication_dates = (Date.parse(rule[:start_date])..Date.parse(rule[:end_date])).to_a
-            
+
             publications.each do |publication_id, count|
               limit = (count.to_f / publication_dates.length).ceil
               samples_backdated.where(publication: publication_id).find_in_batches(batch_size: limit).with_index do |samples_batch, index|

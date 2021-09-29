@@ -15,10 +15,26 @@
   .col-7
     =render 'task_comments', comments: @comments
 
-.card.mt-3
-  .card-header.small.text-right
-    -if current_account.eql?(@task.creator) || current_account.types.include?('manager')
-      =link_to '[ edit task ]', edit_task_path(@task), remote: true
+#subtasks.accordion.mt-2
+  .card.small
+    .card-header.p-1
+      %div.row
+        .col-11
+          %div{"aria-controls" => "#subtasksCollapse", "aria-expanded" => "true", "data-target" => "#subtasksCollapse", "data-toggle" => "collapse", type: "button"}
+            subtasks
+        .col-1.text-right
+          -if @task.creator?(current_account) || current_account.types.include?('manager')
+            =link_to '[ create ]', new_task_path(parent_task: @task), remote: true
+    #subtasksCollapse.collapse{"data-parent" => "#subtasks"}
+      =render 'subtasks'
+
+.card.mt-2
+  .card-header.p-1
+    .d-flex.justify-content-between.small
+      info
+      -if @task.creator?(current_account) || current_account.types.include?('manager')
+        =link_to '[ edit task ]', edit_task_path(@task), remote: true
+
   .card-body
     #body
       .row.small.mb-3
