@@ -38,6 +38,7 @@ class StoryType < ApplicationRecord
   has_one :template, as: :templateable
   has_one :fact_checking_doc, as: :fcdable
   has_one :cron_tab
+  has_one :cron_tab_iteration, -> { where(cron_tab: true) }, class_name: 'StoryTypeIteration'
   has_one :reminder
 
   has_one_attached :code
@@ -182,9 +183,11 @@ class StoryType < ApplicationRecord
     end
 
     if status_id_changed?
-      old_status = Status.find_by(id: status_id_change.first).name
-      new_status = status.name
-      changes['progress status changed'] = "#{old_status} -> #{new_status}"
+      old_status_name = Status.find_by(id: status_id_change.first).name
+      new_status_name = status.name
+      changes['progress status changed'] = "#{old_status_name} -> #{new_status_name}"
+
+      StoryTypes::SlackNotificationJob.perform_now(iteration, 'status', changes['progress status changed'], current_account)
     end
 
     changes.each { |ev, ch| record_to_change_history(self, ev, ch, current_account) }

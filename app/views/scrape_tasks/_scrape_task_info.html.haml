@@ -1,11 +1,82 @@
 #scrapeTaskStatusComment
   =render 'status_comment'
 
-.row.mb-1
+#scrapeTaskTags
+  .row.mb-4
+    .col-2.pr-0.text-right.font-weight-bold
+      tags:
+    .col-10
+      -if current_account.types.include?('manager')
+        .d-inline-block.mr-3{ 'data-toggle' => "collapse", href: "#tagInputBlock", 'aria-expanded' => "false", 'aria-controls' => "tagInputBlock" }
+          =icon('fa', 'pencil')
+        #tagsList.d-inline-block
+          =render partial: 'scrape_tasks/tags/tag', collection: @scrape_task.tags, locals: { display: false }
+
+        #tagInputBlock.collapse
+          %input.underline-input{ list: 'tagsDatalist', onkeypress: 'onEnterPostTag(event, this.value);' }
+          %datalist#tagsDatalist
+            -ScrapeTaskTag.all.each do |tag|
+              %option{ value: "#{tag.name}" }
+          .d-inline-block.ml-2
+            %div.mouse-hover{ onclick: 'onClickPostTag();' }
+              =icon('fa', 'paper-plane')
+
+  :javascript
+    $('#tagInputBlock').on('shown.bs.collapse', function () {
+      document.querySelectorAll('#tagsList a').forEach((e) => { e.classList.remove('d-none') })
+      document.querySelector('.tag-input').focus();
+    });
+
+    $('#tagInputBlock').on('hidden.bs.collapse', function () {
+      document.querySelectorAll('#tagsList a').forEach((e) => { e.classList.add('d-none') })
+    });
+
+    function postTag(value) {
+      Rails.ajax({
+        type: "POST",
+        dataType: 'script',
+        url: `#{include_scrape_task_tags_path(@scrape_task)}`,
+        data: `tag[name]=${encodeURIComponent(value)}`
+      });
+    }
+
+    function clearInput() {
+      document.querySelector("#tagInputBlock input").value = "";
+    }
+
+    function onEnterPostTag(event, value) {
+      if((event.keyCode !== 13) || (value.trim().length === 0)) {
+        return false;
+      } else {
+        postTag(value);
+        clearInput();
+      }
+    }
+
+    function onClickPostTag() {
+      let value = document.querySelector('#tagInputBlock input').value
+
+      if((value.trim().length === 0)) {
+        return false;
+      } else {
+        postTag(value);
+        clearInput();
+      }
+    }
+
+
+
+.row.mb-4
   .col-2.pr-0.text-right.font-weight-bold
     name:
   .col-10
     =@scrape_task.name
+
+.row.mb-1
+  .col-2.pr-0.text-right.font-weight-bold
+    data requester:
+  .col-10
+    =@scrape_task.data_requester
 .row.mb-4
   .col-2.pr-0.text-right.font-weight-bold
     gather task:
@@ -15,6 +86,12 @@
       =link_to(nil, link, target: '_blank')
     -else
       \---
+
+.row.mb-4
+  .col-2.pr-0.text-right.font-weight-bold
+    deadline:
+  .col-10
+    =@scrape_task.deadline.to_s
 
 .row.mb-4
   .col-2.pr-0.text-right.font-weight-bold
@@ -41,10 +118,10 @@
   .col-2.pr-0.text-right.font-weight-bold
     scrapable?
   .col-10
-    -if @scrape_task.scrapable
+    -if @scrape_task.scrapable.eql?(1)
       .font-weight-bold
         yes
-    -elsif @scrape_task.scrapable.eql?(false)
+    -elsif @scrape_task.scrapable.eql?(0)
       .font-weight-bold
         no
     -else
@@ -61,7 +138,7 @@
     scraper:
   .col-10
     =@scrape_task.scraper&.name
-.row.mb-1
+.row.mb-4
   .col-2.pr-0.text-right.font-weight-bold
     scrape frequency:
   .col-10

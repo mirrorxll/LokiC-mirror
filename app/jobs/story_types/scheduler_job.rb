@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 module StoryTypes
-  class SchedulerJob < StoryTypeJob
-    def perform(iteration, type, options = {}, account = nil)
+  class SchedulerJob < StoryTypesJob
+    def perform(iteration, type, options = {})
       status = nil
       message = 'Success'
       story_type = iteration.story_type
-      account ||= story_type.developer
+      options[:account] ||= story_type.developer
 
       rd, wr = IO.pipe
 
@@ -17,17 +17,17 @@ module StoryTypes
 
           case type
           when :manual
-            MiniLokiC::Creation::Scheduler::Base.run_schedule(samples, manual_params(options))
+            MiniLokiC::Creation::Scheduler::Base.run_schedule(samples, manual_params(options[:params]))
           when :backdate
-            MiniLokiC::Creation::Scheduler::Backdate.backdate_scheduler(samples, backdate_params(options))
+            MiniLokiC::Creation::Scheduler::Backdate.backdate_scheduler(samples, backdate_params(options[:params]))
           when :auto
-            MiniLokiC::Creation::Scheduler::Auto.run_auto(samples, auto_params(options))
-          when :run_from_code
-            MiniLokiC::Creation::Scheduler::FromCode.run_from_code(samples, options)
+            MiniLokiC::Creation::Scheduler::Auto.run_auto(samples, auto_params(options[:params]))
+          when :"run-from-code"
+            MiniLokiC::Creation::Scheduler::FromCode.run_from_code(samples, options[:params])
           end
 
-          record_to_change_history(story_type, 'scheduled', type, account)
-        rescue StandardError => e
+          record_to_change_history(story_type, 'scheduled', type, options[:account])
+        rescue StandardError, ScriptError => e
           wr.write({ e.class.to_s => e.message }.to_json)
         ensure
           wr.close
@@ -46,13 +46,18 @@ module StoryTypes
       status = true if iteration.reload.stories.where(published_at: nil).none?
 
       true
-    rescue StandardError => e
+    rescue StandardError, ScriptError => e
       status = nil
       message = e.message
+
+      raise SchedulerExecutionError, "Scheduling from code: #{message}" if options[:exception]
     ensure
       iteration.update!(schedule: status)
-      send_to_action_cable(iteration.story_type, :scheduler, message)
-      SlackNotificationJob.perform_now(iteration, "#{type}-scheduling", message)
+
+      unless options[:exception]
+        send_to_action_cable(iteration.story_type, :scheduler, message)
+        SlackNotificationJob.perform_now(iteration, "#{type}-scheduling", message)
+      end
     end
 
     private

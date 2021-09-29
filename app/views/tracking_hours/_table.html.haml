@@ -27,7 +27,7 @@
           .col-3.text-left
             =row['comment']
           .col-1
-            =link_to(icon('fa', 'minus', class: 'fas fa-minus'), exclude_row_tracking_hour_path(id: row['id']), method: :delete, remote: true, style: "color:black;")
+            =link_to(icon('fa', 'minus'), exclude_row_tracking_hour_path(id: row['id']), method: :delete, remote: true, style: "color:black;")
         %hr/
 
 :javascript

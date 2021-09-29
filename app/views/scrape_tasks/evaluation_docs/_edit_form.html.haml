@@ -1,0 +1,50 @@
+=form_with(url: scrape_task_evaluation_doc_path(@scrape_task), method: :patch) do |f|
+  =f.text_area 'evaluation_doc[body]', id: 'scrapeEvaluationDocBody', value: @scrape_task.evaluation_doc.body
+
+  :javascript
+    $.FroalaEditor.DefineIcon('submitEvalDocEdit', { NAME: 'check' });
+    $.FroalaEditor.RegisterCommand('submitEvalDocEdit', {
+      title: 'Submit',
+      focus: false,
+      undo: false,
+      refreshAfterCallback: false,
+      callback: function () {
+        Rails.ajax({
+          type: "PATCH",
+          dataType: 'script',
+          url: `#{scrape_task_evaluation_doc_path(@scrape_task)}`,
+          data: `evaluation_doc[body]=${encodeURIComponent(this.html.get())}`
+        })
+      }
+    });
+
+    $.FroalaEditor.DefineIcon('cancelEvalDocEdit', {NAME: 'remove'});
+    $.FroalaEditor.RegisterCommand('cancelEvalDocEdit', {
+      title: 'Cancel Edit',
+      focus: false,
+      undo: false,
+      refreshAfterCallback: false,
+      callback: function () {
+        if(confirm('cancel edit evaluation doc?')) {
+          Rails.ajax({
+            type: "GET",
+            dataType: 'script',
+            url: `#{cancel_edit_scrape_task_evaluation_doc_path(@scrape_task)}`
+          })
+        }
+      }
+    });
+
+    $('#scrapeEvaluationDocBody').froalaEditor({
+      key: 'KfdolbcqsaA2wzA-13==',
+      toolbarSticky: true,
+      documentReady: true,
+      toolbarButtons: ['fullscreen', 'undo', 'redo', '|', '|', 'submitEvalDocEdit', 'cancelEvalDocEdit', '|', '|', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineClass', 'inlineStyle', 'paragraphStyle', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', 'insertLink', 'insertImage', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'getPDF', 'help', 'html'],
+      imageUploadURL: '/images/upload',
+      imageUploadMethod: 'POST',
+      saveInterval: 1500,
+      saveParam: 'evaluation_doc[body]',
+      saveURL: `${window.location.origin}/scrape_tasks/#{@scrape_task.id}/evaluation_doc/autosave`,
+      saveMethod: 'PATCH',
+      tabSpaces: true
+    })

@@ -1,3 +1,5 @@
+$fa-font-path: "~font-awesome/fonts";
+
 @import "~bootstrap/scss/bootstrap";
 @import "datagrid";
 @import "data_set";
@@ -8,12 +10,12 @@
 @import "sample";
 @import "froala";
 @import "bootstrap_overrides";
+@import "scrape_task";
+
+@import '~font-awesome/scss/font-awesome';
 @import "actiontext";
 @import "~trix";
 
-
-$fa-font-path: "~font-awesome/fonts";
-@import '~font-awesome/scss/font-awesome';
 
 .fc_scrollable {
   height: 90%;
@@ -26,6 +28,14 @@ $fa-font-path: "~font-awesome/fonts";
 
 .w-97 {
   width: 97%;
+}
+
+.w-10 {
+  width: 10%;
+}
+
+.w-80 {
+  width: 80%;
 }
 
 .w-60 {

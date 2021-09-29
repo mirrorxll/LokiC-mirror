@@ -34,10 +34,11 @@
     let samplesFlash = $('#samples .flash');
     let samplesBody = $('#samples .card-body');
 
-    <% if flash.now[:samples] %>
+    <% stories = flash.now[:samples] || flash.now[:stories] %>
+    <% if stories %>
       samplesFlash.html(
-        `<div class="alert alert-<%= flash_color(flash.now[:samples]) %> text-center">
-          <%= flash.now[:samples].gsub('`', "'") %>
+        `<div class="alert alert-<%= flash_color(stories) %> text-center">
+          <%= stories.gsub('`', "'") %>
         </div>`
       )
     <% else %>

@@ -2,7 +2,7 @@
   .row.small
     .col
       .form-group
-        =form.text_field 'task[title]', placeholder: 'title', id: 'newTaskName', class: 'form-control', required: true, maxlength: 500
+        =form.text_field 'task[title]', placeholder: 'title', id: 'newTaskName', class: 'form-control form-control-sm', required: true, maxlength: 500
         #newTaskNameFeedback.text-danger.text-center.d-none
           Task with this title already created by you. Let's use something else
       .form-group

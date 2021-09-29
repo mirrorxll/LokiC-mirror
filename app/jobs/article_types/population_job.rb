@@ -2,7 +2,7 @@
 
 # Execute population method on sidekiq backend
 module ArticleTypes
-  class PopulationJob < ArticleTypeJob
+  class PopulationJob < ArticleTypesJob
     def perform(iteration, account, options)
       status = true
       message = 'Success'
@@ -17,7 +17,7 @@ module ArticleTypes
 
           MiniLokiC::ArticleTypeCode[article_type].execute(:population, population_args)
 
-          unless article_type.status.name.eql?('in progress')
+          unless article_type.status.name.in?(['in progress', 'on cron'])
             article_type.update!(status: Status.find_by(name: 'in progress'), current_account: account)
           end
         rescue StandardError, ScriptError => e

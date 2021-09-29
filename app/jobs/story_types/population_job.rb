@@ -2,7 +2,7 @@
 
 # Execute population method on sidekiq backend
 module StoryTypes
-  class PopulationJob < StoryTypeJob
+  class PopulationJob < StoryTypesJob
     def perform(iteration, account, options = {})
       status = true
       message = 'Success'
@@ -17,7 +17,7 @@ module StoryTypes
 
           MiniLokiC::StoryTypeCode[story_type].execute(:population, population_args)
 
-          unless story_type.status.name.eql?('in progress')
+          unless story_type.status.name.in?(['in progress', 'on cron'])
             story_type.update!(status: Status.find_by(name: 'in progress'), current_account: account)
           end
 
@@ -38,10 +38,11 @@ module StoryTypes
         raise Object.const_get(klass), message
       end
 
-      true
+      false
     rescue StandardError, ScriptError => e
       status = nil
       message = e.message
+      true
     ensure
       iteration.update!(population: status, current_account: account)
       send_to_action_cable(story_type, :staging_table, message)

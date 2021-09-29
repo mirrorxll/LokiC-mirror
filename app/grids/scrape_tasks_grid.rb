@@ -11,6 +11,15 @@ class ScrapeTasksGrid
     scope.where('name RLIKE ?', value)
   end
 
+  filter(:data_set_location, :string, header: 'Data Location(RLIKE)') do |value, scope|
+    scope.where('data_set_location RLIKE ?', value)
+  end
+
+  filter(:general_comment, :string, header: 'Comment(RLIKE)') do |value, scope|
+    ids = Comment.where(commentable_type: 'ScrapeTask', subtype: 'general comment').where('body RLIKE ?', value).ids
+    scope.where(comments: { id: ids })
+  end
+
   states = State.all.map { |r| [r.name, r.id] }
   filter(:state, :enum, select: states)
 
@@ -18,12 +27,11 @@ class ScrapeTasksGrid
   filter(:scraper, :enum, select: accounts.map { |r| [r.name, r.id] }.sort)
 
   statuses = [
-    ['not started',	1],
     ['in progress',	2],
+    ['on checking',	11],
+    ['done', 9],
     ['blocked',	5],
-    ['canceled', 7],
-    ['inactive', 8],
-    ['done', 9]
+    ['canceled', 7]
   ]
   filter(:status, :enum, select: statuses)
 
@@ -39,6 +47,15 @@ class ScrapeTasksGrid
 
   filter(:with_dataset, :xboolean, header: 'With dataset?') do |value, scope|
     value ? scope.where.not(data_sets: { id: nil }) : scope.where(data_sets: { id: nil })
+  end
+
+  filter(:with_deadline, :xboolean, header: 'With deadline?') do |value, scope|
+    value ? scope.where.not(deadline: nil) : scope.where(deadline: nil)
+  end
+
+  scrapable = [['yes', 1], ['no', 0], ['not checked', -1]]
+  filter(:scrapable, :enum, header: 'Scrapable?', select: scrapable) do |value, scope|
+    scope.where(scrapable: value)
   end
 
   # Columns
@@ -66,13 +83,7 @@ class ScrapeTasksGrid
     format(s_task.name) { |name| link_to(name, s_task) }
   end
 
-  column(:scrapable, header: 'Scrapable?', mandatory: true) do |s_task|
-    if s_task.scrapable.in?([true, false])
-      s_task.scrapable ? 'yes' : 'no'
-    else
-      'not checked'
-    end
-  end
+  column(:deadline, header: 'Deadline', mandatory: true, &:deadline)
 
   column(:scrape_frequency, header: 'Frequency', order: 'frequencies.name', mandatory: true) do |s_task|
     s_task.frequency&.name
@@ -84,5 +95,20 @@ class ScrapeTasksGrid
 
   column(:general_comment, header: 'Comment', order: 'comments.body', mandatory: true) do |s_task|
     format(s_task.general_comment&.body) { |body| truncate(body, length: 35) }
+  end
+
+
+  def row_classes(row)
+    return 'not-scrapable' if row.scrapable.eql?(false)
+
+    return unless row.deadline
+
+    left_until_dl = (row.deadline - Date.today).to_i
+
+    if left_until_dl.to_i <= 1
+      'deadline-1'
+    elsif left_until_dl.to_i <= 2
+      'deadline-2'
+    end
   end
 end

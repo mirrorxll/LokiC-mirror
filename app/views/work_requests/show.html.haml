@@ -1,0 +1,39 @@
+%div{ id: "workRequest", work_request_id: @work_request.id }
+
+%hr/
+
+.d-flex.justify-content-between.align-items-center.mb-3.small
+  .text-secondary
+    created by #{@work_request.requester.name}
+  .text-secondary
+    created at: #{@work_request.created_at}
+
+#workRequestInfo.mt-4.mb-5.small
+  .card
+    .card-header.p-1
+      .d-flex.justify-content-between.align-items-center
+        main info
+        .d-inline-block
+    .card-body
+      =render 'work_request_info'
+
+-if (current_account.types & ['manager', 'outside manager']).any?
+  #newMultiTask.mb-3
+    .card
+      .card-header.small.p-1
+        new multi task
+      .card-body
+
+
+  :javascript
+    $('#newMultiTask .card-body').html('#{ j render 'tasks/form' }')
+
+    $('#task_description').froalaEditor({
+      key: 'KfdolbcqsaA2wzA-13==',
+      toolbarSticky: true,
+      documentReady: true,
+      toolbarButtons: ['fullscreen', 'undo', 'redo', '|', 'submitInstructionEdit', 'cancelInstructionEdit', '|', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineClass', 'inlineStyle', 'paragraphStyle', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', 'insertLink', 'insertImage', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'getPDF', 'help', 'html'],
+      imageUploadURL: '/images/upload',
+      imageUploadMethod: 'POST',
+      height: 700
+    })

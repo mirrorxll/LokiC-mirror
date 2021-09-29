@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ArticleTypes
-  class StagingTableColumnsJob < ArticleTypeJob
+  class StagingTableColumnsJob < ArticleTypesJob
     def perform(staging_table, columns)
       Process.wait(
         fork do
@@ -9,7 +9,7 @@ module ArticleTypes
 
           staging_table.columns.modify(columns)
           staging_table.sync
-        rescue StandardError => e
+        rescue StandardError, ScriptError => e
           message = e.message
         ensure
           staging_table.update!(columns_modifying: false)

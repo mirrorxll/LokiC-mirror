@@ -13,7 +13,7 @@ class ScrapeTasksController < ApplicationController
   def index
     respond_to do |f|
       f.html do
-        @grid.scope { |scope| scope.page(params[:page]).per(50) }
+        @scrape_tasks_grid.scope { |scope| scope.page(params[:page]).per(50) }
       end
     end
   end
@@ -33,12 +33,10 @@ class ScrapeTasksController < ApplicationController
   def update
     render_403 and return if !manager? && !@scrape_task.scraper.eql?(current_account)
 
-    @scrape_task.transaction do
-      @scrape_task.datasource_comment.update!(datasource_comment_param)
-      @scrape_task.scrape_ability_comment.update!(scrape_ability_comment_param)
-      @scrape_task.general_comment.update!(general_comment_param)
-      @scrape_task.update!(update_scrape_task_params)
-    end
+    @scrape_task.datasource_comment.update!(datasource_comment_param)
+    @scrape_task.scrape_ability_comment.update!(scrape_ability_comment_param)
+    @scrape_task.general_comment.update!(general_comment_param)
+    @scrape_task.update!(update_scrape_task_params)
 
     return unless manager?
 
@@ -61,7 +59,7 @@ class ScrapeTasksController < ApplicationController
         { order: :id, descending: true }
       end
 
-    @grid = ScrapeTasksGrid.new(grid_params)
+    @scrape_tasks_grid = ScrapeTasksGrid.new(grid_params)
   end
 
   def find_scrape_task
@@ -80,8 +78,9 @@ class ScrapeTasksController < ApplicationController
     attrs =
       if manager?
         params.require(:scrape_task).permit(
-          :name, :gather_task, :state_id, :datasource_url,
-          :scrapable, :data_set_location, :scraper_id, :frequency_id
+          :name, :data_requester, :gather_task, :deadline,
+          :state_id, :datasource_url, :scrapable, :data_set_location,
+          :scraper_id, :frequency_id
         )
       elsif @scrape_task.scraper.eql?(current_account)
         params.require(:scrape_task).permit(

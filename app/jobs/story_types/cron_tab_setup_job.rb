@@ -7,7 +7,7 @@ module StoryTypes
     def perform(story_type)
       cron_tab = story_type.cron_tab
       cron_tab_name = "story_type_#{story_type.id}"
-      config = { cron: cron_tab.pattern, class: 'CronTabJob', args: [story_type.id], queue: 'cron_tab' }
+      config = { cron: cron_tab.pattern, class: 'StoryTypes::CronTabJob', args: [story_type.id], queue: 'cron_tab' }
 
       if cron_tab.enabled
         Sidekiq.set_schedule(cron_tab_name, config)

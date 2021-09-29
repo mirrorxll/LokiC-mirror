@@ -125,7 +125,6 @@ module MiniLokiC
         end
 
         if compression_makes_sense?(base_row_count)
-          p 'will compress!'
           indexes = find_rows(conditions, false)
           raise 'Conditions should point exactly one row!' unless indexes.count == 1
 

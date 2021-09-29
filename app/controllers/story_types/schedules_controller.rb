@@ -9,19 +9,19 @@ module StoryTypes
 
     def manual
       @iteration.update!(schedule: false, current_account: current_account)
-      SchedulerJob.perform_later(@iteration, :manual, manual_params, current_account)
+      SchedulerJob.perform_later(@iteration, :manual, { params: manual_params, account: current_account })
       render 'hide_section'
     end
 
     def backdate
       @iteration.update!(schedule: false, current_account: current_account)
-      SchedulerJob.perform_later(@iteration, :backdate, backdated_params, current_account)
+      SchedulerJob.perform_later(@iteration, :backdate, { params: backdated_params, account: current_account })
       render 'hide_section'
     end
 
     def auto
       @iteration.update!(schedule: false, current_account: current_account)
-      SchedulerJob.perform_later(@iteration, :auto, auto_params, current_account)
+      SchedulerJob.perform_later(@iteration, :auto, { params: auto_params, account: current_account })
       render 'hide_section'
     end
 

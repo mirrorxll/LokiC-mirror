@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module StoryTypes
-  class PurgeExportJob < StoryTypeJob
+  class PurgeExportJob < StoryTypesJob
     def perform(iteration, account)
       message = 'Success'
       story_type = iteration.story_type
@@ -14,7 +14,7 @@ module StoryTypes
             rd.close
 
             Samples[PL_TARGET].remove!(iteration)
-          rescue StandardError => e
+          rescue StandardError, ScriptError => e
             wr.write({ e.class.to_s => e.message }.to_json)
           ensure
             wr.close

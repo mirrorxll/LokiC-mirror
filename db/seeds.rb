@@ -50,32 +50,44 @@ def dates(range: false)
   range ? start..finish : [start, finish]
 end
 
-def type_of_works
+def types_of_work
   [
-    { name: 'Data Collection and Processing' },
-    { name: 'DWYM' },
-    { name: 'General Management' },
-    { name: 'G&A Development Services' },
-    { name: 'G&A Management- Data Services' },
-    { name: 'Story Production' },
-    { name: 'Lead Generation' },
-    { name: 'Data Cleaning' },
-    { name: 'Roseland MVP' },
-    { name: 'Cost Of Sales - Ballotpedia' },
-    { name: 'FOIA Chargers' },
-    { name: 'Franklin Archer Social Media' },
-    { name: 'Blockshopper Customer Service' },
-    { name: "Data Analysis - Voter Profile 'Grid'" },
-    { name: 'Dev Algo work' },
-    { name: 'Application Maintenance' },
-    { name: 'Human Resources - Hiring Skill test' },
-    { name: 'Matching Algos' },
-    { name: 'Physical Hardware Cost' },
-    { name: 'Scrape sourcing, instructions and data review' },
-    { name: 'Data Collection' },
-    { name: 'Data Matching' },
-    { name: 'G&A Management- Human Resources' },
-    { name: 'Scrape Work' }
+    { work: 0, name: 'Data Collection and Processing' },
+    { work: 0, name: 'DWYM' },
+    { work: 0, name: 'General Management' },
+    { work: 0, name: 'G&A Development Services' },
+    { work: 0, name: 'G&A Management- Data Services' },
+    { work: 0, name: 'Story Production' },
+    { work: 0, name: 'Lead Generation' },
+    { work: 0, name: 'Data Cleaning' },
+    { work: 0, name: 'Roseland MVP' },
+    { work: 0, name: 'Cost Of Sales - Ballotpedia' },
+    { work: 0, name: 'FOIA Chargers' },
+    { work: 0, name: 'Franklin Archer Social Media' },
+    { work: 0, name: 'Blockshopper Customer Service' },
+    { work: 0, name: "Data Analysis - Voter Profile 'Grid'" },
+    { work: 0, name: 'Dev Algo work' },
+    { work: 0, name: 'Application Maintenance' },
+    { work: 0, name: 'Human Resources - Hiring Skill test' },
+    { work: 0, name: 'Matching Algos' },
+    { work: 0, name: 'Physical Hardware Cost' },
+    { work: 0, name: 'Scrape sourcing, instructions and data review' },
+    { work: 0, name: 'Data Collection' },
+    { work: 0, name: 'Data Matching' },
+    { work: 0, name: 'G&A Management- Human Resources' },
+    { work: 0, name: 'Scrape Work' },
+    { work: 1, name: %(Scrape) },
+    { work: 1, name: %(FOIA Request) },
+    { work: 1, name: %(Manual Data Gather) },
+    { work: 1, name: %(Marketwatch) },
+    { work: 1, name: %(HLE Story Template Creation / Production) },
+    { work: 1, name: %(Creation of new client or projects/publications in Pipeline) },
+    { work: 1, name: %(Direct data delivery (in a spreadsheet or csv)) },
+    { work: 1, name: %(Data to Limpar) },
+    { work: 1, name: %(Lumen work) },
+    { work: 1, name: %(Tool building, maintenance, or improvement) },
+    { work: 1, name: %(Human Resources (hiring, training, writing documentation, etc)) },
+    { work: 1, name: %(Report request (e.g., "How many of this or that have we done so far, etc.", "How much did we spend?")) }
   ]
 end
 
@@ -182,7 +194,7 @@ frequency.each { |obj| Frequency.create!(obj) }
 puts 'Statuses'
 status.each { |obj| Status.create!(obj) }
 puts 'Type of works'
-type_of_works.each { |obj| TypeOfWork.create!(obj) }
+types_of_work.each { |obj| WorkType.create!(obj) }
 puts 'Clients Report'
 clients_report.each { |obj| ClientsReport.create!(obj) }
 puts 'TaskReminderFrequency'
@@ -202,7 +214,7 @@ SlackAccountsJob.perform_now
 
 hidden = Client.where('name LIKE :like OR name IN (:mm, :mb)',
                       like: 'MM -%', mm: 'Metric Media', mb: 'Metro Business Network')
-hidden.update_all(hidden: false)
+hidden.update_all(hidden_for_story_type: false)
 
 # ============ Time Frames for staging tables ============
 puts 'Time Frames'

@@ -8,8 +8,8 @@ class ScrapeTask < ApplicationRecord
     build_scrape_ability_comment(subtype: 'scrape ability comment')
     build_status_comment(subtype: 'status comment')
     build_general_comment(subtype: 'general comment')
-    build_scrape_instruction
-    build_scrape_evaluation_doc
+    build_instruction
+    build_evaluation_doc
   end
 
   after_create { record_to_change_history(self, 'created', name, creator) }
@@ -25,8 +25,8 @@ class ScrapeTask < ApplicationRecord
   belongs_to :status,    optional: true
   belongs_to :state,     optional: true
 
-  has_one :scrape_instruction
-  has_one :scrape_evaluation_doc
+  has_one :instruction, class_name: 'ScrapeInstruction'
+  has_one :evaluation_doc, class_name: 'ScrapeEvaluationDoc'
   has_one :scrape_ability_comment, -> { where(subtype: 'scrape ability comment') }, as: :commentable, class_name: 'Comment'
   has_one :datasource_comment, -> { where(subtype: 'datasource comment') }, as: :commentable, class_name: 'Comment'
   has_one :status_comment, -> { where(subtype: 'status comment') }, as: :commentable, class_name: 'Comment'
@@ -35,6 +35,8 @@ class ScrapeTask < ApplicationRecord
 
   has_many :change_history, as: :history
   has_many :alerts, as: :alert
+
+  has_and_belongs_to_many :tags, class_name: 'ScrapeTaskTag'
 
   def updated_early?
     updated_at > created_at
@@ -59,7 +61,7 @@ class ScrapeTask < ApplicationRecord
     changes['datasource url changed'] = "#{datasource_url_change.first} -> #{datasource_url}" if datasource_url_changed?
 
     if scrapable_changed?
-      scrapable_changes = scrapable_change.first.nil? ? 'not checked' : "#{scrapable_change.first} -> #{scrapable}"
+      scrapable_changes = scrapable_change.first.eql?(-1) ? 'not checked' : "#{scrapable_change.first} -> #{scrapable}"
       changes['scrapable status changed'] = scrapable_changes
     end
 
@@ -71,14 +73,16 @@ class ScrapeTask < ApplicationRecord
       new_scraper_name = new_scraper&.name || 'not distributed'
       changes['distributed'] = "#{old_scraper_name} -> #{new_scraper_name}"
 
-      SlackScrapeTaskNotificationJob.perform_now(self, 'scraper', 'Unpinned') if old_scraper
-      SlackScrapeTaskNotificationJob.perform_now(self, 'scraper', 'Distributed to you') if new_scraper
+      ScrapeTasks::SlackNotificationJob.perform_now(self, 'scraper', 'Unpinned', old_scraper) if old_scraper
+      ScrapeTasks::SlackNotificationJob.perform_now(self, 'scraper', 'Distributed to you', new_scraper) if new_scraper
     end
 
     if status_id_changed?
       old_status_name = Status.find_by(id: status_id_change.first).name
-      new_status_name = status.name.in?(%w[blocked canceled]) ? "#{status.name}: #{status_comment&.body}" : status.name
+      new_status_name = status.name.in?(%w[blocked canceled]) ? "#{status.name}: #{status_comment.reload&.body}" : status.name
       changes['progress status changed'] = "#{old_status_name} -> #{new_status_name}"
+
+      ScrapeTasks::SlackNotificationJob.perform_now(self, 'status', changes['progress status changed'], current_account)
     end
 
     if frequency_id_changed?

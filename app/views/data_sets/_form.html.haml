@@ -54,7 +54,7 @@
               -u_id = SecureRandom.hex(3)
               .row.mb-1{ id: u_id }
                 .col-4.pr-1
-                  =f.collection_select :client_id, Client.where(hidden: false).sort_by(&:name), :id, :name,
+                  =f.collection_select :client_id, Client.where(hidden_for_story_type: false).sort_by(&:name), :id, :name,
                                        { include_blank: true, selected: row.client.id },
                                        { id: "data_set_default_#{u_id}_client_id", name: "default_props[client_tag_ids[#{u_id}[client_id]]]", class: 'form-control form-control-sm clients_select', required: true }
                 .col-4.pr-1

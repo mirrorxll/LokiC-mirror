@@ -29,7 +29,7 @@ class StoryTypeShownSamplesGrid
     scope.where(data_sets: { states: { id: value } })
   end
 
-  clients = Client.where(hidden: false).order(:name)
+  clients = Client.where(hidden_for_story_type: false).order(:name)
   filter(:client, :enum, select: clients.pluck(:name, :id).sort_by(&:first)) do |value, scope|
     scope.where(clients: { id: value })
   end

@@ -19,7 +19,7 @@ class TrackingHoursController < ApplicationController # :nodoc:
   def create
     params[:report].values.each do |row|
       TrackingHour.create!(developer: current_account,
-                           type_of_work: TypeOfWork.find_by(name: row['type_of_work']),
+                           type_of_work: WorkType.find_by(work: 0, name: row['type_of_work']),
                            client: ClientsReport.find_by(name: row['client']),
                            week: @week,
                            hours: row['hours'],

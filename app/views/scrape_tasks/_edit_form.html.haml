@@ -1,17 +1,30 @@
 -disable_input = !current_account.types.include?('manager')
 
 =form_with(url: scrape_task_path(@scrape_task), method: :patch) do |f|
-  .row.mb-1
+  .row.mb-4
     .col-2.pr-0.text-right.font-weight-bold
       name:
     .col-10
       =f.text_field 'scrape_task[name]', class: 'w-50 border rounded', placeholder: 'name',
                     value: @scrape_task.name, required: true, disabled: disable_input, readonly: disable_input
+  .row.mb-1
+    .col-2.pr-0.text-right.font-weight-bold
+      data requester:
+    .col-10
+      =f.text_field 'scrape_task[data_requester]', class: 'w-25 border rounded', placeholder: 'data requester',
+                    value: @scrape_task.data_requester, disabled: disable_input, readonly: disable_input
   .row.mb-4
     .col-2.pr-0.text-right.font-weight-bold
       gather task:
     .col-10
       =f.number_field 'scrape_task[gather_task]', class: 'w-25 border rounded', placeholder: 'id', value: @scrape_task.gather_task
+
+  .row.mb-4
+    .col-2.pr-0.text-right.font-weight-bold
+      deadline:
+    .col-10
+      =f.date_field 'scrape_task[deadline]', class: 'w-25 border rounded',
+                    value: @scrape_task.deadline, disabled: disable_input, readonly: disable_input
 
   .row.mb-4
     .col-2.pr-0.text-right.font-weight-bold
@@ -37,9 +50,9 @@
     .col-2.pr-0.text-right.font-weight-bold
       scrapable?
     .col-10
-      =f.radio_button "scrape_task[scrapable]", true, checked: @scrape_task.scrapable.eql?(true), disabled: disable_input, readonly: disable_input
+      =f.radio_button "scrape_task[scrapable]", 1, checked: @scrape_task.scrapable.eql?(1), disabled: disable_input, readonly: disable_input
       =f.label 'yes', class: 'mr-2'
-      =f.radio_button "scrape_task[scrapable]", false, checked: @scrape_task.scrapable.eql?(false), disabled: disable_input, readonly: disable_input
+      =f.radio_button "scrape_task[scrapable]", 0, checked: @scrape_task.scrapable.eql?(0), disabled: disable_input, readonly: disable_input
       =f.label 'no'
   .row.mb-4
     .col-2.pr-0.text-right.font-weight-bold
@@ -55,7 +68,7 @@
       =f.collection_select 'scrape_task[scraper_id]', Account.joins(:account_types).where(account_types: { name: 'scraper'}), :id, :name,
                            { include_blank: true, selected: @scrape_task.scraper&.id },
                            { disabled: disable_input, readonly: disable_input }
-  .row.mb-1
+  .row.mb-4
     .col-2.pr-0.text-right.font-weight-bold
       scrape frequency:
     .col-10

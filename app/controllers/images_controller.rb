@@ -1,5 +1,6 @@
 class ImagesController < ApplicationController
   skip_before_action :verify_authenticity_token
+
   skip_before_action :find_parent_story_type
   skip_before_action :find_parent_article_type
   skip_before_action :set_story_type_iteration

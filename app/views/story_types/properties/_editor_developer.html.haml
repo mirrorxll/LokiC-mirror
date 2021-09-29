@@ -1,0 +1,10 @@
+.row.mb-2.font-weight-bold
+  .col-4
+    editor
+  .col-4
+    developer
+.row
+  .col-4
+    =@story_type.editor.name
+  .col-4
+    =@story_type.developer ? @story_type.developer.name: '---'
