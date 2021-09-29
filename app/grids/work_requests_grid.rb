@@ -72,7 +72,7 @@ class WorkRequestsGrid
 
   column(:status, mandatory: true) { 'Reserved(TO DO)' }
   column(:why_blocked?, mandatory: true) { 'Reserved(TO DO)' }
-  column(:active_subtasks, mandatory: true) { 'Reserved(TO DO)<br/>Reserved(TO DO)<br/>Reserved(TO DO)<br/>'.html_safe }
+  column(:active_subtasks, mandatory: true) { 'Reserved(TO DO)' }
 
   column(:r_val, header: 'R Value', mandatory: true) do |req|
     format(req) do |r|
