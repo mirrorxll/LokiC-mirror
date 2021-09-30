@@ -39,6 +39,11 @@
       gather_task:
       .mt-1
         =form.text_field 'task[gather_task]', class: 'w-70'
+    -if params[:parent_task].blank?
+      .col
+        main_task:
+        .mt-1
+          =form.collection_select 'task[parent]', Task.where.not(status: Status.find_by(name: 'deleted')).order(:id), :id, :title_with_id, { prompt: '' }, style: "width:150px"
 
   %hr/
   .modal-footer.justify-content-center
