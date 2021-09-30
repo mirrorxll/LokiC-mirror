@@ -6,24 +6,28 @@
       .form-group
         =form.text_area 'task[description]', id: 'task_description', value: @task.description
   %hr/
-  .form-group.row.small.font-weight-bold.text-center
-    .col-3
+  .form-group.row.small.font-weight-bold.text-center.justify-content-between
+    .col
       reminder frequency:
-    .col-3
+    .col
       client:
-    .col-3
+    .col
       deadline:
-    .col-3
+    .col
       gather_task:
-  .form-group.row.small.text-center
-    .col-3
+    .col
+      main_task
+  .form-group.row.small.text-center.justify-content-between
+    .col
       =form.collection_select 'task[reminder_frequency]', sorted_reminder_frequencies, :id, :name, { selected: @task.reminder_frequency.nil? ? '' : @task.reminder_frequency.id, prompt: '' }
-    .col-3
+    .col
       =form.collection_select 'task[client_id]', ClientsReport.all.order(:name), :id, :name, { selected: @task.client.nil? ? '' : @task.client.id, prompt: '' }, style: "width:150px"
-    .col-3
+    .col
       =form.date_field 'task[deadline]', value: @task.deadline
-    .col-3
+    .col
       =form.text_field 'task[gather_task]', value: @task.gather_task
+    .col
+      =form.collection_select 'task[parent]', Task.where.not(status: Status.find_by(name: 'deleted')).order(:id) - [@task], :id, :title_with_id, { selected: @task.parent.nil? ? '' : @task.parent.id, prompt: '' }, style: "width:150px"
   %hr/
   .modal-footer
     =link_to( 'close', '#', class: 'ml-auto btn btn-sm btn-outline-secondary',
