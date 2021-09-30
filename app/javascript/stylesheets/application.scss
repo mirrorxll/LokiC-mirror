@@ -8,6 +8,7 @@ $fa-font-path: "~font-awesome/fonts";
 @import "staging_table";
 @import "story_type_tables";
 @import "sample";
+@import "fact_checkcing_doc";
 @import "froala";
 @import "bootstrap_overrides";
 @import "scrape_task";
@@ -17,9 +18,18 @@ $fa-font-path: "~font-awesome/fonts";
 @import "actiontext";
 @import "~trix";
 
+@media (min-width: 100px) {
+  .modal-dialog-fullscreen {
+    max-width: 97%;
+  }
+}
 
-.fc_scrollable {
+.modal-frame-scrollable-90 {
+  overflow: scroll;
   height: 90%;
+}
+
+.overflow-scroll {
   overflow: scroll;
 }
 
@@ -27,26 +37,33 @@ $fa-font-path: "~font-awesome/fonts";
   height: 90%;
 }
 
-.w-97 {
-  width: 97%;
+.h-97 {
+  height: 97%;
 }
 
 .w-10 {
   width: 10%;
 }
 
-.w-80 {
-  width: 80%;
+.w-39 {
+  width: 39%;
+}
+
+.w-48 {
+  width: 48%;
 }
 
 .w-60 {
   width: 60%;
 }
 
-.w-39 {
-  width: 39%;
+.w-97 {
+  width: 97%;
 }
 
+.w-80 {
+  width: 80%;
+}
 
 .w-65px {
   width: 65px;
@@ -62,44 +79,4 @@ $fa-font-path: "~font-awesome/fonts";
 
 .w-250px {
   width: 250px;
-}
-
-@media (min-width: 100px) {
-  .modal-full {
-    max-width: 97%;
-  }
-}
-
-#manual_feedback_modal .modal-content {
-  height: 97%;
-}
-
-#editors_feedback_body_modal, #reviewers_feedback_body_modal {
-  padding: 15px;
-  overflow: auto;
-}
-
-.manual_feedback {
-  position: relative;
-  border-radius: 3px;
-  padding: 15px;
-}
-
-.manual_feedback:hover {
-  background-color: rgba(0, 0, 0, 0.03);
-}
-
-.reviewers_fb_info, .editors_fb_info {
-  position: absolute;
-  display: inline-block;
-  margin-top: -26px;
-  margin-left: -5px;
-  background: white;
-}
-
-.label_to_line_modal {
-  position: absolute;
-  background-color: white;
-  margin-top: -27px;
-  margin-left: 5px;
 }

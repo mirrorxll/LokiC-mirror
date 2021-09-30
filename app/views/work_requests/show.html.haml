@@ -14,8 +14,27 @@
       .d-flex.justify-content-between.align-items-center
         main info
         .d-inline-block
+          -if current_account.eql?(@work_request.requester) || (current_account.types & ['manager', 'outside manager']).any?
+            #scrapeTaskEdit.d-inline-block.mr-2.small
+              =button_to('[ edit ]', edit_work_request_path(@work_request), method: :get, remote: true,
+                         class: 'p-0 pb-1 btn btn-sm btn-link ml-2', data: { disable_with: '...'})
+
     .card-body
       =render 'work_request_info'
+
+#updateWorkRequestModal.modal.fade.pr-0{ "aria-hidden" => "true", "aria-labelledby" => "updateWorkRequestModalLabel",
+                                        role: "dialog", tabindex: "-1" }
+  .modal-dialog.modal-dialog-scrollable.modal-dialog-fullscreen
+    .modal-content
+      .modal-header
+        .modal-title#updateWorkRequestModalLabel
+          Work Request Updating
+        %button.close{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+          %span{ "aria-hidden" => "true" } ×
+      .modal-body
+        .editable.d-inline-block.overflow-scroll.h-97.w-50
+        .preview.d-inline-block.overflow-scroll.small.w-48.h-90
+
 
 -if (current_account.types & ['manager', 'outside manager']).any?
   #newMultiTask.mb-3
