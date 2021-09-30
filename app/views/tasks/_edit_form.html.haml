@@ -27,7 +27,7 @@
     .col
       =form.text_field 'task[gather_task]', value: @task.gather_task
     .col
-      =form.collection_select 'task[parent]', Task.where.not(status: Status.find_by(name: 'deleted')).order(:id), :id, :title_with_id, { selected: @task.parent.nil? ? '' : @task.parent.id, prompt: '' }, style: "width:150px"
+      =form.collection_select 'task[parent]', Task.where.not(status: Status.find_by(name: 'deleted')).order(:id) - [@task], :id, :title_with_id, { selected: @task.parent.nil? ? '' : @task.parent.id, prompt: '' }, style: "width:150px"
   %hr/
   .modal-footer
     =link_to( 'close', '#', class: 'ml-auto btn btn-sm btn-outline-secondary',
