@@ -16,7 +16,7 @@
       =icon('fa', 'plus', class: 'ml-2', id: 'add_assignment')
       #assignments_form
         .row.mt-1.justify-content-center
-          =form.collection_select 'task[assignment_to][]', current_account.types.include?('developer') ? [current_account] : Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }
+          =form.collection_select 'task[assignment_to][]', current_account.types.include?('developer') ? [current_account] : Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }, style: "width:130px"
     .col
       reminder frequency:
       .mt-1.mw-50
@@ -51,8 +51,8 @@
     let hex = secureRandom(6);
 
     $('#assignments_form').append(
-        `<div id="assignment_${hex}" class="row mt-1 ml-1 justify-content-center">
-           <select id="task[assignment_to][]" class="mr-1" name="task[assignment_to][]">${buildSelect(accounts)}</select>
+        `<div id="assignment_${hex}" class="row mt-1 ml-1 justify-content-center" >
+           <select id="task[assignment_to][]" style = "width:130px" class="mr-1" name="task[assignment_to][]">${buildSelect(accounts)}</select>
            <div class="ml-1" id="rm_assignment_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
          </div>`
     );
