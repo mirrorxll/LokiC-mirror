@@ -38,4 +38,7 @@ class Task < ApplicationRecord # :nodoc:
     account.eql?(creator)
   end
 
+  def title_with_id
+    "##{id} #{title}"
+  end
 end
