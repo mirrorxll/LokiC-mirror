@@ -84,8 +84,6 @@
       .card-body
         .font-weight-bold.mb-2
           Clients
-          %span.small.text-danger
-            *required
         .list
           -Client.where(hidden_for_work_request: false).each do |cl|
             .row.mb-2.align-items-center{ class: "client-#{cl.id}"}
@@ -546,9 +544,10 @@
       event.preventDefault();
       event.stopPropagation();
 
+
+      // #clients,
       let cards = document.querySelectorAll(
         `#workTypes,
-         #clients,
          #revenueTypes,
          #projectOrderName,
          #sow,
@@ -568,11 +567,11 @@
         return false;
       }
 
-      let client = [...document.querySelectorAll('#clients input[type="checkbox"]')].some((el) => { return el.checked; } );
-      if(!client) {
-        scrollToCard('#clients')
-        return false;
-      }
+      // let client = [...document.querySelectorAll('#clients input[type="checkbox"]')].some((el) => { return el.checked; } );
+      // if(!client) {
+      //   scrollToCard('#clients')
+      //   return false;
+      // }
 
       let revenueType = [...document.querySelectorAll('#revenueTypes input[type="checkbox"]')].some((el) => { return el.checked; } );
       if(!revenueType) {
