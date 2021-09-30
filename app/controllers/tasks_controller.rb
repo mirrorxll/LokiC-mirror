@@ -104,9 +104,10 @@ class TasksController < ApplicationController # :nodoc:
   end
 
   def update_task_params
-    up_task_params = params.require(:task).permit(:title, :description, :deadline, :client_id, :reminder_frequency, :gather_task)
+    up_task_params = params.require(:task).permit(:title, :description, :deadline, :parent, :client_id, :reminder_frequency, :gather_task)
     up_task_params[:reminder_frequency] = up_task_params[:reminder_frequency].blank? ? nil : TaskReminderFrequency.find(up_task_params[:reminder_frequency])
     up_task_params[:client] = up_task_params[:client_id].blank? ? nil : ClientsReport.find(up_task_params[:client_id])
+    up_task_params[:parent] = up_task_params[:parent].blank? ? nil : Task.find(up_task_params[:parent])
     up_task_params
   end
 
