@@ -26,6 +26,12 @@
       .mt-1
         =form.collection_select 'task[client_id]', ClientsReport.all.order(:name), :id, :name, { prompt: '' }, style: "width:150px"
     .col
+      main task:
+      .mt-1
+        =form.collection_select 'task[parent_task_id]', Task.all.order(:title), :id, :title, { prompt: '' }, style: "width:150px"
+  .form-group.row.small.font-weight-bold.text-center.justify-content-between
+    .col
+    .col.text-center
       deadline:
       .mt-1
         =form.date_field 'task[deadline]'
@@ -33,6 +39,7 @@
       gather_task:
       .mt-1
         =form.text_field 'task[gather_task]', class: 'w-70'
+
   %hr/
   .modal-footer.justify-content-center
     =form.submit :create, class: 'btn btn-sm btn-outline-success'
