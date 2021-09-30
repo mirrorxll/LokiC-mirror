@@ -111,10 +111,6 @@ class TasksController < ApplicationController # :nodoc:
     up_task_params
   end
 
-  def parent_task_id
-
-  end
-
   def comment_params
     params.require(:comment)
   end
