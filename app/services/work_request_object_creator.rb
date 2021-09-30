@@ -29,8 +29,8 @@ class WorkRequestObjectCreator
       invoice_frequency: InvoiceFrequency.find_by(id: @prm['invoice_frequency']),
       priority: Priority.find_by(id: @prm['priority']),
       sow: @prm['sow'],
-      expected_first_invoice: @prm['expected_first_invoice'],
-      expected_final_invoice: @prm['expected_final_invoice'],
+      first_invoice: @prm['first_invoice'],
+      final_invoice: @prm['final_invoice'],
       goal_deadline: @prm['goal_deadline'],
       final_deadline: @prm['final_deadline'],
       budget_of_project: @prm['budget_of_project']
