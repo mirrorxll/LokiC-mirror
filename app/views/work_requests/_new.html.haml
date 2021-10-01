@@ -532,11 +532,11 @@
   -if modal
     .modal-footer.justify-content-center
       %button.btn.btn-sm.btn-secondary{"data-dismiss" => "modal", :type => "button"} Close
-      =f.submit 'Submit', class: 'btn btn-sm btn-secondary'
+      =f.submit 'Submit', class: 'btn btn-sm btn-secondary', data: { disable_with: ' ... '}
   -else
     %hr.mt-0/
     .pl-3
-      =f.submit 'Submit', class: 'btn btn-sm btn-secondary'
+      =f.submit 'Submit', class: 'btn btn-sm btn-secondary', data: { disable_with: ' ... ' }
     %hr/
 
   :javascript
@@ -654,3 +654,4 @@
     }
 
     document.querySelector('#requestWorkForm form').addEventListener('submit', onSubmit)
+
