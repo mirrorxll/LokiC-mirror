@@ -84,8 +84,6 @@
       .card-body
         .font-weight-bold.mb-2
           Clients
-          %span.small.text-danger
-            *required
         .list
           -Client.where(hidden_for_work_request: false).each do |cl|
             .row.mb-2.align-items-center{ class: "client-#{cl.id}"}
@@ -534,11 +532,11 @@
   -if modal
     .modal-footer.justify-content-center
       %button.btn.btn-sm.btn-secondary{"data-dismiss" => "modal", :type => "button"} Close
-      =f.submit 'Submit', class: 'btn btn-sm btn-secondary'
+      =f.submit 'Submit', class: 'btn btn-sm btn-secondary', data: { disable_with: ' ... '}
   -else
     %hr.mt-0/
     .pl-3
-      =f.submit 'Submit', class: 'btn btn-sm btn-secondary'
+      =f.submit 'Submit', class: 'btn btn-sm btn-secondary', data: { disable_with: ' ... ' }
     %hr/
 
   :javascript
@@ -546,9 +544,10 @@
       event.preventDefault();
       event.stopPropagation();
 
+
+      // #clients,
       let cards = document.querySelectorAll(
         `#workTypes,
-         #clients,
          #revenueTypes,
          #projectOrderName,
          #sow,
@@ -568,11 +567,11 @@
         return false;
       }
 
-      let client = [...document.querySelectorAll('#clients input[type="checkbox"]')].some((el) => { return el.checked; } );
-      if(!client) {
-        scrollToCard('#clients')
-        return false;
-      }
+      // let client = [...document.querySelectorAll('#clients input[type="checkbox"]')].some((el) => { return el.checked; } );
+      // if(!client) {
+      //   scrollToCard('#clients')
+      //   return false;
+      // }
 
       let revenueType = [...document.querySelectorAll('#revenueTypes input[type="checkbox"]')].some((el) => { return el.checked; } );
       if(!revenueType) {
@@ -655,3 +654,4 @@
     }
 
     document.querySelector('#requestWorkForm form').addEventListener('submit', onSubmit)
+
