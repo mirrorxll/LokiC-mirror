@@ -178,11 +178,12 @@
     #underwritingProjectAnchor.mb-3
     #underwritingProject.card
       .card-body
-        .font-weight-bold.mb-2
+        .d-inline-block.font-weight-bold.mb-2
           Underwriting Project
+        %a.reset.ml-3.d-none{ href: '#', onclick: 'unselect(event);' } unselect
         .projects
           -UnderwritingProject.where(hidden: false).each do |up|
-            .row.mb-2.align-items-center{ class: "underwriting-project-#{up.id}"}
+            .row.mb-2.align-items-center{ class: "underwriting-project-#{up.id}", oninput: 'showUnselect();'}
               .col-1.text-right
                 =f.radio_button "work_request[underwriting_project]", up.id
               .col-11.pl-0.text-left
@@ -203,6 +204,17 @@
           .small.text-secondary
             *** other input: after typing or selecting press enter or click 'Enter' icon on right
       :javascript
+        function showUnselect() {
+          document.querySelector('#underwritingProject .reset').classList.remove('d-none');
+        }
+
+        function unselect(event) {
+          event.preventDefault();
+
+          [...document.querySelectorAll('#underwritingProject input[type="radio"]')].forEach((item) => item.checked = false)
+          event.target.classList.add('d-none');
+        }
+
         function projectByEnterPress(event, input) {
           if(event.keyCode !== 13 || input.value.trim().length === 0) return false;
 
@@ -235,7 +247,7 @@
 
               document.querySelector('#underwritingProject .projects').insertAdjacentHTML(
                 'beforeend',
-                `<div class="row mb-2 align-items-center underwriting-project-${data['project_id']}">
+                `<div class="row mb-2 align-items-center underwriting-project-${data['project_id']}" oninput="showUnselect();">
                   <div class="col-1 text-right">
                     <input type="radio" value="${data['project_id']}" name="work_request[underwriting_project]" id="work_request[underwriting_project]_${data['project_id']}" checked>
                   </div>
@@ -243,7 +255,9 @@
                     <label class="m-0" for="work_request[underwriting_project]_${data['project_id']}" value="${data['project_id']}">${data['project_name']}</label>
                   </div>
                 </div>`
-              )
+              );
+
+              showUnselect();
             }
           });
         }

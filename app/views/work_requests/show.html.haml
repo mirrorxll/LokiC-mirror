@@ -31,9 +31,9 @@
           Work Request Updating
         %button.close{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
           %span{ "aria-hidden" => "true" } ×
-      .modal-body
-        .editable.d-inline-block.overflow-scroll.h-97.w-50
-        .preview.d-inline-block.overflow-scroll.small.w-48.h-90
+      .modal-body.d-flex
+        .preview.overflow-scroll.small.w-48
+        .editable.overflow-scroll.h-97.w-50
 
 
 -if (current_account.types & ['manager', 'outside manager']).any?
