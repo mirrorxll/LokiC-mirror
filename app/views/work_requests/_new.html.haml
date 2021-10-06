@@ -1,5 +1,5 @@
-=form_with(url: work_requests_path, html: { onkeypress: "return event.keyCode !== 13;" } ) do |f|
-  .modal-body.small
+=form_with(url: work_requests_path, html: { class: 'small', onkeypress: "return event.keyCode !== 13;" } ) do |f|
+  .modal-body.pt-0
     #workTypesAnchor.mb-3
     #workTypes.card
       .card-body
@@ -494,7 +494,7 @@
     #firstInvoice.card
       .card-body
         .font-weight-bold.mb-2
-          Expected First Invoice Date
+          First Invoice Date
           %span.small.text-danger
             *required
         =f.date_field "work_request[first_invoice]", class: 'form-control form-control-sm w-50'
@@ -505,8 +505,8 @@
     #expectedFinalInvoice.card
       .card-body
         .font-weight-bold.mb-2
-          Expected Final Invoice Date
-        =f.date_field "work_request[expected_finale_invoice]", class: 'form-control form-control-sm w-50'
+          Final Invoice Date
+        =f.date_field "work_request[final_invoice]", class: 'form-control form-control-sm w-50'
 
 
 
@@ -530,6 +530,15 @@
 
 
 
+    #eta.mb-3
+    #eta.card
+      .card-body
+        .font-weight-bold.mb-2
+          ETA
+        =f.date_field "work_request[eta]", class: 'form-control form-control-sm w-50'
+
+
+
     #priorityAnchor.mb-3
     #priority.card
       .card-body
@@ -545,14 +554,17 @@
               .col-11.pl-0.text-left
                 =f.label "work_request[priority]", rt.name, value: rt.id, class: 'm-0'
 
+
+
   -if modal
-    .modal-footer.justify-content-center
-      %button.btn.btn-sm.btn-secondary{"data-dismiss" => "modal", :type => "button"} Close
-      =f.submit 'Submit', class: 'btn btn-sm btn-secondary'
+    .modal-footer.small.justify-content-center
+      =f.submit 'Submit', class: 'm-0 btn btn-sm btn-secondary', data: { disable_with: ' ... ' }
+      .ml-1.mr-1
+      %button.m-0.btn.btn-sm.btn-outline-secondary{"data-dismiss" => "modal", :type => "button"} Close
   -else
     %hr.mt-0/
-    .pl-3
-      =f.submit 'Submit', class: 'btn btn-sm btn-secondary'
+    .pl-3.small
+      =f.submit 'Submit', class: 'btn btn-sm btn-secondary', data: { disable_with: ' ... ' }
     %hr/
 
   :javascript
@@ -560,9 +572,9 @@
       event.preventDefault();
       event.stopPropagation();
 
+      // #clients,
       let cards = document.querySelectorAll(
         `#workTypes,
-         #clients,
          #revenueTypes,
          #projectOrderName,
          #sow,
@@ -582,11 +594,11 @@
         return false;
       }
 
-      let client = [...document.querySelectorAll('#clients input[type="checkbox"]')].some((el) => { return el.checked; } );
-      if(!client) {
-        scrollToCard('#clients')
-        return false;
-      }
+      // let client = [...document.querySelectorAll('#clients input[type="checkbox"]')].some((el) => { return el.checked; } );
+      // if(!client) {
+      //   scrollToCard('#clients')
+      //   return false;
+      // }
 
       let revenueType = [...document.querySelectorAll('#revenueTypes input[type="checkbox"]')].some((el) => { return el.checked; } );
       if(!revenueType) {

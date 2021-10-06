@@ -71,6 +71,23 @@ class WorkRequestsGrid
   end
 
   column(:status, mandatory: true) { 'Reserved(TO DO)' }
+
+  column(:eta, header: 'ETA', mandatory: true) do |req|
+    format(req) do |r|
+      content_tag(:div, id: "eta#{r.id}", class: 'text-center') do
+        content_tag(
+          :u, r.eta || '****-**-**',
+          'class' => 'mouse-hover',
+          'data-container' => 'body',
+          'data-toggle' => 'popover',
+          'data-placement' => 'top',
+          'data-html' => 'true',
+          'data-content' => (render 'work_requests/index__date_form', work_request: r, key: 'eta').to_s
+        )
+      end
+    end
+  end
+
   column(:why_blocked?, mandatory: true) { 'Reserved(TO DO)' }
   column(:active_subtasks, mandatory: true) { 'Reserved(TO DO)' }
 

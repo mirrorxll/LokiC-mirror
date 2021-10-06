@@ -32,9 +32,32 @@
         %button.close{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
           %span{ "aria-hidden" => "true" } ×
       .modal-body.d-flex
-        .preview.overflow-scroll.small.w-48
-        .editable.overflow-scroll.h-97.w-50
+        .preview.overflow-scroll.small.w-55.pt-3.pr-3.pb-3
+        .w-45
+          .editable.overflow-scroll.pt-3.h-92.pr-2.pb-3
+          %hr.m-2/
+          .d-flex.align-items-center.justify-content-center.h-5
+            =link_to('update', '#', id: 'updateWorkRequestButton', class: 'btn btn-sm btn-secondary')
+            .mr-1.ml-1
+            .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+              cancel
 
+:javascript
+  document.querySelector('#updateWorkRequestButton').addEventListener('click', (event) => {
+    event.preventDefault();
+
+    event.target.classList.add('disabled');
+    event.target.innerText = '...';
+
+    document.querySelector('#hiddenUpdateButton').click();
+  }, false);
+
+  $('#updateWorkRequestModal').on('hidden.bs.modal', () => {
+    let button = document.querySelector('#updateWorkRequestButton');
+
+    button.classList.remove('disabled');
+    button.innerText = 'update';
+  });
 
 -if (current_account.types & ['manager', 'outside manager']).any?
   #newMultiTask.mb-3

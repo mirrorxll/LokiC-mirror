@@ -107,12 +107,12 @@
     =@work_request.invoice_frequency&.name
 .row.mb-1.align-items-end
   .col-2.pr-0.text-right.font-weight-bold
-    expected first invoice date:
+    first invoice date:
   .col-9
     =@work_request.first_invoice
 .row.mb-4.align-items-end
   .col-2.pr-0.text-right.font-weight-bold
-    expected final invoice date:
+    final invoice date:
   .col-9
     =@work_request.final_invoice
 
@@ -129,6 +129,12 @@
   .col-9
     =@work_request.final_deadline
 .row.mb-4.align-items-end
+  .col-2.pr-0.text-right.font-weight-bold
+    ETA:
+  .col-9
+    =@work_request.eta
+
+.row.mb-1.align-items-end
   .col-2.pr-0.text-right.font-weight-bold
     priority:
   .col-9
