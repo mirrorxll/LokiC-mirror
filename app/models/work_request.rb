@@ -8,11 +8,11 @@ class WorkRequest < ApplicationRecord
     build_budget_for_project(subtype: 'budget for project')
   end
 
-  belongs_to :requester, class_name: 'Account'
+  belongs_to :requester,            optional: true, class_name: 'Account'
   belongs_to :underwriting_project, optional: true
-  belongs_to :priority,          optional: true
-  belongs_to :invoice_type,      optional: true
-  belongs_to :invoice_frequency, optional: true
+  belongs_to :priority,             optional: true
+  belongs_to :invoice_type,         optional: true
+  belongs_to :invoice_frequency,    optional: true
 
   has_one :project_order_name, -> { where(subtype: 'project order name') }, as: :commentable, class_name: 'Comment'
   has_one :project_order_details, -> { where(subtype: 'project order details') }, as: :commentable, class_name: 'Comment'

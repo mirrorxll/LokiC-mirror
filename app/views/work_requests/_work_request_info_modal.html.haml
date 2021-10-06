@@ -1,0 +1,105 @@
+.row.mb-4
+  .col-3.pr-0.text-right.font-weight-bold
+    requester:
+  .col-9
+    =@work_request.requester.name
+.row.mb-1
+  .col-3.pr-0.text-right.font-weight-bold
+    work types:
+  .col-9
+    -@work_request.work_types.each do |wt|
+      =wt.name
+      %br
+.row.mb-1
+  .col-3.pr-0.text-right.font-weight-bold
+    clients:
+  .col-9
+    -@work_request.clients.each do |cl|
+      =cl.name
+      %br
+.row.mb-1
+  .col-3.pr-0.text-right.font-weight-bold
+    underwriting Project:
+  .col-9
+    =@work_request.underwriting_project&.name
+.row.mb-4
+  .col-3.pr-0.text-right.font-weight-bold
+    revenue types:
+  .col-9
+    -@work_request.revenue_types.each do |rt|
+      =rt.name
+      %br
+
+
+
+.row.mb-1
+  .col-3.pr-0.text-right.font-weight-bold
+    project order name:
+  .col-9
+    =@work_request.project_order_name.body
+.row.mb-1
+  .col-3.pr-0.text-right.font-weight-bold
+    SOW:
+  .col-9
+    =link_to(nil, @work_request.sow, target: '_blank')
+.row.mb-1.align-items-end
+  .col-3.pr-0.text-right.font-weight-bold
+    project order details:
+  .col-9
+    =@work_request.project_order_details.body
+.row.mb-4.align-items-end
+  .col-3.pr-0.text-right.font-weight-bold
+    most worried details:
+  .col-9
+    =@work_request.most_worried_details.body
+
+
+
+.row.mb-1.align-items-end
+  .col-3.pr-0.text-right.font-weight-bold
+    budget for project:
+  .col-9
+    =@work_request.budget_for_project.body
+.row.mb-1.align-items-end
+  .col-3.pr-0.text-right.font-weight-bold
+    invoice type:
+  .col-9
+    =@work_request.invoice_type&.name
+.row.mb-1.align-items-end
+  .col-3.pr-0.text-right.font-weight-bold
+    invoice frequency:
+  .col-9
+    =@work_request.invoice_frequency&.name
+.row.mb-1.align-items-end
+  .col-3.pr-0.text-right.font-weight-bold
+    first invoice date:
+  .col-9
+    =@work_request.first_invoice
+.row.mb-4.align-items-end
+  .col-3.pr-0.text-right.font-weight-bold
+    final invoice date:
+  .col-9
+    =@work_request.final_invoice
+
+
+
+.row.mb-1.align-items-end
+  .col-3.pr-0.text-right.font-weight-bold
+    goal deadline:
+  .col-9
+    =@work_request.goal_deadline
+.row.mb-1.align-items-end
+  .col-3.pr-0.text-right.font-weight-bold
+    final deadline:
+  .col-9
+    =@work_request.final_deadline
+.row.mb-4.align-items-end
+  .col-2.pr-0.text-right.font-weight-bold
+    ETA:
+  .col-9
+    =@work_request.eta
+.row.mb-1.align-items-end
+  .col-3.pr-0.text-right.font-weight-bold
+    priority:
+  .col-9
+    =@work_request.priority.name
