@@ -38,5 +38,7 @@
     }
 
 -else
-  #statusButton.border.text-center.rounded.pl-2.pr-2{ class: "bg-#{status_color(@scrape_task.status.name)}" }
-    =@scrape_task.status.name
+  .d-inline-block
+    status:
+  #statusButton.d-inline-block.border.text-center.rounded.pl-2.pr-2{ class: "bg-#{status_color(@work_request.status.name)}" }
+    =@work_request.status.name

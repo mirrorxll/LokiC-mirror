@@ -42,11 +42,13 @@
       }
     }
 
-.row.mb-4
-  .col-2.pr-0.text-right.font-weight-bold
-    requester:
-  .col-9
-    =@work_request.requester.name
+-if(current_account.types & ['manager', 'outside manager']).any?
+  .row.mb-4
+    .col-2.pr-0.text-right.font-weight-bold
+      requester:
+    .col-9
+      =@work_request.requester.name
+
 .row.mb-1
   .col-2.pr-0.text-right.font-weight-bold
     work types:
@@ -76,22 +78,22 @@
 
 
 
-.row.mb-1
+.row.mb-1.text-break
   .col-2.pr-0.text-right.font-weight-bold
     project order name:
   .col-9
     =@work_request.project_order_name.body
-.row.mb-1
+.row.mb-1.text-break
   .col-2.pr-0.text-right.font-weight-bold
     SOW:
   .col-9
     =link_to(nil, @work_request.sow, target: '_blank')
-.row.mb-1.align-items-end
+.row.mb-1.text-break
   .col-2.pr-0.text-right.font-weight-bold
     project order details:
   .col-9
     =@work_request.project_order_details.body
-.row.mb-4.align-items-end
+.row.mb-4.text-break
   .col-2.pr-0.text-right.font-weight-bold
     most worried details:
   .col-9
