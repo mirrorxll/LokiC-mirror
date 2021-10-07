@@ -6,13 +6,13 @@ class WorkRequest < ApplicationRecord
     build_project_order_details(subtype: 'project order details')
     build_most_worried_details(subtype: 'most worried details')
     build_budget_for_project(subtype: 'budget for project')
-    build_budget_for_project(subtype: 'status comment')
+    build_status_comment(subtype: 'status comment')
 
     self.status = Status.find_by(name: 'created and in queue')
   end
 
-  belongs_to :status
   belongs_to :requester,            optional: true, class_name: 'Account'
+  belongs_to :status,               optional: true
   belongs_to :underwriting_project, optional: true
   belongs_to :priority,             optional: true
   belongs_to :invoice_type,         optional: true
