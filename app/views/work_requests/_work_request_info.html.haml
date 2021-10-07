@@ -22,6 +22,11 @@
         F Value:
       .col-9
         =f.text_field "work_request[f_val]", class: 'form-control form-control-sm w-10', value: @work_request.f_val
+    .row.mb-1.align-items-center
+      .col-2.pr-0.text-right.font-weight-bold
+        ETA:
+      .col-9
+        =f.date_field "work_request[eta]", class: 'form-control form-control-sm w-150px', value: @work_request.eta
   %hr/
 
   :javascript
