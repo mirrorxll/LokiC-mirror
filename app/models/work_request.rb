@@ -6,8 +6,12 @@ class WorkRequest < ApplicationRecord
     build_project_order_details(subtype: 'project order details')
     build_most_worried_details(subtype: 'most worried details')
     build_budget_for_project(subtype: 'budget for project')
+    build_budget_for_project(subtype: 'status comment')
+
+    self.status = Status.find_by(name: 'created and in queue')
   end
 
+  belongs_to :status
   belongs_to :requester,            optional: true, class_name: 'Account'
   belongs_to :underwriting_project, optional: true
   belongs_to :priority,             optional: true
@@ -18,6 +22,7 @@ class WorkRequest < ApplicationRecord
   has_one :project_order_details, -> { where(subtype: 'project order details') }, as: :commentable, class_name: 'Comment'
   has_one :most_worried_details, -> { where(subtype: 'most worried details') }, as: :commentable, class_name: 'Comment'
   has_one :budget_for_project, -> { where(subtype: 'budget for project') }, as: :commentable, class_name: 'Comment'
+  has_one :status_comment, -> { where(subtype: 'status comment') }, as: :commentable, class_name: 'Comment'
   has_one :multitask, class_name: 'Task'
 
   has_and_belongs_to_many :work_types, join_table: 'types_of_work_work_requests', association_foreign_key: :type_of_work_id, class_name: 'WorkType'

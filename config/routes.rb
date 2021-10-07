@@ -69,7 +69,11 @@ Rails.application.routes.draw do
   end
 
   resources :work_requests, except: :destroy do
-
+    scope module: :work_requests do
+      resources :progress_statuses, only: [] do
+        patch :change, on: :collection
+      end
+    end
   end
 
   resources :data_sets, except: %i[new] do
