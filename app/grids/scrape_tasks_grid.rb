@@ -63,7 +63,7 @@ class ScrapeTasksGrid
 
   column(:state, header: 'State', order: 'states.short_name', mandatory: true) { |s_task| s_task.state&.short_name }
 
-  column(:status, order: 'statuses.name', scrape_status: true, html: true, mandatory: true) do |s_task|
+  column(:status, order: 'statuses.name', html: true, mandatory: true) do |s_task|
     attributes = { class: "bg-#{status_color(s_task.status.name)}" }
 
     if s_task.status.name.in?(%w[blocked canceled])

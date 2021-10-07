@@ -1,3 +1,7 @@
+#workRequestStatusComment
+  =render 'status_comment'
+
+
 -if (current_account.types & ['manager', 'outside manager']).any?
   =form_with(url: api_work_request_path(@work_request), method: :patch, html: { id: 'managerForm'}) do |f|
     .row.mb-4.align-items-center

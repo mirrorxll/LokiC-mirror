@@ -70,7 +70,21 @@ class WorkRequestsGrid
     req.requester.name
   end
 
-  column(:status, mandatory: true) { 'Reserved(TO DO)' }
+  column(:status, html: true, mandatory: true) do |req|
+    attributes = { class: "bg-#{status_color(req.status.name)}" }
+
+    if req.status.name.in?(%w[blocked canceled])
+      attributes.merge!(
+        {
+          'data-toggle' => 'tooltip',
+          'data-placement' => 'right',
+          title: truncate(req.status_comment&.body, length: 150)
+        }
+      )
+    end
+
+    content_tag(:div, req.status.name, attributes)
+  end
 
   column(:eta, header: 'ETA', mandatory: true) do |req|
     format(req) do |r|

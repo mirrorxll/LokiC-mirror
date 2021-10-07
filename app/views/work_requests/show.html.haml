@@ -14,8 +14,10 @@
       .d-flex.justify-content-between.align-items-center
         main info
         .d-inline-block
+          #workRequestStatus.d-inline-block
+            =render 'statuses'
           -if current_account.eql?(@work_request.requester) || (current_account.types & ['manager', 'outside manager']).any?
-            #scrapeTaskEdit.d-inline-block.mr-2.small
+            .d-inline-block.mr-2.small
               =button_to('[ edit ]', edit_work_request_path(@work_request), method: :get, remote: true,
                          class: 'p-0 pb-1 btn btn-sm btn-link ml-2', data: { disable_with: '...'})
 
