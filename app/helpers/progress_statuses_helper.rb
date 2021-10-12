@@ -2,7 +2,7 @@
 
 module ProgressStatusesHelper
   def status_color(name)
-    case name
+    case name.strip.downcase
     when 'migrated', 'not started'
       'secondary text-white'
     when 'in progress'

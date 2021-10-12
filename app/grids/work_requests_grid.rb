@@ -71,19 +71,29 @@ class WorkRequestsGrid
   end
 
   column(:status, html: true, mandatory: true) do |req|
-    attributes = { class: "bg-#{status_color(req.status.name)}" }
-
-    if req.status.name.in?(%w[blocked canceled])
-      attributes.merge!(
+    attributes =
+      if req.status.name.in?(%w[blocked canceled])
         {
+          'class' => "mouse-hover bg-#{status_color(req.status.name)}",
           'data-toggle' => 'tooltip',
           'data-placement' => 'right',
-          title: truncate(req.status_comment&.body, length: 150)
+          'title' => truncate(req.status_comment&.body, length: 150)
         }
-      )
-    end
+      else
+        { 'class' => "bg-#{status_color(req.status.name)}" }
+      end
 
-    content_tag(:div, req.status.name, attributes)
+    content_tag(:div, attributes) do
+      name =
+        if req.status.name.in?(%w[blocked canceled])
+          "<u>#{req.status.name}&nbsp"\
+          "#{icon('fa', 'commenting')}</u>"
+        else
+          req.status.name
+        end
+
+      name.html_safe
+    end
   end
 
   column(:eta, header: 'ETA', mandatory: true) do |req|
@@ -102,7 +112,6 @@ class WorkRequestsGrid
     end
   end
 
-  column(:why_blocked?, mandatory: true) { 'Reserved(TO DO)' }
   column(:active_subtasks, mandatory: true) { 'Reserved(TO DO)' }
 
   column(:r_val, header: 'R Value', mandatory: true) do |req|

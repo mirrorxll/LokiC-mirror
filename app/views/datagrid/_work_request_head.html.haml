@@ -1,0 +1,8 @@
+%tr
+  -client = current_account.types.include?('client')
+  -grid.html_columns(*options[:columns]).each do |column|
+    -next if client && column.header.in?(['ETA', 'R Value', 'F Value'])
+
+    %th{:scope => "col"}
+      =column.header
+      =datagrid_order_for(grid, column, options) if column.supports_order? && options[:order]
