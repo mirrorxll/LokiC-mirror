@@ -6,7 +6,8 @@
 -if controller_name.in?(%w[scrape_tasks tasks shown_samples exported_story_types production_removals])
   -if grid.html_columns(*options[:columns]).any?
     =content_tag :table, class: %w(datagrid table table-striped table-bordered table-sm) do
-      %thead= datagrid_header(grid, options)
+      %thead
+        =datagrid_header(grid, options)
       %tbody
         -if assets.any?
           =datagrid_rows(grid, assets, **options)

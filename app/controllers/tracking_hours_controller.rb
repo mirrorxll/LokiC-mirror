@@ -54,7 +54,7 @@ class TrackingHoursController < ApplicationController # :nodoc:
 
   def google_sheets
     link = LinkAssembled.find_by(week: @week)
-    link.update_attribute(:in_process, true) unless link.nil?
+    link&.update_attribute(:in_process, true)
     AssembledsJob.perform_later(@week, link)
   end
 
@@ -84,6 +84,6 @@ class TrackingHoursController < ApplicationController # :nodoc:
   end
 
   def row_report_params
-    params.require(:report).each{ |report| report.values.permit(:hours, :type_of_work_id, :client_id, :date) }
+    params.require(:report).each { |report| report.values.permit(:hours, :type_of_work_id, :client_id, :date) }
   end
 end

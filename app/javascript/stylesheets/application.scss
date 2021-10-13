@@ -8,44 +8,96 @@ $fa-font-path: "~font-awesome/fonts";
 @import "staging_table";
 @import "story_type_tables";
 @import "sample";
+@import "fact_checkcing_doc";
 @import "froala";
 @import "bootstrap_overrides";
 @import "scrape_task";
+@import "work_requesting_form";
 
 @import '~font-awesome/scss/font-awesome';
 @import "actiontext";
 @import "~trix";
 
 
-.fc_scrollable {
-  height: 90%;
+@media (min-width: 100px) {
+  .modal-dialog-fullscreen {
+    max-width: 97%;
+  }
+}
+
+.modal-frame-scrollable-90 {
   overflow: scroll;
+  height: 90%;
+}
+
+.overflow-scroll {
+  overflow: scroll;
+  overflow-x: hidden;
+}
+
+.h-4 {
+  height: 4%;
+}
+
+.h-5 {
+  height: 5%;
+}
+
+.h-7 {
+  height: 7%;
 }
 
 .h-90 {
   height: 90%;
 }
 
-.w-97 {
-  width: 97%;
+.h-92 {
+  height: 92%;
+}
+
+.h-97 {
+  height: 97%;
 }
 
 .w-10 {
   width: 10%;
 }
 
-.w-80 {
-  width: 80%;
+.w-39 {
+  width: 39%;
+}
+
+.w-40 {
+  width: 40%;
+}
+
+.w-45 {
+  width: 45%;
+}
+
+.w-48 {
+  width: 48%;
+}
+
+.w-49 {
+  width: 49%;
+}
+
+.w-55 {
+  width: 55%;
 }
 
 .w-60 {
   width: 60%;
 }
 
-.w-39 {
-  width: 39%;
+.w-97 {
+  width: 97%;
 }
 
+.w-80 {
+  width: 80%;
+}
 
 .w-65px {
   width: 65px;
@@ -59,46 +111,10 @@ $fa-font-path: "~font-awesome/fonts";
   width: 85px;
 }
 
+.w-150px {
+  width: 150px;
+}
+
 .w-250px {
   width: 250px;
-}
-
-@media (min-width: 100px) {
-  .modal-full {
-    max-width: 97%;
-  }
-}
-
-#manual_feedback_modal .modal-content {
-  height: 97%;
-}
-
-#editors_feedback_body_modal, #reviewers_feedback_body_modal {
-  padding: 15px;
-  overflow: auto;
-}
-
-.manual_feedback {
-  position: relative;
-  border-radius: 3px;
-  padding: 15px;
-}
-
-.manual_feedback:hover {
-  background-color: rgba(0, 0, 0, 0.03);
-}
-
-.reviewers_fb_info, .editors_fb_info {
-  position: absolute;
-  display: inline-block;
-  margin-top: -26px;
-  margin-left: -5px;
-  background: white;
-}
-
-.label_to_line_modal {
-  position: absolute;
-  background-color: white;
-  margin-top: -27px;
-  margin-left: 5px;
 }

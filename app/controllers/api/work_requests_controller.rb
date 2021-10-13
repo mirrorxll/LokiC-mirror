@@ -9,7 +9,9 @@ module Api
     private
 
     def work_request_params
-      params.require(:work_request).permit(:billed_for_entire_project?, :r_val, :f_val)
+      params
+        .require(:work_request)
+        .permit(:billed_for_entire_project?, :r_val, :f_val, :last_invoice, :eta)
     end
   end
 end

@@ -49,8 +49,7 @@ module StoryTypes
 
           wr.write(message.to_json)
         rescue StandardError, ScriptError => e
-          pp e.backtrace
-          wr.write({ e.class.to_s => e.backtrace }.to_json)
+          wr.write({ e.class.to_s => e.message }.to_json)
         ensure
           wr.close
         end
@@ -70,7 +69,6 @@ module StoryTypes
       false
     rescue StandardError, ScriptError => e
       status = nil
-      pp e.backtrace
       message = e.message
       true
     ensure

@@ -1,6 +1,6 @@
-=form_with(url: work_requests_path, html: { class: 'small', onkeypress: "return event.keyCode !== 13;" } ) do |f|
-  .modal-body.pt-0
-    #workTypesAnchor.mb-3
+=form_with(url: work_request_path(@work_request), method: :patch, html: { onkeypress: "return event.keyCode !== 13;" } ) do |f|
+  .small.pl-3
+    #workTypesAnchor
     #workTypes.card
       .card-body
         .font-weight-bold.mb-2
@@ -8,13 +8,12 @@
           %span.small.text-danger
             *required
         .types
-          -work_types = WorkType.where(work: :work_request)
-          -work_types.where(hidden: false).each do |tw|
-            .row.mb-2.align-items-center{ class: "work-type-#{tw.id}"}
+          -@work_request.work_types.each do |wt|
+            .row.mb-2.align-items-center{ class: "work-type-#{wt.id}"}
               .col-1.text-right
-                =f.check_box "work_request[tf_work_type__#{tw.id}]"
+                =f.check_box "work_request[tf_work_type__#{wt.id}]", checked: true
               .col-11.pl-0.text-left
-                =f.label "work_request[tf_work_type__#{tw.id}]", tw.name, class: 'm-0'
+                =f.label "work_request[tf_work_type__#{wt.id}]", wt.name, class: 'm-0'
         .row.loadingSpinner.d-none
           .col-1.text-right
             .spinner-border.spinner-border-sm.text-secondary
@@ -23,8 +22,8 @@
           Other:
           %input.underline-input.w-80.p-0{ list: 'otherTypesOfWork', onkeypress: 'typeOfWorkByEnterPress(event, this)' }
           %datalist#otherTypesOfWork
-            -work_types.where(hidden: true).each do |tp|
-              %option{ value: "#{tp.name}" }
+            -WorkType.where("work = 1 AND id NOT IN(#{@work_request.work_types.ids.join(',')})").order(:name).each do |wt|
+              %option{ value: "#{wt.name}" }
           .sign-in.d-inline-block.ml-1
             .mouse-hover{ onclick: 'typeOfWorkByArrowClick();' }
               =icon('fa', 'sign-in')
@@ -81,14 +80,15 @@
 
     #clientsAnchor.mb-3
     #clients.card
+      -clients = @work_request.clients
       .card-body
         .font-weight-bold.mb-2
           Clients
         .list
-          -Client.where(hidden_for_work_request: false).each do |cl|
+          -clients.each do |cl|
             .row.mb-2.align-items-center{ class: "client-#{cl.id}"}
               .col-1.text-right
-                =f.check_box "work_request[tf_client__#{cl.id}]"
+                =f.check_box "work_request[tf_client__#{cl.id}]", checked: true
               .col-11.pl-0.text-left
                 =f.label "work_request[tf_client__#{cl.id}]", cl.name, class: 'm-0'
         .row.processingOther.align-items-center.d-none
@@ -102,7 +102,8 @@
           Other:
           %input.underline-input.w-50.p-0{ list: 'otherClients', onkeypress: 'clientByEnterPress(event, this)', oninput: 'hideClientNone();' }
           %datalist#otherClients
-            -Client.where(hidden_for_work_request: true).each do |cl|
+            -other_client = clients.present? ? Client.where("id NOT IN (#{clients.ids.join(',')})") : Client.all
+            -other_client.each do |cl|
               %option{ value: "#{cl.name}" }
           .sign-in.d-inline-block.ml-1
             .mouse-hover{ onclick: 'clientByArrowClick();' }
@@ -175,15 +176,16 @@
 
     #underwritingProjectAnchor.mb-3
     #underwritingProject.card
+      -up = @work_request.underwriting_project
       .card-body
         .d-inline-block.font-weight-bold.mb-2
           Underwriting Project
-        %a.reset.ml-3.d-none{ href: '#', onclick: 'unselect(event);' } unselect
+        %a.reset.ml-3{ href: '#', class: "#{up ? '' : ' d-none'}", onclick: 'unselect(event);' } unselect
         .projects
-          -UnderwritingProject.where(hidden: false).each do |up|
+          -if up
             .row.mb-2.align-items-center{ class: "underwriting-project-#{up.id}", oninput: 'showUnselect();'}
               .col-1.text-right
-                =f.radio_button "work_request[underwriting_project]", up.id
+                =f.radio_button "work_request[underwriting_project]", up.id, checked: true
               .col-11.pl-0.text-left
                 =f.label "work_request[underwriting_project]", up.name, value: up.id, class: 'm-0'
         .row.loadingSpinner.d-none
@@ -194,8 +196,8 @@
           Other:
           %input.underline-input.w-50.p-0{ list: 'otherProjects', onkeypress: 'projectByEnterPress(event, this)' }
           %datalist#otherProjects
-            -UnderwritingProject.where(hidden: true).each do |up|
-              %option{ value: "#{up.name}" }
+            -UnderwritingProject.where("id #{up ? "!= #{up.id}" : 'IS NOT NULL'}").each do |oup|
+              %option{ value: "#{oup.name}" }
           .sign-in.d-inline-block.ml-1
             .mouse-hover{ onclick: 'projectByArrowClick();' }
               =icon('fa', 'sign-in')
@@ -273,7 +275,7 @@
           -RevenueType.where(hidden: false).each do |rt|
             .row.mb-2.align-items-center{ class: "revenue-type-#{rt.id}"}
               .col-1.text-right
-                =f.check_box "work_request[tf_revenue_type__#{rt.id}]"
+                =f.check_box "work_request[tf_revenue_type__#{rt.id}]", checked: @work_request.revenue_types.exists?(rt.id)
               .col-11.pl-0.text-left
                 =f.label "work_request[tf_revenue_type__#{rt.id}]", rt.name, class: 'm-0'
 
@@ -285,8 +287,10 @@
           Project Order Name (the short way to refer to the project)
           %span.small.text-danger
             *required
-        =f.text_field "work_request[project_order_name]", class: 'form-control form-control-sm w-50'
-
+        =f.text_field "work_request[project_order_name]", class: 'form-control form-control-sm w-50',
+                      value: @work_request.project_order_name.body, maxlength: 2000
+        .small.text-secondary
+          limit: 2000 symbols
 
     #sowAnchor.mb-3
     #sow.card
@@ -295,8 +299,9 @@
           SOW
           %span.small.text-danger
             *link to Google Doc or Spreadsheet
-        =f.text_field "work_request[sow]",
-                      class: 'form-control form-control-sm w-50'
+        =f.text_field "work_request[sow]", class: 'form-control form-control-sm w-50',
+                      value: @work_request.sow
+
 
 
     #projectOrderDetailsAnchor.mb-3
@@ -306,7 +311,8 @@
           Project Order Details (What do we need to do?)
           %span.small.text-danger
             *required
-        =f.text_area "work_request[project_order_details]", class: 'form-control form-control-sm w-50'
+        =f.text_area "work_request[project_order_details]", class: 'form-control form-control-sm w-50',
+                     value: @work_request.project_order_details.body, maxlength: 2000
         .small.text-secondary
           limit: 2000 symbols
 
@@ -317,7 +323,8 @@
       .card-body
         .font-weight-bold.mb-2
           What are you most worried about us missing or not doing on this task?
-        =f.text_area "work_request[most_worried_details]", class: 'form-control form-control-sm w-50'
+        =f.text_area "work_request[most_worried_details]", class: 'form-control form-control-sm w-50',
+                     value: @work_request.most_worried_details.body, maxlength: 2000
         .small.text-secondary
           limit: 2000 symbols
 
@@ -330,24 +337,25 @@
           Budget for Project
           %span.small.text-danger
             *required
-        =f.text_field "work_request[budget_for_project]", class: 'form-control form-control-sm w-50'
+        =f.text_field "work_request[budget_for_project]", class: 'form-control form-control-sm w-50',
+                      value: @work_request.budget_for_project.body, maxlength: 2000
 
 
 
     #invoiceTypeAnchor.mb-3
     #invoiceType.card
+      -it = @work_request.invoice_type
       .card-body
-        .font-weight-bold.mb-2
+        .d-inline-block.font-weight-bold.mb-2
           Invoice Type
           %span.small.text-danger
             *required
         .types
-          -InvoiceType.where(hidden: false).each do |it|
-            .row.mb-2.align-items-center{ class: "invoice-type-#{it.id}"}
-              .col-1.text-right
-                =f.radio_button "work_request[invoice_type]", it.id
-              .col-11.pl-0.text-left
-                =f.label "work_request[invoice_type]", it.name, value: it.id, class: 'm-0'
+          .row.mb-2.align-items-center{ class: "invoice-type-#{it.id}"}
+            .col-1.text-right
+              =f.radio_button "work_request[invoice_type]", it.id, checked: true
+            .col-11.pl-0.text-left
+              =f.label "work_request[invoice_type]", it.name, value: it.id, class: 'm-0'
         .row.loadingSpinner.d-none
           .col-1.text-right
             .spinner-border.spinner-border-sm.text-secondary
@@ -356,8 +364,8 @@
           Other:
           %input.underline-input.w-50.p-0{ list: 'otherInvoiceTypes', onkeypress: 'invoiceTypeByEnterPress(event, this)' }
           %datalist#otherInvoiceTypes
-            -InvoiceType.where(hidden: true).each do |it|
-              %option{ value: "#{it.name}" }
+            -InvoiceType.where("id != #{it.id}").each do |oit|
+              %option{ value: "#{oit.name}" }
           .sign-in.d-inline-block.ml-1
             .mouse-hover{ onclick: 'invoiceTypeByArrowClick();' }
               =icon('fa', 'sign-in')
@@ -413,18 +421,18 @@
 
     #invoiceFrequencyAnchor.mb-3
     #invoiceFrequency.card
+      -ifr = @work_request.invoice_frequency
       .card-body
         .font-weight-bold.mb-2
           Invoice Frequency
           %span.small.text-danger
             *required
         .frequencies
-          -InvoiceFrequency.where(hidden: false).each do |it|
-            .row.mb-2.align-items-center{ class: "invoice-frequency-#{it.id}"}
-              .col-1.text-right
-                =f.radio_button "work_request[invoice_frequency]", it.id
-              .col-11.pl-0.text-left
-                =f.label "work_request[invoice_frequency]", it.name, value: it.id, class: 'm-0'
+          .row.mb-2.align-items-center{ class: "invoice-frequency-#{ifr.id}"}
+            .col-1.text-right
+              =f.radio_button "work_request[invoice_frequency]", ifr.id, checked: true
+            .col-11.pl-0.text-left
+              =f.label "work_request[invoice_frequency]", ifr.name, value: ifr.id, class: 'm-0'
         .row.loadingSpinner.d-none
           .col-1.text-right
             .spinner-border.spinner-border-sm.text-secondary
@@ -433,8 +441,8 @@
           Other:
           %input.underline-input.w-50.p-0{ list: 'otherInvoiceFrequencies', onkeypress: 'invoiceFrequencyByEnterPress(event, this)' }
           %datalist#otherInvoiceFrequencies
-            -InvoiceFrequency.where(hidden: true).each do |it|
-              %option{ value: "#{it.name}" }
+            -InvoiceFrequency.where("id != #{ifr.id}").each do |oifr|
+              %option{ value: "#{oifr.name}" }
           .sign-in.d-inline-block.ml-1
             .mouse-hover{ onclick: 'invoiceFrequencyByArrowClick();' }
               =icon('fa', 'sign-in')
@@ -495,16 +503,18 @@
           First Invoice Date
           %span.small.text-danger
             *required
-        =f.date_field "work_request[first_invoice]", class: 'form-control form-control-sm w-50'
+        =f.date_field "work_request[first_invoice]", class: 'form-control form-control-sm w-50',
+                      value: @work_request.first_invoice
 
 
 
-    #expectedFinalInvoiceAnchor.mb-3
-    #expectedFinalInvoice.card
+    #FinalInvoiceAnchor.mb-3
+    #FinalInvoice.card
       .card-body
         .font-weight-bold.mb-2
           Final Invoice Date
-        =f.date_field "work_request[final_invoice]", class: 'form-control form-control-sm w-50'
+        =f.date_field "work_request[final_invoice]", class: 'form-control form-control-sm w-50',
+                      value: @work_request.final_invoice
 
 
 
@@ -513,7 +523,8 @@
       .card-body
         .font-weight-bold.mb-2
           Goal deadline
-        =f.date_field "work_request[goal_deadline]", class: 'form-control form-control-sm w-50'
+        =f.date_field "work_request[goal_deadline]", class: 'form-control form-control-sm w-50',
+                      value: @work_request.goal_deadline
 
 
 
@@ -524,7 +535,9 @@
           Final deadline
           %span.small.text-danger
             *required
-        =f.date_field "work_request[final_deadline]", class: 'form-control form-control-sm w-50'
+        =f.date_field "work_request[final_deadline]", class: 'form-control form-control-sm w-50',
+                      value: @work_request.final_deadline
+
 
 
 
@@ -536,25 +549,14 @@
           %span.small.text-danger
             *required
         .priorities
-          -Priority.all.each do |rt|
-            .row.mb-2.align-items-center{ class: "revenue-type-#{rt.id}"}
+          -Priority.all.each do |pr|
+            .row.mb-2.align-items-center{ class: "revenue-type-#{pr.id}"}
               .col-1.text-right
-                =f.radio_button "work_request[priority]", rt.id
+                =f.radio_button "work_request[priority]", pr.id, checked: @work_request.priority.eql?(pr)
               .col-11.pl-0.text-left
-                =f.label "work_request[priority]", rt.name, value: rt.id, class: 'm-0'
-
-
-
-  -if modal
-    .modal-footer.small.justify-content-center
-      =f.submit 'Submit', class: 'm-0 btn btn-sm btn-secondary', data: { disable_with: ' ... ' }
-      .ml-1.mr-1
-      %button.m-0.btn.btn-sm.btn-outline-secondary{"data-dismiss" => "modal", :type => "button"} Close
-  -else
-    %hr.mt-0/
-    .pl-3.small
-      =f.submit 'Submit', class: 'btn btn-sm btn-secondary', data: { disable_with: ' ... ' }
-    %hr/
+                =f.label "work_request[priority]", pr.name, value: pr.id, class: 'm-0'
+  .d-none
+    =f.submit id: 'hiddenUpdateButton'
 
   :javascript
     function onSubmit(event) {
@@ -635,8 +637,8 @@
         return false;
       }
 
-      let expectedFirstInvoice = document.querySelector('#firstInvoice input').value.length > 0
-      if(!expectedFirstInvoice) {
+      let FirstInvoice = document.querySelector('#firstInvoice input').value.length > 0
+      if(!FirstInvoice) {
         scrollToCard('#firstInvoice')
         return false;
       }
@@ -657,16 +659,20 @@
       Rails.fire(event.target, 'submit');
     }
 
-    document.querySelector('#requestWorkForm').addEventListener('scroll', () => {
+    document.querySelector('#updateWorkRequestModal').addEventListener('scroll', () => {
       document.querySelectorAll('input[list]').forEach(el => { el.blur();  })
     }, false)
 
     function scrollToCard(id) {
+      let button = document.querySelector('#updateWorkRequestButton');
       let required = document.querySelector(id);
 
+      button.classList.remove('disabled');
+      button.innerText = 'update';
       required.addEventListener('animationend', (ev) => { ev.target.classList.remove('touch-required-field') })
+
       document.querySelector(id).classList.add('border-danger', 'touch-required-field')
       document.querySelector(`${id}Anchor`).scrollIntoView();
     }
 
-    document.querySelector('#requestWorkForm form').addEventListener('submit', onSubmit)
+    document.querySelector('#updateWorkRequestModal form').addEventListener('submit', onSubmit)

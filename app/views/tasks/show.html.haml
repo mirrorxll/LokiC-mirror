@@ -1,6 +1,6 @@
 %hr/
-.row.justify-content-center.font-weight-bold
-  =@task.title
+.row.justify-content-center
+  =link_to(@task.title, @task)
 %hr/
 
 .row
@@ -27,7 +27,7 @@
         .col-1.text-right
           -if @task.creator?(current_account) || current_account.types.include?('manager')
             =link_to '[ create ]', new_task_path(parent_task: @task), remote: true
-    #subtasksCollapse.collapse{"data-parent" => "#subtasks"}
+    #subtasksCollapse.collapse{"data-parent" => "#subtasks", class: @task.subtasks.count > 0 ? 'show' : '' }
       =render 'subtasks'
 
 .card.mt-2

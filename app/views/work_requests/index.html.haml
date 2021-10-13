@@ -1,14 +1,15 @@
 %hr/
-.row.m-2.justify-content-between
-  .text-left
+.row.m-2.align-items-center
+  .col-5.offset-1
     -if (current_account.types & ['outside manager', 'manager']).any?
       =link_to 'all requested work', work_requests_path,
                class: 'btn btn-sm btn-outline-dark'
       =link_to('requested work by you',
                url_for(@grid.to_param => { requester: current_account.id }),
                class: 'btn btn-sm btn-outline-dark')
-
-  .text-right
+    -else
+      Requested Work
+  .col-5.text-right
     %button.btn.btn-sm.btn-outline-dark{ "data-target" => "#requestWorkForm", "data-toggle" => "modal" }
       request work
 %hr/
@@ -31,3 +32,35 @@
         %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
           %span{"aria-hidden" => "true"} ×
       =render 'new', modal: true
+
+:javascript
+  // $('.mouse-hover').click(function(){
+  //     $('.mouse-hover').not(this).popover('hide');
+  // });
+
+  function submitForm(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    let form = event.target;
+    let input = form.querySelector('input[type="number"], input[type="date"]');
+
+    let target = input.id.split('__');
+    let valueType = target.at(0);
+    let valueId = target.at(-1);
+    let value = form.querySelector(`input[type="${input.type}"]`).value
+
+    if(value.length === 0) {
+      if(input.type === 'number') {
+        value = '**'
+      } else {
+        value = '****-**-**'
+      }
+    }
+
+    document.querySelector(`\#${valueType}${valueId} u`).innerText = value;
+
+    form.removeEventListener('submit', submitForm);
+    Rails.fire(form, 'submit');
+    form.addEventListener('submit', submitForm)
+  }

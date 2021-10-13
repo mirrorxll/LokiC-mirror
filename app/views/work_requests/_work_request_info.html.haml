@@ -1,3 +1,7 @@
+#workRequestStatusComment
+  =render 'status_comment'
+
+
 -if (current_account.types & ['manager', 'outside manager']).any?
   =form_with(url: api_work_request_path(@work_request), method: :patch, html: { id: 'managerForm'}) do |f|
     .row.mb-4.align-items-center
@@ -18,6 +22,11 @@
         F Value:
       .col-9
         =f.text_field "work_request[f_val]", class: 'form-control form-control-sm w-10', value: @work_request.f_val
+    .row.mb-1.align-items-center
+      .col-2.pr-0.text-right.font-weight-bold
+        ETA:
+      .col-9
+        =f.date_field "work_request[eta]", class: 'form-control form-control-sm w-150px', value: @work_request.eta
   %hr/
 
   :javascript
@@ -33,11 +42,13 @@
       }
     }
 
-.row.mb-4
-  .col-2.pr-0.text-right.font-weight-bold
-    requester:
-  .col-9
-    =@work_request.requester.name
+-if(current_account.types & ['manager', 'outside manager']).any?
+  .row.mb-4
+    .col-2.pr-0.text-right.font-weight-bold
+      requester:
+    .col-9
+      =@work_request.requester.name
+
 .row.mb-1
   .col-2.pr-0.text-right.font-weight-bold
     work types:
@@ -67,22 +78,22 @@
 
 
 
-.row.mb-1
+.row.mb-1.text-break
   .col-2.pr-0.text-right.font-weight-bold
     project order name:
   .col-9
     =@work_request.project_order_name.body
-.row.mb-1
+.row.mb-1.text-break
   .col-2.pr-0.text-right.font-weight-bold
     SOW:
   .col-9
     =link_to(nil, @work_request.sow, target: '_blank')
-.row.mb-1.align-items-end
+.row.mb-1.text-break
   .col-2.pr-0.text-right.font-weight-bold
     project order details:
   .col-9
     =@work_request.project_order_details.body
-.row.mb-4.align-items-end
+.row.mb-4.text-break
   .col-2.pr-0.text-right.font-weight-bold
     most worried details:
   .col-9
@@ -107,14 +118,14 @@
     =@work_request.invoice_frequency&.name
 .row.mb-1.align-items-end
   .col-2.pr-0.text-right.font-weight-bold
-    expected first invoice date:
+    first invoice date:
   .col-9
-    =@work_request.expected_first_invoice
+    =@work_request.first_invoice
 .row.mb-4.align-items-end
   .col-2.pr-0.text-right.font-weight-bold
-    expected final invoice date:
+    final invoice date:
   .col-9
-    =@work_request.expected_final_invoice
+    =@work_request.final_invoice
 
 
 
@@ -129,6 +140,12 @@
   .col-9
     =@work_request.final_deadline
 .row.mb-4.align-items-end
+  .col-2.pr-0.text-right.font-weight-bold
+    ETA:
+  .col-9
+    =@work_request.eta
+
+.row.mb-1.align-items-end
   .col-2.pr-0.text-right.font-weight-bold
     priority:
   .col-9

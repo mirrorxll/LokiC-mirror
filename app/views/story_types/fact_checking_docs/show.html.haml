@@ -131,7 +131,7 @@
 
   #manual_feedback_modal.modal.fade.pr-0{ "aria-hidden" => "true", "aria-labelledby" => "manual_feedback_modal_label",
                                           role: "dialog", tabindex: "-1" }
-    .modal-dialog.modal-dialog-centered.modal-full.modal-dialog-scrollable
+    .modal-dialog.modal-dialog-centered.modal-dialog-fullscreen.modal-dialog-scrollable
       .modal-content
         .modal-header
           .modal-title#manual_feedback_modal_label
@@ -142,7 +142,7 @@
             %li.nav-item{role: "presentation"}
               %a#fcd-tab.nav-link.active{"aria-controls" => "fcd", "aria-selected" => "true", "data-toggle" => "tab", href: "#fcd", role: "tab"} FCD
 
-          .d-inline-block.fc_scrollable.w-60
+          .d-inline-block.modal-frame-scrollable-90.w-60
             #manual_feedback_tabs_content.tab-content
               #fcd.tab-pane.fade.show.active{"aria-labelledby" => "fcd-tab", role: "tabpanel"}
 

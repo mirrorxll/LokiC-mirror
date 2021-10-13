@@ -10,7 +10,7 @@ class WorkRequestsController < ApplicationController
   before_action :find_work_request, only: %i[show edit update]
 
   def index
-    @grid.scope { |sc| sc.page(params[:page]).per(50) }
+    @grid.scope { |sc| sc.page(params[:page]).per(100) }
   end
 
   def show; end
@@ -18,12 +18,16 @@ class WorkRequestsController < ApplicationController
   def new; end
 
   def create
-    @request = WorkRequestObjectCreator.create_from!(current_account, work_request_params)
+    @request =
+      WorkRequestObject.create_from!(work_request_params)
   end
 
   def edit; end
 
-  def update; end
+  def update
+    @work_request =
+      WorkRequestObject.update_from!(@work_request, work_request_params)
+  end
 
   private
 
@@ -34,7 +38,9 @@ class WorkRequestsController < ApplicationController
   end
 
   def work_request_params
-    params.require(:work_request).permit!
+    params
+      .require(:work_request).permit!
+      .merge({ account: current_account })
   end
 
   def find_work_request

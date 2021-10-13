@@ -5,7 +5,7 @@
 .change_progress_status_form.d-none
   =form_with(url: change_task_progress_statuses_path(task), id: 'status_form',
              html: { class: 'd-inline', onchange: "statusSubmit();" }, method: :patch) do |form|
-    =form.collection_select :status_id, Status.multi_task_dev_statuses, :id, :name, { prompt: '' , selected: task.status.id},
+    =form.collection_select :status_id, Status.multi_task_statuses, :id, :name, { prompt: '' , selected: task.status.id},
     data: { confirm: 'Are you sure you want to delete the task?' }
 
 :javascript

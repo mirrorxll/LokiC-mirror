@@ -4,7 +4,9 @@
       %th{:scope => "col"}
         =column.header
         =datagrid_order_for(grid, column, options) if column.supports_order? && options[:order]
-- else
+-elsif grid.is_a?(WorkRequestsGrid)
+  =render 'datagrid/work_request_head', grid: grid, options: options
+-else
   %tr
     -grid.html_columns(*options[:columns]).each do |column|
       %th{:class => datagrid_column_classes(grid, column)}
