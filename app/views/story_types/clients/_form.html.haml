@@ -1,2 +1,2 @@
-=form_with(url: include_story_type_clients_path(@story_type), html: { onchange: "Rails.fire(this, 'submit'); $('#client_id').val([])" }) do |form|
-  =form.collection_select :client_id, Client.where(hidden_for_story_type: false).order(name: :asc), :id, :name, { prompt: '', onchange: "$('#client_id').val([])" }, { name: :id }
+=form_with(url: include_story_type_clients_path(@story_type), html: { onchange: "Rails.fire(this, 'submit'); $('#client_id').val([])" }) do |f|
+  =f.collection_select :client_id, Client.where(hidden_for_story_type: false).order(name: :asc), :id, :name, { prompt: '', onchange: "$('#client_id').val([])" }, { name: :id }

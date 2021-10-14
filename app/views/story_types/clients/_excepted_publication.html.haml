@@ -1,0 +1,7 @@
+.row.mb-1{ id: "excepted_publication_#{excepted_publication.id}" }
+  .col-4.client
+    =excepted_publication.client.name
+  .col-4.publication
+    =excepted_publication.publication.name
+    =link_to('x', exclude_story_type_excepted_publication_path(@story_type, excepted_publication.publication),
+             method: :delete, remote: true)

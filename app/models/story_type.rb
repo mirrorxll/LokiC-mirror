@@ -48,6 +48,7 @@ class StoryType < ApplicationRecord
   has_many :configurations_no_tags, -> { where(tag: nil).or(where(skipped: true)) }, class_name: 'ExportConfiguration'
   has_many :stories
   has_many :clients_publications_tags, class_name: 'StoryTypeClientPublicationTag'
+  has_many :excepted_publications
   has_many :clients, through: :clients_publications_tags
   has_many :tags, through: :clients_publications_tags
   has_many :change_history, as: :history

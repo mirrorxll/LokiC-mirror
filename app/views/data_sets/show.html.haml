@@ -35,6 +35,7 @@
           %hr.mt-1/
       .mt-4
       =render partial: 'story_types/story_type', collection: @story_types
+      =render 'story_type_properties_modal'
       .mt-4
   #articleTypes.tab-pane.fade{ "aria-labelledby" => "articleTypesTab" }
     .card.border-top-0.rounded-top-0.mb-5
@@ -63,7 +64,6 @@
         %h5.modal-title
       .modal-body
 
-=render 'story_type_properties_from'
 
 :javascript
   (() => {
