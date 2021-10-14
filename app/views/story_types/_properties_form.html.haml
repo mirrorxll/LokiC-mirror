@@ -11,18 +11,23 @@
       =render partial: 'story_types/clients/client_publication_tag', collection: @story_type.clients_publications_tags
     .p-0
       =render 'story_types/clients/form'
-#excludedClientsPublicationsModal.row.mt-3.small
+
+.row
+  .col-10.offset-1
+    %hr/
+
+#excludedClientsPublicationsModal.row.small
   .col-1.text-right.font-weight-bold
     excepted:
   .col-10
     .table_body
-      =render partial: 'story_types/clients/except_publication', collection: @story_type.excepted_publications
+      =render partial: 'story_types/clients/excepted_publication', collection: @story_type.excepted_publications
     .p-0
       =form_with(url: include_story_type_excepted_publications_path(@story_type),) do |f|
         =f.collection_select :client_id, Client.where(hidden_for_story_type: false).order(name: :asc), :id, :name,
                              { prompt: '' }, { class: 'mr-2', onchange: 'updatePublicationsByClient(event, this)' }
         =f.collection_select :publication_id, [], :id, :name, {},
-                             { onchange: "Rails.fire(this.form, 'submit'); $(this).val([])" }
+                             { onchange: "Rails.fire(this.form, 'submit');" }
 
       :javascript
         function updatePublicationsByClient(event, select) {

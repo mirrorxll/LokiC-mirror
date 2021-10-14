@@ -7,20 +7,25 @@ module StoryTypes
     skip_before_action :set_story_type_iteration
 
     before_action :render_403, if: :developer?
+    before_action :find_client, only: :include
     before_action :find_publication
+    before_action :find_excepted_publication
 
     def include
-      excepted =
-        @story_type.excepted_publications.find_by(publication: @publication)
-      render_403 && return if excepted
+      render_403 && return if @excepted_publication
 
-      @excepted_publication = @story_type.excepted_publications.create!(
-        client: @client,
-        publication: @publication
-      )
+      @excepted_publication =
+        @story_type.excepted_publications.create!(
+          client: @client,
+          publication: @publication
+        )
     end
 
-    def exclude; end
+    def exclude
+      render_403 && return unless @excepted_publication
+
+      @excepted_publication.destroy
+    end
 
     private
 
@@ -29,7 +34,11 @@ module StoryTypes
     end
 
     def find_publication
-      @publication = Publication.find(params[:publication_id])
+      @publication = Publication.find(params[:publication_id] || params[:id])
+    end
+
+    def find_excepted_publication
+      @excepted_publication = @story_type.excepted_publications.find_by(publication: @publication)
     end
   end
 end

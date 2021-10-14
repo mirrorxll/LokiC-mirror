@@ -22,21 +22,21 @@
 
     =render 'story_types/additional_properties'
   .col-5.border-left.ml-1
-    .row.mb-2.font-weight-bold
+    .row.mb-1.font-weight-bold
       .col-12
         story type's code
     #story_type_code
       =render 'story_types/codes/section'
     %hr/
     -if correct_account?(@story_type)
-      .row.mb-2.font-weight-bold
+      .row.mb-1.font-weight-bold
         .col-12
           export configurations (manual execution)
       #export_configs
         =render 'story_types/export_configurations/export_configurations'
       %hr/
 
-      .row.mb-2.font-weight-bold
+      .row.mb-1.font-weight-bold
         .col-12
           cron tab
 
