@@ -10,13 +10,6 @@ class TaskStatusesController < ApplicationController
   before_action :find_status, only: :change
 
   def change
-    if @status.name.in?(%w(blocked canceled)) && ActionController::Base.helpers.strip_tags(params[:body]).length < 5
-      respond_to do |format|
-        format.html { redirect_to @task }
-        format.js { "$('#comment').modal('hide');" }
-      end
-      return
-    end
     @task.update(status: @status)
     @task.update(done_at: Time.now) if @status.name.eql?('done')
     comment && send_notification
