@@ -1,5 +1,5 @@
-.row.small
-  #clients__tags.col-10.offset-1
+#clientsPublicationsTagsModal.row.small
+  .col-10.offset-1
     .row.font-weight-bold
       .col-4
         client
@@ -7,11 +7,48 @@
         publication
       .col-4
         tag
-    #clients_tags_table_body
-      -if @story_type.clients.present?
-        =render partial: 'story_types/clients/client_publication_tag', collection: @story_type.clients_publications_tags
-    .p-1
+    .table_body
+      =render partial: 'story_types/clients/client_publication_tag', collection: @story_type.clients_publications_tags
+    .p-0
       =render 'story_types/clients/form'
+#excludedClientsPublicationsModal.row.mt-3.small
+  .col-1.text-right.font-weight-bold
+    excepted:
+  .col-10
+    .table_body
+      =render partial: 'story_types/clients/except_publication', collection: @story_type.excepted_publications
+    .p-0
+      =form_with(url: include_story_type_excepted_publications_path(@story_type),) do |f|
+        =f.collection_select :client_id, Client.where(hidden_for_story_type: false).order(name: :asc), :id, :name,
+                             { prompt: '' }, { class: 'mr-2', onchange: 'updatePublicationsByClient(event, this)' }
+        =f.collection_select :publication_id, [], :id, :name, {},
+                             { onchange: "Rails.fire(this.form, 'submit'); $(this).val([])" }
+
+      :javascript
+        function updatePublicationsByClient(event, select) {
+          let clientId = select.value;
+          let pubsSelect = select.form.querySelector('select[name="publication_id"]');
+
+          if(clientId === '') { return false; }
+
+          window.$.ajax({
+            url: `${window.location.origin}/api/clients/${clientId}/publications`,
+            dataType: 'json',
+            success: (publications) => {
+              let option = document.createElement("option");
+
+              pubsSelect.innerHTML = '';
+              pubsSelect.appendChild(option);
+
+              for (let i = 0; i < publications.length; i++) {
+                option = document.createElement("option");
+                option.setAttribute("value", publications[i].id);
+                option.text = publications[i].name;
+                pubsSelect.appendChild(option);
+              }
+            }
+          });
+        }
 %hr/
 
 .row.small

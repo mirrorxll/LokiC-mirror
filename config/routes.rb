@@ -45,15 +45,12 @@ Rails.application.routes.draw do
 
     resources :work_requests, only: :update
 
-    resources :clients, only: [] do
-      get :visible,           on: :collection
-      get :local_publication, on: :collection
-      get :publications
-      get :tags
-
-      resources :publications, only: [] do
-        get :tags
+    resources :clients, only: :index do
+      resources :publications, only: :index do
+        resources :publication_tags, path: :tags, as: :tags, only: :index
       end
+
+      resources :client_tags, path: :tags, as: :tags, only: :index
     end
 
     resources :scrape_tasks, only: [] do
@@ -66,6 +63,11 @@ Rails.application.routes.draw do
     end
 
     resources :shown_samples, only: :update
+
+    get 'publication_scopes', to: 'publications#scopes'
+    get 'all_publications_scope_id', to: 'publications#all_pubs_scope_id'
+    get 'all_local_publications_scope_id', to: 'publications#all_local_pubs_scope_id'
+    get 'all_statewide_publications_scope_id', to: 'publications#all_statewide_pubs_scope_id'
   end
 
   resources :work_requests, except: :destroy do
@@ -98,15 +100,20 @@ Rails.application.routes.draw do
         post    :include, on: :collection
         delete  :exclude, on: :member
 
-        resources :tags, only: [] do
-          post   :include, on: :collection
-          delete :exclude, on: :member
-        end
-
         resources :publications, only: [] do
           post   :include, on: :collection
           delete :exclude, on: :member
         end
+
+        resources :tags, only: [] do
+          post   :include, on: :collection
+          delete :exclude, on: :member
+        end
+      end
+
+      resources :excepted_publications, only: [] do
+        post   :include, on: :collection
+        delete :exclude, on: :member
       end
 
       resources :progress_statuses, only: [] do

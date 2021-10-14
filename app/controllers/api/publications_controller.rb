@@ -2,15 +2,36 @@
 
 module Api
   class PublicationsController < ApiController
-    include TagsHelper
+    def index
+      publications = Client.find(params[:client_id]).publications.select(:id, :name).order(:name)
 
-    def tags
-      client = Client.find(params[:client_id])
-      publication = Publication.find(params[:publication_id])
+      render json: publications
+    end
 
-      tags = tags_for_publication(publication, client)
+    def scopes
+      names = ['all local publications', 'all publications', 'all statewide publications']
+      raw_sql = Arel.sql("FIELD(name, '#{names.join("', '")}')")
+      scopes = Publication.select(:id, :name).where(name: names).order(raw_sql)
 
-      render json: { attached: tags }
+      render json: scopes
+    end
+
+    def all_pubs_scope_id
+      id = Publication.find_by(name: 'all publications').id
+
+      render json: id
+    end
+
+    def all_local_pubs_scope_id
+      id = Publication.find_by(name: 'all local publications').id
+
+      render json: id
+    end
+
+    def all_statewide_pubs_scope_id
+      id = Publication.find_by(name: 'all statewide publications').id
+
+      render json: id
     end
   end
 end

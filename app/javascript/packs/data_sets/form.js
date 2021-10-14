@@ -88,9 +88,9 @@ window.$('#add_client').on('click', (e)=> {
 
     if(clients.length === 0) {
         window.$.ajax({
-            url: `${window.location.origin}/api/clients/visible`,
+            url: `${window.location.origin}/api/clients`,
             dataType: 'json',
-            success: (clients)=> { addClientsToSelectGroup(uId, clients.visible) }
+            success: (clients)=> { addClientsToSelectGroup(uId, clients) }
         });
     } else {
         addClientsToSelectGroup(uId);
@@ -123,16 +123,54 @@ function addClientsToSelectGroup(uId, clientsFromApi = null) {
     }
 }
 
+function publicationsByClient(event) {
+    let scopes = []
+    window.$.ajax({
+        url: `${window.location.origin}/api/publication_scopes`,
+        dataType: 'json',
+        success: (publications) => { scopes.concat(publications) }
+    });
+
+    let clientId = event.target.value;
+    if(clientId === '') return false;
+
+    let publicationsSelect = event.target.parentNode.parentNode.getElementsByClassName('publications_select')[0]
+
+    while (publicationsSelect.firstChild) {
+        publicationsSelect.removeChild(publicationsSelect.firstChild);
+    }
+
+    window.$.ajax({
+        url: `${window.location.origin}/api/clients/${clientId}/publications`,
+        dataType: 'json',
+        success: (publications) => {
+            let pubs = scopes.concat(publications)
+            addPublicationsToSelectGroup(publicationsSelect, pubs)
+        }
+    });
+}
+
+function addPublicationsToSelectGroup(publicationsSelect, publications) {
+    let option = null;
+
+    for (let i = 0; i < publications.length; i++) {
+        option = document.createElement("option");
+        option.setAttribute("value", publications[i].id);
+        option.text = publications[i].name;
+        publicationsSelect.appendChild(option);
+    }
+}
+
 function tagsByPublication(event) {
-    var publicationId = event.target.parentNode.parentNode.getElementsByClassName('publications_select')[0].value;
+    let publicationId = event.target.parentNode.parentNode.getElementsByClassName('publications_select')[0].value;
     let clientId = event.target.parentNode.parentNode.getElementsByClassName('clients_select')[0].value;
 
     if(publicationId === ''){
         window.$.ajax({
-            url: `${window.location.origin}/api/clients/local_publication`,
+            url: `${window.location.origin}/api/all_local_publications_scope_id`,
             dataType: 'json',
             async: false,
-            success: (local_publication_id)=> { publicationId = local_publication_id.attached }
+            success: (id) => { publicationId = id }
         });
     }
 
@@ -147,7 +185,7 @@ function tagsByPublication(event) {
     window.$.ajax({
         url: `${window.location.origin}/api/clients/${clientId}/publications/${publicationId}/tags`,
         dataType: 'json',
-        success: (tags)=> { addTagsToSelectGroup(tagsSelect, tags.attached) }
+        success: (tags)=> { addTagsToSelectGroup(tagsSelect, tags) }
     });
 }
 
@@ -172,33 +210,6 @@ function addTagsToSelectGroup(tagsSelect, tags) {
     }
 }
 
-function publicationsByClient(event) {
-    let clientId = event.target.value;
-    if(clientId === '') return false;
-
-    let publicationsSelect = event.target.parentNode.parentNode.getElementsByClassName('publications_select')[0]
-
-    while (publicationsSelect.firstChild) {
-        publicationsSelect.removeChild(publicationsSelect.firstChild);
-    }
-
-    window.$.ajax({
-        url: `${window.location.origin}/api/clients/${clientId}/publications`,
-        dataType: 'json',
-        success: (publications)=> { addPublicationsToSelectGroup(publicationsSelect, publications.attached) }
-    });
-}
-
-function addPublicationsToSelectGroup(publicationsSelect, publications) {
-    let option = null;
-
-    for (let i = 0; i < publications.length; i++) {
-        option = document.createElement("option");
-        option.setAttribute("value", publications[i].id);
-        option.text = publications[i].name;
-        publicationsSelect.appendChild(option);
-    }
-}
 
 function removeClientTag(e) {
     e.target.parentNode.parentNode.remove();
