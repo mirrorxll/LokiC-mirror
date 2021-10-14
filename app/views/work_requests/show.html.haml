@@ -20,7 +20,10 @@
             .d-inline-block.mr-2.small
               =button_to('[ edit ]', edit_work_request_path(@work_request), method: :get, remote: true,
                          class: 'p-0 pb-1 btn btn-sm btn-link ml-2', data: { disable_with: '...'})
-
+          -if current_account.types.include?('manager')
+            .d-inline-block.mr-2.small
+              =button_to('[ create project ]', edit_work_request_path(@work_request), method: :get, remote: true,
+                         class: 'p-0 pb-1 btn btn-sm btn-link ml-2', data: { disable_with: '...'})
     .card-body
       =render 'work_request_info'
 
@@ -43,6 +46,17 @@
             .mr-1.ml-1
             .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
               cancel
+
+#createProjectModal.modal.fade.pr-0{ "aria-hidden" => "true", "aria-labelledby" => "createProjectModalLabel",
+                                        role: "dialog", tabindex: "-1" }
+  .modal-dialog.modal-dialog-scrollable.modal-dialog-fullscreen
+    .modal-content
+      .modal-header
+        .modal-title#createProjectModalLabel
+          Work Request Updating
+        %button.close{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+          %span{ "aria-hidden" => "true" } ×
+      .modal-body
 
 :javascript
   document.querySelector('#updateWorkRequestButton').addEventListener('click', (event) => {
