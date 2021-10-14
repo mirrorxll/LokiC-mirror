@@ -19,6 +19,7 @@ module StoryTypes
       exp_config_counts = {}
       exp_config_counts.default = 0
       iteration = story_type.iteration
+      blank_tag = Tag.find_by(name: '_Blank')
 
       st_cl_pub_tgs = story_type.clients_publications_tags.sort_by { |st_cl_pub_tg| sort_weight(st_cl_pub_tg) }
 
@@ -33,12 +34,11 @@ module StoryTypes
         )
 
         exp_c.photo_bucket = story_type.photo_bucket
-        exp_c.tag = (cl_pub_tg.tag && publication.tag?(cl_pub_tg.tag) ? cl_pub_tg.tag : nil)
+        exp_c.tag = (cl_pub_tg.tag && publication.tag?(cl_pub_tg.tag) ? cl_pub_tg.tag : blank_tag)
         exp_c.save!
       end
     rescue StandardError, ScriptError => e
       status = nil
-      pp e.full_message
       message = e.message
     ensure
       story_type.update!(export_configurations_created: status, current_account: account)

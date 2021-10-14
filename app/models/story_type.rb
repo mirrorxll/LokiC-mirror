@@ -81,7 +81,7 @@ class StoryType < ApplicationRecord
   end
 
   def publication_pl_ids
-    pubs = clients_publications_tags.flat_map do |cl_p_t|
+    pubs = clients_publications_tags.where.not(tag: nil).flat_map do |cl_p_t|
       cl = cl_p_t.client
 
       cl_pubs =
@@ -99,7 +99,7 @@ class StoryType < ApplicationRecord
       cl_pubs.map(&:pl_identifier)
     end
 
-    pubs.uniq
+    (pubs. - excepted_publications.map(&:publication).map(&:pl_identifier)).uniq
   end
 
   def show_samples
