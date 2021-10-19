@@ -1,5 +1,1 @@
-<%if current_account.eql?(@task_receipt.task.creator) || current_account.types.include?('manager') %>
-$('#confirms').html('<%= j render 'task_receipts/confirms', task_receipts: @task_receipts %>')
-<%else %>
-$('#confirms').html('<%= j render 'task_receipts/confirmed' %>')
-<%end %>
+$('#confirms').html('<%= j render 'task_receipts/confirm_receipts', task: @task %>')

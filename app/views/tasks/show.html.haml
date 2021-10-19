@@ -13,7 +13,8 @@
   .col-5
     .mb-1
       =render 'task_info'
-      =render 'task_receipts/confirm_receipts'
+      #confirms
+        =render 'task_receipts/confirm_receipts', task: @task
   .col-7
     =render 'task_comments', comments: @comments
 
@@ -25,7 +26,7 @@
           %div{"aria-controls" => "#subtasksCollapse", "aria-expanded" => "true", "data-target" => "#subtasksCollapse", "data-toggle" => "collapse", type: "button"}
             subtasks
         .col-1.text-right
-          -if @task.creator?(current_account) || current_account.types.include?('manager')
+          -if (@task.creator?(current_account) || current_account.types.include?('manager')) && @task.parent.nil?
             =link_to '[ create ]', new_task_path(parent_task: @task), remote: true
     #subtasksCollapse.collapse{"data-parent" => "#subtasks", class: @task.subtasks.count > 0 ? 'show' : '' }
       =render 'subtasks'

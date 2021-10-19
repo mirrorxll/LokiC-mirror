@@ -4,7 +4,7 @@ class TasksGrid
   include Datagrid
 
   # Scope
-  scope { Task.includes(:tasks_assignments, :creator, :assignment_to) }
+  scope { Task.includes(:assignments, :creator, :assignment_to) }
 
   # Filters
 
@@ -13,7 +13,7 @@ class TasksGrid
   end
 
   filter(:assignment_to, :enum, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] }) do |value, scope|
-    scope.joins(tasks_assignments: [:account]).where('account_id= ?', value)
+    scope.joins(assignments: [:account]).where('account_id= ?', value)
   end
 
   filter(:creator, :enum, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })

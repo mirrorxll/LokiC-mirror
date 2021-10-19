@@ -1,12 +1,11 @@
 %table.table.table-bordered.table-sm
   %tbody
-    -task_receipts.each do |task_receipt|
+    -task_assignments.each do |task_assignment|
       %tr
         %td
-          =task_receipt.assignment.name
+          =task_assignment.name
         %td
-          -if task_receipt.confirmed
-            =time_confirm(task_receipt)
+          -if task_assignment.confirmed
+            =time_confirm_to_words(task_assignment.time_confirm)
           -else
             %span ----
-

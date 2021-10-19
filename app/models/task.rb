@@ -14,8 +14,9 @@ class Task < ApplicationRecord # :nodoc:
   belongs_to :parent, class_name: 'Task', foreign_key: :parent_task_id, optional: true
   belongs_to :client, class_name: 'ClientsReport', foreign_key: :client_id, optional: true
 
-  has_many :tasks_assignments, class_name: 'TaskAssignment'
-  has_many :assignment_to, through: :tasks_assignments, source: :account
+  has_many :assignments, class_name: 'TaskAssignment'
+  has_many :assignment_to, through: :assignments, source: :account
+
   has_many :comments, -> { where(subtype: ['task comment','status comment','status comment blocked', 'status comment canceled' ]) }, as: :commentable, class_name: 'Comment'
   has_many :subtasks, -> { where.not(status: Status.find_by(name: 'deleted')) }, foreign_key: :parent_task_id, class_name: 'Task'
 
@@ -40,5 +41,16 @@ class Task < ApplicationRecord # :nodoc:
 
   def title_with_id
     "##{id} #{title}"
+  end
+
+  def current_assignment(account)
+    assignments.find_by(account: account)
+  end
+
+  def access?(account)
+    return true if assignment_to_or_creator?(account)
+    subtasks.each { |subtask| return true if subtask.assignment_to_or_creator?(account) }
+    parent.subtasks.each { |subtask| return true if subtask.assignment_to_or_creator?(account) } if parent
+    false
   end
 end

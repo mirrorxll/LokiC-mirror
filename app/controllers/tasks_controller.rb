@@ -8,8 +8,7 @@ class TasksController < ApplicationController # :nodoc:
 
   before_action :find_task, only: %i[show edit update]
   before_action :grid, only: :index
-  before_action :receipt, only: :show
-  before_action :task_receipts, only: :show
+  before_action :task_assignments, only: :show
 
   after_action  :send_notification, only: :create
 
@@ -25,7 +24,7 @@ class TasksController < ApplicationController # :nodoc:
   end
 
   def show
-    render_401 if !manager? && !@task.assignment_to_or_creator?(current_account)
+    render_401 unless manager? || @task.access?(current_account)
 
     @comments = @task.comments.order(created_at: :desc)
   end
@@ -55,6 +54,10 @@ class TasksController < ApplicationController # :nodoc:
   end
 
   private
+
+  def access
+
+  end
 
   def comment
     body = "##{@task.id} Task created. "
@@ -118,12 +121,7 @@ class TasksController < ApplicationController # :nodoc:
     params.require(:comment)
   end
 
-  def receipt
-    @receipt = TaskReceipt.find_by(task: @task, assignment: current_account)
+  def task_assignments
+    @task_assignments = TaskAssignment.where(task: @task)
   end
-
-  def task_receipts
-    @task_receipts = TaskReceipt.where(task: @task)
-  end
-
 end
