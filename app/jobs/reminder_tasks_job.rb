@@ -45,7 +45,7 @@ class ReminderTasksJob < ApplicationJob
           task.assignment_to.each do |assignment|
             next if assignment.slack.nil? || assignment.slack.deleted
 
-            message = "*[ LokiC ] Unfinished <#{generate_task_url(task)}|Task ##{task.id}> | REMINDER | "\
+            message = "*Unfinished <#{generate_task_url(task)}|Task ##{task.id}> | REMINDER | "\
               "#{assignment.name}*\n" \
               "#{task.title}".gsub("\n", "\n>")
             SlackNotificationJob.perform_now(assignment.slack.identifier, message)
@@ -74,7 +74,7 @@ class ReminderTasksJob < ApplicationJob
           accounts.each do |account|
             next if account.slack.nil? || account.slack.deleted
 
-            message = "*[ LokiC ] #{deadline_message} | <#{generate_task_url(task)}|Task ##{task.id}> | "\
+            message = "*#{deadline_message} | <#{generate_task_url(task)}|Task ##{task.id}> | "\
                     "#{account.name}*\n" \
                     "#{task.title}".gsub("\n", "\n>")
             SlackNotificationJob.perform_now(account.slack.identifier, message)

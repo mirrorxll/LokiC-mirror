@@ -44,7 +44,7 @@ class TaskStatusesController < ApplicationController
     accounts.each do |account|
       next if account.slack.nil? || account.slack.deleted
 
-      message = "*[ LokiC ] <#{task_url(@task)}| TASK ##{@task.id}> | "\
+      message = "*<#{task_url(@task)}| TASK ##{@task.id}> | "\
                 "Status changed to #{@task.status.name}*\n>#{@task.title}"
 
       SlackNotificationJob.perform_later(account.slack.identifier, message)

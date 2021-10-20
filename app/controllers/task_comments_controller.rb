@@ -5,8 +5,12 @@ class TaskCommentsController < ApplicationController
   skip_before_action :find_parent_article_type
   skip_before_action :set_article_type_iteration
   skip_before_action :set_story_type_iteration
+
   before_action :find_task
+  before_action :find_comment, only: %i[edit update destroy]
+
   after_action  :send_notification, only: :create
+  after_action  :find_comments, only: %i[update destroy]
 
   def new
     @comment = Comment.new
@@ -18,7 +22,27 @@ class TaskCommentsController < ApplicationController
     @comment.save!
   end
 
+  def edit; end
+
+  def update
+    @comment.update!(body: params[:body])
+    @comments = @task.comments.order(created_at: :desc)
+  end
+
+  def destroy
+    @comment.destroy
+    @comments = @task.comments.order(created_at: :desc)
+  end
+
   private
+
+  def find_comments
+    @comments = @task.comments.order(created_at: :desc)
+  end
+
+  def find_comment
+    @comment = Comment.find(params[:id])
+  end
 
   def find_task
     @task = Task.find(params[:task_id])
@@ -34,7 +58,7 @@ class TaskCommentsController < ApplicationController
     accounts.each do |account|
       next if account.slack.nil? || account.slack.deleted
 
-      message = "*[ LokiC ] <#{task_url(@task)}| TASK ##{@task.id}> | "\
+      message = "*<#{task_url(@task)}| TASK ##{@task.id}> | "\
               "#{@comment.commentator.name} add comment | Check please*\n>#{@task.title}"
 
       SlackNotificationJob.perform_later(account.slack.identifier, message)

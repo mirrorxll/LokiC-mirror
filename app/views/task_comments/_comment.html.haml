@@ -6,4 +6,6 @@
     =comment.created_at.strftime('%F %R %Z')
 .row.col-12.small
   =comment.body&.html_safe
+  =link_to icon('fa', 'edit'), edit_task_comment_path(@task, comment), remote: true
+  =link_to icon('fa', 'delete'), task_comment_path(@task, comment), method: :delete, remote: true, data: { confirm: 'Are you sure you want to delete the comment?' }
 %hr.mt-3.mb-3/

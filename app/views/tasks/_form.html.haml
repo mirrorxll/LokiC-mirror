@@ -1,4 +1,4 @@
-=form_with(url: tasks_path, id: 'form_new_task') do |form|
+=form_with(url: tasks_path, id: 'form_new_task',  html: { onkeypress: "return event.keyCode !== 13;" } ) do |form|
   .row.small
     .col
       .form-group
@@ -38,7 +38,6 @@
         main_task:
         .mt-1
           =form.collection_select 'task[parent]', Task.where(parent: nil).where.not(status: Status.find_by(name: 'deleted')).order(:id), :id, :title_with_id, { prompt: '' }, style: "width:150px"
-
   %hr/
   .modal-footer.justify-content-center
     =form.submit :create, class: 'btn btn-sm btn-outline-success'

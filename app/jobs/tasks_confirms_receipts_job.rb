@@ -6,15 +6,17 @@ class TasksConfirmsReceiptsJob < ApplicationJob
   def perform
     Process.wait(
       fork do
-        task_receipts = TaskReceipt.where(confirmed: 0)
-        task_receipts.each do |receipt|
-          next if receipt.assignment.slack.nil? || receipt.assignment.slack.deleted
+        task_assignments = TaskAssignment.where(confirmed: 0)
+        task_assignments.each do |assignment|
+          sleep(rand)
+          account = assignment.account
+          next if account.slack.nil? || account.slack.deleted
 
-          message = "*[ LokiC ] <#{generate_task_url(receipt.task)}|Task ##{receipt.task.id}> | You need confirm receipt | "\
-            "#{receipt.assignment.name}*\n" \
-            "#{receipt.task.title}".gsub("\n", "\n>")
-          SlackNotificationJob.perform_now(receipt.assignment.slack.identifier, message)
-          SlackNotificationJob.perform_now('hle_lokic_task_reminders', message)
+          message = "*<#{generate_task_url(assignment.task)}|Task ##{assignment.task.id}> | You need confirm receipt of task | "\
+            "#{account.name}*\n" \
+            "#{assignment.task.title}".gsub("\n", "\n>")
+          SlackNotificationJob.perform_now(account.slack.identifier, message)
+          SlackNotificationJob.perform_later(Rails.env.production? ? 'hle_lokic_task_reminders' : 'hle_lokic_development_messages', message)
         end
       end
     )

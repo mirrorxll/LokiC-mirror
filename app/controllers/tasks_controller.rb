@@ -11,7 +11,6 @@ class TasksController < ApplicationController # :nodoc:
   before_action :task_assignments, only: :show
 
   after_action  :send_notification, only: :create
-
   after_action  :send_notification, only: :create
   after_action  :comment, only: :create
   
@@ -55,10 +54,6 @@ class TasksController < ApplicationController # :nodoc:
 
   private
 
-  def access
-
-  end
-
   def comment
     body = "##{@task.id} Task created. "
     body += if @task.assignment_to.empty?
@@ -92,8 +87,8 @@ class TasksController < ApplicationController # :nodoc:
     @task.assignment_to.each do |assignment|
       next if assignment.slack.nil? || assignment.slack.deleted
 
-      message = "*[ LokiC ] <#{task_url(@task)}| TASK ##{@task.id}> | "\
-              "ASSIGNMENT TO YOU*\n>#{@task.title}"
+      message = "*<#{task_url(@task)}| TASK ##{@task.id}> | "\
+              "Assignment to you*\n>#{@task.title}"
 
       SlackNotificationJob.perform_later(assignment.slack.identifier, message)
       SlackNotificationJob.perform_later(Rails.env.production? ? 'hle_lokic_task_reminders' : 'hle_lokic_development_messages', message)

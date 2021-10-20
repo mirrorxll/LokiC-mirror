@@ -337,7 +337,7 @@ Rails.application.routes.draw do
       patch :confirm,   on: :collection
     end
 
-    resources :comments, controller: 'task_comments', only: %i[new create]
+    resources :comments, controller: 'task_comments', only: %i[new create edit update destroy]
 
     resources :assignments, controller: 'task_assignments', only: [] do
       get   :edit,   on: :collection

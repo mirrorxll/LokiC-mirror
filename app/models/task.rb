@@ -17,7 +17,7 @@ class Task < ApplicationRecord # :nodoc:
   has_many :assignments, class_name: 'TaskAssignment'
   has_many :assignment_to, through: :assignments, source: :account
 
-  has_many :comments, -> { where(subtype: ['task comment','status comment','status comment blocked', 'status comment canceled' ]) }, as: :commentable, class_name: 'Comment'
+  has_many :comments, -> { where(commentable_type: 'Task') }, as: :commentable, class_name: 'Comment'
   has_many :subtasks, -> { where.not(status: Status.find_by(name: 'deleted')) }, foreign_key: :parent_task_id, class_name: 'Task'
 
   def status_comment

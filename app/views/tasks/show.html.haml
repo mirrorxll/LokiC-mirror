@@ -16,7 +16,17 @@
       #confirms
         =render 'task_receipts/confirm_receipts', task: @task
   .col-7
-    =render 'task_comments', comments: @comments
+    .card{style: 'height: 375px;'}
+      .card-header.p-1
+        .d-flex.justify-content-between.small
+          comments
+          -if current_account.eql?(@task.creator) || current_account.types.include?('manager') || current_account.in?(@task.assignment_to)
+            #comment_form
+              =link_to('[ add comment ]',
+                       new_task_comment_path(@task, subtype: 'user comment'),
+                       remote: true)
+      .card-body
+        =render 'comments', comments: @comments
 
 #subtasks.accordion.mt-2
   .card.small
