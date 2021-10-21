@@ -14,9 +14,9 @@
     .col
       deadline:
     .col
-      gather_task:
+      gather task id:
     .col
-      main_task
+      main task:
   .form-group.row.small.text-center.justify-content-between
     .col
       =form.collection_select 'task[reminder_frequency]', sorted_reminder_frequencies, :id, :name, { selected: @task.reminder_frequency.nil? ? '' : @task.reminder_frequency.id, prompt: '' }

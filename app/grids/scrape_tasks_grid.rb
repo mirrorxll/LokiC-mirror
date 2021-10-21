@@ -26,13 +26,7 @@ class ScrapeTasksGrid
   accounts = Account.joins(:account_types).where(account_types: { name: 'scraper' })
   filter(:scraper, :enum, select: accounts.map { |r| [r.name, r.id] }.sort)
 
-  statuses = [
-    ['in progress',	2],
-    ['on checking',	11],
-    ['done', 9],
-    ['blocked',	5],
-    ['canceled', 7]
-  ]
+  statuses = Status.scrape_task_statuses_for_grid.pluck(:name, :id)
   filter(:status, :enum, select: statuses)
 
   frequency = Frequency.pluck(:name, :id)

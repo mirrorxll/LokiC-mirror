@@ -1,5 +1,4 @@
 $('#assignments').html(`<%= j render 'task_assignments/assignments', task: @task %>`);
 <%- if @comment %>
-  <%- puts @comment.id %>
   $('#comments').prepend(`<%= j render 'task_comments/comment', comment: @comment %>`);
 <%- end %>
