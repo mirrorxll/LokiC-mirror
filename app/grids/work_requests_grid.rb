@@ -112,7 +112,9 @@ class WorkRequestsGrid
     end
   end
 
-  column(:active_subtasks, mandatory: true) { 'Reserved(TO DO)' }
+  column(:active_subtasks, mandatory: true) do |req|
+    # to do
+  end
 
   column(:r_val, header: 'R Value', mandatory: true) do |req|
     format(req) do |r|
