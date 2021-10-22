@@ -87,6 +87,10 @@ class ScrapeTasksGrid
     s_task.scraper&.name
   end
 
+  # column(:tags, header: 'Tags', mandatory: true) do |s_task|
+  #   s_task.scraper&.name
+  # end
+
   column(:general_comment, header: 'Comment', order: 'comments.body', mandatory: true) do |s_task|
     format(s_task.general_comment&.body) { |body| truncate(body, length: 35) }
   end

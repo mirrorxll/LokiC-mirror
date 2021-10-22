@@ -53,17 +53,15 @@
       .card-body
         =render 'story_types/properties'
 
--if correct_account?(@story_type)
-  -if @iteration.eql?(@story_type.iteration)
-    #story_type_staging_table.accordion
-      .card
-        .card-header
-          %div.text-center{"aria-controls" => "#staging_table", "aria-expanded" => "false", "data-target" => "#staging_table", "data-toggle" => "collapse", type: "button"}
-            staging table
-        #staging_table.collapse.show{"data-parent" => "#story_type_staging_table"}
-          .flash
-          .card-body
-            =render 'story_types/staging_tables/staging_table'
+#story_type_staging_table.accordion
+  .card
+    .card-header
+      %div.text-center{"aria-controls" => "#staging_table", "aria-expanded" => "false", "data-target" => "#staging_table", "data-toggle" => "collapse", type: "button"}
+        staging table
+    #staging_table.collapse.show{"data-parent" => "#story_type_staging_table"}
+      .flash
+      .card-body
+        =render 'story_types/staging_tables/staging_table'
 
 %div.accordion{id: "story_type_samples_#{@iteration.id}"}
   .card

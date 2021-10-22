@@ -142,7 +142,6 @@ Rails.application.routes.draw do
 
       resources :staging_tables, only: %i[show create destroy] do
         post    :attach,         on: :collection
-        delete  :detach,         on: :member
         patch   :sync,           on: :member
         get     :canceling_edit, on: :collection
 
@@ -256,7 +255,6 @@ Rails.application.routes.draw do
 
       resources :staging_tables, only: %i[show create destroy] do
         post    :attach,         on: :collection
-        delete  :detach,         on: :member
         patch   :sync,           on: :member
         get     :canceling_edit, on: :collection
 

@@ -1,15 +1,24 @@
 # frozen_string_literal: true
 
 class StagingTable < ApplicationRecord # :nodoc:
-  before_create :generate_table_name,        if: :noname?
-  before_create :create_table,               if: :not_exists?
-  before_create :default_iter_id
-  before_create :default_story_type_columns, if: :story_type?
-  before_create :delete_useless_columns,     if: :story_type?
-  before_create :add_story_created,          if: :story_type?
-  before_create :add_article_created,        if: :article_type?
-  before_create :timestamps
-  after_create  :sync
+  before_create do
+    attach_table_name if noname?
+    create_table if not_exists?
+
+    default_iter_id
+
+    if story_type?
+      default_story_type_columns
+      delete_useless_columns
+      add_story_created
+    elsif article_type?
+      add_article_created
+    end
+
+    rename_table if not_lokic_name?
+    timestamps
+  end
+  after_create :sync
 
   belongs_to :staging_tableable, polymorphic: true
 
@@ -67,8 +76,16 @@ class StagingTable < ApplicationRecord # :nodoc:
     !self.class.exists?(name)
   end
 
+  def not_lokic_name?
+    !name.match?(/^[as]\d{4,5}$/)
+  end
+
   def generate_table_name
-    self.name = "#{staging_tableable.class.to_s.underscore}_#{staging_tableable.id.to_s.rjust(5, '0')}_staging"
+    "#{staging_tableable.class.to_s.downcase.first}#{staging_tableable.id.to_s.rjust(4, '0')}"
+  end
+
+  def attach_table_name
+    self.name = generate_table_name
   end
 
   def create_table
@@ -93,5 +110,12 @@ class StagingTable < ApplicationRecord # :nodoc:
 
   def timestamps
     Table.timestamps(name)
+  end
+
+  def rename_table
+    self.old_name = name
+    self.name = generate_table_name
+
+    Table.rename_table(old_name, name)
   end
 end
