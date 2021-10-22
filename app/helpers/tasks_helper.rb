@@ -26,7 +26,7 @@ module TasksHelper
     end
   end
 
-  def _title(title)
+  def parent_title(title)
     title.length > 40 ? title.first(40) + '...' : title
   end
 end
