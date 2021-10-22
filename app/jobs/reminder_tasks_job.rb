@@ -40,6 +40,8 @@ class ReminderTasksJob < ApplicationJob
                 end
 
         tasks.each do |task|
+          sleep(rand)
+
           next if task.assignment_to.empty? || task.status.name.in?(%w(canceled done deleted)) || task.reminder_frequency.nil?
 
           task.assignment_to.each do |assignment|
@@ -55,6 +57,7 @@ class ReminderTasksJob < ApplicationJob
 
         tasks_with_deadlines = Task.where.not(deadline: nil)
         tasks_with_deadlines.each do |task|
+          sleep(rand)
           next if task.status.name.in?(%w(canceled done deleted))
 
           deadline = task.deadline
