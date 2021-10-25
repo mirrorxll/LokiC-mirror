@@ -41,7 +41,6 @@ class ReminderTasksJob < ApplicationJob
 
         tasks.each do |task|
           sleep(rand)
-
           next if task.assignment_to.empty? || task.status.name.in?(%w(canceled done deleted)) || task.reminder_frequency.nil?
 
           task.assignment_to.each do |assignment|

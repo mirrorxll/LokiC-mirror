@@ -26,12 +26,10 @@ class TaskCommentsController < ApplicationController
 
   def update
     @comment.update!(body: params[:body])
-    @comments = @task.comments.order(created_at: :desc)
   end
 
   def destroy
     @comment.destroy
-    @comments = @task.comments.order(created_at: :desc)
   end
 
   private
