@@ -113,5 +113,12 @@ module Table
         conn.exec_query(upd_at_query)
       end
     end
+
+    def rename_table(old_name, new_name)
+      old_name = schema_table(old_name)
+      new_name = schema_table(new_name)
+
+      loki_story_creator { |conn| conn.rename_table(old_name, new_name) }
+    end
   end
 end

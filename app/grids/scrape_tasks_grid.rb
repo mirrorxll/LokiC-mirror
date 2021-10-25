@@ -26,13 +26,7 @@ class ScrapeTasksGrid
   accounts = Account.joins(:account_types).where(account_types: { name: 'scraper' })
   filter(:scraper, :enum, select: accounts.map { |r| [r.name, r.id] }.sort)
 
-  statuses = [
-    ['in progress',	2],
-    ['on checking',	11],
-    ['done', 9],
-    ['blocked',	5],
-    ['canceled', 7]
-  ]
+  statuses = Status.scrape_task_statuses_for_grid.pluck(:name, :id)
   filter(:status, :enum, select: statuses)
 
   frequency = Frequency.pluck(:name, :id)
@@ -92,6 +86,10 @@ class ScrapeTasksGrid
   column(:scraper, header: 'Dev', order: 'accounts.first_name, accounts.last_name', mandatory: true) do |s_task|
     s_task.scraper&.name
   end
+
+  # column(:tags, header: 'Tags', mandatory: true) do |s_task|
+  #   s_task.scraper&.name
+  # end
 
   column(:general_comment, header: 'Comment', order: 'comments.body', mandatory: true) do |s_task|
     format(s_task.general_comment&.body) { |body| truncate(body, length: 35) }

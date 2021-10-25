@@ -18,11 +18,25 @@
             =render 'statuses'
           -if current_account.eql?(@work_request.requester) || (current_account.types & ['manager', 'outside manager']).any?
             .d-inline-block.mr-2.small
-              =button_to('[ edit ]', edit_work_request_path(@work_request), method: :get, remote: true,
-                         class: 'p-0 pb-1 btn btn-sm btn-link ml-2', data: { disable_with: '...'})
-
+              %button{ type: 'button', class: 'p-0 pb-1 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#updateWorkRequestModal" }
+                [ edit ]
+          -if current_account.types.include?('manager')
+            .d-inline-block.mr-2.small
+              %button{ type: 'button', class: 'p-0 pb-1 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#createProjectModal" }
+                [ create project ]
     .card-body
       =render 'work_request_info'
+
+#workRequestProjects.mb-5.small
+  .card
+    .card-header.p-1
+      created projects
+    .card-body
+      -@work_request.projects.each do |p|
+        .row
+          .col-10.offset-1
+            =link_to(p.title, p)
+
 
 #updateWorkRequestModal.modal.fade.pr-0{ "aria-hidden" => "true", "aria-labelledby" => "updateWorkRequestModalLabel",
                                         role: "dialog", tabindex: "-1" }
@@ -35,8 +49,10 @@
           %span{ "aria-hidden" => "true" } ×
       .modal-body.d-flex
         .preview.overflow-scroll.small.w-55.pt-3.pr-3.pb-3
+          =render 'work_request_info_modal'
         .w-45
-          .editable.overflow-scroll.pt-3.h-92.pr-2.pb-3
+          .editable.overflow-scroll.pt-3.h-94.pr-2.pb-3
+            =render 'edit'
           %hr.m-2/
           .d-flex.align-items-center.justify-content-center.h-5
             =link_to('update', '#', id: 'updateWorkRequestButton', class: 'btn btn-sm btn-secondary')
@@ -48,7 +64,7 @@
   document.querySelector('#updateWorkRequestButton').addEventListener('click', (event) => {
     event.preventDefault();
 
-    event.target.classList.add('disabled');
+    event.target.disabled = true;
     event.target.innerText = '...';
 
     document.querySelector('#hiddenUpdateButton').click();
@@ -62,22 +78,38 @@
   });
 
 -if (current_account.types & ['manager', 'outside manager']).any?
-  #newMultiTask.mb-3
-    .card
-      .card-header.small.p-1
-        new multi task
-      .card-body
-
-
+  #createProjectModal.modal.fade.pr-0{ "aria-hidden" => "true", "aria-labelledby" => "createProjectModalLabel",
+                                        role: "dialog", tabindex: "-1" }
+    .modal-dialog.modal-dialog-scrollable.modal-dialog-fullscreen
+      .modal-content
+        .modal-header
+          .modal-title#createProjectModalLabel
+            New Project
+          %button.close{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+            %span{ "aria-hidden" => "true" } ×
+        .modal-body.d-flex
+          .preview.overflow-scroll.small.w-50.pt-3.pr-3.pb-3
+            =render 'work_request_info_modal'
+          .w-50
+            .editable.overflow-scroll.h-94.pr-2.pb-3.pl-2
+              =render 'tasks/project_form'
+            %hr.m-2/
+            .d-flex.align-items-center.justify-content-center.h-5
+              =button_tag('create', id: 'createProjectButton', class: 'btn btn-sm btn-secondary disabled')
+              .mr-1.ml-1
+              .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+                cancel
   :javascript
-    $('#newMultiTask .card-body').html('#{ j render 'tasks/form' }')
+    document.querySelector('#newProjectName').value = '#{@work_request.project_order_name.body}';
 
-    $('#task_description').froalaEditor({
-      key: 'KfdolbcqsaA2wzA-13==',
-      toolbarSticky: true,
-      documentReady: true,
-      toolbarButtons: ['fullscreen', 'undo', 'redo', '|', 'submitInstructionEdit', 'cancelInstructionEdit', '|', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineClass', 'inlineStyle', 'paragraphStyle', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', 'insertLink', 'insertImage', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'getPDF', 'help', 'html'],
-      imageUploadURL: '/images/upload',
-      imageUploadMethod: 'POST',
-      height: 700
-    })
+    (() => {
+      let button = document.querySelector('#createProjectButton');
+
+      button.disabled = true;
+
+      button.addEventListener('click', (event) => {
+        event.preventDefault();
+
+        document.querySelector('#hiddenCreateProjectButton').click();
+      }, false);
+    })();

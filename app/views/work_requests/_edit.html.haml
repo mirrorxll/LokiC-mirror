@@ -579,25 +579,25 @@
 
       let workType = [...document.querySelectorAll('#workTypes input[type="checkbox"]')].some((el) => { return el.checked; } );
       if(!workType) {
-        scrollToCard('#workTypes')
+        scrollToCardUnblockButton('#workTypes')
         return false;
       }
 
       // let client = [...document.querySelectorAll('#clients input[type="checkbox"]')].some((el) => { return el.checked; } );
       // if(!client) {
-      //   scrollToCard('#clients')
+      //   scrollToCardUnblockButton('#clients')
       //   return false;
       // }
 
       let revenueType = [...document.querySelectorAll('#revenueTypes input[type="checkbox"]')].some((el) => { return el.checked; } );
       if(!revenueType) {
-        scrollToCard('#revenueTypes')
+        scrollToCardUnblockButton('#revenueTypes')
         return false;
       }
 
       let orderName = document.querySelector('#projectOrderName input').value.length > 0
       if(!orderName) {
-        scrollToCard('#projectOrderName')
+        scrollToCardUnblockButton('#projectOrderName')
         return false;
       }
 
@@ -606,50 +606,50 @@
         let sowPattern = sowInput.value.match(/^https:\/\/docs.google.com\/(document|spreadsheets)/)
 
         if(!sowPattern) {
-          scrollToCard("#sow")
+          scrollToCardUnblockButton("#sow")
           return false;
         }
       }
 
       let orderDetail = document.querySelector('#projectOrderDetails textarea').value.length > 0
       if(!orderDetail) {
-        scrollToCard('#projectOrderDetails')
+        scrollToCardUnblockButton('#projectOrderDetails')
         return false;
       }
 
       let budget = document.querySelector('#budgetForProject input').value.length > 0
       if(!budget) {
-        scrollToCard('#budgetForProject')
+        scrollToCardUnblockButton('#budgetForProject')
         return false;
       }
 
       let invoiceType = [...document.querySelectorAll('#invoiceType input[type="radio"]')].some((el) => { return el.checked; } );
       if(!invoiceType) {
-        scrollToCard('#invoiceType')
+        scrollToCardUnblockButton('#invoiceType')
         return false;
       }
 
       let invoiceFrequency = [...document.querySelectorAll('#invoiceFrequency input[type="radio"]')].some((el) => { return el.checked; } );
       if(!invoiceFrequency) {
-        scrollToCard('#invoiceFrequency')
+        scrollToCardUnblockButton('#invoiceFrequency')
         return false;
       }
 
       let FirstInvoice = document.querySelector('#firstInvoice input').value.length > 0
       if(!FirstInvoice) {
-        scrollToCard('#firstInvoice')
+        scrollToCardUnblockButton('#firstInvoice')
         return false;
       }
 
       // let finalDeadline = document.querySelector('#finalDeadline input').value.length > 0
       // if(!finalDeadline) {
-      //   scrollToCard('#finalDeadline')
+      //   scrollToCardUnblockButton('#finalDeadline')
       //   return false;
       // }
 
       let priority = [...document.querySelectorAll('#priority input[type="radio"]')].some((el) => { return el.checked; } );
       if(!priority) {
-        scrollToCard('#priority')
+        scrollToCardUnblockButton('#priority')
         return false;
       }
 
@@ -661,7 +661,7 @@
       document.querySelectorAll('input[list]').forEach(el => { el.blur();  })
     }, false)
 
-    function scrollToCard(id) {
+    function scrollToCardUnblockButton(id) {
       let button = document.querySelector('#updateWorkRequestButton');
       let required = document.querySelector(id);
 

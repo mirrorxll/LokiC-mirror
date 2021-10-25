@@ -70,7 +70,7 @@ class Story < ApplicationRecord
   def self.ready_to_export
     where("pl_#{PL_TARGET}_story_id" => nil)
       .joins(:export_configuration, :publication, :output)
-      .order(:published_at).where(backdated: false)
+      .where(backdated: false).where.not(published_at: nil).order(:published_at)
       .where.not(export_configurations: { tag: nil })
   end
 

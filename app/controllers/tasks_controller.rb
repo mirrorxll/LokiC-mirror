@@ -12,7 +12,7 @@ class TasksController < ApplicationController # :nodoc:
 
   after_action  :send_notification, only: :create
   after_action  :comment, only: :create
-  
+
   def index
     respond_to do |f|
       f.html do
@@ -32,6 +32,9 @@ class TasksController < ApplicationController # :nodoc:
   end
 
   def create
+    puts params[:work_request_id]
+    puts task_params[:work_request]
+
     @task = Task.new(
       title: task_params[:title],
       description: task_params[:description],
@@ -39,6 +42,7 @@ class TasksController < ApplicationController # :nodoc:
       deadline: task_params[:deadline],
       gather_task: task_params[:gather_task],
       parent: task_params[:parent],
+      work_request: task_params[:work_request],
       client: task_params[:client],
       creator: current_account
     )
@@ -100,6 +104,7 @@ class TasksController < ApplicationController # :nodoc:
     task_params[:assignment_to] = task_params[:assignment_to].uniq.reject(&:blank?)
     task_params[:parent] = task_params[:parent].blank? ? nil : Task.find(task_params[:parent])
     task_params[:client] = task_params[:client_id].blank? ? nil : ClientsReport.find(task_params[:client_id])
+    task_params[:work_request] = params[:work_request_id] && WorkRequest.find(params[:work_request_id])
     task_params
   end
 
@@ -109,9 +114,5 @@ class TasksController < ApplicationController # :nodoc:
     up_task_params[:client] = up_task_params[:client_id].blank? ? nil : ClientsReport.find(up_task_params[:client_id])
     up_task_params[:parent] = up_task_params[:parent].blank? ? nil : Task.find(up_task_params[:parent])
     up_task_params
-  end
-
-  def comment_params
-    params.require(:comment)
   end
 end
