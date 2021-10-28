@@ -9,20 +9,32 @@ class TaskAssignment < ApplicationRecord # :nodoc:
   end
 
   def time_confirm
-    confirmed_at - created_at
+    confirmed_at - created_at - time_off
   end
 
-  # def dates
-  #   created_at.to_date..updated_at.to_date
-  # end
-  #
-  # def day_off?(date)
-  #   date.sunday? || date.saturday?
-  # end
-  #
-  # def saturdays
-  #   saturdays = []
-  #   updated_at.to_date - created_at.to_date).each { |date| saturdays << date.saturday? }
-  # end
-  #
+  private
+
+  def time_off
+    time_off = 0
+    dates = created_at.to_date..confirmed_at.to_date
+    dates.each_with_index do |date, index|
+      next unless day_off?(date)
+
+      time_off += if dates.count == 1
+                    confirmed_at - created_at
+                  elsif index == 0
+                    created_at.end_of_day - created_at
+                  elsif index == dates.count - 1
+                    confirmed_at - confirmed_at.beginning_of_day
+                  else
+                    1.day.to_i
+                  end
+    end
+    time_off
+  end
+
+  def day_off?(date)
+    date.sunday? || date.saturday?
+  end
+
 end
