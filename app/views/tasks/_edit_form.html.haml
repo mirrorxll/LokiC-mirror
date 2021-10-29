@@ -16,6 +16,10 @@
     .col
       gather_task:
     .col
+      =form.check_box 'task[access]', class: 'form-check-input', checked: @task.access
+      %label.form-check-label
+        Access to tasks and its subtasks
+    .col
       main_task
   .form-group.row.small.text-center.justify-content-between
     .col

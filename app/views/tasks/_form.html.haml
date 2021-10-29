@@ -33,6 +33,10 @@
       gather_task:
       .mt-1
         =form.text_field 'task[gather_task]', class: 'w-70'
+    .col
+      =form.check_box 'task[access]', class: 'form-check-input', checked: true
+      %label.form-check-label
+        Access to tasks and its subtasks
     -if params[:parent_task].blank?
       .col
         main_task:

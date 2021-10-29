@@ -23,7 +23,7 @@ class TasksController < ApplicationController # :nodoc:
   end
 
   def show
-    render_401 unless manager? || @task.access?(current_account)
+    render_401 unless manager? || @task.access_for?(current_account)
 
     @comments = @task.comments.order(created_at: :desc)
   end
@@ -41,6 +41,7 @@ class TasksController < ApplicationController # :nodoc:
       gather_task: task_params[:gather_task],
       parent: task_params[:parent],
       client: task_params[:client],
+      access: task_params[:access],
       creator: current_account
     )
     @task.assignment_to << Account.find(task_params[:assignment_to]) if @task.save!
@@ -96,7 +97,7 @@ class TasksController < ApplicationController # :nodoc:
   end
 
   def task_params
-    task_params = params.require(:task).permit(:title, :description, :parent, :deadline, :client_id, :reminder_frequency, :gather_task, assignment_to: [])
+    task_params = params.require(:task).permit(:title, :description, :parent, :deadline, :client_id, :reminder_frequency, :access, :gather_task, assignment_to: [])
     task_params[:reminder_frequency] = task_params[:reminder_frequency].blank? ? nil : TaskReminderFrequency.find(task_params[:reminder_frequency])
     task_params[:assignment_to] = task_params[:assignment_to].uniq.reject(&:blank?)
     task_params[:parent] = task_params[:parent].blank? ? nil : Task.find(task_params[:parent])
