@@ -10,40 +10,50 @@
       .form-group
         =form.hidden_field 'task[parent]', value: params[:parent_task]
   %hr/
-  .form-group.row.small.font-weight-bold.text-center.justify-content-between
-    .col
+  .d-flex.small.font-weight-bold.text-center
+    .col-2
       assignment to:
       =icon('fa', 'plus', class: 'ml-2', id: 'add_assignment')
       #assignments_form
-        .row.mt-1.justify-content-center
+        .row.mt-1.justify-content-center.small
           =form.collection_select 'task[assignment_to][]', current_account.types.include?('developer') ? [current_account] : Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }, style: "width:130px"
-    .col
-      reminder frequency:
-      .mt-1.mw-50
-        =form.collection_select 'task[reminder_frequency]', sorted_reminder_frequencies, :id, :name, { prompt: '' }
-    .col
-      client:
-      .mt-1
-        =form.collection_select 'task[client_id]', ClientsReport.all.order(:name), :id, :name, { prompt: '' }, style: "width:150px"
-    .col
-      deadline:
-      .mt-1
-        =form.date_field 'task[deadline]'
-    .col
-      gather_task:
-      .mt-1
-        =form.text_field 'task[gather_task]', class: 'w-70'
-    .col
-      =form.check_box 'task[access]', class: 'form-check-input', checked: true
-      %label.form-check-label
-        Access to tasks and its subtasks
-    -if params[:parent_task].blank?
-      .col
-        main_task:
-        .mt-1
-          =form.collection_select 'task[parent]', Task.where(parent: nil).where.not(status: Status.find_by(name: 'deleted')).order(:id), :id, :title_with_id, { prompt: '' }, style: "width:150px"
+    .col-4
+      .row.mb-2
+        .col.text-right
+          reminder frequency:
+        .col.text-left.small
+          =form.collection_select 'task[reminder_frequency]', sorted_reminder_frequencies, :id, :name, { prompt: '' }
+      .row.mb-2
+        .col.text-right
+          client:
+        .col.text-left.small
+          =form.collection_select 'task[client_id]', ClientsReport.all.order(:name), :id, :name, { prompt: '' }, style: "width:150px"
+      .row.mb-2
+        .col.text-right
+          access to task and its subtasks:
+        .col.text-left
+          =form.check_box 'task[access]', class: 'form-check-input ml-0 mt-2', checked: true
+    .col-4
+      .row.mb-2
+        .col.text-right
+          gather_task:
+        .col.text-left.small
+          =form.text_field 'task[gather_task]', class: 'w-70'
+      .row.mb-2
+        .col.text-right
+          deadline:
+        .col.text-left.small
+          =form.date_field 'task[deadline]'
+      .row.mb-2
+        -if params[:parent_task].blank?
+          .col.text-right
+            main_task:
+          .col.text-left.small
+            =form.collection_select 'task[parent]', Task.where(parent: nil).where.not(status: Status.find_by(name: 'deleted')).order(:id), :id, :title_with_id, { prompt: '' }, style: "width:150px"
   %hr/
   .modal-footer.justify-content-center
+    .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+      cancel
     =form.submit :create, class: 'btn btn-sm btn-outline-success'
 
 :javascript

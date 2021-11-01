@@ -4,6 +4,6 @@
       =hidden_field_tag 'comment[subtype]', params[:subtype]
       =form.rich_text_area :body, class: 'form-control overflow-auto', required: true, style: 'min-height: 150px;'
   .modal-footer.justify-content-center
-    =form.submit :send, class: 'btn btn-sm btn-outline-success'
     .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
       cancel
+    =form.submit :send, class: 'btn btn-sm btn-outline-success'
