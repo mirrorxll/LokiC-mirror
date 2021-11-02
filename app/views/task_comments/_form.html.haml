@@ -1,4 +1,12 @@
 =form_with(model: @comment, url: task_comments_path) do |form|
+  .row.col.d-flex.all_assignment_comment
+    .small.pr-1
+      send to:
+    .badge.badge-pill.badge-info
+      all
+    .change_assignment_comment_form.d-none
+
+  %hr/
   .row
     .col.small
       =hidden_field_tag 'comment[subtype]', params[:subtype]
@@ -7,3 +15,5 @@
     .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
       cancel
     =form.submit :send, class: 'btn btn-sm btn-outline-success'
+
+:javascript

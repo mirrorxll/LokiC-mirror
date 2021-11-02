@@ -20,6 +20,7 @@ class TaskCommentsController < ApplicationController
     @comment = @task.comments.build(subtype: comment_params[:subtype], body: comment_params[:body])
     @comment.commentator = current_account
     @comment.save!
+    # @comment.assignment_to << accounts
   end
 
   def edit; end
