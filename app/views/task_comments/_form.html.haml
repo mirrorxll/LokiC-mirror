@@ -1,10 +1,10 @@
 =form_with(model: @comment, url: task_comments_path) do |form|
-  .row.col.d-flex.all_assignment_comment
-    .small.pr-1
-      send to:
-    .badge.badge-pill.badge-info
-      all
-    .change_assignment_comment_form.d-none
+  .row.small.font-weight-bold
+    send to:
+    =icon('fa', 'plus', class: 'ml-2', id: 'add_assignment')
+    #assignments_form
+      .mt-1.justify-content-center.small
+        =form.collection_select 'comment[assignment_to][]', @task.assignment_to, :id, :name, { prompt: '' }, style: "width:130px"
 
   %hr/
   .row
@@ -17,3 +17,41 @@
     =form.submit :send, class: 'btn btn-sm btn-outline-success'
 
 :javascript
+  let accounts = #{ raw @task.assignment_to} };
+
+  $('#add_assignment').click(function () {
+    let hex = secureRandom(6);
+
+    $('#assignments_form').append(
+        `<div id="assignment_${hex}" class="row mt-1 ml-1 justify-content-center" >
+           <select id="task[assignment_to][]" style = "width:130px" class="mr-1" name="comment[assignment_to][]">${buildSelect(accounts)}</select>
+           <div class="ml-1" id="rm_assignment_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
+         </div>`
+    );
+  });
+
+  $('#delete_assignment').click(function () {
+    let assignments = document.getElementById('assignments')
+    assignments.removeChild(assignments.lastChild)
+  });
+
+  function buildSelect(options) {
+    var $select = $('');
+    $select += ('<option value="' + '' + '">' + '' + '</option>');
+    for (var i = 0; i < options.length; i++) {
+      $select += ('<option value="' + options[i][1] + '">' + options[i][0] + '</option>');
+    }
+    return $select;
+  }
+
+  function removeDate(elem) {
+    $(elem.parentNode).remove();
+  }
+
+  function secureRandom(n){
+    let result = '';
+    while (n--){
+      result += Math.floor(Math.random() * 16).toString(16);
+    }
+    return result;
+  }

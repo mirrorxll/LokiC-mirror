@@ -22,8 +22,8 @@
   function statusSubmit() {
     let select = document.getElementById('status_id');
     let status = select.options[select.selectedIndex].text;
-    let status_form = document.getElementById('status_form')
-    if(status == 'deleted'){
+    let status_form = document.getElementById('status_form');
+    if(status === 'deleted'){
       message = confirm("Are you sure you want to delete the task?");
       if (!message){
         return;
