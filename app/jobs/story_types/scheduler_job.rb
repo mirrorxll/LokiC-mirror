@@ -45,6 +45,24 @@ module StoryTypes
 
       status = true if iteration.reload.stories.where(published_at: nil).none?
 
+      counts = {}
+      stories = iteration.stories
+
+      if (counts[:total] = stories.count).zero?
+        counts[:scheduled], counts[:backdated] = 0
+      else
+        published = stories.where.not(published_at: nil)
+        counts[:scheduled] = published.where(backdated: 0).count
+        counts[:backdated] = published.count - counts[:scheduled]
+      end
+
+      current_schedule_counts = iteration.schedule_counts || {}
+
+      iteration.update!(
+        schedule_counts: current_schedule_counts.merge(counts),
+        current_account: options[:account]
+      )
+
       true
     rescue StandardError, ScriptError => e
       status = nil

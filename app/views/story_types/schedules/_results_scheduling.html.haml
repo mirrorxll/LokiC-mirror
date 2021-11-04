@@ -1,13 +1,13 @@
 count of stories:
 =@iteration.schedule_counts[:total]
 %br/
-stories sheduled:
-=@iteration.stories.where.not(published_at: nil).where(backdated: 0).count
+stories scheduled:
+=@iteration.schedule_counts[:scheduled]
 %br/
 stories backdated:
-=@iteration.stories.where(backdated: 1).count
+=@iteration.schedule_counts[:backdated]
 %hr/
--@iteration.schedule_counts.except(:total).each do |client, count|
+-@iteration.schedule_counts.except(:total, :backdated, :scheduled).each do |client, count|
   ="#{client}: #{count}"
   %br/
 -if @iteration.stories.where.not(published_at: nil).count > 1 && @iteration.export.nil?

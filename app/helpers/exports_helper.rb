@@ -27,4 +27,8 @@ module ExportsHelper
       'q9' => 'Paste example(s) of exported story errors below:'
     }
   end
+
+  def time_is_up?(date)
+    date <= Time.now
+  end
 end
