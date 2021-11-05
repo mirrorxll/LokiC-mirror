@@ -19,7 +19,8 @@ namespace :story_type do
 
       counts[:total] = current_schedule_counts.fetch(:total, stories.count)
       if counts[:total].zero?
-        counts[:scheduled], counts[:backdated] = 0
+        counts[:scheduled] = 0
+        counts[:backdated] = 0
       else
         published = stories.where.not(published_at: nil)
         counts[:scheduled] = published.where(backdated: 0).count
