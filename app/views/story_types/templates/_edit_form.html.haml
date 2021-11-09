@@ -10,3 +10,19 @@
   $('#template').on('hidden.bs.modal', function () {
     $('#template .modal-body').empty();
   });
+
+  $('[data-editor="summernote"]').summernote({
+    height: 600,
+    toolbar: [
+        ['style', ['style']],
+        ['font', ['clear', 'bold', 'italic', 'underline', 'strikethrough']],
+        ['fontname', ['fontname', 'fontsize']],
+        ['color', ['color']],
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['table', ['table']],
+        ['insert', ['link', 'picture', 'video']],
+        ['view', ['fullscreen', 'codeview', 'help']],
+    ]
+  });
+
+  $('#template').modal('show');
