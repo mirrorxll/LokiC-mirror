@@ -124,28 +124,30 @@ function addClientsToSelectGroup(uId, clientsFromApi = null) {
 }
 
 function publicationsByClient(event) {
-    let scopes = []
     window.$.ajax({
         url: `${window.location.origin}/api/publication_scopes`,
         dataType: 'json',
-        success: (publications) => { scopes.concat(publications) }
-    });
-
-    let clientId = event.target.value;
-    if(clientId === '') return false;
-
-    let publicationsSelect = event.target.parentNode.parentNode.getElementsByClassName('publications_select')[0]
-
-    while (publicationsSelect.firstChild) {
-        publicationsSelect.removeChild(publicationsSelect.firstChild);
-    }
-
-    window.$.ajax({
-        url: `${window.location.origin}/api/clients/${clientId}/publications`,
-        dataType: 'json',
         success: (publications) => {
-            let pubs = scopes.concat(publications)
-            addPublicationsToSelectGroup(publicationsSelect, pubs)
+            let scopes = []
+            scopes = scopes.concat(publications);
+
+            let clientId = event.target.value;
+            if(clientId === '') return false;
+
+            let publicationsSelect = event.target.parentNode.parentNode.getElementsByClassName('publications_select')[0]
+
+            while (publicationsSelect.firstChild) {
+                publicationsSelect.removeChild(publicationsSelect.firstChild);
+            }
+
+            window.$.ajax({
+                url: `${window.location.origin}/api/clients/${clientId}/publications`,
+                dataType: 'json',
+                success: (publications) => {
+                    let pubs = scopes.concat(publications)
+                    addPublicationsToSelectGroup(publicationsSelect, pubs)
+                }
+            });
         }
     });
 }

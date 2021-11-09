@@ -10,10 +10,10 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :authenticate_account!
 
-  before_action :find_parent_story_type
-  before_action :set_story_type_iteration
-  before_action :find_parent_article_type
-  before_action :set_article_type_iteration
+  before_action :find_parent_story_type, unless: :devise_controller?
+  before_action :set_story_type_iteration, unless: :devise_controller?
+  before_action :find_parent_article_type, unless: :devise_controller?
+  before_action :set_article_type_iteration, unless: :devise_controller?
 
   private
 

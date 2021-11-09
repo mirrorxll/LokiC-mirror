@@ -53,7 +53,7 @@ module StoryTypes
     private
 
     def schedule_counts(iteration)
-      counts = {}
+      counts = Hash.new(0)
       counts[:total] = iteration.stories.count
       return counts if counts[:total].zero?
 
