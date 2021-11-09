@@ -50,6 +50,11 @@
               %hr/
       #instruction.show{"data-parent" => "#scrapeInstruction"}
         =render 'scrape_tasks/instructions/instruction'
+      :javascript
+        [...document.querySelectorAll('#instruction .fr-view a')].forEach((el) => {
+          el.setAttribute('target', '_black');
+          el.setAttribute('rel', 'noopener noreferrer');
+        })
 
   #scrapeEvaluationDoc.tab-pane.fade.show
     .card.border-top-0.rounded-top-0.mb-5
@@ -69,5 +74,10 @@
               %hr/
       #evaluationDoc.show{ "data-parent" => "#scrapeEvaluationDoc" }
         =render 'scrape_tasks/evaluation_docs/evaluation_doc'
+      :javascript
+        [...document.querySelectorAll('#evaluationDoc .fr-view a')].forEach((el) => {
+          el.setAttribute('target', '_black');
+          el.setAttribute('rel', 'noopener noreferrer');
+        })
 
   #dataSample.tab-pane

@@ -8,17 +8,19 @@
       %b FCD ##{@story_type.id} #{@story_type.name} -- #{@story_type.developer.name}
   %hr/
 
-  -unless current_account.types.include?('editor')
-    .row
-      .col-10.offset-1
-        %nav{ 'area-label' => 'breadcrumb' }
-          %ov.breadcrumb.mb-0
+  .row
+    .col-10.offset-1
+      %nav{ 'area-label' => 'breadcrumb' }
+        %ov.breadcrumb.mb-0
+          %li.breadcrumb-item
+            =link_to('home', root_url)
+          -if current_account.types.include?('editor')
             %li.breadcrumb-item
-              =link_to('home', root_url)
-            %li.breadcrumb-item
-              =link_to('story type', story_type_path(@story_type))
-            %li.breadcrumb-item.active{ 'area-current' => 'page' }
-              FCD
+              =link_to('data set', data_set_path(@story_type.data_set))
+          %li.breadcrumb-item
+            =link_to('story type', story_type_path(@story_type))
+          %li.breadcrumb-item.active{ 'area-current' => 'page' }
+            FCD
   %hr/
 
   .row

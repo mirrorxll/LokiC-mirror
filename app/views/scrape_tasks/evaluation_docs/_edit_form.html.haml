@@ -47,4 +47,9 @@
       saveURL: `${window.location.origin}/scrape_tasks/#{@scrape_task.id}/evaluation_doc/autosave`,
       saveMethod: 'PATCH',
       tabSpaces: true
-    })
+    });
+
+    [...document.querySelectorAll('#scrapeEvaluationDoc .fr-element.fr-view a')].forEach((el) => {
+      el.setAttribute('target', '_black');
+      el.setAttribute('rel', 'noopener noreferrer');
+    });
