@@ -10,12 +10,13 @@ require("channels");
 require("trix");
 require("@rails/actiontext");
 
-import 'bootstrap'
-import '../stylesheets/application'
-import './summernote'
+import 'bootstrap';
+import '../stylesheets/application';
+import './summernote';
 import Rails from "@rails/ujs";
-import cronstrue from 'cronstrue'
-import './froala'
+import cronstrue from 'cronstrue';
+import './froala';
+import multipleSelect from 'multiple-select';
 
 window.Rails = Rails;
 window.jQuery = $;
