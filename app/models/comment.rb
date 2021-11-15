@@ -10,4 +10,8 @@ class Comment < ApplicationRecord
   def assignment?
     !assignment_to.empty?
   end
+
+  def assignment_to_s
+    assignment_to.map { |assignment| assignment.name }.to_sentence
+  end
 end

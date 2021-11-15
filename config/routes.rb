@@ -333,6 +333,8 @@ Rails.application.routes.draw do
       patch :subtasks,      on: :collection
     end
 
+    resources :checklists, controller: 'task_checklists', only: %i[new create edit update]
+
     resources :receipts, controller: 'task_receipts', only: :index do
       patch :confirm,   on: :collection
     end

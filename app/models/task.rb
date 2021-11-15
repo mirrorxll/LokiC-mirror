@@ -14,6 +14,7 @@ class Task < ApplicationRecord # :nodoc:
   belongs_to :parent, class_name: 'Task', foreign_key: :parent_task_id, optional: true
   belongs_to :client, class_name: 'ClientsReport', foreign_key: :client_id, optional: true
 
+  has_many :checklists, class_name: 'TaskChecklist'
   has_many :assignments, class_name: 'TaskAssignment'
   has_many :assignment_to, through: :assignments, source: :account
 
@@ -55,4 +56,14 @@ class Task < ApplicationRecord # :nodoc:
     parent.subtasks.each { |subtask| return true if subtask.assignment_to_or_creator?(account) } if parent
     false
   end
+
+  def done_by_all_assignments?
+    assignments.find_by(done: false).nil?
+  end
+
+  def sum_hours
+    assignments.sum(:hours).to_s + ' hours'
+  end
+
+
 end

@@ -1,0 +1,70 @@
+=form_with(url: change_task_progress_statuses_path(@task), method: :patch, id: 'task_hours_form') do |form|
+  =hidden_field_tag :status
+  #task_done.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "properties", role: "dialog", :tabindex => "-1"}
+    .modal-dialog.modal-dialog-centered.modal
+      .modal-content
+        .modal-body
+          .row.small.text-center
+            .col-7
+              How much time you spend on the task?
+            .col-5
+              =form.text_field :hours, id: 'hoursInput', required: true, class: 'small', placeholder: 'hours'
+          -unless @task.subtasks.empty?
+            %hr.mt-3.mb-3/
+            .card.overflow-auto{style: 'max-height: 350px;'}
+              .card-header.p-1
+                .justify-content-between.small
+                  subtasks
+              .card-body.overflow-auto
+                =render 'task_tracking_hours/subtasks_hours', task: @task
+
+            .row.small.mt-2.text-center
+              .col
+                Team work:
+              .col.text-lowercase.small.mt-1.justify-content-between
+                =form.radio_button(:type_team_work, :hours, { checked: 'checked', onclick: 'changePlaceholder(this);' })
+                =form.label :hours, class: 'mr-3'
+                =form.radio_button(:type_team_work, :dollars, { onclick: 'changePlaceholder(this);' })
+                =form.label :dollars
+              .col-5
+                =form.text_field :team_work, id: 'teamWork', required: true, class: 'small', placeholder: 'hours'
+        .modal-footer.justify-content-center
+          .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+            cancel
+          =form.submit :send, class: 'btn btn-sm btn-outline-success'
+
+:javascript
+  document.getElementById('task_hours_form').addEventListener('submit', function (evt) {
+    let select = document.getElementById('status_id');
+    let status = select.options[select.selectedIndex].text;
+    document.getElementById('status').value = status
+  });
+
+  function changePlaceholder(element) {
+    if (element.id === 'type_team_work_hours'){
+      document.getElementById('teamWork').placeholder = 'hours'
+    }
+    else {
+      document.getElementById('teamWork').placeholder = 'dollars'
+    }
+
+
+  }
+
+  function onSubmit(ev) {
+    ev.preventDefault();
+
+    let form = ev.target;
+    let hoursInput = form.querySelector('#hoursInput');
+    let hoursFeedback = form.querySelector('#hoursFeedback');
+    let submitButton = form.querySelector('input[type="submit"]');
+
+    if(!hoursInput.value.isNaN) {
+      form.removeEventListener('submit', onSubmit);
+      Rails.fire(form, 'submit');
+    } else {
+      hoursFeedback.classList.remove('d-none');
+      ev.stopPropagation();
+    }
+  }
+  document.querySelector('#task_hours_form').addEventListener('submit', onSubmit)

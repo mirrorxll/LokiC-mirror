@@ -15,7 +15,12 @@
             %li
               =link_to 'edit', edit_task_comment_path(@task, comment), remote: true, class: 'dropdown-item'
             %li
-              =link_to 'delete', task_comment_path(@task, comment), method: :delete, remote: true, class: 'dropdown-item', data: { confirm: 'Are you sure you want to delete the comment?' }
+              =link_to 'delete', task_comment_path(@task, comment), method: :delete, remote: true, class: 'dropdown-item', data: { confirm: 'Are you sure you want to delete this comment?' }
   .row.small.col-12.d-block
     =comment.body&.html_safe
-  %hr.mt-3.mb-3/
+  -if comment.assignment?
+    .row.text-secondary.font-italic.small.text-left.col-12.blockquote-footer.mt-2
+      ='sent to ' + comment.assignment_to_s
+    %hr.mt-1.mb-3/
+  -else
+    %hr.mt-3.mb-3/

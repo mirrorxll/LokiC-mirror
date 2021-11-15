@@ -1,30 +1,30 @@
 =form_with(model: @comment, url: task_comments_path) do |form|
-  .row.small.font-weight-bold
-    send to:
-    =icon('fa', 'plus', class: 'ml-2', id: 'add_assignment')
-    #assignments_form
-      .mt-1.justify-content-center.small
-        =form.collection_select 'comment[assignment_to][]', @task.assignment_to, :id, :name, { prompt: '' }, style: "width:130px"
-
-  %hr/
   .row
     .col.small
       =hidden_field_tag 'comment[subtype]', params[:subtype]
       =form.rich_text_area :body, class: 'form-control overflow-auto', required: true, style: 'min-height: 150px;'
+  .d-flex.small.font-weight-bold.mt-2.mb-2
+    .col-2
+      send to:
+      =icon('fa', 'plus', class: 'ml-2', id: 'add_assignment_comment')
+      .text-secondary.font-italic.small
+        (by default send to all)
+    .col-10.justify-content-start
+      #assignments_comment_form.row
   .modal-footer.justify-content-center
     .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
       cancel
     =form.submit :send, class: 'btn btn-sm btn-outline-success'
 
 :javascript
-  let accounts = #{ raw @task.assignment_to} };
+  var accounts = #{ raw @task.assignment_to.order([:first_name, :last_name]).map{ |account| [account.first_name.to_s + ' ' + account.last_name.to_s, account.id]} }
 
-  $('#add_assignment').click(function () {
+  $('#add_assignment_comment').click(function () {
     let hex = secureRandom(6);
 
-    $('#assignments_form').append(
-        `<div id="assignment_${hex}" class="row mt-1 ml-1 justify-content-center" >
-           <select id="task[assignment_to][]" style = "width:130px" class="mr-1" name="comment[assignment_to][]">${buildSelect(accounts)}</select>
+    $('#assignments_comment_form').append(
+        `<div id="assignment_${hex}" class="d-flex col-3 mt-2" >
+           <select id="comment[assignment_to][]" style = "width:130px" class="mr-1" name="comment[assignment_to][]">${buildSelect(accounts)}</select>
            <div class="ml-1" id="rm_assignment_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
          </div>`
     );

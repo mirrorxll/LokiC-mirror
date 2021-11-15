@@ -20,7 +20,7 @@ class TaskCommentsController < ApplicationController
     @comment = @task.comments.build(subtype: comment_params[:subtype], body: comment_params[:body])
     @comment.commentator = current_account
     @comment.save!
-    # @comment.assignment_to << accounts
+    @comment.assignment_to << comment_assignment_to
   end
 
   def edit; end
@@ -48,12 +48,16 @@ class TaskCommentsController < ApplicationController
   end
 
   def comment_params
-    params.require(:comment).permit(:body, :subtype)
+    params.require(:comment).permit(:body, :subtype, assignment_to: [])
+  end
+
+  def comment_assignment_to
+    comment_params[:assignment_to].blank? ? [] : Account.find(comment_params[:assignment_to])
   end
 
   def send_notification
     return unless @comment
-    accounts = ((@task.assignment_to.to_a << @task.creator) - [@comment.commentator]).uniq
+    accounts = @comment.assignment? ? @comment.assignment_to : ((@task.assignment_to.to_a << @task.creator) - [@comment.commentator]).uniq
     accounts.each do |account|
       next if account.slack.nil? || account.slack.deleted
 

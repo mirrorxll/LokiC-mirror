@@ -50,7 +50,6 @@
             main_task:
           .col.text-left.small
             =form.collection_select 'task[parent]', Task.where(parent: nil).where.not(status: Status.find_by(name: 'deleted')).order(:id), :id, :title_with_id, { prompt: '' }, style: "width:150px"
-  %hr/
   .modal-footer.justify-content-center
     .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
       cancel

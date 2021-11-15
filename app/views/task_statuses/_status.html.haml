@@ -1,12 +1,12 @@
+-status = status_for_user(task)
 .current_progress_status
-  =link_to(task.status.name, '#',
-        class: "badge badge-pill badge-#{status_color(task.status.name)}")
+  =link_to(status.name, '#',
+        class: "badge badge-pill badge-#{status_color(status.name)}")
 
 .change_progress_status_form.d-none
   =form_with(url: change_task_progress_statuses_path(task), id: 'status_form',
              html: { class: 'd-inline', onchange: "statusSubmit();" }, method: :patch) do |form|
-    =form.collection_select :status_id, Status.multi_task_statuses, :id, :name, { prompt: '' , selected: task.status.id},
-    data: { confirm: 'Are you sure you want to delete the task?' }
+    =form.collection_select :status_id, Status.multi_task_statuses, :id, :name, { prompt: '' , selected: status.id }
 
 :javascript
   document.querySelector('.current_progress_status a').addEventListener('click', function (evt) {
@@ -23,21 +23,33 @@
     let select = document.getElementById('status_id');
     let status = select.options[select.selectedIndex].text;
     let status_form = document.getElementById('status_form');
-    if(status === 'deleted'){
+    let taskId = #{task.id};
+
+    if(status === 'deleted') {
       message = confirm("Are you sure you want to delete the task?");
-      if (!message){
+      if (!message) {
         return;
-       } else { submit(status_form); }
+      } else {
+        submit(status_form);
+      }
     }
     else if (['blocked', 'canceled'].includes(status)) {
       $('#comment .modal-body').html("#{ j render 'task_statuses/comment_form' }");
       $('#comment').modal('show');
+    }
+    else if (status === 'done') {
+      var assignment = #{@task.assignment_to.include?(current_account)};
+      if(assignment) {
+        $('#task_done').modal('show');
+      } else {
+        return
+      }
     }
     else {
       submit(status_form);
     }
   };
 
-  function submit(form) {
+  function  submit(form) {
     Rails.fire(form, 'submit');
   }

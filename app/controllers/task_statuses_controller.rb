@@ -7,11 +7,17 @@ class TaskStatusesController < ApplicationController
   skip_before_action :set_article_type_iteration
 
   before_action :find_task
-  before_action :find_status, only: :change
+  before_action :find_status
+  before_action :find_assignment
 
   def change
-    @task.update(status: @status)
-    @task.update(done_at: Time.now) if @status.name.eql?('done')
+    if @status.name.eql?('done')
+      @assignment.update!(hours: params[:hours], done: true)
+      @task.update(done_at: Time.now, status: @status) if @task.done_by_all_assignments?
+    else
+      @assignment.update!(hours: nil, done: false)
+      @task.update(status: @status)
+    end
     comment && send_notification
   end
 
@@ -23,6 +29,10 @@ class TaskStatusesController < ApplicationController
 
   def find_status
     @status = params[:status].blank? ? Status.find(params[:status_id]) : Status.find_by(name: params[:status])
+  end
+
+  def find_assignment
+    @assignment = TaskAssignment.find_by(task: @task, account: current_account)
   end
 
   def comment
@@ -48,7 +58,7 @@ class TaskStatusesController < ApplicationController
                 "Status changed to #{@task.status.name}*\n>#{@task.title}"
 
       SlackNotificationJob.perform_later(account.slack.identifier, message)
-      SlackNotificationJob.perform_later(Rails.env.production? ? 'hle_lokic_task_reminders' : 'hle_lokic_development_messages', message)
+      # SlackNotificationJob.perform_later(Rails.env.production? ? 'hle_lokic_task_reminders' : 'hle_lokic_development_messages', message)
     end
   end
 end

@@ -1,0 +1,41 @@
+=form_with(url: task_checklists_path(@task), method: :post, id: 'task_checklist_form') do |form|
+  #taskChecklist.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "properties", role: "dialog", :tabindex => "-1"}
+    .modal-dialog.modal-dialog-centered.modal
+      .modal-content
+        .modal-body
+          .row.small.mb-1
+            .col
+              =icon('fa', 'plus', id: 'add_checklist')
+          .row.small
+            .col#forms_checklists
+              .row.col.mt-1
+                =form.text_field 'checklist[]'
+                .delete_checklist.ml-1{ onclick: "removeDate(this)" }
+                  =icon('fa', 'minus')
+        .modal-footer.justify-content-center
+          .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+            skip
+          =form.submit 'create', class: 'small mt-1 btn btn-sm btn-outline-dark'
+:javascript
+  $('#add_rchecklist').click(function () {
+    let hex = secureRandom(6);
+
+    $('#forms_checklists').append(
+        `<div id="assignment_${hex}" class="row col mt-1">
+           <input id="checklist[]" name="checklist[]"></input>
+           <div class="ml-1" id="rm_checklist_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
+         </div>`
+    );
+  });
+
+  function removeDate(elem) {
+    $(elem.parentNode).remove();
+  }
+
+  function secureRandom(n){
+    let result = '';
+    while (n--){
+      result += Math.floor(Math.random() * 16).toString(16);
+    }
+    return result;
+  }
