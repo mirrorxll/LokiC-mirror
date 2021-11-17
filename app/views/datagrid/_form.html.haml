@@ -37,9 +37,13 @@
 
 :javascript
   $(function() {
-    $('select#story_types_grid_developer').multipleSelect({
+    let multiselect = $('select').not(".dynamic_filter, .extended_boolean_filter, .boolean_filter .string_filter");
+    multiselect.prop('multiple','multiple');
+    multiselect.multipleSelect({
       multiple: true,
-      selectAll: false,
-      multipleWidth: 'auto'
-    })
-  })
+      maxHeightUnit: 'row',
+      multipleWidth: 'auto',
+      filter: true
+    });
+    multiselect.next().find('.ms-select-all').next().prop('hidden', 'true');
+  });

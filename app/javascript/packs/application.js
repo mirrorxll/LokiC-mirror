@@ -23,7 +23,6 @@ window.jQuery = $;
 window.$ = $;
 window.cronValidator = require('cron-validator')
 window.cronstrue = cronstrue
-
 document.addEventListener('turbolinks:load', () => {
   $('[data-toggle="tooltip"]').tooltip()
   $('[data-toggle="popover"]').popover({sanitize: false})
