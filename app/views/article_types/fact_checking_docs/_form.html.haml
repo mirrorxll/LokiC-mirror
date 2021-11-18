@@ -8,5 +8,4 @@
              class: 'btn btn-sm btn-outline-dark', onclick: 'hideAllPopovers();')
   %small.d-block.mb-2.mt-2
     *** FCD will be automatically saved every 30 seconds.
-  .field{ id: 'fcd_editable', "data-controller" => "summernote" }
-    =form.text_area 'fact_checking_doc[body]', data: { editor: 'summernote' }
+  =form.text_area 'fact_checking_doc[body]',id: 'fcd_editable', value: @fcd.body

@@ -1,8 +1,8 @@
 #editors_feedback_editor_modal.ml-3
   =form_with(url: story_type_fact_checking_doc_editors_feedback_index_path(@story_type, @story_type.fact_checking_doc),
              local: true) do |form|
-    .field{ id: 'editors_feedback_editable', "data-controller" => "summernote" }
-      =form.text_area 'editors_feedback[body]', data: { editor: 'summernote' }
+    .field
+      =form.rich_text_area 'editors_feedback[body]'
     .mt-3.mb-4
       =form.submit "create feedback", class: 'btn btn-sm btn-outline-dark',
                    onclick: "sessionStorage.removeItem('editorsFeedback');"

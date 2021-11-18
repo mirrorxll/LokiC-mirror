@@ -17,7 +17,8 @@ $fa-font-path: "~font-awesome/fonts";
 @import '~font-awesome/scss/font-awesome';
 @import "actiontext";
 @import "~trix";
-
+@import "~multiple-select/dist/multiple-select";
+@import "~multiple-select/dist/themes/bootstrap";
 
 @media (min-width: 100px) {
   .modal-dialog-fullscreen {

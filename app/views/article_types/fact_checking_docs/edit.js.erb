@@ -5,24 +5,23 @@
 
     body.innerHTML = `<%= j render 'form' %>`
 
-    let fcdEditor = $('#fcd_editable [data-editor="summernote"]')
-    fcdEditor.summernote({
-        height: 700,
-        toolbar: [
-            ['style', ['style']],
-            ['font', ['clear', 'bold', 'italic', 'underline', 'strikethrough']],
-            ['fontname', ['fontname', 'fontsize']],
-            ['color', ['color']],
-            ['para', ['ul', 'ol', 'paragraph']],
-            ['table', ['table']],
-            ['insert', ['link', 'picture', 'video']],
-            ['view', ['fullscreen', 'codeview', 'help']],
-        ]
+    let fcdEditor = $('#fcd_editable')
+    fcdEditor.froalaEditor({
+        key: 'KfdolbcqsaA2wzA-13==',
+        toolbarSticky: true,
+        documentReady: true,
+        toolbarButtons: ['fullscreen', 'undo', 'redo', '|', '|', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineClass', 'inlineStyle', 'paragraphStyle', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', 'insertLink', 'insertImage', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'getPDF', 'help', 'html'],
+        imageUploadURL: '/images/upload',
+        imageUploadMethod: 'POST',
+        saveInterval: 1500,
+        saveParam: 'fact_checking_doc[body]',
+        saveURL: `${window.location.origin}/article_types/#{@article_type.id}/fact_checking_doc`,
+        saveMethod: 'PATCH',
+        tabSpaces: true
     });
-    fcdEditor.summernote('code', fcd);
 
     sessionStorage['fcdSaverId'] = setInterval(fcdSaver, 30000);
-}).call();
+})();
 
 function fcdSaver() {
     let fcdHTML = document.querySelector('#fcd_editable .note-editable').children;

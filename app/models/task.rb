@@ -5,6 +5,14 @@ class Task < ApplicationRecord # :nodoc:
     self.status = Status.find_by(name: 'not started')
   end
 
+  before_save do
+    regexp = '<p data-f-id="pbf" style="text-align: center; font-size: 14px; margin-top: 30px; opacity: 0.65; '\
+             'font-family: sans-serif;">Powered by <a href="https://www.froala.com/wysiwyg-editor?pb=1" '\
+             'title="Froala Editor">Froala Editor</a></p>'
+
+    self.description = description&.gsub(/#{Regexp.escape(regexp)}/, '')
+  end
+
   validates :title, length: { maximum: 500 }
   validates :title, uniqueness: { scope: :creator }, case_sensitive: false
 
