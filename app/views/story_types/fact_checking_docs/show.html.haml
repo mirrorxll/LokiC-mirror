@@ -63,12 +63,12 @@
                   .row
                     -if r_fb.approvable || r_fb.confirmed
                       .col-12
-                        =r_fb.body&.html_safe
+                        =raw(r_fb.body)
                     -else
                       .col-1.d-flex.justify-content-center.align-items-center{ onchange: "confirmFeedback(this, 'reviewers', #{r_fb.id});" }
                         %input{ type: :checkbox }
                       .col-11.pl-0
-                        =r_fb.body&.html_safe
+                        =raw(r_fb.body)
                 -if index != (reviewers_feedback.count - 1)
                   %hr.mt-4.mb-4/
 
@@ -102,12 +102,12 @@
                 .row
                   -if e_fb.approvable || e_fb.confirmed
                     .col-12
-                      =e_fb.body&.html_safe
+                      =raw(e_fb.body)
                   -else
                     .col-1.d-flex.justify-content-center.align-items-center{ onchange: "confirmFeedback(this, 'editors', #{e_fb.id});" }
                       %input{ type: :checkbox }
                     .col-11.pl-0
-                      =e_fb.body&.html_safe
+                      =raw(e_fb.body)
               -if index != (editors_feedback.count - 1)
                 %hr.mt-4.mb-4/
 

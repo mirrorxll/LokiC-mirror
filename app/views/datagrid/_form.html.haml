@@ -34,3 +34,16 @@
       .text-center
         =f.submit 'apply', :class => "btn btn-sm btn-outline-dark mt-2"
         =link_to 'reset', url_for(grid.to_param => {}), :class => "btn btn-sm btn-outline-dark mt-2"
+
+:javascript
+  $(function() {
+    let multiselect = $('select').not(".dynamic_filter, .extended_boolean_filter, .boolean_filter .string_filter");
+    multiselect.prop('multiple','multiple');
+    multiselect.multipleSelect({
+      multiple: true,
+      maxHeightUnit: 'row',
+      multipleWidth: 'auto',
+      filter: true
+    });
+    multiselect.next().find('.ms-select-all').next().prop('hidden', 'true');
+  });

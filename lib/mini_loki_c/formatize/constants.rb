@@ -129,6 +129,9 @@ module MiniLokiC
         'WY' => 'Wyoming'
       }.freeze
 
+      STATES_SHORT = STATES_SHORT_LONG.keys.freeze
+      STATES_LONG  = STATES_SHORT_LONG.values.freeze
+
       STREET_TYPES = {
         /(\bALLEE\b|\bALY\b|\bALLE?Y\b)\.*/i => 'Alley',
         /(\bANX\b|\bANN?EX\b)\.*/i => 'Annex',

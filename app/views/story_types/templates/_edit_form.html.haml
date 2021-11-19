@@ -1,6 +1,6 @@
 =form_with(model: [@story_type, @story_type.template]) do |form|
-  .field.small{ "data-controller" => "summernote" }
-    =form.text_area :body, data: { editor: 'summernote' }
+  .field.small
+    =form.text_area :body, id: 'storytype-template-body', value: @story_type.template.body
   .modal-footer
     =link_to( 'close', '#', class: 'ml-auto btn btn-sm btn-outline-secondary',
               'data-dismiss' => 'modal', data: { confirm: 'All changes shall be lost. Close?'})
@@ -9,20 +9,6 @@
 :javascript
   $('#template').on('hidden.bs.modal', function () {
     $('#template .modal-body').empty();
-  });
-
-  $('[data-editor="summernote"]').summernote({
-    height: 600,
-    toolbar: [
-        ['style', ['style']],
-        ['font', ['clear', 'bold', 'italic', 'underline', 'strikethrough']],
-        ['fontname', ['fontname', 'fontsize']],
-        ['color', ['color']],
-        ['para', ['ul', 'ol', 'paragraph']],
-        ['table', ['table']],
-        ['insert', ['link', 'picture', 'video']],
-        ['view', ['fullscreen', 'codeview', 'help']],
-    ]
   });
 
   $('#template').modal('show');
