@@ -14,25 +14,25 @@ class StoryTypesGrid
   filter(:gather_task, :xboolean, left: true) do |value, scope|
     value ? scope.where.not(gather_task: nil) : scope.where(gather_task: nil)
   end
-  filter(:level_id, :enum, select: Level.all.pluck(:name, :id), left: true)
-  filter(:state, :enum, left: true, select: State.all.pluck(:short_name, :full_name, :id).map { |r| [r[0] + ' - ' + r[1], r[2]] }) do |value, scope|
+  filter(:level_id, :enum, multiple: true, select: Level.all.pluck(:name, :id), left: true)
+  filter(:state, :enum, multiple: true, left: true, select: State.all.pluck(:short_name, :full_name, :id).map { |r| [r[0] + ' - ' + r[1], r[2]] }) do |value, scope|
     scope.joins(data_set: [:state]).where(['states.id = ?', value])
   end
-  filter(:category, :enum, left: true, select: DataSetCategory.all.order(:name).pluck(:name, :id)) do |value, scope|
+  filter(:category, :enum, multiple: true, left: true, select: DataSetCategory.all.order(:name).pluck(:name, :id)) do |value, scope|
     scope.joins(data_set: [:category]).where(['data_set_categories.id = ?', value])
   end
-  filter(:data_set, :enum, left: true, select: DataSet.all.order(:name).pluck(:name, :id))
+  filter(:data_set, :enum, multiple: true, left: true, select: DataSet.all.order(:name).pluck(:name, :id))
   filter(:location, :string, left: true, header: 'Location (like)') do |value, scope|
     scope.joins(:data_set).where('location like ?', "%#{value}%")
   end
-  filter(:developer, :enum, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
-  filter(:frequency, :enum, left: true, select: Frequency.pluck(:name, :id))
-  filter(:photo_bucket, :enum, left: true, select: PhotoBucket.all.order(:name).pluck(:name, :id))
-  filter(:status, :enum, left: true, select: Status.all.pluck(:name, :id)) do |value, scope|
+  filter(:developer, :enum, multiple: true, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
+  filter(:frequency, :enum, multiple: true, left: true, select: Frequency.pluck(:name, :id))
+  filter(:photo_bucket, :enum, multiple: true, left: true, select: PhotoBucket.all.order(:name).pluck(:name, :id))
+  filter(:status, :enum, multiple: true, left: true, select: Status.all.pluck(:name, :id)) do |value, scope|
     status = Status.find(value)
     scope.where(status: status)
   end
-  filter(:client, :enum, left: true, select: Client.where(hidden_for_story_type: false).order(:name).pluck(:name, :id)) do |value, scope|
+  filter(:client, :enum, multiple: true, left: true, select: Client.where(hidden_for_story_type: false).order(:name).pluck(:name, :id)) do |value, scope|
     scope.joins(clients_publications_tags: [:client]).where(['clients.id = ?', value])
   end
   filter(:condition1, :dynamic, left: false, header: 'Dynamic condition 1')

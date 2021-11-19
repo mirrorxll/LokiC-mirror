@@ -37,13 +37,16 @@
 
 :javascript
   $(function() {
-    let multiselect = $('select').not(".dynamic_filter, .extended_boolean_filter, .boolean_filter .string_filter");
-    multiselect.prop('multiple','multiple');
+    // Don't use on .dynamic_filter, .extended_boolean_filter, .boolean_filter, .string_filter,
+    //   .date & .datetime because they do n/w. "rage: true" filters also will not work.
+    let multiselect = $('select[multiple]')
     multiselect.multipleSelect({
       multiple: true,
       maxHeightUnit: 'row',
       multipleWidth: 'auto',
       filter: true
     });
-    multiselect.next().find('.ms-select-all').next().prop('hidden', 'true');
+
+    // Removes ugly shift-зagination after "Select all"
+    multiselect.next().find('.ms-select-all').addClass('multiple');
   });

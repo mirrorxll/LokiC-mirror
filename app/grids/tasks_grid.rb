@@ -12,13 +12,13 @@ class TasksGrid
     scope.where('title RLIKE ?', value)
   end
 
-  filter(:assignment_to, :enum, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] }) do |value, scope|
+  filter(:assignment_to, :enum, multiple: true, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] }) do |value, scope|
     scope.joins(tasks_assignments: [:account]).where('account_id= ?', value)
   end
 
-  filter(:creator, :enum, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
-  filter(:status, :enum, select: Status.where(name: ['not started','in progress','blocked','canceled','done']).pluck(:name, :id).map { |r| [r[0], r[1]] })
-  filter(:deadline,:datetime, header: 'Deadline >= ?', multiple: ',')
+  filter(:creator, :enum, multiple: true, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
+  filter(:status, :enum, multiple: true, select: Status.where(name: ['not started','in progress','blocked','canceled','done']).pluck(:name, :id).map { |r| [r[0], r[1]] })
+  filter(:deadline, :datetime, header: 'Deadline >= ?', multiple: ',')
 
 
   filter(:deleted_tasks, :xboolean, left: true) do |value, scope|
