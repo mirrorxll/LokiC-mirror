@@ -10,20 +10,30 @@ RailsAdmin.config do |config|
   end
   config.current_user_method(&:current_account)
 
-  # config.actions do
-  #   dashboard { statistics false }
-  #
-  #   index
-  #   new
-  #   export
-  #   bulk_delete
-  #   show
-  #   edit
-  #   delete
-  #   show_in_app
+  # this is the way to whitelist the models
+  config.included_models =
+    %w[
+      Account AccountType Article ArticleType ArticleTypeIteration Assembled AutoFeedback
+      AutoFeedbackConfirmation Client ClientsReport Comment CronTab DataSet DataSetCategory
+      Frequency Level PhotoBucket Publication Reminder ScrapeTask SlackAccount StagingTable
+      State Status StoryType StoryTypeIteration Tag Task Template TimeFrame TrackingHour
+    ]
 
-    ## With an audit adapter, you can add:
+  config.actions do
+    dashboard
+
+    index
+    new
+    export
+    bulk_delete
+    show
+    edit
+    delete
+    show_in_app
+
+    # With an audit adapter, you can add:
     # history_index
     # history_show
-  # end
+  end
 end
+

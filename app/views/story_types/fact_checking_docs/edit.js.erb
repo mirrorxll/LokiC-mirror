@@ -17,14 +17,15 @@
         saveParam: 'fact_checking_doc[body]',
         saveURL: `${window.location.origin}/story_types/#{@story_type.id}/fact_checking_doc`,
         saveMethod: 'PATCH',
-        tabSpaces: true
+        tabSpaces: true,
+        htmlRemoveTags: ['script', 'base']
     });
 
     sessionStorage['fcdSaverId'] = setInterval(fcdSaver, 30000);
 })();
 
 function fcdSaver() {
-    let fcdHTML = document.querySelector('#fcd_editable .note-editable').children;
+    let fcdHTML = document.querySelector('#fcd_editable .fr-view').children;
     let reducer = (acc, curr)=>{ return acc + curr.outerHTML};
     let fcdStr = Array.from(fcdHTML).reduce(reducer, '');
 
