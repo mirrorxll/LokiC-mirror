@@ -75,8 +75,8 @@
 
     $(manual_feedback_modal).off('hidden.bs.modal')
     manual_feedback_modal.on('hidden.bs.modal', editorsFeedbackSaver)
-}).call();
+})();
 
 function editorsFeedbackSaver() {
-    sessionStorage['editorsFeedback'] = document.querySelector('#editors_feedback_editable .note-editable').innerHTML;
+    sessionStorage['editorsFeedback'] = document.querySelector('#editors_feedback_editable .fr-view').innerHTML;
 }

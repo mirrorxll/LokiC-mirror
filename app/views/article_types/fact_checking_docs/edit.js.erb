@@ -24,7 +24,7 @@
 })();
 
 function fcdSaver() {
-    let fcdHTML = document.querySelector('#fcd_editable .note-editable').children;
+    let fcdHTML = document.querySelector('#fcd_editable .fr-view').children;
     let reducer = (acc, curr)=>{ return acc + curr.outerHTML};
     let fcdStr = Array.from(fcdHTML).reduce(reducer, '');
 
