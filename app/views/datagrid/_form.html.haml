@@ -47,6 +47,11 @@
       filter: true
     });
 
-    // Removes ugly shift-зagination after "Select all"
+    // Removes ugly shift/pagination after "Select all"
     multiselect.next().find('.ms-select-all').addClass('multiple');
+
+    // Datepicker for Tasks-Deadline filter field (selects only date)
+    $('input[type=datetime]').datepicker({
+      format: 'yyyy-mm-dd'
+    });
   });

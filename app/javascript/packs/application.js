@@ -12,10 +12,11 @@ require("@rails/actiontext");
 
 import 'bootstrap';
 import '../stylesheets/application';
+import './froala';
 import './summernote';
 import Rails from "@rails/ujs";
 import cronstrue from 'cronstrue';
-import './froala';
+import datepicker from 'bootstrap-datepicker';
 import multipleSelect from 'multiple-select';
 
 window.Rails = Rails;
