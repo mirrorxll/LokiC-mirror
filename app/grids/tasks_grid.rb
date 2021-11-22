@@ -21,8 +21,8 @@ class TasksGrid
   filter(:creator, :enum, multiple: true, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
 
   statuses = [
-    ['not started',	1],
-    ['in progress',	2],
+    ['not started', 1],
+    ['in progress', 2],
     ['blocked',	5],
     ['canceled', 7],
     ['done', 9]

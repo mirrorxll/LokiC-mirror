@@ -100,6 +100,7 @@ class TasksController < ApplicationController # :nodoc:
     task_params[:reminder_frequency] = task_params[:reminder_frequency].blank? ? nil : TaskReminderFrequency.find(task_params[:reminder_frequency])
     task_params[:assignment_to] = task_params[:assignment_to].uniq.reject(&:blank?)
     task_params[:parent] = task_params[:parent].blank? ? nil : Task.find(task_params[:parent])
+    task_params[:status] = task_params[:status].blank? ? nil : Status.find(task_params[:status])
     task_params[:client] = task_params[:client_id].blank? ? nil : ClientsReport.find(task_params[:client_id])
     task_params
   end
@@ -107,6 +108,7 @@ class TasksController < ApplicationController # :nodoc:
   def update_task_params
     up_task_params = params.require(:task).permit(:title, :description, :deadline, :parent, :status, :client_id, :reminder_frequency, :gather_task)
     up_task_params[:reminder_frequency] = up_task_params[:reminder_frequency].blank? ? nil : TaskReminderFrequency.find(up_task_params[:reminder_frequency])
+    up_task_params[:status] = up_task_params[:status].blank? ? nil : Status.find(up_task_params[:status])
     up_task_params[:client] = up_task_params[:client_id].blank? ? nil : ClientsReport.find(up_task_params[:client_id])
     up_task_params[:parent] = up_task_params[:parent].blank? ? nil : Task.find(up_task_params[:parent])
     up_task_params
