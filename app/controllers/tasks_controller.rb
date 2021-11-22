@@ -12,7 +12,7 @@ class TasksController < ApplicationController # :nodoc:
 
   after_action  :send_notification, only: :create
   after_action  :comment, only: :create
-  
+
   def index
     respond_to do |f|
       f.html do
@@ -39,6 +39,7 @@ class TasksController < ApplicationController # :nodoc:
       deadline: task_params[:deadline],
       gather_task: task_params[:gather_task],
       parent: task_params[:parent],
+      status: task_params[:status],
       client: task_params[:client],
       creator: current_account
     )
@@ -95,7 +96,7 @@ class TasksController < ApplicationController # :nodoc:
   end
 
   def task_params
-    task_params = params.require(:task).permit(:title, :description, :parent, :deadline, :client_id, :reminder_frequency, :gather_task, assignment_to: [])
+    task_params = params.require(:task).permit(:title, :description, :parent, :deadline, :status, :client_id, :reminder_frequency, :gather_task, assignment_to: [])
     task_params[:reminder_frequency] = task_params[:reminder_frequency].blank? ? nil : TaskReminderFrequency.find(task_params[:reminder_frequency])
     task_params[:assignment_to] = task_params[:assignment_to].uniq.reject(&:blank?)
     task_params[:parent] = task_params[:parent].blank? ? nil : Task.find(task_params[:parent])
@@ -104,7 +105,7 @@ class TasksController < ApplicationController # :nodoc:
   end
 
   def update_task_params
-    up_task_params = params.require(:task).permit(:title, :description, :deadline, :parent, :client_id, :reminder_frequency, :gather_task)
+    up_task_params = params.require(:task).permit(:title, :description, :deadline, :parent, :status, :client_id, :reminder_frequency, :gather_task)
     up_task_params[:reminder_frequency] = up_task_params[:reminder_frequency].blank? ? nil : TaskReminderFrequency.find(up_task_params[:reminder_frequency])
     up_task_params[:client] = up_task_params[:client_id].blank? ? nil : ClientsReport.find(up_task_params[:client_id])
     up_task_params[:parent] = up_task_params[:parent].blank? ? nil : Task.find(up_task_params[:parent])

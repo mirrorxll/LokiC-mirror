@@ -97,7 +97,6 @@ class ScrapeTasksGrid
     format(s_task.general_comment&.body) { |body| truncate(body, length: 35) }
   end
 
-
   def row_classes(row)
     return 'not-scrapable' if row.scrapable.eql?(false)
 
