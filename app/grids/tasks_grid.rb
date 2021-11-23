@@ -20,13 +20,7 @@ class TasksGrid
 
   filter(:creator, :enum, multiple: true, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
 
-  statuses = [
-    ['not started', 1],
-    ['in progress', 2],
-    ['blocked',	5],
-    ['canceled', 7],
-    ['done', 9]
-  ]
+  statuses = Status.multi_task_statuses_for_grid.pluck(:name, :id)
   filter(:status, :enum, multiple: true, select: statuses)
 
   filter(:deadline, :datetime, header: 'Deadline >= ?', multiple: ',', type: 'datetime')
