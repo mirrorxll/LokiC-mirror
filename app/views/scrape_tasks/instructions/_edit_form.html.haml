@@ -48,4 +48,9 @@
       saveURL: `${window.location.origin}/scrape_tasks/#{@scrape_task.id}/instruction/autosave`,
       saveMethod: 'PATCH',
       tabSpaces: true
+    });
+
+    [...document.querySelectorAll('#scrapeInstruction .fr-element.fr-view a')].forEach((el) => {
+      el.setAttribute('target', '_black');
+      el.setAttribute('rel', 'noopener noreferrer');
     })

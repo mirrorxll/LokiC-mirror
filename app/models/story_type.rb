@@ -48,6 +48,7 @@ class StoryType < ApplicationRecord
   has_many :configurations_no_tags, -> { where(tag: nil).or(where(skipped: true)) }, class_name: 'ExportConfiguration'
   has_many :stories
   has_many :clients_publications_tags, class_name: 'StoryTypeClientPublicationTag'
+  has_many :excepted_publications
   has_many :clients, through: :clients_publications_tags
   has_many :tags, through: :clients_publications_tags
   has_many :change_history, as: :history
@@ -80,7 +81,7 @@ class StoryType < ApplicationRecord
   end
 
   def publication_pl_ids
-    pubs = clients_publications_tags.flat_map do |cl_p_t|
+    pubs = clients_publications_tags.where.not(tag: nil).flat_map do |cl_p_t|
       cl = cl_p_t.client
 
       cl_pubs =
@@ -98,7 +99,7 @@ class StoryType < ApplicationRecord
       cl_pubs.map(&:pl_identifier)
     end
 
-    pubs.uniq
+    (pubs. - excepted_publications.map(&:publication).map(&:pl_identifier)).uniq
   end
 
   def show_samples

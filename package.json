@@ -14,11 +14,10 @@
     "cronstrue": "^1.108.0",
     "font-awesome": "^4.7.0",
     "froala-editor": "2.9.1",
-    "jquery": "^3.5.1",
+    "jquery": "3.6.0",
     "multiple-select": "1.5.2",
     "popper.js": "^1.16.1",
     "stimulus": "^1.1.1",
-    "summernote": "^0.8.18",
     "trix": "^1.2.0",
     "turbolinks": "^5.2.0"
   },

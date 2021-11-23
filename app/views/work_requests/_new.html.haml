@@ -522,8 +522,6 @@
       .card-body
         .font-weight-bold.mb-2
           Final deadline
-          %span.small.text-danger
-            *required
         =f.date_field "work_request[final_deadline]", class: 'form-control form-control-sm w-50'
 
 
@@ -562,6 +560,7 @@
       event.stopPropagation();
 
       // #clients,
+      // #finalDeadline,
       let cards = document.querySelectorAll(
         `#workTypes,
          #revenueTypes,
@@ -572,7 +571,6 @@
          #invoiceType,
          #invoiceFrequency,
          #firstInvoice,
-         #finalDeadline,
          #priority`
       );
       [...cards].forEach((el) => { el.classList.remove('border-danger') })
@@ -641,11 +639,11 @@
         return false;
       }
 
-      let finalDeadline = document.querySelector('#finalDeadline input').value.length > 0
-      if(!finalDeadline) {
-        scrollToCard('#finalDeadline')
-        return false;
-      }
+      // let finalDeadline = document.querySelector('#finalDeadline input').value.length > 0
+      // if(!finalDeadline) {
+      //   scrollToCard('#finalDeadline')
+      //   return false;
+      // }
 
       let priority = [...document.querySelectorAll('#priority input[type="radio"]')].some((el) => { return el.checked; } );
       if(!priority) {

@@ -32,6 +32,9 @@ class TasksController < ApplicationController # :nodoc:
   end
 
   def create
+    puts params[:work_request_id]
+    puts task_params[:work_request]
+
     @task = Task.new(
       title: task_params[:title],
       description: task_params[:description],
@@ -40,6 +43,7 @@ class TasksController < ApplicationController # :nodoc:
       gather_task: task_params[:gather_task],
       parent: task_params[:parent],
       status: task_params[:status],
+      work_request: task_params[:work_request],
       client: task_params[:client],
       creator: current_account
     )
@@ -59,7 +63,7 @@ class TasksController < ApplicationController # :nodoc:
     body += if @task.assignment_to.empty?
               "Not assigned."
             else
-              "Assignment to #{@task.assignment_to.map { |assignment| assignment.name }.to_sentence}."
+              "Assignment to #{@task.assignment_to.map(&:name).to_sentence}."
             end
     @task.comments.build(
       subtype: 'task comment',
@@ -73,7 +77,7 @@ class TasksController < ApplicationController # :nodoc:
       if params[:tasks_grid]
         params.require(:tasks_grid).permit!
       else
-        !manager? ? { assignment_to: current_account.id, order: :id, descending: true } : { order: :id, descending: true }
+        manager? ? { order: :id, descending: true } : { assignment_to: current_account.id, order: :id, descending: true }
       end
     grid_params[:status] = Status.multi_task_statuses_for_grid if grid_params[:deleted_tasks] != 'YES'
     @grid = TasksGrid.new(grid_params.except(:collapse))
@@ -88,7 +92,7 @@ class TasksController < ApplicationController # :nodoc:
       next if assignment.slack.nil? || assignment.slack.deleted
 
       message = "*[ LokiC ] <#{task_url(@task)}| TASK ##{@task.id}> | "\
-              "ASSIGNMENT TO YOU*\n>#{@task.title}"
+                "ASSIGNMENT TO YOU*\n>#{@task.title}"
 
       SlackNotificationJob.perform_later(assignment.slack.identifier, message)
       SlackNotificationJob.perform_later(Rails.env.production? ? 'hle_lokic_task_reminders' : 'hle_lokic_development_messages', message)
@@ -102,6 +106,7 @@ class TasksController < ApplicationController # :nodoc:
     task_params[:parent] = task_params[:parent].blank? ? nil : Task.find(task_params[:parent])
     task_params[:status] = task_params[:status].blank? ? nil : Status.find(task_params[:status])
     task_params[:client] = task_params[:client_id].blank? ? nil : ClientsReport.find(task_params[:client_id])
+    task_params[:work_request] = params[:work_request_id] && WorkRequest.find(params[:work_request_id])
     task_params
   end
 
@@ -112,9 +117,5 @@ class TasksController < ApplicationController # :nodoc:
     up_task_params[:client] = up_task_params[:client_id].blank? ? nil : ClientsReport.find(up_task_params[:client_id])
     up_task_params[:parent] = up_task_params[:parent].blank? ? nil : Task.find(up_task_params[:parent])
     up_task_params
-  end
-
-  def comment_params
-    params.require(:comment)
   end
 end

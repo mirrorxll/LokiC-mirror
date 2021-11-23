@@ -1,0 +1,37 @@
+-# =form_with() do |f|
+-#   #clients_publications_tags
+-#     -if @data_set.persisted?
+-#       -@data_set.client_publication_tags.each do |row|
+-#         -u_id = SecureRandom.hex(3)
+-#         .row.mb-1{ id: u_id }
+-#           .col-4.pr-1
+-#             =f.collection_select :client_id, Client.where(hidden_for_story_type: false).sort_by(&:name), :id, :name,
+-#                                  { include_blank: true, selected: row.client.id },
+-#                                  { id: "data_set_default_#{u_id}_client_id", name: "default_props[client_tag_ids[#{u_id}[client_id]]]", class: 'form-control form-control-sm clients_select', required: true }
+-#           .col-4.pr-1
+-#             =f.collection_select :publication_id, Publication.where(name: ['all local publications', 'all statewide publications', 'all publications']) + row.client.publications.sort_by(&:name), :id, :name,
+-#                                  { include_blank: true, selected: row.publication ? row.publication.id : Publication.where(name: 'all publications').first.id },
+-#                                  { id: "data_set_default_#{u_id}_publication_id", name: "default_props[client_tag_ids[#{u_id}[publication_id]]]", class: 'form-control form-control-sm publications_select' }
+-#
+-#           .col-3.pl-1.pr-1
+-#             =f.collection_select :tag_id, row.client.tags.sort_by(&:name), :id, :name,
+-#                                  { include_blank: true, selected: row.tag.id },
+-#                                  { id: "data_set_default_#{u_id}_tag_id", name: "default_props[client_tag_ids[#{u_id}[tag_id]]]", class: 'form-control form-control-sm tags_select', required: true }
+-#           .col-1.pl-1.my-auto
+-#             %strong.remove_x
+-#               x
+-#   %hr.mb-2/
+-#   .text-center
+-#     =f.submit @data_set.new_record? ? 'create' : 'update',
+-#               class: 'btn btn-sm btn-outline-dark mt-2', data: { disable_with: "..." }
+-#     -if @data_set.new_record?
+-#       -if !controller_name.eql?('scrape_tasks')
+-#         =link_to('cancel', '#dataSetForm', 'aria-controls' => 'data_set_form',
+-#                  'aria-expanded' => false, data: { toggle: "collapse", target: "#dataSetForm" },
+-#                  type: "button", id: '#crt_upd_data_set_btn', class: 'btn btn-sm btn-outline-dark mt-2')
+-#       -else
+-#         =link_to('cancel', '#', class: 'mt-2 ml-auto btn btn-sm btn-outline-secondary', 'data-dismiss' => 'modal',)
+-#     -else
+-#       =link_to 'cancel', data_set_path(@data_set), class: 'btn btn-sm btn-outline-dark mt-2'
+-#
+-# =javascript_pack_tag 'data_sets/form'

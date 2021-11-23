@@ -10,6 +10,13 @@
             main task:
           .col-9
             =link_to parent_title(@task.parent.title), task_path(@task.parent), title: @task.parent.title
+      -if @task.work_request
+        -work_request = @task.work_request
+        .row.mb-2
+          .col-3.font-weight-bold
+            w. request:
+          .col-9
+            =link_to('click', work_request)
       .row.mb-2
         .col-3.font-weight-bold
           client:

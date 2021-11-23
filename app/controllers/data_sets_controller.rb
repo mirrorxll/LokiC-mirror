@@ -80,7 +80,7 @@ class DataSetsController < ApplicationController # :nodoc:
     @data_set.data_set_photo_bucket&.delete
     @data_set.client_publication_tags.destroy_all
 
-    DataSetDefaultProps.setup(@data_set, default_props_params)
+    DataSetDefaultProps.setup!(@data_set, default_props_params)
   end
 
   def story_type_filter_params

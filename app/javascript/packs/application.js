@@ -13,7 +13,6 @@ require("@rails/actiontext");
 import 'bootstrap';
 import '../stylesheets/application';
 import './froala';
-import './summernote';
 import Rails from "@rails/ujs";
 import cronstrue from 'cronstrue';
 import datepicker from 'bootstrap-datepicker';

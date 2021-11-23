@@ -11,10 +11,17 @@ module StoryTypes
     before_action :all_local_publications, only: :include
 
     def include
-      render_403 && return unless @story_type.clients_publications_tags.find_by(client: @client, publication: [nil, all_local_publications]).nil?
+      client = @story_type.clients_publications_tags.find_by(
+        client: @client,
+        publication: [nil, @all_local_publications]
+      )
+      render_403 && return if client
 
-      StoryTypeClientPublicationTag.create(story_type: @story_type, client: @client, publication: all_local_publications)
-      @client_publication_tag = @story_type.clients_publications_tags.find_by(client: @client, publication: all_local_publications)
+      @client_publication_tag =
+        @story_type.clients_publications_tags.create!(
+          client: @client,
+          publication: @all_local_publications
+        )
     end
 
     def exclude
@@ -29,7 +36,7 @@ module StoryTypes
     end
 
     def all_local_publications
-      @all_publications = Publication.find_by(name: 'all local publications')
+      @all_local_publications = Publication.find_by(name: 'all local publications')
     end
   end
 end

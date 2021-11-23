@@ -6,4 +6,6 @@ class EditorsFeedback < ApplicationRecord
 
   belongs_to :fact_checking_doc
   belongs_to :editor, class_name: 'Account'
+
+  has_rich_text :body
 end

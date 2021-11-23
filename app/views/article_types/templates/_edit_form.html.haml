@@ -1,6 +1,6 @@
 =form_with(model: [@article_type, @article_type.template]) do |form|
-  .field.small{ "data-controller" => "summernote" }
-    =form.text_area :body, data: { editor: 'summernote' }
+  .field.small
+    =form.text_area :body, id: 'articletype-template-body', value: @article_type.template.body
   .modal-footer
     =link_to( 'close', '#', class: 'ml-auto btn btn-sm btn-outline-secondary',
               'data-dismiss' => 'modal', data: { confirm: 'All changes shall be lost. Close?'})

@@ -6,4 +6,6 @@ class ReviewersFeedback < ApplicationRecord
 
   belongs_to :fact_checking_doc
   belongs_to :reviewer, class_name: 'Account'
+
+  has_rich_text :body
 end

@@ -19,22 +19,12 @@ module StoryTypes
         elsif @staging_table_name.present? && StagingTable.not_exists?(@staging_table_name)
           "Table with name '#{@staging_table_name}' not exists."
         else
-          StagingTableAttachingJob.perform_later(@story_type, current_account, @staging_table_name)
           @story_type.update!(staging_table_attached: false, current_account: current_account)
+          StagingTableAttachingJob.perform_later(@story_type, current_account, @staging_table_name)
           nil
         end
 
       render 'show'
-    end
-
-    def detach
-      staging_table_action do
-        messages = @staging_table.destroy.errors.full_messages
-        @story_type.update!(staging_table_attached: nil, current_account: current_account)
-        messages.any? ? messages.join(' | ') : nil
-      end
-
-      render 'new'
     end
 
     def sync

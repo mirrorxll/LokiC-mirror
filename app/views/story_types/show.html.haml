@@ -19,16 +19,20 @@
 .row
   .col-10
     #story_type_iterations
-      =render partial: 'story_types/iterations/iteration',
-              collection: @story_type.iterations.where(cron_tab: [nil, false]),
-              current_iteration: @story_type.iteration
+      -if correct_account?(@story_type)
+        =render partial: 'story_types/iterations/iteration',
+                collection: @story_type.iterations.where(cron_tab: [nil, false]),
+                current_iteration: @story_type.iteration
 
-      .badge.badge-pill.badge-light{'data-container' => 'body',
-                                    'data-toggle' => 'popover',
-                                    'data-placement' => 'top',
-                                    'data-html' => 'true',
-                                    'data-content' => "#{ render 'story_types/iterations/new_form' }" }
-        new iteration
+        .badge.badge-pill.badge-light{'data-container' => 'body',
+                                      'data-toggle' => 'popover',
+                                      'data-placement' => 'top',
+                                      'data-html' => 'true',
+                                      'data-content' => "#{ render 'story_types/iterations/new_form' }" }
+          new iteration
+      -else
+        .badge.badge-pill.badge-dark
+          =@story_type.iteration.name
   .col-2.text-right
     #story_type_status
       =render 'story_types/progress_statuses/status'
@@ -53,17 +57,15 @@
       .card-body
         =render 'story_types/properties'
 
--if correct_account?(@story_type)
-  -if @iteration.eql?(@story_type.iteration)
-    #story_type_staging_table.accordion
-      .card
-        .card-header
-          %div.text-center{"aria-controls" => "#staging_table", "aria-expanded" => "false", "data-target" => "#staging_table", "data-toggle" => "collapse", type: "button"}
-            staging table
-        #staging_table.collapse.show{"data-parent" => "#story_type_staging_table"}
-          .flash
-          .card-body
-            =render 'story_types/staging_tables/staging_table'
+#story_type_staging_table.accordion
+  .card
+    .card-header
+      %div.text-center{"aria-controls" => "#staging_table", "aria-expanded" => "false", "data-target" => "#staging_table", "data-toggle" => "collapse", type: "button"}
+        staging table
+    #staging_table.collapse.show{"data-parent" => "#story_type_staging_table"}
+      .flash
+      .card-body
+        =render 'story_types/staging_tables/staging_table'
 
 %div.accordion{id: "story_type_samples_#{@iteration.id}"}
   .card

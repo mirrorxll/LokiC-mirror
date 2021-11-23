@@ -12,7 +12,7 @@ module Reports
       session = GoogleDrive::Session.from_config('config/google_drive.json')
 
       workbook[0].sheet_name = 'Assembled 2020'
-      ['Date','Dept','Name','Updated Description',
+      ['Date', 'Dept', 'Name','Updated Description',
        'Oppourtunity Name','Oppourtunity ID','Old Product Name',
        'SF Product ID','Client Name','Account Name',
        'Hours','Employment Classification'].each_with_index do |cell, j|

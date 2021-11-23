@@ -1,0 +1,198 @@
+=form_with(url: tasks_path(work_request_id: @work_request), id: 'formNewProject', html: { onkeypress: "return event.keyCode !== 13;" }) do |form|
+  .form-group
+    .row
+      .col-10.offset-1
+        =form.text_field 'task[title]', placeholder: 'title', id: 'newProjectName',
+                         class: 'w-100 mb-2', maxlength: 500
+        #newProjectNameFeedback.mb-1.text-danger.text-center
+          .is-empty.d-none
+            Project's title is empty
+          .already-created.d-none
+            Project with this title has been already created
+    =form.text_area 'task[description]', class: 'form-control form-control-sm', id: 'project_description'
+  %hr/
+  .row.small.font-weight-bold
+    .col-5.offset-1.mr-1.border-right
+      .row
+        .col-5.mb-1.text-center.text-white
+          \.
+      .row.mb-1.mt-1
+        .col-5.text-right
+          client:
+        .col-7
+          =form.collection_select 'task[client_id]', ClientsReport.all.order(:name), :id, :name, { prompt: '' }, class: 'w-100'
+      .row.mb-1
+        .col-5.text-right
+          reminder frequency:
+        .col-7
+          =form.collection_select 'task[reminder_frequency]', sorted_reminder_frequencies, :id, :name, { prompt: '' }, class: 'w-100'
+      .row.mb-1
+        .col-5.text-right
+          deadline:
+        .col-7
+          =form.date_field 'task[deadline]', class: 'w-75'
+      .row.mb-1
+        .col-5.text-right
+          gather task id:
+        .col-7
+          =form.number_field 'task[gather_task]', class: 'w-50'
+    .col-5.border-left.ml-1.border-left
+      .row
+        .col-5.mb-1.text-center
+          assignment to
+          =icon('fa', 'plus', class: 'ml-1 mr-1', id: 'add_assignment')
+      .row
+        .col-5.text-center
+          #assignments_form
+            -accounts = current_account.types.include?('developer') ? [current_account] : Account.all.order([:first_name, :last_name])
+            =form.collection_select 'task[assignment_to][]', accounts, :id, :name, { prompt: '' }, class: 'mt-1'
+
+  .d-none
+    =form.submit :create, id: 'hiddenCreateProjectButton'
+
+:javascript
+  $('#project_description').froalaEditor({
+      key: 'KfdolbcqsaA2wzA-13==',
+      toolbarButtons: ['fullscreen', 'undo', 'redo', '|', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineClass', 'inlineStyle', 'paragraphStyle', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', 'insertLink', 'insertImage', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'getPDF', 'help', 'html'],
+      imageUploadURL: '/images/upload',
+      imageUploadMethod: 'POST',
+      height: 420
+  });
+
+  $('#add_assignment').click(function () {
+    let hex = secureRandom(6);
+    let accounts = #{raw Account.all.order([:first_name, :last_name]).map{ |account| [account.first_name.to_s + ' ' + account.last_name.to_s, account.id]} };
+
+    $('#assignments_form').append(
+        `<div id="assignment_${hex}" class="d-flex mt-1 justify-content-base" >
+           <select id="task[assignment_to][]" class="mr-1" name="task[assignment_to][]">${buildSelect(accounts)}</select>
+           <div id="rm_assignment_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
+         </div>`
+    );
+  });
+
+  $('#delete_assignment').click(function () {
+    let assignments = document.getElementById('assignments')
+    assignments.removeChild(assignments.lastChild)
+  });
+
+  function buildSelect(options) {
+    var $select = $('');
+    $select += ('<option value="' + '' + '">' + '' + '</option>');
+    for (var i = 0; i < options.length; i++) {
+      $select += ('<option value="' + options[i][1] + '">' + options[i][0] + '</option>');
+    }
+    return $select;
+  }
+
+  function removeDate(elem) {
+    $(elem.parentNode).remove();
+  }
+
+  function secureRandom(n){
+    let result = '';
+    while (n--){
+      result += Math.floor(Math.random() * 16).toString(16);
+    }
+    return result;
+  }
+
+  $('#task').on('hidden.bs.modal', function () {
+    $('#task .modal-body').empty();
+  });
+
+  function delay(fn, ms) {
+    let timer = 0;
+    return function(...args) {
+      clearTimeout(timer);
+      timer = setTimeout(fn.bind(this, ...args), ms || 0)
+    }
+  }
+
+  function isUniq(name, names) {
+    let lowName = name.toLowerCase();
+    return !names.find(el => lowName === el.toLowerCase());
+  }
+
+  document.querySelector('#newProjectName').addEventListener('input', delay(() => {
+    let nameInput = document.querySelector('#newProjectName');
+    let feedbackIsEmpty = document.querySelector('#newProjectNameFeedback .is-empty');
+    let feedbackAlreadyCreated = document.querySelector('#newProjectNameFeedback .already-created');
+    let button = document.querySelector('#createProjectButton');
+    let hiddenButton = document.querySelector('#hiddenCreateProjectButton');
+
+    if(nameInput.value.trim().length === 0) {
+      nameInput.classList.add('border', 'border-danger');
+      feedbackIsEmpty.classList.remove('d-none');
+      hiddenButton.disabled = true;
+      button.disabled = true;
+      button.classList.add('disabled');
+      return false;
+    }
+
+    Rails.ajax({
+      type: 'GET',
+      dataType: 'json',
+      url: `#{root_url}api/tasks/titles`,
+      data: `creator_id=#{current_account.id}`,
+      success: (names) => {
+        let nameIsUniq = isUniq(nameInput.value.trim(), names);
+
+        if(nameIsUniq === true) {
+          nameInput.classList.remove('border', 'border-danger');
+          feedbackAlreadyCreated.classList.add('d-none');
+          feedbackIsEmpty.classList.add('d-none');
+          hiddenButton.disabled = false;
+          button.disabled = false;
+          button.classList.remove('disabled');
+        } else {
+          nameInput.classList.add('border', 'border-danger');
+          feedbackAlreadyCreated.classList.remove('d-none');
+          hiddenButton.disabled = true;
+          button.disabled = true;
+          button.classList.add('disabled');
+        }
+      }
+    })
+  }, 500));
+
+  function onSubmitProject(ev) {
+    ev.preventDefault();
+    ev.stopPropagation();
+
+    let form = ev.target;
+    let nameInput = form.querySelector('#newProjectName');
+    let feedbackIsEmpty = form.querySelector('#newProjectNameFeedback .is-empty');
+    let feedbackAlreadyCreated = form.querySelector('#newProjectNameFeedback .already-created');
+    let button = document.querySelector('#createProjectButton');
+    let hiddenButton = document.querySelector('#hiddenCreateProjectButton');
+
+    if(nameInput.value.trim().length === 0) {
+       feedbackIsEmpty.classList.remove('d-none');
+       hiddenButton.disabled = true;
+       button.disabled = true;
+       button.innerText = 'create';
+       return false;
+    }
+
+    Rails.ajax({
+      type: 'GET',
+      dataType: 'json',
+      url: `#{root_url}api/tasks/titles`,
+      data: `creator_id=#{current_account.id}`,
+      success: (names) => {
+        let nameIsUniq = isUniq(nameInput.value, names);
+
+        if(nameIsUniq && nameInput.value.trim().length > 0) {
+          form.removeEventListener('submit', onSubmitProject);
+          Rails.fire(form, 'submit');
+        } else {
+          nameInput.classList.add('border', 'border-danger');
+          nameFeedback.classList.remove('d-none');
+          button.classList.remove('disabled');
+          button.innerText = 'create';
+        }
+      }
+    })
+  }
+  document.querySelector('#formNewProject').addEventListener('submit', onSubmitProject, false)

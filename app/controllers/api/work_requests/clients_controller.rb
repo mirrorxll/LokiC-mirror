@@ -13,7 +13,7 @@ module Api
       private
 
       def client_params
-        params.require(:client).permit(:name)
+        params.require(:client).permit(:id, :name)
       end
     end
   end
