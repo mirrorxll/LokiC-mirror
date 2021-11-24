@@ -102,9 +102,9 @@ class ScrapeTasksGrid
 
     left_until_dl = (row.deadline - Date.today).to_i
 
-    if left_until_dl.to_i <= 1
+    if left_until_dl.to_i.eql?(0)
       'deadline-1'
-    elsif left_until_dl.to_i <= 2
+    elsif left_until_dl.to_i.between?(-2, -1)
       'deadline-2'
     end
   end

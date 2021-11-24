@@ -7,7 +7,6 @@ class TasksGrid
   scope { Task.includes(:status, :tasks_assignments, :creator, :assignment_to) }
 
   # Filters
-
   filter(:title, :string, left: true, header: 'Title(RLIKE)') do |value, scope|
     scope.where('title RLIKE ?', value)
   end
@@ -22,9 +21,8 @@ class TasksGrid
 
   statuses = Status.multi_task_statuses_for_grid.pluck(:name, :id)
   filter(:status, :enum, multiple: true, select: statuses)
-
   filter(:deadline, :datetime, header: 'Deadline >= ?', multiple: ',', type: 'datetime')
-
+  filter(:deadline, :datetime, header: 'Deadline >= ?', multiple: ',', type: 'datetime')
   filter(:deleted_tasks, :xboolean, left: true) do |value, scope|
     status_deleted = Status.find_by(name: 'deleted')
     value ? scope.where(status: status_deleted) : scope.where.not(status: status_deleted)

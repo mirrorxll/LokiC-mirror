@@ -33,10 +33,11 @@ class ScrapeTasksController < ApplicationController
   def update
     render_403 and return if !manager? && !@scrape_task.scraper.eql?(current_account)
 
-    @scrape_task.datasource_comment.update!(datasource_comment_param)
-    @scrape_task.scrape_ability_comment.update!(scrape_ability_comment_param)
-    @scrape_task.general_comment.update!(general_comment_param)
+    @scrape_task.datasource_comment&.update!(datasource_comment_param)
+    @scrape_task.scrape_ability_comment&.update!(scrape_ability_comment_param)
+    @scrape_task.general_comment&.update!(general_comment_param)
     @scrape_task.update!(update_scrape_task_params)
+    p @scrape_task.update!(multi_task_param)
 
     return unless manager?
 
@@ -108,5 +109,9 @@ class ScrapeTasksController < ApplicationController
 
   def data_set_param
     params.require(:data_set).permit(:id)
+  end
+
+  def multi_task_param
+    params.require(:multi_task).permit(:task_id)
   end
 end

@@ -77,6 +77,12 @@
     data requester:
   .col-10
     =@scrape_task.data_requester
+.row.mb-1
+  .col-2.pr-0.text-right.font-weight-bold
+    multi task:
+  .col-10
+    -if @scrape_task.multi_task
+      =link_to('\asdfsadf', @scrape_task.multi_task)
 .row.mb-4
   .col-2.pr-0.text-right.font-weight-bold
     gather task:
