@@ -38,15 +38,11 @@ module MiniLokiC
       end
 
       def list_to_short(list = STATES_LONG)
-        list.map do |state|
-          to_short(state)
-        end
+        list.map { |state| to_short(state) }
       end
 
       def list_to_long(list = STATES_SHORT)
-        list.map do |st|
-          to_long(st)
-        end
+        list.map { |st| to_long(st) }
       end
     end
   end

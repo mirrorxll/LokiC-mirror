@@ -6,7 +6,7 @@ class ReminderTasksJob < ApplicationJob
   def perform
     Process.wait(
       fork do
-        day_of_week = Date.today.strftime("%A")
+        day_of_week = Date.today.strftime('%A')
 
         each_day = TaskReminderFrequency.find_by(name: 'each day')
         once_a_week = TaskReminderFrequency.find_by(name: 'once a week')
@@ -40,12 +40,16 @@ class ReminderTasksJob < ApplicationJob
                 end
 
         tasks.each do |task|
-          next if task.assignment_to.empty? || task.status.name.in?(%w(canceled done deleted)) || task.reminder_frequency.nil?
+          if task.assignment_to.empty? || task.status.name.in?(%w[canceled done deleted]) || task.reminder_frequency.nil?
+            next
+          end
 
           task.assignment_to.each do |assignment|
             next if assignment.slack.nil? || assignment.slack.deleted
 
-            message = "*[ LokiC ] Unfinished <#{generate_task_url(task)}|Task ##{task.id}> | REMINDER | "\
+            sleep(rand)
+
+            message = "*[ LokiC ] Unfinished <#{generate_task_url(task)} | Task ##{task.id}> | REMINDER | "\
               "#{assignment.name}*\n" \
               "#{task.title}".gsub("\n", "\n>")
             SlackNotificationJob.perform_now(assignment.slack.identifier, message)
@@ -55,7 +59,7 @@ class ReminderTasksJob < ApplicationJob
 
         tasks_with_deadlines = Task.where.not(deadline: nil)
         tasks_with_deadlines.each do |task|
-          next if task.status.name.in?(%w(canceled done deleted))
+          next if task.status.name.in?(%w[canceled done deleted])
 
           deadline = task.deadline
           deadline_message = if deadline - 5.days == Date.today
@@ -73,6 +77,8 @@ class ReminderTasksJob < ApplicationJob
           accounts = (task.assignment_to.to_a << task.creator).uniq
           accounts.each do |account|
             next if account.slack.nil? || account.slack.deleted
+
+            sleep(rand)
 
             message = "*[ LokiC ] #{deadline_message} | <#{generate_task_url(task)}|Task ##{task.id}> | "\
                     "#{account.name}*\n" \

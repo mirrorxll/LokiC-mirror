@@ -21,16 +21,16 @@ class ScrapeTasksGrid
   end
 
   states = State.all.map { |r| [r.name, r.id] }
-  filter(:state, :enum, select: states)
+  filter(:state, :enum, multiple: true, select: states)
 
   accounts = Account.joins(:account_types).where(account_types: { name: 'scraper' })
-  filter(:scraper, :enum, select: accounts.map { |r| [r.name, r.id] }.sort)
+  filter(:scraper, :enum, multiple: true, select: accounts.map { |r| [r.name, r.id] }.sort)
 
   statuses = Status.scrape_task_statuses_for_grid.pluck(:name, :id)
-  filter(:status, :enum, select: statuses)
+  filter(:status, :enum, multiple: true, select: statuses)
 
   frequency = Frequency.pluck(:name, :id)
-  filter(:frequency, :enum, select: frequency) do |value, scope|
+  filter(:frequency, :enum, multiple: true, select: frequency) do |value, scope|
     scope.where(frequencies: { id: value })
   end
 
@@ -48,7 +48,7 @@ class ScrapeTasksGrid
   end
 
   scrapable = [['yes', 1], ['no', 0], ['not checked', -1]]
-  filter(:scrapable, :enum, header: 'Scrapable?', select: scrapable) do |value, scope|
+  filter(:scrapable, :enum, multiple: true, header: 'Scrapable?', select: scrapable) do |value, scope|
     scope.where(scrapable: value)
   end
 
@@ -103,9 +103,9 @@ class ScrapeTasksGrid
 
     left_until_dl = (row.deadline - Date.today).to_i
 
-    if left_until_dl.to_i <= 1
+    if left_until_dl.to_i.eql?(0)
       'deadline-1'
-    elsif left_until_dl.to_i <= 2
+    elsif left_until_dl.to_i.between?(-2, -1)
       'deadline-2'
     end
   end
