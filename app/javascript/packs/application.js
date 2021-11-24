@@ -17,7 +17,6 @@ import Rails from "@rails/ujs";
 import cronstrue from 'cronstrue';
 import datepicker from 'bootstrap-datepicker';
 import multipleSelect from 'multiple-select';
-import datepicker from 'bootstrap-datepicker';
 
 window.Rails = Rails;
 window.jQuery = $;

@@ -34,6 +34,10 @@
     .col-10
       =f.date_field 'scrape_task[deadline]', class: 'w-25 border rounded',
                     value: @scrape_task.deadline, disabled: disable_input, readonly: disable_input
+    :javascript
+      $('input[id="scrape_task[deadline]"').datepicker({
+        format: 'yyyy-mm-dd'
+      });
 
   .row.mb-4
     .col-2.pr-0.text-right.font-weight-bold
