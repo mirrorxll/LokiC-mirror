@@ -38,9 +38,10 @@ class TaskStatusesController < ApplicationController
   def comment
     body, subtype = if %w(blocked canceled).include? @task.status.name
                       ["<div><b>Status changed to #{@task.status.name}.</b><br>#{params[:body]}</div>", 'status comment']
-                   else
-                     ["<b>Status changed to #{@task.status.name}.</b>", 'task comment']
-                   end
+                    else
+                      ["<b>Status changed to #{@task.status.name}.</b>", 'task comment']
+                    end
+
     @comment = @task.comments.build(
       subtype: subtype,
       body: body,
@@ -58,7 +59,7 @@ class TaskStatusesController < ApplicationController
                 "Status changed to #{@task.status.name}*\n>#{@task.title}"
 
       SlackNotificationJob.perform_later(account.slack.identifier, message)
-      # SlackNotificationJob.perform_later(Rails.env.production? ? 'hle_lokic_task_reminders' : 'hle_lokic_development_messages', message)
+      SlackNotificationJob.perform_later(Rails.env.production? ? 'hle_lokic_task_reminders' : 'hle_lokic_development_messages', message)
     end
   end
 end

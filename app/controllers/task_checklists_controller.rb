@@ -11,7 +11,8 @@ class TaskChecklistsController < ApplicationController
   def new; end
 
   def create
-    @comment = @task.comments.build(subtype: comment_params[:subtype], body: comment_params[:body])
+    task_checklists = @task.checklists
+    checklists[:descriptions].each { |description| task_checklists.build(description: description).save! }
   end
 
   def edit; end
@@ -24,6 +25,10 @@ class TaskChecklistsController < ApplicationController
 
   def find_task
     @task = Task.find(params[:task_id])
+  end
+
+  def checklists
+    params.require(:checklists).permit(descriptions: [])
   end
 
 end

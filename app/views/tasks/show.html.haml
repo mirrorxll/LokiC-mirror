@@ -53,10 +53,19 @@
       .row.small.mb-3
         .col-10.offset-1
           .fr-view
+            -if @task.checklists.exists?
+              %ul
+                -@task.checklists.each do |checklist|
+                  %li.h6
+                    =checklist.description
+
+              %hr.mt-3.mb-3
             =@task.description.html_safe
 
 =render 'task_statuses/hours_form'
-=render 'task_checklists/form'
 
 =render 'tasks/task_modal'
 =render 'task_comments/comment_modal'
+
+
+-#window.location.replace("<%= task_path(@task) %>")

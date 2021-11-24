@@ -10,13 +10,28 @@
       .form-group
         =form.hidden_field 'task[parent]', value: params[:parent_task]
   %hr/
+
+  #checklists.accordion.mt-2
+    .card.small
+      .card-header.p-1
+        %div.row
+          .col-1
+            =icon('fa', 'plus', id: 'add_checklist')
+          .col-11.text-right
+            %div{"aria-controls" => "#checklistsCollapse", "aria-expanded" => "true", "data-target" => "#checklistsCollapse", "data-toggle" => "collapse", type: "button"}
+              checklists
+      #checklistsCollapse.collapse{"data-parent" => "#checklists", class: 'show'}
+        .row.mt-2.mb-2
+          .col#forms_checklists
+  %hr/
+
   .d-flex.small.font-weight-bold.text-center
     .col-2
       assignment to:
       =icon('fa', 'plus', class: 'ml-2', id: 'add_assignment')
       #assignments_form
         .row.mt-1.justify-content-center.small
-          =form.collection_select 'task[assignment_to][]', current_account.types.include?('developer') ? [current_account] : Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }, style: "width:130px"
+          =form.collection_select 'assignment_to[]', current_account.types.include?('developer') ? [current_account] : Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }, style: "width:130px"
     .col-4
       .row.mb-2
         .col.text-right
@@ -64,7 +79,7 @@
 
     $('#assignments_form').append(
         `<div id="assignment_${hex}" class="row mt-1 ml-1 justify-content-center" >
-           <select id="task[assignment_to][]" style = "width:130px" class="mr-1" name="task[assignment_to][]">${buildSelect(accounts)}</select>
+           <select id="assignment_to[]" style = "width:130px" class="mr-1" name="assignment_to[]">${buildSelect(accounts)}</select>
            <div class="ml-1" id="rm_assignment_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
          </div>`
     );
@@ -88,7 +103,7 @@
     $(elem.parentNode).remove();
   }
 
-  function secureRandom(n){
+  function secureRandom(n) {
     let result = '';
     while (n--){
       result += Math.floor(Math.random() * 16).toString(16);
@@ -167,3 +182,14 @@
     })
   }
   document.querySelector('#form_new_task').addEventListener('submit', onSubmit)
+
+  $('#add_checklist').click(function () {
+    let hex = secureRandom(6);
+    $('#forms_checklists').append(
+        `<div id="assignment_${hex}" class="row small justify-content-center mt-2">
+           <div class="small mt-1 mr-2"><i class="fa fa-circle"></i></div>
+           <input id="checklists[]" style='width: 90%' required=required name="checklists[]"></input>
+           <div class="ml-2" id="rm_checklist_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
+         </div>`
+    );
+  });

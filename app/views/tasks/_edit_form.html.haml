@@ -6,6 +6,29 @@
       .form-group
         =form.text_area 'task[description]', id: 'task_description', value: @task.description
   %hr/
+
+  #checklists.accordion.mt-2
+    .card.small
+      .card-header.p-1
+        %div.row
+          .col-1
+            =icon('fa', 'plus', id: 'add_checklist')
+          .col-11.text-right
+            %div{"aria-controls" => "#checklistsCollapse", "aria-expanded" => "true", "data-target" => "#checklistsCollapse", "data-toggle" => "collapse", type: "button"}
+              checklists
+      #checklistsCollapse.collapse{"data-parent" => "#checklists", class: 'show'}
+        .row.mt-2.mb-2
+          .col#forms_checklists
+            -if @task.checklists.exists?
+              -@task.checklists.each do |checklist|
+                .row.justify-content-center.small.mt-2
+                  .mt-1.mr-2.small
+                    =icon('fa', 'circle')
+                  =form.text_field "checklists[#{checklist.id}]", style: 'width: 90%;', require: true, value: checklist.description
+                  .delete_checklist.ml-2{ onclick: "removeDate(this)" }
+                    =icon('fa', 'minus')
+  %hr/
+
   .d-flex.small.font-weight-bold.text-center
     .col-6
       .row.mb-2
@@ -50,3 +73,27 @@
   $('#task').on('hidden.bs.modal', function () {
     $('#task .modal-body').empty();
   });
+
+  $('#add_checklist').click(function () {
+    let hex = secureRandom(6);
+
+    $('#forms_checklists').append(
+        `<div id="assignment_${hex}" class="row small justify-content-center mt-2">
+           <div class="small mt-1 mr-2"><i class="fa fa-circle"></i></div>
+           <input id="checklists[new_${hex}]" style='width: 90%' require=true name="checklists[new_${hex}]"></input>
+           <div class="ml-2" id="rm_checklist_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
+         </div>`
+    );
+  });
+
+  function secureRandom(n) {
+    let result = '';
+    while (n--){
+      result += Math.floor(Math.random() * 16).toString(16);
+    }
+    return result;
+  }
+
+  function removeDate(elem) {
+    $(elem.parentNode).remove();
+  }
