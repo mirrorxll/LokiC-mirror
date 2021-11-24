@@ -62,6 +62,6 @@ class Status < ApplicationRecord
   private
 
   def self.ordered_statuses(list)
-    where(name: list).order("FIELD(name, '#{list.join("', '")}')")
+    where(name: list).order(Arel.sql("FIELD(name, '#{list.join("', '")}')"))
   end
 end

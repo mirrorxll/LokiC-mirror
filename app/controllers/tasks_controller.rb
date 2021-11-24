@@ -62,7 +62,7 @@ class TasksController < ApplicationController # :nodoc:
     body += if @task.assignment_to.empty?
               "Not assigned."
             else
-              "Assignment to #{@task.assignment_to.map { |assignment| assignment.name }.to_sentence}."
+              "Assignment to #{@task.assignment_to.map(&:name).to_sentence}."
             end
     @task.comments.build(
       subtype: 'task comment',
@@ -76,14 +76,13 @@ class TasksController < ApplicationController # :nodoc:
       if params[:tasks_grid]
         params.require(:tasks_grid).permit!
       else
-        !manager? ? { assignment_to: current_account.id, order: :id, descending: true } : { order: :id, descending: true }
+        manager? ? { order: :id, descending: true } : { assignment_to: current_account.id, order: :id, descending: true }
       end
-    grid_params[:status] = Status.multi_task_statuses_for_grid if grid_params[:deleted_tasks] != 'YES'
     @grid = TasksGrid.new(grid_params.except(:collapse))
   end
 
   def find_task
-    @task = Task.find(params[:id])
+    @task = Task.find(params[:id]) || params[:task_id]
   end
 
   def send_notification
@@ -91,7 +90,7 @@ class TasksController < ApplicationController # :nodoc:
       next if assignment.slack.nil? || assignment.slack.deleted
 
       message = "*[ LokiC ] <#{task_url(@task)}| TASK ##{@task.id}> | "\
-              "ASSIGNMENT TO YOU*\n>#{@task.title}"
+                "ASSIGNMENT TO YOU*\n>#{@task.title}"
 
       SlackNotificationJob.perform_later(assignment.slack.identifier, message)
       SlackNotificationJob.perform_later(Rails.env.production? ? 'hle_lokic_task_reminders' : 'hle_lokic_development_messages', message)
@@ -102,8 +101,8 @@ class TasksController < ApplicationController # :nodoc:
     task_params = params.require(:task).permit(:title, :description, :parent, :deadline, :client_id, :reminder_frequency, :gather_task, assignment_to: [])
     task_params[:reminder_frequency] = task_params[:reminder_frequency].blank? ? nil : TaskReminderFrequency.find(task_params[:reminder_frequency])
     task_params[:assignment_to] = task_params[:assignment_to].uniq.reject(&:blank?)
-    task_params[:parent] = task_params[:parent].blank? ? nil : Task.find(task_params[:parent])
     task_params[:client] = task_params[:client_id].blank? ? nil : ClientsReport.find(task_params[:client_id])
+    task_params[:parent] = task_params[:parent].blank? ? nil : Task.find(task_params[:parent])
     task_params[:work_request] = params[:work_request_id] && WorkRequest.find(params[:work_request_id])
     task_params
   end
