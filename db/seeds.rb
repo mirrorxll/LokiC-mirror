@@ -184,32 +184,19 @@ def task_reminder_frequency
   frequencies.map { |fr| { name: fr } }
 end
 
-# ============ Initial filling DB ============
-puts 'Account Types'
 account_type.each { |obj| AccountType.create!(obj) }
-puts 'Accounts'
 account.each { |obj| Account.create!(obj).account_types << AccountType.first }
-puts 'Frequencies'
 frequency.each { |obj| Frequency.create!(obj) }
-puts 'Statuses'
 status.each { |obj| Status.create!(obj) }
-puts 'Type of works'
 types_of_work.each { |obj| WorkType.create!(obj) }
-puts 'Clients Report'
 clients_report.each { |obj| ClientsReport.create!(obj) }
-puts 'TaskReminderFrequency'
 task_reminder_frequency.each { |obj| TaskReminderFrequency.create!(obj) }
 
 
-puts 'Clients Publications Tags'
 ClientsPublicationsTagsJob.perform_now
-puts 'Clients Tags'
 ClientsTagsJob.perform_now
-puts 'Sections'
 SectionsJob.perform_now
-puts 'PhotoBuckets'
 PhotoBucketsJob.perform_now
-puts 'SlackAccounts'
 SlackAccountsJob.perform_now
 
 hidden = Client.where('name LIKE :like OR name IN (:mm, :mb)',

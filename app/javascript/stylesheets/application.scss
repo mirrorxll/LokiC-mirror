@@ -27,6 +27,10 @@ $fa-font-path: "~font-awesome/fonts";
   }
 }
 
+div.enum_filter > div.ms-drop li {
+  width: 100%;
+}
+
 .modal-frame-scrollable-90 {
   overflow: scroll;
   height: 90%;
