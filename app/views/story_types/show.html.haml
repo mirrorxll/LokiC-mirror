@@ -19,20 +19,17 @@
 .row
   .col-10
     #story_type_iterations
-      -if correct_account?(@story_type)
-        =render partial: 'story_types/iterations/iteration',
-                collection: @story_type.iterations.where(cron_tab: [nil, false]),
-                current_iteration: @story_type.iteration
+      =render partial: 'story_types/iterations/iteration',
+              collection: @story_type.iterations.where(cron_tab: [nil, false]),
+              current_iteration: @story_type.iteration
 
+      -if correct_account?(@story_type)
         .badge.badge-pill.badge-light{'data-container' => 'body',
                                       'data-toggle' => 'popover',
                                       'data-placement' => 'top',
                                       'data-html' => 'true',
                                       'data-content' => "#{ render 'story_types/iterations/new_form' }" }
           new iteration
-      -else
-        .badge.badge-pill.badge-dark
-          =@story_type.iteration.name
   .col-2.text-right
     #story_type_status
       =render 'story_types/progress_statuses/status'
