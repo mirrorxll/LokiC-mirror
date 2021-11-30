@@ -19,9 +19,11 @@
     .col-10.small
       =f.select 'multi_task[task_id]', multi_tasks_to_options(ScrapeTask), { prompt: '' }
   :javascript
-    $(function() {
-      $('select[id="multi_task[task_id]"').multipleSelect({ filter: true });
-    });
+    (() => {
+      $('select[id="multi_task[task_id]"]').multipleSelect({ filter: true });
+      $('.hide-radio.selected').addClass('d-none')
+    })();
+
   .row.mb-1
     .col-2.pr-0.text-right.font-weight-bold
       gather task:
@@ -33,9 +35,9 @@
       deadline:
     .col-10
       =f.date_field 'scrape_task[deadline]', class: 'w-25 border rounded',
-                    value: @scrape_task.deadline, disabled: disable_input, readonly: disable_input
+                    value: @scrape_task.deadline, disabled: disable_input, readonly: disable_input, type: :datetime
     :javascript
-      $('input[id="scrape_task[deadline]"').datepicker({
+      $('input[id="scrape_task[deadline]"]').datepicker({
         format: 'yyyy-mm-dd'
       });
 
@@ -46,10 +48,10 @@
       =f.collection_select 'scrape_task[state_id]', State.all, :id, :name,
                            { include_blank: true, selected: @scrape_task.state&.id },
                            { disabled: disable_input, readonly: disable_input }
-  :javascript
-    $(function() {
-      $('select[id="scrape_task[state_id]"').multipleSelect({ filter: true });
-    });
+      :javascript
+        (() => {
+          $('select[id="scrape_task[state_id]"]').multipleSelect({ filter: true });
+        })();
 
   .row.mb-1
     .col-2.pr-0.text-right.font-weight-bold
@@ -86,9 +88,9 @@
                            { include_blank: true, selected: @scrape_task.scraper&.id },
                            { disabled: disable_input, readonly: disable_input }
     :javascript
-      $(function() {
-        $('select[id="scrape_task[scraper_id]"').multipleSelect({ filter: true });
-      });
+      (() => {
+        $('select[id="scrape_task[scraper_id]"]').multipleSelect({ filter: true });
+      })();
 
   .row.mb-4
     .col-2.pr-0.text-right.font-weight-bold
@@ -98,9 +100,9 @@
                            { include_blank: true, selected: @scrape_task.frequency&.id },
                            { disabled: disable_input, readonly: disable_input }
     :javascript
-      $(function() {
-        $('select[id="scrape_task[frequency_id]"').multipleSelect({ filter: true });
-      });
+      (() => {
+        $('select[id="scrape_task[frequency_id]"]').multipleSelect({ filter: true });
+      })();
 
   .row.mb-4
     .col-2.pr-0.text-right.font-weight-bold
@@ -124,9 +126,9 @@
         =f.collection_select 'data_set[id]', DataSet.where('scrape_task_id IS NULL or id = :data_set_id', data_set_id: @scrape_task.data_set).order(:name),
                              :id, :name, { include_blank: true, selected: @scrape_task.data_set&.id }
     :javascript
-      $(function() {
-        $('select[id="data_set[id]"').multipleSelect({ filter: true });
-      });
+      (() => {
+        $('select[id="data_set[id]"]').multipleSelect({ filter: true });
+      })();
 
 
   .row.mt-4

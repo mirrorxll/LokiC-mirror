@@ -1,17 +1,20 @@
 -status = @story_type.status
 
 .current_progress_status
-  =link_to_if(correct_account?(@story_type), status.name, '#', class: "badge badge-pill badge-#{status_color(status.name)}")
+  -if correct_account?(@story_type)
+    =link_to(status.name, '#', class: "badge badge-pill badge-#{status_color(status.name)}")
+    :javascript
+      document.querySelector('.current_progress_status a').addEventListener('click', function (evt) {
+        evt.preventDefault();
+        evt.target.parentNode.classList.add('d-none');
+        document.getElementsByClassName('change_progress_status_form')[0].classList.remove('d-none');
+        return false;
+      })
+  -else
+    .badge.badge-pill{ class: "badge-#{status_color(status.name)}" }
+      =status.name
 
 .change_progress_status_form.d-none
   =form_with(url: change_story_type_progress_statuses_path(@story_type, @iteration),
              html: { class: 'd-inline', onchange: "Rails.fire(this, 'submit')" }, method: :patch) do |form|
     =form.collection_select :status_id, Status.hle_statuses, :id, :name, { prompt: '' }, selected: status.id
-
-:javascript
-  document.querySelector('.current_progress_status a').addEventListener('click', function (evt) {
-    evt.preventDefault();
-    evt.target.parentNode.classList.add('d-none');
-    document.getElementsByClassName('change_progress_status_form')[0].classList.remove('d-none');
-    return false;
-  })

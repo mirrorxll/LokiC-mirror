@@ -26,17 +26,18 @@
                    class: 'd-inline-block mr-3 mt-3 btn btn-sm btn-outline-dark', target: '_blank')
 
 
-          -# =link_to('remove exported stories', '#', 'aria-controls' => 'remove_exported_stories_form',
-                   'aria-expanded' => false, data: { toggle: "collapse", target: "#remove_exported_stories_form" },
-                   type: "button", class: 'mt-3 btn btn-sm btn-outline-danger')
-
-      -#.row
+          -story = stories.where.not(published_at: nil).order(:published_at).first
+          -unless story && story.published_at <= Time.now
+            =link_to('remove exported stories', '#', 'aria-controls' => 'remove_exported_stories_form',
+                     'aria-expanded' => false, data: { toggle: "collapse", target: "#remove_exported_stories_form" },
+                     type: "button", class: 'mt-3 btn btn-sm btn-outline-danger')
+      .row
         .col-5.offset-1.mt-3
           #remove_exported_stories_form.collapse
             =form_with(url: remove_exported_stories_story_type_iteration_exports_path(@story_type, @iteration), method: :delete) do |f|
               *** Why do you want to remove stories from production?
               =f.text_area 'remove_exported_stories[reasons]', class: 'form-control form-control-sm', rows: 3,
-                           value: (recent_removal&.status.eql?(false) ? recent_removal.reasons : '' ), required: true
+                           value: (@removal&.status.eql?(false) ? @removal.reasons : '' ), required: true
               =f.submit 'remove stories from production', class: 'mt-1 btn btn-sm btn-outline-dark w-100'
 
     -elsif @iteration.export.eql?(false)
