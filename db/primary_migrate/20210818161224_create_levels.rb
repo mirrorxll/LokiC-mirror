@@ -6,8 +6,6 @@ class CreateLevels < ActiveRecord::Migration[6.0]
       t.string :name
       t.timestamps
     end
-
-    %w[U.S. State Region Community].each { |lvl| Level.create!(name: lvl) }
   end
 
   def down
