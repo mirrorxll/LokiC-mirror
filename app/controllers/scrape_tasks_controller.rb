@@ -37,7 +37,7 @@ class ScrapeTasksController < ApplicationController
     @scrape_task.scrape_ability_comment&.update!(scrape_ability_comment_param)
     @scrape_task.general_comment&.update!(general_comment_param)
     @scrape_task.update!(update_scrape_task_params)
-    p @scrape_task.update!(multi_task_param)
+    @scrape_task.update!(multi_task_param)
 
     return unless manager?
 
