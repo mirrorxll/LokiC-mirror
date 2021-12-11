@@ -19,7 +19,58 @@
                                { class: 'mb-1 form-control form-control-sm' }
 
         =f.label :location, 'location', class: 'small mb-0 mt-2'
-        =f.text_field :location, placeholder: 'location', class: 'mb-1 form-control form-control-sm', value: @scrape_task ? @scrape_task.data_set_location : @data_set.location
+        =f.text_field :location, placeholder: 'location', class: 'mb-2 form-control form-control-sm',
+                      value: @scrape_task ? @scrape_task.data_set_location : @data_set.location,
+                      id: 'dataSetLocation', oninput: ''
+        #scrapeTasksWithSimilarLocations.small
+          .card
+            .card-body.p-1.pl-3
+
+        :javascript
+          function delay(fn, ms) {
+            let timer = 0;
+            return function(...args) {
+              clearTimeout(timer);
+              timer = setTimeout(fn.bind(this, ...args), ms || 0)
+            }
+          }
+
+          function truncateString(str, num) {
+            if (str.length > num) {
+              return str.slice(0, num) + "...";
+            } else {
+              return str;
+            }
+          }
+
+          document.querySelector('#dataSetLocation').addEventListener('input', delay(() => {
+            const locationValue = document.querySelector('#dataSetLocation').value
+            const scrapeTaskContainer = document.querySelector('#scrapeTasksWithSimilarLocations .card-body')
+
+            scrapeTaskContainer.innerHTML = '';
+
+            if(locationValue.length === 0 || locationValue === '%') return false;
+
+            Rails.ajax({
+                type: "GET",
+                dataType: 'json',
+                url: '#{data_set_locations_api_scrape_tasks_url}',
+                data: `scrape_task[value]=${encodeURIComponent(locationValue)}`,
+                success: function (data) {
+                  data.forEach((el) => {
+                    const link = document.createElement('a');
+                    link.innerHTML = `\#${el['id']} - ${truncateString(el['name'], 60)}`;
+                    link.setAttribute('href', `#{root_url}scrape_tasks/${el['id']}`);
+                    link.setAttribute('target', '_blank');
+                    link.setAttribute('rel', "noopener noreferrer");
+
+                    scrapeTaskContainer.appendChild(link);
+                    scrapeTaskContainer.appendChild(document.createElement('br'));
+                  })
+                }
+            })
+
+          }, 1000))
 
         =f.label :preparation_doc, 'preparation_doc', class: 'small mb-0 mt-2'
         =f.text_field :preparation_doc, placeholder: "preparation document", class: 'mb-1 form-control form-control-sm'

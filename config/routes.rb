@@ -55,6 +55,7 @@ Rails.application.routes.draw do
 
     resources :scrape_tasks, only: [] do
       get :names, on: :collection
+      get :data_set_locations, on: :collection
     end
 
     resources :tasks, only: [] do
