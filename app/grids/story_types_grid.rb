@@ -5,7 +5,16 @@ class StoryTypesGrid
 
   # Scope
   scope do
-    StoryType.includes(:status, :frequency, :photo_bucket, :developer, :clients_publications_tags, :clients, :tags, data_set: %i[state category])
+    StoryType.includes(
+      :status, :frequency,
+      :photo_bucket, :developer,
+      :clients_publications_tags,
+      :clients, :tags, :reminder,
+      data_set: %i[state category]
+    ).order(
+      'reminders.has_updates DESC',
+      'story_types.id desc'
+    )
   end
 
   # Filters
@@ -82,6 +91,9 @@ class StoryTypesGrid
   end
   column(:last_export, mandatory: true) do |record|
     record.last_export&.to_date
+  end
+  column(:has_updates, mandatory: true, order: 'reminders.has_updates DESC, story_types.id desc') do |record|
+    record.reminder&.has_updates
   end
   column(:client_tags, order: 'frequencies.name', header: 'Client: Tag') do |record|
     str = ''
