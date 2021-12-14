@@ -34,7 +34,7 @@
   %li.nav-item.text-center{ style: 'width: 33%' }
     %a#scrapeEvaluationDocTab.nav-link{"aria-selected" => "false", "data-toggle" => "tab", :href => "#scrapeEvaluationDoc", :role => "tab"} Evaluation Document
   %li.nav-item.text-center{ style: 'width: 33%' }
-    %a#dataSampleTab.nav-link.disabled{"aria-selected" => "false", "data-toggle" => "tab", :href => "#dataSample", :role => "tab"} Data Sample (TO DO)
+    %a#dataSampleTab.nav-link{"aria-selected" => "false", "data-toggle" => "tab", :href => "#dataSample", :role => "tab"} Data Sample (TO DO)
 
 #scrapeTaskTabsContent.tab-content
   #scrapeInstruction.tab-pane.fade.show.active
@@ -80,4 +80,7 @@
           el.setAttribute('rel', 'noopener noreferrer');
         })
 
-  #dataSample.tab-pane
+  #dataSample.tab-pane.fade.show
+    .card.border-top-0.rounded-top-0.mb-5
+      #evaluationDocEdit.small
+
