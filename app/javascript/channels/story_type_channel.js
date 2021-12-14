@@ -15,9 +15,26 @@ $(document).on("turbolinks:load", function() {
         {
             connected()    { console.log('connected'); },
             disconnected() { console.log('disconnected'); },
-            received(data) { update_sections(data); }
+            received(data) {
+                console.log(data);
+
+                if (data.spinner){
+                    showSpinner(data);
+                } else {
+                    update_sections(data);
+                }
+            }
         }
     )
+
+    function showSpinner(data) {
+        $('#staging_table > .card-body').html("<div class=\"small text-center\">\n" +
+            "<div class=\"spinner-border text-dark text-center\" role=\"status\"></div>\n" +
+            "<div class=\"font-weight-bold\">\n" +
+            data['message'] + "\n" +
+            "</div>\n" +
+            "</div>")
+    }
 
     function update_sections(data) {
         $.ajax({
