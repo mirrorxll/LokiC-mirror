@@ -47,7 +47,6 @@
       info
       -if @task.creator?(current_account) || current_account.types.include?('manager')
         =link_to '[ edit task ]', edit_task_path(@task), remote: true
-
   .card-body
     #body
       .row.small.mb-3
@@ -56,16 +55,12 @@
             -if @task.checklists.exists?
               %ul
                 -@task.checklists.each do |checklist|
-                  %li.h6
+                  %li.mb-2
                     =checklist.description
-
               %hr.mt-3.mb-3
             =@task.description.html_safe
 
-=render 'task_statuses/hours_form'
+=render 'task_checklists/confirms'
 
 =render 'tasks/task_modal'
 =render 'task_comments/comment_modal'
-
-
--#window.location.replace("<%= task_path(@task) %>")

@@ -7,6 +7,7 @@ class TaskChecklistsController < ApplicationController
   skip_before_action :set_story_type_iteration
 
   before_action :find_task
+  before_action :find_task_checklist_assignment, only: :confirm
 
   def new; end
 
@@ -17,8 +18,8 @@ class TaskChecklistsController < ApplicationController
 
   def edit; end
 
-  def update
-
+  def confirm
+    @task_checklist_assignment.update!(confirmed: params[:confirm])
   end
 
   private
@@ -27,8 +28,11 @@ class TaskChecklistsController < ApplicationController
     @task = Task.find(params[:task_id])
   end
 
+  def find_task_checklist_assignment
+    @task_checklist_assignment = TaskChecklistAssignment.find(params[:id])
+  end
+
   def checklists
     params.require(:checklists).permit(descriptions: [])
   end
-
 end

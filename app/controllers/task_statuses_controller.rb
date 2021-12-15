@@ -12,10 +12,10 @@ class TaskStatusesController < ApplicationController
 
   def change
     if @status.name.eql?('done')
-      @assignment.update!(hours: params[:hours], done: true)
+      @assignment.update!(done: true)
       @task.update(done_at: Time.now, status: @status) if @task.done_by_all_assignments?
     else
-      @assignment.update!(hours: nil, done: false)
+      @assignment.update!(done: false)
       @task.update(status: @status)
     end
     comment && send_notification
@@ -36,10 +36,12 @@ class TaskStatusesController < ApplicationController
   end
 
   def comment
-    body, subtype = if %w(blocked canceled).include? @task.status.name
-                      ["<div><b>Status changed to #{@task.status.name}.</b><br>#{params[:body]}</div>", 'status comment']
+    body, subtype = if %w(blocked canceled).include? @status.name
+                      ["<div><b>Status changed to #{@status.name}.</b><br>#{params[:body]}</div>", 'status comment']
+                    elsif @status.name.eql?('done') && !@task.done_by_all_assignments?
+                      ["<b>Set status #{@status.name}.</b>", 'task comment']
                     else
-                      ["<b>Status changed to #{@task.status.name}.</b>", 'task comment']
+                      ["<b>Status changed to #{@status.name}.</b>", 'task comment']
                     end
 
     @comment = @task.comments.build(
@@ -55,8 +57,13 @@ class TaskStatusesController < ApplicationController
     accounts.each do |account|
       next if account.slack.nil? || account.slack.deleted
 
-      message = "*<#{task_url(@task)}| TASK ##{@task.id}> | "\
-                "Status changed to #{@task.status.name}*\n>#{@task.title}"
+      if @status.name.eql?('done') && !@task.done_by_all_assignments?
+        message = "*<#{task_url(@task)}| TASK ##{@task.id}> | "\
+                  "#{current_account.name} set status #{@status.name}*. To change the status of a task to done all performers must change the status.\n>#{@task.title}"
+      else
+        message = "*<#{task_url(@task)}| TASK ##{@task.id}> | "\
+                  "Status changed to #{@status.name}.*\n>#{@task.title}"
+      end
 
       SlackNotificationJob.perform_later(account.slack.identifier, message)
       SlackNotificationJob.perform_later(Rails.env.production? ? 'hle_lokic_task_reminders' : 'hle_lokic_development_messages', message)

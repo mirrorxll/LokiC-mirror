@@ -1,6 +1,6 @@
-=form_with(url: change_task_progress_statuses_path(@task), method: :patch, id: 'task_hours_form') do |form|
+=form_with(url: change_task_progress_statuses_path(@task), method: :patch, id: 'checklist_confirm_form') do |form|
   =hidden_field_tag :status
-  #task_done.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "properties", role: "dialog", :tabindex => "-1"}
+  #checklists_confirms.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "properties", role: "dialog", :tabindex => "-1"}
     .modal-dialog.modal-dialog-centered.modal
       .modal-content
         .modal-body
@@ -34,22 +34,11 @@
           =form.submit :send, class: 'btn btn-sm btn-outline-success'
 
 :javascript
-  document.getElementById('task_hours_form').addEventListener('submit', function (evt) {
+  document.getElementById('checklist_confirm_form').addEventListener('submit', function (evt) {
     let select = document.getElementById('status_id');
     let status = select.options[select.selectedIndex].text;
     document.getElementById('status').value = status
   });
-
-  function changePlaceholder(element) {
-    if (element.id === 'type_team_work_hours'){
-      document.getElementById('teamWork').placeholder = 'hours'
-    }
-    else {
-      document.getElementById('teamWork').placeholder = 'dollars'
-    }
-
-
-  }
 
   function onSubmit(ev) {
     ev.preventDefault();

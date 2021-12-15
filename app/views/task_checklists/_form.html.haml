@@ -1,40 +1,8 @@
-=form_with(url: task_checklists_path(task_id: @task), method: :post, id: 'task_checklist_form') do |form|
-  .row.mb-1
-    .col
-      =icon('fa', 'plus', id: 'add_checklist')
-  .row
-    .col#forms_checklists
-      .row.justify-content-center.small
-        .mt-1.mr-2.small
-          =icon('fa', 'circle')
-        =form.text_field 'checklists[descriptions][]', style: 'width: 90%;', require: true
-        .delete_checklist.ml-2{ onclick: "removeDate(this)" }
-          =icon('fa', 'minus')
-  .row.justify-content-center.mt-2
-    .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
-      skip
-    =form.submit 'create', class: 'ml-2 small btn btn-sm btn-outline-success'
+=form_with(url: confirm_task_checklist_path(task_id: @task, id: checklist_assignment.id), html: { onchange: "Rails.fire(this, 'submit'); removeDangerText();" }, method: :patch) do |form|
+  =form.check_box :confirm, checked: checklist_assignment.confirmed
 
 :javascript
-  $('#add_checklist').click(function () {
-    let hex = secureRandom(6);
-    $('#forms_checklists').append(
-        `<div id="assignment_${hex}" class="row small justify-content-center mt-2">
-           <div class="small mt-1 mr-2"><i class="fa fa-circle"></i></div>
-           <input id="checklists[descriptions][]" style='width: 90%' require=true name="checklists[descriptions][]"></input>
-           <div class="ml-2" id="rm_checklist_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
-         </div>`
-    );
-  });
-
-  function removeDate(elem) {
-    $(elem.parentNode).remove();
-  }
-
-  function secureRandom(n){
-    let result = '';
-    while (n--){
-      result += Math.floor(Math.random() * 16).toString(16);
-    }
-    return result;
+  function removeDangerText() {
+    let confirmsFeedback = document.querySelector('#confirmsFeedback');
+    confirmsFeedback.classList.add('d-none');
   }

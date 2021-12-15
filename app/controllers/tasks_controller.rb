@@ -11,7 +11,6 @@ class TasksController < ApplicationController # :nodoc:
   before_action :task_assignments, only: :show
 
   after_action  :send_notification, only: :create
-  after_action  :send_notification, only: :create
   after_action  :comment, only: :create
   
   def index
@@ -66,6 +65,7 @@ class TasksController < ApplicationController # :nodoc:
             else
               "Assignment to #{@task.assignment_to.map { |assignment| assignment.name }.to_sentence}."
             end
+
     @task.comments.build(
       subtype: 'task comment',
       body: body,
@@ -114,7 +114,7 @@ class TasksController < ApplicationController # :nodoc:
   end
 
   def checklists_params
-    params.require(:checklists)
+    params.key?(:checklists) ? params.require(:checklists) : []
   end
 
   def update_task_params
@@ -126,7 +126,7 @@ class TasksController < ApplicationController # :nodoc:
   end
 
   def update_checklists_params
-    params.require(:checklists)
+    params.key?(:checklists) ? params.require(:checklists) : []
   end
 
   def comment_params

@@ -24,7 +24,7 @@
                 .row.justify-content-center.small.mt-2
                   .mt-1.mr-2.small
                     =icon('fa', 'circle')
-                  =form.text_field "checklists[#{checklist.id}]", style: 'width: 90%;', require: true, value: checklist.description
+                  =form.text_field "checklists[#{checklist.id}]", style: 'width: 90%;', maxlength: 255, require: true, value: checklist.description
                   .delete_checklist.ml-2{ onclick: "removeDate(this)" }
                     =icon('fa', 'minus')
   %hr/
@@ -80,7 +80,7 @@
     $('#forms_checklists').append(
         `<div id="assignment_${hex}" class="row small justify-content-center mt-2">
            <div class="small mt-1 mr-2"><i class="fa fa-circle"></i></div>
-           <input id="checklists[new_${hex}]" style='width: 90%' require=true name="checklists[new_${hex}]"></input>
+           <input id="checklists[new_${hex}]" style='width: 90%' require=true maxlength="255" name="checklists[new_${hex}]"></input>
            <div class="ml-2" id="rm_checklist_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
          </div>`
     );

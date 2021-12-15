@@ -4,6 +4,10 @@ class TaskAssignment < ApplicationRecord # :nodoc:
   belongs_to :task
   belongs_to :account
 
+  after_create do
+    task.checklists.each { |checklist| TaskChecklistAssignment.create!(task: task, account: account, checklist: checklist) }
+  end
+
   def name
     account.name
   end
@@ -36,5 +40,4 @@ class TaskAssignment < ApplicationRecord # :nodoc:
   def day_off?(date)
     date.sunday? || date.saturday?
   end
-
 end

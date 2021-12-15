@@ -39,10 +39,16 @@
     }
     else if (status === 'done') {
       var assignment = #{@task.assignment_to.include?(current_account)};
-      if(assignment) {
-        $('#task_done').modal('show');
-      } else {
-        return
+      var has_checklists = #{@task.has_checklists?};
+
+      if(assignment && has_checklists) {
+        $('#checklists_confirms').modal('show');
+      }
+      else if(assignment) {
+        submit(status_form);
+      }
+      else {
+        return;
       }
     }
     else {
@@ -50,6 +56,6 @@
     }
   };
 
-  function  submit(form) {
+  function submit(form) {
     Rails.fire(form, 'submit');
   }
