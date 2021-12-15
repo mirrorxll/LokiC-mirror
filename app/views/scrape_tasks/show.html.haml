@@ -83,4 +83,10 @@
   #dataSample.tab-pane.fade.show
     .card.border-top-0.rounded-top-0.mb-5
       #evaluationDocEdit.small
-
+        .row.p-4
+          .col-10.offset-1
+            -if @scrape_task.data_sample
+              =link_to(nil, @scrape_task.data_sample.remote_url)
+            -else
+              =button_to('generate google spreadsheet', scrape_task_data_samples_path(@scrape_task),
+                         class: 'btn btn-sm btn-outline-dark')

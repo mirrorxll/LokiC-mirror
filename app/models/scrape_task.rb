@@ -33,6 +33,7 @@ class ScrapeTask < ApplicationRecord
   has_one :status_comment,         -> { where(subtype: 'status comment') }, as: :commentable, class_name: 'Comment'
   has_one :general_comment,        -> { where(subtype: 'general comment') }, as: :commentable, class_name: 'Comment'
   has_one :data_set
+  has_one :data_sample
 
   has_many :change_history, as: :history
   has_many :alerts, as: :alert

@@ -329,6 +329,8 @@ Rails.application.routes.draw do
         post :include, on: :collection
         delete :exclude
       end
+
+      resources :data_samples, only: :create
     end
   end
 
