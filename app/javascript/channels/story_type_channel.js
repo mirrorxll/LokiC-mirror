@@ -16,8 +16,6 @@ $(document).on("turbolinks:load", function() {
             connected()    { console.log('connected'); },
             disconnected() { console.log('disconnected'); },
             received(data) {
-                console.log(data);
-
                 if (data.spinner){
                     showSpinner(data);
                 } else {
@@ -31,7 +29,7 @@ $(document).on("turbolinks:load", function() {
         $('#staging_table > .card-body').html("<div class=\"small text-center\">\n" +
             "<div class=\"spinner-border text-dark text-center\" role=\"status\"></div>\n" +
             "<div class=\"font-weight-bold\">\n" +
-            data['message'] + "\n" +
+            data.message + "\n" +
             "</div>\n" +
             "</div>")
     }
