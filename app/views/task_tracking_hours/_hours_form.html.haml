@@ -1,6 +1,6 @@
 =form_with(url: change_task_progress_statuses_path(@task), method: :patch, id: 'checklist_confirm_form') do |form|
   =hidden_field_tag :status
-  #checklists_confirms.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "properties", role: "dialog", :tabindex => "-1"}
+  #hours.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "properties", role: "dialog", :tabindex => "-1"}
     .modal-dialog.modal-dialog-centered.modal
       .modal-content
         .modal-body
@@ -11,13 +11,12 @@
               =form.text_field :hours, id: 'hoursInput', required: true, class: 'small', placeholder: 'hours'
           -unless @task.subtasks.empty?
             %hr.mt-3.mb-3/
-            .card.overflow-auto{style: 'max-height: 350px;'}
+            .card.overflow-auto{ style: 'max-height: 350px;' }
               .card-header.p-1
                 .justify-content-between.small
                   subtasks
               .card-body.overflow-auto
                 =render 'task_tracking_hours/subtasks_hours', task: @task
-
             .row.small.mt-2.text-center
               .col
                 Team work:

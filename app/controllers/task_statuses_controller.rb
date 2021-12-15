@@ -22,7 +22,6 @@ class TaskStatusesController < ApplicationController
   end
 
   private
-
   def find_task
     @task = Task.find(params[:task_id])
   end

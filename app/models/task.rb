@@ -35,7 +35,7 @@ class Task < ApplicationRecord # :nodoc:
 
   def access_for?(account)
     return true if assignment_to_or_creator?(account)
-    # return false unless access
+    return false unless access
 
     subtasks.each { |subtask| return true if subtask.assignment_to_or_creator?(account) }
     parent.subtasks.each { |subtask| return true if subtask.assignment_to_or_creator?(account) } if parent
