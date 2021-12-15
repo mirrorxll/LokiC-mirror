@@ -24,7 +24,7 @@ module StoryTypes
         @iteration.update!(iteration_args)
 
         StoryTypeChannel.broadcast_to(@story_type, { spinner: true,
-                                                     message: 'Staging table columns modifying in progress' })
+                                                     message: 'Population in progress' })
         PopulationJob.perform_later(@iteration, current_account, population_args)
       end
 
