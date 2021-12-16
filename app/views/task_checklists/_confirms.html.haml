@@ -30,7 +30,7 @@
     let confirmsFeedback = document.querySelector('#confirmsFeedback');
     if (confirmsCount === 0) {
       $('#checklists_confirms').modal('hide');
-      Rails.fire(status_form, 'submit');
+      $('#hours').modal('show');
     } else {
       confirmsFeedback.classList.remove('d-none');
     }

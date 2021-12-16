@@ -326,6 +326,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :task_tracking_hours, controller: 'task_tracking_hours', only: :index
+
   resources :tasks do
     resources :progress_statuses, controller: 'task_statuses', only: [] do
       patch :change,        on: :collection

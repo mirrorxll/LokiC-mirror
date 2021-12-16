@@ -1,7 +1,7 @@
 =form_with(url: change_task_progress_statuses_path(@task), method: :patch, id: 'task_hours_form') do |form|
   =hidden_field_tag :status
   -team_work = @task.team_work
-  -if team_work.nil?
+  -if team_work.nil? && @task.subtasks.count > 0
     =hidden_field_tag 'team_work[confirm]', value: true
   #hours.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "properties", role: "dialog", :tabindex => "-1"}
     .modal-dialog.modal-dialog-centered.modal
