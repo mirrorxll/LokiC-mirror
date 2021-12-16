@@ -12,7 +12,9 @@ class TaskStatusesController < ApplicationController
 
   def change
     if @status.name.eql?('done')
-      @assignment.update!(done: true)
+      @assignment.update!(done: true, hours: params[:hours])
+      puts '////////'
+      puts team_work_params
       @task.update(done_at: Time.now, status: @status) if @task.done_by_all_assignments?
     else
       @assignment.update!(done: false)
@@ -22,6 +24,7 @@ class TaskStatusesController < ApplicationController
   end
 
   private
+
   def find_task
     @task = Task.find(params[:task_id])
   end
@@ -32,6 +35,11 @@ class TaskStatusesController < ApplicationController
 
   def find_assignment
     @assignment = TaskAssignment.find_by(task: @task, account: current_account)
+  end
+
+  def team_work_params
+    team_work = params.require(:team_work)
+    team_work[:creator]
   end
 
   def comment

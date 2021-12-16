@@ -14,6 +14,7 @@ class Task < ApplicationRecord # :nodoc:
   belongs_to :parent, class_name: 'Task', foreign_key: :parent_task_id, optional: true
   belongs_to :client, class_name: 'ClientsReport', foreign_key: :client_id, optional: true
 
+  has_one :team_work, class_name: 'TaskTeamWork'
   has_one :last_comment, -> { order created_at: :desc }, as: :commentable, class_name: 'Comment'
 
   has_many :checklists, class_name: 'TaskChecklist'

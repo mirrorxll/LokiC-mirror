@@ -21,12 +21,12 @@
               .col
                 Team work:
               .col.text-lowercase.small.mt-1.justify-content-between
-                =form.radio_button(:type_team_work, :hours, { checked: 'checked', onclick: 'changePlaceholder(this);' })
+                =form.radio_button('team_work[type]', :hours, { checked: 'checked', onclick: 'changePlaceholder(this);' })
                 =form.label :hours, class: 'mr-3'
-                =form.radio_button(:type_team_work, :dollars, { onclick: 'changePlaceholder(this);' })
+                =form.radio_button('team_work[type]', :dollars, { onclick: 'changePlaceholder(this);' })
                 =form.label :dollars
               .col-5
-                =form.text_field :team_work, id: 'teamWork', required: true, class: 'small', placeholder: 'hours'
+                =form.text_field 'team_work[sum]', id: 'teamWork', required: true, class: 'small', placeholder: 'hours'
         .modal-footer.justify-content-center
           .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
             cancel
