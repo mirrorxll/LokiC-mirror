@@ -42,6 +42,6 @@ class TaskTrackingHoursGrid
   end
 
   column(:team_work, mandatory: true) do |scope|
-    scope.hours ? "#{ sprintf('%g', scope.sum) } hours" : "$#{ sprintf('%g', scope.sum) }"
+    scope.hours ? "#{ sprintf('%g', scope.sum) } hours" : "$#{MiniLokiC::Formatize::Numbers.add_commas(scope.sum.to_s)}"
   end
 end

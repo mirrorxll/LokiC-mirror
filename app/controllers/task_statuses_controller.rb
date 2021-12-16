@@ -64,7 +64,7 @@ class TaskStatusesController < ApplicationController
 
       if @status.name.eql?('done') && !@task.done_by_all_assignments?
         message = "*<#{task_url(@task)}| TASK ##{@task.id}> | "\
-                  "#{current_account.name} set status #{@status.name}*. To change the status of a task to done all executors must change the status.\n>#{@task.title}"
+                  "#{current_account.name} set status #{@status.name}*. To change the status of task to done all executors must change the status.\n>#{@task.title}"
       else
         message = "*<#{task_url(@task)}| TASK ##{@task.id}> | "\
                   "Status changed to #{@status.name}.*\n>#{@task.title}"

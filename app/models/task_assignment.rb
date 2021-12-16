@@ -4,6 +4,10 @@ class TaskAssignment < ApplicationRecord # :nodoc:
   belongs_to :task
   belongs_to :account
 
+  after_destroy do
+    task.checklists_assignments_for(account).each { |checklist_assignment| checklist_assignment.destroy }
+  end
+
   after_create do
     task.checklists.each { |checklist| TaskChecklistAssignment.create!(task: task, account: account, checklist: checklist) }
   end
