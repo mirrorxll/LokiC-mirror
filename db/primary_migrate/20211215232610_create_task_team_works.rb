@@ -6,7 +6,7 @@ class CreateTaskTeamWorks < ActiveRecord::Migration[6.0]
       t.belongs_to :task
       t.belongs_to :creator
       t.boolean    :hours, default: true
-      t.decimal    :sum, scale: 7, precision: 9
+      t.decimal    :sum, scale: 2, precision: 9
     end
   end
 end

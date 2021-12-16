@@ -6,5 +6,5 @@
       .col-6
         =assignment.name
       .col-6
-        =assignment.hours.nil? ? '---' : assignment.hours.to_s + ' hours'
+        =assignment.hours.nil? ? '---' : sprintf('%g', assignment.hours.to_s) + ' hours'
   %hr

@@ -81,4 +81,25 @@ class TasksGrid
       content_tag(:div, last_comment.created_at.strftime('%y-%m-%d'), attr)
     end
   end
+
+  # column(:team_work, order: 'team_work', mandatory: true, html: true) do |task|
+  #   sum = task.team_work.nil? ? '' : task.team_work.sum
+  #   attr = { 'aria-controls' => "#subtasksCollapse",
+  #            'aria-expanded' => "true",
+  #            'data-target' => "#subtasksCollapse",
+  #            'data-toggle' => "collapse",
+  #            'type' => "button"
+  #   }
+  #   if task.team_work.nil?
+  #     ''
+  #   else
+  #     content_tag(:div, sum, attr) do
+  #       attr2 = { 'id' => "subtasksCollapse",
+  #                 'class' => "collapse",
+  #                 'data-parent' => "#subtasks"
+  #               }
+  #       content_tag(:div, task.subtasks.count, attr2)
+  #     end
+  #   end
+  # end
 end

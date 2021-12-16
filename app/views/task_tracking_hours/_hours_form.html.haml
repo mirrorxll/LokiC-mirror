@@ -1,5 +1,8 @@
-=form_with(url: change_task_progress_statuses_path(@task), method: :patch, id: 'checklist_confirm_form') do |form|
+=form_with(url: change_task_progress_statuses_path(@task), method: :patch, id: 'task_hours_form') do |form|
   =hidden_field_tag :status
+  -team_work = @task.team_work
+  -if team_work.nil?
+    =hidden_field_tag 'team_work[confirm]', value: true
   #hours.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "properties", role: "dialog", :tabindex => "-1"}
     .modal-dialog.modal-dialog-centered.modal
       .modal-content
@@ -11,33 +14,67 @@
               =form.text_field :hours, id: 'hoursInput', required: true, class: 'small', placeholder: 'hours'
           -unless @task.subtasks.empty?
             %hr.mt-3.mb-3/
-            .card.overflow-auto{ style: 'max-height: 350px;' }
-              .card-header.p-1
-                .justify-content-between.small
-                  subtasks
-              .card-body.overflow-auto
-                =render 'task_tracking_hours/subtasks_hours', task: @task
-            .row.small.mt-2.text-center
-              .col
-                Team work:
-              .col.text-lowercase.small.mt-1.justify-content-between
-                =form.radio_button('team_work[type]', :hours, { checked: 'checked', onclick: 'changePlaceholder(this);' })
-                =form.label :hours, class: 'mr-3'
-                =form.radio_button('team_work[type]', :dollars, { onclick: 'changePlaceholder(this);' })
-                =form.label :dollars
-              .col-5
-                =form.text_field 'team_work[sum]', id: 'teamWork', required: true, class: 'small', placeholder: 'hours'
+            #teamWork{ class: team_work.nil? ? '' : 'nav-link disabled' }
+              .card.overflow-auto{ style: 'max-height: 380px;' }
+                .card-header.p-1
+                  .justify-content-between.small
+                    subtasks
+                .card-body.overflow-auto
+                  =render 'task_tracking_hours/subtasks_hours', task: @task
+              .row.small.mt-2.text-center
+                .col-3
+                  Team work:
+                .col.text-lowercase.small.mt-1
+                  -dollars_checked = !team_work.nil? && !team_work.hours
+                  =form.radio_button('team_work[type]', :hours, { checked: dollars_checked ? '' : 'checked', onclick: 'changePlaceholder(this);' })
+                  =form.label :hours, class: 'mr-3'
+                  =form.radio_button('team_work[type]', :dollars, { checked: dollars_checked ? 'checked' : '', onclick: 'changePlaceholder(this);' })
+                  =form.label :dollars
+                .col-5
+                  =form.text_field 'team_work[sum]', value: team_work.nil? ? '' : sprintf('%g', team_work.sum), class: 'small', placeholder: dollars_checked ? 'dollars' : 'hours'
+            -unless team_work.nil?
+              .row.small.mt-2.text-center
+                .col-8
+                  %label.form-check-label{:for => "confirmHours"}
+                    .row
+                      =@task.team_work.creator.name + " set teamwork."
+                    .row.text-danger
+                      If you want to change it, please, confirm this:
+                .col-4.align-items-center.text-left.mt-2
+                  =form.check_box 'team_work[confirm]', id: 'confirmInputTeamWork', onchange: 'teamWorkShow(this);'
         .modal-footer.justify-content-center
           .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
             cancel
-          =form.submit :send, class: 'btn btn-sm btn-outline-success'
+          =form.submit :send, class: 'btn btn-sm btn-outline-success', onclick: "$('#hours').modal('hide');"
 
 :javascript
-  document.getElementById('checklist_confirm_form').addEventListener('submit', function (evt) {
+  document.getElementById('task_hours_form').addEventListener('submit', function (evt) {
     let select = document.getElementById('status_id');
     let status = select.options[select.selectedIndex].text;
     document.getElementById('status').value = status
   });
+
+  function teamWorkShow(element) {
+    let teamWork = document.querySelector('#teamWork');
+    if (element.checked) {
+      teamWork.classList.remove('nav-link');
+      teamWork.classList.remove('disabled');
+    } else {
+      teamWork.classList.add('nav-link');
+      teamWork.classList.add('disabled');
+    }
+  }
+
+  function changePlaceholder(element) {
+    if (element.id === 'team_work[type]_hours'){
+      console.log(document.getElementById('teamWork'));
+      document.getElementById('team_work[sum]').placeholder = 'hours'
+    }
+    else {
+      console.log(document.getElementById('teamWork'));
+      document.getElementById('team_work[sum]').placeholder = 'dollars'
+    }
+  }
 
   function onSubmit(ev) {
     ev.preventDefault();

@@ -76,6 +76,6 @@ class Task < ApplicationRecord # :nodoc:
   end
 
   def sum_hours
-    assignments.sum(:hours).to_s + ' hours'
+    sprintf('%g', assignments.sum(:hours).to_s) + ' hours'
   end
 end

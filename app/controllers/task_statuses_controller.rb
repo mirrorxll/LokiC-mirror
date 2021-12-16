@@ -13,8 +13,7 @@ class TaskStatusesController < ApplicationController
   def change
     if @status.name.eql?('done')
       @assignment.update!(done: true, hours: params[:hours])
-      puts '////////'
-      puts team_work_params
+      create_team_work unless params[:team_work].nil?
       @task.update(done_at: Time.now, status: @status) if @task.done_by_all_assignments?
     else
       @assignment.update!(done: false)
@@ -38,8 +37,7 @@ class TaskStatusesController < ApplicationController
   end
 
   def team_work_params
-    team_work = params.require(:team_work)
-    team_work[:creator]
+    params.require(:team_work)
   end
 
   def comment
@@ -66,7 +64,7 @@ class TaskStatusesController < ApplicationController
 
       if @status.name.eql?('done') && !@task.done_by_all_assignments?
         message = "*<#{task_url(@task)}| TASK ##{@task.id}> | "\
-                  "#{current_account.name} set status #{@status.name}*. To change the status of a task to done all performers must change the status.\n>#{@task.title}"
+                  "#{current_account.name} set status #{@status.name}*. To change the status of a task to done all executors must change the status.\n>#{@task.title}"
       else
         message = "*<#{task_url(@task)}| TASK ##{@task.id}> | "\
                   "Status changed to #{@status.name}.*\n>#{@task.title}"
@@ -74,6 +72,17 @@ class TaskStatusesController < ApplicationController
 
       SlackNotificationJob.perform_later(account.slack.identifier, message)
       SlackNotificationJob.perform_later(Rails.env.production? ? 'hle_lokic_task_reminders' : 'hle_lokic_development_messages', message)
+    end
+  end
+
+  def create_team_work
+    return if team_work_params[:confirm].eql?('0')
+
+    team_work = TaskTeamWork.find_by(task: @task)
+    if team_work.nil?
+      TaskTeamWork.create!(task: @task, creator: current_account, sum: team_work_params[:sum].to_f.round(2), hours: team_work_params[:type].eql?('hours') ? true : false)
+    else
+      team_work.update!(creator: current_account, sum: team_work_params[:sum].to_f.round(2), hours: team_work_params[:type].eql?('hours') ? true : false)
     end
   end
 end
