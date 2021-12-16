@@ -13,7 +13,7 @@ module ArticleTypes
 
       flash.now[:error] =
         if @staging_table.nil? || StagingTable.not_exists?(@staging_table.name)
-          detached_or_delete
+          staging_table_deleted
         elsif @staging_table.index.list.empty?
           'first...create unique index'
         end

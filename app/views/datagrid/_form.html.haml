@@ -12,7 +12,7 @@
             -grid.filters.each do |filter|
               .col-3.mb-3
                 =f.datagrid_label filter
-                =f.datagrid_filter filter, class: 'form-control form-control-sm'
+                =f.datagrid_filter filter, class: 'form-control form-control-sm', type: filter.options[:type]
         .text-center
           =f.submit 'apply', class: "btn btn-sm btn-outline-dark"
           =link_to 'reset', url_for(grid.to_param => {}), class: "btn btn-sm btn-outline-dark2"
@@ -34,3 +34,24 @@
       .text-center
         =f.submit 'apply', :class => "btn btn-sm btn-outline-dark mt-2"
         =link_to 'reset', url_for(grid.to_param => {}), :class => "btn btn-sm btn-outline-dark mt-2"
+
+:javascript
+  $(function() {
+    // Don't use on .dynamic_filter, .extended_boolean_filter, .boolean_filter, .string_filter,
+    //   .date & .datetime because they do n/w. "rage: true" filters also will not work.
+    let multiselect = $('select[multiple]')
+    multiselect.multipleSelect({
+      multiple: true,
+      maxHeightUnit: 'px',
+      multipleWidth: 'auto',
+      filter: true
+    });
+
+    // Removes ugly shift/pagination after "Select all"
+    multiselect.next().find('.ms-select-all').addClass('multiple');
+
+    // Datepicker for Tasks-Deadline filter field (selects only date)
+    $('input[type=datetime]').datepicker({
+      format: 'yyyy-mm-dd'
+    });
+  });

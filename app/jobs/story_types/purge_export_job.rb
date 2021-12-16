@@ -53,7 +53,7 @@ module StoryTypes
     rescue StandardError, ScriptError => e
       message = e.message
     ensure
-      iteration.update!(purge_export: false)
+      iteration.update!(purge_export: false, export: nil)
       send_to_action_cable(iteration.story_type, :export, message)
       StoryTypes::SlackNotificationJob.perform_now(iteration, 'remove from pl', message)
     end

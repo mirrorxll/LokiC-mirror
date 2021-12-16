@@ -6,7 +6,7 @@ class ReminderTasksJob < ApplicationJob
   def perform
     Process.wait(
       fork do
-        day_of_week = Date.today.strftime("%A")
+        day_of_week = Date.today.strftime('%A')
 
         each_day = TaskReminderFrequency.find_by(name: 'each day')
         once_a_week = TaskReminderFrequency.find_by(name: 'once a week')
@@ -46,7 +46,9 @@ class ReminderTasksJob < ApplicationJob
           task.assignment_to.each do |assignment|
             next if assignment.slack.nil? || assignment.slack.deleted
 
-            message = "*Unfinished <#{generate_task_url(task)}|Task ##{task.id}> | REMINDER | "\
+            sleep(rand)
+
+            message = "*[ LokiC ] Unfinished <#{generate_task_url(task)} | Task ##{task.id}> | REMINDER | "\
               "#{assignment.name}*\n" \
               "#{task.title}".gsub("\n", "\n>")
             SlackNotificationJob.perform_now(assignment.slack.identifier, message)
@@ -76,7 +78,8 @@ class ReminderTasksJob < ApplicationJob
           accounts.each do |account|
             next if account.slack.nil? || account.slack.deleted
 
-            message = "*#{deadline_message} | <#{generate_task_url(task)}|Task ##{task.id}> | "\
+            sleep(rand)
+            message = "*[ LokiC ] #{deadline_message} | <#{generate_task_url(task)}|Task ##{task.id}> | "\
                     "#{account.name}*\n" \
                     "#{task.title}".gsub("\n", "\n>")
             SlackNotificationJob.perform_now(account.slack.identifier, message)

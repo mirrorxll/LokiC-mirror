@@ -1,11 +1,13 @@
 -if (current_account.types & ['manager', 'outside manager']).any?
-  .row.mb-4
+  .row.mt-4.mb-4
     .col-3.pr-0.text-right.font-weight-bold
       requester:
     .col-9
       =@work_request.requester.name
+-else
+  .m-4
 
-.row.mb-1
+.row
   .col-3.pr-0.text-right.font-weight-bold
     work types:
   .col-9

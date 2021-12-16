@@ -1,46 +1,90 @@
 # frozen_string_literal: true
 
-def account_type
-  %w[manager editor developer].map { |type| { name: type } }
+def account_type(db02)
+  query = 'SELECT name FROM account_types;'
+  db02.query(query).to_a
 end
 
-def account
-  [
-    {
-      first_name: 'Sergey',
-      last_name: 'Emelyanov',
-      email: 'evilx@lokic.loc',
-      password: '123456'
-    },
-    {
-      first_name: 'Dmitriy',
-      last_name: 'Buzina',
-      email: 'dmitriy.b@lokic.loc',
-      password: '123456'
-    },
-    {
-      first_name: 'Sergey',
-      last_name: 'Burenkov',
-      email: 'serg.burenkov@lokic.loc',
-      password: '123456'
-    },
-    {
-      first_name: 'John',
-      last_name: 'Putz',
-      email: 'john.putz@lokic.loc',
-      password: '123456'
-    }
-  ]
+def account(db02)
+  count = AccountType.all.count
+  query = "SELECT first_name, last_name FROM accounts ORDER BY id LIMIT #{count};"
+  response = db02.query(query).to_a
+
+  accounts = []
+  response.zip(AccountType.pluck(:name)).each do |a, b|
+    record = {}
+    record[:first_name] = a['first_name']
+    record[:last_name] = a['last_name']
+    record[:email] = "#{b.parameterize.underscore}@lokic.loc"
+    record[:password] = '123456'
+    accounts << record
+  end
+  accounts
 end
 
-def status
-  statuses = ['not started', 'in progress', 'exported', 'on cron', 'blocked', 'migrated', 'canceled']
-  statuses.map { |st| { name: st } }
+def frequency(db02)
+  query = 'SELECT name FROM frequencies;'
+  db02.query(query).to_a
 end
 
-def frequency
-  frequencies = %w[daily weekly monthly quarterly annually biannually irregularly]
-  frequencies.map { |fr| { name: fr } }
+def state(db02)
+  query = 'SELECT full_name, short_name  FROM states;'
+  db02.query(query).to_a
+end
+
+def data_set_category(db02)
+  query = 'SELECT name, note FROM data_set_categories;'
+  db02.query(query).to_a
+end
+
+def status(db02)
+  query = 'SELECT name FROM statuses;'
+  db02.query(query).to_a
+end
+
+def level(db02)
+  query = 'SELECT name FROM levels;'
+  db02.query(query).to_a
+end
+
+def work_type(db02)
+  query = 'SELECT work, name, hidden FROM work_types;'
+  db02.query(query).to_a
+end
+
+def underwriting_project(db02)
+  query = 'SELECT name, hidden FROM underwriting_projects;'
+  db02.query(query).to_a
+end
+
+def revenue_type(db02)
+  query = 'SELECT name, hidden FROM revenue_types;'
+  db02.query(query).to_a
+end
+
+def priority(db02)
+  query = 'SELECT name FROM priorities;'
+  db02.query(query).to_a
+end
+
+def invoice_type(db02)
+  query = 'SELECT name, hidden FROM invoice_types;'
+  db02.query(query).to_a
+end
+
+def invoice_frequency(db02)
+  query = 'SELECT name, hidden FROM invoice_frequencies;'
+  db02.query(query).to_a
+end
+
+def task_reminder_frequency(db02)
+  query = 'SELECT name FROM task_reminder_frequencies;'
+  db02.query(query).to_a
+end
+
+def weeks(db02_sec)
+  query = 'SELECT begin, end FROM weeks;'
+  db02_sec.query(query).to_a
 end
 
 def dates(range: false)
@@ -50,226 +94,71 @@ def dates(range: false)
   range ? start..finish : [start, finish]
 end
 
-def types_of_work
-  [
-    { work: 0, name: 'Data Collection and Processing' },
-    { work: 0, name: 'DWYM' },
-    { work: 0, name: 'General Management' },
-    { work: 0, name: 'G&A Development Services' },
-    { work: 0, name: 'G&A Management- Data Services' },
-    { work: 0, name: 'Story Production' },
-    { work: 0, name: 'Lead Generation' },
-    { work: 0, name: 'Data Cleaning' },
-    { work: 0, name: 'Roseland MVP' },
-    { work: 0, name: 'Cost Of Sales - Ballotpedia' },
-    { work: 0, name: 'FOIA Chargers' },
-    { work: 0, name: 'Franklin Archer Social Media' },
-    { work: 0, name: 'Blockshopper Customer Service' },
-    { work: 0, name: "Data Analysis - Voter Profile 'Grid'" },
-    { work: 0, name: 'Dev Algo work' },
-    { work: 0, name: 'Application Maintenance' },
-    { work: 0, name: 'Human Resources - Hiring Skill test' },
-    { work: 0, name: 'Matching Algos' },
-    { work: 0, name: 'Physical Hardware Cost' },
-    { work: 0, name: 'Scrape sourcing, instructions and data review' },
-    { work: 0, name: 'Data Collection' },
-    { work: 0, name: 'Data Matching' },
-    { work: 0, name: 'G&A Management- Human Resources' },
-    { work: 0, name: 'Scrape Work' },
-    { work: 1, name: %(Scrape) },
-    { work: 1, name: %(FOIA Request) },
-    { work: 1, name: %(Manual Data Gather) },
-    { work: 1, name: %(Marketwatch) },
-    { work: 1, name: %(HLE Story Template Creation / Production) },
-    { work: 1, name: %(Creation of new client or projects/publications in Pipeline) },
-    { work: 1, name: %(Direct data delivery (in a spreadsheet or csv)) },
-    { work: 1, name: %(Data to Limpar) },
-    { work: 1, name: %(Lumen work) },
-    { work: 1, name: %(Tool building, maintenance, or improvement) },
-    { work: 1, name: %(Human Resources (hiring, training, writing documentation, etc)) },
-    { work: 1, name: %(Report request (e.g., "How many of this or that have we done so far, etc.", "How much did we spend?")) }
-  ]
-end
-
-def clients_report
-  [
-    { name: 'AbelsonTaylor' },
-    { name: 'All Texas Process Servers' },
-    { name: 'American Independent Media' },
-    { name: 'Arizona Prosperity Alliance' },
-    { name: 'Austin American-Statesman' },
-    { name: 'Beaumont Enterprise' },
-    { name: 'Berkeley Research Group' },
-    { name: 'Configure One' },
-    { name: 'Curious Task' },
-    { name: 'D181 School Board Campaign' },
-    { name: 'Dan Proft' },
-    { name: 'Delos Communications' },
-    { name: 'Digital Logic' },
-    { name: 'DirecTech' },
-    { name: 'Edelman' },
-    { name: 'Empower Texans' },
-    { name: 'Everett Herald' },
-    { name: 'File & ServeXpress' },
-    { name: 'Financial Poise' },
-    { name: 'Fisher Wallace Laboratories' },
-    { name: 'Franklin News Foundation' },
-    { name: 'Genus Holdings' },
-    { name: 'Georgetown Group' },
-    { name: 'Google AdSense' },
-    { name: 'Grocery Manufacturers Association' },
-    { name: 'Heartland Institute' },
-    { name: 'Houston Chronicle' },
-    { name: 'Hutchinson & Stoy PLLC' },
-    { name: 'Illinois Business Alliance' },
-    { name: 'Illinois Opportunity Project' },
-    { name: 'Illinois Policy Institute' },
-    { name: 'Illinois Policy(501c3)' },
-    { name: 'IMGE' },
-    { name: 'INN-Watchdog.org' },
-    { name: 'Iowa Digital Newsboard' },
-    { name: 'Ironlight' },
-    { name: 'Ives for Illinois' },
-    { name: 'Kin' },
-    { name: 'Kivvit' },
-    { name: 'Liberty Principals PAC' },
-    { name: 'Lisa Wagner Co.' },
-    { name: 'Litify' },
-    { name: 'Local Government Information Services' },
-    { name: 'Local Labs' },
-    { name: 'Local Labs - Shared Services' },
-    { name: 'Metric Media' },
-    { name: 'Project 5 Media' },
-    { name: 'Real Time Reporters' },
-    { name: 'Red Dog Dumpsters' },
-    { name: 'Satter Foundation' },
-    { name: 'Satter Management' },
-    { name: 'Scripps Media' },
-    { name: 'Semiotics' },
-    { name: 'Shaw Media' },
-    { name: 'Shorewood Development Group' },
-    { name: 'Situation Management Group' },
-    { name: 'Spiegel' },
-    { name: 'Steve Lefko - School Board' },
-    { name: 'Texas Monitor' },
-    { name: 'Texas Public Policy Foundation' },
-    { name: 'The Record' },
-    { name: 'Tiger Swan' },
-    { name: 'Timothy Broas' },
-    { name: 'Toba Communications' },
-    { name: 'Trident CEO Council' },
-    { name: 'Two Dog Blog' },
-    { name: 'US Term Limits' },
-    { name: 'WV Bar Association' },
-    { name: 'Zola Creative' },
-    { name: 'Zurich North America' },
-    { name: 'Ballotpedia' },
-    { name: 'Blockshopper' },
-    { name: 'ASC' },
-    { name: 'Roseland' },
-    { name: 'Situation Management Group (SMG)' },
-    { name: 'Broomfield, CO - Big Dog Promotion' },
-    { name: 'G&A Management- Data Services' },
-    { name: 'G&A Development Services' },
-    { name: 'Lumen' },
-    { name: 'G&A Management- Human Resources' },
-    { name: 'urban business underwriting' },
-    { name: 'catholic vote' }
-  ]
-end
-
-def task_reminder_frequency
-  frequencies = ['each day', 'once a week', 'two times a week', 'three times a week',
-                 'each Monday', 'each Tuesday', 'each Wednesday', 'each Thursday', 'each Friday', 'each Saturday', 'each Sunday']
-  frequencies.map { |fr| { name: fr } }
-end
-
 # ============ Initial filling DB ============
+db02 = MiniLokiC::Connect::Mysql.on(DB02, 'lokic')
+db02_sec = MiniLokiC::Connect::Mysql.on(DB02, 'lokic_secondary')
+
 puts 'Account Types'
-account_type.each { |obj| AccountType.create!(obj) }
+account_type(db02).each { |obj| AccountType.create!(obj) }
+
 puts 'Accounts'
-account.each { |obj| Account.create!(obj).account_types << AccountType.first }
+account(db02).each { | obj | Account.create!(obj) }
+
 puts 'Frequencies'
-frequency.each { |obj| Frequency.create!(obj) }
+frequency(db02).each { |obj| Frequency.create!(obj) }
+
+puts 'States'
+state(db02).each { |obj| State.create!(obj) }
+
+puts 'Data Set Categories'
+data_set_category(db02).each { |obj| DataSetCategory.create!(obj) }
+
 puts 'Statuses'
-status.each { |obj| Status.create!(obj) }
-puts 'Type of works'
-types_of_work.each { |obj| WorkType.create!(obj) }
-puts 'Clients Report'
-clients_report.each { |obj| ClientsReport.create!(obj) }
-puts 'TaskReminderFrequency'
-task_reminder_frequency.each { |obj| TaskReminderFrequency.create!(obj) }
+status(db02).each { |obj| Status.create!(obj) }
 
+puts 'Levels'
+level(db02).each { |obj| Level.create!(obj) }
 
-puts 'Clients Publications Tags'
+puts 'Fact Checking Channels'
+Account.all.each { |acc| acc.create_fact_checking_channel(name: "fcd_#{acc.first_name.downcase}_#{acc.last_name.downcase}") }
+
+puts 'Work Types'
+work_type(db02).each { |obj| WorkType.create!(obj) }
+
+puts 'Underwriting Projects'
+underwriting_project(db02).each { |obj| UnderwritingProject.create!(obj) }
+
+puts 'Revenue Types'
+revenue_type(db02).each { |obj| RevenueType.create!(obj) }
+
+puts 'Priorities'
+priority(db02).each { |obj| Priority.create!(obj) }
+
+puts 'Invoice Types'
+invoice_type(db02).each { |obj| InvoiceType.create!(obj) }
+
+puts 'Invoice Frequencies'
+invoice_frequency(db02).each { |obj| InvoiceFrequency.create!(obj) }
+
+puts 'Task Reminder Frequencies'
+task_reminder_frequency(db02).each { |obj| TaskReminderFrequency.create!(obj) }
+
+puts 'Weeks'
+weeks(db02_sec).each { |obj| Week.create!(obj) }
+
+db02.close
+db02_sec.close
+
 ClientsPublicationsTagsJob.perform_now
-puts 'Clients Tags'
 ClientsTagsJob.perform_now
-puts 'Sections'
 SectionsJob.perform_now
-puts 'PhotoBuckets'
 PhotoBucketsJob.perform_now
-puts 'SlackAccounts'
 SlackAccountsJob.perform_now
 
 hidden = Client.where('name LIKE :like OR name IN (:mm, :mb)',
                       like: 'MM -%', mm: 'Metric Media', mb: 'Metro Business Network')
 hidden.update_all(hidden_for_story_type: false)
 
-# ============ Time Frames for staging tables ============
-puts 'Time Frames'
-# daily
-dates(range: true).each do |dt|
-  TimeFrame.create!(frame: "d:#{dt.yday}:#{dt.year}")
-end
-
-# weekly
-date, end_date = dates
-loop do
-  TimeFrame.create!(frame: "w:#{date.cweek}:#{date.year}")
-  date += 7
-  break if date > end_date
-end
-
-# monthly
-date, end_date = dates
-loop do
-  TimeFrame.create!(frame: "m:#{date.month}:#{date.year}")
-  date = date.next_month
-  break if date > end_date
-end
-
-# quarterly
-date, end_date = dates
-loop do
-  (1..4).each { |q| TimeFrame.create!(frame: "q:#{q}:#{date.year}") }
-  date = date >> 3
-  break if date > end_date
-end
-
-# biannually
-date, end_date = dates
-loop do
-  (1..2).each { |b| TimeFrame.create!(frame: "b:#{b}:#{date.year}") }
-  date = date >> 6
-  break if date > end_date
-end
-
-# annually
-date, end_date = dates
-loop do
-  TimeFrame.create!(frame: date.year)
-  date = date.next_year
-  break if date > end_date
-end
-
-begin_date = Date.parse('2020/01/06')
-end_date = Date.parse('2020/01/12 23/59/59')
-110.times do
-  Week.create(begin: begin_date, end: end_date)
-  begin_date += 7
-  end_date += 7
-end
 
 # ============ FeedBack rules for stories ============
 rules = {

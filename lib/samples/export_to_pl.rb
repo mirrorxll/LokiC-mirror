@@ -50,7 +50,7 @@ module Samples
               true
             end
 
-            sample.update!(@pl_lead_id_key => nil, @pl_story_id_key => nil)
+            sample.update!(@pl_lead_id_key => nil, @pl_story_id_key => nil, exported_at: nil)
           end
         end
       end

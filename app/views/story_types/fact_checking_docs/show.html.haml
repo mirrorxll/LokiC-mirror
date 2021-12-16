@@ -8,17 +8,19 @@
       %b FCD ##{@story_type.id} #{@story_type.name} -- #{@story_type.developer.name}
   %hr/
 
-  -unless current_account.types.include?('editor')
-    .row
-      .col-10.offset-1
-        %nav{ 'area-label' => 'breadcrumb' }
-          %ov.breadcrumb.mb-0
+  .row
+    .col-10.offset-1
+      %nav{ 'area-label' => 'breadcrumb' }
+        %ov.breadcrumb.mb-0
+          %li.breadcrumb-item
+            =link_to('home', root_url)
+          -if current_account.types.include?('editor')
             %li.breadcrumb-item
-              =link_to('home', root_url)
-            %li.breadcrumb-item
-              =link_to('story type', story_type_path(@story_type))
-            %li.breadcrumb-item.active{ 'area-current' => 'page' }
-              FCD
+              =link_to('data set', data_set_path(@story_type.data_set))
+          %li.breadcrumb-item
+            =link_to('story type', story_type_path(@story_type))
+          %li.breadcrumb-item.active{ 'area-current' => 'page' }
+            FCD
   %hr/
 
   .row
@@ -61,12 +63,12 @@
                   .row
                     -if r_fb.approvable || r_fb.confirmed
                       .col-12
-                        =r_fb.body&.html_safe
+                        =r_fb.body
                     -else
                       .col-1.d-flex.justify-content-center.align-items-center{ onchange: "confirmFeedback(this, 'reviewers', #{r_fb.id});" }
                         %input{ type: :checkbox }
                       .col-11.pl-0
-                        =r_fb.body&.html_safe
+                        =r_fb.body
                 -if index != (reviewers_feedback.count - 1)
                   %hr.mt-4.mb-4/
 
@@ -100,12 +102,12 @@
                 .row
                   -if e_fb.approvable || e_fb.confirmed
                     .col-12
-                      =e_fb.body&.html_safe
+                      =e_fb.body
                   -else
                     .col-1.d-flex.justify-content-center.align-items-center{ onchange: "confirmFeedback(this, 'editors', #{e_fb.id});" }
                       %input{ type: :checkbox }
                     .col-11.pl-0
-                      =e_fb.body&.html_safe
+                      =e_fb.body
               -if index != (editors_feedback.count - 1)
                 %hr.mt-4.mb-4/
 

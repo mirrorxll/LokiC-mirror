@@ -14,3 +14,32 @@
   .form-group
     =f.submit  t('.sign_in'), class: 'btn btn-primary'
 =render 'devise/shared/links'
+
+=link_to('click', '', onclick: 'popupCenter(event, 500, 300);')
+
+:javascript
+  function popupCenter(event, w, h) {
+    event.preventDefault();
+
+    // Fixes dual-screen position                             Most browsers      Firefox
+    const dualScreenLeft = window.screenLeft !==  undefined ? window.screenLeft : window.screenX;
+    const dualScreenTop = window.screenTop !==  undefined   ? window.screenTop  : window.screenY;
+
+    const width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
+    const height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
+
+    const systemZoom = width / window.screen.availWidth;
+    const left = (width - w) / 2 / systemZoom + dualScreenLeft
+    const top = (height - h) / 2 / systemZoom + dualScreenTop
+    const newWindow = window.open('/', 'Login | LokiC',
+      `
+      scrollbars=yes,
+      width=${w / systemZoom},
+      height=${h / systemZoom},
+      top=${top},
+      left=${left}
+      `
+    )
+
+    if (window.focus) newWindow.focus();
+  }

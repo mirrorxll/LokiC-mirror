@@ -19,7 +19,7 @@ class StoryTypeIteration < ApplicationRecord # :nodoc:
   has_many :auto_feedback_confirmations
   has_many :auto_feedback, through: :auto_feedback_confirmations
   has_many :stories
-  has_many :production_removals
+  has_many :production_removals, foreign_key: :iteration_id
 
   has_and_belongs_to_many :statuses
 

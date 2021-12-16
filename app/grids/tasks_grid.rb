@@ -7,7 +7,6 @@ class TasksGrid
   scope { Task.includes(:assignments, :creator, :assignment_to) }
 
   # Filters
-
   filter(:title, :string, left: true, header: 'Title(RLIKE)') do |value, scope|
     scope.where('title RLIKE ?', value)
   end
@@ -25,6 +24,7 @@ class TasksGrid
   filter(:deadline,:datetime, header: 'Deadline >= ?', multiple: ',')
 
   status_deleted = Status.find_by(name: 'deleted')
+
   filter(:deleted_tasks, :xboolean, left: true) do |value, scope|
     value ? scope.where(status: status_deleted) : scope.where.not(status: status_deleted)
   end
@@ -64,7 +64,7 @@ class TasksGrid
   end
 
   column(:parent_task_id, header: 'Main task', order: 'parent_task_id', mandatory: true) do |task|
-    format("#" + task.parent.id.to_s) { |parent_id| link_to parent_id, task.parent } unless task.parent.nil?
+    format("##{task.parent.id}") { |parent_id| link_to parent_id, task.parent } unless task.parent.nil?
   end
 
   column(:last_comment, header: 'Last comment', order: ->(scope) { scope.joins(:comments).group('tasks.id')
@@ -81,25 +81,4 @@ class TasksGrid
       content_tag(:div, last_comment.created_at.strftime('%y-%m-%d'), attr)
     end
   end
-
-  # column(:team_work, order: 'team_work', mandatory: true, html: true) do |task|
-  #   sum = task.team_work.nil? ? '' : task.team_work.sum
-  #   attr = { 'aria-controls' => "#subtasksCollapse",
-  #            'aria-expanded' => "true",
-  #            'data-target' => "#subtasksCollapse",
-  #            'data-toggle' => "collapse",
-  #            'type' => "button"
-  #   }
-  #   if task.team_work.nil?
-  #     ''
-  #   else
-  #     content_tag(:div, sum, attr) do
-  #       attr2 = { 'id' => "subtasksCollapse",
-  #                 'class' => "collapse",
-  #                 'data-parent' => "#subtasks"
-  #               }
-  #       content_tag(:div, task.subtasks.count, attr2)
-  #     end
-  #   end
-  # end
 end

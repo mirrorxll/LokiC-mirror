@@ -1,0 +1,9 @@
+(() => {
+    document.querySelector('#excludedClientsPublicationsModal select[name="client_id"]').value = '';
+    document.querySelector('#excludedClientsPublicationsModal select[name="publication_id"]').innerHTML = '';
+})();
+
+$('#excludedClientsPublicationsModal .table_body').append(
+    '<%= j render partial: 'story_types/clients/excepted_publication',
+         locals: { excepted_publication: @excepted_publication }%>');
+$('#clientsPublicationsTags').html('<%= j render 'story_types/properties/clients_publications_tags' %>')

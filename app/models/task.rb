@@ -5,6 +5,14 @@ class Task < ApplicationRecord # :nodoc:
     self.status = Status.find_by(name: 'not started')
   end
 
+  before_save do
+    regexp = '<p data-f-id="pbf" style="text-align: center; font-size: 14px; margin-top: 30px; opacity: 0.65; '\
+             'font-family: sans-serif;">Powered by <a href="https://www.froala.com/wysiwyg-editor?pb=1" '\
+             'title="Froala Editor">Froala Editor</a></p>'
+
+    self.description = description&.gsub(/#{Regexp.escape(regexp)}/, '')
+  end
+
   validates :title, length: { maximum: 500 }
   validates :title, uniqueness: { scope: :creator }, case_sensitive: false
 
@@ -13,6 +21,7 @@ class Task < ApplicationRecord # :nodoc:
   belongs_to :reminder_frequency, class_name: 'TaskReminderFrequency', optional: true
   belongs_to :parent, class_name: 'Task', foreign_key: :parent_task_id, optional: true
   belongs_to :client, class_name: 'ClientsReport', foreign_key: :client_id, optional: true
+  belongs_to :work_request, optional: true
 
   has_one :team_work, class_name: 'TaskTeamWork'
   has_one :last_comment, -> { order created_at: :desc }, as: :commentable, class_name: 'Comment'
@@ -25,6 +34,7 @@ class Task < ApplicationRecord # :nodoc:
 
   has_many :comments, -> { where(commentable_type: 'Task') }, as: :commentable, class_name: 'Comment'
   has_many :subtasks, -> { where.not(status: Status.find_by(name: 'deleted')) }, foreign_key: :parent_task_id, class_name: 'Task'
+  has_many :scrape_tasks
 
   def assignment_to_or_creator?(account)
     account.in?(assignment_to) || account.eql?(creator)

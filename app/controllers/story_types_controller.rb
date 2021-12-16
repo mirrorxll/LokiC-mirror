@@ -16,7 +16,7 @@ class StoryTypesController < ApplicationController # :nodoc:
     @grid_params = if request.parameters[:story_types_grid]
                      request.parameters[:story_types_grid]
                    else
-                     developer? ? { order: :id, descending: true, developer: current_account.id } : { order: :id, descending: true }
+                     developer? ? { developer: current_account.id } : {}
                    end
 
     @story_types_grid = StoryTypesGrid.new(@grid_params)
