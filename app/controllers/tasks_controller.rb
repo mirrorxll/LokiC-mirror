@@ -91,13 +91,8 @@ class TasksController < ApplicationController # :nodoc:
     @task.assignment_to.each do |assignment|
       next if assignment.slack.nil? || assignment.slack.deleted
 
-<<<<<<< HEAD
       message = "*<#{task_url(@task)}| TASK ##{@task.id}> | "\
               "Assignment to you*\n>#{@task.title}"
-=======
-      message = "*[ LokiC ] <#{task_url(@task)}| TASK ##{@task.id}> | "\
-                "ASSIGNMENT TO YOU*\n>#{@task.title}"
->>>>>>> bb0a0bb6b0e3076c149e207fc28b0532947415a7
 
       SlackNotificationJob.perform_later(assignment.slack.identifier, message)
       SlackNotificationJob.perform_later(Rails.env.production? ? 'hle_lokic_task_reminders' : 'hle_lokic_development_messages', message)
@@ -107,16 +102,9 @@ class TasksController < ApplicationController # :nodoc:
   def task_params
     task_params = params.require(:task).permit(:title, :description, :parent, :deadline, :client_id, :reminder_frequency, :access, :gather_task)
     task_params[:reminder_frequency] = task_params[:reminder_frequency].blank? ? nil : TaskReminderFrequency.find(task_params[:reminder_frequency])
-<<<<<<< HEAD
     task_params[:parent] = task_params[:parent].blank? ? nil : Task.find(task_params[:parent])
     task_params[:client] = task_params[:client_id].blank? ? nil : ClientsReport.find(task_params[:client_id])
     task_params[:creator] = current_account
-=======
-    task_params[:assignment_to] = task_params[:assignment_to].uniq.reject(&:blank?)
-    task_params[:client] = task_params[:client_id].blank? ? nil : ClientsReport.find(task_params[:client_id])
-    task_params[:parent] = task_params[:parent].blank? ? nil : Task.find(task_params[:parent])
-    task_params[:work_request] = params[:work_request_id] && WorkRequest.find(params[:work_request_id])
->>>>>>> bb0a0bb6b0e3076c149e207fc28b0532947415a7
     task_params
   end
 
@@ -135,7 +123,6 @@ class TasksController < ApplicationController # :nodoc:
     up_task_params[:parent] = up_task_params[:parent].blank? ? nil : Task.find(up_task_params[:parent])
     up_task_params
   end
-<<<<<<< HEAD
 
   def update_checklists_params
     params.key?(:checklists) ? params.require(:checklists) : []
@@ -148,6 +135,4 @@ class TasksController < ApplicationController # :nodoc:
   def task_assignments
     @task_assignments = TaskAssignment.where(task: @task)
   end
-=======
->>>>>>> bb0a0bb6b0e3076c149e207fc28b0532947415a7
 end
