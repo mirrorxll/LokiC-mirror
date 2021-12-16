@@ -49,13 +49,13 @@
         =link_to '[ edit task ]', edit_task_path(@task), remote: true
   .card-body
     #body
-      .row.small.mb-3
+      .row.mb-3
         .col-10.offset-1
           .fr-view
             -if @task.checklists.exists?
               %ul
                 -@task.checklists.each do |checklist|
-                  %li.mb-2
+                  %li.mb-2.small
                     =checklist.description
               %hr.mt-3.mb-3
             =@task.description.html_safe
