@@ -1,4 +1,4 @@
-=form_with(url: task_path(@task), method: :patch) do |form|
+=form_with(url: task_path(@task), method: :patch, html: { onkeypress: "return event.keyCode !== 13;" }) do |form|
   .row.small
     .col
       .form-group
@@ -6,28 +6,63 @@
       .form-group
         =form.text_area 'task[description]', id: 'task_description', value: @task.description
   %hr/
-  .form-group.row.small.font-weight-bold.text-center.justify-content-between
-    .col
-      reminder frequency:
-    .col
-      client:
-    .col
-      deadline:
-    .col
-      gather task id:
-    .col
-      main task:
-  .form-group.row.small.text-center.justify-content-between
-    .col
-      =form.collection_select 'task[reminder_frequency]', sorted_reminder_frequencies, :id, :name, { selected: @task.reminder_frequency.nil? ? '' : @task.reminder_frequency.id, prompt: '' }
-    .col
-      =form.collection_select 'task[client_id]', ClientsReport.all.order(:name), :id, :name, { selected: @task.client.nil? ? '' : @task.client.id, prompt: '' }, style: "width:150px"
-    .col
-      =form.date_field 'task[deadline]', value: @task.deadline
-    .col
-      =form.text_field 'task[gather_task]', value: @task.gather_task
-    .col
-      =form.collection_select 'task[parent]', Task.where.not(status: Status.find_by(name: 'deleted')).order(:id) - [@task], :id, :title_with_id, { selected: @task.parent.nil? ? '' : @task.parent.id, prompt: '' }, style: "width:150px"
+
+  #checklists.accordion.mt-2
+    .card.small
+      .card-header.p-1
+        %div.row
+          .col-1
+            =icon('fa', 'plus', id: 'add_checklist')
+          .col-11.text-right
+            %div{"aria-controls" => "#checklistsCollapse", "aria-expanded" => "true", "data-target" => "#checklistsCollapse", "data-toggle" => "collapse", type: "button"}
+              checklists
+      #checklistsCollapse.collapse{"data-parent" => "#checklists", class: 'show'}
+        .row.mt-2.mb-2
+          .col#forms_checklists
+            -if @task.checklists.exists?
+              -@task.checklists.each do |checklist|
+                .row.justify-content-center.small.mt-2
+                  .mt-1.mr-2.small
+                    =icon('fa', 'circle')
+                  =form.text_field "checklists[#{checklist.id}]", style: 'width: 90%;', maxlength: 255, require: true, value: checklist.description
+                  .delete_checklist.ml-2{ onclick: "removeDate(this)" }
+                    =icon('fa', 'minus')
+  %hr/
+
+  .d-flex.small.font-weight-bold.text-center
+    .col-6
+      .row.mb-2
+        .col.text-right
+          reminder frequency:
+        .col.text-left.small
+          =form.collection_select 'task[reminder_frequency]', sorted_reminder_frequencies, :id, :name, { selected: @task.reminder_frequency.nil? ? '' : @task.reminder_frequency.id, prompt: '' }
+      .row.mb-2
+        .col.text-right
+          client:
+        .col.text-left.small
+          =form.collection_select 'task[client_id]', ClientsReport.all.order(:name), :id, :name, { selected: @task.client.nil? ? '' : @task.client.id, prompt: '' }, style: "width:150px"
+      .row.mb-2
+        .col.text-right
+          access to task and its subtasks:
+        .col.text-left
+          =form.check_box 'task[access]', class: 'form-check-input ml-0 mt-1', checked: @task.access
+    .col-6
+      .row.mb-2
+        .col.text-right
+          gather_task:
+        .col.text-left.small
+          =form.text_field 'task[gather_task]', value: @task.gather_task
+      .row.mb-2
+        .col.text-right
+          deadline:
+        .col.text-left.small
+          =form.date_field 'task[deadline]', value: @task.deadline
+      .row.mb-2
+        -if params[:parent_task].blank?
+          .col.text-right
+            main_task:
+          .col.text-left.small
+            =form.collection_select 'task[parent]', Task.where(parent: nil).where.not(status: Status.find_by(name: 'deleted')).order(:id) - [@task], :id, :title_with_id, { selected: @task.parent.nil? ? '' : @task.parent.id, prompt: '' }, style: "width:150px"
   %hr/
   .modal-footer
     =link_to( 'close', '#', class: 'ml-auto btn btn-sm btn-outline-secondary',
@@ -38,3 +73,27 @@
   $('#task').on('hidden.bs.modal', function () {
     $('#task .modal-body').empty();
   });
+
+  $('#add_checklist').click(function () {
+    let hex = secureRandom(6);
+
+    $('#forms_checklists').append(
+        `<div id="assignment_${hex}" class="row small justify-content-center mt-2">
+           <div class="small mt-1 mr-2"><i class="fa fa-circle"></i></div>
+           <input id="checklists[new_${hex}]" style='width: 90%' require=true maxlength="255" name="checklists[new_${hex}]"></input>
+           <div class="ml-2" id="rm_checklist_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
+         </div>`
+    );
+  });
+
+  function secureRandom(n) {
+    let result = '';
+    while (n--){
+      result += Math.floor(Math.random() * 16).toString(16);
+    }
+    return result;
+  }
+
+  function removeDate(elem) {
+    $(elem.parentNode).remove();
+  }

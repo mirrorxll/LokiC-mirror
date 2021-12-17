@@ -1,0 +1,17 @@
+-task.assignments.each do |assignment|
+  .row.mt-2.small.col-10
+    .col-6.font-weight-bold
+      =assignment.name
+    .col-6
+      =assignment.hours.nil? ? '---' : sprintf('%g', assignment.hours.to_s) + ' hours'
+%hr
+-task.subtasks.each do |subtask|
+  .row.small.col
+    =link_to parent_title(subtask.title), task_path(subtask)
+  .row.small.col-10
+    -subtask.assignments.each do |assignment|
+      .col-6.font-weight-bold
+        =assignment.name
+      .col-6
+        =assignment.hours.nil? ? '---' : sprintf('%g', assignment.hours.to_s) + ' hours'
+  %hr

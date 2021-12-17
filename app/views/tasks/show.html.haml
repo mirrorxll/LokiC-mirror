@@ -11,9 +11,22 @@
 
 .row.mt-3
   .col-5
-    =render 'task_info'
+    .mb-1
+      =render 'task_info'
+      #confirms
+        =render 'task_receipts/confirm_receipts', task: @task
   .col-7
-    =render 'task_comments', comments: @comments
+    .card{style: 'height: 375px;'}
+      .card-header.p-1
+        .d-flex.justify-content-between.small
+          comments
+          -if current_account.eql?(@task.creator) || current_account.types.include?('manager') || current_account.in?(@task.assignment_to)
+            #comment_form
+              =link_to('[ add comment ]',
+                       new_task_comment_path(@task, subtype: 'user comment'),
+                       remote: true)
+      .card-body
+        =render 'comments', comments: @comments
 
 #subtasks.accordion.mt-2
   .card.small
@@ -23,7 +36,7 @@
           %div{"aria-controls" => "#subtasksCollapse", "aria-expanded" => "true", "data-target" => "#subtasksCollapse", "data-toggle" => "collapse", type: "button"}
             subtasks
         .col-1.text-right
-          -if @task.creator?(current_account) || current_account.types.include?('manager')
+          -if (@task.creator?(current_account) || current_account.types.include?('manager')) && @task.parent.nil?
             =link_to '[ create ]', new_task_path(parent_task: @task), remote: true
     #subtasksCollapse.collapse{"data-parent" => "#subtasks", class: @task.subtasks.count > 0 ? 'show' : '' }
       =render 'subtasks'
@@ -34,13 +47,21 @@
       info
       -if @task.creator?(current_account) || current_account.types.include?('manager')
         =link_to '[ edit task ]', edit_task_path(@task), remote: true
-
   .card-body
     #body
       .row.small.mb-3
         .col-10.offset-1
           .fr-view
+            -if @task.checklists.exists?
+              %ul
+                -@task.checklists.each do |checklist|
+                  %li.mb-2
+                    =checklist.description
+              %hr.mt-3.mb-3
             =@task.description.html_safe
+
+=render 'task_checklists/confirms'
+=render 'task_tracking_hours/hours_form'
 
 =render 'tasks/task_modal'
 =render 'task_comments/comment_modal'

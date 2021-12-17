@@ -8,7 +8,7 @@ class TasksController < ApplicationController # :nodoc:
 
   before_action :find_task, only: %i[show edit update]
   before_action :grid, only: :index
-  after_action  :send_notification, only: :create
+  before_action :task_assignments, only: :show
 
   after_action  :send_notification, only: :create
   after_action  :comment, only: :create
@@ -22,7 +22,7 @@ class TasksController < ApplicationController # :nodoc:
   end
 
   def show
-    render_401 if !manager? && !@task.assignment_to_or_creator?(current_account)
+    render_401 unless manager? || @task.access_for?(current_account)
 
     @comments = @task.comments.order(created_at: :desc)
   end
@@ -32,27 +32,28 @@ class TasksController < ApplicationController # :nodoc:
   end
 
   def create
-    puts params[:work_request_id]
-    puts task_params[:work_request]
+    @task = Task.new(task_params)
 
-    @task = Task.new(
-      title: task_params[:title],
-      description: task_params[:description],
-      reminder_frequency: task_params[:reminder_frequency],
-      deadline: task_params[:deadline],
-      gather_task: task_params[:gather_task],
-      parent: task_params[:parent],
-      work_request: task_params[:work_request],
-      client: task_params[:client],
-      creator: current_account
-    )
-    @task.assignment_to << Account.find(task_params[:assignment_to]) if @task.save!
+    if @task.save!
+      @task.assignment_to << Account.find(assignment_to_params)
+      task_checklists = @task.checklists
+      checklists_params.each { |description| task_checklists.create!(description: description) }
+    end
   end
 
   def edit; end
 
   def update
     @task.update!(update_task_params)
+
+    task_checklists = @task.checklists
+    update_checklists_params.each do |id, description|
+      if id[0..2].eql?('new')
+        task_checklists.create!(description: description)
+      else
+        TaskChecklist.find(id).update(description: description)
+      end
+    end
   end
 
   private
@@ -64,6 +65,7 @@ class TasksController < ApplicationController # :nodoc:
             else
               "Assignment to #{@task.assignment_to.map(&:name).to_sentence}."
             end
+
     @task.comments.build(
       subtype: 'task comment',
       body: body,
@@ -89,8 +91,8 @@ class TasksController < ApplicationController # :nodoc:
     @task.assignment_to.each do |assignment|
       next if assignment.slack.nil? || assignment.slack.deleted
 
-      message = "*[ LokiC ] <#{task_url(@task)}| TASK ##{@task.id}> | "\
-                "ASSIGNMENT TO YOU*\n>#{@task.title}"
+      message = "*<#{task_url(@task)}| TASK ##{@task.id}> | "\
+              "Assignment to you*\n>#{@task.title}"
 
       SlackNotificationJob.perform_later(assignment.slack.identifier, message)
       SlackNotificationJob.perform_later(Rails.env.production? ? 'hle_lokic_task_reminders' : 'hle_lokic_development_messages', message)
@@ -98,20 +100,39 @@ class TasksController < ApplicationController # :nodoc:
   end
 
   def task_params
-    task_params = params.require(:task).permit(:title, :description, :parent, :deadline, :client_id, :reminder_frequency, :gather_task, assignment_to: [])
+    task_params = params.require(:task).permit(:title, :description, :parent, :deadline, :client_id, :reminder_frequency, :access, :gather_task)
     task_params[:reminder_frequency] = task_params[:reminder_frequency].blank? ? nil : TaskReminderFrequency.find(task_params[:reminder_frequency])
-    task_params[:assignment_to] = task_params[:assignment_to].uniq.reject(&:blank?)
-    task_params[:client] = task_params[:client_id].blank? ? nil : ClientsReport.find(task_params[:client_id])
     task_params[:parent] = task_params[:parent].blank? ? nil : Task.find(task_params[:parent])
-    task_params[:work_request] = params[:work_request_id] && WorkRequest.find(params[:work_request_id])
+    task_params[:client] = task_params[:client_id].blank? ? nil : ClientsReport.find(task_params[:client_id])
+    task_params[:creator] = current_account
     task_params
   end
 
+  def assignment_to_params
+    params.require(:assignment_to).uniq.reject(&:blank?)
+  end
+
+  def checklists_params
+    params.key?(:checklists) ? params.require(:checklists) : []
+  end
+
   def update_task_params
-    up_task_params = params.require(:task).permit(:title, :description, :deadline, :parent, :client_id, :reminder_frequency, :gather_task)
+    up_task_params = params.require(:task).permit(:title, :description, :deadline, :parent, :access, :client_id, :reminder_frequency, :gather_task)
     up_task_params[:reminder_frequency] = up_task_params[:reminder_frequency].blank? ? nil : TaskReminderFrequency.find(up_task_params[:reminder_frequency])
     up_task_params[:client] = up_task_params[:client_id].blank? ? nil : ClientsReport.find(up_task_params[:client_id])
     up_task_params[:parent] = up_task_params[:parent].blank? ? nil : Task.find(up_task_params[:parent])
     up_task_params
+  end
+
+  def update_checklists_params
+    params.key?(:checklists) ? params.require(:checklists) : []
+  end
+
+  def comment_params
+    params.require(:comment)
+  end
+
+  def task_assignments
+    @task_assignments = TaskAssignment.where(task: @task)
   end
 end

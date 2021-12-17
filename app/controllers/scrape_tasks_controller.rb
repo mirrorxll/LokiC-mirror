@@ -59,7 +59,6 @@ class ScrapeTasksController < ApplicationController
       else
         { order: :id, descending: true }
       end
-
     @scrape_tasks_grid = ScrapeTasksGrid.new(grid_params)
   end
 
