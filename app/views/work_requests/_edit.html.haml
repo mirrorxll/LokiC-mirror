@@ -95,16 +95,14 @@
           .col-1.text-right
             .loadingSpinner.spinner-border.spinner-border-sm.text-secondary
               %span.sr-only
-          .col-11.pl-0.small
-            .client-not-found.text-danger
-              Client not found!
         .other-clients
           Other:
           %input.underline-input.w-50.p-0{ list: 'otherClients', onkeypress: 'clientByEnterPress(event, this)', oninput: 'hideClientNone();' }
           %datalist#otherClients
-            -other_client = clients.present? ? Client.where("id NOT IN (#{clients.ids.join(',')})") : Client.all
+            -other_client = (clients.present? ? Client.where("id NOT IN (#{clients.ids.join(',')})") : Client.all).order(:name)
             -other_client.each do |cl|
-              %option{ value: "#{cl.name}" }
+              %option{ value: "#{cl.exist_in_pl ? cl.name : "#{cl.name} (New Client)"}" }
+
           .sign-in.d-inline-block.ml-1
             .mouse-hover{ onclick: 'clientByArrowClick();' }
               =icon('fa', 'sign-in')
@@ -127,27 +125,37 @@
 
         function addClient(input) {
           let spinner = document.querySelector('#clients .loadingSpinner');
-          let client404 = document.querySelector('#clients .client-not-found');
           let processing = document.querySelector('#clients .processingOther');
 
-          client404.classList.add('d-none');
           processing.classList.remove('d-none');
 
           Rails.ajax({
             type: "GET",
             dataType: 'script',
             url: `#{find_api_clients_path}`,
-            data: `client[name]=${encodeURIComponent(input.value)}`,
+            data: `client[name]=${encodeURIComponent(input.value.replaceAll(/ \(New Client\)/g, ''))}`,
             success: (data) => {
               input.value = '';
               spinner.classList.add('d-none');
 
-              if(data === 404) {
-                client404.classList.remove('d-none');
-                return false;
-              } else if(document.querySelector(`.client-${data['client_id']}`)) {
+              let clientName;
+
+              if(data['exist_in_pl']) {
+                clientName = data['client_name'];
+              } else {
+                clientName = data['client_name'] + ' ' + '(New Client)';
+              }
+
+              if(document.querySelector(`.client-${data['client_id']}`)) {
                 processing.classList.add('d-none');
                 return false;
+              }
+
+              if(data['new_record']) {
+                document.querySelector('#otherClients').insertAdjacentHTML(
+                  'afterbegin',
+                  `<option value="${clientName}"></option>`
+                )
               }
 
               document.querySelector('#clients .list').insertAdjacentHTML(
@@ -158,7 +166,7 @@
                     <input type="checkbox" value="1" name="work_request[tf_client__${data['client_id']}]" id="work_request[tf_client__${data['client_id']}]" checked>
                   </div>
                   <div class="col-11 pl-0 text-left">
-                    <label class="m-0" for="work_request[tf_client__${data['client_id']}]">${data['client_name']}</label>
+                    <label class="m-0" for="work_request[tf_client__${data['client_id']}]">${clientName}</label>
                   </div>
                 </div>`
               )
@@ -169,7 +177,6 @@
         function hideClientNone() {
           document.querySelector('#clients .processingOther').classList.add('d-none');
           document.querySelector('#clients .loadingSpinner').classList.remove('d-none');
-          document.querySelector('#clients .client-not-found').classList.remove('d-none');
         }
 
 
