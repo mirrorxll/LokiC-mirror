@@ -13,7 +13,7 @@ class WorkRequestObject
 
   def initialize(work_request: nil, params:)
     @request = work_request || WorkRequest.create!
-    @prm = params.reject! { |k, v| k.start_with?('tf_') && v.eql?('0') }
+    @prm = params.reject { |k, v| k.start_with?('tf_') && v.eql?('0') }
 
     @work_types =
       @prm.select { |k, _v| k.start_with?('tf_work_type') }.keys.map { |k| WorkType.find(k.split('__').last) }
@@ -32,7 +32,7 @@ class WorkRequestObject
       invoice_type: InvoiceType.find_by(id: @prm['invoice_type']),
       invoice_frequency: InvoiceFrequency.find_by(id: @prm['invoice_frequency']),
       priority: Priority.find_by(id: @prm['priority']),
-      sow: @prm['sow'],
+      default_sow: @prm['sow']['default'],
       eta: @prm['eta'],
       first_invoice: @prm['first_invoice'],
       final_invoice: @prm['final_invoice'],
@@ -40,6 +40,11 @@ class WorkRequestObject
       final_deadline: @prm['final_deadline'],
       budget_of_project: @prm['budget_of_project']
     }
+    regexp = %r{^https://docs.google.com/(document|spreadsheets)}
+
+    if @prm['sow']['default'].eql?('0') && @prm['sow']['link'].strip[regexp]
+      params.merge!({ sow: @prm['sow']['link'] })
+    end
 
     @request.update!(params)
     @request.project_order_name.update(body: @prm['project_order_name'])
