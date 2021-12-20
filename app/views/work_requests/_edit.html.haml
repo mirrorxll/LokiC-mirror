@@ -625,9 +625,7 @@
 
       let sowCheckBox = document.querySelector('input[id="work_request[sow[default]]"]');
       let sowInput = document.querySelector('input[id="work_request[sow[link]]"]');
-        console.log('0000000000');
       if(!sowCheckBox.checked) {
-        console.log(111111)
         let sowPattern = sowInput.value.match(/^https:\/\/docs.google.com\/(document|spreadsheets)/)
 
         if(!sowPattern) {
