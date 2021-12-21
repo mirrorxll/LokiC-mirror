@@ -108,6 +108,8 @@
               =icon('fa', 'sign-in')
           .small.text-secondary
             *** other input: after typing or selecting press enter or click 'Enter' icon on right
+          .small.text-dark
+            *** (New Client) - this mark means client doesn't exist in PL
       :javascript
         function clientByEnterPress(event, input) {
           if(event.keyCode !== 13 || input.value.trim().length === 0) return false;
