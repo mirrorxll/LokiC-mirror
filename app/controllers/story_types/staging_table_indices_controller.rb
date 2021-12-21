@@ -20,6 +20,8 @@ module StoryTypes
     def create
       staging_table_action do
         @staging_table.update!(indices_modifying: true)
+        StoryTypeChannel.broadcast_to(@story_type, { spinner: true,
+                                                     message: 'Staging table indices creating in progress' })
         StagingTableIndexAddJob.perform_later(@staging_table, uniq_index_column_ids)
         nil
       end
