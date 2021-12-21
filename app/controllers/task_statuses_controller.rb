@@ -16,7 +16,7 @@ class TaskStatusesController < ApplicationController
       create_team_work unless params[:team_work].nil?
       @task.update(done_at: Time.now, status: @status) if @task.done_by_all_assignments?
     else
-      @assignment.update!(done: false)
+      @assignment.update!(done: false) unless @assignment.nil?
       @task.update(status: @status)
     end
     comment && send_notification

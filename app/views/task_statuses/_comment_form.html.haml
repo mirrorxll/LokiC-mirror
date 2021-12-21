@@ -1,7 +1,7 @@
 =form_with(url: change_task_progress_statuses_path(@task), method: :patch, id: 'status_comment_form') do |form|
   .row
     .col.small
-      =hidden_field_tag :status
+      =hidden_field_tag :status, nil, { id: 'status_comment' }
       =form.rich_text_area :body, id: 'commentArea', class: 'form-control overflow-auto', required: true, style: 'min-height: 150px;'
       #commentFeedback.text-danger.text-center.d-none
         The comment must be at least five characters
@@ -12,7 +12,7 @@
   function onSubmit(ev) {
     let select = document.getElementById('status_id');
     let status = select.options[select.selectedIndex].text;
-    document.getElementById('status').value = status;
+    document.getElementById('status_comment').value = status;
 
     ev.preventDefault();
 
