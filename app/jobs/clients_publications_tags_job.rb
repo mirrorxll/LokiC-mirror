@@ -43,7 +43,7 @@ class ClientsPublicationsTagsJob < ApplicationJob
           c.publications.each { |p| p.tags << blank_tag }
         end
 
-        Client.where('DATE(updated_at) < DATE(created_at)').destroy_all
+        Client.where('DATE(updated_at) < DATE(created_at) AND exist_in_pl = 1').destroy_all
         Publication.where('DATE(updated_at) < DATE(created_at)').destroy_all
         Tag.where('DATE(updated_at) < DATE(created_at)').destroy_all
       end
