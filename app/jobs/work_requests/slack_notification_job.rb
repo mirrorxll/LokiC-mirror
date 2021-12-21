@@ -7,7 +7,7 @@ module WorkRequests
       channel = Rails.env.production? ? 'lokic_work_request_messages' : 'hle_lokic_development_messages'
 
       url = generate_url(work_request)
-      message = "*<#{url} | Work Request> | #{work_requester.name}*\n>#{raw_message}"
+      message = "*Work Request <#{url} |  #{work_request.project_order_name.body}> | #{work_requester.name}*\n>#{raw_message}"
 
       ::SlackNotificationJob.perform_now(channel, message)
     end
