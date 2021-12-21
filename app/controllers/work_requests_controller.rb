@@ -20,6 +20,10 @@ class WorkRequestsController < ApplicationController
   def create
     @request =
       WorkRequestObject.create_from!(work_request_params)
+    WorkRequests::SlackNotificationJob.perform_later(
+      @request,
+      '<!channel> Just was created a new work request. Check it'
+    )
   end
 
   def edit; end
@@ -30,6 +34,10 @@ class WorkRequestsController < ApplicationController
   end
 
   private
+
+  def john_putz_slack_id
+    "<@#{Account.find(4).slack_identifier}" # John Putz slack ID
+  end
 
   def generate_grid
     default = manager? || outside_manager? ? {} : { requester: current_account.id }

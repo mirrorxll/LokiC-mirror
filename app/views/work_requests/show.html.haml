@@ -1,6 +1,9 @@
 %div{ id: "workRequest", work_request_id: @work_request.id }
 
 %hr/
+#workRequestOrderName.text-center.font-weight-bold
+  =link_to(@work_request.project_order_name.body, @work_request)
+%hr.mb-0/
 
 .d-flex.justify-content-between.align-items-center.mb-3.small
   .text-secondary
@@ -27,6 +30,8 @@
     .card-body
       =render 'work_request_info'
 
+
+
 #workRequestProjects.mb-5.small
   .card
     .card-header.p-1
@@ -39,7 +44,7 @@
 
 
 #updateWorkRequestModal.modal.fade.pr-0{ "aria-hidden" => "true", "aria-labelledby" => "updateWorkRequestModalLabel",
-                                        role: "dialog", tabindex: "-1" }
+                                         role: "dialog", tabindex: "-1", 'data-backdrop' => 'static', 'data-keyboard' => 'false' }
   .modal-dialog.modal-dialog-scrollable.modal-dialog-fullscreen
     .modal-content
       .modal-header
