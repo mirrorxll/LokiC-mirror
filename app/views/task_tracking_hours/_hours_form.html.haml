@@ -1,0 +1,106 @@
+=form_with(url: change_task_progress_statuses_path(@task), method: :patch, id: 'task_hours_form') do |form|
+  =hidden_field_tag :status
+  -team_work = @task.team_work
+  -if team_work.nil? && @task.subtasks.count > 0
+    =hidden_field_tag 'team_work[confirm]', value: true
+  #hours.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "properties", role: "dialog", :tabindex => "-1"}
+    .modal-dialog.modal-dialog-centered.modal
+      .modal-content
+        .modal-body
+          .row.small.text-center
+            .col-7
+              How much time you spend on the task?
+            .col-5
+              =form.text_field :hours, id: 'hoursInput', required: true, class: 'small', placeholder: 'hours'
+          -unless @task.subtasks.empty?
+            %hr.mt-3.mb-3/
+            #teamWork{ class: team_work.nil? ? '' : 'nav-link disabled' }
+              .card.overflow-auto{ style: 'max-height: 380px;' }
+                .card-header.p-1
+                  .justify-content-between.small
+                    subtasks
+                .card-body.overflow-auto
+                  =render 'task_tracking_hours/subtasks_hours', task: @task
+              .row.small.mt-2.text-center
+                .col-3
+                  Team work:
+                .col.text-lowercase.small.mt-1
+                  -dollars_checked = !team_work.nil? && !team_work.hours
+                  =form.radio_button('team_work[type]', :hours, { checked: dollars_checked ? '' : 'checked', onclick: 'changePlaceholder(this);' })
+                  =form.label :hours, class: 'mr-3'
+                  =form.radio_button('team_work[type]', :dollars, { checked: dollars_checked ? 'checked' : '', onclick: 'changePlaceholder(this);' })
+                  =form.label :dollars
+                .col-5
+                  =form.text_field 'team_work[sum]', value: team_work.nil? ? '' : sprintf('%g', team_work.sum), class: 'small', placeholder: dollars_checked ? 'dollars' : 'hours'
+            -unless team_work.nil?
+              .row.small.mt-2.text-center
+                .col-8
+                  %label.form-check-label{:for => "confirmHours"}
+                    .row
+                      =@task.team_work.creator.name + " set teamwork."
+                    .row.text-danger
+                      If you want to change it, please, confirm this:
+                .col-4.align-items-center.text-left.mt-2
+                  =form.check_box 'team_work[confirm]', id: 'confirmInputTeamWork', onchange: 'teamWorkShow(this);'
+        #hoursFeedback.text-danger.small.text-center.d-none
+          Incorrect data
+        .modal-footer.justify-content-center
+          .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+            cancel
+          =form.submit :send, class: 'btn btn-sm btn-outline-success'
+
+:javascript
+  document.getElementById('task_hours_form').addEventListener('submit', function (evt) {
+    let select = document.getElementById('status_id');
+    let status = select.options[select.selectedIndex].text;
+    document.getElementById('status').value = status
+  });
+
+  function teamWorkShow(element) {
+    let teamWork = document.querySelector('#teamWork');
+    if (element.checked) {
+      teamWork.classList.remove('nav-link');
+      teamWork.classList.remove('disabled');
+    } else {
+      teamWork.classList.add('nav-link');
+      teamWork.classList.add('disabled');
+    }
+  }
+
+  function changePlaceholder(element) {
+    if (element.id === 'team_work[type]_hours'){
+      document.getElementById('team_work[sum]').placeholder = 'hours'
+    }
+    else {
+      document.getElementById('team_work[sum]').placeholder = 'dollars'
+    }
+  }
+
+  function onSubmit(ev) {
+    ev.preventDefault();
+
+    let form = ev.target;
+    let hoursInput = form.querySelector('#hoursInput');
+    let hoursFeedback = form.querySelector('#hoursFeedback');
+    let submitButton = form.querySelector('input[type="submit"]');
+
+    if(!isNaN(hoursInput.value)) {
+      $('#hours').modal('hide');
+      Rails.fire(form, 'submit');
+    } else {
+      hoursInput.classList.add('border', 'border-danger');
+      hoursFeedback.classList.remove('d-none');
+      document.querySelector('#hoursInput').addEventListener('input', onchangeHours);
+      ev.stopPropagation();
+    }
+  }
+
+  document.querySelector('#task_hours_form').addEventListener('submit', onSubmit);
+
+  function onchangeHours() {
+      let hoursInput = document.querySelector('#hoursInput');
+      let hoursFeedback = document.querySelector('#hoursFeedback');
+      hoursInput.classList.remove('border', 'border-danger');
+      hoursFeedback.classList.add('d-none');
+      hoursInput.removeEventListener('input', onchangeHours);
+  }

@@ -23,11 +23,39 @@ class Task < ApplicationRecord # :nodoc:
   belongs_to :client, class_name: 'ClientsReport', foreign_key: :client_id, optional: true
   belongs_to :work_request, optional: true
 
-  has_many :tasks_assignments, class_name: 'TaskAssignment'
-  has_many :assignment_to, through: :tasks_assignments, source: :account
-  has_many :comments, -> { where(subtype: ['task comment', 'status comment', 'status comment blocked', 'status comment canceled']) }, as: :commentable, class_name: 'Comment'
+  has_one :team_work, class_name: 'TaskTeamWork'
+  has_one :last_comment, -> { order created_at: :desc }, as: :commentable, class_name: 'Comment'
+
+  has_many :checklists, class_name: 'TaskChecklist'
+  has_many :checklists_assignments, class_name: 'TaskChecklistAssignment'
+
+  has_many :assignments, class_name: 'TaskAssignment'
+  has_many :assignment_to, through: :assignments, source: :account
+
+  has_many :comments, -> { where(commentable_type: 'Task') }, as: :commentable, class_name: 'Comment'
   has_many :subtasks, -> { where.not(status: Status.find_by(name: 'deleted')) }, foreign_key: :parent_task_id, class_name: 'Task'
   has_many :scrape_tasks
+
+  def assignment_to_or_creator?(account)
+    account.in?(assignment_to) || account.eql?(creator)
+  end
+
+  def creator?(account)
+    account.eql?(creator)
+  end
+
+  def access_for?(account)
+    return true if assignment_to_or_creator?(account)
+    return false unless access
+
+    subtasks.each { |subtask| return true if subtask.assignment_to_or_creator?(account) }
+    parent.subtasks.each { |subtask| return true if subtask.assignment_to_or_creator?(account) } if parent
+    false
+  end
+
+  def has_checklists?
+    checklists.exists?
+  end
 
   def status_comment
     ActionView::Base.full_sanitizer.sanitize(comments.where(subtype: 'status comment').last.body)
@@ -40,15 +68,24 @@ class Task < ApplicationRecord # :nodoc:
     "https://pipeline.locallabs.com/gather_tasks/#{gather_task}"
   end
 
-  def assignment_to_or_creator?(account)
-    account.in?(assignment_to) || account.eql?(creator)
-  end
-
-  def creator?(account)
-    account.eql?(creator)
-  end
 
   def title_with_id
     "##{id} #{title}"
+  end
+
+  def checklists_assignments_for(account)
+    checklists_assignments.where(account: account)
+  end
+
+  def current_assignment(account)
+    assignments.find_by(account: account)
+  end
+
+  def done_by_all_assignments?
+    assignments.find_by(done: false).nil?
+  end
+
+  def sum_hours
+    sprintf('%g', assignments.sum(:hours).to_s) + ' hours'
   end
 end

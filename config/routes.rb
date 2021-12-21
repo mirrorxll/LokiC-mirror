@@ -331,6 +331,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :task_tracking_hours, controller: 'task_tracking_hours', only: :index
+
   resources :tasks do
     resources :progress_statuses, controller: 'task_statuses', only: [] do
       patch :change,        on: :collection
@@ -338,7 +340,15 @@ Rails.application.routes.draw do
       patch :subtasks,      on: :collection
     end
 
-    resources :comments, controller: 'task_comments', only: %i[new create]
+    resources :checklists, controller: 'task_checklists', only: %i[new create edit update] do
+      patch :confirm,   on: :member
+    end
+
+    resources :receipts, controller: 'task_receipts', only: :index do
+      patch :confirm,   on: :collection
+    end
+
+    resources :comments, controller: 'task_comments', only: %i[new create edit update destroy]
 
     resources :assignments, controller: 'task_assignments', only: [] do
       get   :edit,   on: :collection

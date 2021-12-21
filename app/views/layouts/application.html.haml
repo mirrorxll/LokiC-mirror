@@ -55,6 +55,8 @@
                       =link_to('developers production', exported_counts_developers_productions_path, class: 'nav-link small')
                     .dropdown-item
                       =link_to('assembled 2020', assembleds_tracking_hours_path(week: current_week), class: 'nav-link small')
+                    .dropdown-item
+                      =link_to('tracking hours tasks', task_tracking_hours_path, class: 'nav-link small')
 
               -if (acc_types & %w[manager editor developer]).any?
                 %li.nav-item.active.dropdown
@@ -102,5 +104,5 @@
     -if alert
       %p.alert.alert-danger.text-center
         =alert
-    %div{ class: controller_name.in?(%w(data_sets story_types samples exports exported_story_types work_requests scrape_tasks)) && action_name.in?(%w(index stories)) ? "container-fluid" : "container" }
+    %div{ class: controller_name.in?(%w(data_sets story_types samples exports exported_story_types work_requests scrape_tasks tasks)) && action_name.in?(%w(index stories)) ? "container-fluid" : "container" }
       =yield

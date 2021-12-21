@@ -9,13 +9,11 @@
     =form.submit :send, class: 'btn btn-sm btn-outline-success'
 
 :javascript
-  document.getElementById('status_comment_form').addEventListener('submit', function (evt) {
+  function onSubmit(ev) {
     let select = document.getElementById('status_id');
     let status = select.options[select.selectedIndex].text;
-    document.getElementById('status').value = status
-  });
+    document.getElementById('status').value = status;
 
-  function onSubmit(ev) {
     ev.preventDefault();
 
     let form = ev.target;

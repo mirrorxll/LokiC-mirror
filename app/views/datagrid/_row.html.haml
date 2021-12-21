@@ -2,6 +2,8 @@
   =render 'datagrid/scrape_task_row', grid: grid, asset: asset, options: options
 -elsif asset.is_a?(WorkRequest)
   =render 'datagrid/work_request_row', grid: grid, asset: asset, options: options
+-elsif asset.is_a?(TaskTeamWork)
+  =render 'datagrid/task_team_work_row', grid: grid, asset: asset, options: options
 -else
   %tr
     -grid.html_columns.each do |column|
