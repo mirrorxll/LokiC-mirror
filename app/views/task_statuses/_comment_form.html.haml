@@ -24,9 +24,6 @@
     if(nameInput.innerText.length >= 5) {
       form.removeEventListener('submit', onSubmit);
       Rails.fire(form[0], 'submit');
-
-      // Rails.fire(form, 'submit');
-      // ev.stopPropagation();
     } else {
       nameFeedback.classList.remove('d-none');
       ev.stopPropagation();
