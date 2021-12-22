@@ -8,4 +8,8 @@ class ReviewersFeedback < ApplicationRecord
   belongs_to :reviewer, class_name: 'Account'
 
   has_rich_text :body
+
+  def body
+    rich_text_body || build_rich_text_body(body: read_attribute(:body))
+  end
 end
