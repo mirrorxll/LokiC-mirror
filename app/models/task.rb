@@ -34,7 +34,8 @@ class Task < ApplicationRecord # :nodoc:
 
   has_many :comments, -> { where(commentable_type: 'Task') }, as: :commentable, class_name: 'Comment'
   has_many :subtasks, -> { where.not(status: Status.find_by(name: 'deleted')) }, foreign_key: :parent_task_id, class_name: 'Task'
-  has_many :scrape_tasks
+
+  has_and_belongs_to_many :scrape_tasks
 
   def assignment_to_or_creator?(account)
     account.in?(assignment_to) || account.eql?(creator)
