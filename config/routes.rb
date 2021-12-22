@@ -21,6 +21,7 @@ Rails.application.routes.draw do
   end
 
   namespace :api, constraints: { format: :json } do
+    resources :work_requests, only: :update
     scope module: :work_requests do
       resources :work_types, only: [] do
         post :find_or_create, on: :collection
@@ -43,8 +44,6 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :work_requests, only: :update
-
     resources :clients, only: :index do
       resources :publications, only: :index do
         resources :publication_tags, path: :tags, as: :tags, only: :index
@@ -56,6 +55,13 @@ Rails.application.routes.draw do
     resources :scrape_tasks, only: [] do
       get :names, on: :collection
     end
+    scope module: :scrape_tasks, path: 'scrape_tasks/:scrape_task_id', as: 'scrape_tasks' do
+      resources :tasks, only: [] do
+        post   :include, on: :collection
+        delete :exclude, on: :collection
+      end
+    end
+
 
     resources :tasks, only: [] do
       get :titles,   on: :collection
