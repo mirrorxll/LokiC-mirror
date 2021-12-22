@@ -1,5 +1,5 @@
 =form_with(url: change_task_progress_statuses_path(@task), method: :patch, id: 'task_hours_form') do |form|
-  =hidden_field_tag :status
+  =hidden_field_tag :status, nil, { id: 'status_hours' }
   -team_work = @task.team_work
   -if team_work.nil? && @task.subtasks.count > 0
     =hidden_field_tag 'team_work[confirm]', value: true
@@ -50,12 +50,6 @@
           =form.submit :send, class: 'btn btn-sm btn-outline-success'
 
 :javascript
-  document.getElementById('task_hours_form').addEventListener('submit', function (evt) {
-    let select = document.getElementById('status_id');
-    let status = select.options[select.selectedIndex].text;
-    document.getElementById('status').value = status
-  });
-
   function teamWorkShow(element) {
     let teamWork = document.querySelector('#teamWork');
     if (element.checked) {
@@ -76,17 +70,24 @@
     }
   }
 
+  document.querySelector('#task_hours_form').addEventListener('submit', onSubmit);
+
   function onSubmit(ev) {
+    let select = document.getElementById('status_id');
+    let status = select.options[select.selectedIndex].text;
+    document.getElementById('status_hours').value = status
+
     ev.preventDefault();
 
     let form = ev.target;
+
     let hoursInput = form.querySelector('#hoursInput');
     let hoursFeedback = form.querySelector('#hoursFeedback');
     let submitButton = form.querySelector('input[type="submit"]');
 
     if(!isNaN(hoursInput.value)) {
-      $('#hours').modal('hide');
-      Rails.fire(form, 'submit');
+      form.removeEventListener('submit', onSubmit);
+      Rails.fire(form[0], 'submit');
     } else {
       hoursInput.classList.add('border', 'border-danger');
       hoursFeedback.classList.remove('d-none');
@@ -94,8 +95,6 @@
       ev.stopPropagation();
     }
   }
-
-  document.querySelector('#task_hours_form').addEventListener('submit', onSubmit);
 
   function onchangeHours() {
       let hoursInput = document.querySelector('#hoursInput');
