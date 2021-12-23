@@ -27,54 +27,6 @@
             %br/
 
       =f.select 'multi_task[task_id]', multi_tasks_to_options, { prompt: '' }, onchange: 'includeMultiTaskToScrapeTask(this);'
-    :javascript
-      function includeMultiTaskToScrapeTask(input) {
-        Rails.ajax({
-          type: "POST",
-          dataType: 'json',
-          url: `#{include_api_scrape_tasks_tasks_path(@scrape_task)}`,
-          data: `task_id=${encodeURIComponent(input.value)}`,
-          success: (data) => {
-            if(data['not_included']) return false;
-
-            document.querySelector('#includedTasks').insertAdjacentHTML(
-              'beforeend',
-              `<div class="task-${data['task_id']}">
-                 <a onclick="excludeMultiTaskFromScrapeTask(event, ${data['task_id']});" href="#">
-                   [ remove ]
-                 </a>
-                 &nbsp;&nbsp;|&nbsp;&nbsp;
-                 <a rel="noopener noreferrer" href="/tasks/${data['task_id']}">
-                   \#${data['task_id']} ${data['task_name']}
-                 </a>
-                 <br>
-               </div>`
-            );
-          }
-        });
-      }
-
-      function excludeMultiTaskFromScrapeTask(e, task_id) {
-        e.preventDefault();
-
-        Rails.ajax({
-          type: "DELETE",
-          dataType: 'json',
-          url: `#{exclude_api_scrape_tasks_tasks_path(@scrape_task)}`,
-          data: `task_id=${encodeURIComponent(task_id)}`,
-          success: (data) => {
-            if(data['not_excluded']) return false;
-
-            console.log(`#includedTasks .task-${task_id}`);
-            document.querySelector(`#includedTasks .task-${task_id}`).remove();
-          }
-        });
-      }
-
-      (() => {
-        $('select[id="multi_task[task_id]"]').multipleSelect({ filter: true });
-        $('.hide-radio.selected').addClass('d-none');
-      })();
   %hr/
 
   .row.mb-1
@@ -89,10 +41,6 @@
     .col-10
       =f.date_field 'scrape_task[deadline]', class: 'w-25 border rounded',
                     value: @scrape_task.deadline, disabled: disable_input, readonly: disable_input, type: :datetime
-    :javascript
-      $('input[id="scrape_task[deadline]"]').datepicker({
-        format: 'yyyy-mm-dd'
-      });
 
   .row.mb-4
     .col-2.pr-0.text-right.font-weight-bold
@@ -101,10 +49,6 @@
       =f.collection_select 'scrape_task[state_id]', State.all, :id, :name,
                            { include_blank: true, selected: @scrape_task.state&.id },
                            { disabled: disable_input, readonly: disable_input }
-      :javascript
-        (() => {
-          $('select[id="scrape_task[state_id]"]').multipleSelect({ filter: true });
-        })();
 
   .row.mb-1
     .col-2.pr-0.text-right.font-weight-bold
@@ -140,10 +84,6 @@
       =f.collection_select 'scrape_task[scraper_id]', Account.joins(:account_types).where(account_types: { name: 'scraper'}).order(:first_name, :last_name), :id, :name,
                            { include_blank: true, selected: @scrape_task.scraper&.id },
                            { disabled: disable_input, readonly: disable_input }
-    :javascript
-      (() => {
-        $('select[id="scrape_task[scraper_id]"]').multipleSelect({ filter: true });
-      })();
 
   .row.mb-4
     .col-2.pr-0.text-right.font-weight-bold
@@ -152,10 +92,6 @@
       =f.collection_select 'scrape_task[frequency_id]',  Frequency.all, :id, :name,
                            { include_blank: true, selected: @scrape_task.frequency&.id },
                            { disabled: disable_input, readonly: disable_input }
-    :javascript
-      (() => {
-        $('select[id="scrape_task[frequency_id]"]').multipleSelect({ filter: true });
-      })();
 
   .row.mb-4
     .col-2.pr-0.text-right.font-weight-bold
@@ -178,10 +114,6 @@
       .col-10
         =f.collection_select 'data_set[id]', DataSet.where('scrape_task_id IS NULL or id = :data_set_id', data_set_id: @scrape_task.data_set).order(:name),
                              :id, :name, { include_blank: true, selected: @scrape_task.data_set&.id }
-    :javascript
-      (() => {
-        $('select[id="data_set[id]"]').multipleSelect({ filter: true });
-      })();
 
 
   .row.mt-4
