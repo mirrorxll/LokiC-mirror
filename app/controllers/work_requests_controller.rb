@@ -35,6 +35,14 @@ class WorkRequestsController < ApplicationController
     default = manager? || outside_manager? ? {} : { requester: current_account.id }
     @grid = request.parameters[:work_requests_grid] || default
     @grid = WorkRequestsGrid.new(@grid)
+
+    @grid.column(:project_order_name, after: :priority) do |req|
+      WorkRequestsGrid.format(req) do
+        name = req.project_order_name.body
+        truncated = "##{req.id} #{name.truncate(30)}"
+        link_to(truncated, req)
+      end
+    end
   end
 
   def work_request_params

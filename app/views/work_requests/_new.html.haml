@@ -1,7 +1,18 @@
 =form_with(url: work_requests_path, html: { class: 'small', onkeypress: "return event.keyCode !== 13;" } ) do |f|
   .modal-body.pt-0
-    #workTypesAnchor.mb-3
-    #workTypes.card
+    #projectOrderNameAnchor.mb-3
+    #projectOrderName.card
+      .card-body
+        .font-weight-bold.mb-2
+          Project Order Name (the short way to refer to the project)
+          %span.small.text-danger
+            *required
+        =f.text_field "work_request[project_order_name]", class: 'form-control form-control-sm w-75'
+
+
+
+    -##workTypesAnchor.mb-3
+    -##workTypes.card
       .card-body
         .font-weight-bold.mb-2
           Work types
@@ -182,8 +193,8 @@
 
 
 
-    #underwritingProjectAnchor.mb-3
-    #underwritingProject.card
+    -##underwritingProjectAnchor.mb-3
+    -##underwritingProject.card
       .card-body
         .d-inline-block.font-weight-bold.mb-2
           Underwriting Project
@@ -271,8 +282,8 @@
 
 
 
-    #revenueTypesAnchor.mb-3
-    #revenueTypes.card
+    -##revenueTypesAnchor.mb-3
+    -##revenueTypes.card
       .card-body
         .font-weight-bold.mb-2
           What Revenue Type is this?
@@ -287,41 +298,33 @@
                 =f.label "work_request[tf_revenue_type__#{rt.id}]", rt.name, class: 'm-0'
 
 
-    #projectOrderNameAnchor.mb-3
-    #projectOrderName.card
-      .card-body
-        .font-weight-bold.mb-2
-          Project Order Name (the short way to refer to the project)
-          %span.small.text-danger
-            *required
-        =f.text_field "work_request[project_order_name]", class: 'form-control form-control-sm w-50'
 
+    -if current_account.types.include?('manager')
+      #sowAnchor.mb-3
+      #sow.card
+        .card-body
+          .font-weight-bold.mb-2
+            SOW
+          =f.check_box "work_request[sow[default]]", onchange: 'sowLinkSwitcher(this)'
+          =f.label "work_request[sow[default]]", 'Default (SOW not ready yet)'
+          .default-sow.d-none.mb-3
+            =link_to('Create SOW Here (template)', 'https://docs.google.com/document/d/1XGBr8mitj6Ui4uTXiCZnevLx7F-5R0Ru0ZNkBLvXpWI/edit',
+                     target: '_blank', rel: 'noopener noreferrer')
+          .sow-link
+            %span.small.text-danger
+              ***link to Google Doc or Spreadsheet
+            =f.text_field "work_request[sow[link]]",
+                          class: 'form-control form-control-sm w-50'
+          :javascript
+            function sowLinkSwitcher(check_box) {
+              let defaultSow = document.querySelector('.default-sow');
 
-    #sowAnchor.mb-3
-    #sow.card
-      .card-body
-        .font-weight-bold.mb-2
-          SOW
-        =f.check_box "work_request[sow[default]]", onchange: 'sowLinkSwitcher(this)'
-        =f.label "work_request[sow[default]]", 'Default (SOW not ready yet)'
-        .default-sow.d-none.mb-3
-          =link_to('Create SOW Here (template)', 'https://docs.google.com/document/d/1XGBr8mitj6Ui4uTXiCZnevLx7F-5R0Ru0ZNkBLvXpWI/edit',
-                   target: '_blank', rel: 'noopener noreferrer')
-        .sow-link
-          %span.small.text-danger
-            ***link to Google Doc or Spreadsheet
-          =f.text_field "work_request[sow[link]]",
-                        class: 'form-control form-control-sm w-50'
-        :javascript
-          function sowLinkSwitcher(check_box) {
-            let defaultSow = document.querySelector('.default-sow');
-
-            if(check_box.checked) {
-              defaultSow.classList.remove('d-none');
-            } else {
-              defaultSow.classList.add('d-none');
+              if(check_box.checked) {
+                defaultSow.classList.remove('d-none');
+              } else {
+                defaultSow.classList.add('d-none');
+              }
             }
-          }
 
 
 
@@ -332,25 +335,35 @@
           Project Order Details (What do we need to do?)
           %span.small.text-danger
             *required
-        =f.text_area "work_request[project_order_details]", class: 'form-control form-control-sm w-50'
+        =f.text_area "work_request[project_order_details]", class: 'form-control form-control-sm w-75',
+                     onkeypress: 'newLine(event, this);'
         .small.text-secondary
           limit: 2000 symbols
 
-
+    :javascript
+      function newLine(event, element) {
+        if (event.keyCode === 13) {
+          element.value = element.value + "\n";
+          return false;
+        } else {
+          return true;
+        }
+      }
 
     #mostWorriedDetailsAnchor.mb-3
     #mostWorriedDetails.card
       .card-body
         .font-weight-bold.mb-2
           What are you most worried about us missing or not doing on this task?
-        =f.text_area "work_request[most_worried_details]", class: 'form-control form-control-sm w-50'
+        =f.text_area "work_request[most_worried_details]", class: 'form-control form-control-sm w-75',
+                     onkeypress: 'newLine(event, this);'
         .small.text-secondary
           limit: 2000 symbols
 
 
 
-    #budgetForProjectAnchor.mb-3
-    #budgetForProject.card
+    -##budgetForProjectAnchor.mb-3
+    -##budgetForProject.card
       .card-body
         .font-weight-bold.mb-2
           Budget for Project
@@ -358,8 +371,8 @@
 
 
 
-    #invoiceTypeAnchor.mb-3
-    #invoiceType.card
+    -##invoiceTypeAnchor.mb-3
+    -##invoiceType.card
       .card-body
         .font-weight-bold.mb-2
           Invoice Type
@@ -435,8 +448,8 @@
 
 
 
-    #invoiceFrequencyAnchor.mb-3
-    #invoiceFrequency.card
+    -##invoiceFrequencyAnchor.mb-3
+    -##invoiceFrequency.card
       .card-body
         .font-weight-bold.mb-2
           Invoice Frequency
@@ -512,8 +525,8 @@
 
 
 
-    #firstInvoiceAnchor.mb-3
-    #firstInvoice.card
+    -##firstInvoiceAnchor.mb-3
+    -##firstInvoice.card
       .card-body
         .font-weight-bold.mb-2
           First Invoice Date
@@ -521,8 +534,8 @@
 
 
 
-    #expectedFinalInvoiceAnchor.mb-3
-    #expectedFinalInvoice.card
+    -##expectedFinalInvoiceAnchor.mb-3
+    -##expectedFinalInvoice.card
       .card-body
         .font-weight-bold.mb-2
           Final Invoice Date
@@ -581,27 +594,23 @@
       event.preventDefault();
       event.stopPropagation();
 
+      // #workTypes,
+      // #revenueTypes,
       // #clients,
       // #finalDeadline,
       // #budgetForProject,
       // #firstInvoice,
-      let cards = document.querySelectorAll(
-        `#workTypes,
-         #revenueTypes,
-         #projectOrderName,
-         #sow,
-         #projectOrderDetails,
-         #invoiceType,
-         #invoiceFrequency,
-         #priority`
-      );
+      // #invoiceType,
+      // #invoiceFrequency,
+      let sections = `#projectOrderName, #projectOrderDetails, #priority#{current_account.types.include?('manager') ? ', #sow' : ''}`
+      let cards = document.querySelectorAll(sections);
       [...cards].forEach((el) => { el.classList.remove('border-danger') })
 
-      let workType = [...document.querySelectorAll('#workTypes input[type="checkbox"]')].some((el) => { return el.checked; } );
-      if(!workType) {
-        scrollToCard('#workTypes')
-        return false;
-      }
+      // let workType = [...document.querySelectorAll('#workTypes input[type="checkbox"]')].some((el) => { return el.checked; } );
+      // if(!workType) {
+      //   scrollToCard('#workTypes')
+      //   return false;
+      // }
 
       // let client = [...document.querySelectorAll('#clients input[type="checkbox"]')].some((el) => { return el.checked; } );
       // if(!client) {
@@ -609,11 +618,11 @@
       //   return false;
       // }
 
-      let revenueType = [...document.querySelectorAll('#revenueTypes input[type="checkbox"]')].some((el) => { return el.checked; } );
-      if(!revenueType) {
-        scrollToCard('#revenueTypes')
-        return false;
-      }
+      // let revenueType = [...document.querySelectorAll('#revenueTypes input[type="checkbox"]')].some((el) => { return el.checked; } );
+      // if(!revenueType) {
+      //   scrollToCard('#revenueTypes')
+      //   return false;
+      // }
 
       let orderName = document.querySelector('#projectOrderName input').value.length > 0
       if(!orderName) {
@@ -621,14 +630,16 @@
         return false;
       }
 
-      let sowCheckBox = document.querySelector('input[id="work_request[sow[default]]"]');
-      let sowInput = document.querySelector('input[id="work_request[sow[link]]"]');
-      if(!sowCheckBox.checked) {
-        let sowPattern = sowInput.value.match(/^https:\/\/docs.google.com\/(document|spreadsheets)/)
+      if(#{raw(current_account.types.include?('manager'))}) {
+        let sowCheckBox = document.querySelector('input[id="work_request[sow[default]]"]');
+        let sowInput = document.querySelector('input[id="work_request[sow[link]]"]');
+        if(!sowCheckBox.checked) {
+          let sowPattern = sowInput.value.match(/^https:\/\/docs.google.com\/(document|spreadsheets)/)
 
-        if(!sowPattern) {
-          scrollToCard("#sow")
-          return false;
+          if(!sowPattern) {
+            scrollToCard("#sow")
+            return false;
+          }
         }
       }
 
@@ -644,17 +655,17 @@
       //   return false;
       // }
 
-      let invoiceType = [...document.querySelectorAll('#invoiceType input[type="radio"]')].some((el) => { return el.checked; } );
-      if(!invoiceType) {
-        scrollToCard('#invoiceType')
-        return false;
-      }
+      // let invoiceType = [...document.querySelectorAll('#invoiceType input[type="radio"]')].some((el) => { return el.checked; } );
+      // if(!invoiceType) {
+      //   scrollToCard('#invoiceType')
+      //   return false;
+      // }
 
-      let invoiceFrequency = [...document.querySelectorAll('#invoiceFrequency input[type="radio"]')].some((el) => { return el.checked; } );
-      if(!invoiceFrequency) {
-        scrollToCard('#invoiceFrequency')
-        return false;
-      }
+      // let invoiceFrequency = [...document.querySelectorAll('#invoiceFrequency input[type="radio"]')].some((el) => { return el.checked; } );
+      // if(!invoiceFrequency) {
+      //   scrollToCard('#invoiceFrequency')
+      //   return false;
+      // }
 
       // let expectedFirstInvoice = document.querySelector('#firstInvoice input').value.length > 0
       // if(!expectedFirstInvoice) {

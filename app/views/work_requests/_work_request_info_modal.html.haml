@@ -45,7 +45,7 @@
   .col-3.pr-0.text-right.font-weight-bold
     SOW:
   .col-9
-    -unless @work_request.default_sow
+    -if current_account.types.include?('manager') && @work_request.default_sow
       -name = @work_request.sow[/document/] ? 'Google Document' : 'Google Sheet'
       =link_to(name, @work_request.sow, target: '_blank')
 .row.mb-1.text-break
