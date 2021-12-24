@@ -59,7 +59,7 @@ class WorkRequestsGrid
     format(req) do
       name = req.project_order_name.body
       truncated = name.truncate(30)
-      lnk = req.sow.strip.present? ? link_to(truncated, req.sow, target: '_blank') : truncated
+      lnk = req.sow&.strip&.present? ? link_to(truncated, req.sow, target: '_blank') : truncated
       attrs = { 'data-toggle' => 'tooltip', 'data-placement' => 'right', 'data-html' => 'true', 'title' => name }
 
       content_tag(:div, lnk, attrs)

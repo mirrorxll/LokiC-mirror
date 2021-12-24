@@ -87,7 +87,15 @@
   .col-2.pr-0.text-right.font-weight-bold
     SOW:
   .col-9
-    =link_to(nil, @work_request.sow, target: '_blank')
+    -if @work_request.default_sow
+      .small
+        *** For attaching SOW document please press [ edit ] button and scroll to SOW section
+      =link_to('Create SOW Here (template)', 'https://docs.google.com/document/d/1XGBr8mitj6Ui4uTXiCZnevLx7F-5R0Ru0ZNkBLvXpWI/edit',
+               target: '_blank', rel: 'noopener noreferrer')
+    -else
+      -name = @work_request.sow[/document/] ? 'Google Document' : 'Google Sheet'
+      =link_to(name, @work_request.sow, target: '_blank')
+
 .row.mb-1.text-break
   .col-2.pr-0.text-right.font-weight-bold
     project order details:

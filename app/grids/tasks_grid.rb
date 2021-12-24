@@ -4,26 +4,28 @@ class TasksGrid
   include Datagrid
 
   # Scope
-  scope { Task.includes(:status, :tasks_assignments, :creator, :assignment_to) }
+  scope { Task.includes(:assignments, :creator, :assignment_to) }
 
   # Filters
   filter(:title, :string, left: true, header: 'Title(RLIKE)') do |value, scope|
     scope.where('title RLIKE ?', value)
   end
 
-  filter(:assignment_to, :enum, multiple: true, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] }) do |value, scope|
-    account = Account.find(value)
-    task_assignment = TaskAssignment.joins(:account, :task).where(account: account).pluck(:task_id)
-    scope.where(id: task_assignment)
+  filter(:description, :string, left: true, header: 'Description(RLIKE)') do |value, scope|
+    scope.where('description RLIKE ?', value)
   end
 
-  filter(:creator, :enum, multiple: true, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
+  filter(:assignment_to, :enum, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] }) do |value, scope|
+    scope.joins(assignments: [:account]).where('account_id= ?', value)
+  end
 
-  statuses = Status.multi_task_statuses_for_grid.pluck(:name, :id)
-  filter(:status, :enum, multiple: true, select: statuses)
-  filter(:deadline, :datetime, header: 'Deadline >= ?', multiple: ',', type: 'datetime')
+  filter(:creator, :enum, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
+  filter(:status, :enum, select: Status.where(name: ['not started','in progress','blocked','canceled','done']).pluck(:name, :id).map { |r| [r[0], r[1]] })
+  filter(:deadline,:datetime, header: 'Deadline >= ?', multiple: ',')
+
+  status_deleted = Status.find_by(name: 'deleted')
+
   filter(:deleted_tasks, :xboolean, left: true) do |value, scope|
-    status_deleted = Status.find_by(name: 'deleted')
     value ? scope.where(status: status_deleted) : scope.where.not(status: status_deleted)
   end
 
@@ -63,5 +65,20 @@ class TasksGrid
 
   column(:parent_task_id, header: 'Main task', order: 'parent_task_id', mandatory: true) do |task|
     format("##{task.parent.id}") { |parent_id| link_to parent_id, task.parent } unless task.parent.nil?
+  end
+
+  column(:last_comment, header: 'Last comment', order: ->(scope) { scope.joins(:comments).group('tasks.id')
+                                                                                   .select('tasks.*, MAX(comments.created_at) as max_created_at')
+                                                                                   .order('max_created_at') }, mandatory: true, html: true) do |task|
+    last_comment = task.last_comment
+    if last_comment.nil?
+      last_comment
+    else
+      body = ActionView::Base.full_sanitizer.sanitize(last_comment.body)
+      attr = {'data-toggle' => 'tooltip',
+              'data-placement' => 'right',
+              title: truncate("#{last_comment.commentator.name}: #{body}", length: 150) }
+      content_tag(:div, last_comment.created_at.strftime('%y-%m-%d'), attr)
+    end
   end
 end

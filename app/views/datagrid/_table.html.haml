@@ -3,7 +3,7 @@
 -# assets - Array of database Entities
 -# options - passed options Hash
 
--if controller_name.in?(%w[scrape_tasks tasks shown_samples exported_story_types production_removals])
+-if controller_name.in?(%w[scrape_tasks task_tracking_hours tasks shown_samples exported_story_types production_removals])
   -if grid.html_columns(*options[:columns]).any?
     =content_tag :table, class: %w(datagrid table table-striped table-bordered table-sm) do
       %thead

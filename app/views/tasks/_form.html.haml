@@ -1,4 +1,4 @@
-=form_with(url: tasks_path, id: 'form_new_task') do |form|
+=form_with(url: tasks_path, id: 'form_new_task',  html: { onkeypress: "return event.keyCode !== 13;" } ) do |form|
   .row.small
     .col
       .form-group
@@ -10,37 +10,64 @@
       .form-group
         =form.hidden_field 'task[parent]', value: params[:parent_task]
   %hr/
-  .form-group.row.small.font-weight-bold.text-center.justify-content-between
-    .col
+
+  #checklists.accordion.mt-2
+    .card.small
+      .card-header.p-1
+        %div.row
+          .col-1
+            =icon('fa', 'plus', id: 'add_checklist')
+          .col-11.text-right
+            %div{"aria-controls" => "#checklistsCollapse", "aria-expanded" => "true", "data-target" => "#checklistsCollapse", "data-toggle" => "collapse", type: "button"}
+              checklists
+      #checklistsCollapse.collapse{"data-parent" => "#checklists", class: 'show'}
+        .row.mt-2.mb-2
+          .col#forms_checklists
+  %hr/
+
+  .d-flex.small.font-weight-bold.text-center
+    .col-2
       assignment to:
       =icon('fa', 'plus', class: 'ml-2', id: 'add_assignment')
       #assignments_form
-        .row.mt-1.justify-content-center
-          =form.collection_select 'task[assignment_to][]', current_account.types.include?('developer') ? [current_account] : Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }, style: "width:130px"
-    .col
-      reminder frequency:
-      .mt-1.mw-50
-        =form.collection_select 'task[reminder_frequency]', sorted_reminder_frequencies, :id, :name, { prompt: '' }
-    .col
-      client:
-      .mt-1
-        =form.collection_select 'task[client_id]', ClientsReport.all.order(:name), :id, :name, { prompt: '' }, style: "width:150px"
-    .col
-      deadline:
-      .mt-1
-        =form.date_field 'task[deadline]'
-    .col
-      gather_task:
-      .mt-1
-        =form.text_field 'task[gather_task]', class: 'w-70'
-    -if params[:parent_task].blank?
-      .col
-        main_task:
-        .mt-1
-          =form.collection_select 'task[parent]', Task.where.not(status: Status.find_by(name: 'deleted')).order(:id), :id, :title_with_id, { prompt: '' }, style: "width:150px"
-
-  %hr/
+        .row.mt-1.justify-content-center.small
+          =form.collection_select 'assignment_to[]', current_account.types.include?('developer') ? [current_account] : Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }, style: "width:130px"
+    .col-4
+      .row.mb-2
+        .col.text-right
+          reminder frequency:
+        .col.text-left.small
+          =form.collection_select 'task[reminder_frequency]', sorted_reminder_frequencies, :id, :name, { prompt: '' }
+      .row.mb-2
+        .col.text-right
+          client:
+        .col.text-left.small
+          =form.collection_select 'task[client_id]', ClientsReport.all.order(:name), :id, :name, { prompt: '' }, style: "width:150px"
+      .row.mb-2
+        .col.text-right
+          access to task and its subtasks:
+        .col.text-left
+          =form.check_box 'task[access]', class: 'form-check-input ml-0 mt-2', checked: true
+    .col-4
+      .row.mb-2
+        .col.text-right
+          gather_task:
+        .col.text-left.small
+          =form.text_field 'task[gather_task]', class: 'w-70'
+      .row.mb-2
+        .col.text-right
+          deadline:
+        .col.text-left.small
+          =form.date_field 'task[deadline]'
+      .row.mb-2
+        -if params[:parent_task].blank?
+          .col.text-right
+            main_task:
+          .col.text-left.small
+            =form.collection_select 'task[parent]', Task.where(parent: nil).where.not(status: Status.find_by(name: 'deleted')).order(:id), :id, :title_with_id, { prompt: '' }, style: "width:150px"
   .modal-footer.justify-content-center
+    .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+      cancel
     =form.submit :create, class: 'btn btn-sm btn-outline-success'
 
 :javascript
@@ -52,7 +79,7 @@
 
     $('#assignments_form').append(
         `<div id="assignment_${hex}" class="row mt-1 ml-1 justify-content-center" >
-           <select id="task[assignment_to][]" style = "width:130px" class="mr-1" name="task[assignment_to][]">${buildSelect(accounts)}</select>
+           <select id="assignment_to[]" style = "width:130px" class="mr-1" name="assignment_to[]">${buildSelect(accounts)}</select>
            <div class="ml-1" id="rm_assignment_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
          </div>`
     );
@@ -76,7 +103,7 @@
     $(elem.parentNode).remove();
   }
 
-  function secureRandom(n){
+  function secureRandom(n) {
     let result = '';
     while (n--){
       result += Math.floor(Math.random() * 16).toString(16);
@@ -155,3 +182,14 @@
     })
   }
   document.querySelector('#form_new_task').addEventListener('submit', onSubmit)
+
+  $('#add_checklist').click(function () {
+    let hex = secureRandom(6);
+    $('#forms_checklists').append(
+        `<div id="assignment_${hex}" class="row small justify-content-center mt-2">
+           <div class="small mt-1 mr-2"><i class="fa fa-circle"></i></div>
+           <input id="checklists[]" style='width: 90%' required=required maxlength="255" name="checklists[]"></input>
+           <div class="ml-2" id="rm_checklist_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
+         </div>`
+    );
+  });

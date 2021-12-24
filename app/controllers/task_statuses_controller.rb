@@ -7,18 +7,18 @@ class TaskStatusesController < ApplicationController
   skip_before_action :set_article_type_iteration
 
   before_action :find_task
-  before_action :find_status, only: :change
+  before_action :find_status
+  before_action :find_assignment
 
   def change
-    if @status.name.in?(%w(blocked canceled)) && ActionController::Base.helpers.strip_tags(params[:body]).length < 5
-      respond_to do |format|
-        format.html { redirect_to @task }
-        format.js { "$('#comment').modal('hide');" }
-      end
-      return
+    if @status.name.eql?('done')
+      @assignment.update!(done: true, hours: params[:hours])
+      create_team_work unless params[:team_work].nil?
+      @task.update(done_at: Time.now, status: @status) if @task.done_by_all_assignments?
+    else
+      @assignment.update!(done: false) unless @assignment.nil?
+      @task.update(status: @status)
     end
-    @task.update(status: @status)
-    @task.update(done_at: Time.now) if @status.name.eql?('done')
     comment && send_notification
   end
 
@@ -32,12 +32,23 @@ class TaskStatusesController < ApplicationController
     @status = params[:status].blank? ? Status.find(params[:status_id]) : Status.find_by(name: params[:status])
   end
 
+  def find_assignment
+    @assignment = TaskAssignment.find_by(task: @task, account: current_account)
+  end
+
+  def team_work_params
+    params.require(:team_work)
+  end
+
   def comment
-    body, subtype = if %w(blocked canceled).include? @task.status.name
-                      ["<div><b>Status changed to #{@task.status.name}.</b><br>#{params[:body]}</div>", 'status comment']
-                   else
-                     ["<b>Status changed to #{@task.status.name}.</b>", 'task comment']
-                   end
+    body, subtype = if %w(blocked canceled).include? @status.name
+                      ["<div><b>Status changed to #{@status.name}.</b><br>#{params[:body]}</div>", 'status comment']
+                    elsif @status.name.eql?('done') && !@task.done_by_all_assignments?
+                      ["<b>Set status #{@status.name}.</b>", 'task comment']
+                    else
+                      ["<b>Status changed to #{@status.name}.</b>", 'task comment']
+                    end
+
     @comment = @task.comments.build(
       subtype: subtype,
       body: body,
@@ -51,11 +62,27 @@ class TaskStatusesController < ApplicationController
     accounts.each do |account|
       next if account.slack.nil? || account.slack.deleted
 
-      message = "*[ LokiC ] <#{task_url(@task)}| TASK ##{@task.id}> | "\
-                "Status changed to #{@task.status.name}*\n>#{@task.title}"
+      if @status.name.eql?('done') && !@task.done_by_all_assignments?
+        message = "*<#{task_url(@task)}| TASK ##{@task.id}> | "\
+                  "#{current_account.name} set status #{@status.name}*. To change the status of task to done all executors must change the status.\n>#{@task.title}"
+      else
+        message = "*<#{task_url(@task)}| TASK ##{@task.id}> | "\
+                  "Status changed to #{@status.name}.*\n>#{@task.title}"
+      end
 
       SlackNotificationJob.perform_later(account.slack.identifier, message)
       SlackNotificationJob.perform_later(Rails.env.production? ? 'hle_lokic_task_reminders' : 'hle_lokic_development_messages', message)
+    end
+  end
+
+  def create_team_work
+    return if team_work_params[:confirm].eql?('0')
+
+    team_work = TaskTeamWork.find_by(task: @task)
+    if team_work.nil?
+      TaskTeamWork.create!(task: @task, creator: current_account, sum: team_work_params[:sum].to_f.round(2), hours: team_work_params[:type].eql?('hours') ? true : false)
+    else
+      team_work.update!(creator: current_account, sum: team_work_params[:sum].to_f.round(2), hours: team_work_params[:type].eql?('hours') ? true : false)
     end
   end
 end

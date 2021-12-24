@@ -55,8 +55,8 @@ class TaskAssignmentsController < ApplicationController
     assignments.each do |assignment|
       next if assignment.slack.nil? || assignment.slack.deleted
 
-      message = "*[ LokiC ] <#{task_url(@task)}| TASK ##{@task.id}> | "\
-                "ASSIGNMENT TO YOU*\n>#{@task.title}"
+      message = "*<#{task_url(@task)}| TASK ##{@task.id}> | "\
+                "Assignment to you*\n>#{@task.title}"
       SlackNotificationJob.perform_later(assignment.slack.identifier, message)
       SlackNotificationJob.perform_later(Rails.env.production? ? 'hle_lokic_task_reminders' : 'hle_lokic_development_messages', message)
     end
