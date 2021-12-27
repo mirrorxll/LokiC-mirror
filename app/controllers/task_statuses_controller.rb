@@ -14,7 +14,10 @@ class TaskStatusesController < ApplicationController
     if @status.name.eql?('done')
       @assignment.update!(done: true, hours: params[:hours])
       create_team_work unless params[:team_work].nil?
-      @task.update(done_at: Time.now, status: @status) if @task.done_by_all_assignments?
+      if @task.done_by_all_assignments?
+        @task.update(done_at: Time.now, status: @status)
+        TaskTeamWork.create!(task: @task, creator: current_account, sum: 0, hours: true) if TaskTeamWork.find_by(task: @task).nil?
+      end
     else
       @assignment.update!(done: false) unless @assignment.nil?
       @task.update(status: @status)
@@ -76,7 +79,7 @@ class TaskStatusesController < ApplicationController
   end
 
   def create_team_work
-    return if team_work_params[:confirm].eql?('0')
+    return if team_work_params[:confirm].eql?('0') || team_work_params[:sum].blank?
 
     team_work = TaskTeamWork.find_by(task: @task)
     if team_work.nil?
