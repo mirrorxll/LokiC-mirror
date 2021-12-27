@@ -81,8 +81,10 @@
   .col-2.pr-0.text-right.font-weight-bold
     multi task:
   .col-10
-    -if @scrape_task.multi_task
-      =link_to(@scrape_task.multi_task.name, @scrape_task.multi_task)
+    -if @scrape_task.multi_tasks.present?
+      -@scrape_task.multi_tasks.each do |mt|
+        =link_to("##{mt.id} #{mt.title}", mt)
+        %br/
 .row.mb-4
   .col-2.pr-0.text-right.font-weight-bold
     gather task:

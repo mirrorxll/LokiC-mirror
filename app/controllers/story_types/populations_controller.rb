@@ -23,6 +23,8 @@ module StoryTypes
         iteration_args = population_args.merge(current_account: current_account)
         @iteration.update!(iteration_args)
 
+        StoryTypeChannel.broadcast_to(@story_type, { spinner: true,
+                                                     message: 'Population in progress' })
         PopulationJob.perform_later(@iteration, current_account, population_args)
       end
 
