@@ -122,6 +122,8 @@ module MiniLokiC
           ranks[number - 1]
         end
       end
+
+      alias normalize_rate drop_scale_zero
     end
   end
 end
