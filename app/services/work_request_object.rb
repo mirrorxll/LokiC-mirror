@@ -41,8 +41,12 @@ class WorkRequestObject
     }
     regexp = %r{^https://docs.google.com/(document|spreadsheets)}
 
+    if @prm['sow']&.fetch('default')
+      params.merge!(default_sow: @prm['sow']['default'])
+    end
+
     if @prm['sow']&.fetch('default')&.eql?('0') && @prm['sow'].fetch('link')&.strip&.match?(regexp)
-      params.merge!({ sow: @prm['sow']['link'], default_sow: @prm['sow']['default'] })
+      params.merge!({ sow: @prm['sow']['link'] })
     end
 
     @request.update!(params)

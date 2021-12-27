@@ -336,9 +336,10 @@
           %span.small.text-danger
             *required
         =f.text_area "work_request[project_order_details]", class: 'form-control form-control-sm w-75',
-                     onkeypress: 'newLine(event, this);'
+                     maxlength: 2000, onkeypress: 'newLine(event, this);'
         .small.text-secondary
           limit: 2000 symbols
+
 
     :javascript
       function newLine(event, element) {
@@ -350,13 +351,14 @@
         }
       }
 
+
     #mostWorriedDetailsAnchor.mb-3
     #mostWorriedDetails.card
       .card-body
         .font-weight-bold.mb-2
           What are you most worried about us missing or not doing on this task?
         =f.text_area "work_request[most_worried_details]", class: 'form-control form-control-sm w-75',
-                     onkeypress: 'newLine(event, this);'
+                     maxlength: 2000, onkeypress: 'newLine(event, this);'
         .small.text-secondary
           limit: 2000 symbols
 

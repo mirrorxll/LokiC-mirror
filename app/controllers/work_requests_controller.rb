@@ -43,6 +43,17 @@ class WorkRequestsController < ApplicationController
         link_to(truncated, req)
       end
     end
+
+    return unless manager?
+
+    @grid.column(:sow, header: 'SOW', after: :project_order_name) do |req|
+      WorkRequestsGrid.format(req) do
+        if req.default_sow && req.sow.present?
+          name = req.sow[/document/] ? 'Google Document' : 'Google Sheet'
+          link_to(name, req.sow, target: '_blank')
+        end
+      end
+    end
   end
 
   def work_request_params

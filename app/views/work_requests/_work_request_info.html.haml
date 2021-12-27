@@ -96,19 +96,19 @@
                  target: '_blank', rel: 'noopener noreferrer')
       -else
         -name = @work_request.sow[/document/] ? 'Google Document' : 'Google Sheet'
-        =link_to(name, @work_request.sow, target: '_blank')
+        =link_to(name, @work_request.sow, target: '_blank', rel: 'noopener noreferrer')
 
 .row.mb-1.text-break
   .col-2.pr-0.text-right.font-weight-bold
     project order details:
   .col-9
-    =@work_request.project_order_details.body
+    =@work_request.project_order_details.body&.gsub(/\n/, '<br/>')&.html_safe
+
 .row.mb-4.text-break
   .col-2.pr-0.text-right.font-weight-bold
     most worried details:
   .col-9
-    =@work_request.most_worried_details.body
-
+    =@work_request.most_worried_details.body&.gsub(/\n/, '<br/>')&.html_safe
 
 
 -#.row.mb-1.align-items-end
