@@ -12,12 +12,12 @@
         =f.label "work_request[billed_for_entire_project]", 'yes', value: true, class: 'mr-3 mb-0'
         =f.radio_button "work_request[billed_for_entire_project?]", false, checked: @work_request.billed_for_entire_project?.eql?(false)
         =f.label "work_request[billed_for_entire_project]", 'no', value: false, class: 'mb-0'
-    .row.mb-1.align-items-center
+    -#.row.mb-1.align-items-center
       .col-2.pr-0.text-right.font-weight-bold
         R Value:
       .col-9
         =f.text_field "work_request[r_val]", class: 'form-control form-control-sm w-10', value: @work_request.r_val
-    .row.mb-1.align-items-center
+    -#.row.mb-1.align-items-center
       .col-2.pr-0.text-right.font-weight-bold
         F Value:
       .col-9
@@ -49,7 +49,7 @@
     .col-9
       =@work_request.requester.name
 
-.row.mb-1
+-#.row.mb-1
   .col-2.pr-0.text-right.font-weight-bold
     work types:
   .col-9
@@ -63,12 +63,12 @@
     -@work_request.clients.each do |cl|
       =cl.name
       %br
-.row.mb-1
+-#.row.mb-1
   .col-2.pr-0.text-right.font-weight-bold
     underwriting Project:
   .col-9
     =@work_request.underwriting_project&.name
-.row.mb-4
+-#.row.mb-4
   .col-2.pr-0.text-right.font-weight-bold
     revenue types:
   .col-9
@@ -83,53 +83,55 @@
     project order name:
   .col-9
     =@work_request.project_order_name.body
-.row.mb-1.text-break
-  .col-2.pr-0.text-right.font-weight-bold
-    SOW:
-  .col-9
-    -if @work_request.default_sow
-      .small
-        *** For attaching SOW document please press [ edit ] button and scroll to SOW section
-      =link_to('Create SOW Here (template)', 'https://docs.google.com/document/d/1XGBr8mitj6Ui4uTXiCZnevLx7F-5R0Ru0ZNkBLvXpWI/edit',
-               target: '_blank', rel: 'noopener noreferrer')
-    -else
-      -name = @work_request.sow[/document/] ? 'Google Document' : 'Google Sheet'
-      =link_to(name, @work_request.sow, target: '_blank')
+
+-if(current_account.types & ['manager', 'outside manager']).any?
+  .row.mb-1.text-break
+    .col-2.pr-0.text-right.font-weight-bold
+      SOW:
+    .col-9
+      -if @work_request.default_sow
+        .small
+          *** For attaching SOW document please press [ edit ] button and scroll to SOW section
+        =link_to('Create SOW Here (template)', 'https://docs.google.com/document/d/1XGBr8mitj6Ui4uTXiCZnevLx7F-5R0Ru0ZNkBLvXpWI/edit',
+                 target: '_blank', rel: 'noopener noreferrer')
+      -else
+        -name = @work_request.sow[/document/] ? 'Google Document' : 'Google Sheet'
+        =link_to(name, @work_request.sow, target: '_blank', rel: 'noopener noreferrer')
 
 .row.mb-1.text-break
   .col-2.pr-0.text-right.font-weight-bold
     project order details:
   .col-9
-    =@work_request.project_order_details.body
+    =@work_request.project_order_details.body&.gsub(/\n/, '<br/>')&.html_safe
+
 .row.mb-4.text-break
   .col-2.pr-0.text-right.font-weight-bold
     most worried details:
   .col-9
-    =@work_request.most_worried_details.body
+    =@work_request.most_worried_details.body&.gsub(/\n/, '<br/>')&.html_safe
 
 
-
-.row.mb-1.align-items-end
+-#.row.mb-1.align-items-end
   .col-2.pr-0.text-right.font-weight-bold
     budget for project:
   .col-9
     =@work_request.budget_for_project.body
-.row.mb-1.align-items-end
+-#.row.mb-1.align-items-end
   .col-2.pr-0.text-right.font-weight-bold
     invoice type:
   .col-9
     =@work_request.invoice_type&.name
-.row.mb-1.align-items-end
+-#.row.mb-1.align-items-end
   .col-2.pr-0.text-right.font-weight-bold
     invoice frequency:
   .col-9
     =@work_request.invoice_frequency&.name
-.row.mb-1.align-items-end
+-#.row.mb-1.align-items-end
   .col-2.pr-0.text-right.font-weight-bold
     first invoice date:
   .col-9
     =@work_request.first_invoice
-.row.mb-4.align-items-end
+-#.row.mb-4.align-items-end
   .col-2.pr-0.text-right.font-weight-bold
     final invoice date:
   .col-9
