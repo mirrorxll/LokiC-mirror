@@ -1,0 +1,21 @@
+=form_with(url: api_work_request_path(work_request), method: :patch) do |f|
+  =f.check_box "work_request[sow[default]]", onchange: 'sowLinkSwitcher(this)', checked: work_request.default_sow
+  =f.label "work_request[sow[default]]", 'Default (SOW not ready yet)'
+  %div{ class: "sow-link#{work_request.id} #{work_request.default_sow ? 'd-none' : ''}" }
+    %span.small.text-danger
+      ***link to Google Doc or Spreadsheet
+    =f.text_field "work_request[sow[link]]", class: 'form-control form-control-sm w-100', value: work_request.sow
+
+:javascript
+  function sowLinkSwitcher(check_box) {
+    let sowLink = document.querySelector('.sow-link#{work_request.id}');
+    let defaultSow = document.querySelector('.default-sow');
+
+    if(check_box.checked) {
+      sowLink.classList.add('d-none');
+      defaultSow.classList.remove('d-none');
+    } else {
+      sowLink.classList.remove('d-none');
+      defaultSow.classList.add('d-none');
+    }
+  }

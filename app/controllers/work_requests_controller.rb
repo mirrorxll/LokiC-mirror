@@ -56,9 +56,29 @@ class WorkRequestsController < ApplicationController
 
     @grid.column(:sow, header: 'SOW', after: :project_order_name) do |req|
       WorkRequestsGrid.format(req) do
-        if req.default_sow && req.sow.present?
-          name = req.sow[/document/] ? 'Google Document' : 'Google Sheet'
-          link_to(name, req.sow, target: '_blank')
+        content_tag(:div, id: "sow#{req.id}", class: 'text-center') do
+          if req.default_sow
+            sow = {
+              link: 'https://docs.google.com/document/d/1XGBr8mitj6Ui4uTXiCZnevLx7F-5R0Ru0ZNkBLvXpWI/edit'
+            }
+
+            content_tag(
+              :u, 'Create SOW',
+              'class' => 'mouse-hover',
+              'data-container' => 'body',
+              'data-toggle' => 'popover',
+              'data-placement' => 'top',
+              'data-html' => 'true',
+              'data-content' => (render 'work_requests/index__sow_form', work_request: req, sow: sow).to_s
+            )
+          else
+            sow = {
+              name: (req.sow[/document/] ? 'Google Document' : 'Google Sheet'),
+              link: req.sow
+            }
+
+            link_to(sow[:name], sow[:link], target: '_blank', rel: 'noopener noreferrer')
+          end
         end
       end
     end

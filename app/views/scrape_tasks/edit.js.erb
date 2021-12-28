@@ -45,8 +45,12 @@ function excludeMultiTaskFromScrapeTask(e, task_id) {
 }
 
 (() => {
-    $('select[id="multi_task[task_id]"]').multipleSelect({ filter: true });
+    let select = $('select[id="multi_task[task_id]"]');
+    select.multipleSelect({ filter: true });
+
     $('.hide-radio.selected').addClass('d-none');
+
+    select.multipleSelect('refresh');
 })();
 
 
@@ -57,7 +61,9 @@ $('input[id="scrape_task[deadline]"]').datepicker({
 
 
 (() => {
-    $('select[id="scrape_task[state_id]"]').multipleSelect({ filter: true });
+    let select = $('select[id="scrape_task[state_id]"]')
+    select.multipleSelect({ filter: true });
+    select
 })();
 
 
