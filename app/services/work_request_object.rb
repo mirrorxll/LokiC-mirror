@@ -12,7 +12,7 @@ class WorkRequestObject
   private
 
   def initialize(work_request: nil, params:)
-    @request = work_request || WorkRequest.create!
+    @request = work_request || WorkRequest.new
     @prm = params.reject { |k, v| k.start_with?('tf_') && v.eql?('0') }
 
     @work_types =
@@ -36,18 +36,21 @@ class WorkRequestObject
       # first_invoice: @prm['first_invoice'],
       # final_invoice: @prm['final_invoice'],
       goal_deadline: @prm['goal_deadline'],
-      final_deadline: @prm['final_deadline'],
+      final_deadline: @prm['final_deadline']
       # budget_of_project: @prm['budget_of_project']
     }
-    regexp = %r{^https://docs.google.com/(document|spreadsheets)}
+    # regexp = %r{^https://docs.google.com/(document|spreadsheets)}
 
-    if @prm['sow']&.fetch('default')
-      params.merge!(default_sow: @prm['sow']['default'])
-    end
+    # if @prm['sow']&.fetch('default')
+    #   params.merge!(default_sow: @prm['sow']['default'])
+    # end
 
-    if @prm['sow']&.fetch('default')&.eql?('0') && @prm['sow'].fetch('link')&.strip&.match?(regexp)
-      params.merge!({ sow: @prm['sow']['link'] })
-    end
+
+    # if @prm['sow']&.fetch('default')&.eql?('0') && @prm['sow'].fetch('link')&.strip&.match?(regexp)
+    #   params.merge!({ sow: @prm['sow']['link'] })
+    # end
+
+    params.merge!(default_sow: true) if @request.new_record?
 
     @request.update!(params)
     @request.project_order_name.update(body: @prm['project_order_name'])

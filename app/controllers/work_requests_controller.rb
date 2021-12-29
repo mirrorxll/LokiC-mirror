@@ -58,10 +58,6 @@ class WorkRequestsController < ApplicationController
       WorkRequestsGrid.format(req) do
         content_tag(:div, id: "sow#{req.id}", class: 'text-center') do
           if req.default_sow
-            sow = {
-              link: 'https://docs.google.com/document/d/1XGBr8mitj6Ui4uTXiCZnevLx7F-5R0Ru0ZNkBLvXpWI/edit'
-            }
-
             content_tag(
               :u, 'Create SOW',
               'class' => 'mouse-hover',
@@ -69,7 +65,7 @@ class WorkRequestsController < ApplicationController
               'data-toggle' => 'popover',
               'data-placement' => 'top',
               'data-html' => 'true',
-              'data-content' => (render 'work_requests/index__sow_form', work_request: req, sow: sow).to_s
+              'data-content' => (render 'work_requests/index__sow_form', work_request: req).to_s
             )
           else
             sow = {
