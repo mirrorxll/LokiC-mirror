@@ -43,6 +43,25 @@ class WorkRequestsController < ApplicationController
     default = manager? || outside_manager? ? {} : { requester: current_account.id }
     @grid = request.parameters[:work_requests_grid] || default
     @grid = WorkRequestsGrid.new(@grid)
+
+    @grid.column(:project_order_name, after: :priority) do |req|
+      WorkRequestsGrid.format(req) do
+        name = req.project_order_name.body
+        truncated = "##{req.id} #{name.truncate(30)}"
+        link_to(truncated, req)
+      end
+    end
+
+    return unless manager?
+
+    @grid.column(:sow, header: 'SOW', after: :project_order_name) do |req|
+      WorkRequestsGrid.format(req) do
+        if req.default_sow && req.sow.present?
+          name = req.sow[/document/] ? 'Google Document' : 'Google Sheet'
+          link_to(name, req.sow, target: '_blank')
+        end
+      end
+    end
   end
 
   def work_request_params

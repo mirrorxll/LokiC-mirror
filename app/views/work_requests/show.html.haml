@@ -1,8 +1,9 @@
 %div{ id: "workRequest", work_request_id: @work_request.id }
 
+
 %hr/
-#workRequestOrderName.text-center.font-weight-bold
-  =link_to(@work_request.project_order_name.body, @work_request)
+#workRequestName.text-center
+  =link_to("##{@work_request.id} #{@work_request.project_order_name.body}", @work_request)
 %hr.mb-0/
 
 .d-flex.justify-content-between.align-items-center.mb-3.small
