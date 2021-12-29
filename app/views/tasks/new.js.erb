@@ -1,4 +1,4 @@
-$('#task .modal-body').html('<%= j render 'form' %>')
+$('#task .modal-body').html('<%= j render 'main_form' %>')
 $('#task .modal-header').html('<%= 'new task' %>')
 
 $('#task_description').froalaEditor({
@@ -7,7 +7,7 @@ $('#task_description').froalaEditor({
     documentReady: true,
     toolbarButtons: ['fullscreen', 'undo', 'redo', '|', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineClass', 'inlineStyle', 'paragraphStyle', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', 'insertLink', 'insertImage', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'getPDF', 'help', 'html'],    imageUploadURL: '/images/upload',
     imageUploadMethod: 'POST',
-    height: 400
+    height: 200
 })
 
 $('#task').modal('show');
