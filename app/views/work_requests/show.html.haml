@@ -26,7 +26,7 @@
                 [ edit ]
           -if current_account.types.include?('manager')
             .d-inline-block.mr-2.small
-              %button{ type: 'button', class: 'p-0 pb-1 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#createProjectModal" }
+              %button{ onclick: 'projectNameChecking();', type: 'button', class: 'p-0 pb-1 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#createProjectModal" }
                 [ create project ]
     .card-body
       =render 'work_request_info'
@@ -110,8 +110,6 @@
 
     (() => {
       let button = document.querySelector('#createProjectButton');
-
-      button.disabled = true;
 
       button.addEventListener('click', (event) => {
         event.preventDefault();
