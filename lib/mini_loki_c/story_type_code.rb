@@ -16,8 +16,6 @@ module MiniLokiC
 
     def check_updates
       story_type_class = load_story_type_class.new
-      return unless story_type_class.respond_to?(:check_updates)
-
       story_type_class.check_updates({})
     end
 

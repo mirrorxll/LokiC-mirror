@@ -139,6 +139,10 @@ class StoryType < ApplicationRecord
     reminder&.updates_confirmed
   end
 
+  def check_updates_developed?
+    !reminder.has_updates.nil?
+  end
+
   private
 
   def tracking_changes

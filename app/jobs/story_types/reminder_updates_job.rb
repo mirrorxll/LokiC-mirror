@@ -27,7 +27,7 @@ module StoryTypes
             end
 
             begin
-              new_data_flag = MiniLokiC::StoryTypeCode[st_type].check_updates
+              new_data_flag = st_type.check_updates_developed? ? MiniLokiC::StoryTypeCode[st_type].check_updates : nil
             rescue StandardError, ScriptError => e
               msg = "[ CheckUpdatesExecutionError ] -> #{e.message} at #{e.backtrace.first}".gsub('`', "'")
               SlackReminderNotificationJob.perform_now(st_type, msg)
@@ -35,7 +35,7 @@ module StoryTypes
             end
 
             type =
-              if !new_data_flag.in?([true, false])
+              if new_data_flag.nil?
                 :method_missing
               elsif new_data_flag.eql?(true)
                 st_type.reminder.update!(has_updates: true, current_account: account)

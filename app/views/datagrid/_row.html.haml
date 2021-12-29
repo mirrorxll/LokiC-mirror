@@ -12,7 +12,11 @@
       -if column.header.eql?('Status')
         -background_color = "bg-#{status_color(ActionView::Base.full_sanitizer.sanitize(value))}"
       -elsif column.header.eql?('Has updates')
-        -background_color = value ? 'bg-warning text-center' : 'text-center'
-        -value = value ? 'Yes' : 'No'
+        -if value.nil?
+          -background_color = 'bg-danger text-center'
+          -value = 'Not realized'
+        -else
+          -background_color = value ? 'bg-warning text-center' : 'text-center'
+          -value = value ? 'Yes' : 'No'
       %td{ class: "#{klass} #{background_color}" }
         =value
