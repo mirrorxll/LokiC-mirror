@@ -9,6 +9,9 @@ module StoryTypes
     before_action :render_403, if: :editor?
     before_action :download_code, only: %i[attach reload]
 
+    # TODO: think about it
+    after_action :check_updates_revise, only: %i[attach reload]
+
     def show
       @ruby_code =
         CodeRay.scan(@story_type.code.download, :ruby).div(line_numbers: :table)
@@ -30,7 +33,17 @@ module StoryTypes
     private
 
     def download_code
-      @code = @story_type.download_code_from_db
+      # @code = @story_type.download_code_from_db
+      @code = <<~CODE
+        class S3
+          
+        end
+      CODE
+    end
+
+    def check_updates_revise
+      pp " *"*50, 'CHECK_UPDATES_REVISE', @story_type.id
+      StoryTypes::CheckUpdatesJob.perform_later(@story_type.id)
     end
   end
 end
