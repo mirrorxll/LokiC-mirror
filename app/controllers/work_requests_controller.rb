@@ -73,7 +73,25 @@ class WorkRequestsController < ApplicationController
               link: req.sow
             }
 
-            link_to(sow[:name], sow[:link], target: '_blank', rel: 'noopener noreferrer')
+            content_tag(:div, nil, class: 'dropdown') do
+              concat(
+                link_to(sow[:name], '#', id: "sowLink#{req.id}", class: 'dropdown-toggle',
+                                         'aria-expanded' => 'false', 'aria-haspopup' => 'true',
+                                         'data-toggle' => 'dropdown',
+                                         target: '_blank', rel: 'noopener noreferrer')
+              )
+              concat(
+                content_tag(:div, class: 'dropdown-menu', 'aria-labelledby' => "sowLink#{req.id}") do
+                  concat(link_to('follow', req.sow, class: 'dropdown-item', target: '_blank', rel: 'noopener noreferrer'))
+                  concat(link_to('change', req.sow, class: 'dropdown-item', target: '_blank', rel: 'noopener noreferrer'))
+                  concat(link_to('delete', req.sow, class: 'dropdown-item', target: '_blank', rel: 'noopener noreferrer'))
+                end
+              )
+            end
+            # content_tag(:div) do
+            #   +
+            #    button_tag(class: 'btn p-0 pl-2 small') { icon('fa', 'pencil') }
+            # end
           end
         end
       end

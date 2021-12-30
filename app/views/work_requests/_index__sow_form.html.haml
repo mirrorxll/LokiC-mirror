@@ -1,49 +1,33 @@
 -sow_template = 'https://docs.google.com/document/d/1XGBr8mitj6Ui4uTXiCZnevLx7F-5R0Ru0ZNkBLvXpWI/edit'
 
 =form_with(url: api_work_request_path(work_request), method: :patch) do |f|
-  %div{ class: "sow-default#{work_request.id}" }
-    =f.check_box "work_request[sow_#{work_request.id}[default]]",
-                 onchange: "sowLinkFieldSwitcher#{work_request.id}(this)", checked: work_request.default_sow
-    =f.label "work_request[sow_#{work_request.id}[default]]", 'SOW not ready yet'
-  %div{ class: "default-link#{work_request.id} #{work_request.default_sow ? '' : 'd-none'}" }
-    =link_to('SOW template', sow_template, target: '_blank', rel: 'noopener noreferrer')
+  %div.mb-2{ class: "default-link#{work_request.id} #{work_request.default_sow ? '' : 'd-none'}" }
+    =link_to('default SOW template', sow_template, target: '_blank', rel: 'noopener noreferrer')
   %div{ class: "sow-link#{work_request.id}" }
-    =f.text_field "work_request[sow_#{work_request.id}[link]]", class: 'form-control form-control-sm w-75',
-                  value: work_request.sow, disabled: work_request.default_sow, readonly: work_request.default_sow
+    =f.text_field "work_request[sow_#{work_request.id}[link]]", class: 'd-inline-block form-control form-control-sm w-85',
+                  value: work_request.sow, onkeypress: 'sowByEnterPress(event, this)'
+    .w-10.d-inline-flex.justify-content-center
+      .mouse-hover
+        =icon('fa', 'sign-in', class: 'fa-lg', onclick: "sowByArrowClick(#{work_requests.id})")
     %span.small.text-danger
       ***link to Google Doc or Spreadsheet
-  .mouse-hover{ onclick: 'typeOfWorkByArrowClick();' }
-    =icon('fa', 'sign-in')
 
 :javascript
-  function sowLinFieldSwitcher#{work_request.id}(check_box) {
-    let sowTemplateLink = document.querySelector('.sow-link#{work_request.id}');
-    let defaultSow = document.querySelector('.default-sow#{work_request.id}');
-
-    if(check_box.checked) {
-      sowTemplateLink.classList.add('d-none');
-      defaultSow.classList.remove('d-none');
-    } else {
-      sowLink.classList.remove('d-none');
-      defaultSow.classList.add('d-none');
-    }
-  }
-
-  function typeOfWorkByEnterPress(event, input) {
+  function sowByEnterPress(event, input) {
     if(event.keyCode !== 13 || input.value.trim().length === 0) return false;
 
-    postTypeOfWorkIfNotExist(input);
+    postSow(input);
   }
 
-  function typeOfWorkByArrowClick() {
-    let input = document.querySelector('#workTypes input.underline-input');
+  function sowByArrowClick() {
+    let input = document.querySelector('input[id="work_request[sow_33[link]]"]');
 
     if(input.value.trim().length === 0) return false;
 
-    postTypeOfWorkIfNotExist(input);
+    postSow(input);
   }
 
-  function postTypeOfWorkIfNotExist(input) {
+  function postSow(input) {
     let spinner = document.querySelector('#workTypes .loadingSpinner');
 
     spinner.classList.remove('d-none');
