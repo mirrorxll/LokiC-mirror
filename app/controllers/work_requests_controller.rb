@@ -40,7 +40,7 @@ class WorkRequestsController < ApplicationController
   end
 
   def generate_grid
-    default = manager? || outside_manager? ? {} : { requester: current_account.id }
+    default = manager? ? {} : { requester: current_account.id }
     @grid = request.parameters[:work_requests_grid] || default
     @grid = WorkRequestsGrid.new(@grid)
 
