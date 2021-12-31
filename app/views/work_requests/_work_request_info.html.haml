@@ -84,7 +84,7 @@
   .col-9
     =@work_request.project_order_name.body
 
--if(current_account.types & ['manager', 'outside manager']).any?
+-# -if(current_account.types & ['manager', 'outside manager']).any?
   .row.mb-1.text-break
     .col-2.pr-0.text-right.font-weight-bold
       SOW:
@@ -131,11 +131,11 @@
     first invoice date:
   .col-9
     =@work_request.first_invoice
--#.row.mb-4.align-items-end
+.row.mb-4.align-items-end
   .col-2.pr-0.text-right.font-weight-bold
-    final invoice date:
+    last invoice date:
   .col-9
-    =@work_request.final_invoice
+    =@work_request.last_invoice
 
 
 

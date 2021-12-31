@@ -304,7 +304,7 @@
 
 
 
-    -if current_account.types.include?('manager')
+    -# -if current_account.types.include?('manager')
       #sowAnchor.mb-3
       #sow.card
         .card-body
@@ -547,17 +547,6 @@
                       value: @work_request.first_invoice
 
 
-    -if current_account.types.include?('manager')
-      #FinalInvoiceAnchor.mb-3
-      #FinalInvoice.card
-        .card-body
-          .font-weight-bold.mb-2
-            Final Invoice Date
-          =f.date_field "work_request[final_invoice]",
-                        class: 'form-control form-control-sm w-50',
-                        value: @work_request.final_invoice
-
-
 
     #goalDeadlineAnchor.mb-3
     #goalDeadline.card
@@ -636,19 +625,6 @@
       if(!orderName) {
         scrollToCardUnblockButton('#projectOrderName')
         return false;
-      }
-
-      if(#{raw(current_account.types.include?('manager'))}) {
-        let sowCheckBox = document.querySelector('input[id="work_request[sow[default]]"]');
-        let sowInput = document.querySelector('input[id="work_request[sow[link]]"]');
-        if(!sowCheckBox.checked) {
-          let sowPattern = sowInput.value.match(/^https:\/\/docs.google.com\/(document|spreadsheets)/)
-
-          if(!sowPattern) {
-            scrollToCardUnblockButton("#sow")
-            return false;
-          }
-        }
       }
 
       let orderDetail = document.querySelector('#projectOrderDetails textarea').value.length > 0

@@ -106,6 +106,7 @@ class TasksController < ApplicationController # :nodoc:
     task_params[:parent] = task_params[:parent].blank? ? nil : Task.find(task_params[:parent])
     task_params[:client] = task_params[:client_id].blank? ? nil : ClientsReport.find(task_params[:client_id])
     task_params[:creator] = current_account
+    task_params[:work_request] = WorkRequest.find(params[:work_request_id])
     task_params
   end
 
