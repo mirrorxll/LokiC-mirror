@@ -80,6 +80,7 @@ class TasksController < ApplicationController # :nodoc:
       else
         manager? ? { order: :id, descending: true } : { assignment_to: current_account.id, order: :id, descending: true }
       end
+    grid_params[:status] = Status.multi_task_statuses_for_grid if grid_params[:deleted_tasks] != 'YES'
     @grid = TasksGrid.new(grid_params.except(:collapse))
   end
 
@@ -105,7 +106,7 @@ class TasksController < ApplicationController # :nodoc:
     task_params[:parent] = task_params[:parent].blank? ? nil : Task.find(task_params[:parent])
     task_params[:client] = task_params[:client_id].blank? ? nil : ClientsReport.find(task_params[:client_id])
     task_params[:creator] = current_account
-    task_params[:work_request] = WorkRequest.find(params[:work_request_id])
+    task_params[:work_request] = params[:work_request_id].nil? ? nil : WorkRequest.find(params[:work_request_id])
     task_params
   end
 
