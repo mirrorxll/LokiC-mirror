@@ -45,7 +45,7 @@
         .col-5.text-center
           #assignments_form
             -accounts = current_account.types.include?('developer') ? [current_account] : Account.all.order([:first_name, :last_name])
-            =form.collection_select 'task[assignment_to][]', accounts, :id, :name, { prompt: '' }, class: 'mt-1'
+            =form.collection_select 'assignment_to[]', accounts, :id, :name, { prompt: '' }, class: 'mt-1'
 
   .d-none
     =form.submit :create, id: 'hiddenCreateProjectButton'
@@ -65,7 +65,7 @@
 
     $('#assignments_form').append(
         `<div id="assignment_${hex}" class="d-flex mt-1 justify-content-base" >
-           <select id="task[assignment_to][]" class="mr-1" name="task[assignment_to][]">${buildSelect(accounts)}</select>
+           <select id="assignment_to[]" class="mr-1" name="assignment_to[]">${buildSelect(accounts)}</select>
            <div id="rm_assignment_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
          </div>`
     );
