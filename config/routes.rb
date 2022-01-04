@@ -22,26 +22,26 @@ Rails.application.routes.draw do
 
   namespace :api, constraints: { format: :json } do
     resources :work_requests, only: :update
-    scope module: :work_requests do
-      resources :work_types, only: [] do
-        post :find_or_create, on: :collection
-      end
+    scope module: :work_requests, path: 'work_requests', as: 'work_requests' do
+      # resources :work_types, only: [] do
+      #   post :find_or_create, on: :collection
+      # end
 
       resources :clients, only: [] do
         get :find, on: :collection
       end
 
-      resources :underwriting_projects, only: [] do
-        post :find_or_create, on: :collection
-      end
+      # resources :underwriting_projects, only: [] do
+      #   post :find_or_create, on: :collection
+      # end
 
-      resources :invoice_types, only: [] do
-        post :find_or_create, on: :collection
-      end
+      # resources :invoice_types, only: [] do
+      #   post :find_or_create, on: :collection
+      # end
 
-      resources :invoice_frequencies, only: [] do
-        post :find_or_create, on: :collection
-      end
+      # resources :invoice_frequencies, only: [] do
+      #   post :find_or_create, on: :collection
+      # end
     end
 
     resources :clients, only: :index do
@@ -66,6 +66,10 @@ Rails.application.routes.draw do
     resources :tasks, only: [] do
       get :titles,   on: :collection
       get :subtasks, on: :member
+    end
+
+    scope module: :tasks, path: 'tasks/:task_id', as: 'tasks' do
+      resources :statuses, only: :update
     end
 
     resources :shown_samples, only: :update
