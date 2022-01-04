@@ -1,0 +1,9 @@
+$('#archiveWorkRequest').html('<%= link_to('[ archive ]',
+                               archive_work_request_path(@work_request),
+                               data: { confirm: "Work Request will be hidden from Work Requests' queue. Continue?" },
+                               class: 'p-0 pb-1 btn btn-sm text-danger small',
+                               onclick: 'archiveSpinnerAnimation()',
+                               method: :patch, remote: true) %>')
+
+document.querySelector('#createProject button').disabled = false;
+document.querySelector('#editWorkRequest button').disabled = false;

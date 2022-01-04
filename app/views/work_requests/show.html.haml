@@ -17,17 +17,46 @@
     .card-header.p-1
       .d-flex.justify-content-between.align-items-center
         main info
-        .d-inline-block
+        .d-flex.align-items-center
           #workRequestStatus.d-inline-block
             =render 'statuses'
-          -if current_account.eql?(@work_request.requester) || (current_account.types & ['manager', 'outside manager']).any?
-            .d-inline-block.mr-2.small
-              %button{ type: 'button', class: 'p-0 pb-1 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#updateWorkRequestModal" }
-                [ edit ]
-          -if current_account.types.include?('manager')
-            .d-inline-block.mr-2.small
-              %button{ onclick: 'projectNameChecking();', type: 'button', class: 'p-0 pb-1 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#createProjectModal" }
-                [ create project ]
+          #createProject
+            -if current_account.types.include?('manager')
+              .d-inline-block.mr-2.small
+                %button{ onclick: 'projectNameChecking();', type: 'button', class: 'p-0 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#createProjectModal", disabled: @work_request.archived }
+                  [ create project ]
+          #editWorkRequest
+            -if current_account.eql?(@work_request.requester) || (current_account.types & ['manager', 'outside manager']).any?
+              .d-inline-block.mr-2.small
+                %button{ type: 'button', class: 'p-0 ml-1 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#updateWorkRequestModal", disabled: @work_request.archived}
+                  [ edit ]
+          #archiveWorkRequest.d-inline-block.mr-2
+            -if current_account.types.include?('manager') && @work_request.projects.all? { |p| p.status.name.eql?('deleted') }
+              -if @work_request.archived
+                =link_to('[ unarchive ]', unarchive_work_request_path(@work_request),
+                         class: 'p-0 btn btn-sm text-danger small',
+                         onclick: 'archiveSpinnerAnimation()',
+                         method: :patch, remote: true)
+              -else
+                =link_to('[ archive ]', archive_work_request_path(@work_request),
+                       data: { confirm: "Work Request will be hidden from Work Requests' queue. Continue?" },
+                       class: 'p-0 btn btn-sm text-danger small',
+                       onclick: 'archiveSpinnerAnimation()',
+                       method: :patch, remote: true)
+
+              :javascript
+                function archiveSpinnerAnimation() {
+                  document.querySelector('#archiveWorkRequest').innerHTML =
+                    `
+                      <div class = "spinner-border spinner-border-sm text-secondary">
+                        <span class="sr-only"></span>
+                      </div>
+                    `
+                }
+            -elsif @work_request.archived
+              .badge.badge-pill.badge-danger
+                archived
+
     .card-body
       =render 'work_request_info'
 
@@ -44,7 +73,7 @@
               -if p.status.name.eql?('deleted')
                 deleted
               -else
-                =link_to('[ delete ]', '#', onclick: "markTaskAsDeleted(event, this, #{p.id}, #{@delete_status.id})")
+                =link_to('[ delete ]', '#', onclick: "markTaskAsDeleted(event, this, #{@work_request.id}, #{p.id}, #{@delete_status.id});;")
                 .d-none{ class: "processing" }
                   .loadingSpinner.spinner-border.spinner-border-sm.text-secondary
                     %span.sr-only
@@ -52,10 +81,10 @@
             .badge.badge-pill{ class: "status badge-#{status_color(p.status.name)}" }
               =p.status.name
           .col-9
-            =link_to(p.title, p, class: 'mr-2')
+            =link_to(p.title, p, class: 'mr-2', target: '_blank', rel: 'noopener noreferrer')
 
   :javascript
-    function markTaskAsDeleted(event, link, task_id, status_id) {
+    function markTaskAsDeleted(event, link, work_request_id, task_id, status_id) {
       event.preventDefault();
 
       let spinner = document.querySelector(`.task-${task_id} .processing`);
@@ -75,8 +104,27 @@
             status.innerHTML = 'deleted'
             status.classList.add('badge-dark');
             document.querySelector(`.task-${task_id} .task-delete`).innerHTML = 'deleted';
+            showArchiveIfAllTasksDeleted(work_request_id);
           } else {
             link.classList.remove('d-none');
+          }
+        }
+      })
+    }
+
+    function showArchiveIfAllTasksDeleted(work_request_id) {
+      Rails.ajax({
+        type: "GET",
+        dataType: 'json',
+        url: `/api/work_requests/${work_request_id}/project_statuses/all_deleted`,
+        success: function (data) {
+          if(data['all_deleted']) {
+            doc ument.querySelector('#archiveWorkRequest').innerHTML =
+              `
+                <a data-confirm="Work Request will be hidden from Work Requests' queue. Continue?" class="p-0 pb-1 btn btn-sm text-danger small" onclick="archiveSpinnerAnimation()" data-remote="true" rel="nofollow" data-method="patch" href="/work_requests/${work_request_id}/archive">
+                 [ archive ]
+                </a>
+              `
           }
         }
       })

@@ -22,13 +22,13 @@ Rails.application.routes.draw do
 
   namespace :api, constraints: { format: :json } do
     resources :work_requests, only: :update
-    scope module: :work_requests, path: 'work_requests', as: 'work_requests' do
+    scope module: :work_requests, path: 'work_requests', as: 'work_request_collections' do
       # resources :work_types, only: [] do
       #   post :find_or_create, on: :collection
       # end
 
       resources :clients, only: [] do
-        get :find, on: :collection
+        get :find_by_name, on: :collection
       end
 
       # resources :underwriting_projects, only: [] do
@@ -42,6 +42,12 @@ Rails.application.routes.draw do
       # resources :invoice_frequencies, only: [] do
       #   post :find_or_create, on: :collection
       # end
+    end
+
+    scope module: :work_requests, path: 'work_requests/:id', as: 'work_request_members' do
+      resources :project_statuses, only: [] do
+        get :all_deleted, on: :collection
+      end
     end
 
     resources :clients, only: :index do
@@ -81,6 +87,11 @@ Rails.application.routes.draw do
   end
 
   resources :work_requests, except: :destroy do
+    authenticate :account, ->(u) { u.types.include?('manager') } do
+      patch :archive,   on: :member
+      patch :unarchive, on: :member
+    end
+
     scope module: :work_requests do
       resources :progress_statuses, only: [] do
         patch :change, on: :collection

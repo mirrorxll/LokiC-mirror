@@ -6,6 +6,10 @@ module Api
       before_action :find_task
       before_action :find_status
 
+      def index
+        render json: Status.multi_task_statuses.map(&:name)
+      end
+
       def update
         render json: { success: @task.update(status: @status) }
       end
