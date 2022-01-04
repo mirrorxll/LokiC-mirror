@@ -80,7 +80,12 @@ class TasksController < ApplicationController # :nodoc:
       else
         manager? ? { order: :id, descending: true } : { assignment_to: current_account.id, order: :id, descending: true }
       end
-    grid_params[:status] = Status.multi_task_statuses_for_grid if grid_params[:deleted_tasks] != 'YES'
+    grid_params[:status] =
+      if grid_params[:status].blank? && grid_params[:deleted_tasks] != 'YES'
+        Status.multi_task_statuses_for_grid
+      else
+        grid_params[:status]
+      end
     @grid = TasksGrid.new(grid_params.except(:collapse))
   end
 
