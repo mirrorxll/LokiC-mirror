@@ -53,7 +53,8 @@ class WorkRequestsController < ApplicationController
     default = manager? ? {} : { requester: current_account.id }
     @grid = request.parameters[:work_requests_grid] || default
     @grid = WorkRequestsGrid.new(@grid) do |scope|
-      scope.where(archived: params[:archived])
+      archived = params[:archived].nil? ? false : params[:archived]
+      scope.where(archived: archived)
     end
 
     @grid.column(:project_order_name, after: :priority) do |req|

@@ -1,6 +1,6 @@
 $('#archiveWorkRequest').html('<%=link_to('[ unarchive ]',
                                unarchive_work_request_path(@work_request),
-                               class: 'p-0 pb-1 btn btn-sm text-danger small',
+                               class: 'p-0 btn btn-sm text-danger small',
                                onclick: 'archiveSpinnerAnimation()',
                                method: :patch, remote: true) %>')
 
