@@ -13,7 +13,9 @@ class WorkRequestsController < ApplicationController
     @grid.scope { |sc| sc.page(params[:page]).per(100) }
   end
 
-  def show; end
+  def show
+    @delete_status = Status.find_by(name: 'deleted')
+  end
 
   def new; end
 

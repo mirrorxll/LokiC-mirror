@@ -32,16 +32,55 @@
       =render 'work_request_info'
 
 
-
 #workRequestProjects.mb-5.small
   .card
     .card-header.p-1
       created projects
     .card-body
-      -@work_request.projects.each do |p|
-        .row
-          .col-10.offset-1
-            =link_to(p.title, p)
+      -@work_request.projects.order(created_at: :desc).each do |p|
+        .row{ class: "task-#{p.id}"}
+          .col-1.text-right.pr-0
+            .text-danger{ class: "task-delete" }
+              -if p.status.name.eql?('deleted')
+                deleted
+              -else
+                =link_to('[ delete ]', '#', onclick: "markTaskAsDeleted(event, this, #{p.id}, #{@delete_status.id})")
+                .d-none{ class: "processing" }
+                  .loadingSpinner.spinner-border.spinner-border-sm.text-secondary
+                    %span.sr-only
+          .col-1.text-center.pr-0
+            .badge.badge-pill{ class: "status badge-#{status_color(p.status.name)}" }
+              =p.status.name
+          .col-9
+            =link_to(p.title, p, class: 'mr-2')
+
+  :javascript
+    function markTaskAsDeleted(event, link, task_id, status_id) {
+      event.preventDefault();
+
+      let spinner = document.querySelector(`.task-${task_id} .processing`);
+      let status = document.querySelector(`.task-${task_id} .status`);
+
+      link.classList.add('d-none');
+      spinner.classList.remove('d-none');
+
+      Rails.ajax({
+        type: "PATCH",
+        dataType: 'json',
+        url: `/api/tasks/${task_id}/statuses/${status_id}`,
+        success: function (data) {
+          spinner.classList.add('d-none');
+
+          if(data['success']) {
+            status.innerHTML = 'deleted'
+            status.classList.add('badge-dark');
+            document.querySelector(`.task-${task_id} .task-delete`).innerHTML = 'deleted';
+          } else {
+            link.classList.remove('d-none');
+          }
+        }
+      })
+    }
 
 
 #updateWorkRequestModal.modal.fade.pr-0{ "aria-hidden" => "true", "aria-labelledby" => "updateWorkRequestModalLabel",

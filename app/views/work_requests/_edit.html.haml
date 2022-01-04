@@ -148,7 +148,7 @@
           Rails.ajax({
             type: "GET",
             dataType: 'script',
-            url: `#{find_api_clients_path}`,
+            url: `#{find_api_work_requests_clients_path}`,
             data: `client[name]=${encodeURIComponent(input.value.replaceAll(/ \(New Client\)/g, ''))}`,
             success: (data) => {
               input.value = '';
