@@ -7,13 +7,15 @@ class WorkRequestsController < ApplicationController
   skip_before_action :set_article_type_iteration
 
   before_action :generate_grid, only: :index
-  before_action :find_work_request, only: %i[show edit update]
+  before_action :find_work_request, only: %i[show edit update archive unarchive]
 
   def index
     @grid.scope { |sc| sc.page(params[:page]).per(100) }
   end
 
-  def show; end
+  def show
+    @delete_status = Status.find_by(name: 'deleted')
+  end
 
   def new; end
 
@@ -33,6 +35,14 @@ class WorkRequestsController < ApplicationController
       WorkRequestObject.update_from!(@work_request, work_request_params)
   end
 
+  def archive
+    @work_request.update!(archived: true)
+  end
+
+  def unarchive
+    @work_request.update!(archived: false)
+  end
+
   private
 
   def john_putz_slack_id
@@ -42,7 +52,10 @@ class WorkRequestsController < ApplicationController
   def generate_grid
     default = manager? ? {} : { requester: current_account.id }
     @grid = request.parameters[:work_requests_grid] || default
-    @grid = WorkRequestsGrid.new(@grid)
+    @grid = WorkRequestsGrid.new(@grid) do |scope|
+      archived = params[:archived].nil? ? false : params[:archived]
+      scope.where(archived: archived)
+    end
 
     @grid.column(:project_order_name, after: :priority) do |req|
       WorkRequestsGrid.format(req) do
