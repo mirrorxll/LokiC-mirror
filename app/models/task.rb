@@ -69,7 +69,6 @@ class Task < ApplicationRecord # :nodoc:
     "https://pipeline.locallabs.com/gather_tasks/#{gather_task}"
   end
 
-
   def title_with_id
     "##{id} #{title}"
   end
