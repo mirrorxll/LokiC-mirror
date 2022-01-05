@@ -23,7 +23,7 @@
           %div{ class: "task-#{mt.id}" }
             =link_to('[ remove ]', nil, onclick: "excludeMultiTaskFromScrapeTask(event, #{mt.id});")
             &nbsp&nbsp|&nbsp&nbsp
-            =link_to("##{mt.id} #{mt.title}", mt, rel: 'noopener noreferrer')
+            =link_to("##{mt.id} #{mt.title}", mt, target: '_blank', rel: 'noopener noreferrer')
             %br/
 
       =f.select 'multi_task[task_id]', multi_tasks_to_options, { prompt: '' }, onchange: 'includeMultiTaskToScrapeTask(this);'

@@ -1,12 +1,14 @@
 %hr/
 .row.m-2.align-items-center
   .col-5.offset-1
-    -if (current_account.types & ['manager']).any?
-      =link_to 'all requested work', work_requests_path,
+    -if current_account.types.include?('manager')
+      =link_to 'all requested work', work_requests_path(archived: false),
                class: 'btn btn-sm btn-outline-dark'
       =link_to('requested work by you',
-               url_for(@grid.to_param => { requester: current_account.id }),
+               url_for(@grid.to_param => { requester: current_account.id }, archived: false),
                class: 'btn btn-sm btn-outline-dark')
+      =link_to('archived work requests', work_requests_path(archived: true),
+               class: 'ml-3 btn btn-sm btn-outline-danger')
     -else
       Requested Work
   .col-5.text-right
