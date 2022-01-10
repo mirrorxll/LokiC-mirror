@@ -3,7 +3,7 @@
 module Api
   module WorkRequests
     class ClientsController < ApiController
-      def find
+      def find_by_name
         permitted_params = client_params
         client = Client.find_by(permitted_params) || Client.new(permitted_params)
         new_record = client.new_record?

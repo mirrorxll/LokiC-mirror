@@ -28,21 +28,24 @@ class WorkRequestObject
   def update!
     params = {
       requester: @request&.requester || @prm['account'],
-      underwriting_project: UnderwritingProject.find_by(id: @prm['underwriting_project']),
-      invoice_type: InvoiceType.find_by(id: @prm['invoice_type']),
-      invoice_frequency: InvoiceFrequency.find_by(id: @prm['invoice_frequency']),
+      # underwriting_project: UnderwritingProject.find_by(id: @prm['underwriting_project']),
+      # invoice_type: InvoiceType.find_by(id: @prm['invoice_type']),
+      # invoice_frequency: InvoiceFrequency.find_by(id: @prm['invoice_frequency']),
       priority: Priority.find_by(id: @prm['priority']),
-      default_sow: @prm['sow']['default'],
       eta: @prm['eta'],
-      first_invoice: @prm['first_invoice'],
-      final_invoice: @prm['final_invoice'],
+      # first_invoice: @prm['first_invoice'],
+      # final_invoice: @prm['final_invoice'],
       goal_deadline: @prm['goal_deadline'],
       final_deadline: @prm['final_deadline'],
-      budget_of_project: @prm['budget_of_project']
+      # budget_of_project: @prm['budget_of_project']
     }
     regexp = %r{^https://docs.google.com/(document|spreadsheets)}
 
-    if @prm['sow']['default'].eql?('0') && @prm['sow']['link'].strip[regexp]
+    if @prm['sow']&.fetch('default')
+      params.merge!(default_sow: @prm['sow']['default'])
+    end
+
+    if @prm['sow']&.fetch('default')&.eql?('0') && @prm['sow'].fetch('link')&.strip&.match?(regexp)
       params.merge!({ sow: @prm['sow']['link'] })
     end
 
@@ -50,11 +53,11 @@ class WorkRequestObject
     @request.project_order_name.update(body: @prm['project_order_name'])
     @request.project_order_details.update(body: @prm['project_order_details'])
     @request.most_worried_details.update(body: @prm['most_worried_details'])
-    @request.budget_for_project.update(body: @prm['budget_for_project'])
+    # @request.budget_for_project.update(body: @prm['budget_for_project'])
 
-    @work_types.each { |wt| @request.work_types << wt unless @request.work_types.exists?(wt.id) }
+    # @work_types.each { |wt| @request.work_types << wt unless @request.work_types.exists?(wt.id) }
     @clients.each { |cl| @request.clients << cl unless @request.clients.exists?(cl.id) }
-    @rev_types.each { |rt| @request.revenue_types << rt unless @request.revenue_types.exists?(rt.id) }
+    # @rev_types.each { |rt| @request.revenue_types << rt unless @request.revenue_types.exists?(rt.id) }
 
     @request
   end
