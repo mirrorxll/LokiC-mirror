@@ -25,6 +25,7 @@ prod_default: &prod_default
 dev_default: &dev_default
   username: <%= ENV['LOCAL_DB_USR'] %>
   password: <%= ENV['LOCAL_DB_PWD'] %>
+  host: '127.0.0.1'
 
 development:
   primary:
