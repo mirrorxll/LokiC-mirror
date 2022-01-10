@@ -16,7 +16,6 @@ module MiniLokiC
 
     def check_updates
       story_type_class = load_story_type_class.new
-      pp '>'*50, story_type_class
       story_type_class.check_updates({})
     end
 

@@ -30,14 +30,7 @@ module StoryTypes
     private
 
     def download_code
-      # @code = @story_type.download_code_from_db
-      @code = <<~CODE
-        class S1
-          def check_updates(_options = {})
-            true
-          end
-        end
-      CODE
+      @code = @story_type.download_code_from_db
     end
   end
 end

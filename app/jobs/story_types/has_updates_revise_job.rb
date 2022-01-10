@@ -4,10 +4,10 @@
 module StoryTypes
   class HasUpdatesReviseJob < StoryTypesJob
     def perform
-      StoryType.ongoing.with_developer.each do |story_type|
+      StoryType.ongoing.with_developer.with_code.each do |story_type|
         sleep rand(5..10)
-        code = story_type.code.try(:download)
-        story_type.reminder.update(has_updates: nil) unless code || code&.include?('def check_updates')
+        code = story_type.code.download
+        story_type.reminder.update(has_updates: nil) unless code.include?('def check_updates')
       end
     end
   end

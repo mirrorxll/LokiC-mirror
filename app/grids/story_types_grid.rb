@@ -47,16 +47,12 @@ class StoryTypesGrid
     client = Client.find(value)
     scope.joins(clients_publications_tags: [:client]).where(clients: client)
   end
-  # filter(:has_updates, :enum, :select => ['Not realized', true, false], left:true) do |value|
-  #   not_realized = []
-  #   self.each do |story_type|
-  #     code = story_type.code.download
-  #     not_realized << story_type.id unless code.include?('def check_updates')
-  #   end
-  #   value == 'Not realized' ? self.where(id: not_realized) : self.joins(:reminder)
-  #                                                                .where(:reminders => { :has_updates => value })
-  #                                                                .where.not(id: not_realized)
-  # end
+
+  filter(:has_updates, :enum, select: ['Not realized', 'Yes', 'No'], left: true) do |value, scope|
+    denotations = { 'Not realized' => nil, 'Yes' => true, 'No' => false }
+    scope.where(reminders: { has_updates: denotations[value] })
+  end
+
   filter(:condition1, :dynamic, left: false, header: 'Dynamic condition 1')
   filter(:condition2, :dynamic, left: false, header: 'Dynamic condition 2')
   column_names_filter(header: 'Extra Columns', left: false, checkboxes: false)
