@@ -68,46 +68,7 @@ class WorkRequestsController < ApplicationController
     return unless manager?
 
     @grid.column(:sow, header: 'SOW', after: :project_order_name) do |req|
-      WorkRequestsGrid.format(req) do
-        content_tag(:div, id: "sow#{req.id}", class: 'text-center') do
-          if req.default_sow
-            content_tag(
-              :u, 'Create SOW',
-              'class' => 'mouse-hover',
-              'data-container' => 'body',
-              'data-toggle' => 'popover',
-              'data-placement' => 'top',
-              'data-html' => 'true',
-              'data-content' => (render 'work_requests/index__sow_form', work_request: req).to_s
-            )
-          else
-            sow = {
-              name: (req.sow[/document/] ? 'Google Document' : 'Google Sheet'),
-              link: req.sow
-            }
-
-            content_tag(:div, nil, class: 'dropdown') do
-              concat(
-                link_to(sow[:name], '#', id: "sowLink#{req.id}", class: 'dropdown-toggle',
-                                         'aria-expanded' => 'false', 'aria-haspopup' => 'true',
-                                         'data-toggle' => 'dropdown',
-                                         target: '_blank', rel: 'noopener noreferrer')
-              )
-              concat(
-                content_tag(:div, class: 'dropdown-menu', 'aria-labelledby' => "sowLink#{req.id}") do
-                  concat(link_to('follow', req.sow, class: 'dropdown-item', target: '_blank', rel: 'noopener noreferrer'))
-                  concat(link_to('change', req.sow, class: 'dropdown-item', target: '_blank', rel: 'noopener noreferrer'))
-                  concat(link_to('delete', req.sow, class: 'dropdown-item', target: '_blank', rel: 'noopener noreferrer'))
-                end
-              )
-            end
-            # content_tag(:div) do
-            #   +
-            #    button_tag(class: 'btn p-0 pl-2 small') { icon('fa', 'pencil') }
-            # end
-          end
-        end
-      end
+      WorkRequestsGrid.format(req) { (render 'work_requests/sow_cell', work_request: req, default: req.default_sow).to_s }
     end
   end
 

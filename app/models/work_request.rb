@@ -11,6 +11,8 @@ class WorkRequest < ApplicationRecord
     self.status = Status.find_by(name: 'created and in queue')
   end
 
+  before_update { self.default_sow = !sow.present? }
+
   before_destroy do
     work_types.clear
     clients.clear
