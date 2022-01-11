@@ -1,18 +1,10 @@
-.row.small
-  .col-10.offset-1
-    .row.font-weight-bold
-      .col-4
-        data set
-    .row
-      .col-12
-        .mb-3
-          .current_data_set
-            =link_to(@story_type.data_set.name, @story_type.data_set)
-            =link_to('x', '#')
-          .change_data_set_form.d-none
-            =form_with(url: change_data_set_story_type_path(@story_type), method: :patch, html: { onchange: "Rails.fire(this, 'submit')"}) do |f|
-              =f.collection_select 'story_type[data_set_id]', DataSet.order(name: :asc), :id, :name, selected: @story_type.data_set.id
-              =f.hidden_field 'current_data_set_page_id'
+.current_data_set
+  =link_to(@story_type.data_set.name, @story_type.data_set)
+  =link_to('x', '#')
+.change_data_set_form.d-none
+  =form_with(url: change_data_set_story_type_path(@story_type), method: :patch, html: { onchange: "Rails.fire(this, 'submit')"}) do |f|
+    =f.collection_select 'story_type[data_set_id]', DataSet.order(name: :asc), :id, :name, selected: @story_type.data_set.id
+    =f.hidden_field 'current_data_set_page_id'
 
 :javascript
   (() => {
