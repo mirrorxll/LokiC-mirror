@@ -67,9 +67,9 @@ class WorkRequestsController < ApplicationController
 
     return unless manager?
 
-    @grid.column(:sow, header: 'SOW', after: :project_order_name) do |req|
-      WorkRequestsGrid.format(req) { (render 'work_requests/sow_cell', work_request: req, default: req.default_sow).to_s }
-    end
+    # @grid.column(:sow, header: 'SOW', after: :project_order_name) do |req|
+    #   WorkRequestsGrid.format(req) { (render 'work_requests/sow_cell', work_request: req, default: req.default_sow).to_s }
+    # end
   end
 
   def work_request_params
