@@ -1,0 +1,4 @@
+.d-inline-block
+  #{@story_type.template.static_year || '---'} / #{@story_type.template.revision || '---'}
+-if show_edit_form
+  =link_to('x', '#', onclick: "showEditStatRev(event);")
