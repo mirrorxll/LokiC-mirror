@@ -1,0 +1,44 @@
+=text_field_tag :static_year, @story_type.template.static_year, class: 'w-20'
+\/
+=date_field_tag :revision, @story_type.template.revision, class: 'w-45'
+.sign-in.d-inline-block.ml-1
+  .mouse-hover{ onclick: 'updateTemplateInfo();' }
+    =icon('fa', 'sign-in fa-lg')
+
+:javascript
+  function updateTemplateInfo() {
+    let staticYear = document.querySelector('#static_year').value.trim();
+    let revision = document.querySelector('#revision').value.trim();
+
+    if(staticYear.length === 0 && revision.length === 0) return false;
+
+    Rails.ajax({
+      type: "PATCH",
+      dataType: 'json',
+      url: `/api/story_types/#{@story_type.id}/template/#{@story_type.template.id}`,
+      data: `template[static_year]=${encodeURIComponent(staticYear)}&template[revision]=${encodeURIComponent(revision)}`,
+      success: (data) => {
+        let formWrapper = document.querySelector('.change-static-year-revision-date-form');
+        let showWrapper =  document.querySelector('.current-static-year-revision-date');
+        let templateFooter = document.querySelector('#templateStaticYearRevision');
+
+        formWrapper.classList.add('d-none');
+        showWrapper.classList.remove('d-none');
+
+        showWrapper.innerHTML = `
+          <div class="d-inline-block mr-1">
+            ${staticYear || '---'} / ${revision || '---'}
+          </div>
+          <a href="#" onclick="showEditStatRev(event);">x</a>
+        `;
+
+        if(templateFooter)
+          console.log(templateFooter);
+          templateFooter.innerHTML = `
+            <div class="d-inline-block mr-1">
+              ${staticYear || '---'} / ${revision || '---'}
+            </div>
+          `;
+      }
+    });
+  }

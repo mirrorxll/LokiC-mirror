@@ -4,7 +4,7 @@ class TaskTrackingHoursGrid
   include Datagrid
 
   # Scope
-  scope { TaskTeamWork.done.includes(:task) }
+  scope { TaskTeamWork.done.includes(:task).order(task_id: :desc) }
 
   # Filters
 

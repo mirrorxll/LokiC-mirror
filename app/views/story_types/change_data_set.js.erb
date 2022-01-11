@@ -1,4 +1,4 @@
-$('#change_data_set').html(`<%= j render 'change_data_set' %>`);
-$('#storyTypes').html(`<%= j render @current_data_set.story_types.order(id: :desc) %>`)
+$('#changeDataSet_template .change-ds-form').html(`<%= j render 'change_data_set' %>`);
+$('#storyTypes .story-types-list').html(`<%= j render @current_data_set.story_types.order(id: :desc) %>`)
 
 $('#currentDataSet').html('<%= j render 'story_types/properties/current_data_set' %>')

@@ -22,6 +22,11 @@ Rails.application.routes.draw do
 
   namespace :api, constraints: { format: :json } do
     resources :work_requests, only: :update
+
+    scope module: :story_types, path: 'story_types/:story_type_id' do
+      resources :template, only: :update
+    end
+
     scope module: :work_requests, path: 'work_requests', as: 'work_request_collections' do
       resources :clients, only: [] do
         get :find_by_name, on: :collection

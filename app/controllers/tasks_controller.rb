@@ -84,7 +84,7 @@ class TasksController < ApplicationController # :nodoc:
     grid_params[:status] =
       if grid_params[:status].blank? && grid_params[:deleted_tasks] != 'YES'
         Status.multi_task_statuses_for_grid
-      else
+      elsif grid_params[:status].length == 1
         grid_params[:status]
       end
 

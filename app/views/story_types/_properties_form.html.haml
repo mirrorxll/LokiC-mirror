@@ -1,3 +1,49 @@
+#changeDataSet_template
+  .row.small
+    .col-10.offset-1
+      .row.font-weight-bold
+        .col-4
+          data set
+        .col-4
+          static year in template / next revision date
+      .row
+        .col-4.change-ds-form
+          =render 'change_data_set'
+        .col-4.set-static-year-revision-date
+          -if @story_type.template.static_year.present?
+            .current-static-year-revision-date
+              =render 'static_year__revision', show_edit_form: true
+            .change-static-year-revision-date-form.d-none
+              =render 'static_year__revision_form'
+          -else
+            .current-static-year-revision-date.d-none
+            .change-static-year-revision-date-form
+              =render 'static_year__revision_form'
+
+          :javascript
+            function showEditStatRev(event) {
+              event.preventDefault();
+
+              document.querySelector('.current-static-year-revision-date').classList.toggle('d-none');
+              document.querySelector('.change-static-year-revision-date-form').classList.toggle('d-none');
+
+              return false;
+            }
+
+            (() => {
+              document.querySelector('#current_data_set_page_id').value = $('#data_set').attr('data_set_id');
+            })();
+
+            document.querySelector('.current_data_set a[href="#"]').addEventListener('click', function (evt) {
+              evt.preventDefault();
+              evt.target.parentNode.classList.add('d-none');
+              document.getElementsByClassName('change_data_set_form')[0].classList.remove('d-none');
+              return false;
+            })
+
+
+%hr.mt-2/
+
 #clientsPublicationsTagsModal.row.small
   .col-10.offset-1
     .row.font-weight-bold
@@ -56,7 +102,7 @@
         }
 %hr/
 
-.row.small
+.row.mb-3.small
   #level__frequency__photo_bucket.col-10.offset-1
     .row.font-weight-bold
       .col-4
@@ -81,9 +127,5 @@
           =render 'story_types/photo_buckets/photo_bucket', photo_bucket: @story_type.photo_bucket
         -else
           =render 'story_types/photo_buckets/form'
-%hr/
-
-#change_data_set
-  =render 'change_data_set'
 
 .modal-footer
