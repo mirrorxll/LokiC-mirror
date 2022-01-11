@@ -23,7 +23,7 @@ class TaskTrackingHoursController < ApplicationController
       if params[:task_tracking_hours_grid]
         params.require(:task_tracking_hours_grid).permit!
       else
-        { order: :id, descending: true }
+        {}
       end
     @grid = TaskTrackingHoursGrid.new(grid_params)
   end
