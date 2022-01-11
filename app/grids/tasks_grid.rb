@@ -4,7 +4,7 @@ class TasksGrid
   include Datagrid
 
   # Scope
-  scope { Task.includes(:assignments, :creator, :assignment_to) }
+  scope { Task.includes(:assignments, :creator, :assignment_to).order(id: :desc) }
 
   # Filters
   filter(:title, :string, left: true, header: 'Title(RLIKE)') do |value, scope|
