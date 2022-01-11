@@ -12,8 +12,9 @@ class StoryTypesGrid
       :clients, :tags, :reminder,
       data_set: %i[state category]
     ).order(
+      'reminders.has_updates is null DESC',
       'reminders.has_updates DESC',
-      'story_types.id desc'
+      'story_types.id DESC'
     )
   end
 
@@ -98,7 +99,9 @@ class StoryTypesGrid
   column(:last_export, mandatory: true) do |record|
     record.last_export&.to_date
   end
-  column(:has_updates, mandatory: true, order: 'reminders.has_updates DESC, story_types.id desc') do |record|
+  column(:has_updates,
+         mandatory: true,
+         order: 'reminders.has_updates is null DESC, reminders.has_updates DESC, story_types.id DESC') do |record|
     record.reminder&.has_updates
   end
   column(:client_tags, order: 'frequencies.name', header: 'Client: Tag') do |record|
