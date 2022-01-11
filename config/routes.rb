@@ -28,25 +28,9 @@ Rails.application.routes.draw do
     end
 
     scope module: :work_requests, path: 'work_requests', as: 'work_request_collections' do
-      # resources :work_types, only: [] do
-      #   post :find_or_create, on: :collection
-      # end
-
       resources :clients, only: [] do
         get :find_by_name, on: :collection
       end
-
-      # resources :underwriting_projects, only: [] do
-      #   post :find_or_create, on: :collection
-      # end
-
-      # resources :invoice_types, only: [] do
-      #   post :find_or_create, on: :collection
-      # end
-
-      # resources :invoice_frequencies, only: [] do
-      #   post :find_or_create, on: :collection
-      # end
     end
 
     scope module: :work_requests, path: 'work_requests/:id', as: 'work_request_members' do

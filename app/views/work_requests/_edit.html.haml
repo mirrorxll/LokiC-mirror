@@ -9,9 +9,6 @@
             *required
         =f.text_field "work_request[project_order_name]", class: 'form-control form-control-sm w-75',
                       value: @work_request.project_order_name.body, maxlength: 2000
-        .small.text-secondary
-          limit: 2000 symbols
-
 
 
     -##workTypesAnchor
@@ -346,20 +343,20 @@
         =f.text_area "work_request[project_order_details]", class: 'form-control form-control-sm w-75',
                      value: @work_request.project_order_details.body&.gsub(/\\n/, '\n'), maxlength: 2000,
                      rows: @work_request.project_order_details.body&.count("\n") + 1, onkeypress: 'newLine(event, this);'
-        .small.text-secondary
-          limit: 2000 symbols
-
 
     :javascript
-      function newLine(event, element) {
-        if (event.keyCode === 13) {
-          element.value = element.value + "\n";
-          return false;
-        } else {
-          return true;
-        }
-      }
-
+      $('#projectOrderDetails textarea').froalaEditor({
+        key: 'KfdolbcqsaA2wzA-13==',
+        editorClass: 'border rounded p-2',
+        toolbarInline: true,
+        toolbarButtons: ['undo', 'redo', '|', 'bold', 'italic', 'underline', 'strikeThrough', '|', 'color', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'insertLink', 'insertImage'],
+        imageUploadURL: '/images/upload',
+        imageUploadMethod: 'POST',
+        charCounterCount: true,
+        toolbarVisibleWithoutSelection: false,
+        charCounterMax: 2000,
+        zIndex: 3333
+      })
 
     #mostWorriedDetailsAnchor.mb-3
     #mostWorriedDetails.card
@@ -369,9 +366,20 @@
         =f.text_area "work_request[most_worried_details]", class: 'form-control form-control-sm w-75',
                      value: @work_request.most_worried_details.body&.gsub(/\\n/, '\n'), maxlength: 2000,
                      rows: @work_request.most_worried_details.body&.count("\n") + 1, onkeypress: 'newLine(event, this);'
-        .small.text-secondary
-          limit: 2000 symbols
 
+    :javascript
+      $('#mostWorriedDetails textarea').froalaEditor({
+        key: 'KfdolbcqsaA2wzA-13==',
+        editorClass: 'border rounded p-2',
+        toolbarInline: true,
+        toolbarButtons: ['undo', 'redo', '|', 'bold', 'italic', 'underline', 'strikeThrough', '|', 'color', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'insertLink', 'insertImage'],
+        imageUploadURL: '/images/upload',
+        imageUploadMethod: 'POST',
+        charCounterCount: true,
+        toolbarVisibleWithoutSelection: false,
+        charCounterMax: 2000,
+        zIndex: 3333
+      })
 
 
     -##budgetForProjectAnchor.mb-3
