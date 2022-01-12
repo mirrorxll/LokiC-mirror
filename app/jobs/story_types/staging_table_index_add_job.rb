@@ -3,6 +3,7 @@
 module StoryTypes
   class StagingTableIndexAddJob < StoryTypesJob
     def perform(staging_table, column_ids)
+      sleep 10
       Process.wait(
         fork do
           message = "Success. Staging table's main index added"

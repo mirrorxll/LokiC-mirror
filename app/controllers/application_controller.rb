@@ -124,4 +124,8 @@ class ApplicationController < ActionController::Base
   def respond_to_missing?(method_name, include_private = false)
     !!method_name.to_s[/render_([0-9]+)/] || super
   end
+
+  def send_to_action_cable(story_type, message)
+    StoryTypeChannel.broadcast_to(story_type, { spinner: true, message: message })
+  end
 end

@@ -4,6 +4,7 @@
 module StoryTypes
   class PopulationJob < StoryTypesJob
     def perform(iteration, account, options = {})
+      sleep 10
       status = true
       message = 'Success'
       story_type = iteration.story_type

@@ -2,6 +2,7 @@
 
 module StoryTypes
   class StagingTableIndexDropJob < StoryTypesJob
+    sleep 10
     def perform(staging_table)
       Process.wait(
         fork do

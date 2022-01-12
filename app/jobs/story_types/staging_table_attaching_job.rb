@@ -3,6 +3,7 @@
 module StoryTypes
   class StagingTableAttachingJob < StoryTypesJob
     def perform(story_type, account, staging_table_name)
+      sleep 10
       Process.wait(
         fork do
           status = true
