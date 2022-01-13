@@ -85,6 +85,10 @@ Rails.application.routes.draw do
       resources :progress_statuses, only: [] do
         patch :change, on: :collection
       end
+
+      resources :sow_cells, only: [] do
+        patch :change, on: :collection
+      end
     end
   end
 
@@ -111,6 +115,7 @@ Rails.application.routes.draw do
         delete  :exclude, on: :member
 
         resources :publications, only: [] do
+          post   :include, on: :collection
           post   :include, on: :collection
           delete :exclude, on: :member
         end

@@ -7,13 +7,16 @@
                             rel: 'noopener noreferrer')
   %div.dropdown-menu{ 'aria-labelledby' => "sowLink#{work_request.id}" }
     =link_to('follow', work_request.sow, class: 'dropdown-item', target: '_blank', rel: 'noopener noreferrer')
-    =link_to('change', work_request.sow, class: 'dropdown-item', target: '_blank', rel: 'noopener noreferrer')
-    =link_to('delete', work_request.sow, class: 'dropdown-item', target: '_blank', rel: 'noopener noreferrer')
+    =link_to('delete', '#', onclick: "deleteSow#{work_request.id}(event)", class: 'dropdown-item')
 
-%u{ 'class' => 'mouse-hover',
-    'data-container' => 'body',
-    'data-toggle' => 'popover',
-    'data-placement' => 'top',
-    'data-html' => 'true',
-    'data-title' => "##{work_request.id}",
-    'data-content' => (render 'work_requests/index__sow_update_form', work_request: work_request).to_s }
+  :javascript
+    function deleteSow#{work_request.id}(event) {
+      event.preventDefault();
+
+      Rails.ajax({
+        type: "PATCH",
+        dataType: 'script',
+        url: `#{change_work_request_sow_cells_path(work_request)}`,
+        data: `work_request[sow]=`
+      });
+    }
