@@ -39,34 +39,12 @@
     arrow.classList.add('d-none');
     spinner.classList.remove('d-none');
 
+    $('#sow#{work_request.id} u').popover('hide');
+
     Rails.ajax({
       type: "PATCH",
-      dataType: 'json',
-      url: `/api/work_requests/#{work_request.id}`,
-      data: `work_request[sow]=${encodeURIComponent(value)}`,
-      success: (data) => {
-        if(data['success']) {
-          $('#sow#{work_request.id} u').popover('hide');
-
-          document.querySelector("#sow#{work_request.id}").innerHTML = `
-            <div class="dropdown">
-              <a id="sowLink#{work_request.id}" class="dropdown-toggle" aria-expanded="false" aria-haspopup="true" data-toggle="dropdown" target="_blank" rel="noopener noreferrer" href="#">
-                Google ${value.match(/document/) ? 'Doc' : 'Sheet'}
-              </a>
-              <div aria-labelledby="sowLink#{work_request.id}" class="dropdown-menu">
-                <a class="dropdown-item" target="_blank" rel="noopener noreferrer" href="${value}">
-                  follow
-                </a>
-                <a class="dropdown-item" target="_blank" rel="noopener noreferrer" href="${value}">
-                  change
-                </a>
-                <a class="dropdown-item" target="_blank" rel="noopener noreferrer" href="${value}">
-                  delete
-                </a>
-              </div>
-            </div>`;
-        }
-      }
+      dataType: 'script',
+      url: `#{change_work_request_sow_cells_path(work_request)}`,
+      data: `work_request[sow]=${encodeURIComponent(value)}`
     });
   }
-
