@@ -12,6 +12,7 @@ module StoryTypes
 
       send_to_action_cable(@story_type, 'scheduler', 'scheduling in progress')
       SchedulerJob.perform_later(@iteration, :manual, { params: manual_params, account: current_account })
+
       render 'hide_section'
     end
 
@@ -20,6 +21,7 @@ module StoryTypes
 
       send_to_action_cable(@story_type, 'scheduler', 'scheduling in progress')
       SchedulerJob.perform_later(@iteration, :backdate, { params: backdated_params, account: current_account })
+
       render 'hide_section'
     end
 
@@ -28,6 +30,7 @@ module StoryTypes
 
       send_to_action_cable(@story_type, 'scheduler', 'scheduling in progress')
       SchedulerJob.perform_later(@iteration, :auto, { params: auto_params, account: current_account })
+
       render 'hide_section'
     end
 
