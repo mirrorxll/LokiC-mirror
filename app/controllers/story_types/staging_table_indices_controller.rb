@@ -21,7 +21,7 @@ module StoryTypes
       staging_table_action do
         @staging_table.update!(indices_modifying: true)
 
-        send_to_action_cable(@story_type, 'staging table modifying in progress')
+        send_to_action_cable(@story_type, 'staging_table', 'staging table modifying in progress')
         StagingTableIndexAddJob.perform_later(@staging_table, uniq_index_column_ids)
         nil
       end
@@ -33,7 +33,7 @@ module StoryTypes
       staging_table_action do
         @staging_table.update!(indices_modifying: true)
 
-        send_to_action_cable(@story_type, 'staging table modifying in progress')
+        send_to_action_cable(@story_type, 'staging_table', 'staging table modifying in progress')
         StagingTableIndexDropJob.perform_later(@staging_table)
         nil
       end

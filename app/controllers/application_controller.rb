@@ -125,7 +125,7 @@ class ApplicationController < ActionController::Base
     !!method_name.to_s[/render_([0-9]+)/] || super
   end
 
-  def send_to_action_cable(story_type, message)
-    StoryTypeChannel.broadcast_to(story_type, { spinner: true, message: message })
+  def send_to_action_cable(story_type, section, message)
+    StoryTypeChannel.broadcast_to(story_type, { spinner: true, section: section, message: message })
   end
 end

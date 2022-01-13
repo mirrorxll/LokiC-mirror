@@ -9,18 +9,24 @@ module StoryTypes
 
     def manual
       @iteration.update!(schedule: false, current_account: current_account)
+
+      send_to_action_cable(@story_type, 'scheduler', 'scheduling in progress')
       SchedulerJob.perform_later(@iteration, :manual, { params: manual_params, account: current_account })
       render 'hide_section'
     end
 
     def backdate
       @iteration.update!(schedule: false, current_account: current_account)
+
+      send_to_action_cable(@story_type, 'scheduler', 'scheduling in progress')
       SchedulerJob.perform_later(@iteration, :backdate, { params: backdated_params, account: current_account })
       render 'hide_section'
     end
 
     def auto
       @iteration.update!(schedule: false, current_account: current_account)
+
+      send_to_action_cable(@story_type, 'scheduler', 'scheduling in progress')
       SchedulerJob.perform_later(@iteration, :auto, { params: auto_params, account: current_account })
       render 'hide_section'
     end

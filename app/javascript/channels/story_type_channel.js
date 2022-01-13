@@ -26,7 +26,7 @@ $(document).on("turbolinks:load", function() {
     )
 
     function showSpinner(data) {
-        $('#staging_table > .card-body').html("<div class=\"small text-center\">\n" +
+        $(`#${data.section} > .card-body`).html("<div class=\"small text-center\">\n" +
             "<div class=\"spinner-border text-dark text-center\" role=\"status\"></div>\n" +
             "<div class=\"font-weight-bold\">\n" +
             data.message + "\n" +

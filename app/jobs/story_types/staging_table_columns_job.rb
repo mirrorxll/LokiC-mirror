@@ -3,7 +3,6 @@
 module StoryTypes
   class StagingTableColumnsJob < StoryTypesJob
     def perform(staging_table, columns)
-      sleep 10
       Process.wait(
         fork do
           message = "Success. Staging table's columns modified"
