@@ -20,8 +20,8 @@ module StoryTypes
     def create
       staging_table_action do
         @staging_table.update!(indices_modifying: true)
-        StoryTypeChannel.broadcast_to(@story_type, { spinner: true,
-                                                     message: 'Staging table indices creating in progress' })
+
+        send_to_action_cable(@story_type, 'staging_table', 'staging table modifying in progress')
         StagingTableIndexAddJob.perform_later(@staging_table, uniq_index_column_ids)
         nil
       end
@@ -32,6 +32,8 @@ module StoryTypes
     def destroy
       staging_table_action do
         @staging_table.update!(indices_modifying: true)
+
+        send_to_action_cable(@story_type, 'staging_table', 'staging table modifying in progress')
         StagingTableIndexDropJob.perform_later(@staging_table)
         nil
       end
