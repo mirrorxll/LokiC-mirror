@@ -8,8 +8,8 @@ class StoryTypesGrid
     StoryType.includes(
       :status, :frequency,
       :photo_bucket, :developer,
-      :clients_publications_tags,
       :clients, :tags, :reminder,
+      clients_publications_tags: :client,
       data_set: %i[state category]
     ).order(
       'reminders.has_updates is null DESC',
@@ -27,11 +27,11 @@ class StoryTypesGrid
   filter(:level_id, :enum, multiple: true, select: Level.all.pluck(:name, :id), left: true)
   filter(:state, :enum, multiple: true, left: true, select: State.all.pluck(:short_name, :full_name, :id).map { |r| [r[0] + ' - ' + r[1], r[2]] }) do |value, scope|
     data_set_state = State.find(value)
-    scope.joins(data_set: [:state]).where(data_set: [{ state: data_set_state }])
+    scope.where(data_sets: { state: data_set_state })
   end
   filter(:category, :enum, multiple: true, left: true, select: DataSetCategory.all.order(:name).pluck(:name, :id)) do |value, scope|
     data_set_category = DataSetCategory.find(value)
-    scope.joins(data_set: [:category]).where(data_set_categories: data_set_category)
+    scope.where(data_sets: { category: data_set_category })
   end
   filter(:data_set, :enum, multiple: true, left: true, select: DataSet.all.order(:name).pluck(:name, :id))
   filter(:location, :string, left: true, header: 'Location (like)') do |value, scope|
@@ -46,7 +46,7 @@ class StoryTypesGrid
   end
   filter(:client, :enum, multiple: true, left: true, select: Client.where(hidden_for_story_type: false).order(:name).pluck(:name, :id)) do |value, scope|
     client = Client.find(value)
-    scope.joins(clients_publications_tags: [:client]).where(clients: client)
+    scope.where('story_type_client_publication_tags.client_id': client)
   end
 
   filter(:has_updates, :enum, select: ['Not realized', 'Yes', 'No'], left: true) do |value, scope|

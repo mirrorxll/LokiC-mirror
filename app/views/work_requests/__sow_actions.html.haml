@@ -1,0 +1,22 @@
+-sow = { name: (work_request.sow[/document/] ? 'Google Doc' : 'Google Sheet'), link: work_request.sow }
+
+%div.dropdown
+  =link_to(sow[:name], '#', id: "sowLink#{work_request.id}", class: 'dropdown-toggle',
+                            'aria-expanded' => 'false', 'aria-haspopup' => 'true',
+                            'data-toggle' => 'dropdown', target: '_blank',
+                            rel: 'noopener noreferrer')
+  %div.dropdown-menu{ 'aria-labelledby' => "sowLink#{work_request.id}" }
+    =link_to('follow', work_request.sow, class: 'dropdown-item', target: '_blank', rel: 'noopener noreferrer')
+    =link_to('delete', '#', onclick: "deleteSow#{work_request.id}(event)", class: 'dropdown-item')
+
+  :javascript
+    function deleteSow#{work_request.id}(event) {
+      event.preventDefault();
+
+      Rails.ajax({
+        type: "PATCH",
+        dataType: 'script',
+        url: `#{change_work_request_sow_cells_path(work_request)}`,
+        data: `work_request[sow]=`
+      });
+    }
