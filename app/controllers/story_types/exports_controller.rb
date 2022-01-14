@@ -13,12 +13,16 @@ module StoryTypes
     def execute
       @iteration.update!(export: false, current_account: current_account)
       url = stories_story_type_iteration_exports_url(params[:story_type_id], params[:iteration_id])
+
+      send_to_action_cable(@story_type, 'export', 'export in progress')
       ExportJob.perform_later(@iteration, current_account, url)
     end
 
     def remove_exported_stories
       @iteration.update!(purge_export: true, current_account: current_account)
       @removal.update!(removal_params)
+
+      send_to_action_cable(@story_type, 'export', 'removing from PL in progress')
       PurgeExportJob.perform_later(@iteration, current_account)
     end
 
