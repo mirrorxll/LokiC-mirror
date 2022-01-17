@@ -2,14 +2,14 @@
   .row.small
     .col-10.offset-1
       .row.font-weight-bold
-        .col-4
+        .col-3
           data set
-        .col-4
+        .col-9
           static year in template / next revision date
       .row
-        .col-4.change-ds-form
+        .col-3.change-ds-form
           =render 'change_data_set'
-        .col-4.set-static-year-revision-date
+        .col-9.set-static-year-revision-date
           -if @story_type.template.static_year.present?
             .current-static-year-revision-date
               =render 'static_year__revision', show_edit_form: true
@@ -47,12 +47,14 @@
 #clientsPublicationsTagsModal.row.small
   .col-10.offset-1
     .row.font-weight-bold
-      .col-4
+      .col-3
         client
-      .col-4
+      .col-3
         publication
-      .col-4
+      .col-3
         tag
+      .col-3
+        sections
     .table_body
       =render partial: 'story_types/clients/client_publication_tag', collection: @story_type.clients_publications_tags
     .p-0
@@ -105,24 +107,24 @@
 .row.mb-3.small
   #level__frequency__photo_bucket.col-10.offset-1
     .row.font-weight-bold
-      .col-4
+      .col-3
         level
-      .col-4
+      .col-3
         frequency
-      .col-4
+      .col-3
         photo bucket
     .row
-      .col-4.level
+      .col-3.level
         -if @story_type.level
           =render 'story_types/levels/level', level: @story_type.level
         -else
           =render 'story_types/levels/form'
-      .col-4.frequency
+      .col-3.frequency
         -if @story_type.frequency
           =render 'story_types/frequencies/frequency', frequency: @story_type.frequency
         -else
           =render 'story_types/frequencies/form'
-      .col-4.photo_bucket
+      .col-3.photo_bucket
         -if @story_type.photo_bucket
           =render 'story_types/photo_buckets/photo_bucket', photo_bucket: @story_type.photo_bucket
         -else
