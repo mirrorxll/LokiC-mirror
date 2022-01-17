@@ -3,9 +3,11 @@
 module StoryTypes
   class ExportJob < StoryTypesJob
     def perform(iteration, account, url = nil)
+      story_type = iteration.story_type
+      return if story_type.template.expired_revision?
+
       status = true
       message = 'Success. Make sure that all stories are exported'
-      story_type = iteration.story_type
       threads_count = (iteration.stories.count / 75_000.0).ceil + 1
       threads_count = threads_count > 20 ? 20 : threads_count
 

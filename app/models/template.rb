@@ -14,4 +14,10 @@ class Template < ApplicationRecord
 
     self.body = body&.gsub(/#{Regexp.escape(regexp)}/, '')
   end
+
+  # scope :expired_revision, -> { where('revision <= ?', Date.today).where(revisioned: false) }
+
+  def expired_revision?
+    revision.present? && revision <= Date.today && revisioned == false
+  end
 end

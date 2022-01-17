@@ -6,7 +6,7 @@ module Api
       before_action :find_story_type
 
       def update
-        render json: { success: @story_type.template.update(template_params) }
+        render json: { success: @story_type.template.update(template_params.merge(revisioned: false)) }
       end
 
       private
