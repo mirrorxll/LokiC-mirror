@@ -100,7 +100,7 @@ class StoryTypesGrid
   column(:has_updates,
          mandatory: true,
          order: 'reminders.has_updates is null DESC, reminders.has_updates DESC, story_types.id DESC') do |record|
-    record.cron_tab.enabled? ? false : record.reminder&.has_updates
+    record.cron_tab&.enabled? ? false : record.reminder&.has_updates
   end
   column(:client_tags, order: 'frequencies.name', header: 'Client: Tag') do |record|
     str = ''
