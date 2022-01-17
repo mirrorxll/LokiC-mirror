@@ -41,6 +41,7 @@ module StoryTypes
                 st_type.reminder.update!(has_updates: true, current_account: account)
                 :has_updates
               elsif new_data_flag.eql?(false)
+                st_type.reminder.update!(has_updates: false, current_account: account)
                 next
               end
 
