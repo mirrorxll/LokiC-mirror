@@ -59,6 +59,7 @@ class StoryType < ApplicationRecord
   scope :ongoing, lambda {
     joins(:status).where.not('statuses.name': ['canceled', 'migrated', 'not started', 'blocked', 'done'])
   }
+  scope :not_cron, -> { joins(:cron_tab).where.not('cron_tabs.enabled': true) }
 
   def number_name
     "##{id} #{name}"

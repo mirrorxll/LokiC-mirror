@@ -48,12 +48,10 @@ class StoryTypesGrid
     client = Client.find(value)
     scope.where('story_type_client_publication_tags.client_id': client)
   end
-
   filter(:has_updates, :enum, select: ['Not realized', 'Yes', 'No'], left: true) do |value, scope|
     denotations = { 'Not realized' => nil, 'Yes' => true, 'No' => false }
     scope.where(reminders: { has_updates: denotations[value] })
   end
-
   filter(:condition1, :dynamic, left: false, header: 'Dynamic condition 1')
   filter(:condition2, :dynamic, left: false, header: 'Dynamic condition 2')
   column_names_filter(header: 'Extra Columns', left: false, checkboxes: false)
@@ -102,7 +100,7 @@ class StoryTypesGrid
   column(:has_updates,
          mandatory: true,
          order: 'reminders.has_updates is null DESC, reminders.has_updates DESC, story_types.id DESC') do |record|
-    record.reminder&.has_updates
+    record.cron_tab.enabled? ? false : record.reminder&.has_updates
   end
   column(:client_tags, order: 'frequencies.name', header: 'Client: Tag') do |record|
     str = ''
