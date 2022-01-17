@@ -4,7 +4,11 @@ module StoryTypes
   class ExportJob < StoryTypesJob
     def perform(iteration, account, url = nil)
       story_type = iteration.story_type
-      return if story_type.template.expired_revision?
+      if story_type.template.expired_revision?
+        message = "You must to do revision of static years in template for StoryType #{story_type.template.id} to" \
+                  ' unlock export function!'
+        return
+      end
 
       status = true
       message = 'Success. Make sure that all stories are exported'
