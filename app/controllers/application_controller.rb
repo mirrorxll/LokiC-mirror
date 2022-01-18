@@ -128,4 +128,8 @@ class ApplicationController < ActionController::Base
   def send_to_action_cable(story_type, section, message)
     StoryTypeChannel.broadcast_to(story_type, { spinner: true, section: section, message: message })
   end
+
+  def template_with_expired_revision
+    @iteration.story_type.template.expired_revision?
+  end
 end
