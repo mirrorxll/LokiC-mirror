@@ -63,9 +63,10 @@ module StoryTypes
     end
 
     def revision_reminder
+      # TODO: uncomment and remove 'channel = @story_type.developer.slack_identifier' line
       # channel = @story_type.editor.slack_identifier
       channel = @story_type.developer.slack_identifier
-      message = "#{@story_type} error"
+      message = "You have to revise template for Story Type #{@story_type.id} to unlock export for developer!"
       section = :export
       flash_message = {
         iteration_id: @iteration.id,
@@ -74,8 +75,9 @@ module StoryTypes
           section => 'Editor must revise the template to unlock export!'
         }
       }
-
+      # flash message for developer
       StoryTypeChannel.broadcast_to(@story_type, flash_message)
+      # slack message for editor
       ::SlackNotificationJob.perform_now(channel, message)
 
       render json: { status: :ok }

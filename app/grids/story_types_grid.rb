@@ -9,6 +9,7 @@ class StoryTypesGrid
       :status, :frequency,
       :photo_bucket, :developer,
       :clients, :tags, :reminder,
+      :template,
       clients_publications_tags: :client,
       data_set: %i[state category]
     ).order(
@@ -48,12 +49,13 @@ class StoryTypesGrid
     client = Client.find(value)
     scope.where('story_type_client_publication_tags.client_id': client)
   end
-
   filter(:has_updates, :enum, select: ['Not realized', 'Yes', 'No'], left: true) do |value, scope|
     denotations = { 'Not realized' => nil, 'Yes' => true, 'No' => false }
     scope.where(reminders: { has_updates: denotations[value] })
   end
-
+  filter(:revisioned, :xboolean, left: true) do |value, scope|
+    value ? scope.where.not('templates.revision': nil) : scope.where('templates.revision': nil)
+  end
   filter(:condition1, :dynamic, left: false, header: 'Dynamic condition 1')
   filter(:condition2, :dynamic, left: false, header: 'Dynamic condition 2')
   column_names_filter(header: 'Extra Columns', left: false, checkboxes: false)
