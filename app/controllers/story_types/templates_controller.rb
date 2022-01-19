@@ -7,7 +7,7 @@ module StoryTypes
 
     before_action :render_403, except: :show, if: :developer?
     before_action :update_template, only: %i[update save]
-    after_action :send_notifications, only: :update
+    after_action :send_notification, only: :update
 
     def show; end
 
@@ -23,10 +23,11 @@ module StoryTypes
       Template.find(params[:id]).update!(template_params)
     end
 
-    # TODO: CONTINUE HERE
     def send_notification
       channel = @story_type.developer.slack_identifier
-      message = "You have to revise template for Story Type #{@story_type.id} to unlock export for developer!"
+      message = "The template for Story Type #{@story_type.id} have been updated! Pay attention and make needed" \
+                ' changes in the creation method.'
+
       ::SlackNotificationJob.perform_now(channel, message)
     end
 
