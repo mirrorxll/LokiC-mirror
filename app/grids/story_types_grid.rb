@@ -8,11 +8,12 @@ class StoryTypesGrid
     StoryType.includes(
       :status, :frequency,
       :photo_bucket, :developer,
-      :clients, :tags, :reminder,
+      :clients, :tags, :reminder, :cron_tab,
       clients_publications_tags: :client,
       data_set: %i[state category]
     ).order(
-      'reminders.has_updates is null DESC',
+      'cron_tabs.enabled',
+      'reminders.check_updates',
       'reminders.has_updates DESC',
       'story_types.id DESC'
     )
@@ -100,7 +101,13 @@ class StoryTypesGrid
   column(:has_updates,
          mandatory: true,
          order: 'reminders.has_updates is null DESC, reminders.has_updates DESC, story_types.id DESC') do |record|
-    record.cron_tab&.enabled? ? 'on_cron' : record.reminder&.has_updates
+    if record.cron_tab&.enabled?
+      'on_cron'
+    elsif record.reminder&.check_updates == false
+      'not_realized'
+    else
+      record.reminder&.has_updates
+    end
   end
   column(:client_tags, order: 'frequencies.name', header: 'Client: Tag') do |record|
     str = ''

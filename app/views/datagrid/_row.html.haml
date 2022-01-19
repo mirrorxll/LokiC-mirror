@@ -13,7 +13,7 @@
         -background_color = "bg-#{status_color(ActionView::Base.full_sanitizer.sanitize(value))}"
       -elsif column.header.eql?('Has updates')
         -background_color = 'text-center'
-        -if value.nil?
+        -if value == 'not_realized'
           -background_color += ' bg-danger'
           -value = 'Not realized'
         -elsif value == 'on_cron'
