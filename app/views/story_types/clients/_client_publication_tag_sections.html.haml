@@ -1,11 +1,70 @@
-.row.mb-1{ id: "client_publication_tag_#{client_publication_tag.id}" }
-  .col-3.client
-    =render 'story_types/clients/client', client: client_publication_tag.client, client_publication_tag: client_publication_tag
-  .col-3.client_publication
-    =render 'story_types/publications/publication', client_publication_tag: client_publication_tag
-  .col-3.client_tag
-    -if client_publication_tag.tag
-      =render 'story_types/tags/tag', tag: client_publication_tag.tag, client_publication_tag: client_publication_tag
+.row.mb-1{ id: "client_publication_tag_#{client_publication_tag_sections.id}" }
+  .col-3.client.pl-0
+    =render 'story_types/clients/client', client: client_publication_tag_sections.client, client_publication_tag: client_publication_tag_sections
+  .col-3.client_publication.pl-0
+    =render 'story_types/publications/publication', client_publication_tag: client_publication_tag_sections
+  .col-2.client_tag
+    -if client_publication_tag_sections.tag
+      =render 'story_types/tags/tag', tag: client_publication_tag_sections.tag, client_publication_tag: client_publication_tag_sections
     -else
-      =render 'story_types/tags/form', client_publication_tag: client_publication_tag, client: client_publication_tag.client
-  .col-3.sections
+      =render 'story_types/tags/form', client_publication_tag: client_publication_tag_sections, client: client_publication_tag_sections.client
+  .col-4.sections
+    .d-inline-block.mr-3{ 'data-toggle' => "collapse", href: "#sectionInputBlock", 'aria-expanded' => "false", 'aria-controls' => "sectionInputBlock" }
+      =icon('fa', 'pencil')
+    #sectionList.d-inline-block
+      -client_publication_tag_sections.sections.each do |section|
+        .badge.badge-pill.badge-info
+          =section.name
+          =link_to('x', '#')
+
+    #sectionInputBlock.collapse
+      %input.underline-input{ list: 'sectionsDatalist', onkeypress: 'onEnterPostSection(event, this.value);' }
+      %datalist#sectionsDatalist
+        -Section.all.each do |section|
+          %option{ value: "#{section.name}" }
+      .d-inline-block.ml-2
+        %div.mouse-hover{ onclick: 'onClickPostection();' }
+          =icon('fa', 'paper-plane')
+
+    :javascript
+      $('#sectionInputBlock').on('shown.bs.collapse', function () {
+        document.querySelectorAll('#sectionsList a').forEach((e) => { e.classList.remove('d-none') })
+        document.querySelector('.section-input').focus();
+      });
+
+      $('#sectionInputBlock').on('hidden.bs.collapse', function () {
+        document.querySelectorAll('#sectionsList a').forEach((e) => { e.classList.add('d-none') })
+      });
+
+      function postSection(value) {
+        Rails.ajax({
+          type: "POST",
+          dataType: 'script',
+          url: ``,
+          data: `tag[name]=${encodeURIComponent(value)}`
+        });
+      }
+
+      function clearInput() {
+        document.querySelector("#sectionInputBlock input").value = "";
+      }
+
+      function onEnterPostSection(event, value) {
+        if((event.keyCode !== 13) || (value.trim().length === 0)) {
+          return false;
+        } else {
+          postSection(value);
+          clearInput();
+        }
+      }
+
+      function onClickPostSection() {
+        let value = document.querySelector('#sectionInputBlock input').value
+
+        if((value.trim().length === 0)) {
+          return false;
+        } else {
+          postSection(value);
+          clearInput();
+        }
+      }

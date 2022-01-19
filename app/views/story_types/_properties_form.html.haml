@@ -1,73 +1,76 @@
-#changeDataSet_template
-  .row.small
-    .col-10.offset-1
-      .row.font-weight-bold
-        .col-3
-          data set
-        .col-9
-          static year in template / next revision date
-      .row
-        .col-3.change-ds-form
-          =render 'change_data_set'
-        .col-9.set-static-year-revision-date
-          -if @story_type.template.static_year.present?
-            .current-static-year-revision-date
-              =render 'static_year__revision', show_edit_form: true
-            .change-static-year-revision-date-form.d-none
-              =render 'static_year__revision_form'
-          -else
-            .current-static-year-revision-date.d-none
-            .change-static-year-revision-date-form
-              =render 'static_year__revision_form'
+#changeDataSet_template.row.small
+  .col-1
+  .col-11
+    .row.font-weight-bold
+      .col-6.pl-0
+        data set
+      .col-6
+        static year in template / next revision date
+    .row
+      .col-6.change-ds-form.pl-0
+        =render 'change_data_set'
+      .col-6.set-static-year-revision-date
+        -if @story_type.template.static_year.present?
+          .current-static-year-revision-date
+            =render 'static_year__revision', show_edit_form: true
+          .change-static-year-revision-date-form.d-none
+            =render 'static_year__revision_form'
+        -else
+          .current-static-year-revision-date.d-none
+          .change-static-year-revision-date-form
+            =render 'static_year__revision_form'
 
-          :javascript
-            function showEditStatRev(event) {
-              event.preventDefault();
+        :javascript
+          function showEditStatRev(event) {
+            event.preventDefault();
 
-              document.querySelector('.current-static-year-revision-date').classList.toggle('d-none');
-              document.querySelector('.change-static-year-revision-date-form').classList.toggle('d-none');
+            document.querySelector('.current-static-year-revision-date').classList.toggle('d-none');
+            document.querySelector('.change-static-year-revision-date-form').classList.toggle('d-none');
 
-              return false;
-            }
+            return false;
+          }
 
-            (() => {
-              document.querySelector('#current_data_set_page_id').value = $('#data_set').attr('data_set_id');
-            })();
+          (() => {
+            document.querySelector('#current_data_set_page_id').value = $('#data_set').attr('data_set_id');
+          })();
 
-            document.querySelector('.current_data_set a[href="#"]').addEventListener('click', function (evt) {
-              evt.preventDefault();
-              evt.target.parentNode.classList.add('d-none');
-              document.getElementsByClassName('change_data_set_form')[0].classList.remove('d-none');
-              return false;
-            })
+          document.querySelector('.current_data_set a[href="#"]').addEventListener('click', function (evt) {
+            evt.preventDefault();
+            evt.target.parentNode.classList.add('d-none');
+            document.getElementsByClassName('change_data_set_form')[0].classList.remove('d-none');
+            return false;
+          })
 
 
 %hr.mt-2/
 
 #clientsPublicationsTagsModal.row.small
-  .col-10.offset-1
+  .col-1.d-flex.align-items-end.justify-content-end.font-weight-bold
+    add:
+  .col-11
     .row.font-weight-bold
-      .col-3
+      .col-3.pl-0
         client
-      .col-3
+      .col-3.pl-0
         publication
-      .col-3
+      .col-2
         tag
-      .col-3
+      .col-4
         sections
     .table_body
       =render partial: 'story_types/clients/client_publication_tag_sections', collection: @story_type.clients_publications_tags
-    .p-0
-      =render 'story_types/clients/form'
+    .row
+      .col-12.pl-0
+        =render 'story_types/clients/form'
 
 .row
-  .col-10.offset-1
+  .col-11.offset-1.pl-0
     %hr/
 
 #excludedClientsPublicationsModal.row.small
   .col-1.text-right.font-weight-bold
     excepted:
-  .col-10
+  .col-11
     .table_body
       =render partial: 'story_types/clients/excepted_publication', collection: @story_type.excepted_publications
     .p-0

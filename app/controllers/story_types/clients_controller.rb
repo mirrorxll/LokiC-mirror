@@ -11,11 +11,10 @@ module StoryTypes
     before_action :all_local_publications, only: :include
 
     def include
-      client = @story_type.clients_publications_tags.find_by(
+      render_403 && return if @story_type.clients_publications_tags.find_by(
         client: @client,
         publication: [nil, @all_local_publications]
       )
-      render_403 && return if client
 
       @client_publication_tag =
         @story_type.clients_publications_tags.create!(
