@@ -6,9 +6,10 @@
   .col-4
     photo bucket
 .row
-  .col-4
-    =@story_type&.level&.name
-  .col-4
-    =@story_type&.frequency&.name
-  .col-4
-    =@story_type&.photo_bucket&.name
+  -[@story_type&.level&.name, @story_type&.frequency&.name, @story_type&.photo_bucket&.name].each do |name|
+    .col-4
+      -if name
+        =name
+      -else
+        .text-danger.font-italic
+          not set
