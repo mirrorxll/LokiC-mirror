@@ -5,17 +5,18 @@ class StoryTypesGrid
 
   # Scope
   scope do
-    StoryType.includes(
+    StoryType.left_outer_joins(
       :status, :frequency,
       :photo_bucket, :developer,
       :clients, :tags, :reminder, :cron_tab,
       clients_publications_tags: :client,
       data_set: %i[state category]
     ).order(
-      'cron_tabs.enabled',
-      'reminders.check_updates',
-      'reminders.has_updates DESC',
-      'story_types.id DESC'
+      Arel.sql("CASE WHEN reminders.check_updates = false AND cron_tabs.enabled != true THEN 1 END DESC,
+               CASE WHEN reminders.has_updates = true AND cron_tabs.enabled != true THEN 2 END DESC,
+               CASE WHEN cron_tabs.enabled = true THEN 3 END DESC,
+               CASE WHEN reminders.has_updates = false AND cron_tabs.enabled != true THEN 4 END DESC,
+               story_types.id DESC")
     )
   end
 
@@ -50,8 +51,14 @@ class StoryTypesGrid
     scope.where('story_type_client_publication_tags.client_id': client)
   end
   filter(:has_updates, :enum, select: ['Not realized', 'Yes', 'No'], left: true) do |value, scope|
-    denotations = { 'Not realized' => nil, 'Yes' => true, 'No' => false }
-    scope.where(reminders: { has_updates: denotations[value] })
+    denotations = { 'Yes' => true, 'No' => false }
+    if value == 'Not realized'
+      scope.where(reminders: { check_updates: false })
+    else
+      scope.where(reminders: { has_updates: denotations[value] })
+           .where.not(cron_tabs: { enabled: true })
+           .where.not(reminders: { check_updates: false })
+    end
   end
   filter(:condition1, :dynamic, left: false, header: 'Dynamic condition 1')
   filter(:condition2, :dynamic, left: false, header: 'Dynamic condition 2')
@@ -98,9 +105,7 @@ class StoryTypesGrid
   column(:last_export, mandatory: true) do |record|
     record.last_export&.to_date
   end
-  column(:has_updates,
-         mandatory: true,
-         order: 'reminders.has_updates is null DESC, reminders.has_updates DESC, story_types.id DESC') do |record|
+  column(:has_updates, mandatory: true) do |record|
     if record.cron_tab&.enabled?
       'on_cron'
     elsif record.reminder&.check_updates == false
