@@ -20,28 +20,6 @@
           .change-static-year-revision-date-form
             =render 'static_year__revision_form'
 
-        :javascript
-          function showEditStatRev(event) {
-            event.preventDefault();
-
-            document.querySelector('.current-static-year-revision-date').classList.toggle('d-none');
-            document.querySelector('.change-static-year-revision-date-form').classList.toggle('d-none');
-
-            return false;
-          }
-
-          (() => {
-            document.querySelector('#current_data_set_page_id').value = $('#data_set').attr('data_set_id');
-          })();
-
-          document.querySelector('.current_data_set a[href="#"]').addEventListener('click', function (evt) {
-            evt.preventDefault();
-            evt.target.parentNode.classList.add('d-none');
-            document.getElementsByClassName('change_data_set_form')[0].classList.remove('d-none');
-            return false;
-          })
-
-
 %hr.mt-2/
 
 #clientsPublicationsTagsModal.row.small
@@ -70,7 +48,7 @@
 #excludedClientsPublicationsModal.row.small
   .col-1.text-right.font-weight-bold
     excepted:
-  .col-11
+  .col-11.pl-0
     .table_body
       =render partial: 'story_types/clients/excepted_publication', collection: @story_type.excepted_publications
     .p-0
@@ -107,22 +85,23 @@
         }
 %hr/
 
-.row.mb-3.small
-  #level__frequency__photo_bucket.col-10.offset-1
+#level__frequency__photo_bucket.row.mb-3.small
+  .col-1
+  .col-11
     .row.font-weight-bold
-      .col-3
+      .col-3.pl-0
         level
-      .col-3
+      .col-3.pl-0
         frequency
       .col-3
         photo bucket
     .row
-      .col-3.level
+      .col-3.pl-0.level
         -if @story_type.level
           =render 'story_types/levels/level', level: @story_type.level
         -else
           =render 'story_types/levels/form'
-      .col-3.frequency
+      .col-3.pl-0.frequency
         -if @story_type.frequency
           =render 'story_types/frequencies/frequency', frequency: @story_type.frequency
         -else
