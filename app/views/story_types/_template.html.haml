@@ -4,9 +4,10 @@
     =@story_type.template.body.html_safe
 %hr.mb-2/
 
-.row
-  .col-10.offset-1
-    .d-inline-block.font-weight-bold
-      static year in template / next revision date:
-    .d-inline-block#templateStaticYearRevision
-      =render 'static_year__revision', show_edit_form: false
+-if (current_account.types & %w[manager editor]).any?
+  .row
+    .col-10.offset-1
+      .d-inline-block.font-weight-bold
+        static year in template / next revision date:
+      .d-inline-block#templateStaticYearRevision
+        =render 'static_year__revision', show_edit_form: false
