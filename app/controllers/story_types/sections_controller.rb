@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module StoryTypes
   class SectionsController < ApplicationController
     skip_before_action :find_parent_article_type
@@ -8,28 +10,18 @@ module StoryTypes
     before_action :find_section_by_name, only: :create
     before_action :find_section_by_id, only: :destroy
 
-    def include
-      render_403 && return if @client_publication_tag.tag.present?
-
-      @client_publication_tag.update!(tag: @tag)
-    end
-
-    def exclude
-      render_403 && return unless @client_publication_tag.tag.present?
-
-      @client_publication_tag.update!(tag: nil)
-    end
-
     def create
       render_403 && return if @client_publication_tag.sections.exists?(@section.id)
 
       @client_publication_tag.sections << @section
+      render 'story_types/sections/refresh_sections'
     end
 
     def destroy
       render_403 && return unless @client_publication_tag.sections.exists?(@section.id)
 
       @client_publication_tag.sections.destroy(@section)
+      render 'story_types/sections/refresh_sections'
     end
 
     private

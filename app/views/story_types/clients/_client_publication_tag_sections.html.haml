@@ -13,13 +13,10 @@
   .col-4.sections
     .d-inline-block.mr-1.mouse-hover{ 'data-toggle' => "collapse", href: "#section_input_block_#{cpts.id}",
                                       'aria-expanded' => "false", 'aria-controls' => "section_input_block_#{cpts.id}" }
-      =icon('fa', 'pencil')
+      =icon('fa', 'plus')
 
     .d-inline-block{ class: "section_list_#{cpts.id}" }
-      -cpts.sections.each do |section|
-        .badge.badge-pill.badge-info
-          =section.name
-          =link_to('x', story_type_client_section_path(@story_type, cpts.client, section, client_publication_tag: cpts.id), class: 'd-none', method: :delete, remote: true)
+      =render partial: 'story_types/sections/section', collection: cpts.sections, locals: { cpts: cpts }
 
     .collapse{ id: "section_input_block_#{cpts.id}" }
       %input.underline-input{ list: 'sectionsDatalist', onkeypress: "onEnterPostSection#{cpts.id}(event, this.value);" }
@@ -32,21 +29,17 @@
 
     :javascript
       $('#section_input_block_#{cpts.id}').on('show.bs.collapse', () => {
-        document.querySelectorAll('.section_list_#{cpts.id} a').forEach((e) => { e.classList.remove('d-none') });
-
         let sectionEdit = document.querySelector('#client_publication_tag_#{cpts.id} .sections i');
 
-        sectionEdit.classList.remove('fa-pencil');
+        sectionEdit.classList.remove('fa-plus');
         sectionEdit.classList.add('fa-times');
       });
 
       $('#section_input_block_#{cpts.id}').on('hide.bs.collapse', () => {
-        document.querySelectorAll('.section_list_#{cpts.id} a').forEach((e) => { e.classList.add('d-none') })
-
         let sectionEdit = document.querySelector('#client_publication_tag_#{cpts.id} .sections i');
 
         sectionEdit.classList.remove('fa-times');
-        sectionEdit.classList.add('fa-pencil');
+        sectionEdit.classList.add('fa-plus');
       });
 
       function postSection#{cpts.id}(value) {
