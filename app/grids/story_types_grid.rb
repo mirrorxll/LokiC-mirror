@@ -5,11 +5,11 @@ class StoryTypesGrid
 
   # Scope
   scope do
-    StoryType.left_outer_joins(
+    StoryType.eager_load(
       :status, :frequency,
       :photo_bucket, :developer,
+      :clients_publications_tags,
       :clients, :tags, :reminder, :cron_tab,
-      clients_publications_tags: :client,
       data_set: %i[state category]
     ).order(
       Arel.sql("CASE WHEN reminders.check_updates = false AND cron_tabs.enabled = false THEN '1' END DESC,
