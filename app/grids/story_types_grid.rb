@@ -53,7 +53,7 @@ class StoryTypesGrid
     denotations = { 'Not realized' => nil, 'Yes' => true, 'No' => false }
     scope.where(reminders: { has_updates: denotations[value] })
   end
-  filter(:revisioned, :xboolean, left: true) do |value, scope|
+  filter(:revised, :xboolean, left: true) do |value, scope|
     value ? scope.where.not('templates.revision': nil) : scope.where('templates.revision': nil)
   end
   filter(:condition1, :dynamic, left: false, header: 'Dynamic condition 1')
