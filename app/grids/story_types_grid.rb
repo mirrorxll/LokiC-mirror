@@ -12,10 +12,10 @@ class StoryTypesGrid
       clients_publications_tags: :client,
       data_set: %i[state category]
     ).order(
-      Arel.sql("CASE WHEN reminders.check_updates = false AND cron_tabs.enabled = false AND reminders.has_updates = false THEN '1' END DESC,
-                CASE WHEN reminders.check_updates = true AND cron_tabs.enabled = false AND reminders.has_updates = true THEN '2' END DESC,
+      Arel.sql("CASE WHEN reminders.check_updates = false AND cron_tabs.enabled = false THEN '1' END DESC,
+                CASE WHEN reminders.check_updates = true AND reminders.has_updates = true THEN '2' END DESC,
                 CASE WHEN cron_tabs.enabled = true THEN '3' END DESC,
-                CASE WHEN reminders.check_updates = true AND cron_tabs.enabled = false and reminders.has_updates = false THEN '4' END DESC,
+                CASE WHEN reminders.check_updates = true AND reminders.has_updates = false THEN '4' END DESC,
                 story_types.id DESC")
     )
   end
@@ -107,15 +107,15 @@ class StoryTypesGrid
   end
   column(:has_updates,
          mandatory: true,
-         order: Arel.sql("CASE WHEN reminders.check_updates = false AND cron_tabs.enabled = false AND reminders.has_updates = false THEN '1' END DESC,
-                          CASE WHEN reminders.check_updates = true AND cron_tabs.enabled = false AND reminders.has_updates = true THEN '2' END DESC,
+         order: Arel.sql("CASE WHEN reminders.check_updates = false AND cron_tabs.enabled = false THEN '1' END DESC,
+                          CASE WHEN reminders.check_updates = true AND reminders.has_updates = true THEN '2' END DESC,
                           CASE WHEN cron_tabs.enabled = true THEN '3' END DESC,
-                          CASE WHEN reminders.check_updates = true AND cron_tabs.enabled = false and reminders.has_updates = false THEN '4' END DESC,
+                          CASE WHEN reminders.check_updates = true AND reminders.has_updates = false THEN '4' END DESC,
                           story_types.id DESC"),
-         order_desc: Arel.sql("CASE WHEN reminders.check_updates = false AND cron_tabs.enabled = false AND reminders.has_updates = false THEN '1' END,
-                               CASE WHEN reminders.check_updates = true AND cron_tabs.enabled = false AND reminders.has_updates = true THEN '2' END,
+         order_desc: Arel.sql("CASE WHEN reminders.check_updates = false AND cron_tabs.enabled = false THEN '1' END,
+                               CASE WHEN reminders.check_updates = true AND reminders.has_updates = true THEN '2' END,
                                CASE WHEN cron_tabs.enabled = true THEN '3' END,
-                               CASE WHEN reminders.check_updates = true AND cron_tabs.enabled = false and reminders.has_updates = false THEN '4' END,
+                               CASE WHEN reminders.check_updates = true AND reminders.has_updates = false THEN '4' END,
                                story_types.id DESC")) do |record|
     if record.cron_tab&.enabled?
       'on_cron'
