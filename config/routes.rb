@@ -115,7 +115,6 @@ Rails.application.routes.draw do
 
         resources :publications, only: [] do
           post   :include, on: :collection
-          post   :include, on: :collection
           delete :exclude, on: :member
         end
 
@@ -123,6 +122,8 @@ Rails.application.routes.draw do
           post   :include, on: :collection
           delete :exclude, on: :member
         end
+
+        resources :sections, only: %i[create destroy]
       end
 
       resources :excepted_publications, only: [] do

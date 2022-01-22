@@ -2,6 +2,11 @@
 
 class String # :nodoc:
   # Adds HTML tags to the self text according to editorial requirements to tables
+  def correct_output_links(link_types = %w[http https])
+    gsub(URI.regexp(link_types), '\\0'.to_link('\\0'))
+  end
+
+  # Adds HTML tags to the self text according to editorial requirements to tables
   def to_table_title
     %(<div><strong style='font-size: 18px;'>#{self}</strong></div>)
   end
@@ -19,6 +24,12 @@ class String # :nodoc:
   # Wraps the self text to <em>
   def to_italic
     %(<em>#{self}</em>)
+  end
+
+  def multi_gsub!(event, result = ' ')
+    gsub!(event, result) while index(event)
+
+    self
   end
 end
 
@@ -38,6 +49,25 @@ class Array
     self
   end
 
+  def ranking_new!(base_key, rank_key: 'rank', asc: false)
+    return self if empty?
+
+    sort_by! { |row| (asc ? 1 : -1) * row[base_key] }
+    curr_value = first[base_key]
+    curr_rank = 1
+
+    to_enum.with_index(1) do |row, index|
+      unless row[base_key].eql?(curr_value)
+        curr_value = row[base_key]
+        curr_rank = index
+      end
+
+      row[rank_key] = curr_rank
+    end
+
+    self
+  end
+
   # Makes full deep copy of array with all nested arrays or hashes like the method deep_dup from ActiveSupport class
   def deep_copy
     Marshal.load(Marshal.dump(self))
@@ -51,7 +81,7 @@ class Array
   def percentile(index)
     raise "The index is #{index} -- it cannot be more than #{size}" if index > size
 
-    99 - ((index) / (count.to_f - 1) * 98).round
+    99 - (index / (count.to_f - 1) * 98).round
   end
 
   # Gets an array of hashes and convert it to json contains a tables with headers

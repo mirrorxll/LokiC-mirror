@@ -1,0 +1,76 @@
+-cpts = client_publication_tag_sections
+
+.row.mb-1{ id: "client_publication_tag_#{cpts.id}" }
+  .col-3.client.pl-0
+    =render 'story_types/clients/client', client: cpts.client, client_publication_tag: cpts
+  .col-3.client_publication.pl-0
+    =render 'story_types/publications/publication', client_publication_tag: cpts
+  .col-2.client_tag
+    -if cpts.tag
+      =render 'story_types/tags/tag', tag: cpts.tag, client_publication_tag: cpts
+    -else
+      =render 'story_types/tags/form', client_publication_tag: cpts, client: cpts.client
+  .col-4.sections
+    .d-inline-block.mr-1.mouse-hover{ 'data-toggle' => "collapse", href: "#section_input_block_#{cpts.id}",
+                                      'aria-expanded' => "false", 'aria-controls' => "section_input_block_#{cpts.id}" }
+      =icon('fa', 'plus')
+
+    .d-inline-block{ class: "section_list_#{cpts.id}" }
+      =render partial: 'story_types/sections/section', collection: cpts.sections, locals: { cpts: cpts }
+
+    .collapse{ id: "section_input_block_#{cpts.id}" }
+      %input.underline-input{ list: 'sectionsDatalist', onkeypress: "onEnterPostSection#{cpts.id}(event, this.value);" }
+      %datalist#sectionsDatalist
+        -Section.all.each do |section|
+          %option{ value: "#{section.name}" }
+      .d-inline-block.ml-2
+        %div.mouse-hover{ onclick: "onClickPostSection#{cpts.id}();" }
+          =icon('fa', 'paper-plane')
+
+    :javascript
+      $('#section_input_block_#{cpts.id}').on('show.bs.collapse', () => {
+        let sectionEdit = document.querySelector('#client_publication_tag_#{cpts.id} .sections i');
+
+        sectionEdit.classList.remove('fa-plus');
+        sectionEdit.classList.add('fa-times');
+      });
+
+      $('#section_input_block_#{cpts.id}').on('hide.bs.collapse', () => {
+        let sectionEdit = document.querySelector('#client_publication_tag_#{cpts.id} .sections i');
+
+        sectionEdit.classList.remove('fa-times');
+        sectionEdit.classList.add('fa-plus');
+      });
+
+      function postSection#{cpts.id}(value) {
+        Rails.ajax({
+          type: "POST",
+          dataType: 'script',
+          url: `#{story_type_client_sections_path(@story_type, cpts.client)}`,
+          data: `section=${encodeURIComponent(value)}&client_publication_tag=${encodeURIComponent(#{cpts.id})}`
+        });
+      }
+
+      function clearInput#{cpts.id}() {
+        document.querySelector("#section_input_block_#{cpts.id} input").value = '';
+      }
+
+      function onEnterPostSection#{cpts.id}(event, value) {
+        if((event.keyCode !== 13) || (value.trim().length === 0)) {
+          return false;
+        } else {
+          postSection#{cpts.id}(value);
+          clearInput#{cpts.id}();
+        }
+      }
+
+      function onClickPostSection#{cpts.id}() {
+        let value = document.querySelector('#section_input_block_#{cpts.id} input').value
+
+        if((value.trim().length === 0)) {
+          return false;
+        } else {
+          postSection#{cpts.id}(value);
+          clearInput#{cpts.id}();
+        }
+      }
