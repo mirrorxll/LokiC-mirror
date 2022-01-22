@@ -1,14 +1,28 @@
 .row.mb-1.font-weight-bold
-  .col-8
+  .col-7
     client
-  .col-4
+  .col-3
     tag
+  .col-2
+    sections
+
 -@story_type.clients_publications_tags.each do |cl_t|
   .row
-    .col-8
+    .col-7
       =cl_t.client.name + "(#{cl_t.publication ? cl_t.publication.name : 'all publications'})"
-    .col-4
-      =cl_t.tag ? cl_t.tag.name : 'not set'
+    .col-3
+      -if cl_t.tag
+        =cl_t.tag.name
+      -else
+        .text-danger.font-italic
+          not set
+    .col-2
+      -if cl_t.sections.present?
+        -cl_t.sections.each do |section|
+          .badge.badge-pill.badge-info{ style: 'cursor: pointer', 'data-toggle' => 'tooltip',
+                                        'data-placement' => 'top', 'title' => section.name }
+            =section.id
+
 
 .row.mt-3.mb-1.font-weight-bold
   .col-12
