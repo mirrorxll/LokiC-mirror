@@ -1,8 +1,8 @@
-=form_with(url: tasks_path, id: 'form_new_task',  html: { onkeypress: "return event.keyCode !== 13;" } ) do |form|
+=form_with(url: tasks_path, class: 'newSubtaskForm',  html: { onkeypress: "return event.keyCode !== 13;" } ) do |form|
   .row.col.small
     .form-group
-      =form.text_field 'task_parent[title]', placeholder: 'title', id: 'newTaskNameParent', class: 'form-control form-control-sm', required: true, maxlength: 500
-      #newTaskNameParentFeedback.text-danger.text-center.d-none
+      =form.text_field "subtask_#{number_subtask}[title]", placeholder: 'title', id: "newSubtask#{number_subtask}Name", class: 'form-control form-control-sm', required: true, maxlength: 500
+      %div.text-danger.text-center.d-none{ id: "newTaskNameFeedback" }
         Task with this title already created by you. Let's use something else
   .d-flex.small.font-weight-bold
     .col-4.border-right
@@ -11,91 +11,63 @@
           assignment to:
         .col
           .row.mt-1.small
-            =form.collection_select 'task_parent[assignment_to]', current_account.types.include?('developer') ? [current_account] : Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }, style: "width:130px"
-      .row.justify-content-between.mt-1
+            =form.collection_select "subtask_#{number_subtask}[assignment_to]", current_account.types.include?('developer') ? [current_account] : Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }, style: "width:130px"
+      .row.justify-content-between.mt-1.mb-2
         .col
           assistants:
-          =icon('fa', 'plus', class: 'ml-2', id: 'addAssistantParent')
-        .col#assistantsParentForm
+          =icon('fa', 'plus', class: 'ml-2', id: "add_assistant_#{number_subtask}")
+        .col#assistants_form_parent
     .col-4
       .row.mb-2
         .col.text-right
           reminder frequency:
         .col.text-left.small
-          =form.collection_select 'task_parent[reminder_frequency]', sorted_reminder_frequencies, :id, :name, { prompt: '' }
-      .row.mb-2
-        .col.text-right
-          client:
-        .col.text-left.small
-          =form.collection_select 'task_parent[client_id]', ClientsReport.all.order(:name), :id, :name, { prompt: '' }, style: "width:150px"
+          =form.collection_select "subtask_#{number_subtask}[reminder_frequency]", sorted_reminder_frequencies, :id, :name, { prompt: '' }
     .col-4
       .row.mb-2
         .col.text-right
           deadline:
         .col.text-left.small
-          =form.date_field 'task_parent[deadline]'
-      .row.mb-2
-        .col.text-right
-          access to task and its subtasks:
-        .col.text-left
-          =form.check_box 'task_parent[access]', class: 'form-check-input ml-0 mt-2', checked: true
+          =form.date_field "subtask_#{number_subtask}[deadline]"
   .row.col.small
     .form-group
-      =form.text_area 'task_parent[description]', class: 'form-control', id: 'task_description'
+      =form.text_area "subtask_#{number_subtask}[description]", class: 'form-control', id: "descriptionSubtask#{number_subtask}"
   .row.col.small
     =link_to('[ checklists ]', nil, onclick: "showChecklists(event, 'parent')")
-  .row.col.small
-    -# =link_to '[ add subtask ]', add_subtask_tasks_path, method: :get, remote: true, data: { params: `number_subtask=numberSubtask();` }
-    =link_to '[ add subtask ]', nil, onclick: 'addSubtask(event);'
-  #checklistsParent.accordion.mt-2.d-none
+
+  #checklists_parent.accordion.mt-2.d-none
     .card.small
       .card-header.p-1
         %div.row
           .col-1
-            =icon('fa', 'plus', id: 'addСhecklistParent')
+            =icon('fa', 'plus', id: 'add_checklist')
           .col-11.text-right
-            %div{"aria-controls" => "#checklistsParentCollapse", "aria-expanded" => "true", "data-target" => "#checklistsParentCollapse", "data-toggle" => "collapse", type: "button"}
+            %div{"aria-controls" => "#checklistsCollapse", "aria-expanded" => "true", "data-target" => "#checklistsCollapse", "data-toggle" => "collapse", type: "button"}
               checklists
-      #checklistsParentCollapse.collapse{"data-parent" => "#checklistsParent", class: 'show'}
+      #checklistsCollapse.collapse{"data-parent" => "#checklists_parent", class: 'show'}
         .row.mt-2.mb-2
           .col#forms_checklists_parent
   %hr/
-
-  #formsSubtasks
-
-  .modal-footer.justify-content-center
-    .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
-      cancel
-    =form.submit :create, class: 'btn btn-sm btn-outline-success'
 
 :javascript
   var accounts = #{raw Account.all.order([:first_name, :last_name]).map{ |account| [account.first_name.to_s + ' ' + account.last_name.to_s, account.id]} };
   var current_account_id = #{raw current_account.id}
 
-  function addSubtask(e) {
-    e.preventDefault();
+  numberSubtask = #{raw number_subtask}
 
-    Rails.ajax({
-        type: "GET",
-        dataType: 'script',
-        url: `#{add_subtask_tasks_path}`,
-        data: `number_subtask=${document.querySelectorAll('#formsSubtasks .newSubtaskForm').length + 1}`
-    })
-  }
-
-  $('#addAssistantParent').click(function () {
+  $('#add_assistant').click(function () {
     let hex = secureRandom(6);
 
-    $('#assistantsParentForm').append(
-        `<div id="assistant_${hex}" class="row small mt-1 mb-1" >
-           <select id="task_parent[assistants][]" style = "width:130px" class="mr-1" name="task_parent[assistants][]">${buildSelect(accounts)}</select>
+    $('#assistants_form').append(
+        `<div id="assistant_${hex}" class="row mt-1 mb-1" >
+           <select id="assistants[]" style = "width:130px" class="mr-1" name="assistants[]">${buildSelect(accounts)}</select>
            <div class="ml-1" id="rm_assistant_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
          </div>`
     );
   });
 
-  $('#deleteParentAssistant').click(function () {
-    let assignments = document.getElementById('assistantsParent')
+  $('#delete_assistant').click(function () {
+    let assignments = document.getElementById('assistants')
     assignments.removeChild(assignments.lastChild)
   });
 
@@ -137,15 +109,15 @@
     return !names.find(el => lowName === el.toLowerCase());
   }
 
-  document.querySelector('#newTaskNameParent').addEventListener('input', delay(() => {
+  document.querySelector('#newTaskName').addEventListener('input', delay(() => {
     Rails.ajax({
       type: 'GET',
       dataType: 'json',
       url: `#{root_url}api/tasks/titles`,
       data: `creator_id=${current_account_id}`,
       success: (names) => {
-        let nameInput = document.querySelector('#newTaskNameParent');
-        let nameFeedback = document.querySelector('#newTaskNameParentFeedback');
+        let nameInput = document.querySelector('#newTaskName');
+        let nameFeedback = document.querySelector('#newTaskNameFeedback');
         let submitButton = document.querySelector('#form_new_task input[type="submit"]');
         let nameIsUniq = isUniq(nameInput.value, names);
 
@@ -167,8 +139,8 @@
     ev.stopPropagation();
 
     let form = ev.target;
-    let nameInput = form.querySelector('#newTaskNameParent');
-    let nameFeedback = form.querySelector('#newTaskNameParentFeedback');
+    let nameInput = form.querySelector('#newTaskName');
+    let nameFeedback = form.querySelector('#newTaskNameFeedback');
     let submitButton = form.querySelector('input[type="submit"]');
 
     Rails.ajax({
@@ -194,10 +166,10 @@
 
   $('#add_checklist').click(function () {
     let hex = secureRandom(6);
-    $('#forms_checklists_parent').append(
-        `<div id="checklist_${hex}" class="row small justify-content-center mt-2">
+    $('#forms_checklists').append(
+        `<div id="assignment_${hex}" class="row small justify-content-center mt-2">
            <div class="small mt-1 mr-2"><i class="fa fa-circle"></i></div>
-           <input id="task_parent[checklists][]" style='width: 90%' required=required maxlength="255" name="task_parent[checklists][]"></input>
+           <input id="checklists[]" style='width: 90%' required=required maxlength="255" name="checklists[]"></input>
            <div class="ml-2" id="rm_checklist_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
          </div>`
     );

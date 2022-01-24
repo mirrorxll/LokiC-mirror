@@ -56,6 +56,10 @@ class TasksController < ApplicationController # :nodoc:
     end
   end
 
+  def add_subtask
+    @number_subtask = params[:number_subtask]
+  end
+
   private
 
   def comment
