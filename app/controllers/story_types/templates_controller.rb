@@ -7,7 +7,7 @@ module StoryTypes
 
     before_action :render_403, except: :show, if: :developer?
     before_action :update_template, only: %i[update save]
-    after_action :send_notification, only: :update
+    after_action :send_notification, only: :update, if: -> { @story_type.developer.present? }
 
     def show; end
 

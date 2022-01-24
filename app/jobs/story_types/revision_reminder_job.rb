@@ -3,8 +3,7 @@
 module StoryTypes
   class RevisionReminderJob < ApplicationJob
     def perform
-      templates = Template.where.not(revision: nil).where('revision <= ?', Date.today + 1.week)
-      templates.each do |template|
+      Template.revision_needed.each do |template|
         story_type = template.templateable
         channel = story_type.editor.slack_identifier
         message = if template.revision > Date.today
