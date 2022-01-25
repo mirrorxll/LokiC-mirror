@@ -61,7 +61,7 @@ class StoryType < ApplicationRecord
   }
   scope :not_cron, -> { joins(:cron_tab).where.not('cron_tabs.enabled': true) }
 
-  def number_name
+  def id_name
     "##{id} #{name}"
   end
 

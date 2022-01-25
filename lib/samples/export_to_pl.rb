@@ -11,6 +11,7 @@ module Samples
       @pl_client = Pipeline[environment]
       @pl_lead_id_key = "pl_#{environment}_lead_id".to_sym
       @pl_story_id_key = "pl_#{environment}_story_id".to_sym
+      @pub_aggregate_names = ['all local publications', 'all statewide publications', 'all publications']
     end
 
     def export!(iteration, threads_count)
