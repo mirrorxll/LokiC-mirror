@@ -26,7 +26,7 @@ class ArticleType < ApplicationRecord
   has_many :iterations, class_name: 'ArticleTypeIteration'
   has_many :articles
 
-  def number_name
+  def id_name
     "##{id} #{name}"
   end
 
