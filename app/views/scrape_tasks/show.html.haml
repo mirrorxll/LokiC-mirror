@@ -34,7 +34,7 @@
   %li.nav-item.text-center{ style: 'width: 33%' }
     %a#scrapeEvaluationDocTab.nav-link{"aria-selected" => "false", "data-toggle" => "tab", :href => "#scrapeEvaluationDoc", :role => "tab"} Evaluation Document
   %li.nav-item.text-center{ style: 'width: 33%' }
-    %a#dataSampleTab.nav-link.disabled{"aria-selected" => "false", "data-toggle" => "tab", :href => "#dataSample", :role => "tab"} Data Sample (TO DO)
+    %a#dataSampleTab.nav-link{"aria-selected" => "false", "data-toggle" => "tab", :href => "#dataSample", :role => "tab"} Data Sample (TO DO)
 
 #scrapeTaskTabsContent.tab-content
   #scrapeInstruction.tab-pane.fade.show.active
@@ -80,4 +80,13 @@
           el.setAttribute('rel', 'noopener noreferrer');
         })
 
-  #dataSample.tab-pane
+  #dataSample.tab-pane.fade.show
+    .card.border-top-0.rounded-top-0.mb-5
+      #evaluationDocEdit.small
+        .row.p-4
+          .col-10.offset-1
+            -if @scrape_task.data_sample
+              =link_to(nil, @scrape_task.data_sample.remote_url)
+            -else
+              =button_to('generate google spreadsheet', scrape_task_data_samples_path(@scrape_task),
+                         class: 'btn btn-sm btn-outline-dark')
