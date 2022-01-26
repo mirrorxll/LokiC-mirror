@@ -1,2 +1,83 @@
 $('#scrapeTaskEdit').toggleClass('d-inline-block').toggleClass('d-none');
 $('#scrappingInfo .card-body').html('<%= j render 'edit_form' %>');
+
+function includeMultiTaskToScrapeTask(input) {
+    Rails.ajax({
+        type: "POST",
+        dataType: 'json',
+        url: '<%= include_api_scrape_tasks_tasks_path(@scrape_task) %>',
+        data: `task_id=${encodeURIComponent(input.value)}`,
+        success: (data) => {
+            if(data['not_included']) return false;
+
+            document.querySelector('#includedTasks').insertAdjacentHTML(
+                'beforeend',
+                `<div class="task-${data['task_id']}">
+                   <a onclick="excludeMultiTaskFromScrapeTask(event, ${data['task_id']});" href="#">
+                     [ remove ]
+                   </a>
+                   &nbsp;&nbsp;|&nbsp;&nbsp;
+                   <a rel="noopener noreferrer" href="/tasks/${data['task_id']}">
+                     #${data['task_id']} ${data['task_name']}
+                   </a>
+                   <br>
+               </div>`
+            );
+        }
+    });
+}
+
+function excludeMultiTaskFromScrapeTask(e, task_id) {
+    e.preventDefault();
+
+    Rails.ajax({
+        type: "DELETE",
+        dataType: 'json',
+        url: `<%= exclude_api_scrape_tasks_tasks_path(@scrape_task) %>`,
+        data: `task_id=${encodeURIComponent(task_id)}`,
+        success: (data) => {
+            if(data['not_excluded']) return false;
+
+            console.log(`#includedTasks .task-${task_id}`);
+            document.querySelector(`#includedTasks .task-${task_id}`).remove();
+        }
+    });
+}
+
+(() => {
+    let select = $('select[id="multi_task[task_id]"]');
+    select.multipleSelect({ filter: true });
+
+    $('.hide-radio.selected').addClass('d-none');
+
+    select.multipleSelect('refresh');
+})();
+
+
+$('input[id="scrape_task[deadline]"]').datepicker({
+    format: 'yyyy-mm-dd'
+});
+
+
+
+(() => {
+    let select = $('select[id="scrape_task[state_id]"]')
+    select.multipleSelect({ filter: true });
+    select
+})();
+
+
+
+(() => {
+    $('select[id="scrape_task[scraper_id]"]').multipleSelect({ filter: true });
+})();
+
+
+(() => {
+    $('select[id="scrape_task[frequency_id]"]').multipleSelect({ filter: true });
+})();
+
+
+(() => {
+    $('select[id="data_set[id]"]').multipleSelect({ filter: true });
+})();

@@ -1,7 +1,18 @@
 =form_with(url: work_request_path(@work_request), method: :patch, html: { onkeypress: "return event.keyCode !== 13;" } ) do |f|
   .small.pl-3
-    #workTypesAnchor
-    #workTypes.card
+    #projectOrderNameAnchor.mb-3
+    #projectOrderName.card
+      .card-body
+        .font-weight-bold.mb-2
+          Project Order Name (the short way to refer to the project)
+          %span.small.text-danger
+            *required
+        =f.text_field "work_request[project_order_name]", class: 'form-control form-control-sm w-75',
+                      value: @work_request.project_order_name.body, maxlength: 2000
+
+
+    -##workTypesAnchor
+    -##workTypes.card
       .card-body
         .font-weight-bold.mb-2
           Work types
@@ -95,21 +106,21 @@
           .col-1.text-right
             .loadingSpinner.spinner-border.spinner-border-sm.text-secondary
               %span.sr-only
-          .col-11.pl-0.small
-            .client-not-found.text-danger
-              Client not found!
         .other-clients
           Other:
           %input.underline-input.w-50.p-0{ list: 'otherClients', onkeypress: 'clientByEnterPress(event, this)', oninput: 'hideClientNone();' }
           %datalist#otherClients
-            -other_client = clients.present? ? Client.where("id NOT IN (#{clients.ids.join(',')})") : Client.all
+            -other_client = (clients.present? ? Client.where("id NOT IN (#{clients.ids.join(',')})") : Client.all).order(:name)
             -other_client.each do |cl|
-              %option{ value: "#{cl.name}" }
+              %option{ value: "#{cl.exist_in_pl ? cl.name : "#{cl.name} (New Client)"}" }
+
           .sign-in.d-inline-block.ml-1
             .mouse-hover{ onclick: 'clientByArrowClick();' }
               =icon('fa', 'sign-in')
           .small.text-secondary
             *** other input: after typing or selecting press enter or click 'Enter' icon on right
+          .small.text-dark
+            *** (New Client) - this mark means client doesn't exist in PL
       :javascript
         function clientByEnterPress(event, input) {
           if(event.keyCode !== 13 || input.value.trim().length === 0) return false;
@@ -127,27 +138,37 @@
 
         function addClient(input) {
           let spinner = document.querySelector('#clients .loadingSpinner');
-          let client404 = document.querySelector('#clients .client-not-found');
           let processing = document.querySelector('#clients .processingOther');
 
-          client404.classList.add('d-none');
           processing.classList.remove('d-none');
 
           Rails.ajax({
             type: "GET",
             dataType: 'script',
-            url: `#{find_api_clients_path}`,
-            data: `client[name]=${encodeURIComponent(input.value)}`,
+            url: `#{find_by_name_api_work_request_collections_clients_path}`,
+            data: `client[name]=${encodeURIComponent(input.value.replaceAll(/ \(New Client\)/g, ''))}`,
             success: (data) => {
               input.value = '';
               spinner.classList.add('d-none');
 
-              if(data === 404) {
-                client404.classList.remove('d-none');
-                return false;
-              } else if(document.querySelector(`.client-${data['client_id']}`)) {
+              let clientName;
+
+              if(data['exist_in_pl']) {
+                clientName = data['client_name'];
+              } else {
+                clientName = data['client_name'] + ' ' + '(New Client)';
+              }
+
+              if(document.querySelector(`.client-${data['client_id']}`)) {
                 processing.classList.add('d-none');
                 return false;
+              }
+
+              if(data['new_record']) {
+                document.querySelector('#otherClients').insertAdjacentHTML(
+                  'afterbegin',
+                  `<option value="${clientName}"></option>`
+                )
               }
 
               document.querySelector('#clients .list').insertAdjacentHTML(
@@ -158,7 +179,7 @@
                     <input type="checkbox" value="1" name="work_request[tf_client__${data['client_id']}]" id="work_request[tf_client__${data['client_id']}]" checked>
                   </div>
                   <div class="col-11 pl-0 text-left">
-                    <label class="m-0" for="work_request[tf_client__${data['client_id']}]">${data['client_name']}</label>
+                    <label class="m-0" for="work_request[tf_client__${data['client_id']}]">${clientName}</label>
                   </div>
                 </div>`
               )
@@ -169,13 +190,12 @@
         function hideClientNone() {
           document.querySelector('#clients .processingOther').classList.add('d-none');
           document.querySelector('#clients .loadingSpinner').classList.remove('d-none');
-          document.querySelector('#clients .client-not-found').classList.remove('d-none');
         }
 
 
 
-    #underwritingProjectAnchor.mb-3
-    #underwritingProject.card
+    -##underwritingProjectAnchor.mb-3
+    -##underwritingProject.card
       -up = @work_request.underwriting_project
       .card-body
         .d-inline-block.font-weight-bold.mb-2
@@ -264,8 +284,8 @@
 
 
 
-    #revenueTypesAnchor.mb-3
-    #revenueTypes.card
+    -##revenueTypesAnchor.mb-3
+    -##revenueTypes.card
       .card-body
         .font-weight-bold.mb-2
           What Revenue Type is this?
@@ -280,27 +300,36 @@
                 =f.label "work_request[tf_revenue_type__#{rt.id}]", rt.name, class: 'm-0'
 
 
-    #projectOrderNameAnchor.mb-3
-    #projectOrderName.card
-      .card-body
-        .font-weight-bold.mb-2
-          Project Order Name (the short way to refer to the project)
-          %span.small.text-danger
-            *required
-        =f.text_field "work_request[project_order_name]", class: 'form-control form-control-sm w-50',
-                      value: @work_request.project_order_name.body, maxlength: 2000
-        .small.text-secondary
-          limit: 2000 symbols
 
-    #sowAnchor.mb-3
-    #sow.card
-      .card-body
-        .font-weight-bold.mb-2
-          SOW
-          %span.small.text-danger
-            *link to Google Doc or Spreadsheet
-        =f.text_field "work_request[sow]", class: 'form-control form-control-sm w-50',
-                      value: @work_request.sow
+    -# -if current_account.types.include?('manager')
+      #sowAnchor.mb-3
+      #sow.card
+        .card-body
+          .font-weight-bold.mb-2
+            SOW
+          =f.check_box "work_request[sow[default]]", onchange: 'sowLinkSwitcher(this)',  checked: @work_request.default_sow
+          =f.label "work_request[sow[default]]", 'Default (SOW not ready yet)'
+          .sow-link{ class: "#{@work_request.default_sow ? 'd-none' : ''}" }
+            %span.small.text-danger
+              ***link to Google Doc or Spreadsheet
+            =f.text_field "work_request[sow[link]]",
+                          class: 'form-control form-control-sm w-75', value: @work_request.sow
+          .default-sow{ class: "#{@work_request.default_sow ? '' : 'd-none'}" }
+            =link_to('Create SOW Here (template)', 'https://docs.google.com/document/d/1XGBr8mitj6Ui4uTXiCZnevLx7F-5R0Ru0ZNkBLvXpWI/edit',
+                     target: '_blank', rel: 'noopener noreferrer')
+          :javascript
+            function sowLinkSwitcher(check_box) {
+              let sowLink = document.querySelector('.sow-link');
+              let defaultSow = document.querySelector('.default-sow');
+
+              if(check_box.checked) {
+                sowLink.classList.add('d-none');
+                defaultSow.classList.remove('d-none');
+              } else {
+                sowLink.classList.remove('d-none');
+                defaultSow.classList.add('d-none');
+              }
+            }
 
 
 
@@ -311,39 +340,56 @@
           Project Order Details (What do we need to do?)
           %span.small.text-danger
             *required
-        =f.text_area "work_request[project_order_details]", class: 'form-control form-control-sm w-50',
-                     value: @work_request.project_order_details.body, maxlength: 2000
-        .small.text-secondary
-          limit: 2000 symbols
+        =f.text_area "work_request[project_order_details]", class: 'form-control form-control-sm w-75',
+                     value: @work_request.project_order_details.body&.gsub(/\\n/, '\n'),
+                     rows: @work_request.project_order_details.body&.count("\n") + 1, onkeypress: 'newLine(event, this);'
 
-
+    :javascript
+      $('#projectOrderDetails textarea').froalaEditor({
+        key: 'KfdolbcqsaA2wzA-13==',
+        editorClass: 'border rounded p-2',
+        toolbarInline: true,
+        toolbarButtons: ['undo', 'redo', '|', 'bold', 'italic', 'underline', 'strikeThrough', '|', 'color', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'insertLink', 'insertImage'],
+        imageUploadURL: '/images/upload',
+        imageUploadMethod: 'POST',
+        toolbarVisibleWithoutSelection: false,
+        zIndex: 3333
+      })
 
     #mostWorriedDetailsAnchor.mb-3
     #mostWorriedDetails.card
       .card-body
         .font-weight-bold.mb-2
           What are you most worried about us missing or not doing on this task?
-        =f.text_area "work_request[most_worried_details]", class: 'form-control form-control-sm w-50',
-                     value: @work_request.most_worried_details.body, maxlength: 2000
-        .small.text-secondary
-          limit: 2000 symbols
+        =f.text_area "work_request[most_worried_details]", class: 'form-control form-control-sm w-75',
+                     value: @work_request.most_worried_details.body&.gsub(/\\n/, '\n'), maxlength: 2000,
+                     rows: @work_request.most_worried_details.body&.count("\n") + 1, onkeypress: 'newLine(event, this);'
+
+    :javascript
+      $('#mostWorriedDetails textarea').froalaEditor({
+        key: 'KfdolbcqsaA2wzA-13==',
+        editorClass: 'border rounded p-2',
+        toolbarInline: true,
+        toolbarButtons: ['undo', 'redo', '|', 'bold', 'italic', 'underline', 'strikeThrough', '|', 'color', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'insertLink', 'insertImage'],
+        imageUploadURL: '/images/upload',
+        imageUploadMethod: 'POST',
+        toolbarVisibleWithoutSelection: false,
+        zIndex: 3333
+      })
 
 
-
-    #budgetForProjectAnchor.mb-3
-    #budgetForProject.card
+    -##budgetForProjectAnchor.mb-3
+    -##budgetForProject.card
       .card-body
         .font-weight-bold.mb-2
           Budget for Project
-          %span.small.text-danger
-            *required
         =f.text_field "work_request[budget_for_project]", class: 'form-control form-control-sm w-50',
                       value: @work_request.budget_for_project.body, maxlength: 2000
 
 
 
-    #invoiceTypeAnchor.mb-3
-    #invoiceType.card
+    -##invoiceTypeAnchor.mb-3
+    -##invoiceType.card
       -it = @work_request.invoice_type
       .card-body
         .d-inline-block.font-weight-bold.mb-2
@@ -419,8 +465,8 @@
 
 
 
-    #invoiceFrequencyAnchor.mb-3
-    #invoiceFrequency.card
+    -##invoiceFrequencyAnchor.mb-3
+    -##invoiceFrequency.card
       -ifr = @work_request.invoice_frequency
       .card-body
         .font-weight-bold.mb-2
@@ -496,25 +542,13 @@
 
 
 
-    #firstInvoiceAnchor.mb-3
-    #firstInvoice.card
+    -##firstInvoiceAnchor.mb-3
+    -##firstInvoice.card
       .card-body
         .font-weight-bold.mb-2
           First Invoice Date
-          %span.small.text-danger
-            *required
         =f.date_field "work_request[first_invoice]", class: 'form-control form-control-sm w-50',
                       value: @work_request.first_invoice
-
-
-
-    #FinalInvoiceAnchor.mb-3
-    #FinalInvoice.card
-      .card-body
-        .font-weight-bold.mb-2
-          Final Invoice Date
-        =f.date_field "work_request[final_invoice]", class: 'form-control form-control-sm w-50',
-                      value: @work_request.final_invoice
 
 
 
@@ -561,27 +595,23 @@
       event.preventDefault();
       event.stopPropagation();
 
+      // #workTypes,
+      // #revenueTypes,
       // #clients,
       // #finalDeadline,
-      let cards = document.querySelectorAll(
-        `#workTypes,
-         #revenueTypes,
-         #projectOrderName,
-         #sow,
-         #projectOrderDetails,
-         #budgetForProject,
-         #invoiceType,
-         #invoiceFrequency,
-         #firstInvoice,
-         #priority`
-      );
+      // #budgetForProject,
+      // #firstInvoice,
+      // #invoiceType,
+      // #invoiceFrequency,
+      let sections = `#projectOrderName, #projectOrderDetails, #priority#{current_account.types.include?('manager') ? ', #sow' : ''}`
+      let cards = document.querySelectorAll(sections);
       [...cards].forEach((el) => { el.classList.remove('border-danger') })
 
-      let workType = [...document.querySelectorAll('#workTypes input[type="checkbox"]')].some((el) => { return el.checked; } );
-      if(!workType) {
-        scrollToCardUnblockButton('#workTypes')
-        return false;
-      }
+      // let workType = [...document.querySelectorAll('#workTypes input[type="checkbox"]')].some((el) => { return el.checked; } );
+      // if(!workType) {
+      //   scrollToCardUnblockButton('#workTypes')
+      //   return false;
+      // }
 
       // let client = [...document.querySelectorAll('#clients input[type="checkbox"]')].some((el) => { return el.checked; } );
       // if(!client) {
@@ -589,26 +619,16 @@
       //   return false;
       // }
 
-      let revenueType = [...document.querySelectorAll('#revenueTypes input[type="checkbox"]')].some((el) => { return el.checked; } );
-      if(!revenueType) {
-        scrollToCardUnblockButton('#revenueTypes')
-        return false;
-      }
+      // let revenueType = [...document.querySelectorAll('#revenueTypes input[type="checkbox"]')].some((el) => { return el.checked; } );
+      // if(!revenueType) {
+      //   scrollToCardUnblockButton('#revenueTypes')
+      //   return false;
+      // }
 
       let orderName = document.querySelector('#projectOrderName input').value.length > 0
       if(!orderName) {
         scrollToCardUnblockButton('#projectOrderName')
         return false;
-      }
-
-      let sowInput = document.querySelector('#sow input')
-      if(sowInput.value.trim().length > 0) {
-        let sowPattern = sowInput.value.match(/^https:\/\/docs.google.com\/(document|spreadsheets)/)
-
-        if(!sowPattern) {
-          scrollToCardUnblockButton("#sow")
-          return false;
-        }
       }
 
       let orderDetail = document.querySelector('#projectOrderDetails textarea').value.length > 0
@@ -617,29 +637,29 @@
         return false;
       }
 
-      let budget = document.querySelector('#budgetForProject input').value.length > 0
-      if(!budget) {
-        scrollToCardUnblockButton('#budgetForProject')
-        return false;
-      }
+      // let budget = document.querySelector('#budgetForProject input').value.length > 0
+      // if(!budget) {
+      //   scrollToCardUnblockButton('#budgetForProject')
+      //   return false;
+      // }
 
-      let invoiceType = [...document.querySelectorAll('#invoiceType input[type="radio"]')].some((el) => { return el.checked; } );
-      if(!invoiceType) {
-        scrollToCardUnblockButton('#invoiceType')
-        return false;
-      }
+      // let invoiceType = [...document.querySelectorAll('#invoiceType input[type="radio"]')].some((el) => { return el.checked; } );
+      // if(!invoiceType) {
+      //   scrollToCardUnblockButton('#invoiceType')
+      //   return false;
+      // }
 
-      let invoiceFrequency = [...document.querySelectorAll('#invoiceFrequency input[type="radio"]')].some((el) => { return el.checked; } );
-      if(!invoiceFrequency) {
-        scrollToCardUnblockButton('#invoiceFrequency')
-        return false;
-      }
+      // let invoiceFrequency = [...document.querySelectorAll('#invoiceFrequency input[type="radio"]')].some((el) => { return el.checked; } );
+      // if(!invoiceFrequency) {
+      //   scrollToCardUnblockButton('#invoiceFrequency')
+      //   return false;
+      // }
 
-      let FirstInvoice = document.querySelector('#firstInvoice input').value.length > 0
-      if(!FirstInvoice) {
-        scrollToCardUnblockButton('#firstInvoice')
-        return false;
-      }
+      // let FirstInvoice = document.querySelector('#firstInvoice input').value.length > 0
+      // if(!FirstInvoice) {
+      //   scrollToCardUnblockButton('#firstInvoice')
+      //   return false;
+      // }
 
       // let finalDeadline = document.querySelector('#finalDeadline input').value.length > 0
       // if(!finalDeadline) {
@@ -655,6 +675,7 @@
 
       event.target.removeEventListener('submit', onSubmit)
       Rails.fire(event.target, 'submit');
+      document.querySelector('#updateWorkRequestModal form').addEventListener('submit', onSubmit)
     }
 
     document.querySelector('#updateWorkRequestModal').addEventListener('scroll', () => {
@@ -662,6 +683,7 @@
     }, false)
 
     function scrollToCardUnblockButton(id) {
+      console.log(id)
       let button = document.querySelector('#updateWorkRequestButton');
       let required = document.querySelector(id);
 

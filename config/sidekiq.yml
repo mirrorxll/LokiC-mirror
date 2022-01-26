@@ -9,6 +9,7 @@
   - cron_tab
   - scrape_task
   - article_type
+  - work_request
 
 :schedule:
   initial:

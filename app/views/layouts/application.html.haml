@@ -23,7 +23,7 @@
           -if acc_types
             -if acc_types.include?('outside manager')
               %li.nav-item.active
-                =link_to('work requesting', work_requests_path, class: 'nav-link')
+                =link_to('work requesting', work_requests_path(archived: false), class: 'nav-link')
               %li.nav-item.active
                 =link_to('multi tasks', tasks_path, class: 'nav-link')
               %li.nav-item.active.dropdown
@@ -37,7 +37,7 @@
 
             -elsif acc_types.include?('client')
               %li.nav-item.active
-                =link_to('work requesting', work_requests_path, class: 'nav-link')
+                =link_to('work requesting', work_requests_path(archived: false), class: 'nav-link')
 
             -else
               -if acc_types.include?('manager')
@@ -46,7 +46,7 @@
                     management
                   .dropdown-menu{"aria-labelledby" => "navbarDropdown1"}
                     .dropdown-item
-                      =link_to('requested work', work_requests_path, class: 'nav-link small')
+                      =link_to('requested work', work_requests_path(archived: false), class: 'nav-link small')
                     .dropdown-item
                       =link_to('admin panel', rails_admin_path, class: 'nav-link small', target: '_blank')
                     .dropdown-item
@@ -55,6 +55,8 @@
                       =link_to('developers production', exported_counts_developers_productions_path, class: 'nav-link small')
                     .dropdown-item
                       =link_to('assembled 2020', assembleds_tracking_hours_path(week: current_week), class: 'nav-link small')
+                    .dropdown-item
+                      =link_to('tracking hours tasks', task_tracking_hours_path, class: 'nav-link small')
 
               -if (acc_types & %w[manager editor developer]).any?
                 %li.nav-item.active.dropdown
@@ -102,5 +104,5 @@
     -if alert
       %p.alert.alert-danger.text-center
         =alert
-    %div{ class: controller_name.in?(%w(data_sets story_types samples exports exported_story_types work_requests scrape_tasks)) && action_name.in?(%w(index stories)) ? "container-fluid" : "container" }
+    %div{ class: controller_name.in?(%w(data_sets story_types samples exports exported_story_types work_requests scrape_tasks tasks)) && action_name.in?(%w(index stories)) ? "container-fluid" : "container" }
       =yield

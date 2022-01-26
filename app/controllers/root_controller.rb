@@ -13,7 +13,7 @@ class RootController < ApplicationController
       elsif client?
         new_work_request_path
       elsif outside_manager?
-        work_requests_path
+        work_requests_path(archived: false)
       elsif guest_1? || guest_2?
         tasks_path
       else

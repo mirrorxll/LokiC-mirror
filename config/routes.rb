@@ -21,29 +21,23 @@ Rails.application.routes.draw do
   end
 
   namespace :api, constraints: { format: :json } do
-    scope module: :work_requests do
-      resources :work_types, only: [] do
-        post :find_or_create, on: :collection
-      end
+    resources :work_requests, only: :update
 
+    scope module: :story_types, path: 'story_types/:story_type_id' do
+      resources :template, only: :update
+    end
+
+    scope module: :work_requests, path: 'work_requests', as: 'work_request_collections' do
       resources :clients, only: [] do
-        get :find, on: :collection
-      end
-
-      resources :underwriting_projects, only: [] do
-        post :find_or_create, on: :collection
-      end
-
-      resources :invoice_types, only: [] do
-        post :find_or_create, on: :collection
-      end
-
-      resources :invoice_frequencies, only: [] do
-        post :find_or_create, on: :collection
+        get :find_by_name, on: :collection
       end
     end
 
-    resources :work_requests, only: :update
+    scope module: :work_requests, path: 'work_requests/:id', as: 'work_request_members' do
+      resources :project_statuses, only: [] do
+        get :all_deleted, on: :collection
+      end
+    end
 
     resources :clients, only: :index do
       resources :publications, only: :index do
@@ -57,10 +51,20 @@ Rails.application.routes.draw do
       get :names, on: :collection
       get :data_set_locations, on: :collection
     end
+    scope module: :scrape_tasks, path: 'scrape_tasks/:scrape_task_id', as: 'scrape_tasks' do
+      resources :tasks, only: [] do
+        post   :include, on: :collection
+        delete :exclude, on: :collection
+      end
+    end
 
     resources :tasks, only: [] do
       get :titles,   on: :collection
       get :subtasks, on: :member
+    end
+
+    scope module: :tasks, path: 'tasks/:task_id', as: 'tasks' do
+      resources :statuses, only: :update
     end
 
     resources :shown_samples, only: :update
@@ -72,8 +76,17 @@ Rails.application.routes.draw do
   end
 
   resources :work_requests, except: :destroy do
+    authenticate :account, ->(u) { u.types.include?('manager') } do
+      patch :archive,   on: :member
+      patch :unarchive, on: :member
+    end
+
     scope module: :work_requests do
       resources :progress_statuses, only: [] do
+        patch :change, on: :collection
+      end
+
+      resources :sow_cells, only: [] do
         patch :change, on: :collection
       end
     end
@@ -110,6 +123,8 @@ Rails.application.routes.draw do
           post   :include, on: :collection
           delete :exclude, on: :member
         end
+
+        resources :sections, only: %i[create destroy]
       end
 
       resources :excepted_publications, only: [] do
@@ -334,14 +349,24 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :task_tracking_hours, controller: 'task_tracking_hours', only: :index
+
   resources :tasks do
     resources :progress_statuses, controller: 'task_statuses', only: [] do
-      patch :change,        on: :collection
-      post  :comment,        on: :collection
+      patch :change, on: :collection
+      post  :comment, on: :collection
       patch :subtasks,      on: :collection
     end
 
-    resources :comments, controller: 'task_comments', only: %i[new create]
+    resources :checklists, controller: 'task_checklists', only: %i[new create edit update] do
+      patch :confirm,   on: :member
+    end
+
+    resources :receipts, controller: 'task_receipts', only: :index do
+      patch :confirm,   on: :collection
+    end
+
+    resources :comments, controller: 'task_comments', only: %i[new create edit update destroy]
 
     resources :assignments, controller: 'task_assignments', only: [] do
       get   :edit,   on: :collection

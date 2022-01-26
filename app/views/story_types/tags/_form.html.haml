@@ -1,2 +1,2 @@
 =form_with(url: include_story_type_client_tags_path(@story_type, client, client_publication_tag: client_publication_tag), html: { onchange: "Rails.fire(this, 'submit')" }) do |form|
-  =form.select :id, grouped_options_for_select(tags_for_publication(client_publication_tag.publication, client)), { prompt: '' }
+  =form.select :id, grouped_options_for_select(tags_for_publication(client_publication_tag.publication, client)), { prompt: '' }, { class: 'w-100' }

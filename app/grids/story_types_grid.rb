@@ -5,7 +5,19 @@ class StoryTypesGrid
 
   # Scope
   scope do
-    StoryType.includes(:status, :frequency, :photo_bucket, :developer, :clients_publications_tags, :clients, :tags, data_set: %i[state category])
+    StoryType.eager_load(
+      :status, :frequency,
+      :photo_bucket, :developer,
+      :clients_publications_tags,
+      :clients, :tags, :reminder, :cron_tab,
+      data_set: %i[state category]
+    ).order(
+      Arel.sql("CASE WHEN reminders.check_updates = false AND cron_tabs.enabled = false THEN '1' END DESC,
+                CASE WHEN reminders.check_updates = true AND reminders.has_updates = true THEN '2' END DESC,
+                CASE WHEN cron_tabs.enabled = true THEN '3' END DESC,
+                CASE WHEN reminders.check_updates = true AND reminders.has_updates = false THEN '4' END DESC,
+                story_types.id DESC")
+    )
   end
 
   # Filters
@@ -17,11 +29,11 @@ class StoryTypesGrid
   filter(:level_id, :enum, multiple: true, select: Level.all.pluck(:name, :id), left: true)
   filter(:state, :enum, multiple: true, left: true, select: State.all.pluck(:short_name, :full_name, :id).map { |r| [r[0] + ' - ' + r[1], r[2]] }) do |value, scope|
     data_set_state = State.find(value)
-    scope.joins(data_set: [:state]).where(data_set: [{ state: data_set_state }])
+    scope.where(data_sets: { state: data_set_state })
   end
   filter(:category, :enum, multiple: true, left: true, select: DataSetCategory.all.order(:name).pluck(:name, :id)) do |value, scope|
     data_set_category = DataSetCategory.find(value)
-    scope.joins(data_set: [:category]).where(data_set_categories: data_set_category)
+    scope.where(data_sets: { category: data_set_category })
   end
   filter(:data_set, :enum, multiple: true, left: true, select: DataSet.all.order(:name).pluck(:name, :id))
   filter(:location, :string, left: true, header: 'Location (like)') do |value, scope|
@@ -36,7 +48,17 @@ class StoryTypesGrid
   end
   filter(:client, :enum, multiple: true, left: true, select: Client.where(hidden_for_story_type: false).order(:name).pluck(:name, :id)) do |value, scope|
     client = Client.find(value)
-    scope.joins(clients_publications_tags: [:client]).where(clients: client)
+    scope.where('story_type_client_publication_tags.client_id': client)
+  end
+  filter(:has_updates, :enum, select: ['Not realized', 'Yes', 'No'], left: true) do |value, scope|
+    denotations = { 'Yes' => true, 'No' => false }
+    if value == 'Not realized'
+      scope.where(reminders: { check_updates: false })
+    else
+      scope.where(reminders: { has_updates: denotations[value] })
+           .where.not(cron_tabs: { enabled: true })
+           .where.not(reminders: { check_updates: false })
+    end
   end
   filter(:condition1, :dynamic, left: false, header: 'Dynamic condition 1')
   filter(:condition2, :dynamic, left: false, header: 'Dynamic condition 2')
@@ -82,6 +104,26 @@ class StoryTypesGrid
   end
   column(:last_export, mandatory: true) do |record|
     record.last_export&.to_date
+  end
+  column(:has_updates,
+         mandatory: true,
+         order: Arel.sql("CASE WHEN reminders.check_updates = false AND cron_tabs.enabled = false THEN '1' END DESC,
+                          CASE WHEN reminders.check_updates = true AND reminders.has_updates = true THEN '2' END DESC,
+                          CASE WHEN cron_tabs.enabled = true THEN '3' END DESC,
+                          CASE WHEN reminders.check_updates = true AND reminders.has_updates = false THEN '4' END DESC,
+                          story_types.id DESC"),
+         order_desc: Arel.sql("CASE WHEN reminders.check_updates = false AND cron_tabs.enabled = false THEN '1' END,
+                               CASE WHEN reminders.check_updates = true AND reminders.has_updates = true THEN '2' END,
+                               CASE WHEN cron_tabs.enabled = true THEN '3' END,
+                               CASE WHEN reminders.check_updates = true AND reminders.has_updates = false THEN '4' END,
+                               story_types.id DESC")) do |record|
+    if record.cron_tab&.enabled?
+      'on_cron'
+    elsif record.reminder&.check_updates == false
+      'not_realized'
+    else
+      record.reminder&.has_updates
+    end
   end
   column(:client_tags, order: 'frequencies.name', header: 'Client: Tag') do |record|
     str = ''
