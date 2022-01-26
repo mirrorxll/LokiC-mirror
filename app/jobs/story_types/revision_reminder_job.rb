@@ -3,8 +3,8 @@
 module StoryTypes
   class RevisionReminderJob < ApplicationJob
     def perform
-      Template.with_soon_revision.map { |template| template.update(revised: false) }
       Template.revision_needed.each do |template|
+        template.update(revised: false)
         story_type = template.templateable
         url = generate_url(story_type)
         channel = Rails.env.production? ? 'lokic_editors' : 'hle_lokic_development_messages'
