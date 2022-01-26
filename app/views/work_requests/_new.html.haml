@@ -336,7 +336,7 @@
           %span.small.text-danger
             *required
         =f.text_area "work_request[project_order_details]",
-                     class: 'form-control form-control-sm w-75', maxlength: 2000
+                     class: 'form-control form-control-sm w-75'
 
 
     :javascript
@@ -347,9 +347,7 @@
         toolbarButtons: ['undo', 'redo', '|', 'bold', 'italic', 'underline', 'strikeThrough', '|', 'color', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'insertLink', 'insertImage'],
         imageUploadURL: '/images/upload',
         imageUploadMethod: 'POST',
-        charCounterCount: true,
         toolbarVisibleWithoutSelection: false,
-        charCounterMax: 2000,
         zIndex: 3333
       })
 
@@ -360,7 +358,7 @@
         .font-weight-bold.mb-2
           What are you most worried about us missing or not doing on this task?
         =f.text_area "work_request[most_worried_details]", class: 'form-control form-control-sm w-75',
-                     maxlength: 2000, onkeypress: 'newLine(event, this);'
+                     onkeypress: 'newLine(event, this);'
     :javascript
       $('#mostWorriedDetails textarea').froalaEditor({
         key: 'KfdolbcqsaA2wzA-13==',
@@ -369,9 +367,7 @@
         toolbarButtons: ['undo', 'redo', '|', 'bold', 'italic', 'underline', 'strikeThrough', '|', 'color', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'insertLink', 'insertImage'],
         imageUploadURL: '/images/upload',
         imageUploadMethod: 'POST',
-        charCounterCount: true,
         toolbarVisibleWithoutSelection: false,
-        charCounterMax: 2000,
         zIndex: 3333
       })
 

@@ -15,8 +15,8 @@ module StoryTypes
     def update
       staging_table_action do
         @staging_table.update!(columns_modifying: true)
-        StoryTypeChannel.broadcast_to(@story_type, { spinner: true,
-                                                     message: 'Staging table columns modifying in progress' })
+
+        send_to_action_cable(@story_type, 'staging_table', 'staging table modifying in progress')
         StagingTableColumnsJob.perform_later(@staging_table, columns_front_params)
         nil
       end

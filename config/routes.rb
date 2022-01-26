@@ -57,7 +57,6 @@ Rails.application.routes.draw do
       end
     end
 
-
     resources :tasks, only: [] do
       get :titles,   on: :collection
       get :subtasks, on: :member
@@ -116,7 +115,6 @@ Rails.application.routes.draw do
 
         resources :publications, only: [] do
           post   :include, on: :collection
-          post   :include, on: :collection
           delete :exclude, on: :member
         end
 
@@ -124,6 +122,8 @@ Rails.application.routes.draw do
           post   :include, on: :collection
           delete :exclude, on: :member
         end
+
+        resources :sections, only: %i[create destroy]
       end
 
       resources :excepted_publications, only: [] do
@@ -350,8 +350,8 @@ Rails.application.routes.draw do
 
   resources :tasks do
     resources :progress_statuses, controller: 'task_statuses', only: [] do
-      patch :change,        on: :collection
-      post  :comment,        on: :collection
+      patch :change, on: :collection
+      post  :comment, on: :collection
       patch :subtasks,      on: :collection
     end
 

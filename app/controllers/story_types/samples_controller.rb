@@ -38,6 +38,8 @@ module StoryTypes
 
     def create_and_gen_auto_feedback
       @iteration.update!(samples: false, current_account: current_account)
+
+      send_to_action_cable(@story_type, 'samples', 'creation in the process')
       SamplesAndAutoFeedbackJob.perform_later(@iteration, current_account, stories_params)
 
       render 'story_types/creations/execute'
@@ -45,6 +47,8 @@ module StoryTypes
 
     def purge_sampled
       @iteration.update!(purge_samples: false, current_account: current_account)
+
+      send_to_action_cable(@story_type, 'samples', 'purging in progress')
       PurgeSamplesJob.perform_later(@iteration, current_account)
 
       render 'story_types/creations/purge'

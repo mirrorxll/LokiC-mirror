@@ -20,8 +20,8 @@ module StoryTypes
           "Table with name '#{@staging_table_name}' not exists."
         else
           @story_type.update!(staging_table_attached: false, current_account: current_account)
-          StoryTypeChannel.broadcast_to(@story_type, { spinner: true,
-                                                       message: 'Staging table attaching in progress' })
+
+          send_to_action_cable(@story_type, 'staging_table', 'staging table attaching in progress')
           StagingTableAttachingJob.perform_later(@story_type, current_account, @staging_table_name)
           nil
         end

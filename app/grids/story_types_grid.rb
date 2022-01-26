@@ -5,15 +5,18 @@ class StoryTypesGrid
 
   # Scope
   scope do
-    StoryType.includes(
+    StoryType.eager_load(
       :status, :frequency,
       :photo_bucket, :developer,
-      :clients, :tags, :reminder,
-      clients_publications_tags: :client,
+      :clients_publications_tags,
+      :clients, :tags, :reminder, :cron_tab,
       data_set: %i[state category]
     ).order(
-      'reminders.has_updates DESC',
-      'story_types.id desc'
+      Arel.sql("CASE WHEN reminders.check_updates = false AND cron_tabs.enabled = false THEN '1' END DESC,
+                CASE WHEN reminders.check_updates = true AND reminders.has_updates = true THEN '2' END DESC,
+                CASE WHEN cron_tabs.enabled = true THEN '3' END DESC,
+                CASE WHEN reminders.check_updates = true AND reminders.has_updates = false THEN '4' END DESC,
+                story_types.id DESC")
     )
   end
 
@@ -46,6 +49,16 @@ class StoryTypesGrid
   filter(:client, :enum, multiple: true, left: true, select: Client.where(hidden_for_story_type: false).order(:name).pluck(:name, :id)) do |value, scope|
     client = Client.find(value)
     scope.where('story_type_client_publication_tags.client_id': client)
+  end
+  filter(:has_updates, :enum, select: ['Not realized', 'Yes', 'No'], left: true) do |value, scope|
+    denotations = { 'Yes' => true, 'No' => false }
+    if value == 'Not realized'
+      scope.where(reminders: { check_updates: false })
+    else
+      scope.where(reminders: { has_updates: denotations[value] })
+           .where.not(cron_tabs: { enabled: true })
+           .where.not(reminders: { check_updates: false })
+    end
   end
   filter(:condition1, :dynamic, left: false, header: 'Dynamic condition 1')
   filter(:condition2, :dynamic, left: false, header: 'Dynamic condition 2')
@@ -92,8 +105,25 @@ class StoryTypesGrid
   column(:last_export, mandatory: true) do |record|
     record.last_export&.to_date
   end
-  column(:has_updates, mandatory: true, order: 'reminders.has_updates DESC, story_types.id desc') do |record|
-    record.reminder&.has_updates
+  column(:has_updates,
+         mandatory: true,
+         order: Arel.sql("CASE WHEN reminders.check_updates = false AND cron_tabs.enabled = false THEN '1' END DESC,
+                          CASE WHEN reminders.check_updates = true AND reminders.has_updates = true THEN '2' END DESC,
+                          CASE WHEN cron_tabs.enabled = true THEN '3' END DESC,
+                          CASE WHEN reminders.check_updates = true AND reminders.has_updates = false THEN '4' END DESC,
+                          story_types.id DESC"),
+         order_desc: Arel.sql("CASE WHEN reminders.check_updates = false AND cron_tabs.enabled = false THEN '1' END,
+                               CASE WHEN reminders.check_updates = true AND reminders.has_updates = true THEN '2' END,
+                               CASE WHEN cron_tabs.enabled = true THEN '3' END,
+                               CASE WHEN reminders.check_updates = true AND reminders.has_updates = false THEN '4' END,
+                               story_types.id DESC")) do |record|
+    if record.cron_tab&.enabled?
+      'on_cron'
+    elsif record.reminder&.check_updates == false
+      'not_realized'
+    else
+      record.reminder&.has_updates
+    end
   end
   column(:client_tags, order: 'frequencies.name', header: 'Client: Tag') do |record|
     str = ''
