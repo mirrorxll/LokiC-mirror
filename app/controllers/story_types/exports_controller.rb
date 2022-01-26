@@ -63,14 +63,16 @@ module StoryTypes
     end
 
     def revision_reminder
-      channel = @story_type.editor.slack_identifier
-      message = "You have to revise template for Story Type #{@story_type.id} to unlock export for developer!"
+      url = generate_url(@story_type)
+      channel = Rails.env.production? ? 'lokic_editors' : 'hle_lokic_development_messages'
+      message = "Static year must be revised in the template for <#{url}|Story Type ##{@story_type.id}> to unlock " \
+                ' export for developer!'
       section = :export
       flash_message = {
         iteration_id: @iteration.id,
         message: {
           key: section,
-          section => 'Editor has to revise the template to unlock export!'
+          section => 'Editor must revise the template to unlock export!'
         }
       }
       # flash message for developer

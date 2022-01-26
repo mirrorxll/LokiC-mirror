@@ -132,4 +132,9 @@ class ApplicationController < ActionController::Base
   def template_with_expired_revision
     @iteration.story_type.template.expired_revision?
   end
+
+  def generate_url(model)
+    host = Rails.env.production? ? 'https://lokic.locallabs.com' : 'http://localhost:3000'
+    "#{host}#{Rails.application.routes.url_helpers.send("#{model.class.to_s.underscore}_path", model)}"
+  end
 end
