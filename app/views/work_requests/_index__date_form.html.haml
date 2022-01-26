@@ -1,8 +1,9 @@
-=form_with(url: api_work_request_path(work_request), method: :patch, ) do |f|
+=form_with(url: api_work_request_path(work_request), method: :patch) do |f|
   =f.date_field "work_request[#{key}]", id: "#{key}__#{work_request.id}",
                 style: 'width: 130px;', class: 'underline-input rounded-0 p-0'
   =button_tag class: 'btn p-0' do
     =icon('fa', 'pencil')
+
 :javascript
   (() => {
     let input = document.querySelector(`\##{key}__#{work_request.id}`)
@@ -10,7 +11,7 @@
     let valueType = target.at(0);
     let valueId = target.at(-1);
 
-    input.form.addEventListener('submit', submitForm)
+    input.form.addEventListener('submit', submitForm);
     input.value = document.querySelector(`\#${valueType}${valueId} u`).innerText;
 
     let popoverBody = document.querySelector('.popover-body');
