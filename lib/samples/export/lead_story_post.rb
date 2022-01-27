@@ -89,7 +89,7 @@ module Samples
           active_org_ids += JSON.parse(response.body).map { |org| org['id'] }
         end
 
-        params = {
+        p params = {
           community_id: publication.pl_identifier,
           lead_id: lead_id,
           organization_ids: active_org_ids,
