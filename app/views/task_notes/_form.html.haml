@@ -1,0 +1,6 @@
+=form_with(model: @note, url: task_notes_path(@task)) do |form|
+  .row.m-2.align-content-center
+    .col
+      =form.rich_text_area 'note[body]', class: 'form-control form-control-sm overflow-auto', required: true
+  .row.justify-content-center.mb-2
+    =form.submit :create, class: 'btn btn-sm btn-outline-success small'
