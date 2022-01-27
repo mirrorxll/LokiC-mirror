@@ -1,0 +1,3 @@
+$('#notesCollapse').html(`<%= j render 'task_notes/edit_form' %>`);
+$("#noteBody_<%= @note.id %>").val(`<%= @note.body %>`);
+$('#notesCollapse').addClass('show');
