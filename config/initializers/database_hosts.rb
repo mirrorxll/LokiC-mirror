@@ -40,6 +40,8 @@ DB13 = 'db13.blockshopper.com'
 DB14 = 'db14.blockshopper.com'
 DB15 = 'db15.blockshopper.com'
 
+UPDATED_MB4_BASES = [{ host: DB02, database: 'twitter' }, { host: DB02, database: 'loki_storycreator' }]
+
 # to convert short names like 'db05' to corresponding constant value
 def full_db_name(name)
   name.include?('blockshopper.com') ? name : Object.const_get(name.to_s.upcase)

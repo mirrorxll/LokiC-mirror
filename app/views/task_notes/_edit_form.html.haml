@@ -1,0 +1,7 @@
+=form_with(url: task_note_path(@task, @note), method: :patch) do |form|
+  .row.m-2.align-content-center
+    .col-12
+      =form.rich_text_area 'note[body]', class: 'form-control form-control-sm overflow-auto', required: true, id: "noteBody_#{@note.id}"
+  .row.justify-content-center.mb-2
+    =form.submit :save, class: 'btn btn-sm btn-outline-dark small mr-1'
+    =link_to('cancel', cancel_edit_task_note_path(@task, @note), method: :get, remote: true, class: 'small btn btn-sm btn-outline-dark ml-1')
