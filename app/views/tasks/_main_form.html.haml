@@ -192,8 +192,9 @@
   }
   document.querySelector('#form_new_task').addEventListener('submit', onSubmit)
 
-  $('#add_checklist').click(function () {
+  $('#addСhecklistParent').click(function () {
     let hex = secureRandom(6);
+
     $('#forms_checklists_parent').append(
         `<div id="checklist_${hex}" class="row small justify-content-center mt-2">
            <div class="small mt-1 mr-2"><i class="fa fa-circle"></i></div>
@@ -206,7 +207,7 @@
   function showChecklists(e, task) {
     e.preventDefault();
 
-    let divChecklists = document.querySelector(`#checklists_${task}`)
+    let divChecklists = document.querySelector(`#checklistsParent`)
     if(divChecklists.classList.contains('d-none')){
       divChecklists.classList.remove('d-none');
     } else {
