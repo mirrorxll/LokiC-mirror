@@ -35,6 +35,8 @@ class Task < ApplicationRecord # :nodoc:
   has_many :comments, -> { where(commentable_type: 'Task') }, as: :commentable, class_name: 'Comment'
   has_many :subtasks, -> { where.not(status: Status.find_by(name: 'deleted')) }, foreign_key: :parent_task_id, class_name: 'Task'
 
+  has_many :notes, class_name: 'TaskNote'
+
   has_and_belongs_to_many :scrape_tasks
 
   def assignment_to_or_creator?(account)
@@ -69,7 +71,6 @@ class Task < ApplicationRecord # :nodoc:
     "https://pipeline.locallabs.com/gather_tasks/#{gather_task}"
   end
 
-
   def title_with_id
     "##{id} #{title}"
   end
@@ -88,5 +89,9 @@ class Task < ApplicationRecord # :nodoc:
 
   def sum_hours
     sprintf('%g', assignments.sum(:hours).to_s) + ' hours'
+  end
+
+  def note(account)
+    notes.find_by(creator: account)
   end
 end

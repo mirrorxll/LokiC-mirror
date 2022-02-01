@@ -88,6 +88,7 @@ class TasksController < ApplicationController # :nodoc:
       elsif grid_params[:status].length == 1
         grid_params[:status]
       end
+    grid_params[:current_account] = current_account
 
     @grid = TasksGrid.new(grid_params.except(:collapse))
   end
