@@ -9,6 +9,8 @@ module StoryTypes
       story_type = iteration.story_type
       population_args = population_args_to_hash(options[:population_args])
 
+      SidekiqStop.create_with(cancel: false).find_or_create_by(story_type: story_type)
+
       rd, wr = IO.pipe
 
       Process.wait(

@@ -22,6 +22,7 @@ module MiniLokiC
     end
 
     def execute(method, options = {})
+      # pp "> "*50, method
       METHODS_TRACER.enable { load_story_type_class.new.public_send(method, options) }
     rescue StandardError, ScriptError => e
       path = e.backtrace.first
@@ -38,12 +39,17 @@ module MiniLokiC
     end
 
     def load_story_type_class
+      # pp "> "*500
       file = "#{Rails.root}/public/ruby_code/s#{@story_type.id}.rb"
-      File.open(file, 'wb') { |f| f.write(@story_type.code.download) }
+      File.open(file, 'wb') do |f|
+        # pp "> "*50, 'load_story_type_class', f
+        f.write(@story_type.code.download)
+      end
 
       load file
       story_type_class = Object.const_get("S#{@story_type.id}")
 
+      # pp "> "*50, 'story_type_class', story_type_class
       story_type_class.include(
         MiniLokiC::Connect,
         MiniLokiC::Formatize,

@@ -30,7 +30,51 @@ module StoryTypes
     private
 
     def download_code
-      @code = @story_type.download_code_from_db
+      # @code = @story_type.download_code_from_db
+      @code = <<~CODE
+        class S1
+          STAGING_TABLE = 's0001'
+          def check_updates; end
+          def population(options)
+            host = Mysql2::Client.new(host: '127.0.0.1', username: 'sammy', password: 'passworD=123', database: 'loki_story_creator_dev')
+            raw                     = {}
+            raw['client_id']        = 196
+            raw['client_name']      = "MM - New York"
+            raw['publication_id']   = 2813
+            raw['publication_name'] = 'NYC Gazette'
+            raw['organization_ids'] = 645397327
+            raw['time_frame']       = Frame[:annually, Date.today.to_s]
+        
+            raw['a']                = 'year'
+
+            pp '>>>>>>>>>>>>>>>>>>>>>>>>', SidekiqStop[self.class.to_s]
+            return if SidekiqStop[self.class.to_s]
+            
+            staging_insert_query = SQL.insert_on_duplicate_key(STAGING_TABLE, raw)
+            host.query(staging_insert_query)
+            host.close
+            # PopulationSuccess[STAGING_TABLE] unless ENV['RAILS_ENV']
+          end
+          def creation(options)
+            samples = Samples.new(STAGING_TABLE, options)
+            StagingRecords[STAGING_TABLE, options].each do |stage|
+              pp "> "*50, stage
+              sample                    = {}
+              sample[:staging_row_id]   = stage['id']
+              sample[:publication_id]   = 2813
+              sample[:organization_ids] = 645397327
+              sample[:time_frame]       = '2022'
+              foo                       = stage['a']
+        
+              sample[:headline] = 'headline'
+              sample[:teaser]   = 'teaser'
+              sample[:body]     = foo
+        
+              samples.insert(sample)
+            end
+          end
+        end
+      CODE
     end
   end
 end
