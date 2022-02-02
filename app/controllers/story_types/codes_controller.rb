@@ -66,17 +66,17 @@ module StoryTypes
               pp "> "*50, stage
               sample                    = {}
               sample[:staging_row_id]   = stage['id']
-              sample[:publication_id]   = 2813
-              sample[:organization_ids] = 645397327
-              sample[:time_frame]       = '2022'
+              sample[:publication_id]   = stage['publication_id']
+              sample[:organization_ids] = stage['organization_ids']
+              sample[:time_frame]       = stage['time_frame']
               foo                       = stage['a']
         
               sample[:headline] = 'headline'
               sample[:teaser]   = 'teaser'
               sample[:body]     = foo
         
-                sleep 1
-                return if SidekiqBreak[self.class.to_s]
+              sleep 1
+              return if SidekiqBreak[self.class.to_s]
 
               samples.insert(sample)
             end
