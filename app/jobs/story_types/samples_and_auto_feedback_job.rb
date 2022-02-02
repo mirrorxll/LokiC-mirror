@@ -4,6 +4,8 @@ module StoryTypes
   class SamplesAndAutoFeedbackJob < StoryTypesJob
     def perform(iteration, account, options = {})
       status = true
+      story_type = iteration.story_type
+      SidekiqBreak.create_with(cancel: false).find_or_create_by(story_type: story_type)
       rd, wr = IO.pipe
 
       Process.wait(
@@ -66,6 +68,11 @@ module StoryTypes
         message = forked_res
       end
 
+      if story_type.sidekiq_break.cancel
+        status = nil
+        message = 'Canceled'
+      end
+
       false
     rescue StandardError, ScriptError => e
       status = nil
@@ -73,7 +80,8 @@ module StoryTypes
       true
     ensure
       iteration.update!(samples: status, current_account: account)
-      send_to_action_cable(iteration.story_type, :samples, message)
+      story_type.sidekiq_break.update(cancel: false)
+      send_to_action_cable(story_type, :samples, message)
 
       StoryTypes::SlackNotificationJob.perform_now(iteration, 'samples', message) if options[:cron] && status.nil?
     end

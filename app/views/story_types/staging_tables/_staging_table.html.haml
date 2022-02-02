@@ -8,9 +8,6 @@
   =render 'story_types/spinner', description: 'staging table modifying in progress'
 -elsif @iteration.population.eql?(false)
   =render 'story_types/spinner', description: 'population in progress'
-  .text-center.mt-3
-    =link_to("cancel the job", story_type_sidekiq_breaks_path(@story_type),
-             class: 'btn btn-sm btn-outline-danger', method: :post, remote: true)
 -else
   -staging_table = @story_type.staging_table
   -columns = staging_table.columns.list

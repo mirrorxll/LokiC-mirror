@@ -22,7 +22,6 @@ module MiniLokiC
     end
 
     def execute(method, options = {})
-      # pp "> "*50, method
       METHODS_TRACER.enable { load_story_type_class.new.public_send(method, options) }
     rescue StandardError, ScriptError => e
       path = e.backtrace.first
@@ -49,7 +48,6 @@ module MiniLokiC
       load file
       story_type_class = Object.const_get("S#{@story_type.id}")
 
-      # pp "> "*50, 'story_type_class', story_type_class
       story_type_class.include(
         MiniLokiC::Connect,
         MiniLokiC::Formatize,
