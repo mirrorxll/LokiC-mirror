@@ -37,21 +37,26 @@ module StoryTypes
           def check_updates; end
           def population(options)
             host = Mysql2::Client.new(host: '127.0.0.1', username: 'sammy', password: 'passworD=123', database: 'loki_story_creator_dev')
-            raw                     = {}
-            raw['client_id']        = 196
-            raw['client_name']      = "MM - New York"
-            raw['publication_id']   = 2813
-            raw['publication_name'] = 'NYC Gazette'
-            raw['organization_ids'] = 645397327
-            raw['time_frame']       = Frame[:annually, Date.today.to_s]
-        
-            raw['a']                = 'year'
-
-            pp '>>>>>>>>>>>>>>>>>>>>>>>>', SidekiqStop[self.class.to_s]
-            return if SidekiqStop[self.class.to_s]
+            arry = ('a'..'z').to_a
+            arry.each do |arr|
+              publications = [{ 'id' => 2813, 'name' => 'NYC Gazette', 'client_id' => 196, 'client_name' => 'MM - New York' }]
+              publications.flatten.each do |publication|
+                raw                      = {}
+                raw['client_id']         = publication['client_id']
+                raw['client_name']       = publication['client_name']
+                raw['publication_id']    = publication['id']
+                raw['publication_name']  = publication['name']
+                raw['organization_ids']  = 645_397_327
+                raw['time_frame']        = Frame[:annually, Date.today.to_s]
             
-            staging_insert_query = SQL.insert_on_duplicate_key(STAGING_TABLE, raw)
-            host.query(staging_insert_query)
+                raw['a']                 = arr
+                sleep 1
+                return if SidekiqBreak[self.class.to_s]
+                
+                staging_insert_query = SQL.insert_on_duplicate_key(STAGING_TABLE, raw)
+                host.query(staging_insert_query)
+              end
+            end
             host.close
             # PopulationSuccess[STAGING_TABLE] unless ENV['RAILS_ENV']
           end
