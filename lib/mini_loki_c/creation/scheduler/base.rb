@@ -85,7 +85,8 @@ module MiniLokiC
             count_stories_per_date = 0
             not_adjusted = true
             stories.each do |story|
-              Kernel.sleep 1
+              break if iteration.story_type.reload.sidekiq_break.cancel
+
               count_stories_per_date += 1
               story_ids[i] = [] unless story_ids[i]
               story_ids[i] << story[:id]

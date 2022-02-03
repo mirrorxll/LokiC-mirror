@@ -6,6 +6,7 @@ module StoryTypes
       status = true
       message = 'Success. Make sure that all stories are exported'
       story_type = iteration.story_type
+      SidekiqBreak.create_with(cancel: false).find_or_create_by(story_type: story_type)
       threads_count = (iteration.stories.count / 75_000.0).ceil + 1
       threads_count = threads_count > 20 ? 20 : threads_count
 
@@ -35,6 +36,8 @@ module StoryTypes
         end
 
         last_export_batch = iteration.reload.last_export_batch_size.zero?
+        pp "> "*50, story_type.sidekiq_break.cancel
+        sleep 1
         break if last_export_batch
       end
 
@@ -80,6 +83,7 @@ module StoryTypes
       message = e.message
     ensure
       iteration.reload.update!(export: status)
+      story_type.sidekiq_break.update(cancel: false)
       send_to_action_cable(story_type, :export, message)
       StoryTypes::SlackNotificationJob.perform_now(iteration, 'export', message)
     end
