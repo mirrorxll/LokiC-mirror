@@ -1,0 +1,2 @@
+$('#client_publication_tag_<%= @client_publication_tag.id %> .section_list_<%= @client_publication_tag.id %>')
+    .html('<%= j render partial: 'story_types/sections/section', collection: @client_publication_tag.sections, locals: { cpts: @client_publication_tag } %>')

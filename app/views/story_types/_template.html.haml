@@ -1,8 +1,13 @@
--#.row
-  .col-10.offset-1
-    #template_edit_save_buttons
-      edit/save
-    %hr/
+%hr/
 .row
   .col-10.offset-1
     =@story_type.template.body.html_safe
+%hr.mb-2/
+
+-if (current_account.types & %w[manager editor]).any?
+  .row
+    .col-10.offset-1
+      .d-inline-block.font-weight-bold
+        static year in template / next revision date:
+      .d-inline-block#templateStaticYearRevision
+        =render 'static_year__revision', show_edit_form: false

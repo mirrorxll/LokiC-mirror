@@ -9,6 +9,7 @@ class TasksController < ApplicationController # :nodoc:
   before_action :find_task, only: %i[show edit update]
   before_action :grid, only: :index
   before_action :task_assignments, only: :show
+  before_action :find_note, only: :show
 
   after_action  :send_notification, only: :create
   after_action  :comment, only: :create
@@ -32,7 +33,7 @@ class TasksController < ApplicationController # :nodoc:
   end
 
   def create
-    @task = Task.new(task_params)
+    @task = Task.new(task_parent_params)
 
     if @task.save!
       @task.assignment_to << Account.find(assignment_to_params)
@@ -90,12 +91,17 @@ class TasksController < ApplicationController # :nodoc:
       elsif grid_params[:status].length == 1
         grid_params[:status]
       end
+    grid_params[:current_account] = current_account
 
     @grid = TasksGrid.new(grid_params.except(:collapse, :type))
   end
 
   def find_task
     @task = Task.find(params[:id]) || params[:task_id]
+  end
+
+  def find_note
+    @note = TaskNote.find_by(task: @task, creator: current_account)
   end
 
   def send_notification
@@ -110,8 +116,8 @@ class TasksController < ApplicationController # :nodoc:
     end
   end
 
-  def task_params
-    task_params = params.require(:task).permit(:title, :description, :parent, :deadline, :client_id, :reminder_frequency, :access, :gather_task)
+  def task_parent_params
+    task_params = params.require(:task_parent).permit(:title, :description, :parent, :deadline, :client_id, :reminder_frequency, :access, :gather_task)
     task_params[:reminder_frequency] = task_params[:reminder_frequency].blank? ? nil : TaskReminderFrequency.find(task_params[:reminder_frequency])
     task_params[:parent] = task_params[:parent].blank? ? nil : Task.find(task_params[:parent])
     task_params[:client] = task_params[:client_id].blank? ? nil : ClientsReport.find(task_params[:client_id])

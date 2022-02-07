@@ -1,0 +1,2 @@
+module StoryTypes::SectionsHelper
+end

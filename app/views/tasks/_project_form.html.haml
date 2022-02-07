@@ -170,11 +170,11 @@
     let hiddenButton = document.querySelector('#hiddenCreateProjectButton');
 
     if(nameInput.value.trim().length === 0) {
-       feedbackIsEmpty.classList.remove('d-none');
-       hiddenButton.disabled = true;
-       button.disabled = true;
-       button.innerText = 'create';
-       return false;
+      feedbackIsEmpty.classList.remove('d-none');
+      hiddenButton.disabled = true;
+      button.disabled = true;
+      button.innerText = 'create';
+      return false;
     }
 
     Rails.ajax({

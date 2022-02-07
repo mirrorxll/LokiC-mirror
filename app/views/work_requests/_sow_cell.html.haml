@@ -1,0 +1,5 @@
+%div{ id: "sow#{work_request.id}", class: 'text-center' }
+  -if default
+    =render 'work_requests/_create_sow', work_request: work_request
+  -else
+    =render 'work_requests/_sow_actions', work_request: work_request

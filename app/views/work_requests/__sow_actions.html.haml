@@ -1,0 +1,3 @@
+-sow = { name: (work_request.sow[/document/] ? 'Google Doc' : 'Google Sheet'), link: work_request.sow }
+
+=link_to(sow[:name], sow[:link], target: '_blank', rel: 'noopener noreferrer')

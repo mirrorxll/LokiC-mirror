@@ -22,26 +22,15 @@ Rails.application.routes.draw do
 
   namespace :api, constraints: { format: :json } do
     resources :work_requests, only: :update
-    scope module: :work_requests, path: 'work_requests', as: 'work_request_collections' do
-      # resources :work_types, only: [] do
-      #   post :find_or_create, on: :collection
-      # end
 
+    scope module: :story_types, path: 'story_types/:story_type_id' do
+      resources :template, only: :update
+    end
+
+    scope module: :work_requests, path: 'work_requests', as: 'work_request_collections' do
       resources :clients, only: [] do
         get :find_by_name, on: :collection
       end
-
-      # resources :underwriting_projects, only: [] do
-      #   post :find_or_create, on: :collection
-      # end
-
-      # resources :invoice_types, only: [] do
-      #   post :find_or_create, on: :collection
-      # end
-
-      # resources :invoice_frequencies, only: [] do
-      #   post :find_or_create, on: :collection
-      # end
     end
 
     scope module: :work_requests, path: 'work_requests/:id', as: 'work_request_members' do
@@ -67,7 +56,6 @@ Rails.application.routes.draw do
         delete :exclude, on: :collection
       end
     end
-
 
     resources :tasks, only: [] do
       get :titles,   on: :collection
@@ -95,6 +83,10 @@ Rails.application.routes.draw do
 
     scope module: :work_requests do
       resources :progress_statuses, only: [] do
+        patch :change, on: :collection
+      end
+
+      resources :sow_cells, only: [] do
         patch :change, on: :collection
       end
     end
@@ -131,6 +123,8 @@ Rails.application.routes.draw do
           post   :include, on: :collection
           delete :exclude, on: :member
         end
+
+        resources :sections, only: %i[create destroy]
       end
 
       resources :excepted_publications, only: [] do
@@ -359,8 +353,8 @@ Rails.application.routes.draw do
     get :add_subtask, on: :collection
 
     resources :progress_statuses, controller: 'task_statuses', only: [] do
-      patch :change,        on: :collection
-      post  :comment,        on: :collection
+      patch :change, on: :collection
+      post  :comment, on: :collection
       patch :subtasks,      on: :collection
     end
 
@@ -378,6 +372,10 @@ Rails.application.routes.draw do
       get   :edit,   on: :collection
       patch :update, on: :collection
       get   :cancel, on: :collection
+    end
+
+    resources :notes, controller: 'task_notes', only: %i[new create edit update] do
+      get :cancel_edit, on: :member
     end
   end
 

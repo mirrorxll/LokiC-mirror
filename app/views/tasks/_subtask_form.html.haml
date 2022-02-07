@@ -1,4 +1,4 @@
-.accordion-item
+.accordion-item.border.border-5
   .accordion-header{ id: "newSubtask#{number_subtask}", class: 'newSubtaskForm' }
     .row.small
       .col-10
@@ -7,9 +7,9 @@
           Task with this title already created by you. Let's use something else
       .col-1
         .accordion-button{"aria-controls" => "collapse#{number_subtask}", "aria-expanded" => "true", "data-target" => "#collapse#{number_subtask}", "data-toggle" => "collapse", :type => "button"}
-          show
-      .col-1
-        [remove]
+          .fa.fas.icon-collapse
+      .col-1.btn.btn-link.btn-block.btn-sm
+        [ remove ]
   .accordion-collapse.collapse{id: "collapse#{number_subtask}", "aria-labelledby" => "newSubtask#{number_subtask}"}
     .accordion-body
       .d-flex.small.font-weight-bold
@@ -46,7 +46,7 @@
         .form-group
           =text_area_tag "subtasks[#{number_subtask}][description]", '', class: 'form-control', id: "descriptionSubtask#{number_subtask}"
 
-      .accordion.mt-2.d-none{ id: "checklists_#{number_subtask}" }
+      .accordion.mt-2.mb-3.d-none{ id: "checklists_#{number_subtask}" }
         .card.small
           .card-header.p-1
             %div.row

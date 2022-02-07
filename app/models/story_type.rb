@@ -54,7 +54,14 @@ class StoryType < ApplicationRecord
   has_many :change_history, as: :history
   has_many :alerts, as: :alert
 
-  def number_name
+  scope :with_developer, -> { where.not(developer: nil) }
+  scope :with_code, -> { joins(:code_attachment) }
+  scope :ongoing, lambda {
+    joins(:status).where.not('statuses.name': ['canceled', 'migrated', 'not started', 'blocked', 'done'])
+  }
+  scope :not_cron, -> { joins(:cron_tab).where.not('cron_tabs.enabled': true) }
+
+  def id_name
     "##{id} #{name}"
   end
 
@@ -137,6 +144,10 @@ class StoryType < ApplicationRecord
 
   def updates_confirmed?
     reminder&.updates_confirmed
+  end
+
+  def check_updates_developed?
+    !reminder.has_updates.nil?
   end
 
   private
