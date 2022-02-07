@@ -32,7 +32,6 @@
         .col.text-right
           =link_to('[ checklists ]', nil, onclick: "showChecklistsParent(event)")
         .col.text-left
-
     .col-4
       .row.mb-2
         .col.text-right
@@ -44,9 +43,6 @@
           access to task and its subtasks:
         .col.text-left
           =form.check_box 'task_parent[access]', class: 'form-check-input ml-0 mt-2', checked: true
-  .row.col.small.mt-2
-    .form-group
-      =form.text_area 'task_parent[description]', class: 'form-control', id: 'task_description'
   #checklistsParent.accordion.mt-2.d-none
     .card.small
       .card-header.p-1
@@ -59,8 +55,11 @@
       #checklistsParentCollapse.collapse{"data-parent" => "#checklistsParent", class: 'show'}
         .row.mt-2.mb-2
           .col#forms_checklists_parent
+  .row.col.small.mt-2
+    .form-group
+      =form.text_area 'task_parent[description]', class: 'form-control', id: 'task_description'
 
-  %hr
+
   #formsSubtasks.accordion
 
   .row.col.small.font-weight-bold.justify-content-center.mb-2

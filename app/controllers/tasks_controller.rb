@@ -33,7 +33,7 @@ class TasksController < ApplicationController # :nodoc:
   end
 
   def create
-    @task = Task.new(task_params)
+    @task = Task.new(task_parent_params)
 
     if @task.save!
       @task.assignment_to << Account.find(assignment_to_params)
@@ -116,8 +116,8 @@ class TasksController < ApplicationController # :nodoc:
     end
   end
 
-  def task_params
-    task_params = params.require(:task).permit(:title, :description, :parent, :deadline, :client_id, :reminder_frequency, :access, :gather_task)
+  def task_parent_params
+    task_params = params.require(:task_parent).permit(:title, :description, :parent, :deadline, :client_id, :reminder_frequency, :access, :gather_task)
     task_params[:reminder_frequency] = task_params[:reminder_frequency].blank? ? nil : TaskReminderFrequency.find(task_params[:reminder_frequency])
     task_params[:parent] = task_params[:parent].blank? ? nil : Task.find(task_params[:parent])
     task_params[:client] = task_params[:client_id].blank? ? nil : ClientsReport.find(task_params[:client_id])
