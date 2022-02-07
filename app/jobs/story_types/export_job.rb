@@ -86,7 +86,7 @@ module StoryTypes
       message = e.message
     ensure
       iteration.reload.update!(export: status)
-      story_type.sidekiq_break.update(cancel: false)
+      story_type.sidekiq_break.update!(cancel: false)
       send_to_action_cable(story_type, :export, message)
       StoryTypes::SlackNotificationJob.perform_now(iteration, 'export', message)
     end

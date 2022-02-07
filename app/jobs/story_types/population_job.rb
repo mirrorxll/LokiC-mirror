@@ -51,7 +51,7 @@ module StoryTypes
       true
     ensure
       iteration.update!(population: status, current_account: account)
-      story_type.sidekiq_break.update(cancel: false)
+      story_type.sidekiq_break.update!(cancel: false)
       send_to_action_cable(story_type, :staging_table, message)
       StoryTypes::SlackNotificationJob.perform_now(iteration, 'population', message)
     end

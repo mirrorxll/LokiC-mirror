@@ -14,7 +14,7 @@ METHODS_TRACER = TracePoint.new(:call) do |tp|
               ">Someone called forbidden method *Publications::#{method}*"
 
     Slack::Web::Client.new.chat_postMessage(
-      channel: 'U02JWAHN88M',
+      channel: 'UA9SJH2Q5',
       text: message,
       as_user: true
     )

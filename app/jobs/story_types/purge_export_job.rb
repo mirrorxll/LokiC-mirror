@@ -61,7 +61,7 @@ module StoryTypes
       message = e.message
     ensure
       iteration.update!(purge_export: status, export: nil)
-      story_type.sidekiq_break.update(cancel: false)
+      story_type.sidekiq_break.update!(cancel: false)
       send_to_action_cable(iteration.story_type, :export, message)
       StoryTypes::SlackNotificationJob.perform_now(iteration, 'remove from pl', message)
     end

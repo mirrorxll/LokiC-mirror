@@ -78,7 +78,7 @@ module StoryTypes
       raise SchedulerExecutionError, "Scheduling from code: #{message}" if options[:exception]
     ensure
       iteration.update!(schedule: status)
-      story_type.sidekiq_break.update(cancel: false)
+      story_type.sidekiq_break.update!(cancel: false)
 
       unless options[:exception]
         send_to_action_cable(iteration.story_type, :scheduler, message)

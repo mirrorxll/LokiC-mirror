@@ -80,7 +80,7 @@ module StoryTypes
       true
     ensure
       iteration.update!(samples: status, current_account: account)
-      story_type.sidekiq_break.update(cancel: false)
+      story_type.sidekiq_break.update!(cancel: false)
       send_to_action_cable(story_type, :samples, message)
 
       StoryTypes::SlackNotificationJob.perform_now(iteration, 'samples', message) if options[:cron] && status.nil?

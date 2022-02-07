@@ -5,8 +5,7 @@ module StoryTypes
     def perform(iteration, step, raw_message, developer = nil)
       story_type = iteration.story_type
       story_type_dev = developer || story_type.developer
-      # channel = Rails.env.production? ? 'lokic_story_type_messages' : 'hle_lokic_development_messages'
-      channel = 'U02JWAHN88M'
+      channel = Rails.env.production? ? 'lokic_story_type_messages' : 'hle_lokic_development_messages'
 
       url = generate_url(story_type)
       progress_step = step.in?(%w[developer]) ? '' : "| #{step.capitalize}"
