@@ -13,7 +13,7 @@ class ScrapeTasksController < ApplicationController
   def index
     respond_to do |f|
       f.html do
-        @scrape_tasks_grid.scope { |scope| scope.page(params[:page]).per(50) }
+        @scrape_tasks_grid.scope { |scope| scope.page(params[:page]).per(30) }
       end
     end
   end

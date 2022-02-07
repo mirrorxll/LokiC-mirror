@@ -1,92 +1,114 @@
-%div{ id: "scrapeTask", scrape_task_id: @scrape_task.id }
+.container-fluid
+  %div{ id: "scrapeTask", scrape_task_id: @scrape_task.id }
 
-%hr/
-#scrapeTaskName.text-center
-  =link_to("##{@scrape_task.id} #{@scrape_task.name}", @scrape_task)
-%hr.mb-0/
+  %hr/
+  #scrapeTaskName.text-center
+    =link_to("##{@scrape_task.id} #{@scrape_task.name}", @scrape_task)
+  %hr.mb-0/
 
-.d-flex.justify-content-between.align-items-center.mb-3.small
-  .text-secondary
-    created by #{@scrape_task.creator.name}
-  .text-secondary
-    created at: #{@scrape_task.created_at}#{@scrape_task.updated_early? ? " | updated at: #{@scrape_task.updated_at}" : ""}
+  .d-flex.justify-content-between.align-items-center.mb-3.small
+    .text-secondary
+      created by #{@scrape_task.creator.name}
+    .text-secondary
+      created at: #{@scrape_task.created_at}#{@scrape_task.updated_early? ? " | updated at: #{@scrape_task.updated_at}" : ""}
 
-#scrappingInfo.mt-4.mb-5.small
-  .card
-    .card-header.p-1
-      .d-flex.justify-content-between.align-items-center
-        main info
-        .d-inline-block
-          -if current_account.eql?(@scrape_task.scraper) || current_account.types.include?('manager')
-            #scrapeTaskEdit.d-inline-block.mr-2.small
-              =button_to('[ edit ]', edit_scrape_task_path(@scrape_task), method: :get, remote: true, class: 'p-0 pb-1 btn btn-sm btn-link ml-2', data: { disable_with: '...'})
-          #scrapeTaskStatus.d-inline-block
-            =render 'statuses'
-    .card-body
-      =render 'scrape_task_info'
+  #scrappingData.row.mb-5.small
+    .info.col-7.pr-0
+      .card
+        .card-header.p-0
+          .d-flex.justify-content-between.align-items-center
+            .d-inline-block.pl-2
+              main info
+            .d-inline-block
+              -if current_account.eql?(@scrape_task.scraper) || current_account.types.include?('manager')
+                .d-inline-block.mr-2.small
+                  %button{ onclick: 'loadEditForm();', type: 'button', class: 'p-0 pb-1 btn btn-sm btn-link ml-2', 'data-toggle' => "modal", 'data-target' => "#scrapeTaskEdit" }
+                    [ edit ]
+                  :javascript
+                    function loadEditForm() {
+                      Rails.ajax({
+                        type: "GET",
+                        dataType: 'script',
+                        url: `#{edit_scrape_task_path(@scrape_task)}`
+                      })
+                    }
 
-#scrapeInstructionAnchor
-#scrapeEvaluationDocAnchor
+              #scrapeTaskStatus.d-inline-block
+                =render 'statuses'
+        .card-body
+          =render 'scrape_task_info'
 
-%ul#scrapeTaskTabs.nav.nav-tabs.small
-  %li.nav-item.text-center{ style: 'width: 33%' }
-    %a#scrapeInstructionTab.nav-link.active{"aria-selected" => "true", "data-toggle" => "tab", :href => "#scrapeInstruction", :role => "tab"} Instruction
-  %li.nav-item.text-center{ style: 'width: 33%' }
-    %a#scrapeEvaluationDocTab.nav-link{"aria-selected" => "false", "data-toggle" => "tab", :href => "#scrapeEvaluationDoc", :role => "tab"} Evaluation Document
-  %li.nav-item.text-center{ style: 'width: 33%' }
-    %a#dataSampleTab.nav-link{"aria-selected" => "false", "data-toggle" => "tab", :href => "#dataSample", :role => "tab"} Data Sample (TO DO)
+    .conversation.col-5.align-self-stretch
+      .card.h-100
+        .card-header.p-1.pl-2
+          conversation
+        .card-body
 
-#scrapeTaskTabsContent.tab-content
-  #scrapeInstruction.tab-pane.fade.show.active
-    .card.border-top-0.rounded-top-0.mb-5
-      #scrapeInstructionEdit.small
-        .row
-          .col-8.offset-2.p-0
-            -if current_account.types.include?('manager')
-              %hr.mb-0.mt-3/
-              =button_to('[ edit ]', edit_scrape_task_instruction_path(@scrape_task), class: 'btn btn-sm btn-link', method: :get, remote: true, data: { disable_with: '...'})
-              %hr.mt-0/
-            -else
-              %hr/
-      #instruction.show{"data-parent" => "#scrapeInstruction"}
-        =render 'scrape_tasks/instructions/instruction'
-      :javascript
-        [...document.querySelectorAll('#instruction .fr-view a')].forEach((el) => {
-          el.setAttribute('target', '_black');
-          el.setAttribute('rel', 'noopener noreferrer');
-        })
+  #scrapeTaskEdit.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "scrapeTaskEdit", tabindex: "-1" }
+    .modal-dialog.modal-dialog-centered.modal-xl
+      .modal-content
+        .modal-header
+        .modal-body.small
+          .text-center
+            .spinner-border.small{ style: "width: 3rem; height: 3rem;" }
+              %span.sr-only
+        .modal-footer
 
-  #scrapeEvaluationDoc.tab-pane.fade.show
-    .card.border-top-0.rounded-top-0.mb-5
-      #evaluationDocEdit.small
-        .row
-          .col-8.offset-2.p-0
-            -if current_account.types.include?('manager')
-              %hr.mb-0.mt-3/
-              .d-inline-block
-                =button_to('[ edit ]', edit_scrape_task_evaluation_doc_path(@scrape_task), class: 'btn btn-sm btn-link', method: :get, remote: true, data: { disable_with: '...'})
-              -if !@scrape_task.evaluation
+  #scrapeInstructionAnchor
+  #scrapeEvaluationDocAnchor
+
+  %ul#scrapeTaskTabs.nav.nav-tabs.small
+    %li.nav-item.text-center{ style: 'width: 33%' }
+      %a#scrapeInstructionTab.nav-link.active{"aria-selected" => "true", "data-toggle" => "tab", :href => "#scrapeInstruction", :role => "tab"} Instruction
+    %li.nav-item.text-center{ style: 'width: 33%' }
+      %a#scrapeEvaluationDocTab.nav-link{"aria-selected" => "false", "data-toggle" => "tab", :href => "#scrapeEvaluationDoc", :role => "tab"} Evaluation Document
+    %li.nav-item.text-center{ style: 'width: 33%' }
+      %a#dataSampleTab.nav-link{"aria-selected" => "false", "data-toggle" => "tab", :href => "#dataSample", :role => "tab"} Data Sample (TO DO)
+
+  #scrapeTaskTabsContent.tab-content
+    #scrapeInstruction.tab-pane.fade.show.active
+      .card.border-top-0.rounded-top-0.mb-5
+        #scrapeInstructionEdit.small
+          .row
+            .col-8.offset-2.p-0
+              -if current_account.types.include?('manager')
+                %hr.mb-0.mt-3/
+                =button_to('[ edit ]', edit_scrape_task_instruction_path(@scrape_task), class: 'btn btn-sm btn-link', method: :get, remote: true, data: { disable_with: '...'})
+                %hr.mt-0/
+              -else
+                %hr/
+        #instruction.show{"data-parent" => "#scrapeInstruction"}
+          =render 'scrape_tasks/instructions/instruction'
+        :javascript
+          [...document.querySelectorAll('#instruction .fr-view a')].forEach((el) => {
+            el.setAttribute('target', '_black');
+            el.setAttribute('rel', 'noopener noreferrer');
+          })
+
+    #scrapeEvaluationDoc.tab-pane.fade.show
+      .card.border-top-0.rounded-top-0.mb-5
+        #evaluationDocEdit.small
+          .row
+            .col-8.offset-2.p-0
+              -if current_account.types.include?('manager')
+                %hr.mb-0.mt-3/
                 .d-inline-block
-                  =button_to('[ evaluate ]', scrape_task_evaluate_path(@scrape_task), method: :patch, remote: true,
-                              id: 'evaluateButton', class: 'btn btn-sm btn-link ml-1', data: { disable_with: '...'})
-              %hr.mt-0/
-            -else
-              %hr/
-      #evaluationDoc.show{ "data-parent" => "#scrapeEvaluationDoc" }
-        =render 'scrape_tasks/evaluation_docs/evaluation_doc'
-      :javascript
-        [...document.querySelectorAll('#evaluationDoc .fr-view a')].forEach((el) => {
-          el.setAttribute('target', '_black');
-          el.setAttribute('rel', 'noopener noreferrer');
-        })
+                  =button_to('[ edit ]', edit_scrape_task_evaluation_doc_path(@scrape_task), class: 'btn btn-sm btn-link', method: :get, remote: true, data: { disable_with: '...'})
+                -if !@scrape_task.evaluation
+                  .d-inline-block
+                    =button_to('[ evaluate ]', scrape_task_evaluate_path(@scrape_task), method: :patch, remote: true,
+                                id: 'evaluateButton', class: 'btn btn-sm btn-link ml-1', data: { disable_with: '...'})
+                %hr.mt-0/
+              -else
+                %hr/
+        #evaluationDoc.show{ "data-parent" => "#scrapeEvaluationDoc" }
+          =render 'scrape_tasks/evaluation_docs/evaluation_doc'
+        :javascript
+          [...document.querySelectorAll('#evaluationDoc .fr-view a')].forEach((el) => {
+            el.setAttribute('target', '_black');
+            el.setAttribute('rel', 'noopener noreferrer');
+          })
 
-  #dataSample.tab-pane.fade.show
-    .card.border-top-0.rounded-top-0.mb-5
-      #evaluationDocEdit.small
-        .row.p-4
-          .col-10.offset-1
-            -if @scrape_task.data_sample
-              =link_to(nil, @scrape_task.data_sample.remote_url)
-            -else
-              =button_to('generate google spreadsheet', scrape_task_data_samples_path(@scrape_task),
-                         class: 'btn btn-sm btn-outline-dark')
+    #dataSample.tab-pane.fade.show
+      .card.border-top-0.rounded-top-0.mb-5
+        #evaluationDocEdit.small

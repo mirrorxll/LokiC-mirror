@@ -3,9 +3,9 @@
 
 #scrapeTaskTags
   .row.mb-4
-    .col-2.pr-0.text-right.font-weight-bold
+    .col-3.pr-0.text-right.font-weight-bold
       tags:
-    .col-10
+    .col-9
       -if current_account.types.include?('manager')
         .d-inline-block.mr-3{ 'data-toggle' => "collapse", href: "#tagInputBlock", 'aria-expanded' => "false", 'aria-controls' => "tagInputBlock" }
           =icon('fa', 'pencil')
@@ -67,28 +67,28 @@
 
 
 .row.mb-4
-  .col-2.pr-0.text-right.font-weight-bold
+  .col-3.pr-0.text-right.font-weight-bold
     name:
-  .col-10
+  .col-9
     =@scrape_task.name
 
 .row.mb-1
-  .col-2.pr-0.text-right.font-weight-bold
+  .col-3.pr-0.text-right.font-weight-bold
     data requester:
-  .col-10
+  .col-9
     =@scrape_task.data_requester
 .row.mb-1
-  .col-2.pr-0.text-right.font-weight-bold
+  .col-3.pr-0.text-right.font-weight-bold
     multi task:
-  .col-10
+  .col-9
     -if @scrape_task.multi_tasks.present?
       -@scrape_task.multi_tasks.each do |mt|
         =link_to("##{mt.id} #{mt.title}", mt)
         %br/
 .row.mb-4
-  .col-2.pr-0.text-right.font-weight-bold
+  .col-3.pr-0.text-right.font-weight-bold
     gather task:
-  .col-10
+  .col-9
     -link = @scrape_task.gather_task_link
     -if link
       =link_to(nil, link, target: '_blank')
@@ -96,36 +96,36 @@
       \---
 
 .row.mb-4
-  .col-2.pr-0.text-right.font-weight-bold
+  .col-3.pr-0.text-right.font-weight-bold
     deadline:
-  .col-10
+  .col-9
     =@scrape_task.deadline.to_s
 
 .row.mb-4
-  .col-2.pr-0.text-right.font-weight-bold
+  .col-3.pr-0.text-right.font-weight-bold
     state:
-  .col-10
+  .col-9
     =@scrape_task.state&.name
 
 .row.mb-1
-  .col-2.pr-0.text-right.font-weight-bold
+  .col-3.pr-0.text-right.font-weight-bold
     URL:
-  .col-10
+  .col-9
     -link = @scrape_task.datasource_url
     -if link.present?
       =link_to(nil, link, target: '_blank')
     -else
       \---
 .row.mb-4
-  .col-2.pr-0.text-right.font-weight-bold
+  .col-3.pr-0.text-right.font-weight-bold
     comment on datasource:
-  .col-10
+  .col-9
     =@scrape_task.datasource_comment&.body
 
 .row.mb-1
-  .col-2.pr-0.text-right.font-weight-bold
+  .col-3.pr-0.text-right.font-weight-bold
     scrapable?
-  .col-10
+  .col-9
     -if @scrape_task.scrapable.eql?(1)
       .font-weight-bold
         yes
@@ -136,31 +136,31 @@
       not checked
 
 .row.mb-4
-  .col-2.pr-0.text-right.font-weight-bold
+  .col-3.pr-0.text-right.font-weight-bold
     comment on scrape ability:
-  .col-10
+  .col-9
     =@scrape_task.scrape_ability_comment&.body
 
 .row.mb-1
-  .col-2.pr-0.text-right.font-weight-bold
+  .col-3.pr-0.text-right.font-weight-bold
     scraper:
-  .col-10
+  .col-9
     =@scrape_task.scraper&.name
 .row.mb-4
-  .col-2.pr-0.text-right.font-weight-bold
+  .col-3.pr-0.text-right.font-weight-bold
     scrape frequency:
-  .col-10
+  .col-9
     =@scrape_task.frequency&.name
 .row.mb-4
-  .col-2.pr-0.text-right.font-weight-bold
+  .col-3.pr-0.text-right.font-weight-bold
     general comment:
-  .col-10
+  .col-9
     =@scrape_task.general_comment&.body
 
 .row.mb-1
-  .col-2.pr-0.text-right.font-weight-bold
+  .col-3.pr-0.text-right.font-weight-bold
     data set location:
-  .col-10
+  .col-9
     =@scrape_task.data_set_location
 
 -if current_account.types.include?('manager')

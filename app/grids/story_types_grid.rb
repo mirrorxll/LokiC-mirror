@@ -128,7 +128,7 @@ class StoryTypesGrid
   column(:client_tags, order: 'frequencies.name', header: 'Client: Tag') do |record|
     str = ''
     record.clients.each_with_index do |client, i|
-      str += "<div><strong>#{client.name}</strong>: #{record.tags[i].name}</div>"
+      str += "<div><strong>#{client.name}</strong>: #{record.tags[i]&.name}</div>"
     end
     str.html_safe
   end

@@ -26,7 +26,7 @@ class ScrapeTask < ApplicationRecord
   belongs_to :status,     optional: true
   belongs_to :state,      optional: true
 
-  has_one :instruction, class_name: 'ScrapeInstruction'
+  has_one :instruction,    class_name: 'ScrapeInstruction'
   has_one :evaluation_doc, class_name: 'ScrapeEvaluationDoc'
   has_one :scrape_ability_comment, -> { where(subtype: 'scrape ability comment') }, as: :commentable, class_name: 'Comment'
   has_one :datasource_comment,     -> { where(subtype: 'datasource comment') }, as: :commentable, class_name: 'Comment'
@@ -37,6 +37,7 @@ class ScrapeTask < ApplicationRecord
 
   has_many :change_history, as: :history
   has_many :alerts, as: :alert
+  has_many :data_locations, as: :data_set_location, class_name: 'DataSetLocation'
 
   has_and_belongs_to_many :tags, class_name: 'ScrapeTaskTag'
   has_and_belongs_to_many :multi_tasks, class_name: 'Task'

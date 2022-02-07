@@ -1,0 +1,7 @@
+-attached_tasks = @scrape_task.multi_tasks
+
+%input.underline-input.w-100.p-0{ list: 'multiTasks', onkeypress: 'multiTaskByEnterPress(event, this)' }
+%datalist#multiTasks
+  -tasks = (attached_tasks.present? ? Task.where("id NOT IN (#{attached_tasks.ids.join(',')}) AND parent_task_id is null") : Task.where(parent: nil))
+  -tasks.each do |t|
+    %option{ value: t.subtask? ? "--> ##{t.id} #{t.title}" : "##{t.id} #{t.title}" }

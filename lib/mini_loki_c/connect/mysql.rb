@@ -4,7 +4,7 @@ module MiniLokiC
   module Connect
     # Mysql connection
     module Mysql
-      def self.on(host, database, username = nil, password = nil)
+      def self.on(host, database = nil, username = nil, password = nil)
         username ||= MiniLokiC.mysql_regular_user
         password ||= MiniLokiC.mysql_regular_password
         fallen = 0
