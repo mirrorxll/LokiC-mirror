@@ -1,53 +1,63 @@
-=form_with(url: tasks_path, class: 'newSubtaskForm',  html: { onkeypress: "return event.keyCode !== 13;" } ) do |form|
-  .row.col.small
-    .form-group
-      =form.text_field "subtask_#{number_subtask}[title]", placeholder: 'title', id: "newSubtask#{number_subtask}Name", class: 'form-control form-control-sm', required: true, maxlength: 500
-      %div.text-danger.text-center.d-none{ id: "newTaskNameFeedback" }
-        Task with this title already created by you. Let's use something else
-  .d-flex.small.font-weight-bold
-    .col-4.border-right
-      .row.justify-content-between
-        .col
-          assignment to:
-        .col
-          .row.mt-1.small
-            =form.collection_select "subtask_#{number_subtask}[assignment_to]", current_account.types.include?('developer') ? [current_account] : Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }, style: "width:130px"
-      .row.justify-content-between.mt-1.mb-2
-        .col
-          assistants:
-          =icon('fa', 'plus', class: 'ml-2', id: "add_assistant_#{number_subtask}")
-        .col#assistants_form_parent
-    .col-4
-      .row.mb-2
-        .col.text-right
-          reminder frequency:
-        .col.text-left.small
-          =form.collection_select "subtask_#{number_subtask}[reminder_frequency]", sorted_reminder_frequencies, :id, :name, { prompt: '' }
-    .col-4
-      .row.mb-2
-        .col.text-right
-          deadline:
-        .col.text-left.small
-          =form.date_field "subtask_#{number_subtask}[deadline]"
-  .row.col.small
-    .form-group
-      =form.text_area "subtask_#{number_subtask}[description]", class: 'form-control', id: "descriptionSubtask#{number_subtask}"
-  .row.col.small
-    =link_to('[ checklists ]', nil, onclick: "showChecklists(event, 'parent')")
+.accordion-item
+  .accordion-header{ id: "newSubtask#{number_subtask}", class: 'newSubtaskForm' }
+    .row.small
+      .col-10
+        =text_field_tag "subtasks[#{number_subtask}][title]", "", id: "newSubtaskName#{number_subtask}", placeholder: 'title', class: 'form-group form-control form-control-sm', required: true, maxlength: 500
+        %div.text-danger.text-center.d-none{ id: "newTaskNameFeedback#{number_subtask}" }
+          Task with this title already created by you. Let's use something else
+      .col-1
+        .accordion-button{"aria-controls" => "collapse#{number_subtask}", "aria-expanded" => "true", "data-target" => "#collapse#{number_subtask}", "data-toggle" => "collapse", :type => "button"}
+          show
+      .col-1
+        [remove]
+  .accordion-collapse.collapse{id: "collapse#{number_subtask}", "aria-labelledby" => "newSubtask#{number_subtask}"}
+    .accordion-body
+      .d-flex.small.font-weight-bold
+        .col-4.border-right
+          .row.justify-content-between
+            .col
+              assignment to:
+            .col
+              .row.mt-1.small
+                =select_tag "subtasks[#{number_subtask}][assignment_to]", options_from_collection_for_select(current_account.types.include?('developer') ? [current_account] : Account.all.order([:first_name, :last_name]), :id, :name), { prompt: '', style: "width:130px" }
+          .row.justify-content-between.mt-1.mb-2
+            .col
+              assistants:
+              =icon('fa', 'plus', class: 'ml-2', id: "addAssistant_#{number_subtask}", onclick: "addAssistant(#{number_subtask})")
+            .col{ id: "assistantsForm_#{number_subtask}" }
+        .col-4
+          .row.mb-2
+            .col.text-right
+              reminder frequency:
+            .col.text-left.small
+              =select_tag "subtasks[#{number_subtask}][reminder_frequency]", options_from_collection_for_select(sorted_reminder_frequencies, :id, :name), { prompt: '' }
+          .row.mb-2
+            .col.text-right
+              =link_to('[ checklists ]', nil, onclick: "showChecklists(event, '#{number_subtask}')")
+            .col.text-left
+        .col-4
+          .row.mb-2
+            .col.text-right
+              deadline:
+            .col.text-left.small
+              =date_field_tag "subtasks[#{number_subtask}][deadline]"
 
-  #checklists_parent.accordion.mt-2.d-none
-    .card.small
-      .card-header.p-1
-        %div.row
-          .col-1
-            =icon('fa', 'plus', id: 'add_checklist')
-          .col-11.text-right
-            %div{"aria-controls" => "#checklistsCollapse", "aria-expanded" => "true", "data-target" => "#checklistsCollapse", "data-toggle" => "collapse", type: "button"}
-              checklists
-      #checklistsCollapse.collapse{"data-parent" => "#checklists_parent", class: 'show'}
-        .row.mt-2.mb-2
-          .col#forms_checklists_parent
-  %hr/
+      .row.col.small.mt-2
+        .form-group
+          =text_area_tag "subtasks[#{number_subtask}][description]", '', class: 'form-control', id: "descriptionSubtask#{number_subtask}"
+
+      .accordion.mt-2.d-none{ id: "checklists_#{number_subtask}" }
+        .card.small
+          .card-header.p-1
+            %div.row
+              .col-1
+                =icon('fa', 'plus', id: "addChecklist_#{number_subtask}", onclick: "addChecklist(#{number_subtask})")
+              .col-11.text-right
+                %div{"aria-controls" => "#checklists#{number_subtask}Collapse", "aria-expanded" => "true", "data-target" => "#checklists#{number_subtask}Collapse", "data-toggle" => "collapse", type: "button"}
+                  checklists
+          .collapse{ id: "checklists#{number_subtask}Collapse", "data-parent" => "#checklists_#{number_subtask}", class: 'show'}
+            .row.mt-2.mb-2
+              .col{ id: "checklistsForms_#{number_subtask}" }
 
 :javascript
   var accounts = #{raw Account.all.order([:first_name, :last_name]).map{ |account| [account.first_name.to_s + ' ' + account.last_name.to_s, account.id]} };
@@ -55,21 +65,16 @@
 
   numberSubtask = #{raw number_subtask}
 
-  $('#add_assistant').click(function () {
+  function addAssistant(subtask) {
     let hex = secureRandom(6);
 
-    $('#assistants_form').append(
-        `<div id="assistant_${hex}" class="row mt-1 mb-1" >
-           <select id="assistants[]" style = "width:130px" class="mr-1" name="assistants[]">${buildSelect(accounts)}</select>
+    $(`#assistantsForm_${subtask}`).append(
+        `<div id="subtask_${subtask}assistant_${hex}" class="row small mt-1 mb-1" >
+           <select id="subtasks[${subtask}][assistants][]" style = "width:130px" class="mr-1" name="subtasks[${subtask}][assistants][]">${buildSelect(accounts)}</select>
            <div class="ml-1" id="rm_assistant_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
          </div>`
     );
-  });
-
-  $('#delete_assistant').click(function () {
-    let assignments = document.getElementById('assistants')
-    assignments.removeChild(assignments.lastChild)
-  });
+  }
 
   function buildSelect(options) {
     var $select = $('');
@@ -109,16 +114,16 @@
     return !names.find(el => lowName === el.toLowerCase());
   }
 
-  document.querySelector('#newTaskName').addEventListener('input', delay(() => {
+  document.querySelector(`#newSubtask${numberSubtask}`).addEventListener('input', delay(() => {
     Rails.ajax({
       type: 'GET',
       dataType: 'json',
       url: `#{root_url}api/tasks/titles`,
       data: `creator_id=${current_account_id}`,
       success: (names) => {
-        let nameInput = document.querySelector('#newTaskName');
-        let nameFeedback = document.querySelector('#newTaskNameFeedback');
-        let submitButton = document.querySelector('#form_new_task input[type="submit"]');
+        let nameInput = document.querySelector(`#newSubtaskName${numberSubtask}`);
+        let nameFeedback = document.querySelector(`#newTaskNameFeedback${numberSubtask}`);
+        let submitButton = document.querySelector('#newTaskParent input[type="submit"]');
         let nameIsUniq = isUniq(nameInput.value, names);
 
         if(nameIsUniq === true) {
@@ -134,51 +139,23 @@
     })
   }, 500));
 
-  function onSubmit(ev) {
-    ev.preventDefault();
-    ev.stopPropagation();
-
-    let form = ev.target;
-    let nameInput = form.querySelector('#newTaskName');
-    let nameFeedback = form.querySelector('#newTaskNameFeedback');
-    let submitButton = form.querySelector('input[type="submit"]');
-
-    Rails.ajax({
-      type: 'GET',
-      dataType: 'json',
-      url: `#{root_url}api/tasks/titles`,
-      data: `creator_id=${current_account_id}`,
-      success: (names) => {
-        let nameIsUniq = isUniq(nameInput.value, names);
-
-        if(nameIsUniq) {
-          form.removeEventListener('submit', onSubmit)
-          Rails.fire(form, 'submit')
-        } else {
-          nameInput.classList.add('border', 'border-danger');
-          nameFeedback.classList.remove('d-none');
-          submitButton.disabled = true;
-        }
-      }
-    })
-  }
-  document.querySelector('#form_new_task').addEventListener('submit', onSubmit)
-
-  $('#add_checklist').click(function () {
+  function addChecklist(subtask) {
     let hex = secureRandom(6);
-    $('#forms_checklists').append(
-        `<div id="assignment_${hex}" class="row small justify-content-center mt-2">
+
+    $(`#checklistsForms_${subtask}`).append(
+        `<div id="subtask_${subtask}checklist_${hex}" class="row small justify-content-center mt-2">
            <div class="small mt-1 mr-2"><i class="fa fa-circle"></i></div>
-           <input id="checklists[]" style='width: 90%' required=required maxlength="255" name="checklists[]"></input>
+           <input id="subtasks[${subtask}][checklists][]" style='width: 90%' required=required maxlength="255" name="subtasks[${subtask}][checklists][]"></input>
            <div class="ml-2" id="rm_checklist_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
          </div>`
     );
-  });
+  }
 
   function showChecklists(e, task) {
     e.preventDefault();
 
     let divChecklists = document.querySelector(`#checklists_${task}`)
+
     if(divChecklists.classList.contains('d-none')){
       divChecklists.classList.remove('d-none');
     } else {

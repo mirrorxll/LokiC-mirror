@@ -1,4 +1,4 @@
-=form_with(url: tasks_path, id: 'form_new_task',  html: { onkeypress: "return event.keyCode !== 13;" } ) do |form|
+=form_with(url: tasks_path, id: 'newTaskParent',  html: { onkeypress: "return event.keyCode !== 13;" } ) do |form|
   .row.col.small
     .form-group
       =form.text_field 'task_parent[title]', placeholder: 'title', id: 'newTaskNameParent', class: 'form-control form-control-sm', required: true, maxlength: 500
@@ -28,6 +28,11 @@
           client:
         .col.text-left.small
           =form.collection_select 'task_parent[client_id]', ClientsReport.all.order(:name), :id, :name, { prompt: '' }, style: "width:150px"
+      .row.mb-2
+        .col.text-right
+          =link_to('[ checklists ]', nil, onclick: "showChecklistsParent(event)")
+        .col.text-left
+
     .col-4
       .row.mb-2
         .col.text-right
@@ -39,14 +44,9 @@
           access to task and its subtasks:
         .col.text-left
           =form.check_box 'task_parent[access]', class: 'form-check-input ml-0 mt-2', checked: true
-  .row.col.small
+  .row.col.small.mt-2
     .form-group
       =form.text_area 'task_parent[description]', class: 'form-control', id: 'task_description'
-  .row.col.small
-    =link_to('[ checklists ]', nil, onclick: "showChecklists(event, 'parent')")
-  .row.col.small
-    -# =link_to '[ add subtask ]', add_subtask_tasks_path, method: :get, remote: true, data: { params: `number_subtask=numberSubtask();` }
-    =link_to '[ add subtask ]', nil, onclick: 'addSubtask(event);'
   #checklistsParent.accordion.mt-2.d-none
     .card.small
       .card-header.p-1
@@ -59,9 +59,12 @@
       #checklistsParentCollapse.collapse{"data-parent" => "#checklistsParent", class: 'show'}
         .row.mt-2.mb-2
           .col#forms_checklists_parent
-  %hr/
 
-  #formsSubtasks
+  %hr
+  #formsSubtasks.accordion
+
+  .row.col.small.font-weight-bold.justify-content-center.mb-2
+    =link_to '[ add subtask ]', nil, onclick: 'addSubtask(event);'
 
   .modal-footer.justify-content-center
     .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
@@ -137,7 +140,7 @@
     return !names.find(el => lowName === el.toLowerCase());
   }
 
-  document.querySelector('#newTaskNameParent').addEventListener('input', delay(() => {
+  document.querySelector('#newTaskParent').addEventListener('input', delay(() => {
     Rails.ajax({
       type: 'GET',
       dataType: 'json',
@@ -146,7 +149,7 @@
       success: (names) => {
         let nameInput = document.querySelector('#newTaskNameParent');
         let nameFeedback = document.querySelector('#newTaskNameParentFeedback');
-        let submitButton = document.querySelector('#form_new_task input[type="submit"]');
+        let submitButton = document.querySelector('#newTaskParent input[type="submit"]');
         let nameIsUniq = isUniq(nameInput.value, names);
 
         if(nameIsUniq === true) {
@@ -162,35 +165,6 @@
     })
   }, 500));
 
-  function onSubmit(ev) {
-    ev.preventDefault();
-    ev.stopPropagation();
-
-    let form = ev.target;
-    let nameInput = form.querySelector('#newTaskNameParent');
-    let nameFeedback = form.querySelector('#newTaskNameParentFeedback');
-    let submitButton = form.querySelector('input[type="submit"]');
-
-    Rails.ajax({
-      type: 'GET',
-      dataType: 'json',
-      url: `#{root_url}api/tasks/titles`,
-      data: `creator_id=${current_account_id}`,
-      success: (names) => {
-        let nameIsUniq = isUniq(nameInput.value, names);
-
-        if(nameIsUniq) {
-          form.removeEventListener('submit', onSubmit)
-          Rails.fire(form, 'submit')
-        } else {
-          nameInput.classList.add('border', 'border-danger');
-          nameFeedback.classList.remove('d-none');
-          submitButton.disabled = true;
-        }
-      }
-    })
-  }
-  document.querySelector('#form_new_task').addEventListener('submit', onSubmit)
 
   $('#addСhecklistParent').click(function () {
     let hex = secureRandom(6);
@@ -204,10 +178,11 @@
     );
   });
 
-  function showChecklists(e, task) {
+  function showChecklistsParent(e) {
     e.preventDefault();
 
-    let divChecklists = document.querySelector(`#checklistsParent`)
+    let divChecklists = document.querySelector(`#checklistsParent`);
+
     if(divChecklists.classList.contains('d-none')){
       divChecklists.classList.remove('d-none');
     } else {
