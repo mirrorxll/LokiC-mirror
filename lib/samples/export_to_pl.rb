@@ -16,6 +16,7 @@ module Samples
 
     def export!(iteration, threads_count)
       stories_to_export = iteration.stories.ready_to_export.limit(10_000).to_a
+      story_type = iteration.story_type
       main_semaphore = Mutex.new
       exported = 0
       forbidden_mb_pubs = [1635, 1149, 1148, 1656, 1659, 1669, 1670]
@@ -24,7 +25,7 @@ module Samples
         Thread.new do
           loop do
             sample = main_semaphore.synchronize { stories_to_export.shift }
-            break if sample.nil?
+            break if sample.nil? || story_type.reload.sidekiq_break.cancel
 
             sample.destroy and next if sample.publication.pl_identifier.in?(forbidden_mb_pubs)
 
@@ -41,6 +42,7 @@ module Samples
     def remove!(iteration)
       semaphore = Mutex.new
       stories = iteration.stories.exported.limit(10_000).to_a
+      story_type = iteration.story_type
 
       threads = Array.new(5) do
         Thread.new do
@@ -55,6 +57,7 @@ module Samples
             end
 
             sample.update!(@pl_lead_id_key => nil, @pl_story_id_key => nil, exported_at: nil)
+            break if story_type.reload.sidekiq_break.cancel
           end
         end
       end

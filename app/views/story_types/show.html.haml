@@ -91,6 +91,7 @@
         %div.text-center{"aria-controls" => "#export", "aria-expanded" => "false", "data-target" => "#export", "data-toggle" => "collapse", type: "button"}
           export (iteration: #{@iteration.name})
       #export.collapse.show{"data-parent" => "#story_type_export_#{@iteration.id}"}
+        .flash
         .card-body.small
           =render 'story_types/exports/export'
 %hr.mb-5/

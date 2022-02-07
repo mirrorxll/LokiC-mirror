@@ -36,8 +36,6 @@ module StoryTypes
         end
 
         last_export_batch = iteration.reload.last_export_batch_size.zero?
-        pp "> "*50, story_type.sidekiq_break.cancel
-        sleep 1
         break if last_export_batch
       end
 
@@ -75,6 +73,11 @@ module StoryTypes
         if Rails.env.production? && url && !iteration.name.match?(/CT\d{8}/)
           send_report_to_editors_slack(iteration, url)
         end
+      end
+
+      if story_type.sidekiq_break.cancel
+        status = nil
+        message = 'Canceled'
       end
 
       true

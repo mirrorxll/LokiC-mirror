@@ -36,7 +36,7 @@ module StoryTypes
           STAGING_TABLE = 's0001'
           def check_updates; end
           def population(options)
-            host = Mysql2::Client.new(host: '127.0.0.1', username: 'sammy', password: 'passworD=123', database: 'loki_story_creator_dev')
+            host = Mysql2::Client.new(host: '127.0.0.1', username: 'sergeydev', password: 'ni260584mss', database: 'loki_story_creator_dev')
             arry = ('a'..'z').to_a
             arry.each do |arr|
               publications = [{ 'id' => 2813, 'name' => 'NYC Gazette', 'client_id' => 196, 'client_name' => 'MM - New York' }]

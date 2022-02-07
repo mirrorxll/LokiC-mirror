@@ -6,11 +6,11 @@ module StoryTypes
       status = true
       message = 'Success. All stories have been created'
       story_type = iteration.story_type
+      SidekiqBreak.create_with(cancel: false).find_or_create_by(story_type: story_type)
       publication_ids = story_type.publication_pl_ids
       options[:iteration] = iteration
       options[:publication_ids] = publication_ids
       options[:type] = 'story'
-      SidekiqBreak.create_with(cancel: false).find_or_create_by(story_type: story_type)
 
       loop do
         rd, wr = IO.pipe
