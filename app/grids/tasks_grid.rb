@@ -6,7 +6,7 @@ class TasksGrid
   attr_accessor(:current_account)
 
   # Scope
-  scope { Task.includes(:assignments, :creator, :assignment_to).order(id: :desc) }
+  scope { Task.includes(:assignments, :creator, :assignment_to, :status, :last_comment).order(id: :desc) }
 
   # Filters
   filter(:title, :string, left: true, header: 'Title(RLIKE)') do |value, scope|

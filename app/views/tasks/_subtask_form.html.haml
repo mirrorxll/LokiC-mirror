@@ -1,0 +1,164 @@
+.accordion-item
+  .accordion-header{ id: "newSubtask#{number_subtask}", class: 'newSubtaskForm' }
+    .row.small
+      .col-10
+        =text_field_tag "subtasks[#{number_subtask}][title]", "", id: "newSubtaskName#{number_subtask}", placeholder: 'title', class: 'form-group form-control form-control-sm', required: true, maxlength: 500
+        %div.text-danger.text-center.d-none{ id: "newTaskNameFeedback#{number_subtask}" }
+          Task with this title already created by you. Let's use something else
+      .col-1
+        .accordion-button{"aria-controls" => "collapse#{number_subtask}", "aria-expanded" => "true", "data-target" => "#collapse#{number_subtask}", "data-toggle" => "collapse", :type => "button"}
+          show
+      .col-1
+        [remove]
+  .accordion-collapse.collapse{id: "collapse#{number_subtask}", "aria-labelledby" => "newSubtask#{number_subtask}"}
+    .accordion-body
+      .d-flex.small.font-weight-bold
+        .col-4.border-right
+          .row.justify-content-between
+            .col
+              assignment to:
+            .col
+              .row.mt-1.small
+                =select_tag "subtasks[#{number_subtask}][assignment_to]", options_from_collection_for_select(current_account.types.include?('developer') ? [current_account] : Account.all.order([:first_name, :last_name]), :id, :name), { prompt: '', style: "width:130px" }
+          .row.justify-content-between.mt-1.mb-2
+            .col
+              assistants:
+              =icon('fa', 'plus', class: 'ml-2', id: "addAssistant_#{number_subtask}", onclick: "addAssistant(#{number_subtask})")
+            .col{ id: "assistantsForm_#{number_subtask}" }
+        .col-4
+          .row.mb-2
+            .col.text-right
+              reminder frequency:
+            .col.text-left.small
+              =select_tag "subtasks[#{number_subtask}][reminder_frequency]", options_from_collection_for_select(sorted_reminder_frequencies, :id, :name), { prompt: '' }
+          .row.mb-2
+            .col.text-right
+              =link_to('[ checklists ]', nil, onclick: "showChecklists(event, '#{number_subtask}')")
+            .col.text-left
+        .col-4
+          .row.mb-2
+            .col.text-right
+              deadline:
+            .col.text-left.small
+              =date_field_tag "subtasks[#{number_subtask}][deadline]"
+
+      .row.col.small.mt-2
+        .form-group
+          =text_area_tag "subtasks[#{number_subtask}][description]", '', class: 'form-control', id: "descriptionSubtask#{number_subtask}"
+
+      .accordion.mt-2.d-none{ id: "checklists_#{number_subtask}" }
+        .card.small
+          .card-header.p-1
+            %div.row
+              .col-1
+                =icon('fa', 'plus', id: "addChecklist_#{number_subtask}", onclick: "addChecklist(#{number_subtask})")
+              .col-11.text-right
+                %div{"aria-controls" => "#checklists#{number_subtask}Collapse", "aria-expanded" => "true", "data-target" => "#checklists#{number_subtask}Collapse", "data-toggle" => "collapse", type: "button"}
+                  checklists
+          .collapse{ id: "checklists#{number_subtask}Collapse", "data-parent" => "#checklists_#{number_subtask}", class: 'show'}
+            .row.mt-2.mb-2
+              .col{ id: "checklistsForms_#{number_subtask}" }
+
+:javascript
+  var accounts = #{raw Account.all.order([:first_name, :last_name]).map{ |account| [account.first_name.to_s + ' ' + account.last_name.to_s, account.id]} };
+  var current_account_id = #{raw current_account.id}
+
+  numberSubtask = #{raw number_subtask}
+
+  function addAssistant(subtask) {
+    let hex = secureRandom(6);
+
+    $(`#assistantsForm_${subtask}`).append(
+        `<div id="subtask_${subtask}assistant_${hex}" class="row small mt-1 mb-1" >
+           <select id="subtasks[${subtask}][assistants][]" style = "width:130px" class="mr-1" name="subtasks[${subtask}][assistants][]">${buildSelect(accounts)}</select>
+           <div class="ml-1" id="rm_assistant_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
+         </div>`
+    );
+  }
+
+  function buildSelect(options) {
+    var $select = $('');
+    $select += ('<option value="' + '' + '">' + '' + '</option>');
+    for (var i = 0; i < options.length; i++) {
+      $select += ('<option value="' + options[i][1] + '">' + options[i][0] + '</option>');
+    }
+    return $select;
+  }
+
+  function removeDate(elem) {
+    $(elem.parentNode).remove();
+  }
+
+  function secureRandom(n) {
+    let result = '';
+    while (n--){
+      result += Math.floor(Math.random() * 16).toString(16);
+    }
+    return result;
+  }
+
+  $('#task').on('hidden.bs.modal', function () {
+    $('#task .modal-body').empty();
+  });
+
+  function delay(fn, ms) {
+    let timer = 0;
+    return function(...args) {
+      clearTimeout(timer);
+      timer = setTimeout(fn.bind(this, ...args), ms || 0)
+    }
+  }
+
+  function isUniq(name, names) {
+    let lowName = name.toLowerCase();
+    return !names.find(el => lowName === el.toLowerCase());
+  }
+
+  document.querySelector(`#newSubtask${numberSubtask}`).addEventListener('input', delay(() => {
+    Rails.ajax({
+      type: 'GET',
+      dataType: 'json',
+      url: `#{root_url}api/tasks/titles`,
+      data: `creator_id=${current_account_id}`,
+      success: (names) => {
+        let nameInput = document.querySelector(`#newSubtaskName${numberSubtask}`);
+        let nameFeedback = document.querySelector(`#newTaskNameFeedback${numberSubtask}`);
+        let submitButton = document.querySelector('#newTaskParent input[type="submit"]');
+        let nameIsUniq = isUniq(nameInput.value, names);
+
+        if(nameIsUniq === true) {
+          nameInput.classList.remove('border', 'border-danger');
+          nameFeedback.classList.add('d-none');
+          submitButton.disabled = false;
+        } else {
+          nameInput.classList.add('border', 'border-danger');
+          nameFeedback.classList.remove('d-none');
+          submitButton.disabled = true;
+        }
+      }
+    })
+  }, 500));
+
+  function addChecklist(subtask) {
+    let hex = secureRandom(6);
+
+    $(`#checklistsForms_${subtask}`).append(
+        `<div id="subtask_${subtask}checklist_${hex}" class="row small justify-content-center mt-2">
+           <div class="small mt-1 mr-2"><i class="fa fa-circle"></i></div>
+           <input id="subtasks[${subtask}][checklists][]" style='width: 90%' required=required maxlength="255" name="subtasks[${subtask}][checklists][]"></input>
+           <div class="ml-2" id="rm_checklist_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
+         </div>`
+    );
+  }
+
+  function showChecklists(e, task) {
+    e.preventDefault();
+
+    let divChecklists = document.querySelector(`#checklists_${task}`)
+
+    if(divChecklists.classList.contains('d-none')){
+      divChecklists.classList.remove('d-none');
+    } else {
+     divChecklists.classList.add('d-none');
+    }
+  };

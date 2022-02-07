@@ -57,6 +57,10 @@ class TasksController < ApplicationController # :nodoc:
     end
   end
 
+  def add_subtask
+    @number_subtask = params[:number_subtask]
+  end
+
   private
 
   def comment
@@ -81,7 +85,6 @@ class TasksController < ApplicationController # :nodoc:
       else
         manager? ? { order: :id, descending: true } : { assignment_to: current_account.id, order: :id, descending: true }
       end
-
     grid_params[:status] =
       if grid_params[:status].blank? && grid_params[:deleted_tasks] != 'YES'
         Status.multi_task_statuses_for_grid
@@ -90,7 +93,7 @@ class TasksController < ApplicationController # :nodoc:
       end
     grid_params[:current_account] = current_account
 
-    @grid = TasksGrid.new(grid_params.except(:collapse))
+    @grid = TasksGrid.new(grid_params.except(:collapse, :type))
   end
 
   def find_task
