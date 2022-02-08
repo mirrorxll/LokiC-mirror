@@ -26,7 +26,11 @@ class Task < ApplicationRecord # :nodoc:
   has_one :team_work, class_name: 'TaskTeamWork'
   has_one :last_comment, -> { order created_at: :desc }, as: :commentable, class_name: 'Comment'
 
-  has_one :main_assignee, -> { where('task_assignments.main_assignee = true') }, through: :assignments, class_name: 'Account'
+  has_one :main_task_assignment, -> { where(main: true) }, class_name: 'TaskAssignment'
+  has_one :main_assignee, through: :main_task_assignment, source: :account
+
+  has_many :task_assistants, -> { where(main: false) }, class_name: 'TaskAssignment'
+  has_many :assistants, through: :task_assistants, source: :account
 
   has_many :checklists, class_name: 'TaskChecklist'
   has_many :checklists_assignments, class_name: 'TaskChecklistAssignment'
@@ -40,10 +44,6 @@ class Task < ApplicationRecord # :nodoc:
   has_many :notes, class_name: 'TaskNote'
 
   has_and_belongs_to_many :scrape_tasks
-
-  # def main_assignee
-  #   assignments.find_by(main_assignee: true).account
-  # end
 
   def assignment_to_or_creator?(account)
     account.in?(assignment_to) || account.eql?(creator)

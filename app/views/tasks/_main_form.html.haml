@@ -1,7 +1,8 @@
-=form_with(url: tasks_path, id: 'newTaskParent',  html: { onkeypress: "return event.keyCode !== 13;" } ) do |form|
+=form_with(url: tasks_path, id: 'newTaskParent',  html: { onkeypress: "return event.keyCode !== 13;" }, class: 'p-3', subtaskCount: 0 ) do |form|
+  =hidden_field_tag 'task_parent[work_request_id]', params[:work_request_id]
   .row.col.small
     .form-group
-      =form.text_field 'task_parent[title]', placeholder: 'title', id: 'newTaskNameParent', class: 'form-control form-control-sm', required: true, maxlength: 500
+      =form.text_field 'task_parent[title]', placeholder: 'main task title', id: 'newTaskNameParent', class: 'form-control form-control-sm', required: true, maxlength: 500
       #newTaskNameParentFeedback.text-danger.text-center.d-none
         Task with this title already created by you. Let's use something else
   .d-flex.small.font-weight-bold
@@ -28,7 +29,7 @@
           client:
         .col.text-left.small
           =form.collection_select 'task_parent[client_id]', ClientsReport.all.order(:name), :id, :name, { prompt: '' }, style: "width:150px"
-      .row.mb-2
+      .row.mb-2.font-weight-normal
         .col.text-right
           =link_to('[ checklists ]', nil, onclick: "showChecklistsParent(event)")
         .col.text-left
@@ -57,32 +58,45 @@
           .col#forms_checklists_parent
   .row.col.small.mt-2
     .form-group
-      =form.text_area 'task_parent[description]', class: 'form-control', id: 'task_description'
+      =form.text_area 'task_parent[description]', id: 'task_description'
 
+  #formsSubtasks.accordion.justify-content-center
 
-  #formsSubtasks.accordion
-
-  .row.col.small.font-weight-bold.justify-content-center.mb-2
+  .row.col.small.font-weight-bold.justify-content-center.mb-2.mt-2
     =link_to '[ add subtask ]', nil, onclick: 'addSubtask(event);'
 
-  .modal-footer.justify-content-center
+  .row.col.small.modal-footer.justify-content-center
     .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
       cancel
     =form.submit :create, class: 'btn btn-sm btn-outline-success'
 
 :javascript
+  $('#task_description').froalaEditor({
+      key: 'KfdolbcqsaA2wzA-13==',
+      toolbarButtons: ['fullscreen', 'undo', 'redo', '|', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineClass', 'inlineStyle', 'paragraphStyle', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', 'insertLink', 'insertImage', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'getPDF', 'help', 'html'],
+      imageUploadURL: '/images/upload',
+      imageUploadMethod: 'POST',
+      height: 300
+  });
+
   var accounts = #{raw Account.all.order([:first_name, :last_name]).map{ |account| [account.first_name.to_s + ' ' + account.last_name.to_s, account.id]} };
   var current_account_id = #{raw current_account.id}
 
   function addSubtask(e) {
     e.preventDefault();
 
+    newTaskParent = document.getElementById('newTaskParent')
+    let countSubtask = newTaskParent.getAttribute('subtaskCount');
+    let newCountSubtask = Number(countSubtask) + 1;
+    newTaskParent.setAttribute('subtaskCount', newCountSubtask)
+
     Rails.ajax({
         type: "GET",
         dataType: 'script',
         url: `#{add_subtask_tasks_path}`,
-        data: `number_subtask=${document.querySelectorAll('#formsSubtasks .newSubtaskForm').length + 1}`
+        data: `number_subtask=${newCountSubtask}`
     })
+
   }
 
   $('#addAssistantParent').click(function () {
@@ -163,6 +177,36 @@
       }
     })
   }, 500));
+
+  function onSubmit(ev) {
+    ev.preventDefault();
+    ev.stopPropagation();
+
+    let form = ev.target;
+    let nameInput = document.querySelector('#newTaskNameParent');
+    let nameFeedback = document.querySelector('#newTaskNameParentFeedback');
+    let submitButton = document.querySelector('#newTaskParent input[type="submit"]');
+
+    Rails.ajax({
+      type: 'GET',
+      dataType: 'json',
+      url: `#{root_url}api/tasks/titles`,
+      data: `creator_id=${current_account_id}`,
+      success: (names) => {
+        let nameIsUniq = isUniq(nameInput.value, names);
+
+        if(nameIsUniq) {
+          form.removeEventListener('submit', onSubmit)
+          Rails.fire(form, 'submit')
+        } else {
+          nameInput.classList.add('border', 'border-danger');
+          nameFeedback.classList.remove('d-none');
+          submitButton.disabled = true;
+        }
+      }
+    })
+  }
+  document.querySelector('#newTaskParent').addEventListener('submit', onSubmit)
 
 
   $('#addСhecklistParent').click(function () {

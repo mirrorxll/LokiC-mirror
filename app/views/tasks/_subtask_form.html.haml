@@ -1,16 +1,16 @@
-.accordion-item.border.border-5
+.accordion-item.border.p-2{ style: 'background: #f6f6f6;', id: "accordion_#{number_subtask}" }
   .accordion-header{ id: "newSubtask#{number_subtask}", class: 'newSubtaskForm' }
     .row.small
       .col-10
-        =text_field_tag "subtasks[#{number_subtask}][title]", "", id: "newSubtaskName#{number_subtask}", placeholder: 'title', class: 'form-group form-control form-control-sm', required: true, maxlength: 500
+        =text_field_tag "subtasks[#{number_subtask}][title]", "", id: "newSubtaskName#{number_subtask}", placeholder: "subtask title", class: 'form-control form-control-sm', required: true, maxlength: 500
         %div.text-danger.text-center.d-none{ id: "newTaskNameFeedback#{number_subtask}" }
           Task with this title already created by you. Let's use something else
       .col-1
-        .accordion-button{"aria-controls" => "collapse#{number_subtask}", "aria-expanded" => "true", "data-target" => "#collapse#{number_subtask}", "data-toggle" => "collapse", :type => "button"}
-          .fa.fas.icon-collapse
-      .col-1.btn.btn-link.btn-block.btn-sm
+        .btn.btn-link.btn-block.btn-sm{"aria-controls" => "collapse#{number_subtask}", "aria-expanded" => "true", "data-target" => "#collapse#{number_subtask}", "data-toggle" => "collapse", :type => "button"}
+          [ collapse ]
+      .col-1.btn.btn-link.btn-block.btn-sm{ id: "remove_#{number_subtask}", "subtask" => "#{number_subtask}", onclick: "removeSubtask(this);" }
         [ remove ]
-  .accordion-collapse.collapse{id: "collapse#{number_subtask}", "aria-labelledby" => "newSubtask#{number_subtask}"}
+  .accordion-collapse.mt-4.collapse{id: "collapse#{number_subtask}", "aria-labelledby" => "newSubtask#{number_subtask}"}
     .accordion-body
       .d-flex.small.font-weight-bold
         .col-4.border-right
@@ -42,10 +42,6 @@
             .col.text-left.small
               =date_field_tag "subtasks[#{number_subtask}][deadline]"
 
-      .row.col.small.mt-2
-        .form-group
-          =text_area_tag "subtasks[#{number_subtask}][description]", '', class: 'form-control', id: "descriptionSubtask#{number_subtask}"
-
       .accordion.mt-2.mb-3.d-none{ id: "checklists_#{number_subtask}" }
         .card.small
           .card-header.p-1
@@ -58,6 +54,12 @@
           .collapse{ id: "checklists#{number_subtask}Collapse", "data-parent" => "#checklists_#{number_subtask}", class: 'show'}
             .row.mt-2.mb-2
               .col{ id: "checklistsForms_#{number_subtask}" }
+
+      .row.col.small.mt-2
+        .form-group
+          =text_area_tag "subtasks[#{number_subtask}][description]", '', class: 'form-control', id: "descriptionSubtask#{number_subtask}"
+
+
 
 :javascript
   var accounts = #{raw Account.all.order([:first_name, :last_name]).map{ |account| [account.first_name.to_s + ' ' + account.last_name.to_s, account.id]} };
@@ -83,6 +85,13 @@
       $select += ('<option value="' + options[i][1] + '">' + options[i][0] + '</option>');
     }
     return $select;
+  }
+
+  function removeSubtask(elem) {
+    let subtask = elem.getAttribute('subtask');
+    console.log(subtask);
+    let accordionItem = document.getElementById(`accordion_${subtask}`);
+    accordionItem.remove();
   }
 
   function removeDate(elem) {
