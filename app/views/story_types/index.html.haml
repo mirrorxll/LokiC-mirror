@@ -9,6 +9,8 @@
     =link_to('filter story types', '#filter_form', 'aria-controls' => 'filter_form',
              'aria-expanded' => false, data: { toggle: "collapse", target: "#filter_form" },
              type: "button", id: '#crt_upd_filter_btn', class: 'btn btn-sm btn-outline-dark')
+    -if current_account.types.include?('manager')
+      =link_to('show archived', url_for({ 'story_types_grid' => {'archived' => true } }), class: 'btn btn-sm btn-outline-dark')
 
 #filter_form.collapse
   .row.mt-3.col-12

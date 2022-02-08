@@ -19,8 +19,12 @@ class StoryTypesController < ApplicationController # :nodoc:
                      developer? ? { developer: current_account.id } : {}
                    end
 
-    @story_types_grid = StoryTypesGrid.new(@grid_params)
-
+    # @grid_params.merge!({ StoryType.where(archived: false) })
+    pp "> "*50, @grid_params, request.parameters
+    @story_types_grid = StoryTypesGrid.new(@grid_params) do |scope|
+      scope.where(archived: false)
+    end
+    pp "> "*50, @story_types_grid
     respond_to do |f|
       f.html do
         @story_types_grid.scope { |scope| scope.page(params[:page]).per(50) }
