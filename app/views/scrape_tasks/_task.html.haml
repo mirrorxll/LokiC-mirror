@@ -1,0 +1,4 @@
+%div{ class: "task-#{task.id}" }
+  =link_to('[ remove ]', nil, onclick: "excludeTaskFromScrapeTask(event, #{task.id});")
+  &nbsp&nbsp|&nbsp&nbsp
+  =link_to("##{task.id} #{task.title}", task, target: '_blank', rel: 'noopener noreferrer')

@@ -1,0 +1,4 @@
+%div{ class: "table-#{table.id}" }
+  =link_to('[ remove ]', nil, onclick: "excludeTableFromScrapeTask(event, #{table.id});")
+  &nbsp&nbsp|&nbsp&nbsp
+  =link_to("##{table.id} #{table.title}", table, target: '_blank', rel: 'noopener noreferrer')

@@ -9,7 +9,13 @@ module ScrapeTasks
 
     before_action :find_scrape_task
 
-    def update
+    def new; end
+
+    def create
+    end
+
+    def destroy
+
     end
 
     private

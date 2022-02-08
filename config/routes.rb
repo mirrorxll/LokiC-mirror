@@ -347,6 +347,8 @@ Rails.application.routes.draw do
       resources :tasks, only: :new
 
       resources :data_samples, only: :create
+
+      resources :tables, only: %i[new create destroy]
     end
   end
 

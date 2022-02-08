@@ -1,0 +1,99 @@
+=form_with(url: scrape_task_tables_path(@scrape_task)) do |tf|
+  =tf.collection_select :host, Host.select(:id, :name), :id, :name, { prompt: '' }, { class: 'form-control form-control-sm mb-1', onchange: 'loadSchemas(this)' }
+  =tf.collection_select :schema, [], :id, :name, { prompt: '' }, { class: 'form-control form-control-sm', onchange: 'loadTables(this)' }
+  =tf.collection_select :table_names, [], :id, :name, {}, { class: 'form-control form-control-sm mt-1', multiple: 'multiple' }
+  =tf.submit :add, class: 'mt-2'
+  .loadingSpinner.d-inline-block.ml-1.invisible
+    .spinner-border.spinner-border-sm.text-secondary
+      %span.sr-only
+%hr/
+
+:javascript
+  $('#host').multipleSelect({
+    maxHeight: '14',
+    maxHeightUnit: 'row',
+    placeholder: 'host'
+  });
+
+  $('#schema').multipleSelect({
+    filter: true,
+    maxHeight: '14',
+    maxHeightUnit: 'row',
+    placeholder: 'schema'
+  });
+
+  $('#table_names').multipleSelect({
+    filter: true,
+    maxHeight: '7',
+    maxHeightUnit: 'row',
+    placeholder: 'table names'
+  });
+
+  function loadSchemas(host) {
+    let spinner = document.querySelector('#addTables .loadingSpinner');
+    let schema = document.querySelector("#schema");
+    let tableNames = document.querySelector('#table_names');
+
+    spinner.classList.remove('invisible');
+    schema.options.length = 0;
+    tableNames.options.length = 0;
+
+    $('#schema').multipleSelect('refresh');
+    $('#table_names').multipleSelect('refresh');
+
+    if(host.value === '') return false;
+
+    Rails.ajax({
+      type: "GET",
+      dataType: 'json',
+      url: `#{api_scrape_tasks_schemas_path(@scrape_task)}`,
+      data: `host=${encodeURIComponent(host.value)}`,
+      success: (data) => {
+        let option = document.createElement("option");
+
+        schema.innerHTML = '';
+        schema.appendChild(option);
+
+        data['schemas'].forEach((item) => {
+          option = document.createElement("option");
+          option.setAttribute("value", item['id']);
+          option.text = item['name'];
+          schema.appendChild(option)
+        });
+
+        spinner.classList.add('invisible');
+        $('#schema').multipleSelect('refresh');
+      }
+    });
+  }
+
+  function loadTables(schema) {
+    let spinner = document.querySelector('#addTables .loadingSpinner');
+    let host = document.querySelector('#host');
+    let tableNames = document.querySelector('#table_names');
+
+    spinner.classList.remove('invisible');
+    tableNames.options.length = 0;
+    $('#table_names').multipleSelect('refresh');
+
+    if(schema.value === '') return false;
+
+    Rails.ajax({
+      type: "GET",
+      dataType: 'json',
+      url: `#{api_scrape_tasks_table_names_path(@scrape_task)}`,
+      data: `host=${encodeURIComponent(host.value)}&schema=${encodeURIComponent(schema.value)}`,
+      success: (data) => {
+        console.log(data['table_names'])
+        data['table_names'].forEach((item) => {
+          let option = document.createElement("option");
+          option.setAttribute("value", item);
+          option.text = item;
+          tableNames.appendChild(option)
+        });
+
+        spinner.classList.add('invisible');
+        $('#table_names').multipleSelect('refresh');
+      }
+    });
+  }

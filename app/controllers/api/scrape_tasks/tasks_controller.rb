@@ -8,10 +8,10 @@ module Api
 
       def create
         json =
-          if @scrape_task.multi_tasks.exists?(@task.id)
+          if @scrape_task.tasks.exists?(@task.id)
             { exist: true }
           else
-            @scrape_task.multi_tasks << @task
+            @scrape_task.tasks << @task
             { exist: false, task_id: @task.id, task_name: @task.title }
           end
 
@@ -20,8 +20,8 @@ module Api
 
       def destroy
         not_exist =
-          if @scrape_task.multi_tasks.exists?(@task.id)
-            @scrape_task.multi_tasks.destroy(@task)
+          if @scrape_task.tasks.exists?(@task.id)
+            @scrape_task.tasks.destroy(@task)
             false
           else
             true

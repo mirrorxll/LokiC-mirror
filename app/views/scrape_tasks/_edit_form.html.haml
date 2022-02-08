@@ -13,20 +13,19 @@
         .col-4.pr-0.text-right.font-weight-bold
           MULTI TASKS:
         .col-8
-          -attached_tasks = @scrape_task.multi_tasks
+          -attached_tasks = @scrape_task.tasks
           #includedTasks
-            =render partial: 'multi_task', collection: attached_tasks
+            =render partial: 'task', collection: attached_tasks
           #addTask
-            =link_to('[ add task ]', new_scrape_task_task_path(@scrape_task), onclick: 'showSpinner()', remote: true)
-            .row.loadingSpinner.d-none
-              .col-1.text-right
-                .spinner-border.spinner-border-sm.text-secondary
-                  %span.sr-only
+            =link_to('[ add task ]', new_scrape_task_task_path(@scrape_task), onclick: 'showTasksSpinner()', remote: true)
+            .loadingSpinner.d-none
+              .spinner-border.spinner-border-sm.text-secondary
+                %span.sr-only
             :javascript
-              function showSpinner() {
-                document.querySelector('#addTask .loadingSpinner').classList.remove('d-none');
-                document.querySelector('#addTask a').classList.add('d-none');
-              }
+                function showTasksSpinner() {
+                  document.querySelector('#addTask .loadingSpinner').classList.remove('d-none');
+                  document.querySelector('#addTask a').classList.add('d-none');
+                }
 
           :javascript
             function addRemoveMarginToTasks() {
@@ -135,66 +134,21 @@
         .col-4.pr-0.text-right.font-weight-bold
           TABLES:
         .col-8
-          =form_with do |f|
-            =f.collection_select :host, Host.select(:id, :name), :id, :name, { prompt: '' }, { onchange: 'loadSchemas(this)' }
-            =f.collection_select :schema, [], :id, :name, { prompt: '' }, { onchange: 'loadTables(this)' }
-            =f.collection_select :table_names, [], :id, :name, {}, {}
+          -tables = @scrape_task.table_locations
+          #includedTables
+            =render partial: 'table', collection: tables
+          #addTables
+            =link_to('[ add tables ]', new_scrape_task_table_path(@scrape_task), onclick: 'showTablesSpinner()', remote: true)
+            .loadingSpinner.d-none
+              .spinner-border.spinner-border-sm.text-secondary
+                %span.sr-only
 
-          :javascript
-            function loadSchemas(host) {
-              let schema = document.querySelector("#schema");
-              let tableNames = document.querySelector('#table_names');
+            :javascript
+              function showTablesSpinner() {
+                document.querySelector('#addTables .loadingSpinner').classList.remove('d-none');
+                document.querySelector('#addTables a').classList.add('d-none');
+              }
 
-              schema.options.length = 0;
-              tableNames.options.length = 0;
-
-              if(host.value === '') return false;
-
-              Rails.ajax({
-                type: "GET",
-                dataType: 'json',
-                url: `#{api_scrape_tasks_schemas_path(@scrape_task)}`,
-                data: `host=${encodeURIComponent(host.value)}`,
-                success: (data) => {
-                  let option = document.createElement("option");
-
-                  schema.innerHTML = '';
-                  schema.appendChild(option);
-
-                  data['schemas'].forEach((item) => {
-                    option = document.createElement("option");
-                    option.setAttribute("value", item['id']);
-                    option.text = item['name'];
-                    schema.appendChild(option)
-                  });
-                }
-              });
-            }
-
-            function loadTables(schema) {
-              let host = document.querySelector('#host');
-              let tableNames = document.querySelector('#table_names');
-
-              tableNames.options.length = 0;
-
-              if(schema.value === '') return false;
-
-              Rails.ajax({
-                type: "GET",
-                dataType: 'json',
-                url: `#{api_scrape_tasks_table_names_path(@scrape_task)}`,
-                data: `host=${encodeURIComponent(host.value)}&schema=${encodeURIComponent(schema.value)}`,
-                success: (data) => {
-                  console.log(data['table_names'])
-                  data['table_names'].forEach((item) => {
-                    let option = document.createElement("option");
-                    option.setAttribute("value", item);
-                    option.text = item;
-                    tableNames.appendChild(option)
-                  });
-                }
-              });
-            }
       -if !disable_input
         .row.mb-4.align-items-center
           .col-4.pr-0.text-right.font-weight-bold
