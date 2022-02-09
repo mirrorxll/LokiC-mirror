@@ -12,6 +12,7 @@ module ScrapeTasks
     def new; end
 
     def create
+
     end
 
     def destroy
@@ -19,6 +20,10 @@ module ScrapeTasks
     end
 
     private
+
+    def table_params
+      params.require(:tables).permit(:host, :schema, names: [])
+    end
 
     def find_scrape_task
       @scrape_task = ScrapeTask.find(params[:scrape_task_id])

@@ -7,9 +7,10 @@ module ScrapeTasks
         host_obj = Object.const_get(host.name)
 
         MiniLokiC::Connect::Mysql.on(host_obj).query('show schemas;').to_a.each do |schema|
-          Schema.find_or_create_by!(host: host, name: schema.values.first)
-          puts schema.values.first
+          Schema.find_or_create_by!(host: host, name: schema.values.first).touch
         end
+
+        Schema.where('DATE(updated_at) < DATE(created_at)').destroy_all
       end
     end
   end
