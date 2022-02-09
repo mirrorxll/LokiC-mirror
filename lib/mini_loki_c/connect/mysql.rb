@@ -10,11 +10,13 @@ module MiniLokiC
         fallen = 0
 
         begin
-          Mysql2::Client.new(
+          db = Mysql2::Client.new(
             host: host, database: database,
             username: username, password: password,
             connect_timeout: 180, reconnect: true
           )
+          db.query('SET NAMES utf8mb4 COLLATE utf8mb4_general_ci') if UPDATED_MB4_BASES.include?(db.query_options.slice(:host, :database))
+          db
         rescue Mysql2::Error => e
           raise Mysql2::Error, e if fallen > 3
 

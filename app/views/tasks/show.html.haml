@@ -28,6 +28,21 @@
       .card-body
         =render 'comments', comments: @comments
 
+-if current_account.eql?(@task.creator) || current_account.in?(@task.assignment_to)
+  #notes.accordion.mt-2
+    .card.small
+      .card-header.p-1
+        %div.row
+          .col-11
+            %div{"aria-controls" => "#notesCollapse", "aria-expanded" => "true", "data-target" => "#notesCollapse", "data-toggle" => "collapse", type: "button"}
+              notes
+          .col-1.text-right#linkEditNote
+            -unless @note.nil?
+              =render 'task_notes/link_edit', note: @note
+      #notesCollapse.collapse{"data-parent" => "#notes"}
+        =render 'task_notes/note', note: @note
+
+
 #subtasks.accordion.mt-2
   .card.small
     .card-header.p-1

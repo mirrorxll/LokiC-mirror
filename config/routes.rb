@@ -376,6 +376,10 @@ Rails.application.routes.draw do
       patch :update, on: :collection
       get   :cancel, on: :collection
     end
+
+    resources :notes, controller: 'task_notes', only: %i[new create edit update] do
+      get :cancel_edit, on: :member
+    end
   end
 
   resources :shown_samples,        controller: 'story_types/shown_samples',        only: :index

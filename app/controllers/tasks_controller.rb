@@ -9,6 +9,7 @@ class TasksController < ApplicationController # :nodoc:
   before_action :find_task, only: %i[show edit update]
   before_action :grid, only: :index
   before_action :task_assignments, only: :show
+  before_action :find_note, only: :show
 
   after_action  :send_notification, only: :create
   after_action  :comment, only: :create
@@ -87,12 +88,17 @@ class TasksController < ApplicationController # :nodoc:
       elsif grid_params[:status].length == 1
         grid_params[:status]
       end
+    grid_params[:current_account] = current_account
 
     @grid = TasksGrid.new(grid_params.except(:collapse))
   end
 
   def find_task
     @task = Task.find(params[:id]) || params[:task_id]
+  end
+
+  def find_note
+    @note = TaskNote.find_by(task: @task, creator: current_account)
   end
 
   def send_notification

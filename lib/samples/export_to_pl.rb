@@ -18,12 +18,15 @@ module Samples
       stories_to_export = iteration.stories.ready_to_export.limit(10_000).to_a
       main_semaphore = Mutex.new
       exported = 0
+      forbidden_mb_pubs = [1635, 1149, 1148, 1656, 1659, 1669, 1670]
 
       threads = Array.new(threads_count) do
         Thread.new do
           loop do
             sample = main_semaphore.synchronize { stories_to_export.shift }
             break if sample.nil?
+
+            sample.destroy and next if sample.publication.pl_identifier.in?(forbidden_mb_pubs)
 
             lead_story_post(sample)
             main_semaphore.synchronize { exported += 1 }

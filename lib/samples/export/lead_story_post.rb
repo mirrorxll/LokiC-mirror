@@ -5,15 +5,15 @@ module Samples
     module LeadStoryPost
       private
 
-      TIMES_BY_WEEKDAY = [
-        %w[7:00 10:00],   # "Sunday"
-        %w[10:00 12:00],  # "Monday"
-        %w[7:00 10:00],   # "Tuesday"
-        %w[7:00 10:00],   # "Wednesday"
-        %w[7:00 10:00],   # "Thursday"
-        %w[7:00 10:00],   # "Friday"
-        %w[8:30 9:30]     # "Saturday"
-      ].freeze
+        TIMES_BY_WEEKDAY = [
+          %w[7:00 10:00],   # "Sunday"
+          %w[10:00 12:00],  # "Monday"
+          %w[7:00 10:00],   # "Tuesday"
+          %w[7:00 10:00],   # "Wednesday"
+          %w[7:00 10:00],   # "Thursday"
+          %w[7:00 10:00],   # "Friday"
+          %w[8:30 9:30]     # "Saturday"
+        ].freeze
 
       def lead_story_post(sample)
         exp_config = sample.export_configuration
@@ -42,12 +42,12 @@ module Samples
 
       def sections(story_type, publication)
         clients_publications_tags = story_type.clients_publications_tags.to_a
-        cl_pub_tg = clients_publications_tags.find { |cpt| cpt.publication.eql?(publication) }
 
+        cl_pub_tg = clients_publications_tags.find { |cpt| cpt.publication.eql?(publication) }
         return cl_pub_tg.sections.ids if cl_pub_tg
 
         aggregated_cpt = clients_publications_tags.select do |cpt|
-          cpt.publication.name.in?(@pub_aggregate_names) || cpt.publication.nil?
+          cpt.publication.nil? || cpt.publication.name.in?(@pub_aggregate_names)
         end
 
         aggregated_cpt.find do |cpt|
@@ -89,7 +89,7 @@ module Samples
           active_org_ids += JSON.parse(response.body).map { |org| org['id'] }
         end
 
-        params = {
+        p params = {
           community_id: publication.pl_identifier,
           lead_id: lead_id,
           organization_ids: active_org_ids,

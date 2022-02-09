@@ -10,8 +10,8 @@
   $('#add_row').click(function () {
     let hex = secureRandom(6);
 
-    var typesOfWorks = #{raw WorkType.where(work: 0).order("name in ('Dev Algo work','Scrape Work','G&A Development Services','G&A Management- Human Resources') DESC, name ASC").map{ |type| type.name} };
-    var clients = #{raw ClientsReport.order("name in ('Metric Media') DESC, name in ('PLA | Dallas Express','G&A Development Services','Local Government Information Services','The Record') DESC, name ASC").map{ |type| type.name} };
+    var typesOfWorks = #{raw WorkType.where(work: 0).order("name in ('Dev Algo work','Scrape Work','G&A Development Services','G&A HLE Haw','G&A Management- Human Resources') DESC, name ASC").map{ |type| type.name} };
+    var clients = #{raw ClientsReport.order("name in ('Metric Media') DESC, name in ('PLA | Dallas Express','G&A Development Services','G&A HLE Haw','Local Government Information Services','The Record') DESC, name ASC").map{ |type| type.name} };
     var max_date = date(#{raw week.end.year}, #{raw week.end.strftime("%m")}, #{raw week.end.strftime("%d")});
     var min_date = date(#{raw week.begin.year}, #{raw week.begin.strftime("%m")}, #{raw week.begin.strftime("%d")});
 
