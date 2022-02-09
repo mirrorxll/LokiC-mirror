@@ -2,4 +2,5 @@
 
 class Host < ApplicationRecord
   has_many :schemas, dependent: :destroy
+  has_many :table_locations, as: :parent
 end

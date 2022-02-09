@@ -36,8 +36,8 @@ class ScrapeTask < ApplicationRecord
 
   has_many :change_history, as: :history
   has_many :alerts, as: :alert
-  has_many :data_locations, as: :data_set_location, class_name: 'DataSetLocation'
-  has_many :table_locations, as: :table_location, class_name: 'TableLocation'
+  has_many :data_set_locations, as: :data_set_location
+  has_many :table_locations, as: :parent, dependent: :destroy
 
   has_and_belongs_to_many :tags, class_name: 'ScrapeTaskTag'
   has_and_belongs_to_many :tasks

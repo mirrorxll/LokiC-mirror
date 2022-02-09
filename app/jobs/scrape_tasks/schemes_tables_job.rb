@@ -10,8 +10,9 @@ module ScrapeTasks
           Schema.find_or_create_by!(host: host, name: schema.values.first).touch
         end
 
-        Schema.where('DATE(updated_at) < DATE(created_at)').destroy_all
       end
+
+      Schema.where('DATE(updated_at) < CURRENT_DATE()').destroy_all
     end
   end
 end

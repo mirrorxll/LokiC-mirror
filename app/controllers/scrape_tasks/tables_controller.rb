@@ -7,25 +7,7 @@ module ScrapeTasks
     skip_before_action :set_story_type_iteration
     skip_before_action :set_article_type_iteration
 
-    before_action :find_scrape_task
-
-    def new; end
-
-    def create
-
-    end
-
-    def destroy
-
-    end
-
-    private
-
-    def table_params
-      params.require(:tables).permit(:host, :schema, names: [])
-    end
-
-    def find_scrape_task
+    def new
       @scrape_task = ScrapeTask.find(params[:scrape_task_id])
     end
   end

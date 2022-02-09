@@ -1,57 +1,77 @@
-=form_with(url: scrape_task_tables_path(@scrape_task)) do |tf|
-  =tf.collection_select 'tables[host]',  Host.select(:id, :name), :id, :name, { prompt: '' }, { class: 'form-control form-control-sm mb-1', onchange: 'loadSchemas(this)' }
-  =tf.collection_select 'tables[schema]', [], :id, :name, { prompt: '' }, { class: 'form-control form-control-sm', onchange: 'loadTables(this)' }
-  =tf.collection_select 'tables[names]', [], :id, :name, {}, { class: 'form-control form-control-sm mt-1', multiple: 'multiple' }
-  =tf.submit :add, class: 'mt-2'
-  .loadingSpinner.d-inline-block.ml-1.invisible
-    .spinner-border.spinner-border-sm.text-secondary
-      %span.sr-only
+=select :tables, :host_id,  Host.pluck(:name, :id), { include_blank: '' }, { class: 'form-control form-control-sm mb-1', onchange: 'loadSchemas(this)' }
+=select :tables, :schema_id, [], {}, { class: 'form-control form-control-sm', onchange: 'loadTables(this)' }
+=select :tables, :names, [], {}, { class: 'form-control form-control-sm mt-1', multiple: 'multiple' }
+%button#tablesAttachButton{ class: 'btn btn-sm btn-dark mt-1', onclick: 'attachTablesToScrapeTask(event);'}
+  attach
+
+.loadingSpinner.d-inline-block.ml-1.invisible
+  .spinner-border.spinner-border-sm.text-secondary
+    %span.sr-only
 %hr/
 
 :javascript
-  $('select[id="tables[host]"]').multipleSelect({
+  function attachTablesToScrapeTask(event) {
+    event.preventDefault();
+
+    let host_id =   document.querySelector('#tables_host_id').value;
+    let schema_id = document.querySelector('#tables_schema_id').value;
+    let selectedNamesOptions =  [...document.querySelector('#tables_names').options].filter(x => x.selected);
+    let names = [...selectedNamesOptions].map(x => `tables[names][]=${encodeURIComponent(x.value)}` ).join('&');
+
+    Rails.ajax({
+      type: "POST",
+      dataType: 'json',
+      url: `#{api_scrape_tasks_tables_path(@scrape_task)}`,
+      data: `tables[host_id]=${encodeURIComponent(host_id)}&tables[schema_id]=${encodeURIComponent(schema_id)}&${names}`,
+      success: (data) => {
+        console.log(1123456);
+        if(data['exist']) return false;
+
+        // document.querySelector('#includedTasks').insertAdjacentHTML(
+        //   'beforeend',
+        //   `<div class="task-${data['task_id']}">
+        //      <a onclick="excludeMultiTaskFromScrapeTask(event, ${data['task_id']});" href="#">
+        //        [ remove ]
+        //      </a>
+        //      &nbsp;&nbsp;|&nbsp;&nbsp;
+        //      <a rel="noopener noreferrer" href="/tasks/${data['task_id']}">\#${data['task_id']} ${data['task_name']}</a>
+        //      <br/>
+        //   </div>`
+        // );
+      }
+    });
+  }
+  $('#tables_host_id').multipleSelect({
     maxHeight: '14',
     maxHeightUnit: 'row',
-    placeholder: 'host',
-    onAfterCreate: () => {
-      $('.hide-radio.selected').addClass('invisible');
-    }
+    placeholder: 'host'
   });
 
-  $('select[id="tables[schema]"]').multipleSelect({
+  $('#tables_schema_id').multipleSelect({
     filter: true,
     maxHeight: '14',
     maxHeightUnit: 'row',
-    placeholder: 'schema',
-    onAfterCreate: () => {
-      $('.hide-radio.selected').addClass('invisible');
-    }
+    placeholder: 'schema'
   });
 
-  $('select[id="tables[names]"]').multipleSelect({
+  $('#tables_names').multipleSelect({
     filter: true,
     maxHeight: '7',
     maxHeightUnit: 'row',
-    placeholder: 'names',
-    onAfterCreate: () => {
-      $('.hide-radio.selected').addClass('invisible');
-    }
+    placeholder: 'names'
   });
-
-
-  // $('.hide-radio.selected').addClass('invisible');
 
   function loadSchemas(host) {
     let spinner = document.querySelector('#addTables .loadingSpinner');
-    let schema = document.querySelector('select[id="tables[schema]"]');
-    let tableNames = document.querySelector('select[id="tables[names]"]');
+    let schema = document.querySelector('#tables_schema_id');
+    let tableNames = document.querySelector('#tables_names');
 
     spinner.classList.remove('invisible');
     schema.options.length = 0;
     tableNames.options.length = 0;
 
-    $('select[id="tables[schema]"]').multipleSelect('refresh');
-    $('select[id="tables[names]').multipleSelect('refresh');
+    $('#tables_schema_id').multipleSelect('refresh');
+    $('#tables_names').multipleSelect('refresh');
 
     if(host.value === '') return false;
 
@@ -74,26 +94,26 @@
         });
 
         spinner.classList.add('invisible');
-        $('select[id="tables[schema]"]').multipleSelect('refresh');
+        $('#tables_schema_id').multipleSelect('refresh');
       }
     });
   }
 
   function loadTables(schema) {
     let spinner = document.querySelector('#addTables .loadingSpinner');
-    let host = document.querySelector('select[id="tables[host]"]');
-    let tableNames = document.querySelector('select[id="tables[names]"]');
+    let host = document.querySelector('#tables_host_id');
+    let tableNames = document.querySelector('#tables_names');
 
     spinner.classList.remove('invisible');
     tableNames.options.length = 0;
-    $('select[id="tables[names]"]').multipleSelect('refresh');
+    $('#tables_names').multipleSelect('refresh');
 
     if(schema.value === '') return false;
 
     Rails.ajax({
       type: "GET",
       dataType: 'json',
-      url: `#{api_scrape_tasks_table_names_path(@scrape_task)}`,
+      url: `#{api_scrape_tasks_tables_path(@scrape_task)}`,
       data: `host=${encodeURIComponent(host.value)}&schema=${encodeURIComponent(schema.value)}`,
       success: (data) => {
         console.log(data['table_names'])
@@ -105,7 +125,7 @@
         });
 
         spinner.classList.add('invisible');
-        $('select[id="tables[names]"]').multipleSelect('refresh');
+        $('#tables_names').multipleSelect('refresh');
       }
     });
   }
