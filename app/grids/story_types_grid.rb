@@ -144,7 +144,4 @@ class StoryTypesGrid
   column(:updated_at) do |record|
     record.updated_at&.to_date
   end
-  column(:archived) do |record|
-    record.archived
-  end
 end
