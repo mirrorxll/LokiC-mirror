@@ -10,10 +10,7 @@ class TasksController < ApplicationController # :nodoc:
   before_action :grid, only: :index
   before_action :task_assignments, only: :show
   before_action :find_note, only: :show
-
-  # after_action  :send_notification, only: :create
-  # after_action  :comment, only: :create
-
+  
   def index
     respond_to do |f|
       f.html do
