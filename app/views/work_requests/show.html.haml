@@ -23,7 +23,7 @@
           #createProject
             -if current_account.types.include?('manager')
               .d-inline-block.mr-2.small
-                %button{ onclick: 'projectNameChecking();', type: 'button', class: 'p-0 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#createProjectModal", disabled: @work_request.archived }
+                %button{ type: 'button', class: 'p-0 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#createProjectModal", disabled: @work_request.archived }
                   [ create project ]
           #editWorkRequest
             -if current_account.eql?(@work_request.requester) || (current_account.types & ['manager', 'outside manager']).any?
@@ -187,22 +187,4 @@
             =render 'work_request_info_modal'
           .w-60
             .editable.overflow-scroll.h-94.pr-2.pb-3.pl-2
-              =render 'tasks/main_form', params: { work_request_id: @work_request.id }
-            -#%hr.m-2/
-            -#.d-flex.align-items-center.justify-content-center.h-5
-            -#  =button_tag('create', id: 'createProjectButton', class: 'btn btn-sm btn-secondary')
-            -#  .mr-1.ml-1
-            -#  .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
-            -#    cancel
-  :javascript
-    document.querySelector('#newProjectName').value = '#{@work_request.project_order_name.body}';
-
-    (() => {
-      let button = document.querySelector('#createProjectButton');
-
-      button.addEventListener('click', (event) => {
-        event.preventDefault();
-
-        document.querySelector('#hiddenCreateProjectButton').click();
-      }, false);
-    })();
+              =render 'tasks/project_form', work_request_id: @work_request.id

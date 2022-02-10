@@ -35,10 +35,8 @@ class TasksController < ApplicationController # :nodoc:
   def create
     parent_params = task_params[:parent]
     subtasks_params = task_params[:subtasks]
-    puts '/////////////////'
-    puts parent_params
+
     @task_parent = Task.new(parent_params.except(:assignment_to, :assistants, :checklists))
-    puts @task_parent.work_request
     if @task_parent.save!
       after_task_create(@task_parent, parent_params)
 
@@ -69,6 +67,16 @@ class TasksController < ApplicationController # :nodoc:
 
   def add_subtask
     @number_subtask = params[:number_subtask]
+  end
+
+  def new_subtask; end
+
+  def create_subtask
+    @subtask = Task.new(subtask_params.except(:assignment_to, :assistants, :checklists))
+
+    if @subtask.save!
+      after_task_create(@subtask, subtask_params)
+    end
   end
 
   private
@@ -136,10 +144,10 @@ class TasksController < ApplicationController # :nodoc:
 
   def task_params
     result_params = {}
-    parent_params = params.require(:task_parent).permit(:title, :description, :parent, :deadline, :client_id, :reminder_frequency, :access, :gather_task, :work_request_id, :assignment_to, assistants: [], checklists: [])
+    parent_params = params.require(:task_parent).permit(:title, :description, :parent, :deadline, :client_id, :reminder_frequency, :access, :gather_task, :work_request, :assignment_to, assistants: [], checklists: [])
     parent_params[:reminder_frequency] = parent_params[:reminder_frequency].blank? ? nil : TaskReminderFrequency.find(parent_params[:reminder_frequency])
     parent_params[:client] = parent_params[:client_id].blank? ? nil : ClientsReport.find(parent_params[:client_id])
-    parent_params[:work_request] = params[:work_request_id] ? WorkRequest.find(params[:work_request_id]) : nil
+    parent_params[:work_request] = parent_params[:work_request] ? WorkRequest.find(parent_params[:work_request]) : nil
     parent_params[:creator] = current_account
     parent_params[:assistants] = parent_params[:assistants].blank? ? nil: parent_params[:assistants].uniq.reject(&:blank?).delete_if {|assignee| assignee == parent_params[:assignment_to] }
     result_params[:parent] = parent_params
@@ -151,21 +159,24 @@ class TasksController < ApplicationController # :nodoc:
     subtasks_params.each do |number_subtask, subtask_params|
       subtask_params = subtask_params.permit(:title, :description, :parent, :deadline, :client_id, :reminder_frequency, :access, :gather_task, :assignment_to, assistants: [], checklists: [])
       subtask_params[:client] = parent_params[:client]
-      subtask_params[:reminder_frequency] = subtask_params[:reminder_frequency].blank? ? nil : subtask_params[:reminder_frequency]
+      subtask_params[:reminder_frequency] = subtask_params[:reminder_frequency].blank? ? nil : TaskReminderFrequency.find(subtask_params[:reminder_frequency])
       subtask_params[:creator] = current_account
       subtask_params[:assistants] = subtask_params[:assistants].blank? ? nil: subtask_params[:assistants].uniq.reject(&:blank?).delete_if {|assignee| assignee == subtask_params[:assignment_to] }
       subtasks << subtask_params
     end
 
     result_params[:subtasks] = subtasks
-
     result_params
-    # task_params[:reminder_frequency] = task_params[:reminder_frequency].blank? ? nil : TaskReminderFrequency.find(task_params[:reminder_frequency])
-    # task_params[:parent] = task_params[:parent].blank? ? nil : Task.find(task_params[:parent])
-    # task_params[:client] = task_params[:client_id].blank? ? nil : ClientsReport.find(task_params[:client_id])
-    # task_params[:work_request] = params[:work_request_id] ? WorkRequest.find(params[:work_request_id]) : nil
-    # task_params[:creator] = current_account
-    # task_params
+  end
+
+  def subtask_params
+    task_params = params.require(:task).permit(:title, :description, :parent, :deadline, :client_id, :reminder_frequency, :access, :gather_task, :assignment_to, assistants: [], checklists: [] )
+    task_params[:reminder_frequency] = task_params[:reminder_frequency].blank? ? nil : TaskReminderFrequency.find(task_params[:reminder_frequency])
+    task_params[:parent] = task_params[:parent].blank? ? nil : Task.find(task_params[:parent])
+    task_params[:client] = task_params[:client_id].blank? ? nil : ClientsReport.find(task_params[:client_id])
+    task_params[:creator] = current_account
+    task_params[:assistants] = task_params[:assistants].blank? ? nil: task_params[:assistants].uniq.reject(&:blank?).delete_if {|assignee| assignee == task_params[:assignment_to] }
+    task_params
   end
 
   def assignment_to_params
