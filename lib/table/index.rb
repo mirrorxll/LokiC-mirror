@@ -1,5 +1,4 @@
-# frozen_string_literal: true        puts 'lll'
-
+# frozen_string_literal: true
 
 module Table
   module Index
