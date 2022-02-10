@@ -21,7 +21,7 @@ class StoryTypeIteration < ApplicationRecord # :nodoc:
   has_many :stories
   has_many :production_removals, foreign_key: :iteration_id
 
-  has_and_belongs_to_many :statuses
+  belongs_to :status, optional: true
 
   def show_samples
     stories.where(show: true)
