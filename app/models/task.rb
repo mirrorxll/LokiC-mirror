@@ -26,6 +26,12 @@ class Task < ApplicationRecord # :nodoc:
   has_one :team_work, class_name: 'TaskTeamWork'
   has_one :last_comment, -> { order created_at: :desc }, as: :commentable, class_name: 'Comment'
 
+  has_one :main_task_assignment, -> { where(main: true) }, class_name: 'TaskAssignment'
+  has_one :main_assignee, through: :main_task_assignment, source: :account
+
+  has_many :task_assistants, -> { where(main: false) }, class_name: 'TaskAssignment'
+  has_many :assistants, through: :task_assistants, source: :account
+
   has_many :checklists, class_name: 'TaskChecklist'
   has_many :checklists_assignments, class_name: 'TaskChecklistAssignment'
 

@@ -42,19 +42,19 @@
       #notesCollapse.collapse{"data-parent" => "#notes"}
         =render 'task_notes/note', note: @note
 
-
-#subtasks.accordion.mt-2
-  .card.small
-    .card-header.p-1
-      %div.row
-        .col-11
-          %div{"aria-controls" => "#subtasksCollapse", "aria-expanded" => "true", "data-target" => "#subtasksCollapse", "data-toggle" => "collapse", type: "button"}
-            subtasks
-        .col-1.text-right
-          -if (@task.creator?(current_account) || current_account.types.include?('manager')) && @task.parent.nil?
-            =link_to '[ create ]', new_task_path(parent_task: @task), remote: true
-    #subtasksCollapse.collapse{"data-parent" => "#subtasks", class: @task.subtasks.count > 0 ? 'show' : '' }
-      =render 'subtasks'
+-if @task.parent.nil?
+  #subtasks.accordion.mt-2
+    .card.small
+      .card-header.p-1
+        %div.row
+          .col-11
+            %div{"aria-controls" => "#subtasksCollapse", "aria-expanded" => "true", "data-target" => "#subtasksCollapse", "data-toggle" => "collapse", type: "button"}
+              subtasks
+          .col-1.text-right
+            -if (@task.creator?(current_account) || (current_account.types & %w[manager guest-1]).any?) && @task.parent.nil?
+              =link_to '[ create ]', new_subtask_tasks_path(parent_task: @task), remote: true
+      #subtasksCollapse.collapse{"data-parent" => "#subtasks", class: @task.subtasks.count > 0 ? 'show' : '' }
+        =render 'subtasks'
 
 .card.mt-2
   .card-header.p-1
@@ -73,7 +73,7 @@
                   %li.mb-2
                     =checklist.description
               %hr.mt-3.mb-3
-            =@task.description.html_safe
+            =@task.description&.html_safe
 
 =render 'task_checklists/confirms'
 =render 'task_tracking_hours/hours_form'
