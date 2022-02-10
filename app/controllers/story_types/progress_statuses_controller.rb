@@ -8,21 +8,18 @@ module StoryTypes
     before_action :render_403, if: :editor?
     before_action :find_status
 
-    before_save :change_archived
-
     def change
-      # change_archived if @status.name == 'archived' || @story_type.status.name == 'archived'
-      @story_type.update!(status: @status, last_status_changed_at: Time.now, current_account: current_account)
-      # pp "> "*50, @story_type.status.name_previous_change
-      # pp "> "*50, @story_type.status.name_was
-      # pp "> "*50, @story_type.status.previous_changes[:name]
+      prev_status = @story_type.status
+      @story_type.assign_attributes(status: @status, last_status_changed_at: Time.now, current_account: current_account)
+      if @story_type.save
+        change_archived if @status.name == 'archived' || prev_status.name == 'archived'
+      end
     end
 
     private
 
     def change_archived
-      pp " *"*50, @story_type.status
-      # @story_type.archived ? @story_type.update!(archived: false) : @story_type.update!(archived: true)
+      @story_type.archived ? @story_type.update!(archived: false) : @story_type.update!(archived: true)
     end
 
     def find_status
