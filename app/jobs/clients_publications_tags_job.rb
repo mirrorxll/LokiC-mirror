@@ -13,6 +13,8 @@ class ClientsPublicationsTagsJob < ApplicationJob
 
         clients_pubs_tags.flatten.each do |cl_pub_tags|
           client = update_client(cl_pub_tags)
+          next if cl_pub_tags['publication_name'].nil?
+
           publication = update_publication(client, cl_pub_tags, pubs_ids_statewide)
           update_tags(publication, cl_pub_tags)
         end
@@ -43,9 +45,9 @@ class ClientsPublicationsTagsJob < ApplicationJob
           c.publications.each { |p| p.tags << blank_tag }
         end
 
-        Client.where('DATE(updated_at) < DATE(created_at) AND exist_in_pl = 1').destroy_all
-        Publication.where('DATE(updated_at) < DATE(created_at)').destroy_all
-        Tag.where('DATE(updated_at) < DATE(created_at)').destroy_all
+        Client.where('DATE(updated_at) < CURRENT_DATE() AND exist_in_pl = 1').destroy_all
+        Publication.where('DATE(updated_at) < CURRENT_DATE()').destroy_all
+        Tag.where('DATE(updated_at) < CURRENT_DATE()').destroy_all
       end
     )
   end
@@ -91,6 +93,7 @@ class ClientsPublicationsTagsJob < ApplicationJob
       tag = Tag.find_or_initialize_by(pl_identifier: id)
       tag.name = name
       tag.save!
+      tag.touch
 
       next if publication.tags.exists?(tag.id)
 
