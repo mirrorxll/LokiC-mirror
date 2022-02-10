@@ -89,7 +89,7 @@ module Samples
           active_org_ids += JSON.parse(response.body).map { |org| org['id'] }
         end
 
-        p params = {
+        params = {
           community_id: publication.pl_identifier,
           lead_id: lead_id,
           organization_ids: active_org_ids,
@@ -114,8 +114,6 @@ module Samples
         sample.update!(published_at: published_at)
         JSON.parse(response.body)['id']
       rescue StandardError => e
-        pp e.full_message
-
         @pl_client.delete_lead(lead_id)
         raise Samples::StoryPostError, "[#{e.class}] -> #{e.message} at #{e.backtrace.first}".gsub('`', "'")
       end

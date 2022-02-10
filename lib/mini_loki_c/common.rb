@@ -1736,9 +1736,8 @@ end
 def insert(db, tab, h, log = false)
   if h.any?
     query = "insert into #{tab} (#{h.keys.map { |e| "`#{e}`" }.join(', ')}) values (#{h.values.map { |e| "'#{escape(e)}'" }.join(', ')})"
-    p query if log
+    query if log
     db.query(query)
-  else p 'Nothing to insert'
   end
 end
 
@@ -1805,7 +1804,6 @@ def add_cols_if_not_exist(db, tab, cols_hh) # cols_hh = {'col_name' => 'col_type
     type = type.to_s
     if name != '' && type != '' && !cols.include?(name)
       db.client.query("alter table #{tab} add #{name} #{type}")
-      p "Column #{name} was added to the table #{tab}."
     end
   end
 end
