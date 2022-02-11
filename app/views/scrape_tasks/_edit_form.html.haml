@@ -16,6 +16,33 @@
           -attached_tasks = @scrape_task.tasks
           #includedTasks
             =render partial: 'task', collection: attached_tasks
+            :javascript
+              function addRemoveMarginToTasks() {
+                let tasks = document.querySelector('#includedTasks');
+
+                if(tasks.innerText.trim() === '') {
+                  tasks.classList.remove('mb-2');
+                } else {
+                  tasks.classList.add('mb-2');
+                }
+              }
+              addRemoveMarginToTasks();
+
+              function excludeTaskFromScrapeTask(event, task_id) {
+                event.preventDefault();
+
+                Rails.ajax({
+                  type: "DELETE",
+                  dataType: 'json',
+                  url: `/api/scrape_tasks/#{@scrape_task.id}/tasks/${task_id}`,
+                  success: (data) => {
+                    if(data['not_exist']) return false;
+
+                    document.querySelector(`#includedTasks .task-${task_id}`).remove();
+                    addRemoveMarginToTasks();
+                  }
+                });
+              }
           #addTask
             =link_to('[ add task ]', new_scrape_task_task_path(@scrape_task), onclick: 'showTasksSpinner()', remote: true)
             .loadingSpinner.d-none
@@ -26,63 +53,6 @@
                   document.querySelector('#addTask .loadingSpinner').classList.remove('d-none');
                   document.querySelector('#addTask a').classList.add('d-none');
                 }
-
-          :javascript
-            function addRemoveMarginToTasks() {
-              let tasks = document.querySelector('#includedTasks');
-
-              if(tasks.innerText.trim() === '') {
-                tasks.classList.remove('mb-2');
-              } else {
-                tasks.classList.add('mb-2');
-              }
-            }
-            addRemoveMarginToTasks();
-
-            function multiTaskByEnterPress(event, input) {
-              if(event.keyCode !== 13 || input.value.trim().length === 0) return false;
-
-              Rails.ajax({
-                type: "POST",
-                dataType: 'script',
-                url: `#{api_scrape_tasks_tasks_path(@scrape_task)}`,
-                data: `multi_task_title=${encodeURIComponent(input.value.replace(/#\d+\s/, ''))}`,
-                success: (data) => {
-                  if(data['exist']) return false;
-
-                  document.querySelector('#includedTasks').insertAdjacentHTML(
-                    'beforeend',
-                    `<div class="task-${data['task_id']}">
-                       <a onclick="excludeMultiTaskFromScrapeTask(event, ${data['task_id']});" href="#">
-                         [ remove ]
-                       </a>
-                       &nbsp;&nbsp;|&nbsp;&nbsp;
-                       <a rel="noopener noreferrer" href="/tasks/${data['task_id']}">\#${data['task_id']} ${data['task_name']}</a>
-                       <br/>
-                    </div>`
-                  );
-
-                  addRemoveMarginToTasks();
-                  input.value = '';
-                }
-              });
-            }
-
-            function excludeMultiTaskFromScrapeTask(event, task_id) {
-              event.preventDefault();
-
-              Rails.ajax({
-                type: "DELETE",
-                dataType: 'json',
-                url: `/api/scrape_tasks/#{@scrape_task.id}/tasks/${task_id}`,
-                success: (data) => {
-                  if(data['not_exist']) return false;
-
-                  document.querySelector(`#includedTasks .task-${task_id}`).remove();
-                  addRemoveMarginToTasks();
-                }
-              });
-            }
 
       .row.mb-4.align-items-center
         .col-4.pr-0.text-right.font-weight-bold

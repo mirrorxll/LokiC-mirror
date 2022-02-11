@@ -24,20 +24,20 @@
       url: `#{api_scrape_tasks_tables_path(@scrape_task)}`,
       data: `tables[host_id]=${encodeURIComponent(host_id)}&tables[schema_id]=${encodeURIComponent(schema_id)}&${names}`,
       success: (data) => {
-        console.log(1123456);
-        if(data['exist']) return false;
+        data['tables'].forEach((table) => {
+          document.querySelector('#includedTables').insertAdjacentHTML(
+            'beforeend',
+            `<div class="task-${table['id']}">
+               <a onclick="excludeTableFromScrapeTask(event, ${table['id']});" href="#">
+                 [ remove ]
+               </a>
+               &nbsp;&nbsp;|&nbsp;&nbsp;
+               ${table['name']}</a>
+               <br/>
+            </div>`
+            );
+        })
 
-        // document.querySelector('#includedTasks').insertAdjacentHTML(
-        //   'beforeend',
-        //   `<div class="task-${data['task_id']}">
-        //      <a onclick="excludeMultiTaskFromScrapeTask(event, ${data['task_id']});" href="#">
-        //        [ remove ]
-        //      </a>
-        //      &nbsp;&nbsp;|&nbsp;&nbsp;
-        //      <a rel="noopener noreferrer" href="/tasks/${data['task_id']}">\#${data['task_id']} ${data['task_name']}</a>
-        //      <br/>
-        //   </div>`
-        // );
       }
     });
   }

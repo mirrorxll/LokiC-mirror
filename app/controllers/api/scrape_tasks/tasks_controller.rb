@@ -12,7 +12,7 @@ module Api
             { exist: true }
           else
             @scrape_task.tasks << @task
-            { exist: false, task_id: @task.id, task_name: @task.title }
+            { exist: false, id: @task.id, name: @task.title }
           end
 
         render json: json
@@ -38,8 +38,8 @@ module Api
 
       def find_task
         @task =
-          if params[:multi_task_title]
-            Task.find_by(title: params[:multi_task_title])
+          if params[:task_title]
+            Task.find_by(title: params[:task_title])
           else
             Task.find(params[:id])
           end

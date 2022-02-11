@@ -16,7 +16,7 @@ module Api
       def create
         tables = ScrapeTaskTables.attach(@scrape_task, table_params)
 
-        render json: tables
+        render json: { tables: tables }
       end
 
       def destroy
