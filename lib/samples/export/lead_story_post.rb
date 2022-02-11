@@ -12,7 +12,7 @@ module Samples
         %w[7:00 19:30], # "Wednesday"
         %w[7:00 19:30], # "Thursday"
         %w[7:00 13:00], # "Friday"
-        %w[7:30 13:00]  # "Saturday"
+        %w[7:00 13:00]  # "Saturday"
       ].freeze
 
       def lead_story_post(sample)
