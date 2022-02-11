@@ -107,12 +107,38 @@
           -tables = @scrape_task.table_locations
           #includedTables
             =render partial: 'table', collection: tables
+            :javascript
+              function addRemoveMarginToTables() {
+                let tables = document.querySelector('#includedTables');
+
+                if(tables.innerText.trim() === '') {
+                  tables.classList.remove('mb-2');
+                } else {
+                  tables.classList.add('mb-2');
+                }
+              }
+              addRemoveMarginToTables();
+
+              function excludeTableFromScrapeTask(event, table_id) {
+                event.preventDefault();
+
+                Rails.ajax({
+                  type: "DELETE",
+                  dataType: 'json',
+                  url: `/api/scrape_tasks/#{@scrape_task.id}/tables/${table_id}`,
+                  success: (data) => {
+                    if(data['not_exist']) return false;
+
+                    document.querySelector(`#includedTables .tables-${table_id}`).remove();
+                    addRemoveMarginToTables();
+                  }
+                });
+              }
           #addTables
             =link_to('[ add tables ]', new_scrape_task_table_path(@scrape_task), onclick: 'showTablesSpinner()', remote: true)
             .loadingSpinner.d-none
               .spinner-border.spinner-border-sm.text-secondary
                 %span.sr-only
-
             :javascript
               function showTablesSpinner() {
                 document.querySelector('#addTables .loadingSpinner').classList.remove('d-none');

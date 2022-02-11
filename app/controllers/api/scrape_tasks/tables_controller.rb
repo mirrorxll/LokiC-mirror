@@ -3,9 +3,10 @@
 module Api
   module ScrapeTasks
     class TablesController < ApiController
-      before_action :open_connection, only: :index
-      after_action :close_connection, only: :index
       before_action :find_scrape_task, only: %i[create destroy]
+      before_action :open_connection, only: :index
+      after_action  :close_connection, only: :index
+      before_action :find_table, only: :destroy
 
       def index
         tables = @connection.query('show tables;').to_a.map { |row| row.values[0] }
@@ -20,17 +21,21 @@ module Api
       end
 
       def destroy
+        not_exist =
+          if @scrape_task.tables.exists?(@task.id)
+            @scrape_task.tables.destroy(@task)
+            false
+          else
+            true
+          end
 
+        render json: { not_exist: not_exist }
       end
 
       private
 
       def find_scrape_task
         @scrape_task = ScrapeTask.find(params[:scrape_task_id])
-      end
-
-      def table_params
-        params.require(:tables).permit(:host_id, :schema_id, names: [])
       end
 
       def open_connection
@@ -42,6 +47,10 @@ module Api
 
       def close_connection
         @connection.close
+      end
+
+      def table_params
+        params.require(:tables).permit(:host_id, :schema_id, names: [])
       end
     end
   end

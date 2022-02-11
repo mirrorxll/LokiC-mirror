@@ -1,4 +1,4 @@
-=form_with(url: tasks_path, id: 'form_new_task',  html: { onkeypress: "return event.keyCode !== 13;" } ) do |form|
+=form_with(url: create_subtask_tasks_path, id: 'form_new_task',  html: { onkeypress: "return event.keyCode !== 13;" } ) do |form|
   .row.small
     .col
       .form-group
@@ -26,12 +26,18 @@
   %hr/
 
   .d-flex.small.font-weight-bold.text-center
-    .col-2
-      assignment to:
-      =icon('fa', 'plus', class: 'ml-2', id: 'add_assignment')
-      #assignments_form
-        .row.mt-1.justify-content-center.small
-          =form.collection_select 'assignment_to[]', current_account.types.include?('developer') ? [current_account] : Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }, style: "width:130px"
+    .col-4.border-right
+      .row.justify-content-between
+        .col
+          assignment to:
+        .col
+          .row.mt-1.small
+            =form.collection_select 'task[assignment_to]', current_account.types.include?('developer') ? [current_account] : Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }, style: "width:130px"
+      .row.justify-content-between.mt-1
+        .col
+          assistants:
+          =icon('fa', 'plus', class: 'ml-2', id: 'addAssistantSubtask')
+        .col#assistantsSubtaskForm
     .col-4
       .row.mb-2
         .col.text-right
@@ -74,13 +80,13 @@
   var accounts = #{raw Account.all.order([:first_name, :last_name]).map{ |account| [account.first_name.to_s + ' ' + account.last_name.to_s, account.id]} };
   var current_account_id = #{raw current_account.id}
 
-  $('#add_assignment').click(function () {
+  $('#addAssistantSubtask').click(function () {
     let hex = secureRandom(6);
 
-    $('#assignments_form').append(
-        `<div id="assignment_${hex}" class="row mt-1 ml-1 justify-content-center" >
-           <select id="assignment_to[]" style = "width:130px" class="mr-1" name="assignment_to[]">${buildSelect(accounts)}</select>
-           <div class="ml-1" id="rm_assignment_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
+    $('#assistantsSubtaskForm').append(
+        `<div id="assistant_${hex}" class="row small mt-1 mb-1" >
+           <select id="task[assistants][]" style = "width:130px" class="mr-1" name="task[assistants][]">${buildSelect(accounts)}</select>
+           <div class="ml-1" id="rm_assistant_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
          </div>`
     );
   });
@@ -188,7 +194,7 @@
     $('#forms_checklists').append(
         `<div id="assignment_${hex}" class="row small justify-content-center mt-2">
            <div class="small mt-1 mr-2"><i class="fa fa-circle"></i></div>
-           <input id="checklists[]" style='width: 90%' required=required maxlength="255" name="checklists[]"></input>
+           <input id="task[checklists][]" style='width: 90%' required=required maxlength="255" name="task[checklists][]"></input>
            <div class="ml-2" id="rm_checklist_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
          </div>`
     );

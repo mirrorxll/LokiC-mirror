@@ -16,14 +16,15 @@ class ScrapeTaskTables
 
   def create
     @table_names.each_with_object([]) do |name, object|
-      table = TableLocation.find_or_create_by(
-        parent: (p @scrape_task),
+      table = TableLocation.find_or_initialize_by(
+        parent: @scrape_task,
         host: @host,
         schema: @schema,
         name: name
       )
+      next if table.persisted?
 
-      object << { table_id: table.id, table_name: table.name }
+      object << { id: table.id, name: table.name }
     end
   end
 end

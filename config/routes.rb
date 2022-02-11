@@ -60,6 +60,7 @@ Rails.application.routes.draw do
     resources :tasks, only: [] do
       get :titles,   on: :collection
       get :subtasks, on: :member
+
     end
 
     scope module: :tasks, path: 'tasks/:task_id', as: 'tasks' do
@@ -355,6 +356,10 @@ Rails.application.routes.draw do
   resources :task_tracking_hours, controller: 'task_tracking_hours', only: :index
 
   resources :tasks do
+    get  :add_subtask,    on: :collection
+    get  :new_subtask,    on: :collection
+    post :create_subtask, on: :collection
+
     resources :progress_statuses, controller: 'task_statuses', only: [] do
       patch :change, on: :collection
       post  :comment, on: :collection
