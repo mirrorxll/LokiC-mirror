@@ -6,13 +6,13 @@ module Samples
       private
 
       TIMES_BY_WEEKDAY = [
-        %w[7:00 10:00],   # "Sunday"
-        %w[10:00 12:00],  # "Monday"
-        %w[7:00 10:00],   # "Tuesday"
-        %w[7:00 10:00],   # "Wednesday"
-        %w[7:00 10:00],   # "Thursday"
-        %w[7:00 10:00],   # "Friday"
-        %w[8:30 9:30]     # "Saturday"
+        %w[7:00 19:30], # "Sunday"
+        %w[7:00 19:30], # "Monday"
+        %w[7:00 19:30], # "Tuesday"
+        %w[7:00 19:30], # "Wednesday"
+        %w[7:00 19:30], # "Thursday"
+        %w[7:00 13:00], # "Friday"
+        %w[7:00 13:00]  # "Saturday"
       ].freeze
 
       def lead_story_post(sample)
