@@ -16,10 +16,12 @@ class TaskStatusesController < ApplicationController
       create_team_work unless params[:team_work].nil?
       if @task.done_by_all_assignments?
         @task.update(done_at: Time.now, status: @status)
-        TaskTeamWork.create!(task: @task, creator: current_account, sum: 0, hours: true) if TaskTeamWork.find_by(task: @task).nil?
+        if TaskTeamWork.find_by(task: @task).nil?
+          TaskTeamWork.create!(task: @task, creator: current_account, sum: 0, hours: true)
+        end
       end
     else
-      @assignment.update!(done: false) unless @assignment.nil?
+      @assignment&.update!(done: false)
       @task.update(status: @status)
     end
     comment && send_notification
@@ -44,7 +46,7 @@ class TaskStatusesController < ApplicationController
   end
 
   def comment
-    body, subtype = if %w(blocked canceled).include? @status.name
+    body, subtype = if %w[blocked canceled].include? @status.name
                       ["<div><b>Status changed to #{@status.name}.</b><br>#{params[:body]}</div>", 'status comment']
                     elsif @status.name.eql?('done') && !@task.done_by_all_assignments?
                       ["<b>Set status #{@status.name}.</b>", 'task comment']
@@ -74,7 +76,7 @@ class TaskStatusesController < ApplicationController
       end
 
       SlackNotificationJob.perform_later(account.slack.identifier, message)
-      SlackNotificationJob.perform_later(Rails.env.production? ? 'hle_lokic_task_reminders' : 'hle_lokic_development_messages', message)
+      SlackNotificationJob.perform_later('hle_lokic_task_reminders', message)
     end
   end
 

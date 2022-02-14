@@ -11,17 +11,11 @@ module ArticleTypes
       message = "*<#{url}|Article Type ##{article_type.id}> (#{iteration.name}) #{progress_step}"\
                 " | #{developer_name}*\n#{raw_message}".gsub("\n", "\n>")
 
-      ::SlackNotificationJob.perform_now(slack_channel, message)
+      ::SlackNotificationJob.perform_now('lokic_article_type_messages', message)
       return if article_type_dev.slack_identifier.nil?
 
       message = message.gsub(/#{Regexp.escape(" | #{developer_name}")}/, '')
       ::SlackNotificationJob.perform_now(article_type_dev.slack_identifier, "*[ LokiC ]* #{message}")
-    end
-
-    private
-
-    def slack_channel
-      Rails.env.production? ? 'lokic_article_type_messages' : 'hle_lokic_development_messages'
     end
   end
 end
