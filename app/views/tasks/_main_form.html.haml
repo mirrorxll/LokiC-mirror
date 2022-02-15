@@ -1,5 +1,4 @@
 =form_with(url: tasks_path, id: 'newTaskParent',  html: { onkeypress: "return event.keyCode !== 13;" }, class: 'p-3', subtaskCount: 0 ) do |form|
-  =hidden_field_tag 'task_parent[work_request_id]', params[:work_request_id]
   .row.col.small
     .form-group
       =form.text_field 'task_parent[title]', placeholder: 'main task title', id: 'newTaskNameParent', class: 'form-control form-control-sm', required: true, maxlength: 500
@@ -44,6 +43,13 @@
           access to task and its subtasks:
         .col.text-left
           =form.check_box 'task_parent[access]', class: 'form-check-input ml-0 mt-2', checked: true
+      .row
+        .col.text-right
+          main task:
+        .col.text-left.small
+          =form.collection_select 'task_parent[parent]', Task.where(parent: nil).where.not(status: Status.find_by(name: 'deleted')).order(:id), :id, :title_with_id, { prompt: '' }, style: "width:150px", onchange: "hideSubtasks(this);"
+      .row.small.justify-content-center
+        (If you select a main task, you won't be able to add subtasks)
   #checklistsParent.accordion.mt-2.d-none
     .card.small
       .card-header.p-1
@@ -62,7 +68,7 @@
 
   #formsSubtasks.accordion.justify-content-center
 
-  .row.col.small.font-weight-bold.justify-content-center.mb-2.mt-2
+  .row.col.small.font-weight-bold.justify-content-center.mb-2.mt-2#addSubtaskLink
     =link_to '[ add subtask ]', nil, onclick: 'addSubtask(event);'
 
   .row.col.small.modal-footer.justify-content-center
@@ -81,6 +87,27 @@
 
   var accounts = #{raw Account.all.order([:first_name, :last_name]).map{ |account| [account.first_name.to_s + ' ' + account.last_name.to_s, account.id]} };
   var current_account_id = #{raw current_account.id}
+
+  function hideSubtasks(elem) {
+    let divSubtasks = document.querySelector('#formsSubtasks');
+    let linkAddSubtask = document.querySelector('#addSubtaskLink');
+    let subtasksTitles = document.getElementsByClassName('subtaskTitle');
+
+    if(elem.value === '') {
+      divSubtasks.classList.remove('d-none');
+      linkAddSubtask.classList.remove('d-none');
+      for (let subtaskTitle of subtasksTitles) {
+        subtaskTitle.required = true;
+      }
+
+    } else {
+      divSubtasks.classList.add('d-none');
+      linkAddSubtask.classList.add('d-none');
+      for (let subtaskTitle of subtasksTitles) {
+        subtaskTitle.required = false;
+      }
+    }
+  }
 
   function addSubtask(e) {
     e.preventDefault();

@@ -146,11 +146,12 @@ class TasksController < ApplicationController # :nodoc:
     parent_params[:client] = parent_params[:client_id].blank? ? nil : ClientsReport.find(parent_params[:client_id])
     parent_params[:work_request] = parent_params[:work_request] ? WorkRequest.find(parent_params[:work_request]) : nil
     parent_params[:creator] = current_account
-    parent_params[:assistants] = parent_params[:assistants].blank? ? nil: parent_params[:assistants].uniq.reject(&:blank?).delete_if {|assignee| assignee == parent_params[:assignment_to] }
+    parent_params[:assistants] = parent_params[:assistants].blank? ? nil : parent_params[:assistants].uniq.reject(&:blank?).delete_if {|assignee| assignee == parent_params[:assignment_to] }
+    parent_params[:parent] = parent_params[:parent].blank? ? nil : Task.find(parent_params[:parent])
     result_params[:parent] = parent_params
 
     subtasks_params = params.key?(:subtasks) ? params.require(:subtasks).each { |number, params| params.permit(:title, :description, :parent, :deadline, :client_id, :reminder_frequency, :access, :gather_task, :assignment_to, assistants: [], checklists: []) } : {}
-    return result_params if subtasks_params.empty?
+    return result_params if subtasks_params.empty? || !parent_params[:parent].blank?
 
     subtasks = []
     subtasks_params.each do |number_subtask, subtask_params|

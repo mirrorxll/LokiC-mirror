@@ -12,9 +12,9 @@
               How much time you spend on the task?
             .col-5
               =form.text_field :hours, id: 'hoursInput', required: true, class: 'small', placeholder: 'hours'
-          -if @task.parent.nil?
+          -if @task.parent.nil? && @task.main_assignee.eql?(current_account)
             %hr.mt-3.mb-3/
-            #teamWork{ class: team_work.nil? ? '' : 'nav-link disabled' }
+            #teamWork
               -unless @task.subtasks.empty?
                 .card.overflow-auto{ style: 'max-height: 380px;' }
                   .card-header.p-1
@@ -32,17 +32,7 @@
                   =form.radio_button('team_work[type]', :dollars, { checked: dollars_checked ? 'checked' : '', onclick: 'changePlaceholder(this);' })
                   =form.label :dollars
                 .col-5
-                  =form.text_field 'team_work[sum]', value: team_work.nil? ? '' : sprintf('%g', team_work.sum), class: 'small', placeholder: dollars_checked ? 'dollars' : 'hours'
-            -unless team_work.nil?
-              .row.small.mt-2.text-center
-                .col-8
-                  %label.form-check-label{:for => "confirmHours"}
-                    .row
-                      =@task.team_work.creator.name + " set teamwork."
-                    .row.text-danger
-                      If you want to change it, please, confirm this:
-                .col-4.align-items-center.text-left.mt-2
-                  =form.check_box 'team_work[confirm]', id: 'confirmInputTeamWork', onchange: 'teamWorkShow(this);'
+                  =form.text_field 'team_work[sum]', required: true, value: team_work.nil? ? '' : sprintf('%g', team_work.sum), class: 'small', placeholder: dollars_checked ? 'dollars' : 'hours'
         #hoursFeedback.text-danger.small.text-center.d-none
           Incorrect data
         .modal-footer.justify-content-center
