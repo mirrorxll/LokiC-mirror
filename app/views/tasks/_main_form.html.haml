@@ -1,5 +1,4 @@
 =form_with(url: tasks_path, id: 'newTaskParent',  html: { onkeypress: "return event.keyCode !== 13;" }, class: 'p-3', subtaskCount: 0 ) do |form|
-  =hidden_field_tag 'task_parent[work_request_id]', params[:work_request_id]
   .row.col.small
     .form-group
       =form.text_field 'task_parent[title]', placeholder: 'main task title', id: 'newTaskNameParent', class: 'form-control form-control-sm', required: true, maxlength: 500
