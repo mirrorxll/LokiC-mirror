@@ -24,7 +24,6 @@ class JobItem
     job_item = @pl_r_client.get_job_item(job_id, story_type.name, publication.name)
     job_item_id = job_item ? job_item['id'] : create_job_item(job_id, story_type, publication, p_bucket)
 
-    puts exp_config.persisted?
     exp_config.update_columns("#{@environment}_job_item".to_sym => job_item_id)
 
     @pl_r_client.close

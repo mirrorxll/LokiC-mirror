@@ -4,14 +4,16 @@ class SlackNotificationJob < ApplicationJob
   queue_as :lokic
 
   def perform(identifier, msg, thread_ts = nil)
-    retry_counter = 0
+    channel = Rails.env.production? ? identifier : 'hle_lokic_development_messages'
 
     params = {
-      channel: identifier,
+      channel: channel,
       text: msg,
       as_user: true,
       thread_ts: thread_ts
     }
+
+    retry_counter = 0
 
     begin
       Slack::Web::Client.new.chat_postMessage(params)
