@@ -33,7 +33,6 @@ class Task < ApplicationRecord # :nodoc:
   has_many :assistants, through: :task_assistants, source: :account
 
   has_many :checklists, class_name: 'TaskChecklist'
-  has_many :checklists_assignments, class_name: 'TaskChecklistAssignment'
 
   has_many :assignments, class_name: 'TaskAssignment'
   has_many :assignment_to, through: :assignments, source: :account
@@ -79,10 +78,6 @@ class Task < ApplicationRecord # :nodoc:
 
   def title_with_id
     "##{id} #{title}"
-  end
-
-  def checklists_assignments_for(account)
-    checklists_assignments.where(account: account)
   end
 
   def current_assignment(account)

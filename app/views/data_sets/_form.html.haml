@@ -63,9 +63,9 @@
                                        { id: "data_set_default_#{u_id}_publication_id", name: "default_props[client_tag_ids[#{u_id}[publication_id]]]", class: 'form-control form-control-sm publications_select' }
 
                 .col-3.pl-1.pr-1
-                  =f.collection_select :tag_id, row.client.tags.sort_by(&:name), :id, :name,
-                                       { include_blank: true, selected: row.tag.id },
-                                       { id: "data_set_default_#{u_id}_tag_id", name: "default_props[client_tag_ids[#{u_id}[tag_id]]]", class: 'form-control form-control-sm tags_select', required: true }
+                  =f.select :tag_id, grouped_options_for_select(tags_for_publication(row.publication, row.client), row.tag.id), {}, { include_blank: true, id: "data_set_default_#{u_id}_tag_id", name: "default_props[client_tag_ids[#{u_id}[tag_id]]]",
+                                                                 class: 'form-control form-control-sm tags_select', required: true }
+
                 .col-1.pl-1.my-auto
                   %strong.remove_x
                     x
