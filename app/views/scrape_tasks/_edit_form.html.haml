@@ -117,7 +117,7 @@
       :javascript
         $('textarea[id="datasource_comment[body]"]').froalaEditor({
           key: 'KfdolbcqsaA2wzA-13==',
-          editorClass: 'border rounded p-2 w-100 mt-1 mb-4',
+          editorClass: 'border rounded p-2 w-100 mt-1 mb-3',
           toolbarInline: true,
           toolbarButtons: ['undo', 'redo', '|', 'bold', 'italic', 'underline', 'strikeThrough', '|', 'color', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'insertLink', 'insertImage'],
           imageUploadURL: '/images/upload',
@@ -134,7 +134,7 @@
       :javascript
         $('textarea[id="scrape_ability_comment[body]"]').froalaEditor({
           key: 'KfdolbcqsaA2wzA-13==',
-          editorClass: 'border rounded p-2 w-100 mt-1 mb-4',
+          editorClass: 'border rounded p-2 w-100 mt-1 mb-3',
           toolbarInline: true,
           toolbarButtons: ['undo', 'redo', '|', 'bold', 'italic', 'underline', 'strikeThrough', '|', 'color', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'insertLink', 'insertImage'],
           imageUploadURL: '/images/upload',
@@ -211,8 +211,27 @@
       #tableInfo
 
   %hr/
+
+  -if !disable_input
+    .row.align-items-center
+      .col-4.offset-2.mb-3
+        .btn.btn-sm.btn-link.p-0{ 'data-toggle' => "collapse", 'data-target' => "#otherFields",
+                                     'aria-expanded' => "false", 'aria-controls' => "otherFields" }
+          [ show/hide other fields ]
+
+    #otherFields.collapse
+      .row.align-items-center
+        .col-2.pr-0.text-right.font-weight-bold
+          GATHER TASK ID:
+        .col-4
+          =f.text_field 'scrape_task[gather_task]', class: 'form-control form-control-sm', value: @scrape_task.gather_task,
+                                                        disabled: disable_input, readonly: disable_input
+  %hr/
+
   .row.align-items-center
     .col-12.text-center
       =f.submit 'update', class: 'btn btn-sm btn-dark'
       %button{ type: "button", class: "btn btn-sm btn-outline-dark", 'data-dismiss' => "modal" }
         Close
+
+

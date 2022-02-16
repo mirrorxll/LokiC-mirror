@@ -3,8 +3,8 @@
 module Api
   module ScrapeTasks
     class TablesController < ApiController
-      before_action :open_connection, only: :index
-      after_action  :close_connection, only: :index
+      before_action :open_connection, only: %i[index show]
+      after_action  :close_connection, only: %i[index show]
       before_action :find_scrape_task, only: %i[create destroy]
       before_action :find_table, only: :destroy
 
@@ -14,14 +14,14 @@ module Api
         render json: { table_names: tables }
       end
 
+      def show
+
+      end
+
       def create
         tables = ScrapeTaskTables.attach(@scrape_task, table_params)
 
         render json: { tables: tables }
-      end
-
-      def edit
-
       end
 
       def update

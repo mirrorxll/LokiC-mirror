@@ -1,4 +1,4 @@
-.container-fluid
+.container
   %div{ id: "scrapeTask", scrape_task_id: @scrape_task.id }
 
   %hr/
@@ -13,7 +13,7 @@
       created at: #{@scrape_task.created_at}#{@scrape_task.updated_early? ? " | updated at: #{@scrape_task.updated_at}" : ""}
 
   #scrappingData.row.mb-5.small
-    .info.col-7.pr-0
+    .info.col-12.pr-0
       .card
         .card-header.p-0
           .d-flex.justify-content-between.align-items-center
@@ -38,7 +38,7 @@
         .card-body
           =render 'scrape_task_info'
 
-    .conversation.col-5.align-self-stretch
+    -#.conversation.col-5.align-self-stretch
       .card.h-100
         .card-header.p-1.pl-2
           conversation

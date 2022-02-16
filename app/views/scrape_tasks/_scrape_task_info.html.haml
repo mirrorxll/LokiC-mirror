@@ -74,11 +74,6 @@
 
 .row.mb-1
   .col-3.pr-0.text-right.font-weight-bold
-    data requester:
-  .col-9
-    =@scrape_task.data_requester
-.row.mb-1
-  .col-3.pr-0.text-right.font-weight-bold
     multi task:
   .col-9
     -if @scrape_task.tasks.present?
@@ -120,7 +115,7 @@
   .col-3.pr-0.text-right.font-weight-bold
     comment on datasource:
   .col-9
-    =@scrape_task.datasource_comment&.body
+    =@scrape_task.datasource_comment.body&.html_safe
 
 .row.mb-1
   .col-3.pr-0.text-right.font-weight-bold
@@ -139,7 +134,7 @@
   .col-3.pr-0.text-right.font-weight-bold
     comment on scrape ability:
   .col-9
-    =@scrape_task.scrape_ability_comment&.body
+    =@scrape_task.scrape_ability_comment.body&.html_safe
 
 .row.mb-1
   .col-3.pr-0.text-right.font-weight-bold
@@ -155,7 +150,7 @@
   .col-3.pr-0.text-right.font-weight-bold
     general comment:
   .col-9
-    =@scrape_task.general_comment&.body
+    =@scrape_task.general_comment.body&.html_safe
 
 .row.mb-1
   .col-3.pr-0.text-right.font-weight-bold

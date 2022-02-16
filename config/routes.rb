@@ -322,7 +322,6 @@ Rails.application.routes.draw do
   end
 
   resources :scrape_tasks, except: :destroy do
-    get   :cancel_edit
     patch :evaluate
 
     scope module: 'scrape_tasks' do
