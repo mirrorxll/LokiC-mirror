@@ -4,7 +4,6 @@ module ScrapeTasks
   class SlackNotificationJob < ScrapeTasksJob
     def perform(task, step, raw_message, scraper = nil)
       task_scraper = scraper || task.scraper
-      channel = Rails.env.production? ? 'lokic_scrape_task_messages' : 'hle_lokic_development_messages'
 
       url = generate_url(task)
       progress_step = step.eql?('scraper') ? '' : "| #{step.capitalize}"
@@ -13,7 +12,7 @@ module ScrapeTasks
 
       record_to_alerts(task, step, raw_message)
 
-      ::SlackNotificationJob.perform_now(channel, message)
+      ::SlackNotificationJob.perform_now('lokic_scrape_task_messages', message)
       return if task.scraper_slack_id.nil?
 
       message = message.gsub(/#{Regexp.escape(" | #{scraper_name}")}/, '')

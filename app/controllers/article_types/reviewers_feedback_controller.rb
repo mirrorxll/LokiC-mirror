@@ -81,8 +81,7 @@ module ArticleTypes
                 "<#{article_type_fact_checking_doc_url(@article_type, @article_type.fact_checking_doc)}"\
                 '#reviewers_feedback|Check it>.'
 
-      channel = Rails.env.production? ? 'hle_reviews_queue' : 'hle_lokic_development_messages'
-      ::SlackNotificationJob.perform_later(channel, message, @fcd.slack_message_ts)
+      ::SlackNotificationJob.perform_later('hle_reviews_queue', message, @fcd.slack_message_ts)
     end
   end
 end

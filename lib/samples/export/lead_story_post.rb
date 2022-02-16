@@ -6,13 +6,13 @@ module Samples
       private
 
       TIMES_BY_WEEKDAY = [
-        %w[7:00 10:00],   # "Sunday"
-        %w[10:00 12:00],  # "Monday"
-        %w[7:00 10:00],   # "Tuesday"
-        %w[7:00 10:00],   # "Wednesday"
-        %w[7:00 10:00],   # "Thursday"
-        %w[7:00 10:00],   # "Friday"
-        %w[8:30 9:30]     # "Saturday"
+        %w[7:00 19:30], # "Sunday"
+        %w[7:00 19:30], # "Monday"
+        %w[7:00 19:30], # "Tuesday"
+        %w[7:00 19:30], # "Wednesday"
+        %w[7:00 19:30], # "Thursday"
+        %w[7:00 13:00], # "Friday"
+        %w[7:00 13:00]  # "Saturday"
       ].freeze
 
       def lead_story_post(sample)
@@ -89,7 +89,7 @@ module Samples
           active_org_ids += JSON.parse(response.body).map { |org| org['id'] }
         end
 
-        p params = {
+        params = {
           community_id: publication.pl_identifier,
           lead_id: lead_id,
           organization_ids: active_org_ids,
@@ -114,8 +114,6 @@ module Samples
         sample.update!(published_at: published_at)
         JSON.parse(response.body)['id']
       rescue StandardError => e
-        pp e.full_message
-
         @pl_client.delete_lead(lead_id)
         raise Samples::StoryPostError, "[#{e.class}] -> #{e.message} at #{e.backtrace.first}".gsub('`', "'")
       end

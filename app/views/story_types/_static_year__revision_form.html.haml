@@ -1,9 +1,8 @@
 =text_field_tag :static_year, @story_type.template.static_year, class: 'w-20'
 \/
-=date_field_tag :revision, @story_type.template.revision, class: 'w-45'
+=date_field_tag :revision, @story_type.template.revision, class: 'w-45', :min => Date.today
 .sign-in.d-inline-block.ml-1
-  .mouse-hover{ onclick: 'updateTemplateInfo();' }
-    =icon('fa', 'sign-in fa-lg')
+  =button_tag 'Save', type: 'button', onclick: 'updateTemplateInfo();', class: 'btn btn-info btn-block btn-sm'
 
 :javascript
   function updateTemplateInfo() {
