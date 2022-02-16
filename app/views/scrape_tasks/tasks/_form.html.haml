@@ -24,10 +24,10 @@
           'beforeend',
           `<div class="task-${data['id']}">
              <a onclick="excludeTaskFromScrapeTask(event, ${data['id']});" href="#">
-               [ remove ]
+               [ X ]
              </a>
-             &nbsp;&nbsp;|&nbsp;&nbsp;
-             <a rel="noopener noreferrer" href="/tasks/${data['id']}">
+             &nbsp;|&nbsp;
+             <a data-toggle="tooltip" 'data-placement'="top", title="${data['name']}" target="_blank" rel="noopener noreferrer" href="/tasks/${data['id']}">
                \#${data['id']} ${data['name']}
              </a>
              <br/>

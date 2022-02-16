@@ -1,3 +1,4 @@
+%hr/
 =select :tables, :host_id,  Host.pluck(:name, :id), { include_blank: '' }, { class: 'form-control form-control-sm mb-1', onchange: 'loadSchemas(this)' }
 =select :tables, :schema_id, [], {}, { class: 'form-control form-control-sm', onchange: 'loadTables(this)' }
 =select :tables, :names, [], {}, { class: 'form-control form-control-sm mt-1', multiple: 'multiple' }
@@ -13,7 +14,7 @@
   function attachTablesToScrapeTask(event) {
     event.preventDefault();
 
-    let host_id =   document.querySelector('#tables_host_id').value;
+    let host_id = document.querySelector('#tables_host_id').value;
     let schema_id = document.querySelector('#tables_schema_id').value;
     let selectedNamesOptions =  [...document.querySelector('#tables_names').options].filter(x => x.selected);
     let names = [...selectedNamesOptions].map(x => `tables[names][]=${encodeURIComponent(x.value)}` ).join('&');
@@ -27,38 +28,41 @@
         data['tables'].forEach((table) => {
           document.querySelector('#includedTables').insertAdjacentHTML(
             'beforeend',
-            `<div class="task-${table['id']}">
+            `<div class="text-truncate table-${table['id']}">
                <a onclick="excludeTableFromScrapeTask(event, ${table['id']});" href="#">
-                 [ remove ]
+                 [ X ]
                </a>
-               &nbsp;&nbsp;|&nbsp;&nbsp;
-               ${table['name']}</a>
+               &nbsp;|&nbsp;
+               <a data-toggle="tooltip" data-placement="top" title="${table['name']}" href="#">${table['name']}</a>
                <br/>
             </div>`
-            );
+          );
+          addRemoveMarginToTables();
         })
-
       }
     });
   }
   $('#tables_host_id').multipleSelect({
     maxHeight: '14',
     maxHeightUnit: 'row',
-    placeholder: 'host'
+    placeholder: 'host',
+    position: 'top'
   });
 
   $('#tables_schema_id').multipleSelect({
     filter: true,
     maxHeight: '14',
     maxHeightUnit: 'row',
-    placeholder: 'schema'
+    placeholder: 'schema',
+    position: 'top'
   });
 
   $('#tables_names').multipleSelect({
     filter: true,
     maxHeight: '7',
     maxHeightUnit: 'row',
-    placeholder: 'names'
+    placeholder: 'names',
+    position: 'top'
   });
 
   function loadSchemas(host) {
@@ -79,7 +83,7 @@
       type: "GET",
       dataType: 'json',
       url: `#{api_scrape_tasks_schemas_path(@scrape_task)}`,
-      data: `host=${encodeURIComponent(host.value)}`,
+      data: `host_id=${encodeURIComponent(host.value)}`,
       success: (data) => {
         let option = document.createElement("option");
 
@@ -114,9 +118,8 @@
       type: "GET",
       dataType: 'json',
       url: `#{api_scrape_tasks_tables_path(@scrape_task)}`,
-      data: `host=${encodeURIComponent(host.value)}&schema=${encodeURIComponent(schema.value)}`,
+      data: `host_id=${encodeURIComponent(host.value)}&schema_id=${encodeURIComponent(schema.value)}`,
       success: (data) => {
-        console.log(data['table_names'])
         data['table_names'].forEach((item) => {
           let option = document.createElement("option");
           option.setAttribute("value", item);

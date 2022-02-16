@@ -1,4 +1,6 @@
-%div{ class: "task-#{task.id}" }
-  =link_to('[ remove ]', nil, onclick: "excludeTaskFromScrapeTask(event, #{task.id});")
-  &nbsp&nbsp|&nbsp&nbsp
-  =link_to("##{task.id} #{task.title}", task, target: '_blank', rel: 'noopener noreferrer')
+%div{ class: "text-truncate task-#{task.id}" }
+  =link_to('[ X ]', '#', onclick: "excludeTaskFromScrapeTask(event, #{task.id});")
+  &nbsp|&nbsp
+  =link_to("##{task.id} #{task.title}", task,
+           'data-toggle' => "tooltip", title: task.title,
+           target: '_blank', rel: 'noopener noreferrer')

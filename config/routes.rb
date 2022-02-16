@@ -53,7 +53,7 @@ Rails.application.routes.draw do
     end
     scope module: :scrape_tasks, path: 'scrape_tasks/:scrape_task_id', as: 'scrape_tasks' do
       resources :tasks,   only: %i[create destroy]
-      resources :tables,  only: %i[index create destroy]
+      resources :tables
       resources :schemas, only: :index
     end
 

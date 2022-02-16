@@ -1,4 +1,5 @@
 -disable_input = !current_account.types.include?('manager')
+
 =form_with(url: scrape_task_path(@scrape_task), html: { onkeypress: "return event.keyCode !== 13;" }, method: :patch) do |f|
   .row.mb-4.align-items-center
     .col-2.pr-0.text-right.font-weight-bold
@@ -16,33 +17,33 @@
           -attached_tasks = @scrape_task.tasks
           #includedTasks
             =render partial: 'task', collection: attached_tasks
-            :javascript
-              function addRemoveMarginToTasks() {
-                let tasks = document.querySelector('#includedTasks');
+          :javascript
+            function addRemoveMarginToTasks() {
+              let tasks = document.querySelector('#includedTasks');
 
-                if(tasks.innerText.trim() === '') {
-                  tasks.classList.remove('mb-2');
-                } else {
-                  tasks.classList.add('mb-2');
+              if(tasks.innerText.trim() === '') {
+                tasks.classList.remove('mb-2');
+              } else {
+                tasks.classList.add('mb-2');
+              }
+            }
+            addRemoveMarginToTasks();
+
+            function excludeTaskFromScrapeTask(event, task_id) {
+              event.preventDefault();
+
+              Rails.ajax({
+                type: "DELETE",
+                dataType: 'json',
+                url: `/api/scrape_tasks/#{@scrape_task.id}/tasks/${task_id}`,
+                success: (data) => {
+                  if(data['not_exist']) return false;
+
+                  document.querySelector(`#includedTasks .task-${task_id}`).remove();
+                  addRemoveMarginToTasks();
                 }
-              }
-              addRemoveMarginToTasks();
-
-              function excludeTaskFromScrapeTask(event, task_id) {
-                event.preventDefault();
-
-                Rails.ajax({
-                  type: "DELETE",
-                  dataType: 'json',
-                  url: `/api/scrape_tasks/#{@scrape_task.id}/tasks/${task_id}`,
-                  success: (data) => {
-                    if(data['not_exist']) return false;
-
-                    document.querySelector(`#includedTasks .task-${task_id}`).remove();
-                    addRemoveMarginToTasks();
-                  }
-                });
-              }
+              });
+            }
           #addTask
             =link_to('[ add task ]', new_scrape_task_task_path(@scrape_task), onclick: 'showTasksSpinner()', remote: true)
             .loadingSpinner.d-none
@@ -100,51 +101,6 @@
         .col-8
           =f.text_field 'scrape_task[datasource_url]', class: 'form-control form-control-sm w-100', value: @scrape_task.datasource_url
 
-      .row.mb-4
-        .col-4.pr-0.text-right.font-weight-bold
-          TABLES:
-        .col-8
-          -tables = @scrape_task.table_locations
-          #includedTables
-            =render partial: 'table', collection: tables
-            :javascript
-              function addRemoveMarginToTables() {
-                let tables = document.querySelector('#includedTables');
-
-                if(tables.innerText.trim() === '') {
-                  tables.classList.remove('mb-2');
-                } else {
-                  tables.classList.add('mb-2');
-                }
-              }
-              addRemoveMarginToTables();
-
-              function excludeTableFromScrapeTask(event, table_id) {
-                event.preventDefault();
-
-                Rails.ajax({
-                  type: "DELETE",
-                  dataType: 'json',
-                  url: `/api/scrape_tasks/#{@scrape_task.id}/tables/${table_id}`,
-                  success: (data) => {
-                    if(data['not_exist']) return false;
-
-                    document.querySelector(`#includedTables .tables-${table_id}`).remove();
-                    addRemoveMarginToTables();
-                  }
-                });
-              }
-          #addTables
-            =link_to('[ add tables ]', new_scrape_task_table_path(@scrape_task), onclick: 'showTablesSpinner()', remote: true)
-            .loadingSpinner.d-none
-              .spinner-border.spinner-border-sm.text-secondary
-                %span.sr-only
-            :javascript
-              function showTablesSpinner() {
-                document.querySelector('#addTables .loadingSpinner').classList.remove('d-none');
-                document.querySelector('#addTables a').classList.add('d-none');
-              }
-
       -if !disable_input
         .row.mb-4.align-items-center
           .col-4.pr-0.text-right.font-weight-bold
@@ -153,12 +109,6 @@
             =f.collection_select 'data_set[id]', DataSet.where('scrape_task_id IS NULL or id = :data_set_id', data_set_id: @scrape_task.data_set).order(:name),
                                  :id, :name, { include_blank: true, selected: @scrape_task.data_set&.id }, { class: 'form-control form-control-sm w-100'}
 
-
-      .row.mt-4.align-items-center
-        .col-12.pt-2.text-center
-          =f.submit 'update', class: 'btn btn-sm btn-dark'
-          %button{ type: "button", class: "btn btn-sm btn-outline-dark", 'data-dismiss' => "modal" }
-            Close
     .col-6
       .font-weight-bold
         COMMENT DATASOURCE:
@@ -167,7 +117,7 @@
       :javascript
         $('textarea[id="datasource_comment[body]"]').froalaEditor({
           key: 'KfdolbcqsaA2wzA-13==',
-          editorClass: 'border rounded p-2 w-100 mt-1 mb-5',
+          editorClass: 'border rounded p-2 w-100 mt-1 mb-4',
           toolbarInline: true,
           toolbarButtons: ['undo', 'redo', '|', 'bold', 'italic', 'underline', 'strikeThrough', '|', 'color', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'insertLink', 'insertImage'],
           imageUploadURL: '/images/upload',
@@ -184,7 +134,7 @@
       :javascript
         $('textarea[id="scrape_ability_comment[body]"]').froalaEditor({
           key: 'KfdolbcqsaA2wzA-13==',
-          editorClass: 'border rounded p-2 w-100 mt-1 mb-5',
+          editorClass: 'border rounded p-2 w-100 mt-1 mb-4',
           toolbarInline: true,
           toolbarButtons: ['undo', 'redo', '|', 'bold', 'italic', 'underline', 'strikeThrough', '|', 'color', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'insertLink', 'insertImage'],
           imageUploadURL: '/images/upload',
@@ -201,7 +151,7 @@
       :javascript
         $('textarea[id="general_comment[body]"]').froalaEditor({
           key: 'KfdolbcqsaA2wzA-13==',
-          editorClass: 'border rounded p-2 w-100 mt-1 mb-5',
+          editorClass: 'border rounded p-2 w-100 mt-1',
           toolbarInline: true,
           toolbarButtons: ['undo', 'redo', '|', 'bold', 'italic', 'underline', 'strikeThrough', '|', 'color', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'insertLink', 'insertImage'],
           imageUploadURL: '/images/upload',
@@ -210,3 +160,59 @@
           zIndex: 3333,
           height: 91
         })
+  %hr/
+  .row.mt-3
+    .col-2.pr-0.text-right.font-weight-bold
+      TABLES:
+    .col-4.border-right
+      -tables = @scrape_task.table_locations
+      #includedTables
+        =render partial: 'table', collection: tables
+      :javascript
+        function addRemoveMarginToTables() {
+          let tables = document.querySelector('#includedTables');
+
+          if(tables.innerText.trim() === '') {
+            tables.classList.remove('mb-2');
+          } else {
+            tables.classList.add('mb-2');
+          }
+        }
+        addRemoveMarginToTables();
+
+        function excludeTableFromScrapeTask(event, table_id) {
+          event.preventDefault();
+
+          Rails.ajax({
+            type: "DELETE",
+            dataType: 'json',
+            url: `/api/scrape_tasks/#{@scrape_task.id}/tables/${table_id}`,
+            success: (data) => {
+              if(data['not_deleted']) return false;
+
+              document.querySelector(`#includedTables .table-${table_id}`).remove();
+              addRemoveMarginToTables();
+            }
+          });
+        }
+      #addTables
+        .form-loader-button
+          =link_to('[ add tables ]', new_scrape_task_table_path(@scrape_task), onclick: 'showTablesSpinner()', remote: true)
+          .loadingSpinner.d-none
+            .spinner-border.spinner-border-sm.text-secondary
+              %span.sr-only
+          :javascript
+            function showTablesSpinner() {
+              document.querySelector('#addTables .loadingSpinner').classList.remove('d-none');
+              document.querySelector('#addTables a').classList.add('d-none');
+            }
+        .form
+    .col-4
+      #tableInfo
+
+  %hr/
+  .row.align-items-center
+    .col-12.text-center
+      =f.submit 'update', class: 'btn btn-sm btn-dark'
+      %button{ type: "button", class: "btn btn-sm btn-outline-dark", 'data-dismiss' => "modal" }
+        Close

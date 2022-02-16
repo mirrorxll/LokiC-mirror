@@ -24,7 +24,9 @@ class ScrapeTaskTables
       )
       next if table.persisted?
 
-      object << { id: table.id, name: table.name }
+      table.save!
+
+      object << { id: table.id, name: "#{table.host&.name}.#{table.schema&.name}.#{table.name}".downcase }
     end
   end
 end
