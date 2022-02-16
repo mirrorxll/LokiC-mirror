@@ -208,6 +208,9 @@
             }
         .form
     .col-4
+      -#.loadingSpinner.d-none
+        .spinner-border.spinner-border-sm.text-secondary
+          %span.sr-only
       #tableInfo
 
   %hr/
@@ -224,7 +227,7 @@
         .col-2.pr-0.text-right.font-weight-bold
           GATHER TASK ID:
         .col-4
-          =f.text_field 'scrape_task[gather_task]', class: 'form-control form-control-sm', value: @scrape_task.gather_task,
+          =f.number_field 'scrape_task[gather_task]', class: 'form-control form-control-sm', value: @scrape_task.gather_task,
                                                         disabled: disable_input, readonly: disable_input
   %hr/
 
