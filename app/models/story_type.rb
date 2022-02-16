@@ -6,6 +6,7 @@ class StoryType < ApplicationRecord
     create_fact_checking_doc
     create_cron_tab
     create_reminder
+    create_sidekiq_break
 
     data_set.client_publication_tags.each do |client_publication_tag|
       clients_publications_tags.create!(
@@ -40,7 +41,7 @@ class StoryType < ApplicationRecord
   has_one :cron_tab
   has_one :cron_tab_iteration, -> { where(cron_tab: true) }, class_name: 'StoryTypeIteration'
   has_one :reminder
-  has_one :sidekiq_break
+  has_one :sidekiq_break, as: :breakable, class_name: 'SidekiqBreak'
 
   has_one_attached :code
 

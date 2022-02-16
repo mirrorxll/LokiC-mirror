@@ -1,3 +1,3 @@
 class SidekiqBreak < ApplicationRecord
-  belongs_to :story_type
+  belongs_to :breakable, polymorphic: true
 end

@@ -1,7 +1,7 @@
 class CreateSidekiqBreak < ActiveRecord::Migration[6.0]
   def change
     create_table :sidekiq_breaks do |t|
-      t.references :story_type, null: false, foreign_key: true
+      t.references :breakable, polymorphic: true
       t.boolean :cancel
 
       t.timestamps
