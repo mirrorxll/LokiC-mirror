@@ -1,5 +1,5 @@
-=form_with(url: confirm_task_checklist_path(task_id: @task, id: checklist_assignment.id), html: { onchange: "Rails.fire(this, 'submit'); removeDangerText();" }, method: :patch) do |form|
-  =form.check_box :confirm, checked: checklist_assignment.confirmed
+=form_with(url: confirm_task_checklist_path(task_id: @task, id: checklist.id), html: { onchange: "Rails.fire(this, 'submit'); removeDangerText();" }, method: :patch) do |form|
+  =form.check_box :confirm, checked: checklist.confirmed
 
 :javascript
   function removeDangerText() {

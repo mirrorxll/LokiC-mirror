@@ -13,13 +13,12 @@ class TaskStatusesController < ApplicationController
   def change
     if @status.name.eql?('done')
       @assignment.update!(done: true, hours: params[:hours])
-      create_team_work unless params[:team_work].nil?
-      if @task.done_by_all_assignments?
-        @task.update(done_at: Time.now, status: @status)
-        if TaskTeamWork.find_by(task: @task).nil?
-          TaskTeamWork.create!(task: @task, creator: current_account, sum: 0, hours: true)
-        end
+
+      unless params[:team_work].nil?
+        TaskTeamWork.find_or_create_by(task: @task)
+                    .update(creator: current_account, sum: team_work_params[:sum].to_f.round(2), hours: team_work_params[:type].eql?('hours') ? true : false)
       end
+      @task.update(done_at: Time.now, status: @status) if @task.done_by_all_assignments?
     else
       @assignment&.update!(done: false)
       @task.update(status: @status)
