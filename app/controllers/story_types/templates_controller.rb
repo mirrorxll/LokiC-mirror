@@ -7,6 +7,7 @@ module StoryTypes
 
     before_action :render_403, except: :show, if: :developer?
     before_action :update_template, only: %i[update save]
+    after_action :send_notification, only: :update, if: -> { @story_type.developer.present? }
 
     def show; end
 
@@ -20,6 +21,15 @@ module StoryTypes
 
     def update_template
       Template.find(params[:id]).update!(template_params)
+    end
+
+    def send_notification
+      url = generate_url(@story_type)
+      channel = @story_type.developer.slack_identifier
+      message = "The template for <#{url}|Story Type ##{@story_type.id}> has been updated! Pay attention and make " \
+                'needed changes in the creation method.'
+
+      ::SlackNotificationJob.perform_now(channel, message)
     end
 
     def template_params
