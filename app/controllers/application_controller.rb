@@ -128,4 +128,13 @@ class ApplicationController < ActionController::Base
   def send_to_action_cable(story_type, section, message)
     StoryTypeChannel.broadcast_to(story_type, { spinner: true, section: section, message: message })
   end
+
+  def template_with_expired_revision
+    @iteration.story_type.template.expired_revision?
+  end
+
+  def generate_url(model)
+    host = Rails.env.production? ? 'https://lokic.locallabs.com' : 'http://localhost:3000'
+    "#{host}#{Rails.application.routes.url_helpers.send("#{model.class.to_s.underscore}_path", model)}"
+  end
 end

@@ -16,6 +16,7 @@ class CronTabInitializerJob < ApplicationJob
     Sidekiq.set_schedule(:tasks_confirms_receipts_2, class: TasksConfirmsReceiptsJob, cron: '0 17 * * *', queue: 'cron_tab')
     Sidekiq.set_schedule(:has_updates_revise, class: StoryTypes::HasUpdatesReviseJob, cron: '0 * * * *', queue: 'cron_tab')
     Sidekiq.set_schedule(:has_updates_revise, class: ScrapeTasks::SchemesTablesJob, cron: '*/5 * * * *', queue: 'cron_tab')
+    Sidekiq.set_schedule(:revision_reminder, class: StoryTypes::RevisionReminderJob, cron: '0 8 * * *', queue: 'cron_tab')
 
     CronTab.all.each do |tab|
       next unless tab.enabled

@@ -10,6 +10,7 @@ class StoryTypesGrid
       :photo_bucket, :developer,
       :clients_publications_tags,
       :clients, :tags, :reminder, :cron_tab,
+      :template,
       data_set: %i[state category]
     ).order(
       Arel.sql("CASE WHEN reminders.check_updates = false AND cron_tabs.enabled = false THEN '1' END DESC,
@@ -59,6 +60,9 @@ class StoryTypesGrid
            .where.not(cron_tabs: { enabled: true })
            .where.not(reminders: { check_updates: false })
     end
+  end
+  filter(:revised, :xboolean, left: true) do |value, scope|
+    value ? scope.where.not('templates.revision': nil) : scope.where('templates.revision': nil)
   end
   filter(:condition1, :dynamic, left: false, header: 'Dynamic condition 1')
   filter(:condition2, :dynamic, left: false, header: 'Dynamic condition 2')

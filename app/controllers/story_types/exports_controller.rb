@@ -9,6 +9,7 @@ module StoryTypes
     before_action :render_403_developer, only: %i[stories submit_editor_report submit_manager_report], if: :developer?
     before_action :show_sample_ids, only: :stories
     before_action :removal, only: :remove_exported_stories
+    before_action :revision_reminder, only: :execute, if: :template_with_expired_revision
 
     def execute
       @iteration.update!(export: false, current_account: current_account)
@@ -59,6 +60,26 @@ module StoryTypes
     def show_sample_ids
       @show_sample_ids = {}
       @iteration.show_samples.map { |smpl| @show_sample_ids[smpl.pl_story_id] = smpl.id }
+    end
+
+    def revision_reminder
+      url = generate_url(@story_type)
+      channel = @story_type.developer.slack_identifier
+      message = "Static year in the template for <#{url}|Story Type ##{@story_type.id}> must be revised to unlock export!"
+      section = :export
+      flash_message = {
+        iteration_id: @iteration.id,
+        message: {
+          key: section,
+          section => 'Editor must revise the template to unlock export!'
+        }
+      }
+      # flash message
+      StoryTypeChannel.broadcast_to(@story_type, flash_message)
+      # slack message
+      ::SlackNotificationJob.perform_now(channel, message)
+
+      render json: { status: :ok }
     end
   end
 end
