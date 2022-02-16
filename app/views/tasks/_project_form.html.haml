@@ -1,78 +1,117 @@
-=form_with(url: tasks_path(work_request_id: @work_request), id: 'formNewProject', html: { onkeypress: "return event.keyCode !== 13;" }) do |form|
-  .form-group
-    .row
-      .col-10.offset-1
-        =form.text_field 'task[title]', placeholder: 'title', id: 'newProjectName',
-                         class: 'w-100 mb-2', maxlength: 500
-        #newProjectNameFeedback.mb-1.text-danger.text-center
-          .is-empty.d-none
-            Project's title is empty
-          .already-created.d-none
-            Project with this title has been already created
-    =form.text_area 'task[description]', class: 'form-control form-control-sm', id: 'project_description'
-  %hr/
-  .row.small.font-weight-bold
-    .col-5.offset-1.mr-1.border-right
-      .row
-        .col-5.mb-1.text-center.text-white
-          \.
-      .row.mb-1.mt-1
-        .col-5.text-right
-          client:
-        .col-7
-          =form.collection_select 'task[client_id]', ClientsReport.all.order(:name), :id, :name, { prompt: '' }, class: 'w-100'
-      .row.mb-1
-        .col-5.text-right
+=form_with(url: tasks_path, id: 'newTaskParent',  html: { onkeypress: "return event.keyCode !== 13;" }, class: 'p-3', subtaskCount: 0 ) do |form|
+  =hidden_field_tag 'task_parent[work_request]', @work_request.id
+  .row.col.small
+    .form-group
+      =form.text_field 'task_parent[title]', placeholder: 'title', id: 'newTaskNameParent', class: 'form-control form-control-sm', required: true, maxlength: 500, value: @work_request.project_order_name.nil? ? '' : @work_request.project_order_name.body
+      #newTaskNameParentFeedback.text-danger.text-center.d-none
+        Task with this title already created by you. Let's use something else
+  .d-flex.small.font-weight-bold
+    .col-4.border-right
+      .row.justify-content-between
+        .col
+          assignment to:
+        .col
+          .row.mt-1.small
+            =form.collection_select 'task_parent[assignment_to]', current_account.types.include?('developer') ? [current_account] : Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }, style: "width:130px"
+      .row.justify-content-between.mt-1
+        .col
+          assistants:
+          =icon('fa', 'plus', class: 'ml-2', id: 'addAssistantParent')
+        .col#assistantsParentForm
+    .col-4
+      .row.mb-2
+        .col.text-right
           reminder frequency:
-        .col-7
-          =form.collection_select 'task[reminder_frequency]', sorted_reminder_frequencies, :id, :name, { prompt: '' }, class: 'w-100'
-      .row.mb-1
-        .col-5.text-right
+        .col.text-left.small
+          =form.collection_select 'task_parent[reminder_frequency]', sorted_reminder_frequencies, :id, :name, { prompt: '' }
+      .row.mb-2
+        .col.text-right
+          client:
+        .col.text-left.small
+          =form.collection_select 'task_parent[client_id]', ClientsReport.all.order(:name), :id, :name, { prompt: '' }, style: "width:150px"
+      .row.mb-2.font-weight-normal
+        .col.text-right
+          =link_to('[ checklists ]', nil, onclick: "showChecklistsParent(event)")
+        .col.text-left
+    .col-4
+      .row.mb-2
+        .col.text-right
           deadline:
-        .col-7
-          =form.date_field 'task[deadline]', class: 'w-75'
-      .row.mb-1
-        .col-5.text-right
-          gather task id:
-        .col-7
-          =form.number_field 'task[gather_task]', class: 'w-50'
-    .col-5.border-left.ml-1.border-left
-      .row
-        .col-5.mb-1.text-center
-          assignment to
-          =icon('fa', 'plus', class: 'ml-1 mr-1', id: 'add_assignment')
-      .row
-        .col-5.text-center
-          #assignments_form
-            -accounts = current_account.types.include?('developer') ? [current_account] : Account.all.order([:first_name, :last_name])
-            =form.collection_select 'assignment_to[]', accounts, :id, :name, { prompt: '' }, class: 'mt-1'
+        .col.text-left.small
+          =form.date_field 'task_parent[deadline]'
+      .row.mb-2
+        .col.text-right
+          access to task and its subtasks:
+        .col.text-left
+          =form.check_box 'task_parent[access]', class: 'form-check-input ml-0 mt-2', checked: true
+  #checklistsParent.accordion.mt-2.d-none
+    .card.small
+      .card-header.p-1
+        %div.row
+          .col-1
+            =icon('fa', 'plus', id: 'addСhecklistParent')
+          .col-11.text-right
+            %div{"aria-controls" => "#checklistsParentCollapse", "aria-expanded" => "true", "data-target" => "#checklistsParentCollapse", "data-toggle" => "collapse", type: "button"}
+              checklists
+      #checklistsParentCollapse.collapse{"data-parent" => "#checklistsParent", class: 'show'}
+        .row.mt-2.mb-2
+          .col#forms_checklists_parent
+  .row.col.small.mt-2
+    .form-group
+      =form.text_area 'task_parent[description]', id: 'task_description'
 
-  .d-none
-    =form.submit :create, id: 'hiddenCreateProjectButton'
+  #formsSubtasks.accordion.justify-content-center
+
+  .row.col.small.font-weight-bold.justify-content-center.mb-2.mt-2
+    =link_to '[ add subtask ]', nil, onclick: 'addSubtask(event);'
+
+  .row.col.small.modal-footer.justify-content-center
+    .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+      cancel
+    =form.submit :create, class: 'btn btn-sm btn-outline-success'
 
 :javascript
-  $('#project_description').froalaEditor({
+  $('#task_description').froalaEditor({
       key: 'KfdolbcqsaA2wzA-13==',
       toolbarButtons: ['fullscreen', 'undo', 'redo', '|', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineClass', 'inlineStyle', 'paragraphStyle', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', 'insertLink', 'insertImage', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'getPDF', 'help', 'html'],
       imageUploadURL: '/images/upload',
       imageUploadMethod: 'POST',
-      height: 420
+      height: 300
   });
 
-  $('#add_assignment').click(function () {
-    let hex = secureRandom(6);
-    let accounts = #{raw Account.all.order([:first_name, :last_name]).map{ |account| [account.first_name.to_s + ' ' + account.last_name.to_s, account.id]} };
+  var accounts = #{raw Account.all.order([:first_name, :last_name]).map{ |account| [account.first_name.to_s + ' ' + account.last_name.to_s, account.id]} };
+  var current_account_id = #{raw current_account.id}
 
-    $('#assignments_form').append(
-        `<div id="assignment_${hex}" class="d-flex mt-1 justify-content-base" >
-           <select id="assignment_to[]" class="mr-1" name="assignment_to[]">${buildSelect(accounts)}</select>
-           <div id="rm_assignment_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
+  function addSubtask(e) {
+    e.preventDefault();
+
+    newTaskParent = document.getElementById('newTaskParent')
+    let countSubtask = newTaskParent.getAttribute('subtaskCount');
+    let newCountSubtask = Number(countSubtask) + 1;
+    newTaskParent.setAttribute('subtaskCount', newCountSubtask)
+
+    Rails.ajax({
+        type: "GET",
+        dataType: 'script',
+        url: `#{add_subtask_tasks_path}`,
+        data: `number_subtask=${newCountSubtask}`
+    })
+
+  }
+
+  $('#addAssistantParent').click(function () {
+    let hex = secureRandom(6);
+
+    $('#assistantsParentForm').append(
+        `<div id="assistant_${hex}" class="row small mt-1 mb-1" >
+           <select id="task_parent[assistants][]" style = "width:130px" class="mr-1" name="task_parent[assistants][]">${buildSelect(accounts)}</select>
+           <div class="ml-1" id="rm_assistant_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
          </div>`
     );
   });
 
-  $('#delete_assignment').click(function () {
-    let assignments = document.getElementById('assignments')
+  $('#deleteParentAssistant').click(function () {
+    let assignments = document.getElementById('assistantsParent')
     assignments.removeChild(assignments.lastChild)
   });
 
@@ -89,7 +128,7 @@
     $(elem.parentNode).remove();
   }
 
-  function secureRandom(n){
+  function secureRandom(n) {
     let result = '';
     while (n--){
       result += Math.floor(Math.random() * 16).toString(16);
@@ -114,87 +153,82 @@
     return !names.find(el => lowName === el.toLowerCase());
   }
 
-  function projectNameChecking() {
-    let nameInput = document.querySelector('#newProjectName');
-    let feedbackIsEmpty = document.querySelector('#newProjectNameFeedback .is-empty');
-    let feedbackAlreadyCreated = document.querySelector('#newProjectNameFeedback .already-created');
-    let button = document.querySelector('#createProjectButton');
-    let hiddenButton = document.querySelector('#hiddenCreateProjectButton');
-
-    if(nameInput.value.trim().length === 0) {
-      nameInput.classList.add('border', 'border-danger');
-      feedbackIsEmpty.classList.remove('d-none');
-      hiddenButton.disabled = true;
-      button.disabled = true;
-      button.classList.add('disabled');
-      return false;
-    }
-
+  document.querySelector('#newTaskParent').addEventListener('input', delay(() => {
     Rails.ajax({
       type: 'GET',
       dataType: 'json',
       url: `#{root_url}api/tasks/titles`,
-      data: `creator_id=#{current_account.id}`,
+      data: `creator_id=${current_account_id}`,
       success: (names) => {
-        let nameIsUniq = isUniq(nameInput.value.trim(), names);
+        let nameInput = document.querySelector('#newTaskNameParent');
+        let nameFeedback = document.querySelector('#newTaskNameParentFeedback');
+        let submitButton = document.querySelector('#newTaskParent input[type="submit"]');
+        let nameIsUniq = isUniq(nameInput.value, names);
 
         if(nameIsUniq === true) {
           nameInput.classList.remove('border', 'border-danger');
-          feedbackAlreadyCreated.classList.add('d-none');
-          feedbackIsEmpty.classList.add('d-none');
-          hiddenButton.disabled = false;
-          button.disabled = false;
-          button.classList.remove('disabled');
+          nameFeedback.classList.add('d-none');
+          submitButton.disabled = false;
         } else {
           nameInput.classList.add('border', 'border-danger');
-          feedbackAlreadyCreated.classList.remove('d-none');
-          hiddenButton.disabled = true;
-          button.disabled = true;
-          button.classList.add('disabled');
+          nameFeedback.classList.remove('d-none');
+          submitButton.disabled = true;
         }
       }
     })
-  }
+  }, 500));
 
-  document.querySelector('#newProjectName').addEventListener('input', delay(projectNameChecking, 500));
-
-  function onSubmitProject(ev) {
+  function onSubmit(ev) {
     ev.preventDefault();
     ev.stopPropagation();
 
     let form = ev.target;
-    let nameInput = form.querySelector('#newProjectName');
-    let feedbackIsEmpty = form.querySelector('#newProjectNameFeedback .is-empty');
-    let feedbackAlreadyCreated = form.querySelector('#newProjectNameFeedback .already-created');
-    let button = document.querySelector('#createProjectButton');
-    let hiddenButton = document.querySelector('#hiddenCreateProjectButton');
-
-    if(nameInput.value.trim().length === 0) {
-      feedbackIsEmpty.classList.remove('d-none');
-      hiddenButton.disabled = true;
-      button.disabled = true;
-      button.innerText = 'create';
-      return false;
-    }
+    let nameInput = form.querySelector('#newTaskNameParent');
+    let nameFeedback = form.querySelector('#newTaskNameParentFeedback');
+    let submitButton = form.querySelector('#newTaskParent input[type="submit"]');
 
     Rails.ajax({
       type: 'GET',
       dataType: 'json',
       url: `#{root_url}api/tasks/titles`,
-      data: `creator_id=#{current_account.id}`,
+      data: `creator_id=${current_account_id}`,
       success: (names) => {
         let nameIsUniq = isUniq(nameInput.value, names);
 
-        if(nameIsUniq && nameInput.value.trim().length > 0) {
-          form.removeEventListener('submit', onSubmitProject);
-          Rails.fire(form, 'submit');
+        if(nameIsUniq) {
+          form.removeEventListener('submit', onSubmit)
+          Rails.fire(form, 'submit')
         } else {
           nameInput.classList.add('border', 'border-danger');
-          feedbackAlreadyCreated.classList.remove('d-none');
-          button.classList.remove('disabled');
-          button.innerText = 'create';
+          nameFeedback.classList.remove('d-none');
+          submitButton.disabled = true;
         }
       }
     })
   }
-  document.querySelector('#formNewProject').addEventListener('submit', onSubmitProject, false)
+  document.querySelector('#newTaskParent').addEventListener('submit', onSubmit)
+
+  $('#addСhecklistParent').click(function () {
+    let hex = secureRandom(6);
+
+    $('#forms_checklists_parent').append(
+        `<div id="checklist_${hex}" class="row small justify-content-center mt-2">
+           <div class="small mt-1 mr-2"><i class="fa fa-circle"></i></div>
+           <input id="task_parent[checklists][]" style='width: 90%' required=required maxlength="255" name="task_parent[checklists][]"></input>
+           <div class="ml-2" id="rm_checklist_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
+         </div>`
+    );
+  });
+
+  function showChecklistsParent(e) {
+    e.preventDefault();
+
+    let divChecklists = document.querySelector(`#checklistsParent`);
+
+    if(divChecklists.classList.contains('d-none')){
+      divChecklists.classList.remove('d-none');
+    } else {
+     divChecklists.classList.add('d-none');
+    }
+  };
+

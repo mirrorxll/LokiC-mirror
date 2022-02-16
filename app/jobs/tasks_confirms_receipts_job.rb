@@ -16,7 +16,7 @@ class TasksConfirmsReceiptsJob < ApplicationJob
             "#{account.name}*\n" \
             "#{assignment.task.title}".gsub("\n", "\n>")
           SlackNotificationJob.perform_now(account.slack.identifier, message)
-          SlackNotificationJob.perform_later(Rails.env.production? ? 'hle_lokic_task_reminders' : 'hle_lokic_development_messages', message)
+          SlackNotificationJob.perform_later('hle_lokic_task_reminders', message)
         end
       end
     )

@@ -6,13 +6,13 @@ module Samples
       private
 
       TIMES_BY_WEEKDAY = [
-        %w[7:00 10:00],   # "Sunday"
-        %w[10:00 12:00],  # "Monday"
-        %w[7:00 10:00],   # "Tuesday"
-        %w[7:00 10:00],   # "Wednesday"
-        %w[7:00 10:00],   # "Thursday"
-        %w[7:00 10:00],   # "Friday"
-        %w[8:30 9:30]     # "Saturday"
+        %w[7:00 19:30], # "Sunday"
+        %w[7:00 19:30], # "Monday"
+        %w[7:00 19:30], # "Tuesday"
+        %w[7:00 19:30], # "Wednesday"
+        %w[7:00 19:30], # "Thursday"
+        %w[7:00 13:00], # "Friday"
+        %w[7:00 13:00]  # "Saturday"
       ].freeze
 
       def lead_story_post(sample)
@@ -26,6 +26,33 @@ module Samples
           @pl_story_id_key => story_id,
           exported_at: DateTime.now
         )
+      end
+
+      def published_at(date)
+        datetime_to_f = lambda do |dt, pos|
+          Time.parse("#{dt} #{TIMES_BY_WEEKDAY[dt.wday][pos]} EST").to_f
+        end
+
+        start = datetime_to_f.call(date, 0)
+        finish = datetime_to_f.call(date, 1)
+        publish_on = (finish - start) * rand + start
+
+        Time.at(publish_on).strftime('%Y-%m-%dT%H:%M:%S%:z')
+      end
+
+      def sections(story_type, publication)
+        clients_publications_tags = story_type.clients_publications_tags.to_a
+
+        cl_pub_tg = clients_publications_tags.find { |cpt| cpt.publication.eql?(publication) }
+        return cl_pub_tg.sections.ids if cl_pub_tg
+
+        aggregated_cpt = clients_publications_tags.select do |cpt|
+          cpt.publication.nil? || cpt.publication.name.in?(@pub_aggregate_names)
+        end
+
+        aggregated_cpt.find do |cpt|
+          cpt.client.publications.include?(publication)
+        end.sections.ids
       end
 
       def lead_post(sample, exp_config)
@@ -47,26 +74,12 @@ module Samples
         raise Samples::LeadPostError, "[#{e.class}] -> #{e.message} at #{e.backtrace.first}"
       end
 
-      def published_at(date)
-        datetime_to_f = lambda do |dt, pos|
-          Time.parse("#{dt} #{TIMES_BY_WEEKDAY[dt.wday][pos]} EST").to_f
-        end
-
-        start = datetime_to_f.call(date, 0)
-        finish = datetime_to_f.call(date, 1)
-        publish_on = (finish - start) * rand + start
-
-        Time.at(publish_on).strftime('%Y-%m-%dT%H:%M:%S%:z')
-      end
-
       def story_post(lead_id, sample, exp_config)
-        author = sample.publication.name
-        client = sample.client
         publication = exp_config.publication
         story_tag_ids = exp_config.tag.name.eql?('_Blank') ? [] : [exp_config.tag.pl_identifier]
         photo_bucket_id = exp_config.photo_bucket&.pl_identifier
+        story_section_ids = sections(sample.story_type, publication)
         published_at = published_at(sample.published_at.to_date)
-        story_section_ids = client.sections.map { |section| section[:pl_identifier] }
         sample_org_ids = sample.organization_ids.delete('[ ]').split(',')
         active_org_ids = []
         limit = 99
@@ -84,7 +97,7 @@ module Samples
           teaser: sample.teaser,
           body: sample.body,
           published_at: published_at,
-          author: author,
+          author: publication.name,
           story_section_ids: story_section_ids,
           story_tag_ids: story_tag_ids,
           published: true,

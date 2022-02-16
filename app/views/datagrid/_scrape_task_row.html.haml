@@ -2,6 +2,13 @@
   -grid.html_columns(*options[:columns]).each do |column|
     -klass = datagrid_column_classes(grid, column)
     -value = datagrid_value(grid, column, asset)
-    -background_color = klass.eql?('status') ? status_color(ActionView::Base.full_sanitizer.sanitize(value)) : ''
-    %td{class: "#{klass} #{"bg-#{background_color}"}"}
+
+    -if klass.start_with?('id ') && asset.data_set_location.blank?
+      -background_color = "bg-danger"
+    -elsif klass.eql?('status')
+      -background_color = "bg-#{status_color(ActionView::Base.full_sanitizer.sanitize(value))}"
+    -else
+      -background_color = ''
+
+    %td{class: "#{klass} #{background_color}"}
       =value

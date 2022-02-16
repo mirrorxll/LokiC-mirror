@@ -11,8 +11,10 @@ class TaskAssignmentsController < ApplicationController
   def edit; end
 
   def update
-    new_assignments = new_assignments(@task, Account.find(assignments_params))
-    update_assignments(@task, new_assignments)
+    return if assistants_params.blank? && assignment_to_params.blank?
+
+    new_assignments = new_assignments(@task, Account.find(assistants_params + [assignment_to_params]))
+    update_assignments(@task, new_assignments, assignment_to_params)
     send_notification(new_assignments)
     comment(new_assignments)
   end
@@ -36,8 +38,16 @@ class TaskAssignmentsController < ApplicationController
     assignments - task.assignment_to
   end
 
-  def update_assignments(task, new_assignments)
-    task.assignment_to << new_assignments
+  def update_assignments(task, new_assignments, new_main_assignee_id)
+    task.assistants << new_assignments
+
+    return if new_main_assignee_id.blank?
+    new_main_assignee = Account.find(new_main_assignee_id)
+    unless new_main_assignee == task.main_assignee
+      old_main_assignee = TaskAssignment.find_by(task: task, main: true)
+      old_main_assignee.update(main: false) unless old_main_assignee.blank?
+      TaskAssignment.find_by(task: task, account: new_main_assignee).update(main: true)
+    end
   end
 
   def comment(new_assignments)
@@ -58,11 +68,15 @@ class TaskAssignmentsController < ApplicationController
       message = "*<#{task_url(@task)}| TASK ##{@task.id}> | "\
                 "Assignment to you*\n>#{@task.title}"
       SlackNotificationJob.perform_later(assignment.slack.identifier, message)
-      SlackNotificationJob.perform_later(Rails.env.production? ? 'hle_lokic_task_reminders' : 'hle_lokic_development_messages', message)
+      SlackNotificationJob.perform_later('hle_lokic_task_reminders', message)
     end
   end
 
-  def assignments_params
-    params.has_key?(:assignment_to) ? params.require(:assignment_to).uniq.reject { |account| account.blank? } : []
+  def assignment_to_params
+    params[:assignment_to].present? ? params.require(:assignment_to) : nil
+  end
+
+  def assistants_params
+    params[:assistants].present? ? params.require(:assistants) : []
   end
 end

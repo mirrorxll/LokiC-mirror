@@ -3,8 +3,10 @@
 class TasksGrid
   include Datagrid
 
+  attr_accessor(:current_account)
+
   # Scope
-  scope { Task.includes(:assignments, :creator, :assignment_to).order(id: :desc) }
+  scope { Task.includes(:assignments, :creator, :assignment_to, :status, :last_comment).order(id: :desc) }
 
   # Filters
   filter(:title, :string, left: true, header: 'Title(RLIKE)') do |value, scope|
@@ -79,6 +81,14 @@ class TasksGrid
               'data-placement' => 'right',
               title: truncate("#{last_comment.commentator.name}: #{body}", length: 150) }
       content_tag(:div, last_comment.created_at.strftime('%y-%m-%d'), attr)
+    end
+  end
+
+  column(:note, header: 'Your note', mandatory: true) do |task, scope|
+    note = task.note(scope.current_account)
+
+    if !note.nil? && !note.body.nil?
+      ActionView::Base.full_sanitizer.sanitize(note.body).first(10)
     end
   end
 end

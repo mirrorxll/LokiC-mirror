@@ -5,8 +5,6 @@
 
     -klass = datagrid_column_classes(grid, column)
     -value = datagrid_value(grid, column, asset)
-    -puts("bg-#{status_color(ActionView::Base.full_sanitizer.sanitize(value))}") if column.header.eql?('Status')
     -background_color = column.header.eql?('Status') ? "bg-#{status_color(ActionView::Base.full_sanitizer.sanitize(value))}" : ''
-
     %td{ class: "#{klass} #{background_color}" }
       =value

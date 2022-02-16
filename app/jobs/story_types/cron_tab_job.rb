@@ -5,7 +5,7 @@ module StoryTypes
     def perform(story_type_id)
       story_type = StoryType.find(story_type_id)
       cron_tab = story_type.cron_tab
-      return if cron_tab.freeze_execution
+      return if cron_tab.freeze_execution || !cron_tab.enabled
 
       account = story_type.developer || Account.find_by(email: 'main@lokic.loc')
       iteration = story_type.cron_tab_iteration || story_type.create_cron_tab_iteration!
