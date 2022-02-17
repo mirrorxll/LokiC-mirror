@@ -9,7 +9,6 @@ module StoryTypes
       story_type = iteration.story_type
       population_args = population_args_to_hash(options[:population_args])
       story_type.sidekiq_break.update!(cancel: false)
-      # SidekiqBreak.create_with(cancel: false).find_or_create_by(story_type: story_type)
 
       rd, wr = IO.pipe
 
@@ -31,7 +30,7 @@ module StoryTypes
         end
       )
 
-      if story_type.sidekiq_break.cancel
+      if story_type.sidekiq_break.reload.cancel
         status = nil
         message = 'Canceled'
       end

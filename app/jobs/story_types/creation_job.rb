@@ -6,7 +6,7 @@ module StoryTypes
       status = true
       message = 'Success. All stories have been created'
       story_type = iteration.story_type
-      SidekiqBreak.create_with(cancel: false).find_or_create_by(story_type: story_type)
+      story_type.sidekiq_break.update!(cancel: false)
       publication_ids = story_type.publication_pl_ids
       options[:iteration] = iteration
       options[:publication_ids] = publication_ids
@@ -14,6 +14,9 @@ module StoryTypes
 
       loop do
         rd, wr = IO.pipe
+        break if story_type.sidekiq_break.reload.cancel || Table.all_stories_created_by_iteration?(staging_table, publication_ids)
+
+        # break if story_type.sidekiq_break.reload.cancel
 
         Process.wait(
           fork do
@@ -36,12 +39,11 @@ module StoryTypes
         end
 
         staging_table = story_type.staging_table.name
-        break if Table.all_stories_created_by_iteration?(staging_table, publication_ids) || story_type.sidekiq_break.cancel
       end
 
       iteration.update!(schedule_counts: schedule_counts(iteration), current_account: account)
 
-      if story_type.sidekiq_break.cancel
+      if story_type.sidekiq_break.reload.cancel
         status = nil
         message = 'Canceled'
       end

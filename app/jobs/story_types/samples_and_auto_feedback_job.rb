@@ -5,7 +5,7 @@ module StoryTypes
     def perform(iteration, account, options = {})
       status = true
       story_type = iteration.story_type
-      SidekiqBreak.create_with(cancel: false).find_or_create_by(story_type: story_type)
+      story_type.sidekiq_break.update!(cancel: false)
       rd, wr = IO.pipe
 
       Process.wait(
@@ -68,7 +68,7 @@ module StoryTypes
         message = forked_res
       end
 
-      if story_type.sidekiq_break.cancel
+      if story_type.sidekiq_break.reload.cancel
         status = nil
         message = 'Canceled'
       end

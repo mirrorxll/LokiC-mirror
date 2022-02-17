@@ -32,14 +32,14 @@ module StoryTypes
     def download_code
       # @code = @story_type.download_code_from_db
       @code = <<~CODE
-        class S9
-          STAGING_TABLE = 's0009'
+        class S1
+          STAGING_TABLE = 's0001'
           def check_updates; end
           def population(options)
             host = Mysql2::Client.new(host: '127.0.0.1', username: 'sammy', password: 'passworD=123', database: 'loki_story_creator_dev')
             arry = ('a'..'z').to_a
             arry.each do |arr|
-              publications = [{ 'id' => 2813, 'name' => 'NYC Gazette', 'client_id' => 196, 'client_name' => 'MM - New York' }]
+              publications = [{ 'id' => 2813, 'name' => 'NYC Gazette', 'client_id' => 188, 'client_name' => 'MM - New York' }]
               publications.flatten.each do |publication|
                 raw                      = {}
                 raw['client_id']         = publication['client_id']
@@ -50,7 +50,7 @@ module StoryTypes
                 raw['time_frame']        = Frame[:annually, Date.today.to_s]
             
                 raw['a']                 = arr
-                sleep 1
+                # sleep 1
                 return if SidekiqBreak[self.class.to_s]
                 
                 staging_insert_query = SQL.insert_on_duplicate_key(STAGING_TABLE, raw)
@@ -58,12 +58,12 @@ module StoryTypes
               end
             end
             host.close
-            # PopulationSuccess[STAGING_TABLE] unless ENV['RAILS_ENV']
+            PopulationSuccess[STAGING_TABLE] unless ENV['RAILS_ENV']
           end
           def creation(options)
             samples = Samples.new(STAGING_TABLE, options)
             StagingRecords[STAGING_TABLE, options].each do |stage|
-              pp "> "*50, stage
+              # pp "> "*50, stage
               sample                    = {}
               sample[:staging_row_id]   = stage['id']
               sample[:publication_id]   = stage['publication_id']
@@ -76,6 +76,7 @@ module StoryTypes
               sample[:body]     = foo
         
               sleep 1
+              pp '========', SidekiqBreak[self.class.to_s]
               return if SidekiqBreak[self.class.to_s]
 
               samples.insert(sample)

@@ -22,7 +22,7 @@ module MiniLokiC
           end
 
         select.each_with_index do |row, i|
-          break if (i % 100).zero? && @options[:iteration].story_type.sidekiq_break.cancel
+          break if (i % 100).zero? && @options[:iteration].story_type.sidekiq_break.reload.cancel
 
           yield(HashWithIndifferentAccess.new(row))
         end
