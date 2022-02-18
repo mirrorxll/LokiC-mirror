@@ -4,19 +4,20 @@ module StoryTypes
   class RevisionReminderJob < ApplicationJob
     def perform
       Template.revision_needed.each do |template|
-        template.update(revised: false)
+        template.update!(revised: false)
         story_type = template.templateable
-        url = generate_url(story_type)
-        channel = Rails.env.production? ? 'lokic_editors' : 'hle_lokic_development_messages'
+        data_set = story_type.data_set
+        story_type_url = generate_url(story_type)
+        data_set_url = generate_url(data_set)
         message = if template.revision > Date.today
-                    "<#{url}|Story Type ##{story_type.id}> needs to revise static year #{template.static_year}." \
-                    " Final revision date - #{template.revision}."
+                    "<#{story_type_url}|Story Type ##{story_type.id}>(<#{data_set_url}|#{data_set.name}>) needs to " \
+                    "revise static year #{template.static_year}. Final revision date - #{template.revision}."
                   else
-                    "<#{url}|Story Type ##{story_type.id}> had to be revised on #{template.revision}. Do it now to" \
-                    ' unblock export!'
+                    "<#{story_type_url}|Story Type ##{story_type.id}>(<#{data_set_url}|#{data_set.name}>) had to be " \
+                    " revised on #{template.revision}. Do it now to unblock export!"
                   end
 
-        ::SlackNotificationJob.perform_now(channel, message)
+        ::SlackNotificationJob.perform_now('lokic_editors', message)
       end
     end
   end
