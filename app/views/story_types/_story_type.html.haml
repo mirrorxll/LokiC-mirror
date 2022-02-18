@@ -9,7 +9,7 @@
             -if current_account.types.include?('editor')
               =story_type.name
             -else
-              =link_to(story_type.name, story_type_path(story_type))
+              =link_to(story_type.name, story_type_path(story_type), class: (story_type.status.name.eql?('archived') ? 'text-secondary' : ''))
           .col-1.p-0.text-center
             =link_to(icon('fa', 'pencil', class: ' fa-xs text-dark'), edit_story_type_path(story_type), remote: true)
       .col-1.p-0{id: "story_type_#{story_type.id}_template"}
