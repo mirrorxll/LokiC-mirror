@@ -1,0 +1,4 @@
+=link_to('purge samples from the last iteration',
+                    purge_story_type_iteration_creations_path(@story_type, @iteration),
+                    id: 'purge_stories', class: 'btn btn-sm btn-outline-danger',
+                    method: :delete, remote: true)

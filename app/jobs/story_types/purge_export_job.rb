@@ -6,10 +6,11 @@ module StoryTypes
       status = false
       message = 'Success'
       story_type = iteration.story_type
-      SidekiqBreak.create_with(cancel: false).find_or_create_by(story_type: story_type)
+      story_type.sidekiq_break.update!(cancel: false)
 
       loop do
         rd, wr = IO.pipe
+        break if iteration.stories.reload.exported.count.zero? || story_type.sidekiq_break.reload.cancel
 
         Process.wait(
           fork do
@@ -31,8 +32,6 @@ module StoryTypes
           klass, message = JSON.parse(exception).to_a.first
           raise Object.const_get(klass), message
         end
-
-        break if iteration.stories.reload.exported.count.zero? || story_type.reload.sidekiq_break.cancel
       end
 
       Process.wait(

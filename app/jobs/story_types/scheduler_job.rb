@@ -6,7 +6,7 @@ module StoryTypes
       status = nil
       message = 'Success'
       story_type = iteration.story_type
-      SidekiqBreak.create_with(cancel: false).find_or_create_by(story_type: story_type)
+      story_type.sidekiq_break.update!(cancel: false)
       options[:account] ||= story_type.developer
 
       rd, wr = IO.pipe
@@ -65,7 +65,7 @@ module StoryTypes
         current_account: options[:account]
       )
 
-      if story_type.sidekiq_break.cancel
+      if story_type.sidekiq_break.reload.cancel
         status = nil
         message = 'Canceled'
       end

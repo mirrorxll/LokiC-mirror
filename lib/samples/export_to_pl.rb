@@ -25,7 +25,7 @@ module Samples
         Thread.new do
           loop do
             sample = main_semaphore.synchronize { stories_to_export.shift }
-            break if sample.nil? || story_type.reload.sidekiq_break.cancel
+            break if sample.nil? || story_type.sidekiq_break.reload.cancel
 
             sample.destroy and next if sample.publication.pl_identifier.in?(forbidden_mb_pubs)
 
