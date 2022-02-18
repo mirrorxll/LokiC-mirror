@@ -7,16 +7,17 @@ module StoryTypes
         template.update(revised: false)
         story_type = template.templateable
         url = generate_url(story_type)
-        channel = Rails.env.production? ? 'lokic_editors' : 'hle_lokic_development_messages'
-        message = if template.revision > Date.today
-                    "<#{url}|Story Type ##{story_type.id}> needs to revise static year #{template.static_year}." \
-                    " Final revision date - #{template.revision}."
-                  else
-                    "<#{url}|Story Type ##{story_type.id}> had to be revised on #{template.revision}. Do it now to" \
-                    ' unblock export!'
-                  end
 
-        ::SlackNotificationJob.perform_now(channel, message)
+        message =
+          if template.revision > Date.today
+            "<#{url}|Story Type ##{story_type.id}> needs to revise static year #{template.static_year}." \
+            " Final revision date - #{template.revision}."
+          else
+            "<#{url}|Story Type ##{story_type.id}> had to be revised on #{template.revision}. Do it now to" \
+            ' unblock export!'
+          end
+
+        ::SlackNotificationJob.perform_now('lokic_editors', message)
       end
     end
   end
