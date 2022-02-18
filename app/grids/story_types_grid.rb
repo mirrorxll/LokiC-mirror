@@ -43,7 +43,7 @@ class StoryTypesGrid
   filter(:developer, :enum, multiple: true, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
   filter(:frequency, :enum, multiple: true, left: true, select: Frequency.pluck(:name, :id))
   filter(:photo_bucket, :enum, multiple: true, left: true, select: PhotoBucket.all.order(:name).pluck(:name, :id))
-  filter(:status, :enum, multiple: true, left: true, select: Status.all.pluck(:name, :id)) do |value, scope|
+  filter(:status, :enum, multiple: true, left: true, select: Status.where.not(name: 'archived').pluck(:name, :id)) do |value, scope|
     status = Status.find(value)
     scope.where(status: status)
   end
