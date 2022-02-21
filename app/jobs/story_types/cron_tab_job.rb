@@ -36,12 +36,12 @@ module StoryTypes
       iteration.update!(samples: false, current_account: account)
       creation_raise = SamplesAndAutoFeedbackJob.perform_now(iteration, account, cron: true)
 
-      return if creation_raise
+      return if creation_raise || iteration.story_type.sidekiq_break.reload.cancel
 
       iteration.update!(creation: false, current_account: account)
       creation_raise = CreationJob.perform_now(iteration, account)
 
-      return if creation_raise
+      return if creation_raise || iteration.story_type.sidekiq_break.reload.cancel
 
       rd, wr = IO.pipe
       Process.wait(

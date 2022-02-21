@@ -26,6 +26,8 @@ module Samples
     end
 
     def generate!
+      return if @iteration.story_type.sidekiq_break.reload.cancel
+
       @stories.each do |sample|
         sample_obj = prepare(sample)
 
