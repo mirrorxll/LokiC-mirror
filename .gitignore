@@ -23,7 +23,10 @@
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 
-# Ignore git's fil
+# Ignore google drive config file.
+/config/google_drive.json
+
+# Ignore git's files
 /.git
 
 # Ignore RubyMine's files
@@ -33,6 +36,7 @@
 /.generators
 /public/packs
 /public/packs-test
+
 /node_modules
 /yarn-error.log
 yarn-debug.log*
@@ -40,6 +44,9 @@ yarn-debug.log*
 
 # Ignore Uploaded Code
 public/ruby_code/*
+
+# ignore created sheets
+public/spreadsheets
 
 # Ignore Uploaded Images
 public/uploads/images/*

@@ -63,7 +63,7 @@ module StoryTypes
       end
 
       iteration.update!(export: false, current_account: account)
-      ExportJob.perform_now(iteration, account)
+      ExportJob.perform_later(iteration, account)
     end
   end
 end

@@ -23,8 +23,8 @@ module Pipeline
       }
 
       Faraday::Connection.new(endpoint, headers) do |c|
-        c.response :raise_error
-        c.request :retry, retry_options
+        # c.response :raise_error
+        # c.request :retry, retry_options
       end
     end
   end

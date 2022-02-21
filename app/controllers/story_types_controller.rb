@@ -19,7 +19,8 @@ class StoryTypesController < ApplicationController # :nodoc:
                      developer? ? { developer: current_account.id } : {}
                    end
 
-    @story_types_grid = StoryTypesGrid.new(@grid_params)
+    @story_types_grid = StoryTypesGrid.new(@grid_params) { |scope| scope.where(archived: false) }
+    @story_types_grid.scope { StoryType.archived } if params[:archived]
 
     respond_to do |f|
       f.html do

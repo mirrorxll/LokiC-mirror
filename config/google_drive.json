@@ -1,9 +1,9 @@
 {
-  "client_id": "452925651630-egr1f18o96acjjvphpbbd1qlsevkho1d.apps.googleusercontent.com",
-  "client_secret": "1U3-Krii5x1oLPrwD5zgn-ry",
+  "client_id": "178328214898-qmggalh7srf75e3n8lv1n011tj8mbjud.apps.googleusercontent.com",
+  "client_secret": "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",
   "scope": [
     "https://www.googleapis.com/auth/drive",
     "https://spreadsheets.google.com/feeds/"
   ],
-  "refresh_token": "1/eC6FF9G4IzHeR8Wc456gS64W8-mjmd6EzsBxdlCyPs4"
+  "refresh_token": "1//09J_f9ErlpylnCgYIARAAGAkSNwF-L9Irawnq6_TlL3QrbJZoViMGK46klHTvH5VYvRvv9yUwwgv4erMGRstkeEnBFnrpsNtM-Ao"
 }

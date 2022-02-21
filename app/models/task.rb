@@ -92,6 +92,10 @@ class Task < ApplicationRecord # :nodoc:
     sprintf('%g', assignments.sum(:hours).to_s) + ' hours'
   end
 
+  def subtask?
+    !!parent
+  end
+
   def note(account)
     notes.find_by(creator: account)
   end
