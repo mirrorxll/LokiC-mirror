@@ -8,6 +8,7 @@ module MiniLokiC
 
         def backdate_scheduler(samples, backdated_rules)
           schedule_args = {}
+          iteration = samples.first.iteration
           backdated_rules = backdated_rules.sort_by { |rule| rule.values_at(:time_frame, :where) }.reverse
 
           backdated_rules.each do |rule|
@@ -20,7 +21,11 @@ module MiniLokiC
             publications.each do |publication_id, count|
               limit = (count.to_f / publication_dates.length).ceil
               samples_backdated.where(publication: publication_id).find_in_batches(batch_size: limit).with_index do |samples_batch, index|
-                samples_batch.each { |sample| sample.update_attributes(published_at: publication_dates[index], backdated: true) }
+                samples_batch.each do |sample|
+                  return if iteration.story_type.reload.sidekiq_break.cancel
+
+                  sample.update_attributes(published_at: publication_dates[index], backdated: true)
+                end
               end
             end
           end
