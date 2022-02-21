@@ -10,7 +10,7 @@ module StoryTypes
           story_types.each do |st_type|
             sleep(rand)
 
-            next if st_type.developer.nil? || st_type.status.name.in?(%w[canceled blocked done])
+            next if st_type.developer.nil? || st_type.status.name.in?(%w[canceled blocked done archived])
 
             active = true
             old_status = st_type.status.name

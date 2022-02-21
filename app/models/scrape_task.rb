@@ -19,26 +19,28 @@ class ScrapeTask < ApplicationRecord
   validates_uniqueness_of :name, case_sensitive: false
   validates :datasource_url, length: { maximum: 1000 }
 
-  belongs_to :multi_task, optional: true, class_name: 'Task', foreign_key: :task_id
   belongs_to :creator,    optional: true, class_name: 'Account'
   belongs_to :scraper,    optional: true, class_name: 'Account'
   belongs_to :frequency,  optional: true
   belongs_to :status,     optional: true
   belongs_to :state,      optional: true
 
-  has_one :instruction, class_name: 'ScrapeInstruction'
+  has_one :instruction,    class_name: 'ScrapeInstruction'
   has_one :evaluation_doc, class_name: 'ScrapeEvaluationDoc'
   has_one :scrape_ability_comment, -> { where(subtype: 'scrape ability comment') }, as: :commentable, class_name: 'Comment'
   has_one :datasource_comment,     -> { where(subtype: 'datasource comment') }, as: :commentable, class_name: 'Comment'
   has_one :status_comment,         -> { where(subtype: 'status comment') }, as: :commentable, class_name: 'Comment'
   has_one :general_comment,        -> { where(subtype: 'general comment') }, as: :commentable, class_name: 'Comment'
   has_one :data_set
+  has_one :data_sample
 
   has_many :change_history, as: :history
   has_many :alerts, as: :alert
+  has_many :data_set_locations, as: :data_set_location
+  has_many :table_locations, as: :parent, dependent: :destroy
 
   has_and_belongs_to_many :tags, class_name: 'ScrapeTaskTag'
-  has_and_belongs_to_many :multi_tasks, class_name: 'Task'
+  has_and_belongs_to_many :tasks
 
   def updated_early?
     updated_at > created_at

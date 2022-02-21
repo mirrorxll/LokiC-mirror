@@ -13,7 +13,7 @@ class ScrapeTasksController < ApplicationController
   def index
     respond_to do |f|
       f.html do
-        @scrape_tasks_grid.scope { |scope| scope.page(params[:page]).per(50) }
+        @scrape_tasks_grid.scope { |scope| scope.page(params[:page]).per(30) }
       end
     end
   end
@@ -28,14 +28,12 @@ class ScrapeTasksController < ApplicationController
 
   def edit; end
 
-  def cancel_edit; end
-
   def update
     render_403 and return if !manager? && !@scrape_task.scraper.eql?(current_account)
 
-    @scrape_task.datasource_comment&.update!(datasource_comment_param)
-    @scrape_task.scrape_ability_comment&.update!(scrape_ability_comment_param)
-    @scrape_task.general_comment&.update!(general_comment_param)
+    @scrape_task.datasource_comment.update!(datasource_comment_param)
+    @scrape_task.scrape_ability_comment.update!(scrape_ability_comment_param)
+    @scrape_task.general_comment.update!(general_comment_param)
     @scrape_task.update!(update_scrape_task_params)
 
     return unless manager?
@@ -94,15 +92,15 @@ class ScrapeTasksController < ApplicationController
   end
 
   def scrape_ability_comment_param
-    params.require(:scrape_ability_comment).permit(:body)
+    p params.require(:scrape_ability_comment).permit(:body)
   end
 
   def datasource_comment_param
-    params.require(:datasource_comment).permit(:body)
+    p params.require(:datasource_comment).permit(:body)
   end
 
   def general_comment_param
-    params.require(:general_comment).permit(:body)
+    p params.require(:general_comment).permit(:body)
   end
 
   def data_set_param

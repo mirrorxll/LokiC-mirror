@@ -92,7 +92,7 @@ class ScrapeTasksGrid
   # end
 
   column(:general_comment, header: 'Comment', order: 'comments.body', mandatory: true) do |s_task|
-    format(s_task.general_comment&.body) { |body| truncate(body, length: 35) }
+    format(s_task.general_comment.body) { |body| truncate(ActionView::Base.full_sanitizer.sanitize(body), length: 35) }
   end
 
   def row_classes(row)

@@ -11,6 +11,7 @@ class DataSetsController < ApplicationController # :nodoc:
   before_action :render_403_scraper, except: :properties, if: :scraper?
   before_action :find_data_set, except: %i[index create]
   after_action  :set_default_props, only: %i[create update]
+  after_action  :create_hidden_scrape_task, only: :create
 
   def index
     @tab_title = 'LokiC::Data Sets'
@@ -83,11 +84,12 @@ class DataSetsController < ApplicationController # :nodoc:
     DataSetDefaultProps.setup!(@data_set, default_props_params)
   end
 
-  def story_type_filter_params
-    return {} unless params[:filter]
+  def create_hidden_scrape_task
+    create_hidden = params.require(:scrape_task).permit(:create_hidden)
 
-    params.require(:filter).slice(
-      :editor, :developer, :client, :frequency, :status
-    )
+    if create_hidden
+      scrape_task = ScrapeTask.create!(name: @data_set.name, hidden: true)
+      @data_set.update!(scrape_task: scrape_task)
+    end
   end
 end

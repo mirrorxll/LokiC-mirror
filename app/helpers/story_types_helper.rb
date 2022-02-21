@@ -16,4 +16,8 @@ module StoryTypesHelper # :nodoc:
   def photo_bucket_name
     @story_type.photo_bucket ? @story_type.photo_bucket.name : '---'
   end
+
+  def manager_or_editor
+    (current_account.types & %w[manager editor]).present?
+  end
 end

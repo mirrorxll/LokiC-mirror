@@ -60,6 +60,7 @@ class StoryType < ApplicationRecord
     joins(:status).where.not('statuses.name': ['canceled', 'migrated', 'not started', 'blocked', 'done'])
   }
   scope :not_cron, -> { joins(:cron_tab).where.not('cron_tabs.enabled': true) }
+  scope :archived, -> { where(archived: true) }
 
   def id_name
     "##{id} #{name}"
