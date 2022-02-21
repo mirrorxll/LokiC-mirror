@@ -15,12 +15,20 @@ class StoryTypesController < ApplicationController # :nodoc:
   def index
     @grid_params = if request.parameters[:story_types_grid]
                      request.parameters[:story_types_grid]
+                   elsif request.parameters[:archive_story_types_grid]
+                     request.parameters[:archive_story_types_grid]
                    else
                      developer? ? { developer: current_account.id } : {}
                    end
 
-    @story_types_grid = StoryTypesGrid.new(@grid_params) { |scope| scope.where(archived: false) }
-    @story_types_grid.scope { StoryType.archived } if params[:archived]
+    if params[:archived] || request.parameters[:archive_story_types_grid]
+      @story_types_grid = ArchiveStoryTypesGrid.new(@grid_params) { StoryType.archived }
+      # @story_types_grid.scope { StoryType.archived }
+    else
+      @story_types_grid = StoryTypesGrid.new(@grid_params) { |scope| scope.where(archived: false) }
+      # @story_types_grid.scope { StoryType.all }
+    end
+    # @story_types_grid.scope { StoryType.archived } if params[:archived] || request.parameters[:story_types_grid]
 
     respond_to do |f|
       f.html do

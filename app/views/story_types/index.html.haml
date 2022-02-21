@@ -10,7 +10,7 @@
              'aria-expanded' => false, data: { toggle: "collapse", target: "#filter_form" },
              type: "button", id: '#crt_upd_filter_btn', class: 'btn btn-sm btn-outline-dark')
     -if manager_or_editor
-      -if params[:archived]
+      -if params[:archived] || params[:archive_story_types_grid]
         =link_to('hide archived', url_for({ }), class: 'btn btn-sm btn-outline-dark')
       -else
         =link_to('show archived', url_for({ 'archived' => true }), class: 'btn btn-sm btn-outline-dark')
