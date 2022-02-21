@@ -2,7 +2,6 @@
 
 class Template < ApplicationRecord
   belongs_to :templateable, polymorphic: true
-  # belongs_to :story_type, -> { where('templates.templateable_type': 'StoryType') }, foreign_key: :templateable_id
 
   before_create do
     self.body = '<p>HEADLINE:</p><p><br></p><p>TEASER:</p><p><br></p><p>BODY:</p><p><br></p>'
@@ -16,10 +15,10 @@ class Template < ApplicationRecord
     self.body = body&.gsub(/#{Regexp.escape(regexp)}/, '')
   end
 
-  # scope :alive, -> { joins(story_type: :status).where.not('statuses.name': ['canceled', 'deleted', 'done', 'archived']) }
+  joins_raw_sql = "INNER JOIN story_types ON templates.templateable_type = 'StoryType' AND templates.templateable_id ="\
+                  ' story_types.id INNER JOIN statuses ON story_types.status_id = statuses.id'
+  scope :alive,           -> { joins(joins_raw_sql).where.not('statuses.name': %w[archived canceled deleted done]) }
   scope :revision_needed, -> { alive.where.not(revision: nil).where('revision <= ?', Date.today + 1.week) }
-  scope :type_of, -> (type) { where(templateable_type: type) }
-  scope :alive, -> { type_of('StoryType') }
 
 
   def expired_revision?
