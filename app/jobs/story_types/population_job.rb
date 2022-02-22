@@ -8,6 +8,7 @@ module StoryTypes
       message = 'Success'
       story_type = iteration.story_type
       population_args = population_args_to_hash(options[:population_args])
+      story_type.sidekiq_break.update!(cancel: false)
 
       rd, wr = IO.pipe
 
@@ -29,6 +30,11 @@ module StoryTypes
         end
       )
 
+      if story_type.sidekiq_break.reload.cancel
+        status = nil
+        message = 'Canceled'
+      end
+
       wr.close
       exception = rd.read
       rd.close
@@ -45,6 +51,7 @@ module StoryTypes
       true
     ensure
       iteration.update!(population: status, current_account: account)
+      story_type.sidekiq_break.update!(cancel: false)
       send_to_action_cable(story_type, :staging_table, message)
       StoryTypes::SlackNotificationJob.perform_now(iteration, 'population', message)
     end

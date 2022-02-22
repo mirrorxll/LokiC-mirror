@@ -6,6 +6,7 @@ module StoryTypes
       status = nil
       message = 'Success'
       story_type = iteration.story_type
+      story_type.sidekiq_break.update!(cancel: false)
       options[:account] ||= story_type.developer
 
       rd, wr = IO.pipe
@@ -64,6 +65,11 @@ module StoryTypes
         current_account: options[:account]
       )
 
+      if story_type.sidekiq_break.reload.cancel
+        status = nil
+        message = 'Canceled'
+      end
+
       true
     rescue StandardError, ScriptError => e
       status = nil
@@ -72,6 +78,7 @@ module StoryTypes
       raise SchedulerExecutionError, "Scheduling from code: #{message}" if options[:exception]
     ensure
       iteration.update!(schedule: status)
+      story_type.sidekiq_break.update!(cancel: false)
 
       unless options[:exception]
         send_to_action_cable(iteration.story_type, :scheduler, message)

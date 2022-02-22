@@ -241,6 +241,8 @@ Rails.application.routes.draw do
         patch :disprove
         patch :turn_off
       end
+
+      post '/sidekiq_breaks', to: 'sidekiq_breaks#cancel'
     end
   end
 
