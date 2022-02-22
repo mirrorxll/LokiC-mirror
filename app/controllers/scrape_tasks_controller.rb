@@ -75,14 +75,12 @@ class ScrapeTasksController < ApplicationController
     attrs =
       if manager?
         params.require(:scrape_task).permit(
-          :name, :data_requester, :gather_task, :deadline,
-          :state_id, :datasource_url, :scrapable, :data_set_location,
-          :scraper_id, :frequency_id
+          :name, :gather_task, :deadline,
+          :state_id, :datasource_url, :scrapable,
+          :data_set_location, :scraper_id, :frequency_id
         )
       elsif @scrape_task.scraper.eql?(current_account)
-        params.require(:scrape_task).permit(
-          :gather_task, :datasource_url, :data_set_location
-        )
+        params.require(:scrape_task).permit(:gather_task, :datasource_url)
       else
         {}
       end
@@ -92,15 +90,15 @@ class ScrapeTasksController < ApplicationController
   end
 
   def scrape_ability_comment_param
-    p params.require(:scrape_ability_comment).permit(:body)
+    params.require(:scrape_ability_comment).permit(:body)
   end
 
   def datasource_comment_param
-    p params.require(:datasource_comment).permit(:body)
+    params.require(:datasource_comment).permit(:body)
   end
 
   def general_comment_param
-    p params.require(:general_comment).permit(:body)
+    params.require(:general_comment).permit(:body)
   end
 
   def data_set_param
