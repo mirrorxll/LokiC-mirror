@@ -4,7 +4,12 @@ class ScrapeTasksGrid
   include Datagrid
 
   # Scope
-  scope { ScrapeTask.includes(:data_set, :status, :frequency, :scraper, :state, :general_comment).order(id: :desc) }
+  scope do
+    ScrapeTask.includes(
+      :data_set, :status, :frequency,
+      :scraper, :state, :general_comment
+    ).order(id: :desc)
+  end
 
   # Filters
   filter(:name, :string, header: 'Name(RLIKE)') do |value, scope|
@@ -12,7 +17,11 @@ class ScrapeTasksGrid
   end
 
   filter(:data_set_location, :string, header: 'Data Location(RLIKE)') do |value, scope|
-    scope.where('data_set_location RLIKE ?', value)
+    location_ids = TableLocation.all.to_a.select do |tl|
+      tl.full_name[/#{Regexp.escape(value)}/]
+    end.map(&:id)
+
+    scope.includes(:table_locations).where(table_locations: { id: location_ids })
   end
 
   filter(:general_comment, :string, header: 'Comment(RLIKE)') do |value, scope|
@@ -86,10 +95,6 @@ class ScrapeTasksGrid
   column(:scraper, header: 'Dev', order: 'accounts.first_name, accounts.last_name', mandatory: true) do |s_task|
     s_task.scraper&.name
   end
-
-  # column(:tags, header: 'Tags', mandatory: true) do |s_task|
-  #   s_task.scraper&.name
-  # end
 
   column(:general_comment, header: 'Comment', order: 'comments.body', mandatory: true) do |s_task|
     format(s_task.general_comment.body) { |body| truncate(ActionView::Base.full_sanitizer.sanitize(body), length: 35) }

@@ -17,7 +17,7 @@ class SlackNotificationJob < ApplicationJob
 
     begin
       Slack::Web::Client.new.chat_postMessage(params)
-    rescue Slack::Web::Api::Errors::TimeoutError
+    rescue Slack::Web::Api::Errors::SlackError
       retry_counter += 1
 
       if retry_counter <= 3

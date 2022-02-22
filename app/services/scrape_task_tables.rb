@@ -26,7 +26,7 @@ class ScrapeTaskTables
 
       table.save!
 
-      object << { id: table.id, name: "#{table.host&.name}.#{table.schema&.name}.#{table.name}".downcase }
+      object << { id: table.id, name: table.full_name.downcase }
     end
   end
 end

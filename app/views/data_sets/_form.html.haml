@@ -2,8 +2,9 @@
   =form_with(model: @data_set, local: controller_name.eql?('data_sets')) do |f|
     .row
       .col-6
-        =f.text_field :name, placeholder: 'name', class: 'mb-1 form-control form-control-sm', required: true
-        -if @data_set.new_record?
+        =f.text_field :name, placeholder: 'name', class: 'mb-1 form-control form-control-sm',
+                             required: true, value: (controller_name.eql?('scrape_tasks') ? @scrape_task.name : @data_set.name  )
+        -if @data_set.new_record? && !controller_name.eql?('scrape_tasks')
           .small
             =f.check_box "create_hidden_scrape_task", { id: "create_hidden_scrape_task", name: "scrape_task[create_hidden]" }
             =f.label "create_hidden_scrape_task", 'create hidden scrape task'
@@ -12,84 +13,48 @@
     .row
       .col-6.border-right
         =f.label :data, 'data:', class: 'small font-weight-bold mb-3'
-        .scrape_task
-          .select_placeholder.text-secondary.form-control.form-control-sm.border-right-0{ 'data-text' => 'scrape task: ' }
-          =f.collection_select :scrape_task_id, ScrapeTask.includes(:data_set).where(data_sets: { id: [nil, @data_set&.id] }).order(:name), :id, :name,
-                               { include_blank: true, selected: @scrape_task&.id || @data_set.scrape_task&.id },
-                               { class: 'mb-1 form-control form-control-sm' }
+        %br/
+        =f.label :scrape_task_id, 'scrape task', class: 'small mb-0 mt-2'
+        =f.collection_select :scrape_task_id, ScrapeTask.includes(:data_set).where(data_sets: { id: [nil, @data_set&.id] }).order(:name), :id, :name,
+                             { include_blank: '-- not set --', selected: @scrape_task&.id || @data_set.scrape_task&.id },
+                             { class: 'mb-1 form-control form-control-sm' }
+        -if controller_name.eql?('scrape_tasks')
+          :javascript
+            var scrapeTaskId = $('#data_set_scrape_task_id');
+            scrapeTaskId.multipleSelect();
+            scrapeTaskId.multipleSelect('disable');
 
         =f.label :location, 'location', class: 'small mb-0 mt-2'
-        =f.text_field :location, placeholder: 'location', class: 'mb-2 form-control form-control-sm',
+        =f.text_field :location, class: 'mb-2 form-control form-control-sm',
                       value: @scrape_task ? @scrape_task.data_set_location : @data_set.location,
                       id: 'dataSetLocation', oninput: ''
-        #scrapeTasksWithSimilarLocations.small
-          .card
-            .card-body.p-1.pl-3
 
+        =f.label :slack_channel, 'slack channel', class: 'small mb-0 mb-0 mt-2'
+        =f.text_field :slack_channel, class: 'mb-1 form-control form-control-sm'
+
+        =f.label :sheriff_id, 'sheriff', class: 'small mb-0 mb-0 mt-2'
+        =f.collection_select :sheriff_id, Account.all.sort_by(&:name), :id, :name,
+                             { include_blank: '-- not set --' }, { class: 'mb-1 form-control form-control-sm' }
         :javascript
-          function delay(fn, ms) {
-            let timer = 0;
-            return function(...args) {
-              clearTimeout(timer);
-              timer = setTimeout(fn.bind(this, ...args), ms || 0)
-            }
-          }
+          $('#data_set_sheriff_id').multipleSelect({
+            filter: true
+          });
 
-          function truncateString(str, num) {
-            if (str.length > num) {
-              return str.slice(0, num) + "...";
-            } else {
-              return str;
-            }
-          }
+        =f.label :state_id, 'state', class: 'small mb-0 mb-0 mt-2'
+        =f.collection_select :state_id, State.all, :id, :name,
+                             { include_blank: '-- not set --' }, { class: 'mb-1 form-control form-control-sm' }
+        :javascript
+          $('#data_set_state_id').multipleSelect({
+            filter: true
+          });
 
-          document.querySelector('#dataSetLocation').addEventListener('input', delay(() => {
-            const locationValue = document.querySelector('#dataSetLocation').value
-            const scrapeTaskContainer = document.querySelector('#scrapeTasksWithSimilarLocations .card-body')
-
-            scrapeTaskContainer.innerHTML = '';
-
-            if(locationValue.length === 0 || locationValue === '%') return false;
-
-            Rails.ajax({
-                type: "GET",
-                dataType: 'json',
-                url: '#{data_set_locations_api_scrape_tasks_url}',
-                data: `scrape_task[value]=${encodeURIComponent(locationValue)}`,
-                success: function (data) {
-                  data.forEach((el) => {
-                    const link = document.createElement('a');
-                    link.innerHTML = `\#${el['id']} - ${truncateString(el['name'], 60)}`;
-                    link.setAttribute('href', `#{root_url}scrape_tasks/${el['id']}`);
-                    link.setAttribute('target', '_blank');
-                    link.setAttribute('rel', "noopener noreferrer");
-
-                    scrapeTaskContainer.appendChild(link);
-                    scrapeTaskContainer.appendChild(document.createElement('br'));
-                  })
-                }
-            })
-
-          }, 1000))
-
-        =f.label :preparation_doc, 'preparation_doc', class: 'small mb-0 mt-2'
-        =f.text_field :preparation_doc, placeholder: "preparation document", class: 'mb-1 form-control form-control-sm'
-
-        =f.label :slack_channel, 'slack_channel', class: 'small mb-0 mb-0 mt-2'
-        =f.text_field :slack_channel, placeholder: "slack channel", class: 'mb-1 form-control form-control-sm'
-
-        .sheriff
-          .select_placeholder.text-secondary.form-control.form-control-sm.border-right-0{ 'data-text' => 'sheriff: ' }
-          =f.collection_select :sheriff_id, Account.all.sort_by(&:name), :id, :name,
-                               { include_blank: true }, { class: 'mb-1 form-control form-control-sm' }
-        .state
-          .select_placeholder.text-secondary.form-control.form-control-sm.border-right-0{ 'data-text' => 'state: ' }
-          =f.collection_select :state_id, State.all, :id, :name,
-                               { include_blank: true }, { class: 'mb-1 form-control form-control-sm' }
-        .category
-          .select_placeholder.text-secondary.form-control.form-control-sm.border-right-0{ 'data-text' => 'category: ' }
-          =f.collection_select :category_id, DataSetCategory.all.sort_by(&:name), :id, :name,
-                                  { include_blank: true }, { class: 'form-control form-control-sm' }
+        =f.label :category_id, 'category', class: 'small mb-0 mb-0 mt-2'
+        =f.collection_select :category_id, DataSetCategory.all.sort_by(&:name), :id, :name,
+                             { include_blank: '-- not set --' }, { class: 'form-control form-control-sm' }
+        :javascript
+          $('#data_set_category_id').multipleSelect({
+            filter: true
+          });
 
         =f.label :comment, 'comment', class: 'small mb-0 mt-3'
         =f.text_area :comment, placeholder: 'comment', class: 'mb-1 form-control form-control-sm'

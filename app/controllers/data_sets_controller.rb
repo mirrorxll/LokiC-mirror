@@ -85,11 +85,10 @@ class DataSetsController < ApplicationController # :nodoc:
   end
 
   def create_hidden_scrape_task
-    create_hidden = params.require(:scrape_task).permit(:create_hidden)
+    create = params[:scrape_task]&.fetch(:create_hidden).to_i
+    return if create.zero?
 
-    if create_hidden
-      scrape_task = ScrapeTask.create!(name: @data_set.name, hidden: true)
-      @data_set.update!(scrape_task: scrape_task)
-    end
+    scrape_task = ScrapeTask.create!(name: @data_set.name, creator: current_account, hidden: true)
+    @data_set.update!(scrape_task: scrape_task)
   end
 end
