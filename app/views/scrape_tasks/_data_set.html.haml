@@ -2,7 +2,7 @@
   .col-3.pr-0.text-right.font-weight-bold
     HLE data set:
   .col-9
-    -if @data_set && @data_set.persisted?
+    -if @data_set&.persisted?
       =link_to(@data_set.name, @data_set)
     -else
       =link_to('[ create ]', '#', "data-toggle" => "modal", "data-target" => "#dataSetForm")

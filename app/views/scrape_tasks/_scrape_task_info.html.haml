@@ -160,6 +160,6 @@
       =tl.full_name.downcase
       %br/
 
--if current_account.types.include?('manager')
+-if @data_set
   #scrapeTaskDataSetForm
     =render 'data_set'

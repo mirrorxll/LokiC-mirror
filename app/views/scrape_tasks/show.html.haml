@@ -38,7 +38,7 @@
         .card-body
           =render 'scrape_task_info'
 
-  -unless @data_set && @data_set.persisted?
+  -if @data_set
     #dataSetForm.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "data_set_form",
                                role: "dialog", tabindex: "-1", 'data-backdrop' => 'static',
                                'data-keyboard' => "false" }
