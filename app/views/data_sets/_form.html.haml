@@ -2,39 +2,59 @@
   =form_with(model: @data_set, local: controller_name.eql?('data_sets')) do |f|
     .row
       .col-6
-        =f.text_field :name, placeholder: 'name', class: 'mb-1 form-control form-control-sm', required: true
+        =f.text_field :name, placeholder: 'name', class: 'mb-1 form-control form-control-sm',
+                             required: true, value: (controller_name.eql?('scrape_tasks') ? @scrape_task.name : @data_set.name  )
+        -if @data_set.new_record? && !controller_name.eql?('scrape_tasks')
+          .small
+            =f.check_box "create_hidden_scrape_task", { id: "create_hidden_scrape_task", name: "scrape_task[create_hidden]" }
+            =f.label "create_hidden_scrape_task", 'create hidden scrape task'
     %hr/
 
     .row
       .col-6.border-right
         =f.label :data, 'data:', class: 'small font-weight-bold mb-3'
-        .scrape_task
-          .select_placeholder.text-secondary.form-control.form-control-sm.border-right-0{ 'data-text' => 'scrape task: ' }
-          =f.collection_select :scrape_task_id, ScrapeTask.includes(:data_set).where(data_sets: { id: [nil, @data_set&.id] }).order(:name), :id, :name,
-                               { include_blank: true, selected: @scrape_task&.id || @data_set.scrape_task&.id },
-                               { class: 'mb-1 form-control form-control-sm' }
+        %br/
+        =f.label :scrape_task_id, 'scrape task', class: 'small mb-0 mt-2'
+        =f.collection_select :scrape_task_id, ScrapeTask.includes(:data_set).where(data_sets: { id: [nil, @data_set&.id] }).order(:name), :id, :name,
+                             { include_blank: '-- not set --', selected: @scrape_task&.id || @data_set.scrape_task&.id },
+                             { class: 'mb-1 form-control form-control-sm' }
+        -if controller_name.eql?('scrape_tasks')
+          :javascript
+            var scrapeTaskId = $('#data_set_scrape_task_id');
+            scrapeTaskId.multipleSelect();
+            scrapeTaskId.multipleSelect('disable');
 
         =f.label :location, 'location', class: 'small mb-0 mt-2'
-        =f.text_field :location, placeholder: 'location', class: 'mb-1 form-control form-control-sm', value: @scrape_task ? @scrape_task.data_set_location : @data_set.location
+        =f.text_field :location, class: 'mb-2 form-control form-control-sm',
+                      value: @scrape_task ? @scrape_task.data_set_location : @data_set.location,
+                      id: 'dataSetLocation', oninput: ''
 
-        =f.label :preparation_doc, 'preparation_doc', class: 'small mb-0 mt-2'
-        =f.text_field :preparation_doc, placeholder: "preparation document", class: 'mb-1 form-control form-control-sm'
+        =f.label :slack_channel, 'slack channel', class: 'small mb-0 mb-0 mt-2'
+        =f.text_field :slack_channel, class: 'mb-1 form-control form-control-sm'
 
-        =f.label :slack_channel, 'slack_channel', class: 'small mb-0 mb-0 mt-2'
-        =f.text_field :slack_channel, placeholder: "slack channel", class: 'mb-1 form-control form-control-sm'
+        =f.label :sheriff_id, 'sheriff', class: 'small mb-0 mb-0 mt-2'
+        =f.collection_select :sheriff_id, Account.all.sort_by(&:name), :id, :name,
+                             { include_blank: '-- not set --' }, { class: 'mb-1 form-control form-control-sm' }
+        :javascript
+          $('#data_set_sheriff_id').multipleSelect({
+            filter: true
+          });
 
-        .sheriff
-          .select_placeholder.text-secondary.form-control.form-control-sm.border-right-0{ 'data-text' => 'sheriff: ' }
-          =f.collection_select :sheriff_id, Account.all.sort_by(&:name), :id, :name,
-                               { include_blank: true }, { class: 'mb-1 form-control form-control-sm' }
-        .state
-          .select_placeholder.text-secondary.form-control.form-control-sm.border-right-0{ 'data-text' => 'state: ' }
-          =f.collection_select :state_id, State.all, :id, :name,
-                               { include_blank: true }, { class: 'mb-1 form-control form-control-sm' }
-        .category
-          .select_placeholder.text-secondary.form-control.form-control-sm.border-right-0{ 'data-text' => 'category: ' }
-          =f.collection_select :category_id, DataSetCategory.all.sort_by(&:name), :id, :name,
-                                  { include_blank: true }, { class: 'form-control form-control-sm' }
+        =f.label :state_id, 'state', class: 'small mb-0 mb-0 mt-2'
+        =f.collection_select :state_id, State.all, :id, :name,
+                             { include_blank: '-- not set --' }, { class: 'mb-1 form-control form-control-sm' }
+        :javascript
+          $('#data_set_state_id').multipleSelect({
+            filter: true
+          });
+
+        =f.label :category_id, 'category', class: 'small mb-0 mb-0 mt-2'
+        =f.collection_select :category_id, DataSetCategory.all.sort_by(&:name), :id, :name,
+                             { include_blank: '-- not set --' }, { class: 'form-control form-control-sm' }
+        :javascript
+          $('#data_set_category_id').multipleSelect({
+            filter: true
+          });
 
         =f.label :comment, 'comment', class: 'small mb-0 mt-3'
         =f.text_area :comment, placeholder: 'comment', class: 'mb-1 form-control form-control-sm'
@@ -63,9 +83,9 @@
                                        { id: "data_set_default_#{u_id}_publication_id", name: "default_props[client_tag_ids[#{u_id}[publication_id]]]", class: 'form-control form-control-sm publications_select' }
 
                 .col-3.pl-1.pr-1
-                  =f.collection_select :tag_id, row.client.tags.sort_by(&:name), :id, :name,
-                                       { include_blank: true, selected: row.tag.id },
-                                       { id: "data_set_default_#{u_id}_tag_id", name: "default_props[client_tag_ids[#{u_id}[tag_id]]]", class: 'form-control form-control-sm tags_select', required: true }
+                  =f.select :tag_id, grouped_options_for_select(tags_for_publication(row.publication, row.client), row.tag.id), {}, { include_blank: true, id: "data_set_default_#{u_id}_tag_id", name: "default_props[client_tag_ids[#{u_id}[tag_id]]]",
+                                                                 class: 'form-control form-control-sm tags_select', required: true }
+
                 .col-1.pl-1.my-auto
                   %strong.remove_x
                     x

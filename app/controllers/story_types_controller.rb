@@ -20,7 +20,8 @@ class StoryTypesController < ApplicationController # :nodoc:
                    end
     @grid_params.merge!(current_account: current_account)
 
-    @story_types_grid = StoryTypesGrid.new(@grid_params)
+    @story_types_grid = StoryTypesGrid.new(@grid_params) { |scope| scope.where(archived: false) }
+    @story_types_grid.scope { StoryType.archived } if params[:archived]
 
     respond_to do |f|
       f.html do

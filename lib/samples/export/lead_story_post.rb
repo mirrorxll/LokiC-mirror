@@ -6,13 +6,13 @@ module Samples
       private
 
       TIMES_BY_WEEKDAY = [
-        %w[7:00 10:00],   # "Sunday"
-        %w[10:00 12:00],  # "Monday"
-        %w[7:00 10:00],   # "Tuesday"
-        %w[7:00 10:00],   # "Wednesday"
-        %w[7:00 10:00],   # "Thursday"
-        %w[7:00 10:00],   # "Friday"
-        %w[8:30 9:30]     # "Saturday"
+        %w[7:00 19:30], # "Sunday"
+        %w[7:00 19:30], # "Monday"
+        %w[7:00 19:30], # "Tuesday"
+        %w[7:00 19:30], # "Wednesday"
+        %w[7:00 19:30], # "Thursday"
+        %w[7:00 13:00], # "Friday"
+        %w[7:00 13:00]  # "Saturday"
       ].freeze
 
       def lead_story_post(sample)
@@ -68,7 +68,6 @@ module Samples
         }
 
         response = @pl_client.post_lead(params)
-
         JSON.parse(response.body)['id']
       rescue StandardError => e
         raise Samples::LeadPostError, "[#{e.class}] -> #{e.message} at #{e.backtrace.first}"
@@ -81,18 +80,11 @@ module Samples
         story_section_ids = sections(sample.story_type, publication)
         published_at = published_at(sample.published_at.to_date)
         sample_org_ids = sample.organization_ids.delete('[ ]').split(',')
-        active_org_ids = []
-        limit = 99
-
-        sample_org_ids.each_slice(limit) do |ids|
-          response = @pl_client.get_all_organizations(ids: ids, limit: limit)
-          active_org_ids += JSON.parse(response.body).map { |org| org['id'] }
-        end
 
         params = {
           community_id: publication.pl_identifier,
           lead_id: lead_id,
-          organization_ids: active_org_ids,
+          organization_ids: [],
           headline: sample.headline,
           teaser: sample.teaser,
           body: sample.body,
@@ -104,15 +96,12 @@ module Samples
           bucket_id: photo_bucket_id
         }
 
-        begin
-          response = @pl_client.post_story(params)
-        rescue Faraday::UnprocessableEntityError
-          params[:organization_ids] = []
-          response = @pl_client.post_story(params)
-        end
+        response = @pl_client.post_story(params)
+        story_id = JSON.parse(response.body)['id']
+        @pl_client.update_story(story_id, organization_ids: sample_org_ids)
 
         sample.update!(published_at: published_at)
-        JSON.parse(response.body)['id']
+        story_id
       rescue StandardError => e
         @pl_client.delete_lead(lead_id)
         raise Samples::StoryPostError, "[#{e.class}] -> #{e.message} at #{e.backtrace.first}".gsub('`', "'")

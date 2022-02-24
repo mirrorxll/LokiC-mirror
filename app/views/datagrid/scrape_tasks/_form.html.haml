@@ -1,0 +1,11 @@
+.container-fluid
+  .card.card-body
+    =form_for grid, options do |f|
+      .row.small
+        -grid.filters.each do |filter|
+          .col-2.mb-3
+            =f.datagrid_label filter
+            =f.datagrid_filter filter, class: 'form-control form-control-sm', type: filter.options[:type]
+      .text-center
+        =f.submit 'apply', class: "btn btn-sm btn-outline-dark"
+        =link_to 'reset', url_for(grid.to_param => {}), class: "btn btn-sm btn-outline-dark"

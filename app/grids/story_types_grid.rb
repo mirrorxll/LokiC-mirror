@@ -12,7 +12,7 @@ class StoryTypesGrid
       :photo_bucket, :developer,
       :clients_publications_tags,
       :clients, :tags, :reminder, :cron_tab,
-      :stories,
+      :stories, :template,
       data_set: %i[state category]
     ).order(
       Arel.sql("CASE WHEN reminders.check_updates = false AND cron_tabs.enabled = false THEN '1' END DESC,
@@ -45,7 +45,7 @@ class StoryTypesGrid
   filter(:developer, :enum, multiple: true, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
   filter(:frequency, :enum, multiple: true, left: true, select: Frequency.pluck(:name, :id))
   filter(:photo_bucket, :enum, multiple: true, left: true, select: PhotoBucket.all.order(:name).pluck(:name, :id))
-  filter(:status, :enum, multiple: true, left: true, select: Status.all.pluck(:name, :id)) do |value, scope|
+  filter(:status, :enum, multiple: true, left: true, select: Status.where.not(name: 'archived').pluck(:name, :id)) do |value, scope|
     status = Status.find(value)
     scope.where(status: status)
   end
@@ -66,6 +66,9 @@ class StoryTypesGrid
   filter(:pipline_story_id, :string, left: true) do |value, scope|
     env = %w[development test].include?(Rails.env) ? 'staging' : Rails.env
     scope.where("stories.pl_#{env}_story_id": value)
+  end
+  filter(:revised, :xboolean, left: true) do |value, scope|
+    value ? scope.where.not('templates.revision': nil) : scope.where('templates.revision': nil)
   end
   filter(:condition1, :dynamic, left: false, header: 'Dynamic condition 1')
   filter(:condition2, :dynamic, left: false, header: 'Dynamic condition 2')
@@ -139,7 +142,7 @@ class StoryTypesGrid
   column(:client_tags, order: 'frequencies.name', header: 'Client: Tag') do |record|
     str = ''
     record.clients.each_with_index do |client, i|
-      str += "<div><strong>#{client.name}</strong>: #{record.tags[i].name}</div>"
+      str += "<div><strong>#{client.name}</strong>: #{record.tags[i]&.name}</div>"
     end
     str.html_safe
   end

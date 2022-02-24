@@ -38,10 +38,11 @@
       $('#comment').modal('show');
     }
     else if (status === 'done') {
-      var assignment = #{@task.assignment_to.include?(current_account)};
-      var has_checklists = #{@task.has_checklists?};
+      let assignment = #{@task.assignment_to.include?(current_account)};
+      let has_checklists = #{@task.has_checklists?};
+      let main_assignee = #{@task.main_assignee.eql?(current_account)};
 
-      if(assignment && has_checklists) {
+      if(main_assignee && has_checklists) {
         $('#checklists_confirms').modal('show');
       }
       else if(assignment) {

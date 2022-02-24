@@ -30,7 +30,7 @@ set :puma_worker_timeout,     nil
 set :puma_init_active_record, true
 
 append :linked_dirs, 'storage', 'public/ruby_code', 'public/uploads/images', 'log'
-append :linked_files, 'config/master.key'
+append :linked_files, 'config/master.key', 'config/google_drive.json'
 
 namespace :sidekiq do
   task :restart do

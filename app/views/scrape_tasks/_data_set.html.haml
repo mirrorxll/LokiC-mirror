@@ -1,17 +1,8 @@
 .row.mt-2
-  .col-2.pr-0.text-right.font-weight-bold
+  .col-3.pr-0.text-right.font-weight-bold
     HLE data set:
-  .col-10
-    -if @data_set && @data_set.persisted?
+  .col-9
+    -if @data_set&.persisted?
       =link_to(@data_set.name, @data_set)
     -else
       =link_to('[ create ]', '#', "data-toggle" => "modal", "data-target" => "#dataSetForm")
-
--unless @data_set && @data_set.persisted?
-  #dataSetForm.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "data_set_form",
-                             role: "dialog", tabindex: "-1", 'data-backdrop' => 'static',
-                             'data-keyboard' => "false" }
-    .modal-dialog.modal-dialog-centered.modal-xl
-      .modal-content
-        .modal-body
-          =render 'data_sets/form'

@@ -22,8 +22,8 @@ class TasksGrid
   end
 
   filter(:creator, :enum, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
-  filter(:status, :enum, select: Status.where(name: ['not started','in progress','blocked','canceled','done']).pluck(:name, :id).map { |r| [r[0], r[1]] })
-  filter(:deadline,:datetime, header: 'Deadline >= ?', multiple: ',')
+  filter(:status, :enum, select: Status.where(name: ['not started', 'in progress', 'blocked', 'canceled', 'done']).pluck(:name, :id).map { |r| [r[0], r[1]] })
+  filter(:deadline, :datetime, header: 'Deadline >= ?', multiple: ',')
 
   status_deleted = Status.find_by(name: 'deleted')
 
@@ -61,25 +61,25 @@ class TasksGrid
     task.assignment_to.pluck(:first_name, :last_name).map { |r| [r[0] + ' ' + r[1]] }.join(', ')
   end
 
-  column(:deadline, order: 'deadline', mandatory: true) do |task|
-    task.deadline
-  end
+  column(:deadline, order: 'deadline', mandatory: true, &:deadline)
 
   column(:parent_task_id, header: 'Main task', order: 'parent_task_id', mandatory: true) do |task|
     format("##{task.parent.id}") { |parent_id| link_to parent_id, task.parent } unless task.parent.nil?
   end
 
-  column(:last_comment, header: 'Last comment', order: ->(scope) { scope.joins(:comments).group('tasks.id')
+  column(:last_comment, header: 'Last comment', order: lambda { |scope|
+                                                         scope.joins(:comments).group('tasks.id')
                                                                                    .select('tasks.*, MAX(comments.created_at) as max_created_at')
-                                                                                   .order('max_created_at') }, mandatory: true, html: true) do |task|
+                                                                                   .order('max_created_at')
+                                                       }, mandatory: true, html: true) do |task|
     last_comment = task.last_comment
     if last_comment.nil?
       last_comment
     else
       body = ActionView::Base.full_sanitizer.sanitize(last_comment.body)
-      attr = {'data-toggle' => 'tooltip',
-              'data-placement' => 'right',
-              title: truncate("#{last_comment.commentator.name}: #{body}", length: 150) }
+      attr = { 'data-toggle' => 'tooltip',
+               'data-placement' => 'right',
+               title: truncate("#{last_comment.commentator.name}: #{body}", length: 150) }
       content_tag(:div, last_comment.created_at.strftime('%y-%m-%d'), attr)
     end
   end
@@ -87,8 +87,6 @@ class TasksGrid
   column(:note, header: 'Your note', mandatory: true) do |task, scope|
     note = task.note(scope.current_account)
 
-    if !note.nil? && !note.body.nil?
-      ActionView::Base.full_sanitizer.sanitize(note.body).first(10)
-    end
+    ActionView::Base.full_sanitizer.sanitize(note.body).first(10) if !note.nil? && !note.body.nil?
   end
 end

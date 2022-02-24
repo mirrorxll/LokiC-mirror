@@ -65,7 +65,7 @@ class TaskCommentsController < ApplicationController
               "#{@comment.commentator.name} add comment | Check please*\n>#{@task.title}"
 
       SlackNotificationJob.perform_later(account.slack.identifier, message)
-      SlackNotificationJob.perform_later(Rails.env.production? ? 'hle_lokic_task_reminders' : 'hle_lokic_development_messages', message)
+      SlackNotificationJob.perform_later('hle_lokic_task_reminders', message)
     end
   end
 end

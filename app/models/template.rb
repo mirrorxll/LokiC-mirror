@@ -14,4 +14,14 @@ class Template < ApplicationRecord
 
     self.body = body&.gsub(/#{Regexp.escape(regexp)}/, '')
   end
+
+  joins_raw_sql = "INNER JOIN story_types ON templates.templateable_type = 'StoryType' AND templates.templateable_id ="\
+                  ' story_types.id INNER JOIN statuses ON story_types.status_id = statuses.id'
+  scope :alive,           -> { joins(joins_raw_sql).where.not('statuses.name': %w[archived canceled deleted done]) }
+  scope :revision_needed, -> { alive.where.not(revision: nil).where('revision <= ?', Date.today + 1.week) }
+
+
+  def expired_revision?
+    revision.present? && revision < Date.today
+  end
 end

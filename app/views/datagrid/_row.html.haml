@@ -1,5 +1,5 @@
--if asset.is_a?(ScrapeTask)
-  =render 'datagrid/scrape_task_row', grid: grid, asset: asset, options: options
+-if controller_name.eql?('scrape_tasks')
+  =render 'datagrid/scrape_tasks/row', grid: grid, asset: asset, options: options
 -elsif asset.is_a?(WorkRequest)
   =render 'datagrid/work_request_row', grid: grid, asset: asset, options: options
 -elsif asset.is_a?(TaskTeamWork)

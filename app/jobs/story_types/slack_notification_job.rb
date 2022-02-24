@@ -5,7 +5,6 @@ module StoryTypes
     def perform(iteration, step, raw_message, developer = nil)
       story_type = iteration.story_type
       story_type_dev = developer || story_type.developer
-      channel = Rails.env.production? ? 'lokic_story_type_messages' : 'hle_lokic_development_messages'
 
       url = generate_url(story_type)
       progress_step = step.in?(%w[developer]) ? '' : "| #{step.capitalize}"
@@ -15,7 +14,7 @@ module StoryTypes
 
       record_to_alerts(story_type, step, raw_message)
 
-      ::SlackNotificationJob.perform_now(channel, message)
+      ::SlackNotificationJob.perform_now('lokic_story_type_messages', message)
       return if story_type_dev.slack_identifier.nil? || step.eql?('status')
 
       message = message.gsub(/#{Regexp.escape(" | #{developer_name}")}/, '')
