@@ -155,11 +155,11 @@
 .row.mb-1
   .col-3.pr-0.text-right.font-weight-bold
     table location(s):
-  .col-9
+  #tableLocations.col-9
     -@scrape_task.table_locations.each do |tl|
-      ="#{tl.host&.name}.#{tl.schema&.name}.#{tl.name}"
+      =tl.full_name.downcase
       %br/
 
--if current_account.types.include?('manager')
+-if @data_set
   #scrapeTaskDataSetForm
     =render 'data_set'

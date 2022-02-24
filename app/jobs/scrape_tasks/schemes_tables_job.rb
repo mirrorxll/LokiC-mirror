@@ -3,13 +3,12 @@
 module ScrapeTasks
   class SchemesTablesJob < ScrapeTasksJob
     def perform
-      Host.find_each do |host|
-        host_obj = Object.const_get(host.name)
+      Host.find_each do |h|
+        host_obj = Object.const_get(h.name)
 
-        MiniLokiC::Connect::Mysql.on(host_obj).query('show schemas;').to_a.each do |schema|
-          Schema.find_or_create_by!(host: host, name: schema.values.first).touch
+        MiniLokiC::Connect::Mysql.on(host_obj).query('SHOW SCHEMAS;').to_a.each do |sc|
+          Schema.find_or_create_by!(host: h, name: sc.values.first).touch
         end
-
       end
 
       Schema.where('DATE(updated_at) < CURRENT_DATE()').destroy_all

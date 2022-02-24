@@ -38,6 +38,15 @@
         .card-body
           =render 'scrape_task_info'
 
+  -if @data_set
+    #dataSetForm.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "data_set_form",
+                               role: "dialog", tabindex: "-1", 'data-backdrop' => 'static',
+                               'data-keyboard' => "false" }
+      .modal-dialog.modal-dialog-centered.modal-xl
+        .modal-content
+          .modal-body
+            =render 'data_sets/form'
+
     -#.conversation.col-5.align-self-stretch
       .card.h-100
         .card-header.p-1.pl-2

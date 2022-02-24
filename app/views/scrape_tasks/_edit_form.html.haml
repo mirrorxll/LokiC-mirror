@@ -59,16 +59,24 @@
         .col-4.pr-0.text-right.font-weight-bold
           DEADLINE:
         .col-8
-          =f.date_field 'scrape_task[deadline]', class: 'form-control form-control-sm w-50',
-                        value: @scrape_task.deadline, disabled: disable_input, readonly: disable_input, type: :datetime
+          =f.date_field 'scrape_task[deadline]', type: :datetime, value: @scrape_task.deadline,
+                                                 disabled: disable_input, readonly: disable_input
+      :javascript
+        $('input[id="scrape_task[deadline]"]').datepicker({
+          format: 'yyyy-mm-dd'
+        });
 
       .row.mb-4.align-items-center
         .col-4.pr-0.text-right.font-weight-bold
           STATE:
         .col-8
           =f.collection_select 'scrape_task[state_id]', State.all, :id, :name,
-                               { include_blank: true, selected: @scrape_task.state&.id },
+                               { include_blank: '-- not set --', selected: @scrape_task.state&.id },
                                { class: 'form-control form-control-sm w-50', disabled: disable_input, readonly: disable_input }
+      :javascript
+        $('select[id="scrape_task[state_id]"]').multipleSelect({
+          filter: true
+        });
 
       .row.mb-4.align-items-center
         .col-4.pr-0.text-right.font-weight-bold
@@ -78,22 +86,32 @@
           =f.label 'yes', class: 'mr-2'
           =f.radio_button "scrape_task[scrapable]", 0, checked: @scrape_task.scrapable.eql?(0), disabled: disable_input, readonly: disable_input
           =f.label 'no'
+          =f.radio_button "scrape_task[scrapable]", nil, checked: @scrape_task.scrapable.nil?, disabled: disable_input, readonly: disable_input
+          =f.label 'unknown'
 
       .row.mb-4.align-items-center
         .col-4.pr-0.text-right.font-weight-bold
           SCRAPER:
         .col-8
           =f.collection_select 'scrape_task[scraper_id]', Account.joins(:account_types).where(account_types: { name: 'scraper'}).order(:first_name, :last_name), :id, :name,
-                               { include_blank: true, selected: @scrape_task.scraper&.id },
+                               { include_blank: '-- not set --', selected: @scrape_task.scraper&.id },
                                { class: 'form-control form-control-sm w-50', disabled: disable_input, readonly: disable_input }
+      :javascript
+        $('select[id="scrape_task[scraper_id]"]').multipleSelect({
+          filter: true
+        });
 
       .row.mb-4.align-items-center
         .col-4.pr-0.text-right.font-weight-bold
           SCRAPE FREQUENCY:
         .col-8
           =f.collection_select 'scrape_task[frequency_id]',  Frequency.all, :id, :name,
-                               { include_blank: true, selected: @scrape_task.frequency&.id },
+                               { include_blank: '-- not set --', selected: @scrape_task.frequency&.id },
                                { class: 'form-control form-control-sm w-50', disabled: disable_input, readonly: disable_input }
+      :javascript
+        $('select[id="scrape_task[frequency_id]"]').multipleSelect({
+          filter: true
+        });
 
       .row.mb-4.align-items-center
         .col-4.pr-0.text-right.font-weight-bold
@@ -106,8 +124,14 @@
           .col-4.pr-0.text-right.font-weight-bold
             DATA SET:
           .col-8
-            =f.collection_select 'data_set[id]', DataSet.where('scrape_task_id IS NULL or id = :data_set_id', data_set_id: @scrape_task.data_set).order(:name),
-                                 :id, :name, { include_blank: true, selected: @scrape_task.data_set&.id }, { class: 'form-control form-control-sm w-100'}
+            -data_sets = DataSet.where('scrape_task_id IS NULL or id = :data_set_id', data_set_id: @scrape_task.data_set).order(:name)
+            =f.collection_select 'data_set[id]', data_sets, :id, :name,
+                                 { include_blank: '-- not set --', selected: @scrape_task.data_set&.id },
+                                 { class: 'form-control form-control-sm w-100' }
+        :javascript
+          $('select[id="data_set[id]"]').multipleSelect({
+            filter: true
+          });
 
     .col-6
       .font-weight-bold
@@ -228,7 +252,7 @@
           GATHER TASK ID:
         .col-4
           =f.number_field 'scrape_task[gather_task]', class: 'form-control form-control-sm', value: @scrape_task.gather_task,
-                                                        disabled: disable_input, readonly: disable_input
+                                                      disabled: disable_input, readonly: disable_input
   %hr/
 
   .row.align-items-center

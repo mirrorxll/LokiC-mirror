@@ -26,8 +26,8 @@ module StoryTypes
     def send_notification
       url = generate_url(@story_type)
       channel = @story_type.developer.slack_identifier
-      message = "The template for <#{url}|Story Type ##{@story_type.id}> has been updated! Pay attention and make " \
-                'needed changes in the creation method.'
+      message = "The template for <#{url}|Story Type ##{@story_type.id}> has been updated by #{current_account.name}." \
+                ' Pay attention and make needed changes in the creation method.'
 
       ::SlackNotificationJob.perform_now(channel, message)
     end
