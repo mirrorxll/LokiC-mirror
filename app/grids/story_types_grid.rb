@@ -11,8 +11,8 @@ class StoryTypesGrid
       :status, :frequency,
       :photo_bucket, :developer,
       :clients_publications_tags,
-      :clients, :tags, :reminder, :cron_tab,
-      :stories, :template,
+      :clients, :tags, :reminder,
+      :cron_tab, :template,
       data_set: %i[state category]
     ).order(
       Arel.sql("CASE WHEN reminders.check_updates = false AND cron_tabs.enabled = false THEN '1' END DESC,
@@ -63,10 +63,10 @@ class StoryTypesGrid
            .where.not(reminders: { check_updates: false })
     end
   end
-  filter(:pipline_story_id, :string, left: true) do |value, scope|
-    env = %w[development test].include?(Rails.env) ? 'staging' : Rails.env
-    scope.where("stories.pl_#{env}_story_id in (#{value})")
-  end
+  # filter(:pipline_story_id, :string, left: true) do |value, scope|
+  #   env = %w[development test].include?(Rails.env) ? 'staging' : Rails.env
+  #   scope.where("stories.pl_#{env}_story_id in (#{value})")
+  # end
   filter(:revised, :xboolean, left: true) do |value, scope|
     value ? scope.where.not('templates.revision': nil) : scope.where('templates.revision': nil)
   end
