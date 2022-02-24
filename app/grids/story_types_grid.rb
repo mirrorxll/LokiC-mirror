@@ -65,7 +65,7 @@ class StoryTypesGrid
   end
   filter(:pipline_story_id, :string, left: true) do |value, scope|
     env = %w[development test].include?(Rails.env) ? 'staging' : Rails.env
-    scope.where("stories.pl_#{env}_story_id": value)
+    scope.where("stories.pl_#{env}_story_id in (#{value})")
   end
   filter(:revised, :xboolean, left: true) do |value, scope|
     value ? scope.where.not('templates.revision': nil) : scope.where('templates.revision': nil)
