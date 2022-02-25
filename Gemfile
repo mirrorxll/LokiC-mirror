@@ -36,7 +36,8 @@ gem 'datagrid'
 # mini_loki_c gems
 gem 'svg-graph', '2.2.0' # don't change version as long as it is possible! :)
 
-
+# charts
+gem 'chart-js-rails'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 6.0.3'

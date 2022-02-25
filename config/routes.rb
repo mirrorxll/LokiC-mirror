@@ -67,6 +67,10 @@ Rails.application.routes.draw do
       resources :statuses, only: :update
     end
 
+    scope :reports do
+      resources :prr_reports, as: ''
+    end
+
     resources :shown_samples, only: :update
 
     get 'publication_scopes', to: 'publications#scopes'
@@ -390,6 +394,8 @@ Rails.application.routes.draw do
     get :show_hours,      on: :collection
     get :exported_counts, on: :collection
   end
+
+  resources :press_release_reports, only: [:index]
 
   resources :tracking_hours, only: %i[new create update destroy index] do
     post   :submit_forms,  on: :collection

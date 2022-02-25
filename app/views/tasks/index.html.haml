@@ -21,13 +21,16 @@
            remote: true)
 %hr/
 
-#filter_form{ class: collapse(params[:tasks_grid])}
+#filter_form{ class: collapse(params[:tasks_grid]) }
   =datagrid_form_for @grid, url: tasks_path
 
 .row
   .col-12
     #scrapeTasks
       #grid_wrapper
+        -puts '11111111111111111111111111111'
+        -puts @grid
+        -puts @grid.class
         =datagrid_table(@grid)
 
 .row.mt-3.col-12
