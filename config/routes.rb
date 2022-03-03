@@ -390,6 +390,7 @@ Rails.application.routes.draw do
 
   resources :shown_samples,        controller: 'story_types/shown_samples',        only: :index
   resources :exported_story_types, controller: 'story_types/exported_story_types', only: :index
+  resources :archived_story_types, controller: 'story_types/archived_story_types', only: :index
   resources :production_removals,  only: :index
 
   resources :developers_productions, only: [] do

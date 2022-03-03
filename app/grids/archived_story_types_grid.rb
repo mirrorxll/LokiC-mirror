@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
-class StoryTypesGrid
+class ArchivedStoryTypesGrid
   include Datagrid
-
-  attr_accessor :current_account
 
   # Scope
   scope do
@@ -11,8 +9,8 @@ class StoryTypesGrid
       :status, :frequency,
       :photo_bucket, :developer,
       :clients_publications_tags,
-      :clients, :tags, :reminder,
-      :cron_tab, :template,
+      :clients, :tags, :reminder, :cron_tab,
+      :template,
       data_set: %i[state category]
     ).order(
       Arel.sql("CASE WHEN reminders.check_updates = false AND cron_tabs.enabled = false THEN '1' END DESC,
@@ -24,60 +22,10 @@ class StoryTypesGrid
   end
 
   # Filters
-  filter(:id, :string, left: true, multiple: ',')
-
-  filter(:gather_task, :xboolean, left: true) do |value, scope|
-    value ? scope.where.not(gather_task: nil) : scope.where(gather_task: nil)
+  filter(:id, :string, multiple: ',', header: 'Id/Name') do |value, scope|
+    scope.where(id: value).or(scope.where('story_types.name like ?', "%#{value.first}%"))
   end
-  filter(:level_id, :enum, multiple: true, select: Level.all.pluck(:name, :id), left: true)
-  filter(:state, :enum, multiple: true, left: true, select: State.all.pluck(:short_name, :full_name, :id).map { |r| [r[0] + ' - ' + r[1], r[2]] }) do |value, scope|
-    data_set_state = State.find(value)
-    scope.where(data_sets: { state: data_set_state })
-  end
-  filter(:category, :enum, multiple: true, left: true, select: DataSetCategory.all.order(:name).pluck(:name, :id)) do |value, scope|
-    data_set_category = DataSetCategory.find(value)
-    scope.where(data_sets: { category: data_set_category })
-  end
-  filter(:data_set, :enum, multiple: true, left: true, select: DataSet.all.order(:name).pluck(:name, :id))
-  filter(:location, :string, left: true, header: 'Location (like)') do |value, scope|
-    scope.joins(:data_set).where('location like ?', "%#{value}%")
-  end
-  filter(:developer, :enum, multiple: true, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
-  filter(:frequency, :enum, multiple: true, left: true, select: Frequency.pluck(:name, :id))
-  filter(:photo_bucket, :enum, multiple: true, left: true, select: PhotoBucket.all.order(:name).pluck(:name, :id))
-  filter(:status, :enum, multiple: true, left: true, select: Status.where.not(name: 'archived')) do |value, scope|
-    status = Status.find(value)
-    scope.where(status: status)
-  end
-  filter(:client, :enum, multiple: true, left: true, select: Client.where(hidden_for_story_type: false).order(:name).pluck(:name, :id)) do |value, scope|
-    client = Client.find(value)
-    scope.where('story_type_client_publication_tags.client_id': client)
-  end
-  filter(:has_updates, :enum, select: ['Not realized', 'Yes', 'No'], left: true) do |value, scope|
-    denotations = { 'Yes' => true, 'No' => false }
-    if value == 'Not realized'
-      scope.where(reminders: { check_updates: false })
-    else
-      scope.where(reminders: { has_updates: denotations[value] })
-           .where.not(cron_tabs: { enabled: true })
-           .where.not(reminders: { check_updates: false })
-    end
-  end
-  # filter(:pipline_story_id, :string, left: true) do |value, scope|
-  #   env = %w[development test].include?(Rails.env) ? 'staging' : Rails.env
-  #   scope.where("stories.pl_#{env}_story_id in (#{value})")
-  # end
-  filter(:revised, :xboolean, left: true) do |value, scope|
-    value ? scope.where.not('templates.revision': nil) : scope.where('templates.revision': nil)
-  end
-  filter(:condition1, :dynamic, left: false, header: 'Dynamic condition 1')
-  filter(:condition2, :dynamic, left: false, header: 'Dynamic condition 2')
-  column_names_filter(header: 'Extra Columns', left: false, checkboxes: false)
-  dynamic do
-    column(:level, preload: :level, header: 'Level') do |record|
-      record.level&.name
-    end
-  end
+  filter(:developer, :enum, multiple: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
   # Columns
   column(:id, mandatory: true, header: 'ID')
 
@@ -95,12 +43,8 @@ class StoryTypesGrid
   column(:category, order: 'data_set_categories.name') do |record|
     record.data_set.category&.name
   end
-  column(:data_set, mandatory: true, order: 'data_sets.name') do |record, scope|
-    if (scope.current_account.types & %w[manager editor]).present?
-      format(record.data_set) { |value| link_to value&.name, value }
-    else
-      record.data_set&.name
-    end
+  column(:data_set, mandatory: true, order: 'data_sets.name') do |record|
+    record.data_set&.name
   end
   column(:location, order: 'data_sets.location') do |record|
     record.data_set.location
