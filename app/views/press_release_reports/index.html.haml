@@ -1,24 +1,4 @@
-%canvas#myChartBar.mt-3{"data-data" => @data_for_bar.to_json, "data-labels" => @clients_names.to_json, :height => "150px", :width => "200px"}
+.row.justify-content-center
+  =link_to '[ generate report ]', get_report_press_release_reports_path, remote: true
 
-%hr.mt-4
-
-%table.table.table-sm
-  %thead
-    %tr
-      %th{:scope => "col", class_name: "table-primary"} client name
-      -(0..5).reverse_each do |i|
-        %th{:scope => "col"}
-          ="#{@max_week - i}"
-      %th{:scope => "col"} total
-  %tbody
-    -@clients_names.each do |client_name|
-      %tr
-        -c_count = @client_counts.select { |row| row['client_name'] == client_name }
-        %th{:scope => "row"}
-          =client_name
-        -(0..5).reverse_each do |i|
-          %td
-            -count = c_count.select { |c| c['story_week'] == @max_week - i }
-            =count.blank? ? 0 : count.first['count_story_id']
-        %td
-          =c_count.sum { |c| c['count_story_id'] }
+.row#press_release_report

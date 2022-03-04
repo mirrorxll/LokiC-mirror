@@ -395,7 +395,11 @@ Rails.application.routes.draw do
     get :exported_counts, on: :collection
   end
 
-  resources :press_release_reports, only: [:index]
+  resources :press_release_reports, path: '/press_release_report', only: %i[index] do
+    get :get_report,  on: :collection
+    post :show_report, on: :collection
+  end
+
 
   resources :tracking_hours, only: %i[new create update destroy index] do
     post   :submit_forms,  on: :collection
