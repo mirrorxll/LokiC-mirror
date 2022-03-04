@@ -34,9 +34,8 @@ gem 'google_drive'
 gem 'datagrid'
 
 # mini_loki_c gems
+gem 'pg', '1.3.3'
 gem 'svg-graph', '2.2.0' # don't change version as long as it is possible! :)
-
-
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 6.0.3'
@@ -61,7 +60,7 @@ group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'bcrypt_pbkdf', '>= 1.0', '< 2.0'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
-  gem 'capistrano', '~> 3.14.1', require: false
+  gem 'capistrano', '3.14.1', require: false
   gem 'capistrano3-puma', require: false
   gem 'capistrano-bundler', require: false
   gem 'capistrano-rails', '~> 1.3', require: false

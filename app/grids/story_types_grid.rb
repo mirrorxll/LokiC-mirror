@@ -3,14 +3,16 @@
 class StoryTypesGrid
   include Datagrid
 
+  attr_accessor :current_account
+
   # Scope
   scope do
     StoryType.eager_load(
       :status, :frequency,
       :photo_bucket, :developer,
       :clients_publications_tags,
-      :clients, :tags, :reminder, :cron_tab,
-      :template,
+      :clients, :tags, :reminder,
+      :cron_tab, :template,
       data_set: %i[state category]
     ).order(
       Arel.sql("CASE WHEN reminders.check_updates = false AND cron_tabs.enabled = false THEN '1' END DESC,
@@ -43,7 +45,7 @@ class StoryTypesGrid
   filter(:developer, :enum, multiple: true, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
   filter(:frequency, :enum, multiple: true, left: true, select: Frequency.pluck(:name, :id))
   filter(:photo_bucket, :enum, multiple: true, left: true, select: PhotoBucket.all.order(:name).pluck(:name, :id))
-  filter(:status, :enum, multiple: true, left: true, select: Status.where.not(name: 'archived').pluck(:name, :id)) do |value, scope|
+  filter(:status, :enum, multiple: true, left: true, select: Status.where.not(name: 'archived')) do |value, scope|
     status = Status.find(value)
     scope.where(status: status)
   end
@@ -71,6 +73,10 @@ class StoryTypesGrid
            .where.not(reminders: { check_updates: false })
     end
   end
+  # filter(:pipline_story_id, :string, left: true) do |value, scope|
+  #   env = %w[development test].include?(Rails.env) ? 'staging' : Rails.env
+  #   scope.where("stories.pl_#{env}_story_id in (#{value})")
+  # end
   filter(:revised, :xboolean, left: true) do |value, scope|
     value ? scope.where.not('templates.revision': nil) : scope.where('templates.revision': nil)
   end
@@ -104,8 +110,12 @@ class StoryTypesGrid
   column(:category, order: 'data_set_categories.name') do |record|
     record.data_set.category&.name
   end
-  column(:data_set, mandatory: true, order: 'data_sets.name') do |record|
-    record.data_set&.name
+  column(:data_set, mandatory: true, order: 'data_sets.name') do |record, scope|
+    if (scope.current_account.types & %w[manager editor]).present?
+      format(record.data_set) { |value| link_to value&.name, value }
+    else
+      record.data_set&.name
+    end
   end
   column(:location, order: 'data_sets.location') do |record|
     record.data_set.location
