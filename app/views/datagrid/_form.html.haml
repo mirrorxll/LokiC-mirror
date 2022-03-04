@@ -1,6 +1,6 @@
 -if controller_name.eql?('scrape_tasks')
   =render 'datagrid/scrape_tasks/form', grid: grid, options: options
-- elsif controller_name.in?(%w[tasks shown_samples exported_story_types production_removals])
+- elsif controller_name.in?(%w[tasks shown_samples exported_story_types production_removals data_sets])
   .container-xl
     .card.card-body
       =form_for grid, options do |f|
