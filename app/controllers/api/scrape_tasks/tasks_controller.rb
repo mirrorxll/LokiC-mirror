@@ -6,28 +6,28 @@ module Api
       before_action :find_scrape_task
       before_action :find_task
 
-      def include
+      def create
         json =
-          if @scrape_task.multi_tasks.exists?(@task.id)
-            { not_included: true }
+          if @scrape_task.tasks.exists?(@task.id)
+            { exist: true }
           else
-            @scrape_task.multi_tasks << @task
-            { task_id: @task.id, task_name: @task.title }
+            @scrape_task.tasks << @task
+            { exist: false, id: @task.id, name: @task.title }
           end
 
         render json: json
       end
 
-      def exclude
-        excluded =
-          if @scrape_task.multi_tasks.exists?(@task.id)
-            @scrape_task.multi_tasks.destroy(@task)
+      def destroy
+        not_exist =
+          if @scrape_task.tasks.exists?(@task.id)
+            @scrape_task.tasks.destroy(@task)
             false
           else
             true
           end
 
-        render json: { not_excluded: excluded }
+        render json: { not_exist: not_exist }
       end
 
       private
@@ -37,7 +37,12 @@ module Api
       end
 
       def find_task
-        @task = Task.find(params[:task_id])
+        @task =
+          if params[:task_title]
+            Task.find_by(title: params[:task_title])
+          else
+            Task.find(params[:id])
+          end
       end
     end
   end

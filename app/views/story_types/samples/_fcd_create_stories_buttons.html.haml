@@ -5,7 +5,7 @@
     .col-11.offset-1
       =link_to('fact checking', story_type_fact_checking_doc_path(@story_type, @story_type.fact_checking_doc),
                class: 'btn btn-sm btn-outline-dark', target: '_blank')
-      -if @iteration.creation
+      -if @iteration.creation || has_created_stories?(@iteration)
         =render 'story_types/samples/stories_link'
       -if @iteration.export.nil?
         -if correct_account?(@story_type)
@@ -13,8 +13,7 @@
             =link_to('create samples from the last iteration',
                       execute_story_type_iteration_creations_path(@story_type, @iteration),
                       class: 'btn btn-sm btn-outline-dark', method: :post, remote: true)
+            -if has_created_stories?(@iteration)
+              =render 'story_types/samples/purge_stories'
           -elsif @iteration.creation
-            =link_to('purge samples from the last iteration',
-                      purge_story_type_iteration_creations_path(@story_type, @iteration),
-                      id: 'purge_stories', class: 'btn btn-sm btn-outline-danger',
-                      method: :delete, remote: true)
+            =render 'story_types/samples/purge_stories'

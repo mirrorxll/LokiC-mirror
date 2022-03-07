@@ -16,6 +16,8 @@ module MiniLokiC
           publications = @route.query(query).to_a
 
           @route&.close if close_connection
+          publications.each { |pub| pub.delete('org_name') }
+
           publications
         end
       end

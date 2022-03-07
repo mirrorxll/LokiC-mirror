@@ -1,123 +1,264 @@
 -disable_input = !current_account.types.include?('manager')
 
-=form_with(url: scrape_task_path(@scrape_task), method: :patch) do |f|
-  .row.mb-4
+=form_with(url: scrape_task_path(@scrape_task), html: { onkeypress: "return event.keyCode !== 13;" }, method: :patch) do |f|
+  .row.mb-4.align-items-center
     .col-2.pr-0.text-right.font-weight-bold
-      name:
-    .col-10
-      =f.text_field 'scrape_task[name]', class: 'w-50 border rounded', placeholder: 'name',
-                    value: @scrape_task.name, required: true, disabled: disable_input, readonly: disable_input
-  .row.mb-1
-    .col-2.pr-0.text-right.font-weight-bold
-      data requester:
-    .col-10
-      =f.text_field 'scrape_task[data_requester]', class: 'w-25 border rounded', placeholder: 'data requester',
-                    value: @scrape_task.data_requester, disabled: disable_input, readonly: disable_input
+      NAME:
+    .col-5
+      =f.text_field 'scrape_task[name]', class: 'form-control form-control-sm', value: @scrape_task.name,
+                                         required: true, disabled: disable_input, readonly: disable_input
   %hr/
-  .row.mb-4
-    .col-2.pr-0.text-right.font-weight-bold
-      multi tasks:
-    .col-10
-      #includedTasks.mb-3
-        -@scrape_task.multi_tasks.each do |mt|
-          %div{ class: "task-#{mt.id}" }
-            =link_to('[ remove ]', nil, onclick: "excludeMultiTaskFromScrapeTask(event, #{mt.id});")
-            &nbsp&nbsp|&nbsp&nbsp
-            =link_to("##{mt.id} #{mt.title}", mt, target: '_blank', rel: 'noopener noreferrer')
-            %br/
+  .row.mt-4
+    .col-6.border-right
+      .row.mb-4
+        .col-4.pr-0.text-right.font-weight-bold
+          MULTI TASKS:
+        .col-8
+          -attached_tasks = @scrape_task.tasks
+          #includedTasks
+            =render partial: 'task', collection: attached_tasks
+          :javascript
+            function addRemoveMarginToTasks() {
+              let tasks = document.querySelector('#includedTasks');
 
-      =f.select 'multi_task[task_id]', multi_tasks_to_options, { prompt: '' }, onchange: 'includeMultiTaskToScrapeTask(this);'
-  %hr/
+              if(tasks.innerText.trim() === '') {
+                tasks.classList.remove('mb-2');
+              } else {
+                tasks.classList.add('mb-2');
+              }
+            }
+            addRemoveMarginToTasks();
 
-  .row.mb-1
-    .col-2.pr-0.text-right.font-weight-bold
-      gather task:
-    .col-10
-      =f.number_field 'scrape_task[gather_task]', class: 'w-25 border rounded', placeholder: 'id', value: @scrape_task.gather_task
+            function excludeTaskFromScrapeTask(event, task_id) {
+              event.preventDefault();
 
-  .row.mb-4
-    .col-2.pr-0.text-right.font-weight-bold
-      deadline:
-    .col-10
-      =f.date_field 'scrape_task[deadline]', class: 'w-25 border rounded',
-                    value: @scrape_task.deadline, disabled: disable_input, readonly: disable_input, type: :datetime
+              Rails.ajax({
+                type: "DELETE",
+                dataType: 'json',
+                url: `/api/scrape_tasks/#{@scrape_task.id}/tasks/${task_id}`,
+                success: (data) => {
+                  if(data['not_exist']) return false;
 
-  .row.mb-4
-    .col-2.pr-0.text-right.font-weight-bold
-      state:
-    .col-10
-      =f.collection_select 'scrape_task[state_id]', State.all, :id, :name,
-                           { include_blank: true, selected: @scrape_task.state&.id },
-                           { disabled: disable_input, readonly: disable_input }
+                  document.querySelector(`#includedTasks .task-${task_id}`).remove();
+                  addRemoveMarginToTasks();
+                }
+              });
+            }
+          #addTask
+            =link_to('[ add task ]', new_scrape_task_task_path(@scrape_task), onclick: 'showTasksSpinner()', remote: true)
+            .loadingSpinner.d-none
+              .spinner-border.spinner-border-sm.text-secondary
+                %span.sr-only
+            :javascript
+                function showTasksSpinner() {
+                  document.querySelector('#addTask .loadingSpinner').classList.remove('d-none');
+                  document.querySelector('#addTask a').classList.add('d-none');
+                }
 
-  .row.mb-1
-    .col-2.pr-0.text-right.font-weight-bold
-      URL:
-    .col-10
-      =f.text_field 'scrape_task[datasource_url]', class: 'w-50 border rounded', value: @scrape_task.datasource_url
-  .row.mb-4
-    .col-2.pr-0.text-right.font-weight-bold
-      comment on datasource:
-    .col-10
-      =f.text_area 'datasource_comment[body]', class: 'form-control form-control-sm w-50',
-                   rows: 5, value: @scrape_task.datasource_comment&.body
+      .row.mb-4.align-items-center
+        .col-4.pr-0.text-right.font-weight-bold
+          DEADLINE:
+        .col-8
+          =f.date_field 'scrape_task[deadline]', type: :datetime, value: @scrape_task.deadline,
+                                                 disabled: disable_input, readonly: disable_input
+      :javascript
+        $('input[id="scrape_task[deadline]"]').datepicker({
+          format: 'yyyy-mm-dd'
+        });
 
-  .row.mb-1
-    .col-2.pr-0.text-right.font-weight-bold
-      scrapable?
-    .col-10
-      =f.radio_button "scrape_task[scrapable]", 1, checked: @scrape_task.scrapable.eql?(1), disabled: disable_input, readonly: disable_input
-      =f.label 'yes', class: 'mr-2'
-      =f.radio_button "scrape_task[scrapable]", 0, checked: @scrape_task.scrapable.eql?(0), disabled: disable_input, readonly: disable_input
-      =f.label 'no'
-  .row.mb-4
-    .col-2.pr-0.text-right.font-weight-bold
-      comment on scrape ability:
-    .col-10
-      =f.text_area 'scrape_ability_comment[body]', class: 'form-control form-control-sm w-50',
-                   rows: 5, value: @scrape_task.scrape_ability_comment&.body
+      .row.mb-4.align-items-center
+        .col-4.pr-0.text-right.font-weight-bold
+          STATE:
+        .col-8
+          =f.collection_select 'scrape_task[state_id]', State.all, :id, :name,
+                               { include_blank: '-- not set --', selected: @scrape_task.state&.id },
+                               { class: 'form-control form-control-sm w-50', disabled: disable_input, readonly: disable_input }
+      :javascript
+        $('select[id="scrape_task[state_id]"]').multipleSelect({
+          filter: true
+        });
 
-  .row.mb-1
-    .col-2.pr-0.text-right.font-weight-bold
-      scraper:
-    .col-10
-      =f.collection_select 'scrape_task[scraper_id]', Account.joins(:account_types).where(account_types: { name: 'scraper'}).order(:first_name, :last_name), :id, :name,
-                           { include_blank: true, selected: @scrape_task.scraper&.id },
-                           { disabled: disable_input, readonly: disable_input }
+      .row.mb-4.align-items-center
+        .col-4.pr-0.text-right.font-weight-bold
+          SCRAPABLE?:
+        .col-8
+          =f.radio_button "scrape_task[scrapable]", 1, checked: @scrape_task.scrapable.eql?(1), disabled: disable_input, readonly: disable_input
+          =f.label 'yes', class: 'mr-2'
+          =f.radio_button "scrape_task[scrapable]", 0, checked: @scrape_task.scrapable.eql?(0), disabled: disable_input, readonly: disable_input
+          =f.label 'no'
+          =f.radio_button "scrape_task[scrapable]", nil, checked: @scrape_task.scrapable.nil?, disabled: disable_input, readonly: disable_input
+          =f.label 'unknown'
 
-  .row.mb-4
-    .col-2.pr-0.text-right.font-weight-bold
-      scrape frequency:
-    .col-10
-      =f.collection_select 'scrape_task[frequency_id]',  Frequency.all, :id, :name,
-                           { include_blank: true, selected: @scrape_task.frequency&.id },
-                           { disabled: disable_input, readonly: disable_input }
+      .row.mb-4.align-items-center
+        .col-4.pr-0.text-right.font-weight-bold
+          SCRAPER:
+        .col-8
+          =f.collection_select 'scrape_task[scraper_id]', Account.joins(:account_types).where(account_types: { name: 'scraper'}).order(:first_name, :last_name), :id, :name,
+                               { include_blank: '-- not set --', selected: @scrape_task.scraper&.id },
+                               { class: 'form-control form-control-sm w-50', disabled: disable_input, readonly: disable_input }
+      :javascript
+        $('select[id="scrape_task[scraper_id]"]').multipleSelect({
+          filter: true
+        });
 
-  .row.mb-4
-    .col-2.pr-0.text-right.font-weight-bold
-      general comment:
-    .col-10
-      =f.text_area 'general_comment[body]', class: 'form-control form-control-sm w-50',
+      .row.mb-4.align-items-center
+        .col-4.pr-0.text-right.font-weight-bold
+          SCRAPE FREQUENCY:
+        .col-8
+          =f.collection_select 'scrape_task[frequency_id]',  Frequency.all, :id, :name,
+                               { include_blank: '-- not set --', selected: @scrape_task.frequency&.id },
+                               { class: 'form-control form-control-sm w-50', disabled: disable_input, readonly: disable_input }
+      :javascript
+        $('select[id="scrape_task[frequency_id]"]').multipleSelect({
+          filter: true
+        });
+
+      .row.mb-4.align-items-center
+        .col-4.pr-0.text-right.font-weight-bold
+          URL:
+        .col-8
+          =f.text_field 'scrape_task[datasource_url]', class: 'form-control form-control-sm w-100', value: @scrape_task.datasource_url
+
+      -if !disable_input
+        .row.mb-4.align-items-center
+          .col-4.pr-0.text-right.font-weight-bold
+            DATA SET:
+          .col-8
+            -data_sets = DataSet.where('scrape_task_id IS NULL or id = :data_set_id', data_set_id: @scrape_task.data_set).order(:name)
+            =f.collection_select 'data_set[id]', data_sets, :id, :name,
+                                 { include_blank: '-- not set --', selected: @scrape_task.data_set&.id },
+                                 { class: 'form-control form-control-sm w-100' }
+        :javascript
+          $('select[id="data_set[id]"]').multipleSelect({
+            filter: true
+          });
+
+    .col-6
+      .font-weight-bold
+        COMMENT DATASOURCE:
+      =f.text_area 'datasource_comment[body]', class: 'form-control form-control-sm',
+                   value: @scrape_task.datasource_comment&.body
+      :javascript
+        $('textarea[id="datasource_comment[body]"]').froalaEditor({
+          key: 'KfdolbcqsaA2wzA-13==',
+          editorClass: 'border rounded p-2 w-100 mt-1 mb-3',
+          toolbarInline: true,
+          toolbarButtons: ['undo', 'redo', '|', 'bold', 'italic', 'underline', 'strikeThrough', '|', 'color', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'insertLink', 'insertImage'],
+          imageUploadURL: '/images/upload',
+          imageUploadMethod: 'POST',
+          toolbarVisibleWithoutSelection: false,
+          zIndex: 3333,
+          height: 91
+        })
+
+      .font-weight-bold
+        COMMENT ON SCRAPE ABILITY:
+      =f.text_area 'scrape_ability_comment[body]', class: 'form-control form-control-sm',
+                   value: @scrape_task.scrape_ability_comment&.body
+      :javascript
+        $('textarea[id="scrape_ability_comment[body]"]').froalaEditor({
+          key: 'KfdolbcqsaA2wzA-13==',
+          editorClass: 'border rounded p-2 w-100 mt-1 mb-3',
+          toolbarInline: true,
+          toolbarButtons: ['undo', 'redo', '|', 'bold', 'italic', 'underline', 'strikeThrough', '|', 'color', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'insertLink', 'insertImage'],
+          imageUploadURL: '/images/upload',
+          imageUploadMethod: 'POST',
+          toolbarVisibleWithoutSelection: false,
+          zIndex: 3333,
+          height: 91
+        })
+
+      .font-weight-bold
+        GENERAL COMMENT:
+      =f.text_area 'general_comment[body]', class: 'form-control form-control-sm',
                    rows: 5, value: @scrape_task.general_comment&.body
-
-  .row.mb-1
+      :javascript
+        $('textarea[id="general_comment[body]"]').froalaEditor({
+          key: 'KfdolbcqsaA2wzA-13==',
+          editorClass: 'border rounded p-2 w-100 mt-1',
+          toolbarInline: true,
+          toolbarButtons: ['undo', 'redo', '|', 'bold', 'italic', 'underline', 'strikeThrough', '|', 'color', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'insertLink', 'insertImage'],
+          imageUploadURL: '/images/upload',
+          imageUploadMethod: 'POST',
+          toolbarVisibleWithoutSelection: false,
+          zIndex: 3333,
+          height: 91
+        })
+  %hr/
+  .row.mt-3
     .col-2.pr-0.text-right.font-weight-bold
-      data set location:
-    .col-10
-      =f.text_field 'scrape_task[data_set_location]', class: 'w-50 border rounded',
-                    value: @scrape_task.data_set_location
+      TABLES:
+    .col-4.border-right
+      -tables = @scrape_task.table_locations
+      #includedTables
+        =render partial: 'table', collection: tables
+      :javascript
+        function addRemoveMarginToTables() {
+          let tables = document.querySelector('#includedTables');
+
+          if(tables.innerText.trim() === '') {
+            tables.classList.remove('mb-2');
+          } else {
+            tables.classList.add('mb-2');
+          }
+        }
+        addRemoveMarginToTables();
+
+        function excludeTableFromScrapeTask(event, table_id) {
+          event.preventDefault();
+
+          Rails.ajax({
+            type: "DELETE",
+            dataType: 'json',
+            url: `/api/scrape_tasks/#{@scrape_task.id}/tables/${table_id}`,
+            success: (data) => {
+              if(data['not_deleted']) return false;
+
+              document.querySelector(`#includedTables .table-${table_id}`).remove();
+              addRemoveMarginToTables();
+            }
+          });
+        }
+      #addTables
+        .form-loader-button
+          =link_to('[ add tables ]', new_scrape_task_table_path(@scrape_task), onclick: 'showTablesSpinner()', remote: true)
+          .loadingSpinner.d-none
+            .spinner-border.spinner-border-sm.text-secondary
+              %span.sr-only
+          :javascript
+            function showTablesSpinner() {
+              document.querySelector('#addTables .loadingSpinner').classList.remove('d-none');
+              document.querySelector('#addTables a').classList.add('d-none');
+            }
+        .form
+    .col-4
+      -#.loadingSpinner.d-none
+        .spinner-border.spinner-border-sm.text-secondary
+          %span.sr-only
+      #tableInfo
+
+  %hr/
 
   -if !disable_input
-    .row.mb-4
-      .col-2.pr-0.text-right.font-weight-bold
-        data set:
-      .col-10
-        =f.collection_select 'data_set[id]', DataSet.where('scrape_task_id IS NULL or id = :data_set_id', data_set_id: @scrape_task.data_set).order(:name),
-                             :id, :name, { include_blank: true, selected: @scrape_task.data_set&.id }
+    .row.align-items-center
+      .col-4.offset-2.mb-3
+        .btn.btn-sm.btn-link.p-0{ 'data-toggle' => "collapse", 'data-target' => "#otherFields",
+                                     'aria-expanded' => "false", 'aria-controls' => "otherFields" }
+          [ show/hide other fields ]
 
+    #otherFields.collapse
+      .row.align-items-center
+        .col-2.pr-0.text-right.font-weight-bold
+          GATHER TASK ID:
+        .col-4
+          =f.number_field 'scrape_task[gather_task]', class: 'form-control form-control-sm', value: @scrape_task.gather_task,
+                                                      disabled: disable_input, readonly: disable_input
+  %hr/
 
-  .row.mt-4
-    .col-10.offset-2
-      =f.submit 'update'
-      =link_to('cancel', scrape_task_cancel_edit_path(@scrape_task), method: :get, remote: true, class: 'btn btn-sm btn-link')
+  .row.align-items-center
+    .col-12.text-center
+      =f.submit 'update', class: 'btn btn-sm btn-dark'
+      %button{ type: "button", class: "btn btn-sm btn-outline-dark", 'data-dismiss' => "modal" }
+        Close
+
 

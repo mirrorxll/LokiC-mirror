@@ -26,4 +26,9 @@ namespace :scrape_task do
 
     puts
   end
+
+  desc 'insert hosts'
+  task hosts: :environment do
+    %w[DB01 DB02 DB04 DB06 DB07 DB10 DB13 DB14 DB15].each { |h| Host.create(name: h) }
+  end
 end

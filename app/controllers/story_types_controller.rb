@@ -18,8 +18,9 @@ class StoryTypesController < ApplicationController # :nodoc:
                    else
                      developer? ? { developer: current_account.id } : {}
                    end
+    @grid_params.merge!(current_account: current_account)
 
-    @story_types_grid = StoryTypesGrid.new(@grid_params)
+    @story_types_grid = StoryTypesGrid.new(@grid_params) { |scope| scope.where(archived: false) }
 
     respond_to do |f|
       f.html do

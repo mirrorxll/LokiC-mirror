@@ -104,5 +104,11 @@
     -if alert
       %p.alert.alert-danger.text-center
         =alert
-    %div{ class: controller_name.in?(%w(data_sets story_types samples exports exported_story_types work_requests scrape_tasks tasks)) && action_name.in?(%w(index stories)) ? "container-fluid" : "container" }
+    -if controller_name.in?(%w(data_sets story_types samples exports exported_story_types work_requests tasks archived_story_types)) && action_name.in?(%w(index stories))
+      %div{ class: "container-fluid" }
+        =yield
+    -elsif controller_name.eql?('scrape_tasks')
       =yield
+    -else
+      %div{ class: "container" }
+        =yield

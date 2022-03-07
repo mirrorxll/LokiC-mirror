@@ -3,11 +3,14 @@
 module StoryTypes
   class PurgeExportJob < StoryTypesJob
     def perform(iteration, account)
+      status = false
       message = 'Success'
       story_type = iteration.story_type
+      story_type.sidekiq_break.update!(cancel: false)
 
       loop do
         rd, wr = IO.pipe
+        break if iteration.stories.reload.exported.count.zero? || story_type.sidekiq_break.reload.cancel
 
         Process.wait(
           fork do
@@ -29,8 +32,6 @@ module StoryTypes
           klass, message = JSON.parse(exception).to_a.first
           raise Object.const_get(klass), message
         end
-
-        break if iteration.stories.reload.exported.count.zero?
       end
 
       Process.wait(
@@ -50,10 +51,16 @@ module StoryTypes
           end
         end
       )
+      if story_type.sidekiq_break.cancel
+        status = nil
+        message = 'Canceled'
+      end
+
     rescue StandardError, ScriptError => e
       message = e.message
     ensure
-      iteration.update!(purge_export: false, export: nil)
+      iteration.update!(purge_export: status, export: nil)
+      story_type.sidekiq_break.update!(cancel: false)
       send_to_action_cable(iteration.story_type, :export, message)
       StoryTypes::SlackNotificationJob.perform_now(iteration, 'remove from pl', message)
     end

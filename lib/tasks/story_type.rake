@@ -32,4 +32,9 @@ namespace :story_type do
 
     puts 'All iterations\' "schedule count" fields had updated'
   end
+
+  desc 'create sidekiq_breakers for story_types'
+  task sidekiq_breakers_creation: :environment do
+    StoryType.all.each { |story_type| story_type.create_sidekiq_break unless story_type.sidekiq_break }
+  end
 end

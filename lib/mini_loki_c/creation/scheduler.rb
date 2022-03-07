@@ -4,6 +4,7 @@ require_relative '../../mini_loki_c/connect/mysql.rb'
 require_relative 'scheduler/base.rb'
 require_relative 'scheduler/backdate.rb'
 require_relative 'scheduler/auto.rb'
+require_relative 'scheduler/press_release.rb'
 
 module MiniLokiC
   module Creation
@@ -11,12 +12,24 @@ module MiniLokiC
       include Base
       include Backdate
       include Auto
+      include PressRelease
 
       def self.run(staging_table, options, scheduling_rules)
-        return if options[:sampled] || !Table.all_stories_created_by_iteration?(staging_table, options[:publication_ids])
+        if options[:sampled] || !Table.all_stories_created_by_iteration?(staging_table, options[:publication_ids])
+          return
+        end
 
         options[:iteration].update!(schedule: false)
         StoryTypes::SchedulerJob.perform_now(options[:iteration], :"run-from-code", { params: scheduling_rules, exception: true })
+      end
+
+      def self.run_press_release(staging_table, options)
+        if options[:sampled] || !Table.all_stories_created_by_iteration?(staging_table, options[:publication_ids])
+          return
+        end
+
+        options[:iteration].update!(schedule: false)
+        StoryTypes::SchedulerJob.perform_now(options[:iteration], :"press_release", { exception: true })
       end
     end
   end
