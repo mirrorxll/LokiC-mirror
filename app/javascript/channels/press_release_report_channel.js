@@ -12,7 +12,7 @@ $(document).on('turbolinks:load', function () {
       $.ajax({
                url: `/press_release_report/show_report`,
                method: 'post',
-               dataType: 'json',
+               dataType: 'script',
                data: { clients_names: data['clients_names'],
                        for_bar: data['for_bar'],
                        clients_counts: data['clients_counts'],

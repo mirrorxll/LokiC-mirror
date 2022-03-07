@@ -8,10 +8,8 @@ module Reports
 
     def initialize
       @clients_counts = PipelineReplica[:production].pl_replica.query(stories_query).to_a
-      @clients_names = @clients_counts.map { |row| row['client_name'] }.uniq
+      @clients_names = @clients_counts.map { |row| row['client_name'] }.uniq.sort
       @max_week = @clients_counts.max { |s| s['story_week'] }['story_week']
-      puts @clients_counts.to_a
-      puts '111111111111111111111'
     end
 
     def data_for_grid_bar
@@ -46,7 +44,7 @@ module Reports
     private
 
     def begin_date
-      (Date.today - 7*6).beginning_of_week(:sunday).to_s
+      (Date.today - 7*4).beginning_of_week(:sunday).to_s
     end
 
     def end_date
@@ -63,7 +61,7 @@ module Reports
                  join client_companies cc on c.client_company_id = cc.id
         where
                 j.content_type in ('press_release', 'press_release_repost') and
-                date(s.published_at) >= date('2022-01-09') and date(s.published_at) <= date('2022-03-05') and (
+                date(s.published_at) >= date('#{begin_date}') and date(s.published_at) <= date('#{end_date}') and (
                     cc.name like 'MM -%' or
                     cc.name in ('American Catholic','AIC - Newspapers','LGIS', 'Franklin Archer Trade Network', 'The Record') or
                     (cc.name = 'Metro Business Network' and c.name like '%Business Daily') or
@@ -80,7 +78,7 @@ module Reports
                  join communities c on c.id = s.community_id
                  join client_companies cc on c.client_company_id = cc.id
         where
-            date(s.published_at) >= date('2022-01-09') and date(s.published_at) <= date('2022-03-05') and
+            date(s.published_at) >= date('#{begin_date}') and date(s.published_at) <= date('#{end_date}') and
             c.client_company_id = 224 and j.name like '%releases HLE%'
         group by cc.id, cc.name, week(s.published_at)
       SQL

@@ -13,16 +13,11 @@ class PressReleaseReportsController < ApplicationController
   end
 
   def show_report
-    respond_to
-
     @data = {}
     @data[:clients_names] = report_params[:clients_names]
     @data[:for_bar] = report_params[:for_bar]
     @data[:clients_counts] = report_params[:clients_counts]
     @data[:max_week] = report_params[:max_week]
-
-    puts '/////////////////////'
-    puts @data
   end
 
   private
@@ -34,7 +29,3 @@ class PressReleaseReportsController < ApplicationController
     report_params
   end
 end
-
-
-# .permit(:label, :data, :backgroundColor, :barThickness) .permit(:prr_type, :client_id, :client_name, :story_week)
-#

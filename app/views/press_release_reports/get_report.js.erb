@@ -1,1 +1,2 @@
-$('#press_release_report').append('<%= j render 'story_types/spinner', description: 'report in progress' %>')
+$('#press_release_report').html('<%= j render 'story_types/spinner', description: 'report in progress' %>')
+document.getElementById('link').classList.add('d-none');

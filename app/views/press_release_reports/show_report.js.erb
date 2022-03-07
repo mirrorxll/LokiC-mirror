@@ -1,22 +1,12 @@
-$('#press_release_report').append('1111111');
-
-document.addEventListener('turbolinks:load', () => {
-    // let myChartBar = $('#myChartBar');
-    //
-    // if(!myChartBar.length) return false;
-
-    let ctx = document.getElementById('myChartBar').getContext('2d');
-    console.log('44444444444444444444444444');
-    let myChart = new Chart(ctx, {
-        type: 'bar',
-        options: { indexAxis: 'y' },
-        data:
-            {
-                labels: JSON.parse(ctx.canvas.dataset.labels),
-                datasets: JSON.parse(ctx.canvas.dataset.data)
-            }
-    });
-})
-
-
-
+$(`#press_release_report`).html('<%= j render 'press_release_reports/report', data: @data %>')
+document.getElementById('link').classList.remove('d-none');
+var ctx = document.getElementById('myChartBar').getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    options: { indexAxis: 'y' },
+    data:
+        {
+            labels: JSON.parse(ctx.canvas.dataset.labels),
+            datasets: JSON.parse(ctx.canvas.dataset.data)
+        }
+});

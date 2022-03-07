@@ -6,7 +6,7 @@
   %thead
     %tr
       %th{:scope => "col", class_name: "table-primary"} client name
-      -(0..5).reverse_each do |i|
+      -(0..3).reverse_each do |i|
         %th{:scope => "col"}
           ="#{data[:max_week].to_i - i}"
       %th{:scope => "col"} total
@@ -16,10 +16,9 @@
         -c_count = data[:clients_counts].select { |row| row['client_name'] == client_name }
         %th{:scope => "row"}
           =client_name
-        -(0..5).reverse_each do |i|
+        -(0..3).reverse_each do |i|
           %td
             -count = c_count.select { |c| c['story_week'].to_i == data[:max_week].to_i - i }
-            -puts data[:max_week]
             =count.blank? ? 0 : count.first['count_story_id']
         %td
-          =c_count.sum { |c| c['count_story_id'] }
+          =c_count.select{ |c| c['story_week'].to_i >= data[:max_week].to_i - 3 }.sum { |c| c['count_story_id'].to_i }
