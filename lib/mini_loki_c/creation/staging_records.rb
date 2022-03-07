@@ -21,8 +21,9 @@ module MiniLokiC
             Table.rows_by_iteration(@staging_table, @options)
           end
 
+        story_type = @options[:iteration].respond_to?(:story_type)
         select.each_with_index do |row, i|
-          break if (i % 100).zero? && @options[:iteration].story_type.sidekiq_break.reload.cancel
+          break if story_type && (i % 100).zero? && @options[:iteration].story_type.sidekiq_break.reload.cancel
 
           yield(HashWithIndifferentAccess.new(row))
         end

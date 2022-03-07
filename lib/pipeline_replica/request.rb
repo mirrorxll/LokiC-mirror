@@ -3,7 +3,7 @@
 Dir["#{__dir__}/request/*.rb"].each { |file| require_relative file }
 
 module PipelineReplica
-  # requests to PL
+  # requests to PL-replica
   module Request
     include Job
     include JobItem
@@ -12,5 +12,6 @@ module PipelineReplica
     include Sections
     include PhotoBuckets
     include User
+    include Opportunity
   end
 end
