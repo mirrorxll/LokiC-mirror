@@ -14,7 +14,9 @@ class TasksController < ApplicationController # :nodoc:
   def index
     respond_to do |f|
       f.html do
-        @grid.scope { |scope| scope.page(params[:page]).per(20) }
+        @grid.scope do |scope|
+          scope.page(params[:page]).per(20)
+        end
       end
     end
   end
