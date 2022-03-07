@@ -67,10 +67,6 @@ Rails.application.routes.draw do
       resources :statuses, only: :update
     end
 
-    scope :reports do
-      resources :prr_reports, as: ''
-    end
-
     resources :shown_samples, only: :update
 
     get 'publication_scopes', to: 'publications#scopes'
