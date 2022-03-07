@@ -76,8 +76,8 @@ class StoryTypesGrid
   filter(:revised, :xboolean, left: true) do |value, scope|
     value ? scope.where.not('templates.revision': nil) : scope.where('templates.revision': nil)
   end
-  filter(:pipline_story_id, :enum, select: :pipeline_story_ids, left: true, multiple: true) do |value, scope, grid|
-    stories        = Story.where("stories.pl_#{grid.env}_story_id": value)
+  filter(:pipeline_story_id, :enum, select: :pipeline_story_ids, left: true, multiple: true) do |value, scope, grid|
+    stories = Story.where("stories.pl_#{grid.env}_story_id": value)
     stories_story_types_ids = stories.pluck(:story_type_id)
 
     scope.where(id: stories_story_types_ids)
