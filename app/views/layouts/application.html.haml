@@ -57,6 +57,8 @@
                       =link_to('assembled 2020', assembleds_tracking_hours_path(week: current_week), class: 'nav-link small')
                     .dropdown-item
                       =link_to('tracking hours tasks', task_tracking_hours_path, class: 'nav-link small')
+                    .dropdown-item
+                      =link_to('press release report', press_release_reports_path, class: 'nav-link small')
 
               -if (acc_types & %w[manager editor developer]).any?
                 %li.nav-item.active.dropdown
