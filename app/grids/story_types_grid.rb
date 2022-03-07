@@ -76,7 +76,7 @@ class StoryTypesGrid
   filter(:revised, :xboolean, left: true) do |value, scope|
     value ? scope.where.not('templates.revision': nil) : scope.where('templates.revision': nil)
   end
-  filter(:pipeline_story_id, :enum, select: :pipeline_story_ids, left: true, multiple: true) do |value, scope, grid|
+  filter(:pipeline_story_id, :string, left: true, multiple: ',', header: 'Pipeline Story ID') do |value, scope, grid|
     stories = Story.where("stories.pl_#{grid.env}_story_id": value)
     stories_story_types_ids = stories.pluck(:story_type_id)
 
@@ -169,9 +169,5 @@ class StoryTypesGrid
   end
   column(:updated_at) do |record|
     record.updated_at&.to_date
-  end
-
-  def pipeline_story_ids
-    Story.all.pluck("stories.pl_#{env}_story_id")
   end
 end
