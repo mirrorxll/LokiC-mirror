@@ -17,6 +17,8 @@ import Rails from "@rails/ujs";
 import cronstrue from 'cronstrue';
 import datepicker from 'bootstrap-datepicker';
 import multipleSelect from 'multiple-select';
+import Chart from 'chart.js/auto';
+global.Chart = Chart;
 
 window.Rails = Rails;
 window.jQuery = $;
@@ -38,7 +40,6 @@ document.addEventListener('turbolinks:load', () => {
       $('[data-toggle="popover"]').popover('hide');
   });
 });
-
 
 // Uncomment to copy all static images under ../images to the output folder and reference
 // them with the image_pack_tag helper in views (e.g <%= image_pack_tag 'rails.png' %>)
