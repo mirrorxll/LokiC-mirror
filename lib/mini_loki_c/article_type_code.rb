@@ -18,7 +18,7 @@ module MiniLokiC
       METHODS_TRACER.enable { load_article_type_class.new.public_send(method, options) }
     rescue StandardError, ScriptError => e
       path = e.backtrace.first
-      at = path[/s#{@story_type.id}/] ? " at #{path}" : ''
+      at = path[/a#{@article_type.id}/] ? " at #{path}" : ''
 
       raise "#{method.capitalize}ExecutionError".constantize,
             "[ #{method.capitalize}ExecutionError ] -> #{e.message}#{at}".gsub('`', "'")
