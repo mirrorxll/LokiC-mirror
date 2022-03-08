@@ -25,6 +25,8 @@ module StoryTypes
             MiniLokiC::Creation::Scheduler::Auto.run_auto(samples, auto_params(options[:params]))
           when :"run-from-code"
             MiniLokiC::Creation::Scheduler::FromCode.run_from_code(samples, options[:params])
+          when :"press_release"
+            MiniLokiC::Creation::Scheduler::PressRelease.run(samples)
           end
 
           record_to_change_history(story_type, 'scheduled', type, options[:account])
