@@ -5,7 +5,7 @@ class CreateAgencies < ActiveRecord::Migration[6.0]
     create_table :agencies, id: false do |t|
       t.string  :id, limit: 36, primary_key: true
       t.string  :name
-      t.string  :partner
+      t.boolean :partner, default: false
       t.timestamps
     end
   end

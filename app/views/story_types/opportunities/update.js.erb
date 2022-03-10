@@ -1,0 +1,2 @@
+$('#storyTypePropertiesForm .properties-pubs-opportunities .list .st-opp-<%= @st_opportunity.id %>')
+    .replaceWith('<%= j render partial: 'story_types/opportunities/story_type_opportunity', locals: { story_type_opportunity: @st_opportunity } %>');

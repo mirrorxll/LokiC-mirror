@@ -11,6 +11,8 @@ class StoryTypeClientPublicationTag < ApplicationRecord
 
   has_and_belongs_to_many :sections, join_table: 'story_type_client_sections'
 
+  private
+
   def set_default_sections
     client.sections.each { |cl_section| sections << cl_section }
   end

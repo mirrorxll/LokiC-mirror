@@ -1,0 +1,5 @@
+$('#storyTypePropertiesForm .properties-pubs-opportunities .list')
+    .html('<%= j render partial: 'story_types/opportunities/story_type_opportunity', collection:  @story_type.opportunities %>');
+$('#storyTypePropertiesForm .properties-pubs-opportunities').removeClass('d-none');
+$('#storyTypePropertiesForm .loadingSpinner').addClass('d-none');
+$('#storyTypePropertiesForm .load-publications-button').removeClass('d-none');

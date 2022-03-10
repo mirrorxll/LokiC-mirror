@@ -12,6 +12,9 @@ module PipelineReplica
     include Sections
     include PhotoBuckets
     include User
+    include Agency
     include Opportunity
+    include OpportunityType
+    include ContentType
   end
 end

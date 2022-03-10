@@ -4,9 +4,8 @@ class Publication < ApplicationRecord # :nodoc:
   belongs_to :client
 
   has_many :stories
-  has_many :agencies
 
-  has_many :opportunity_publications
+  has_many :opportunity_publications, -> { where(archived_at: nil) }
   has_many :opportunities, through: :opportunity_publications
 
   has_and_belongs_to_many :tags

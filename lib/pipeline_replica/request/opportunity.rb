@@ -8,10 +8,10 @@ module PipelineReplica
       end
 
       def get_join_content_types
-        @pl_replica.query(get_opportunities_query).to_a
+        @pl_replica.query(get_join_content_types_query).to_a
       end
 
-      def get_join_opportunity_type
+      def get_join_opportunity_types
         @pl_replica.query(get_join_opportunity_type_query).to_a
       end
 

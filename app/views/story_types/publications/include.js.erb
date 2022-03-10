@@ -1,5 +1,6 @@
-$(`#client_publication_tag_<%= @client_publication_tag.id%> .client_publication`).html('<%= j render @publication, client_publication_tag: @client_publication_tag %>');
-$(`#client_publication_tag_<%= @client_publication_tag.id%> .client_tag`).html(
-    '<%= j render 'story_types/tags/form', client: @client_publication_tag.client, client_publication_tag: @client_publication_tag %>')
+$(`#client_publication_tag_<%= @client_publication_tag.id %> .client_publication`)
+    .html('<%= j render @publication, client_publication_tag: @client_publication_tag %>');
+$(`#client_publication_tag_<%= @client_publication_tag.id %> .client_tag`)
+    .html('<%= j render 'story_types/tags/form', client: @client_publication_tag.client, client_publication_tag: @client_publication_tag %>')
 
-$('#clientsPublicationsTags').html('<%= j render 'story_types/properties/clients_publications_tags' %>')
+$('#clientsPublicationsTags').html('<%= j render 'story_types/properties/clients_publications_tags' %>');

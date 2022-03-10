@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class OpportunityOpportunityType < ApplicationRecord
-  belongs_to :opportunity
-  belongs_to :opportunity_type
+  self.table_name = 'opportunities_opportunity_types'
+
+  belongs_to :opportunity,      optional: true
+  belongs_to :opportunity_type, optional: true
 end

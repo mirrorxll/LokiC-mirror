@@ -4,9 +4,9 @@ class CreateOpportunitiesOpportunityTypes < ActiveRecord::Migration[6.0]
   def change
     create_table :opportunities_opportunity_types, id: false do |t|
       t.string   :id, limit: 36, primary_key: true
-      t.bigint   :opportunity_id
-      t.bigint   :opportunity_type_id
-      t.datetime :archived_at
+      t.string   :opportunity_id, limit: 36
+      t.string   :opportunity_type_id, limit: 36
+      t.datetime :archived_at, index: true
       t.timestamps
     end
 

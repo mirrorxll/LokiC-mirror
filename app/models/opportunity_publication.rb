@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class OpportunityPublication < ApplicationRecord
-  belongs_to :opportunity
-  belongs_to :publication
+  self.table_name = 'opportunities_publications'
+
+  belongs_to :opportunity, optional: true
+  belongs_to :publication, optional: true
 end
