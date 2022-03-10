@@ -25,12 +25,6 @@ Rails.application.routes.draw do
 
     scope module: :story_types, path: 'story_types/:story_type_id' do
       resources :template, only: :update
-
-      resources :opportunities, as: 'story_type_opportunities'
-      scope module: :opportunities, path: 'opportunities/:opportunity_id', as: 'story_type_opportunities' do
-        resources :opportunity_types
-        resources :content_types
-      end
     end
 
     scope module: :work_requests, path: 'work_requests', as: 'work_request_collections' do
@@ -136,6 +130,10 @@ Rails.application.routes.draw do
       resources :excepted_publications, only: [] do
         post   :include, on: :collection
         delete :exclude, on: :member
+      end
+
+      resources :default_opportunities do
+        patch :set, on: :collection
       end
 
       resources :opportunities

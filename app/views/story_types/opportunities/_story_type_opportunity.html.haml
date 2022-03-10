@@ -10,15 +10,15 @@
     .col-2
       =opportunity&.agency&.name
 
-    .col-3{ class: "st-opp-opp-#{story_type_opportunity.id}" }
+    .col-2
       -if opportunity
         =opportunity.name
         =link_to('x', '#', onclick: "removeOpportunity#{story_type_opportunity.id}(event);", remote: true)
       -else
-        =select :opportunity, :id, publication.opportunities.pluck(:name, :id),
+        =select :opportunity, :opportunity_id, publication.opportunities.pluck(:name, :id),
                 { include_blank: '' }, { class: 'w-100', onchange: "addOpportunity#{story_type_opportunity.id}(this.value);" }
 
-    .col-2{ class: "st-opp-type#{story_type_opportunity.id}" }
+    .col-2
       -if story_type_opportunity.opportunity_type
         =story_type_opportunity.opportunity_type.name
         =link_to('x', '#', onclick: "removeOpportunityType#{story_type_opportunity.id}(event);", remote: true)
@@ -27,7 +27,7 @@
         =select :opportunity, :opportunity_type_id, opportunity_types,
                 { include_blank: '' }, { class: 'w-100', onchange: "addOpportunityType#{story_type_opportunity.id}(this.value);" }
 
-    .col-2{ class: "st-opp-cont-type-#{story_type_opportunity.id}" }
+    .col-2
       -if story_type_opportunity.content_type
         =story_type_opportunity.content_type.name
         =link_to('x', '#', onclick: "removeContentType#{story_type_opportunity.id}(event);", remote: true)

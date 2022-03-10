@@ -14,7 +14,6 @@ class StoryTypeOpportunityObject
   end
 
   def upd
-    puts @action
     @st_opportunity.update!(
       case @action
       when 'add opportunity'

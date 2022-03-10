@@ -4,6 +4,7 @@ module StoryTypes
   class ChangeOpportunitiesListJob < StoryTypesJob
     def perform(story_type)
       pubs = []
+      exc_pubs = story_type.excepted_publications.map(&:publication)
 
       story_type.clients_publications_tags.each do |row|
         pub = row.publication
@@ -19,29 +20,31 @@ module StoryTypes
             [row.publication]
           end
 
-        raw_pubs.map { |p| pubs << p }
+        raw_pubs.map { |p| pubs << p unless p.in?(exc_pubs) }
       end
 
-      story_type.excepted_publications.each do |ex_pub|
-        pubs.delete(ex_pub.publication)
-      end
-
+      default_opportunities = story_type.default_opportunities
       opportunities = story_type.opportunities
+
+      default_opportunities.update_all(exist: false)
       opportunities.update_all(exist: false)
 
-      pubs.each do |pub|
-        opportunity = opportunities.find_by(publication: pub)
+      pubs.map(&:client).uniq.each do |c|
+        next if default_opportunities.find_by(client: c)&.update(exist: true)
 
-        if opportunity
-          opportunity.update(exist: true)
-        else
-          story_type.opportunities.create(publication: pub)
-        end
+        story_type.default_opportunities.create(client: c)
       end
 
+      pubs.each do |p|
+        next if opportunities.find_by(publication: p)&.update(exist: true)
+
+        story_type.opportunities.create(client: p.client, publication: p)
+      end
+
+      default_opportunities.where(exist: false).destroy_all
       opportunities.where(exist: false).destroy_all
 
-      StoryTypePublicationsChannel.broadcast_to(story_type, { success: true })
+      StoryTypeOpportunitiesChannel.broadcast_to(story_type, true)
     end
   end
 end

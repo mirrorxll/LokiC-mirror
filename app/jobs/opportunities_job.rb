@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class OpportunitiesJob < ApplicationJob
-  queue_as :lokic
+  queue_as :cron_tab
 
   def perform
     replica = PipelineReplica[:production]

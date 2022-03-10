@@ -6,14 +6,13 @@ $(document).on("turbolinks:load", function() {
 
   consumer.subscriptions.create(
       {
-        channel: "StoryTypePublicationsChannel",
+        channel: "StoryTypeOpportunitiesChannel",
         story_type_id: storyTypeId
       },
       {
         connected()    { console.log('properties connected'); },
         disconnected() { console.log('properties disconnected'); },
         received(_data) {
-          console.log('123456');
           $.ajax({
             url: `${window.location.origin}/story_types/${storyTypeId}/opportunities`,
             method: 'get',

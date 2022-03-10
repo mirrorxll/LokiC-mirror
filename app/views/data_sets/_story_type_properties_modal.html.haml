@@ -10,16 +10,38 @@
 
         %hr/
 
-        .load-publications-button
-          .row
+        -#.default-opportunities
+          .row.font-weight-bold.small
+            .col-3.offlet-5
+              =select :st_opportunity, :opportunity_id, []
+            .col-2
+              =select :st_opportunity, :opportunity_type_id, []
+            .col-2
+              =select :st_opportunity, :content_type_id, []
+
+
+        .load-opportunities-button
+          .row.font-weight-bold.small.small
             .col-1
-            .col-4.pl-0.small
-              =button_to('load publications/opportunities', story_type_opportunities_path(@story_type), remote: true)
+            .col-11.pl-0
+              =button_to('opportunities', story_type_opportunities_path(@story_type), remote: true)
+              =button_to('opportunities', story_type_opportunities_path(@story_type), remote: true)
+
+        .default-opportunities
+          .row.font-weight-bold.small.small
+            .col-3
+            .col-2
+              client
+            .col-3
+              opportunity
+            .col-2
+              opportunity type
+            .col-2
+              content type
 
 
-        .properties-pubs-opportunities.d-none
+        .opportunities.d-none
           %hr/
-
           .header
             .row.font-weight-bold.small
               .col-1
