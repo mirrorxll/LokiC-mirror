@@ -44,7 +44,7 @@ module Samples
         clients_publications_tags = story_type.clients_publications_tags.to_a
 
         cl_pub_tg = clients_publications_tags.find { |cpt| cpt.publication.eql?(publication) }
-        return cl_pub_tg.sections.ids if cl_pub_tg
+        return cl_pub_tg.sections if cl_pub_tg
 
         aggregated_cpt = clients_publications_tags.select do |cpt|
           cpt.publication.nil? || cpt.publication.name.in?(@pub_aggregate_names)
@@ -52,7 +52,7 @@ module Samples
 
         aggregated_cpt.find do |cpt|
           cpt.client.publications.include?(publication)
-        end.sections.ids
+        end.sections
       end
 
       def lead_post(sample, exp_config)
@@ -77,7 +77,7 @@ module Samples
         publication = exp_config.publication
         story_tag_ids = exp_config.tag.name.eql?('_Blank') ? [] : [exp_config.tag.pl_identifier]
         photo_bucket_id = exp_config.photo_bucket&.pl_identifier
-        story_section_ids = sections(sample.story_type, publication)
+        story_section_ids = sections(sample.story_type, publication).map(&:pl_identifier)
         published_at = published_at(sample.published_at.to_date)
         sample_org_ids = sample.organization_ids.delete('[ ]').split(',')
 
