@@ -10,7 +10,7 @@ module StoryTypes
         pub = row.publication
 
         raw_pubs =
-          if pub.nil? || pub.name.eql?('all publication')
+          if pub.nil? || pub.name.eql?('all publications')
             row.client.publications
           elsif pub.name.eql?('all local publications')
             row.client.local_publications

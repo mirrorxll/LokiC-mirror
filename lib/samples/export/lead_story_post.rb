@@ -56,7 +56,6 @@ module Samples
       end
 
       def lead_post(sample, exp_config)
-        story_type = exp_config.story_type
         publication = exp_config.publication
         name = "#{sample.headline} -- [#{exp_config.id}."\
                "#{sample.id}::#{Date.today}.#{Time.now.to_i}]"
