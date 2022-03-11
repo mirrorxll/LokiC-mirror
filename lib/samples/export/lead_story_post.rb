@@ -65,8 +65,7 @@ module Samples
           name: name,
           job_item_id: exp_config["#{@environment}_job_item"],
           sub_type_id: 594,
-          community_ids: [publication.pl_identifier],
-          opportunity_id:
+          community_ids: [publication.pl_identifier]
         }
 
         response = @pl_client.post_lead(params)
