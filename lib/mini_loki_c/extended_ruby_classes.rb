@@ -1,7 +1,19 @@
 # frozen_string_literal: true
 
+class Integer
+  def fact
+    (2..self).reduce(1, :*)
+  end
+
+  alias factorial fact
+end
+
 class String # :nodoc:
   # Adds HTML tags to the self text according to editorial requirements to tables
+  def correct_output_links(link_types = %w[http https])
+    gsub(URI.regexp(link_types), '\\0'.to_link('\\0'))
+  end
+
   def to_table_title
     %(<div><strong style='font-size: 18px;'>#{self}</strong></div>)
   end
@@ -76,7 +88,7 @@ class Array
   def percentile(index)
     raise "The index is #{index} -- it cannot be more than #{size}" if index > size
 
-    99 - ((index) / (count.to_f - 1) * 98).round
+    99 - (index / (count.to_f - 1) * 98).round
   end
 
   # Gets an array of hashes and convert it to json contains a tables with headers

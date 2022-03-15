@@ -63,10 +63,6 @@ class Story < ApplicationRecord
     "#{publication.home_page}/stories/#{pl_story_id}"
   end
 
-  def self.complete_scheduling?
-    where(published_at: nil).limit(1).empty?
-  end
-
   def self.ready_to_export
     where("pl_#{PL_TARGET}_story_id" => nil)
       .joins(:export_configuration, :publication, :output)

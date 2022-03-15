@@ -17,6 +17,7 @@ module Samples
     def export!(iteration, threads_count)
       stories_to_export = iteration.stories.ready_to_export.limit(10_000).to_a
       story_type = iteration.story_type
+      st_opportunities = story_type.opportunities
       main_semaphore = Mutex.new
       exported = 0
       forbidden_mb_pubs = [1635, 1149, 1148, 1656, 1659, 1669, 1670]
@@ -29,7 +30,7 @@ module Samples
 
             sample.destroy and next if sample.publication.pl_identifier.in?(forbidden_mb_pubs)
 
-            lead_story_post(sample)
+            lead_story_post(sample, st_opportunities)
             main_semaphore.synchronize { exported += 1 }
           end
         end

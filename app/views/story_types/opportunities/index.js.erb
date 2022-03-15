@@ -1,0 +1,8 @@
+$('#storyTypePropertiesForm .opportunities .list')
+    .html('<%= j render partial: 'story_types/opportunities/story_type_opportunity', collection:  @story_type.opportunities %>');
+$('#storyTypePropertiesForm .default-opportunities .list')
+    .html('<%= j render partial: 'story_types/default_opportunities/story_type_default_opportunity', collection:  @story_type.default_opportunities %>');
+$('#storyTypePropertiesForm .opportunities').removeClass('d-none');
+$('#storyTypePropertiesForm .default-opportunities').removeClass('d-none');
+$('#storyTypePropertiesForm .loadingSpinner').addClass('d-none');
+$('#storyTypePropertiesForm .load-opportunities-button').removeClass('d-none');

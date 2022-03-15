@@ -22,8 +22,12 @@ $fa-font-path: "~font-awesome/fonts";
 @import "node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.standalone";
 
 @media (min-width: 100px) {
-  .modal-dialog-fullscreen {
+  .modal-fullscreen {
     max-width: 97%;
+  }
+
+  .modal-70percent {
+    max-width: 70%;
   }
 }
 

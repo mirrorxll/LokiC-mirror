@@ -1,0 +1,2 @@
+$('#storyTypePropertiesForm .default-opportunities .list .st-def-opp-<%= @st_def_opportunity.id %>')
+    .replaceWith('<%= j render partial: 'story_types/default_opportunities/story_type_default_opportunity', locals: { story_type_default_opportunity: @st_def_opportunity } %>');

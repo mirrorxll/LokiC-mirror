@@ -1,0 +1,2 @@
+module StoryTypes::OpportunitiesHelper
+end
