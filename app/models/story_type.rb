@@ -55,6 +55,8 @@ class StoryType < ApplicationRecord
   has_many :tags, through: :clients_publications_tags
   has_many :change_history, as: :history
   has_many :alerts, as: :alert
+  has_many :default_opportunities, class_name: 'StoryTypeDefaultOpportunity'
+  has_many :opportunities, class_name: 'StoryTypeOpportunity'
 
   scope :with_developer, -> { where.not(developer: nil) }
   scope :with_code, -> { joins(:code_attachment) }

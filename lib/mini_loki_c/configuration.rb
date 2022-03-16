@@ -9,6 +9,8 @@ module MiniLokiC
       mysql_regular_password
       mysql_pl_replica_user
       mysql_pl_replica_password
+      postgresql_user
+      postgresql_password
     ].freeze
 
     attr_accessor(*CONFIG_KEYS)

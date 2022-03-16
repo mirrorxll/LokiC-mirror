@@ -44,12 +44,6 @@ class ClientsTagsJob < ApplicationJob
 
   private
 
-  def attach_tags_to(client)
-  end
-
-  def attach_tags_to_mm_generic(mm_state, mm_generic)
-  end
-
   def update_tags_for_pubs(ct, mm_by_state)
     client = ct.client.name.eql?('Metric Media') ? mm_by_state : ct.client
     all = ct.client.publications

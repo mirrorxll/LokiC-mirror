@@ -5,6 +5,9 @@ class Publication < ApplicationRecord # :nodoc:
 
   has_many :stories
 
+  has_many :opportunity_publications, -> { where(archived_at: nil) }
+  has_many :opportunities, through: :opportunity_publications
+
   has_and_belongs_to_many :tags
 
   def tag?(tag)

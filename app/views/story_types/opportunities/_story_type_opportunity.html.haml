@@ -1,0 +1,107 @@
+-publication = story_type_opportunity.publication
+-opportunity = story_type_opportunity.opportunity
+
+%div{ class: "st-opp-#{story_type_opportunity.id}" }
+  %hr.m-1/
+  .row.small
+    .col-1
+    .col-2.pl-0
+      =publication.name
+    .col-2
+      =opportunity&.agency&.name
+
+    .col-2
+      -if opportunity
+        =opportunity.name
+        =link_to('x', '#', onclick: "removeOpportunity#{story_type_opportunity.id}(event);", remote: true)
+      -else
+        =select :opportunity, :opportunity_id, publication.opportunities.pluck(:name, :id),
+                { include_blank: '' }, { class: 'w-100', onchange: "addOpportunity#{story_type_opportunity.id}(this.value);" }
+
+    .col-2
+      -if story_type_opportunity.opportunity_type
+        =story_type_opportunity.opportunity_type.name
+        =link_to('x', '#', onclick: "removeOpportunityType#{story_type_opportunity.id}(event);", remote: true)
+      -else
+        -opportunity_types = opportunity ? opportunity.opportunity_types.pluck(:name, :id) : []
+        =select :opportunity, :opportunity_type_id, opportunity_types,
+                { include_blank: '' }, { class: 'w-100', onchange: "addOpportunityType#{story_type_opportunity.id}(this.value);" }
+
+    .col-2
+      -if story_type_opportunity.content_type
+        =story_type_opportunity.content_type.name
+        =link_to('x', '#', onclick: "removeContentType#{story_type_opportunity.id}(event);", remote: true)
+      -else
+        -content_types = opportunity ? opportunity.content_types.pluck(:name, :id) : []
+        =select :opportunity, :content_type_id, content_types,
+                { include_blank: '' }, { class: 'w-100', onchange: "addContentType#{story_type_opportunity.id}(this.value);" }
+
+  :javascript
+    function addOpportunity#{story_type_opportunity.id}(value) {
+      if(value.length === 0) return false;
+
+      let params = `st_opportunity[action]=${encodeURIComponent('add opportunity')}&` +
+                   `st_opportunity[opportunity_id]=${encodeURIComponent(value)}`;
+
+      setStoryTypeOpportunityData#{story_type_opportunity.id}(params);
+    }
+
+    function removeOpportunity#{story_type_opportunity.id}(event) {
+      event.preventDefault();
+
+      let params = `st_opportunity[action]=${encodeURIComponent('remove opportunity')}`;
+
+      setStoryTypeOpportunityData#{story_type_opportunity.id}(params);
+    }
+
+
+
+
+    function addOpportunityType#{story_type_opportunity.id}(value) {
+      if(value.length === 0) return false;
+
+      let params = `st_opportunity[action]=${encodeURIComponent('add opportunity type')}&` +
+                   `st_opportunity[opportunity_type_id]=${encodeURIComponent(value)}`;
+
+      setStoryTypeOpportunityData#{story_type_opportunity.id}(params);
+    }
+
+    function removeOpportunityType#{story_type_opportunity.id}(event) {
+      event.preventDefault();
+
+      let params = `st_opportunity[action]=${encodeURIComponent('remove opportunity type')}`;
+
+      setStoryTypeOpportunityData#{story_type_opportunity.id}(params);
+    }
+
+
+
+
+    function addContentType#{story_type_opportunity.id}(value) {
+      if(value.length === 0) return false;
+
+      let params = `st_opportunity[action]=${encodeURIComponent('add content type')}&` +
+                   `st_opportunity[content_type_id]=${encodeURIComponent(value)}`;
+
+      setStoryTypeOpportunityData#{story_type_opportunity.id}(params);
+    }
+
+    function removeContentType#{story_type_opportunity.id}(event) {
+      event.preventDefault();
+
+      let params = `st_opportunity[action]=${encodeURIComponent('remove content type')}`;
+
+      setStoryTypeOpportunityData#{story_type_opportunity.id}(params);
+    }
+
+
+
+
+    function setStoryTypeOpportunityData#{story_type_opportunity.id}(params = null) {
+      Rails.ajax({
+        type: "patch",
+        dataType: 'script',
+        url: `/story_types/#{@story_type.id}/opportunities/#{story_type_opportunity.id}`,
+        data: `${params}`
+      })
+    }

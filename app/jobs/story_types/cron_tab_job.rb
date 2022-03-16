@@ -43,20 +43,9 @@ module StoryTypes
 
       return if creation_raise || iteration.story_type.sidekiq_break.reload.cancel
 
-      rd, wr = IO.pipe
-      Process.wait(
-        fork do
-          rd.close
+      not_scheduled = iteration.stories.where(published_at: nil).limit(1).present?
 
-          wr.write({ 'scheduling' => iteration.stories.complete_scheduling? }.to_json)
-          wr.close
-        end
-      )
-      wr.close
-      scheduling = JSON.parse(rd.read)['scheduling']
-      rd.close
-
-      unless scheduling
+      if not_scheduled
         message = "Scheduling didn't complete. Please check passed params to it"
         SlackNotificationJob.perform_now(iteration, 'crontab', message)
         return

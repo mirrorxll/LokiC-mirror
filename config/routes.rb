@@ -132,6 +132,12 @@ Rails.application.routes.draw do
         delete :exclude, on: :member
       end
 
+      resources :default_opportunities do
+        patch :set, on: :collection
+      end
+
+      resources :opportunities
+
       resources :progress_statuses, only: [] do
         patch :change, on: :collection
       end

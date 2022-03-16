@@ -1,0 +1,54 @@
+-st_def_opportunity = story_type_default_opportunity
+-opportunity = story_type_default_opportunity.opportunity
+-client = story_type_default_opportunity.client
+
+%div{ class: "st-def-opp-#{st_def_opportunity.id}" }
+  %hr.m-1/
+  .row.small
+    .col-3
+      =client.name
+    .col-3
+      =select :default_opportunity, :opportunity_id, client.opportunities.pluck(:name, :id),
+              { include_blank: '', selected: st_def_opportunity.opportunity&.id },
+              { class: 'w-100', onchange: "defaultOpportunity#{st_def_opportunity.id}(this.value);" }
+    .col-3
+      -opportunity_types = opportunity ? opportunity.opportunity_types.pluck(:name, :id) : []
+      =select :default_opportunity, :opportunity_type_id, opportunity_types,
+              { include_blank: '', selected: st_def_opportunity.opportunity_type&.id },
+              { class: 'w-100', onchange: "defaultOpportunityType#{st_def_opportunity.id}(this.value);" }
+    .col-3
+      -content_types = opportunity ? opportunity.content_types.pluck(:name, :id) : []
+      =select :default_opportunity, :content_type_id, content_types,
+              { include_blank: '', selected: st_def_opportunity.content_type&.id },
+              { class: 'w-100', onchange: "defaultContentType#{st_def_opportunity.id}(this.value);" }
+
+  :javascript
+    function defaultOpportunity#{st_def_opportunity.id}(value) {
+      let params = `st_default_opportunity[action]=${encodeURIComponent('opportunity')}&` +
+                   `st_default_opportunity[opportunity_id]=${encodeURIComponent(value)}`;
+
+      setStoryTypeDefaultOpportunityData#{st_def_opportunity.id}(params);
+    }
+
+    function defaultOpportunityType#{st_def_opportunity.id}(value) {
+      let params = `st_default_opportunity[action]=${encodeURIComponent('opportunity type')}&` +
+                   `st_default_opportunity[opportunity_type_id]=${encodeURIComponent(value)}`;
+
+      setStoryTypeDefaultOpportunityData#{st_def_opportunity.id}(params);
+    }
+
+    function defaultContentType#{st_def_opportunity.id}(value) {
+      let params = `st_default_opportunity[action]=${encodeURIComponent('content type')}&` +
+                   `st_default_opportunity[content_type_id]=${encodeURIComponent(value)}`;
+
+      setStoryTypeDefaultOpportunityData#{st_def_opportunity.id}(params);
+    }
+
+    function setStoryTypeDefaultOpportunityData#{st_def_opportunity.id}(params = null) {
+      Rails.ajax({
+        type: "patch",
+        dataType: 'script',
+        url: `/story_types/#{@story_type.id}/default_opportunities/#{st_def_opportunity.id}`,
+        data: `${params}`
+      })
+    }
