@@ -38,9 +38,10 @@
 #story_type_template.accordion
   .card.small
     .card-header
-      %div.text-center{"aria-controls" => "#template", "aria-expanded" => "true", "data-target" => "#template", "data-toggle" => "collapse", type: "button"}
+      %div.text-center{ "aria-controls" => "#template_preview", "aria-expanded" => "true",
+                        "data-target" => "#template_preview", "data-toggle" => "collapse", type: "button" }
         template
-    #template.collapse.show{"data-parent" => "#story_type_template"}
+    #template_preview.collapse.show{"data-parent" => "#story_type_template"}
       .card-body.small
         =render 'story_types/template'
 
@@ -95,3 +96,4 @@
         .card-body.small
           =render 'story_types/exports/export'
 %hr.mb-5/
+=render 'story_types/template_modal'
