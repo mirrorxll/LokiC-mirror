@@ -8,6 +8,8 @@ module ArticleTypes
     before_action :render_403, except: :show, if: :developer?
     before_action :update_template, only: %i[update save]
 
+    after_action :send_notification, only: :update, if: -> { @article_type.developer.present? }
+
     def show; end
 
     def edit; end
@@ -20,6 +22,15 @@ module ArticleTypes
 
     def update_template
       Template.find(params[:id]).update!(template_params)
+    end
+
+    def send_notification
+      url     = generate_url(@article_type)
+      channel = @article_type.developer.slack_identifier
+      message = "The template for <#{url}|Article Type ##{@article_type.id}> has been updated by #{current_account.name}." \
+                ' Pay attention and make needed changes in the creation method.'
+
+      ::SlackNotificationJob.perform_now(channel, message)
     end
 
     def template_params
