@@ -53,16 +53,7 @@
       .mt-4
       =render partial: 'article_types/article_type', collection: @article_types
       .mt-4
-
-
-#template.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "template",
-                      role: "dialog", tabindex: "-1", 'data-backdrop' => 'static',  'data-keyboard' => "false" }
-  .modal-dialog.modal-dialog-centered.modal-xl
-    .modal-content
-      .modal-header
-        %h5.modal-title
-      .modal-body
-
+=render 'story_types/template_modal'
 
 :javascript
   (() => {
