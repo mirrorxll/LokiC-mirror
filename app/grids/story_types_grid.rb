@@ -3,7 +3,7 @@
 class StoryTypesGrid
   include Datagrid
 
-  attr_accessor :current_account
+  attr_accessor :current_account, :env
 
   # Scope
   scope do
@@ -53,6 +53,16 @@ class StoryTypesGrid
     client = Client.find(value)
     scope.where('story_type_client_publication_tags.client_id': client)
   end
+  filter(:publication, :enum, multiple: true, left: true, select: Publication.all.pluck(:name, :id)) do |value, scope, grid|
+    if grid.only_exported.present?
+      stories = Story.where(publication: value)&.pluck(:story_type_id)&.uniq
+      scope.where(id: stories)
+    else
+      publication = Publication.find(value)
+      scope.where('story_type_client_publication_tags.publication_id': publication)
+    end
+  end
+  filter(:only_exported, :enum, select: ['Yes (only story types with exports to selected pubs)'], left: true, dummy: true, checkboxes: true)
   filter(:has_updates, :enum, select: ['Not realized', 'Yes', 'No'], left: true) do |value, scope|
     denotations = { 'Yes' => true, 'No' => false }
     if value == 'Not realized'
@@ -63,12 +73,14 @@ class StoryTypesGrid
            .where.not(reminders: { check_updates: false })
     end
   end
-  # filter(:pipline_story_id, :string, left: true) do |value, scope|
-  #   env = %w[development test].include?(Rails.env) ? 'staging' : Rails.env
-  #   scope.where("stories.pl_#{env}_story_id in (#{value})")
-  # end
   filter(:revised, :xboolean, left: true) do |value, scope|
     value ? scope.where.not('templates.revision': nil) : scope.where('templates.revision': nil)
+  end
+  filter(:pipeline_story_id, :string, left: true, multiple: ',', header: 'Pipeline Story ID') do |value, scope, grid|
+    stories = Story.where("stories.pl_#{grid.env}_story_id": value)
+    stories_story_types_ids = stories.pluck(:story_type_id)
+
+    scope.where(id: stories_story_types_ids)
   end
   filter(:condition1, :dynamic, left: false, header: 'Dynamic condition 1')
   filter(:condition2, :dynamic, left: false, header: 'Dynamic condition 2')

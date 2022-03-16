@@ -8,13 +8,14 @@ class DataSetsGrid
   filter(:scrape_task, :xboolean, left: true) do |value, scope|
     value ? scope.where.not(scrape_task: nil) : scope.where(scrape_task: nil)
   end
-
-  filter(:state, :enum, multiple: true, left: true, select: State.all.pluck(:short_name, :full_name, :id).map { |r| [r[0] + ' - ' + r[1], r[2]] })
-  filter(:category, :enum, multiple: true, left: true, select: DataSetCategory.all.order(:name).pluck(:name, :id))
-  filter(:sheriff, :enum, multiple: true, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
-  filter(:condition1, :dynamic, left: false, header: 'Dynamic condition 1')
-  filter(:condition2, :dynamic, left: false, header: 'Dynamic condition 2')
-  column_names_filter(header: 'Extra Columns', left: true, checkboxes: true)
+  filter(:name, :string, header: 'Name(RLIKE)') { |value, scope| scope.where('name RLIKE ?', value) }
+  filter(:location, :string, header: 'Location(RLIKE)') { |value, scope| scope.where('location RLIKE ?', value) }
+  filter(:comment, :string, header: 'Comment(RLIKE)') { |value, scope| scope.where('comment RLIKE ?', value) }
+  filter(:state, :enum, multiple: true, select: State.all.pluck(:short_name, :full_name, :id).map { |r| [r[0] + ' - ' + r[1], r[2]] })
+  filter(:category, :enum, multiple: true, select: DataSetCategory.all.order(:name).pluck(:name, :id))
+  filter(:sheriff, :enum, multiple: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
+  filter(:condition1, :dynamic, header: 'Dynamic condition 1')
+  column_names_filter(header: 'Extra Columns', checkboxes: true)
 
   # Columns
   column(:id, mandatory: true, header: 'ID')
