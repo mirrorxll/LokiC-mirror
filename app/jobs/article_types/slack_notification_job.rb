@@ -2,7 +2,8 @@
 
 module ArticleTypes
   class SlackNotificationJob < ArticleTypesJob
-    def perform(article_type, iteration, step, raw_message, developer = nil)
+    def perform(iteration, step, raw_message, developer = nil)
+      article_type = iteration.article_type
       article_type_dev = developer || article_type.developer
 
       url = generate_url(article_type)

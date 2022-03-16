@@ -11,7 +11,7 @@ module ArticleTypes
     ensure
       iteration.update!(population: nil, purge_population: nil, current_account: account)
       send_to_action_cable(iteration.article_type, :staging_table, message)
-      SlackNotificationJob.perform_now(iteration.article_type, iteration, 'population', message)
+      SlackNotificationJob.perform_now(iteration, 'population', message)
     end
   end
 end

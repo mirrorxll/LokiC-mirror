@@ -58,6 +58,7 @@ module ArticleTypes
     ensure
       iteration.update!(samples: status, current_account: account)
       send_to_action_cable(iteration.article_type, :samples, message)
+      ArticleTypes::SlackNotificationJob.perform_now(iteration, 'samples', message)
     end
   end
 end

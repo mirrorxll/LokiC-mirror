@@ -24,6 +24,12 @@
   .col-10.offset-1
     #fcd_control.small
       =render 'fcd_buttons', account_types: account_types
+%hr/
+
+.row
+  .col-10.offset-1
+    #templatePreviewCollapse.collapse.show
+      =render 'article_types/template_preview'
 
 %hr#reviewers_feedback/
 .row.small
@@ -141,3 +147,4 @@
             #fcd.tab-pane.fade.show.active{"aria-labelledby" => "fcd-tab", role: "tabpanel"}
 
         .d-inline-flex.flex-column.align-top.w-39.h-90
+=render 'story_types/template_modal'
