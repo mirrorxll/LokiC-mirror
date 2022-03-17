@@ -9,7 +9,7 @@ module ArticleTypes
       url = generate_url(article_type)
       progress_step = step.eql?('developer') ? '' : "| #{step.capitalize}"
       developer_name = article_type_dev.name
-      message = "*<#{url}|Article Type ##{article_type.id}> (#{iteration.name}) #{progress_step}"\
+      message = "*<#{url}|Factoid Type ##{article_type.id}> (#{iteration.name}) #{progress_step}"\
                 " | #{developer_name}*\n#{raw_message}".gsub("\n", "\n>")
 
       ::SlackNotificationJob.perform_now('lokic_article_type_messages', message)

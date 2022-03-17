@@ -50,7 +50,7 @@ module ArticleTypes
       developer_pm = @article_type.developer&.slack&.identifier
       return if developer_pm.nil? || fcd_channel.nil?
 
-      message_to_dev = "*[ LokiC ] <#{article_type_url(@article_type)}|Article Type ##{@article_type.id}> (#{@article_type.iteration.name}) | FCD*\n>"
+      message_to_dev = "*[ LokiC ] <#{article_type_url(@article_type)}|Factoid Type ##{@article_type.id}> (#{@article_type.iteration.name}) | FCD*\n>"
 
       if params[:commit].eql?('approve!')
         note = ActionView::Base.full_sanitizer.sanitize(@feedback.body)

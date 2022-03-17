@@ -3,7 +3,7 @@
 module ArticleTypes
   class PurgeCreationJob < ArticleTypesJob
     def perform(iteration, account)
-      message = 'Success. All articles have been removed'
+      message = 'Success. All factoids have been removed'
 
       loop do
         rd, wr = IO.pipe
