@@ -16,6 +16,14 @@ class Client < ApplicationRecord # :nodoc:
   has_and_belongs_to_many :sections
   has_and_belongs_to_many :work_requests
 
+  def mm_or_lgis?
+    name.match?(/MM -/) || name.eql?('LGIS')
+  end
+
+  def mb?
+    name.eql?('Metro Business Network')
+  end
+
   def publications
     if name.eql?('Metric Media')
       mm = Client.where('name LIKE :like', like: 'MM -%')

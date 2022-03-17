@@ -13,4 +13,12 @@ class Publication < ApplicationRecord # :nodoc:
   def tag?(tag)
     tags.to_a.map(&:pl_identifier).include?(tag.pl_identifier)
   end
+
+  def mm_or_lgis?
+    client.name.match?(/MM -/) || client.name.eql?('LGIS')
+  end
+
+  def mb?
+    client.name.eql?('Metro Business Network')
+  end
 end
