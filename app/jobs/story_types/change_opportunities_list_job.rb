@@ -23,26 +23,27 @@ module StoryTypes
         raw_pubs.map { |p| pubs << p unless p.in?(exc_pubs) }
       end
 
-      default_opportunities = story_type.default_opportunities
-      opportunities = story_type.opportunities
+      default_st_opportunities = story_type.default_opportunities
+      st_opportunities = story_type.opportunities
 
-      default_opportunities.update_all(exist: false)
-      opportunities.update_all(exist: false)
+      default_st_opportunities.update_all(exist: false)
+      st_opportunities.update_all(exist: false)
 
       pubs.map(&:client).uniq.each do |c|
-        next if default_opportunities.find_by(client: c)&.update(exist: true)
+        next if default_st_opportunities.find_by(client: c)&.update(exist: true)
 
         story_type.default_opportunities.create(client: c)
       end
 
+
       pubs.each do |p|
-        next if opportunities.find_by(publication: p)&.update(exist: true)
+        next if st_opportunities.find_by(publication: p)&.update(exist: true)
 
         story_type.opportunities.create(client: p.client, publication: p)
       end
 
-      default_opportunities.where(exist: false).destroy_all
-      opportunities.where(exist: false).destroy_all
+      default_st_opportunities.where(exist: false).destroy_all
+      st_opportunities.where(exist: false).destroy_all
 
       StoryTypeOpportunitiesChannel.broadcast_to(story_type, true)
     end

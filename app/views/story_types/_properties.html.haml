@@ -54,55 +54,10 @@
         %button.close{"aria-label" => "Close", "data-dismiss" => "modal", type: "button"}
           %span{"aria-hidden" => "true"} ×
       .modal-body
-        .properties-form
-
-        %hr/
-
-        .load-opportunities-button
-          .row
-            .col-1
-            .col-2.pl-0.small
-              =button_to('load opportunities', story_type_opportunities_path(@story_type), remote: true)
-            .col-8.default-opportunities.d-none
-              .header.small
-                .row.font-weight-bold
-                  .col-3
-                    client
-                  .col-3
-                    opportunity
-                  .col-3
-                    opportunity type
-                  .col-3
-                    content type
-              .list
-              .small.mt-2
-                =button_to('set default values', set_story_type_default_opportunities_path(@story_type),
-                           method: :patch, remote: true)
-
-        .opportunities.d-none
-          %hr/
-          .header
-            .row.font-weight-bold.small
-              .col-1
-              .col-2.pl-0
-                publication
-              .col-2
-                agency
-              .col-2
-                opportunity
-              .col-2
-                opportunity type
-              .col-2
-                content type
-          .list
-
-        .loadingSpinner.d-none
-          .row
-            .col-10.offset-1
-              .spinner-border.spinner-border-sm.text-secondary
-                %span.sr-only
+        .loadingSpinner
+          .spinner-border.spinner-border-sm.text-secondary
+            %span.sr-only
       .modal-footer
-
 
 =render 'data_sets/modal_data_set'
 =render 'story_types/codes/modal_ruby_code'
