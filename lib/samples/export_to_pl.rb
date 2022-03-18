@@ -30,7 +30,7 @@ module Samples
 
             sample.destroy and next if sample.publication.pl_identifier.in?(forbidden_mb_pubs)
 
-            lead_story_post(sample)
+            lead_story_post(sample, st_opportunities)
             main_semaphore.synchronize { exported += 1 }
           end
         end

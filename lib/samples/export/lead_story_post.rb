@@ -15,10 +15,10 @@ module Samples
         %w[7:00 13:00]  # "Saturday"
       ].freeze
 
-      def lead_story_post(sample)
+      def lead_story_post(sample, st_opportunities)
         exp_config = sample.export_configuration
 
-        lead_id = lead_post(sample, exp_config)
+        lead_id = lead_post(sample, exp_config, st_opportunities)
         story_id = story_post(lead_id, sample, exp_config)
 
         sample.update!(
@@ -55,10 +55,11 @@ module Samples
         end.sections
       end
 
-      def lead_post(sample, exp_config)
+      def lead_post(sample, exp_config, st_opportunities)
         publication = exp_config.publication
         name = "#{sample.headline} -- [#{exp_config.id}."\
                "#{sample.id}::#{Date.today}.#{Time.now.to_i}]"
+        st_opportunity = st_opportunities.find_by(publication: publication)
 
         params = {
           name: name,
@@ -68,7 +69,21 @@ module Samples
         }
 
         response = @pl_client.post_lead(params)
-        JSON.parse(response.body)['id']
+        lead_id = JSON.parse(response.body)['id']
+
+        begin
+          @pl_client.update_lead(
+            lead_id, {
+              opportunity_id: st_opportunity&.opportunity&.id,
+              opportunity_type_id: st_opportunity&.opportunity_type&.id,
+              content_type_id: st_opportunity&.content_type&.id
+            }
+          )
+        rescue StandardError
+          true
+        end
+
+        lead_id
       rescue StandardError => e
         raise Samples::LeadPostError, "[#{e.class}] -> #{e.message} at #{e.backtrace.first}"
       end
