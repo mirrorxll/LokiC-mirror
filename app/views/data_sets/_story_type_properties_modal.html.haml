@@ -1,8 +1,65 @@
-#storyTypePropertiesForm.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "storyTypePropertiesForm", role: "dialog", :tabindex => "-1"}
-  .modal-dialog.modal-dialog-centered.modal-xl
+#storyTypePropertiesForm.modal.fade{ story_type_id: @story_type.id, "aria-hidden" => "true", "aria-labelledby" => "storyTypePropertiesForm", role: "dialog", :tabindex => "-1"}
+  .modal-dialog.modal-dialog-scrollable.modal-xl
     .modal-content
       .modal-header
         %h5.modal-title
         %button.close{"aria-label" => "Close", "data-dismiss" => "modal", type: "button"}
           %span{"aria-hidden" => "true"} ×
       .modal-body
+        .properties-form
+
+        %hr/
+
+        -#.default-opportunities
+          .row.font-weight-bold.small
+            .col-3.offlet-5
+              =select :st_opportunity, :opportunity_id, []
+            .col-2
+              =select :st_opportunity, :opportunity_type_id, []
+            .col-2
+              =select :st_opportunity, :content_type_id, []
+
+
+        .update-opportunities-list-button
+          .row.font-weight-bold.small.small
+            .col-1
+            .col-11.pl-0
+              =button_to('opportunities', story_type_opportunities_path(@story_type), remote: true)
+              =button_to('opportunities', story_type_opportunities_path(@story_type), remote: true)
+
+        .default-opportunities
+          .row.font-weight-bold.small.small
+            .col-3
+            .col-2
+              client
+            .col-3
+              opportunity
+            .col-2
+              opportunity type
+            .col-2
+              content type
+
+
+        .opportunities.d-none
+          %hr/
+          .header
+            .row.font-weight-bold.small
+              .col-1
+              .col-2.pl-0
+                publication
+              .col-2
+                agency
+              .col-3
+                opportunity
+              .col-2
+                opportunity type
+              .col-2
+                content type
+          .list
+
+        .loadingSpinner.d-none
+          .row
+            .col-10.offset-1
+              .spinner-border.spinner-border-sm.text-secondary
+                %span.sr-only
+      .modal-footer

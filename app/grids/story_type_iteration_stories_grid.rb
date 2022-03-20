@@ -28,8 +28,8 @@ class StoryTypeIterationStoriesGrid
   column(:headline, order: 'outputs.headline, samples.id', mandatory: true)
 
   column(:live, header: "Live", mandatory: true) do |model|
-    cond = model.link? && model.published_at <= Date.today
-    link = cond ?  "#{model.publication.home_page}/stories/#{model.pl_story_id}" : '---'
+    cond = model.link? && model.published_at.to_date <= Date.today
+    link = cond ? "#{model.publication.home_page}/stories/#{model.pl_story_id}" : '---'
     format(link) do
       cond ? link_to('live', model.live_link, target:'_blank') : '---'
     end

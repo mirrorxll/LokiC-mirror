@@ -45,8 +45,19 @@
       #cron_tab_panel
         =render 'story_types/cron_tabs/cron_tab'
       %hr/
-%hr/
+
+#storyTypePropertiesForm.modal.fade{ story_type_id: @story_type.id, "aria-hidden" => "true", "aria-labelledby" => "storyTypePropertiesForm", role: "dialog", :tabindex => "-1"}
+  .modal-dialog.modal-dialog-scrollable.modal-xl
+    .modal-content
+      .modal-header
+        %h5.modal-title
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", type: "button"}
+          %span{"aria-hidden" => "true"} ×
+      .modal-body
+        .loadingSpinner
+          .spinner-border.spinner-border-sm.text-secondary
+            %span.sr-only
+      .modal-footer
 
 =render 'data_sets/modal_data_set'
 =render 'story_types/codes/modal_ruby_code'
-=render 'data_sets/story_type_properties_modal'

@@ -30,6 +30,11 @@
   %hr/
   .row
     .col-10.offset-1
+      #templatePreviewCollapse.collapse.show
+        =render 'story_types/template_preview'
+  %hr/
+  .row
+    .col-10.offset-1
       #autoFeedbackCollapse.collapse.show
         =render 'story_types/auto_feedback/form', auto_feedback: @iteration.auto_feedback_confirmations
 
@@ -133,7 +138,7 @@
 
   #manual_feedback_modal.modal.fade.pr-0{ "aria-hidden" => "true", "aria-labelledby" => "manual_feedback_modal_label",
                                           role: "dialog", tabindex: "-1" }
-    .modal-dialog.modal-dialog-centered.modal-dialog-fullscreen.modal-dialog-scrollable
+    .modal-dialog.modal-dialog-centered.modal-fullscreen.modal-dialog-scrollable
       .modal-content
         .modal-header
           .modal-title#manual_feedback_modal_label
@@ -154,3 +159,4 @@
   .row
     .col-12.text-center.alert.alert-danger
       First...confirm all auto-feedback.
+=render 'story_types/template_modal'

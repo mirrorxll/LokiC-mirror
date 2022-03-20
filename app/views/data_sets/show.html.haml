@@ -35,7 +35,6 @@
           %hr.mt-1/
       .story-types-list.mt-4
         =render partial: 'story_types/story_type', collection: @story_types
-      =render 'story_type_properties_modal'
       .mt-4
   #articleTypes.tab-pane.fade{ "aria-labelledby" => "articleTypesTab" }
     .card.border-top-0.rounded-top-0.mb-5
@@ -54,16 +53,7 @@
       .mt-4
       =render partial: 'article_types/article_type', collection: @article_types
       .mt-4
-
-
-#template.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "template",
-                      role: "dialog", tabindex: "-1", 'data-backdrop' => 'static',  'data-keyboard' => "false" }
-  .modal-dialog.modal-dialog-centered.modal-xl
-    .modal-content
-      .modal-header
-        %h5.modal-title
-      .modal-body
-
+=render 'story_types/template_modal'
 
 :javascript
   (() => {

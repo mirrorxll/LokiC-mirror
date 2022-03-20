@@ -18,7 +18,7 @@ class StoryTypesController < ApplicationController # :nodoc:
                    else
                      developer? ? { developer: current_account.id } : {}
                    end
-    @grid_params.merge!(current_account: current_account)
+    @grid_params.merge!({ current_account: current_account, env: env })
 
     @story_types_grid = StoryTypesGrid.new(@grid_params) { |scope| scope.where(archived: false) }
 
@@ -127,5 +127,9 @@ class StoryTypesController < ApplicationController # :nodoc:
   def message
     @key = params[:message][:key].to_sym
     flash.now[@key] = params[:message][@key]
+  end
+
+  def env
+    %w[development test].include?(Rails.env) ? 'staging' : Rails.env
   end
 end

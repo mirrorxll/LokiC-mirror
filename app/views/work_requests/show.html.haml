@@ -135,7 +135,7 @@
 
 #updateWorkRequestModal.modal.fade.pr-0{ "aria-hidden" => "true", "aria-labelledby" => "updateWorkRequestModalLabel",
                                          role: "dialog", tabindex: "-1", 'data-backdrop' => 'static', 'data-keyboard' => 'false' }
-  .modal-dialog.modal-dialog-scrollable.modal-dialog-fullscreen
+  .modal-dialog.modal-dialog-scrollable.modal-fullscreen
     .modal-content
       .modal-header
         .modal-title#updateWorkRequestModalLabel
@@ -175,7 +175,7 @@
 -if (current_account.types & ['manager', 'outside manager']).any?
   #createProjectModal.modal.fade.pr-0{ "aria-hidden" => "true", "aria-labelledby" => "createProjectModalLabel",
                                         role: "dialog", tabindex: "-1", "data-backdrop" => "static", "data-keyboard" => "false" }
-    .modal-dialog.modal-dialog-scrollable.modal-dialog-fullscreen
+    .modal-dialog.modal-dialog-scrollable.modal-fullscreen
       .modal-content
         .modal-header
           .modal-title#createProjectModalLabel
