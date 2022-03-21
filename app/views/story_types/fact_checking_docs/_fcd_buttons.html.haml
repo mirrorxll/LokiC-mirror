@@ -3,8 +3,9 @@
 .btn-group.w-100
   =link_to('edit FCD', edit_story_type_fact_checking_doc_path(@story_type, @fcd),
            class: "btn btn-sm btn-light text-dark #{disabled ? 'disabled' : ''}", remote: true)
-  =link_to('template', story_type_fact_checking_doc_template_path(@story_type, @fcd),
-           class: 'btn btn-sm btn-light text-dark', remote: true)
+  =link_to('template', story_type_template_path(@story_type, @story_type.template),
+           'data-target' => '#templatePreviewCollapse', 'data-toggle' => 'collapse',
+           class: 'btn btn-sm btn-light text-dark')
   =link_to('auto-feedback', '#autoFeedbackCollapse', "aria-controls" => "feedbackCollapse", 'aria-expanded' => 'false',
            'data-target' => '#autoFeedbackCollapse', 'data-toggle' => 'collapse', onclick: 'hideAllPopovers();',
            class: 'btn btn-sm btn-light text-dark')
