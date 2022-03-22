@@ -5,7 +5,7 @@ module ArticleTypes
     def perform(staging_table, iteration, account)
       message = 'Success. Staging Table Rows for current iteration purged'
 
-      Process.wait(fork { staging_table.purge })
+      Process.wait(fork { staging_table.purge_current_iteration })
     rescue StandardError, ScriptError => e
       message = e.message
     ensure
