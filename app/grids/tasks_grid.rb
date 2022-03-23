@@ -84,6 +84,10 @@ class TasksGrid
     end
   end
 
+  column(:created_at, header: 'Created at', mandatory: true) do |task|
+    task.created_at.strftime('%F')
+  end
+
   column(:note, header: 'Your note', mandatory: true) do |task, scope|
     note = task.note(scope.current_account)
 

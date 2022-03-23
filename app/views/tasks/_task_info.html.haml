@@ -46,5 +46,10 @@
           reminder:
         .col-9
           =@task.reminder_frequency ? @task.reminder_frequency.name : 'not set'
+      .row.mb-2
+        .col-3.font-weight-bold
+          created at:
+        .col-9
+          =@task.created_at.strftime('%F')
       #done
         =render 'done', task: @task
