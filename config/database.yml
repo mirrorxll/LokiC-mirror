@@ -25,6 +25,14 @@ prod_default: &prod_default
 dev_default: &dev_default
   username: <%= ENV['LOCAL_DB_USR'] %>
   password: <%= ENV['LOCAL_DB_PWD'] %>
+  host: '127.0.0.1'
+
+limpar_connection: &limpar_connection
+  adapter: postgresql
+  host: limpar.rds.locallabs.com
+  database: limpar
+  username: <%= Rails.application.credentials.postgresql[:user] %>
+  password: <%= Rails.application.credentials.postgresql[:password] %>
 
 development:
   primary:
@@ -42,6 +50,8 @@ development:
     <<: *dev_default
     database: loki_story_creator_dev
     migrations_paths: db/loki_story_creator_migrate
+  limpar_db:
+    <<: *limpar_connection
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -98,3 +108,5 @@ production:
     <<: *prod_default
     database: loki_storycreator
     migrations_paths: db/loki_story_creator_migrate
+  limpar_db:
+    <<: *limpar_connection

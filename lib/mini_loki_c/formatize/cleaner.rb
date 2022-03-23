@@ -224,7 +224,7 @@ module MiniLokiC
             return "Unknown"
           end
         elsif (name.match(BUSINESS_SUFFIX)) || (name.match(BUSINESS) && name.match(UNKNOWN).nil?)
-          return "Organization"
+          return "LimparOrganization"
         else
           return "Unknown"
         end
