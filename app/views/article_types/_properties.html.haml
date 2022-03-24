@@ -7,6 +7,19 @@
       .col-12
         -if current_account.types.include?('manager')
           =link_to @article_type.data_set.name, data_set_path(@article_type.data_set), class: 'no-link'
+          .d-inline-block.mr-2.ml-2{id: "story_type_#{@article_type.id}_properties"}
+            -# =link_to(icon('fa', 'sliders'), story_type_properties_form_path(@story_type), remote: true)
+            %button{ onclick: 'loadEditForm(this);', type: 'button', class: 'p-0 pb-1 btn btn-sm btn-link ml-2', 'data-toggle' => "modal", 'data-target' => "#storyTypePropertiesForm" }
+              =icon('fa', 'sliders')
+            :javascript
+              function loadEditForm(button) {
+                button.onclick = null;
+                Rails.ajax({
+                  type: "GET",
+                  dataType: 'script',
+                  url: `#{article_type_properties_form_path(@article_type)}`
+                })
+              }
         -else
           =@article_type.data_set.name
         =link_to icon('fa', 'fa fa-info-circle'), properties_data_set_path(@article_type.data_set), remote: true
@@ -32,6 +45,18 @@
       =render 'article_types/codes/section'
     %hr/
 %hr/
+#articleTypePropertiesForm.modal.fade{ article_type_id: @article_type.id, "aria-hidden" => "true", "aria-labelledby" => "articleTypePropertiesForm", role: "dialog", :tabindex => "-1"}
+  .modal-dialog.modal-dialog-scrollable.modal-xl
+    .modal-content
+      .modal-header
+        %h5.modal-title
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", type: "button"}
+          %span{"aria-hidden" => "true"} ×
+      .modal-body
+        .loadingSpinner
+          .spinner-border.spinner-border-sm.text-secondary
+            %span.sr-only
+      .modal-footer
 
 =render 'data_sets/modal_data_set'
 =render 'article_types/codes/modal_ruby_code'

@@ -1,9 +1,9 @@
 .current_data_set
-  =link_to(@story_type.data_set.name, @story_type.data_set)
+  =link_to(@article_type.data_set.name, @article_type.data_set)
   =link_to('x', '#')
 .change_data_set_form.d-none
-  =form_with(url: change_data_set_story_type_path(@story_type), method: :patch, html: { onchange: "Rails.fire(this, 'submit')"}) do |f|
-    =f.collection_select 'story_type[data_set_id]', DataSet.order(name: :asc), :id, :name, selected: @story_type.data_set.id
+  =form_with(url: change_data_set_story_type_path(@article_type), method: :patch, html: { onchange: "Rails.fire(this, 'submit')"}) do |f|
+    =f.collection_select 'story_type[data_set_id]', DataSet.order(name: :asc), :id, :name, selected: @article_type.data_set.id
     =f.hidden_field 'current_data_set_page_id'
 
 :javascript
