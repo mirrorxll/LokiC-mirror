@@ -1,1 +1,1 @@
-LIMPAR_DB = ActiveRecord::Base.configurations['limpar_db']
+LIMPAR_DB = ActiveRecord::Base.configurations['limpar_connection']

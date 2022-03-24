@@ -6,6 +6,7 @@ class Article < ApplicationRecord
 
   belongs_to :article_type
   belongs_to :iteration, class_name: 'ArticleTypeIteration', foreign_key: :article_type_iteration_id
+  # belongs_to :topic, class_name:  'LimparTopic', foreign_key: :topic_id
 
   has_one :output, class_name: 'ArticleOutput', dependent: :destroy
 

@@ -50,8 +50,6 @@ development:
     <<: *dev_default
     database: loki_story_creator_dev
     migrations_paths: db/loki_story_creator_migrate
-  limpar_db:
-    <<: *limpar_connection
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -108,5 +106,3 @@ production:
     <<: *prod_default
     database: loki_storycreator
     migrations_paths: db/loki_story_creator_migrate
-  limpar_db:
-    <<: *limpar_connection
