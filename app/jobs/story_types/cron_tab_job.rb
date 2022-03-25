@@ -164,9 +164,6 @@ module StoryTypes
         SlackNotificationJob.perform_now(cron_tab_iteration, 'crontab', e.message)
       end
 
-      GC.compact
-      return 
-
       cron_tab_iteration.update!(export: export_status, current_account: account)
       return if !export_status || cron_tab_iteration.story_type.sidekiq_break.reload.cancel
 

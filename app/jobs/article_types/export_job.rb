@@ -12,27 +12,7 @@ module ArticleTypes
       iteration.update!(last_export_batch_size: nil)
 
       loop do
-        rd, wr = IO.pipe
-
-        Process.wait(
-          fork do
-            rd.close
-            Samples[PL_TARGET].export!(iteration, threads_count)
-          rescue StandardError, ScriptError => e
-            wr.write({ e.class.to_s => e.message }.to_json)
-          ensure
-            wr.close
-          end
-        )
-
-        wr.close
-        exception = rd.read
-        rd.close
-
-        if exception.present?
-          klass, message = JSON.parse(exception).to_a.first
-          raise Object.const_get(klass), message
-        end
+        Samples[PL_TARGET].export!(iteration, threads_count)
 
         last_export_batch = iteration.reload.last_export_batch_size.zero?
         break if last_export_batch

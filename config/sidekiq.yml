@@ -1,5 +1,6 @@
 :dynamic: true
 :concurrency: 50
+:pidfile: tmp/pids/sidekiq.pid
 
 :queues:
   - active_storage_analysis
