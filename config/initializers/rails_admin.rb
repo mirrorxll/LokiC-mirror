@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 RailsAdmin.config do |config|
+  config.asset_source = :webpacker
   config.main_app_name = proc { |c| ['LokiC', c.params[:action].try(:titleize)] }
   ### Popular gems integration
 

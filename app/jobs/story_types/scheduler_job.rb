@@ -9,42 +9,22 @@ module StoryTypes
       story_type.sidekiq_break.update!(cancel: false)
       options[:account] ||= story_type.developer
 
-      rd, wr = IO.pipe
+      samples = iteration.stories
 
-      Process.wait(
-        fork do
-          rd.close
-          samples = iteration.stories
-
-          case type
-          when :manual
-            MiniLokiC::Creation::Scheduler::Base.run_schedule(samples, manual_params(options[:params]))
-          when :backdate
-            MiniLokiC::Creation::Scheduler::Backdate.backdate_scheduler(samples, backdate_params(options[:params]))
-          when :auto
-            MiniLokiC::Creation::Scheduler::Auto.run_auto(samples, auto_params(options[:params]))
-          when :"run-from-code"
-            MiniLokiC::Creation::Scheduler::FromCode.run_from_code(samples, options[:params])
-          when :"press_release"
-            MiniLokiC::Creation::Scheduler::PressRelease.run(samples)
-          end
-
-          record_to_change_history(story_type, 'scheduled', type, options[:account])
-        rescue StandardError, ScriptError => e
-          wr.write({ e.class.to_s => e.message }.to_json)
-        ensure
-          wr.close
-        end
-      )
-
-      wr.close
-      exception = rd.read
-      rd.close
-
-      if exception.present?
-        klass, message = JSON.parse(exception).to_a.first
-        raise Object.const_get(klass), message
+      case type
+      when :manual
+        MiniLokiC::Creation::Scheduler::Base.run_schedule(samples, manual_params(options[:params]))
+      when :backdate
+        MiniLokiC::Creation::Scheduler::Backdate.backdate_scheduler(samples, backdate_params(options[:params]))
+      when :auto
+        MiniLokiC::Creation::Scheduler::Auto.run_auto(samples, auto_params(options[:params]))
+      when :"run-from-code"
+        MiniLokiC::Creation::Scheduler::FromCode.run_from_code(samples, options[:params])
+      when :press_release
+        MiniLokiC::Creation::Scheduler::PressRelease.run(samples)
       end
+
+      record_to_change_history(story_type, 'scheduled', type, options[:account])
 
       status = true if iteration.reload.stories.where(published_at: nil).none?
 

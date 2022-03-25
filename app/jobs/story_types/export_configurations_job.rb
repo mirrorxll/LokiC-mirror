@@ -3,17 +3,6 @@
 module StoryTypes
   class ExportConfigurationsJob < StoryTypesJob
     def perform(story_type, account, manual = false)
-      if manual
-        pid = fork { create_update_export_config(story_type, account, manual) }
-        Process.wait(pid)
-      else
-        create_update_export_config(story_type, account, manual)
-      end
-    end
-
-    private
-
-    def create_update_export_config(story_type, account, manual)
       status = true
       message = 'Success. Export configurations created'
       exp_config_counts = {}
@@ -48,6 +37,8 @@ module StoryTypes
         StoryTypes::SlackNotificationJob.perform_now(iteration, 'export configurations', message)
       end
     end
+
+    private
 
     def sort_weight(st_cl_pub_tg)
       # st_cl_pubs with pub
