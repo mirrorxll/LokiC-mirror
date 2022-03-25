@@ -126,7 +126,7 @@ module StoryTypes
       counts[:total] = cron_tab_iteration.stories.count
 
       unless counts[:total].zero?
-        cron_tab_iteration.story_type.clients_publications_tags.each_with_object(counts) do |row, obj|
+        counts = cron_tab_iteration.story_type.clients_publications_tags.each_with_object(counts) do |row, obj|
           client = row.client
           pubs = client.publications
           counts = pubs.joins(:stories).where(stories: { iteration: cron_tab_iteration })
@@ -159,7 +159,7 @@ module StoryTypes
           break if cron_tab_iteration.reload.last_export_batch_size.zero?
         end
         SlackNotificationJob.perform_now(cron_tab_iteration, 'crontab', 'Export success. Make sure that all stories are exported')
-      rescue StandardError
+      rescue StandardError => e
         export_status = nil
         SlackNotificationJob.perform_now(cron_tab_iteration, 'crontab', e.message)
       end
@@ -186,8 +186,6 @@ module StoryTypes
       record_to_change_history(story_type, 'exported to pipeline', note, account)
 
       story_type.sidekiq_break.update!(cancel: false)
-
-
     rescue StandardError, ScriptError => e
       message = "[ CronTabExecutionError ] -> #{e.message}#{" at #{e.backtrace.first}"}".gsub('`', "'")
       SlackNotificationJob.perform_now(cron_tab_iteration, 'crontab', message)
