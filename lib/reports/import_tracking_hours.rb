@@ -7,6 +7,7 @@ module Reports
     def self.from_google_drive(url, title = nil, range = nil, developer, week)
       session = GoogleDrive::Session.from_config("config/google_drive.json")
       spreadsheet = session.spreadsheet_by_url("#{url}")
+
       ws = if title.nil?
              spreadsheet.worksheets[0]
            else
@@ -36,6 +37,7 @@ module Reports
     ensure
       rows_reports = TrackingHour.where(developer: developer, week: week)
       return if rows_reports.empty?
+
       Reports::HoursAsm.q(rows_reports)
       return rows_reports.order(:date).map do |dev_hours|
         {

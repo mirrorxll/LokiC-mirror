@@ -15,7 +15,7 @@
     %div{ id: "link_assembled_#{@week.id}" }
       -if @link
         -if @link.in_process
-          =render 'story_types/spinner', description: '' if @link
+          =render 'press_release_reports/spinner', description: '' if @link
         -else
           =render 'link', link: @link
 #assembleds.w-100
@@ -64,5 +64,5 @@
 
 :javascript
   $('#google_sheets').click(function () {
-    $(`#link_assembled_#{raw @week.id}`).html("#{j render 'story_types/spinner', description: ''}")
+    $(`#link_assembled_#{raw @week.id}`).html("#{j render 'press_release_reports/spinner', description: ''}")
   });
