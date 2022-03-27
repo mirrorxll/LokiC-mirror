@@ -3,10 +3,19 @@
     .col-1
     .col-11
       .row.font-weight-bold
-        .col-6.pl-0
+        .col-4.pl-0
           data set
-        .col-6
-          =@article_type.topic.kind
+        .col-4
+          kind
+        .col-4
+          limpar
       .row
-        .col-6.change-ds-form.pl-0
+        .col-4.change-ds-form.pl-0
           =render 'change_data_set'
+        .col-4.change-ds-form.pl-0
+          =form_with(url: change_article_type_topics_path(@article_type), method: :patch, html: { onchange: "Rails.fire(this, 'submit')" }) do |form|
+            =form.collection_select :topic_id, Topic.all.sort_by { |x| [x.kind, x.description] }, :id, :kind_description, selected: @article_type.topic.id
+            -# =form.select :kind, %w[Person Organization Geo], selected: @article_type.topic.kind
+        .col-4.change-ds-form.pl-0
+
+

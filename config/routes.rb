@@ -326,6 +326,10 @@ Rails.application.routes.draw do
           delete :purge,   on: :collection
         end
       end
+
+      resources :topics, only: [] do
+        patch :change, on: :collection
+      end
     end
   end
 
