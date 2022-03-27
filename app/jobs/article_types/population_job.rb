@@ -9,31 +9,10 @@ module ArticleTypes
       article_type = iteration.article_type
       population_args = population_args_to_hash(options[:population_args])
 
-      rd, wr = IO.pipe
+      MiniLokiC::ArticleTypeCode[article_type].execute(:population, population_args)
 
-      Process.wait(
-        fork do
-          rd.close
-
-          MiniLokiC::ArticleTypeCode[article_type].execute(:population, population_args)
-
-          unless article_type.status.name.in?(['in progress', 'on cron'])
-            article_type.update!(status: Status.find_by(name: 'in progress'), current_account: account)
-          end
-        rescue StandardError, ScriptError => e
-          wr.write({ e.class.to_s => e.message }.to_json)
-        ensure
-          wr.close
-        end
-      )
-
-      wr.close
-      exception = rd.read
-      rd.close
-
-      if exception.present?
-        klass, message = JSON.parse(exception).to_a.first
-        raise Object.const_get(klass), message
+      unless article_type.status.name.in?(['in progress', 'on cron'])
+        article_type.update!(status: Status.find_by(name: 'in progress'), current_account: account)
       end
 
       true

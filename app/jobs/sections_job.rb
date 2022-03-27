@@ -4,20 +4,16 @@ class SectionsJob < ApplicationJob
   queue_as :lokic
 
   def perform
-    Process.wait(
-      fork do
-        PipelineReplica[:production].get_sections.each do |raw_section|
-          section = Section.find_or_initialize_by(pl_identifier: raw_section['id'])
-          section.name = raw_section['name']
-          section.save!
-          section.touch
+    PipelineReplica[:production].get_sections.each do |raw_section|
+      section = Section.find_or_initialize_by(pl_identifier: raw_section['id'])
+      section.name = raw_section['name']
+      section.save!
+      section.touch
 
-          clients_section(section)
-        end
+      clients_section(section)
+    end
 
-        Section.where('DATE(updated_at) < DATE(created_at)').delete_all
-      end
-    )
+    Section.where('DATE(updated_at) < DATE(created_at)').delete_all
   end
 
   private
