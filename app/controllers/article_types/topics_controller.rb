@@ -6,17 +6,20 @@ module ArticleTypes
     skip_before_action :set_story_type_iteration
 
     before_action :render_403, if: :editor?
-    before_action :find_topic
+    before_action :find_topic, only: :change
 
     def change
       @article_type.update!(topic: @topic, current_account: current_account)
     end
 
+    def get_descriptions
+      @topics = Topic.where(kind: params[:kind])
+    end
+
     private
 
     def find_topic
-      @topic = Topic.find(params[:topic_id])
+      @topic = Topic.find(params[:id])
     end
   end
 end
-

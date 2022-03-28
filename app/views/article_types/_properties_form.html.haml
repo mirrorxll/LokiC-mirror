@@ -3,19 +3,62 @@
     .col-1
     .col-11
       .row.font-weight-bold
-        .col-4.pl-0
+        .col-3.pl-0
           data set
-        .col-4
+        .col-3
           kind
-        .col-4
+        .col-3
+          descriptions
+        .col-3
           limpar
       .row
-        .col-4.change-ds-form.pl-0
+        .col-3.change-ds-form.pl-0
           =render 'change_data_set'
-        .col-4.change-ds-form.pl-0
-          =form_with(url: change_article_type_topics_path(@article_type), method: :patch, html: { onchange: "Rails.fire(this, 'submit')" }) do |form|
-            =form.collection_select :topic_id, Topic.all.sort_by { |x| [x.kind, x.description] }, :id, :kind_description, selected: @article_type.topic.id
-            -# =form.select :kind, %w[Person Organization Geo], selected: @article_type.topic.kind
-        .col-4.change-ds-form.pl-0
+        .col-3.change-ds-form.pl-0
+          =form_with(html: { onchange: "loadDescriptions(this);" }) do |form|
+            =form.select :kind, %w[Person Organization Geo], selected: @article_type.topic.kind
+        .col-3.change-ds-form.pl-0
+          =form_with(html: { onchange: "changeTopic(this);" }) do |form|
+            =form.select :description, [], prompt: 'Select Kind'
+        .col-3.change-ds-form.pl-0
+          =form_with(html: { onchange: "setLimparId(this);" }) do |form|
+            =form.select :limpar, [], prompt: 'Select Kind'
 
+:javascript
+  function loadDescriptions(elem){
+    var selected_kind = $('option:selected', elem).val();
 
+    Rails.ajax({
+      type: 'GET',
+      dataType: 'script',
+      url: `#{get_descriptions_article_type_topics_path(@article_type.id)}`,
+      data: `kind=${selected_kind}`,
+      success: () => {
+        loadLimparData();
+      }
+    });
+  }
+
+  function changeTopic(elem){
+    var selected_desc = $('option:selected', elem).val();
+
+    Rails.ajax({
+      type: 'PATCH',
+      dataType: 'script',
+      url: `${window.location.origin}/article_types/#{@article_type.id}/topics/${selected_desc}/change`
+    });
+  }
+
+  function loadLimparData(){
+    var selected_kind = $('#kind').val();
+    Rails.ajax({
+      type: 'GET',
+      dataType: 'script',
+      url: `#{get_limpar_data_limpar_records_path}`,
+      data: `kind=${selected_kind}`
+    });
+  }
+
+  function setLimparId(){
+
+  }

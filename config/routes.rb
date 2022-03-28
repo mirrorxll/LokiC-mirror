@@ -328,7 +328,8 @@ Rails.application.routes.draw do
       end
 
       resources :topics, only: [] do
-        patch :change, on: :collection
+        patch :change, on: :member
+        get :get_descriptions, on: :collection
       end
     end
   end
@@ -431,5 +432,11 @@ Rails.application.routes.draw do
   resources :images, only: [] do
     post :upload,   on: :collection
     get  :download, on: :collection
+  end
+
+  resources :limpar_records do
+    collection do
+      get 'get_limpar_data', to: "limpar_records#get_limpar_data"
+    end
   end
 end
