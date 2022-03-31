@@ -27,13 +27,6 @@ dev_default: &dev_default
   password: <%= ENV['LOCAL_DB_PWD'] %>
   host: '127.0.0.1'
 
-limpar_connection: &limpar_connection
-  adapter: postgresql
-  host: limpar.rds.locallabs.com
-  database: limpar
-  username: <%= Rails.application.credentials.postgresql[:user] %>
-  password: <%= Rails.application.credentials.postgresql[:password] %>
-
 development:
   primary:
     <<: *default

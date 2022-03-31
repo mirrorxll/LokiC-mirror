@@ -9,7 +9,7 @@
           =link_to @article_type.data_set.name, data_set_path(@article_type.data_set), class: 'no-link'
           .d-inline-block.mr-2.ml-2{id: "story_type_#{@article_type.id}_properties"}
             -# =link_to(icon('fa', 'sliders'), story_type_properties_form_path(@story_type), remote: true)
-            %button{ onclick: 'loadEditForm(this);', type: 'button', class: 'p-0 pb-1 btn btn-sm btn-link ml-2', 'data-toggle' => "modal", 'data-target' => "#storyTypePropertiesForm" }
+            %button{ onclick: 'loadEditForm(this);', type: 'button', class: 'p-0 pb-1 btn btn-sm btn-link ml-2', 'data-toggle' => "modal", 'data-target' => "#articleTypePropertiesForm" }
               =icon('fa', 'sliders')
             :javascript
               function loadEditForm(button) {
@@ -45,6 +45,7 @@
       =render 'article_types/codes/section'
     %hr/
 %hr/
+
 #articleTypePropertiesForm.modal.fade{ article_type_id: @article_type.id, "aria-hidden" => "true", "aria-labelledby" => "articleTypePropertiesForm", role: "dialog", :tabindex => "-1"}
   .modal-dialog.modal-dialog-scrollable.modal-xl
     .modal-content
