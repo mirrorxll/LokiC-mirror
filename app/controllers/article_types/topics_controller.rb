@@ -13,7 +13,8 @@ module ArticleTypes
     end
 
     def get_descriptions
-      @topics = Topic.where(kind: params[:kind])
+      kind    = %w[State County].include?(params[:kind]) ? 'Geo' : params[:kind]
+      @topics = Topic.where(kind: kind)
     end
 
     private

@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class ArticleType < ApplicationRecord
+  KIND_TYPES = %i[Person Organization State County].freeze
+
+  enum topic_kind: KIND_TYPES
+
   after_create do
     create_template
     create_fact_checking_doc

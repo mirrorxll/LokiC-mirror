@@ -96,9 +96,13 @@ class ArticleTypesController < ApplicationController
       current_account: current_account
     }
   end
-
   def exist_article_type_params
-    attrs = params.require(:article_type).permit(:name, :source_type, :source_name, :source_link)
+    attrs = params.require(:article_type).permit(:name,
+                                                 :topic_kind,
+                                                 :source_type,
+                                                 :source_name,
+                                                 :source_link,
+                                                 :original_publish_date)
     attrs[:current_account] = current_account
     attrs
   end

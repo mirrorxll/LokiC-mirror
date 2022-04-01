@@ -13,8 +13,8 @@
         .col-4.change-ds-form.pl-0
           =render 'change_data_set'
         .col-4.pl-0
-          =form_with(html: { onchange: "loadDescriptions(this);" }) do |form|
-            =form.select :kind, %w[Person Organization Geo], prompt: 'Select Kind', selected: @article_type&.topic&.kind
+          =form_with(model: @article_type, html: { onchange: "loadDescriptions(this);" }) do |form|
+            =form.select :topic_kind, ArticleType::KIND_TYPES, prompt: 'Select Kind', selected: @article_type&.topic_kind
         .col-4.pl-0
           =form_with(html: { onchange: "changeTopic(this);" }) do |form|
             -if @article_type.topic
@@ -27,25 +27,30 @@
     .col-1
     .col-11
       .row.font-weight-bold
-        .col-4.pl-0
+        .col-3.pl-0
           source type
-        .col-4
+        .col-3
           source name
-        .col-4
+        .col-3
           source link
+        .col-3
+          original publish date
       =form_with(model: @article_type) do |form|
         .row
-          .col-4.pl-0
+          .col-3.pl-0
             =form.text_field :source_type, placeholder: 'new source_type'
-          .col-4.pl-0
+          .col-3.pl-0
             =form.text_field :source_name, placeholder: 'new source_name'
-          .col-4.pl-0
+          .col-3.pl-0
             =form.text_field :source_link, placeholder: 'new source_link'
+          .col-3.pl-0
+            =form.date_field :original_publish_date, placeholder: 'new original_publish_date'
             =form.submit :save
 
 :javascript
-  function loadDescriptions(elem){
-    var selected_kind = $('option:selected', elem).val();
+  function loadDescriptions(form){
+    var selected_kind = $('option:selected', form).val();
+    Rails.fire(form, 'submit')
 
     Rails.ajax({
       type: 'GET',
