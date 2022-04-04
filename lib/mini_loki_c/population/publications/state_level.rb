@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'query/state_level.rb'
-
 module MiniLokiC
   module Population
     module Publications

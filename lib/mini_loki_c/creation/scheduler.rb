@@ -1,11 +1,5 @@
 # frozen_string_literal: true
 
-require_relative '../../mini_loki_c/connect/mysql.rb'
-require_relative 'scheduler/base.rb'
-require_relative 'scheduler/backdate.rb'
-require_relative 'scheduler/auto.rb'
-require_relative 'scheduler/press_release.rb'
-
 module MiniLokiC
   module Creation
     module Scheduler

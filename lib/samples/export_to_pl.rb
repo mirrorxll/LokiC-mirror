@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'export/lead_story_post.rb'
-
 module Samples
   class ExportToPl
     include Export::LeadStoryPost
