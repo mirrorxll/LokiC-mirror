@@ -1,5 +1,6 @@
 :dynamic: true
-:concurrency: 20
+:dynamic_every: 60
+:concurrency: 30
 :pidfile: tmp/pids/sidekiq.pid
 
 :queues:
