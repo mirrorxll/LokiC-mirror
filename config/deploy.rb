@@ -34,15 +34,17 @@ append :linked_files, 'config/master.key', 'config/google_drive.json'
 
 namespace :sidekiq do
   task :restart do
-    invoke 'sidekiq:stop'
-    invoke 'sidekiq:start'
+    on roles(:app) do
+      within current_path do
+        execute 'sudo systemctl restart sidekiq-lokic'
+      end
+    end
   end
 
   task :stop do
     on roles(:app) do
       within current_path do
-        execute 'tmux send-keys -t sidekiq-tmux.0 ^C ENTER'
-        sleep(10)
+        execute 'sudo systemctl stop sidekiq-lokic'
       end
     end
   end
@@ -50,35 +52,7 @@ namespace :sidekiq do
   task :start do
     on roles(:app) do
       within current_path do
-        execute "tmux send-keys -t sidekiq-tmux.0 'cd' ENTER"
-        execute "tmux send-keys -t sidekiq-tmux.0 'cd LokiC/current' ENTER"
-        execute "tmux send-keys -t sidekiq-tmux.0 'bundle exec sidekiq -e #{fetch(:stage)} -C config/sidekiq.yml' ENTER"
-      end
-    end
-  end
-end
-
-namespace :sidekiq_cron do
-  task :restart do
-    invoke 'sidekiq_cron:stop'
-    invoke 'sidekiq_cron:start'
-  end
-
-  task :stop do
-    on roles(:app) do
-      within current_path do
-        execute 'tmux send-keys -t sidekiq-cron-tmux.0 ^C ENTER'
-        sleep(10)
-      end
-    end
-  end
-
-  task :start do
-    on roles(:app) do
-      within current_path do
-        execute "tmux send-keys -t sidekiq-cron-tmux.0 'cd' ENTER"
-        execute "tmux send-keys -t sidekiq-cron-tmux.0 'cd LokiC/current' ENTER"
-        execute "tmux send-keys -t sidekiq-cron-tmux.0 'bundle exec sidekiq -e #{fetch(:stage)} -C config/sidekiq_cron.yml' ENTER"
+        execute 'sudo systemctl start sidekiq-lokic'
       end
     end
   end
