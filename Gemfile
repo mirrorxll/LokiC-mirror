@@ -7,7 +7,7 @@ ruby '2.7.1'
 
 gem 'dotenv-rails'
 
-gem 'rails_admin', git: 'https://github.com/sferik/rails_admin.git'
+gem 'rails_admin', '~> 3.0'
 
 # front-end
 gem 'devise'

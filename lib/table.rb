@@ -41,7 +41,7 @@ module Table # :nodoc:
   end
 
   # purge rows that were inserted to staging table
-  def purge_last_iteration(t_name)
+  def purge_current_iteration(t_name)
     curr_iter = curr_iter_id(t_name)
     del_query = delete_query(t_name, curr_iter)
     loki_story_creator { |conn| conn.exec_query(del_query) }

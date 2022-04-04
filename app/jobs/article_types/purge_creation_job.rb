@@ -6,28 +6,7 @@ module ArticleTypes
       message = 'Success. All articles have been removed'
 
       loop do
-        rd, wr = IO.pipe
-
-        Process.wait(
-          fork do
-            rd.close
-
-            iteration.articles.limit(10_000).destroy_all
-          rescue StandardError, ScriptError => e
-            wr.write({ e.class.to_s => e.message }.to_json)
-          ensure
-            wr.close
-          end
-        )
-
-        wr.close
-        exception = rd.read
-        rd.close
-
-        if exception.present?
-          klass, message = JSON.parse(exception).to_a.first
-          raise Object.const_get(klass), message
-        end
+        iteration.articles.limit(10_000).destroy_all
 
         break if iteration.articles.reload.blank?
       end

@@ -55,8 +55,12 @@ class StagingTable < ApplicationRecord # :nodoc:
     Table.publication_ids(name, pub_ids)
   end
 
-  def purge
-    Table.purge_last_iteration(name)
+  def purge_current_iteration
+    Table.purge_current_iteration(name)
+  end
+
+  def iteration_rows_absent?(iteration)
+    Table.rows_absent?(name, iteration.id)
   end
 
   private

@@ -4,42 +4,38 @@ class ClientsTagsJob < ApplicationJob
   queue_as :lokic
 
   def perform
-    Process.wait(
-      fork do
-        Client.all.each do |client|
-          tags = client.publications.to_a.flat_map { |pub| pub.tags.to_a }.uniq
+    Client.all.each do |client|
+      tags = client.publications.to_a.flat_map { |pub| pub.tags.to_a }.uniq
 
-          tags.each do |tag|
-            if !client.tags.exists?(tag.id)
-              client.tags << tag
-            else
-              ClientTag.find_by(client: client, tag: tag)&.touch
-            end
-          end
-        end
-
-        mm_generic = Client.find_by(name: 'Metric Media')
-        mm_by_state = Client.where('name LIKE :query', query: 'MM -%').to_a
-
-        mm_by_state.each do |mm_state|
-          mm_state.tags.each do |tag|
-            if !mm_generic.tags.exists?(tag.id)
-              mm_generic.tags << tag
-            else
-              ClientTag.find_by(client: mm_state, tag: tag)&.touch
-            end
-          end
-        end
-
-        ClientTag.where('DATE(updated_at) < CURRENT_DATE()').destroy_all
-
-        ClientTag.all.each do |ct|
-          ct.delete and next if ct.client.nil? || ct.tag.nil?
-
-          update_tags_for_pubs(ct, mm_by_state)
+      tags.each do |tag|
+        if !client.tags.exists?(tag.id)
+          client.tags << tag
+        else
+          ClientTag.find_by(client: client, tag: tag)&.touch
         end
       end
-    )
+    end
+
+    mm_generic = Client.find_by(name: 'Metric Media')
+    mm_by_state = Client.where('name LIKE :query', query: 'MM -%').to_a
+
+    mm_by_state.each do |mm_state|
+      mm_state.tags.each do |tag|
+        if !mm_generic.tags.exists?(tag.id)
+          mm_generic.tags << tag
+        else
+          ClientTag.find_by(client: mm_state, tag: tag)&.touch
+        end
+      end
+    end
+
+    ClientTag.where('DATE(updated_at) < CURRENT_DATE()').destroy_all
+
+    ClientTag.all.each do |ct|
+      ct.delete and next if ct.client.nil? || ct.tag.nil?
+
+      update_tags_for_pubs(ct, mm_by_state)
+    end
   end
 
   private

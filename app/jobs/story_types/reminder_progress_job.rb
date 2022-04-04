@@ -3,44 +3,40 @@
 module StoryTypes
   class ReminderProgressJob < StoryTypesJob
     def perform(story_types = StoryType.all)
-      Process.wait(
-        fork do
-          account = Account.find_by(email: 'main@lokic.loc')
+      account = Account.find_by(email: 'main@lokic.loc')
 
-          story_types.each do |st_type|
-            sleep(rand)
+      story_types.each do |st_type|
+        sleep(rand)
 
-            next if st_type.developer.nil? || st_type.status.name.in?(%w[canceled blocked done archived])
+        next if st_type.developer.nil? || st_type.status.name.in?(%w[canceled blocked done archived])
 
-            active = true
-            old_status = st_type.status.name
-            distributed_gap = (Date.today - st_type.distributed_at.to_date).to_i
-            last_status_change_gap = (Date.today - st_type.last_status_changed_at.to_date).to_i
-            created_at_gap = (Date.today - st_type.created_at.to_date).to_i
+        active = true
+        old_status = st_type.status.name
+        distributed_gap = (Date.today - st_type.distributed_at.to_date).to_i
+        last_status_change_gap = (Date.today - st_type.last_status_changed_at.to_date).to_i
+        created_at_gap = (Date.today - st_type.created_at.to_date).to_i
 
-            # not migrated story type not started more than seven days
-            if st_type.status.name.in?(['not started']) && distributed_gap > 7 && !st_type.migrated
-              message(st_type, :story_type_not_started)
-              active = false
-            end
-
-            # status not changed during two weeks or more
-            if st_type.status.name.in?(['in progress']) && last_status_change_gap > 14
-              message(st_type, :story_type_not_exported)
-              active = false
-            end
-
-            # not completed migration
-            if created_at_gap > 14 && st_type.migrated && (!st_type.staging_table || !st_type.code.attached?)
-              message(st_type, :not_completed_migration)
-            end
-
-            next if active || old_status.eql?('inactive')
-
-            st_type.update!(status: Status.find_by(name: 'inactive'), current_account: account)
-          end
+        # not migrated story type not started more than seven days
+        if st_type.status.name.in?(['not started']) && distributed_gap > 7 && !st_type.migrated
+          message(st_type, :story_type_not_started)
+          active = false
         end
-      )
+
+        # status not changed during two weeks or more
+        if st_type.status.name.in?(['in progress']) && last_status_change_gap > 14
+          message(st_type, :story_type_not_exported)
+          active = false
+        end
+
+        # not completed migration
+        if created_at_gap > 14 && st_type.migrated && (!st_type.staging_table || !st_type.code.attached?)
+          message(st_type, :not_completed_migration)
+        end
+
+        next if active || old_status.eql?('inactive')
+
+        st_type.update!(status: Status.find_by(name: 'inactive'), current_account: account)
+      end
     end
 
     private
