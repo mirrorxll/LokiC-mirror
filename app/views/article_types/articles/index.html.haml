@@ -13,7 +13,7 @@
 
   .row
     .col-1.text-right
-      total articles:
+      total factoids:
     .col-11
       =@iteration.articles.count
 
@@ -23,7 +23,7 @@
 
 =link_to('download as CSV', url_for(format: 'csv', iteration_stories_grid: @grid_params),
   type: "button", id: '#save_as_csv_btn', class: 'btn btn-sm btn-outline-dark')
-=link_to('filter articles', '#filter_form', 'aria-controls' => 'filter_form',
+=link_to('filter factoids', '#filter_form', 'aria-controls' => 'filter_form',
   'aria-expanded' => false, data: { toggle: "collapse", target: "#filter_form" },
   type: "button", id: '#crt_upd_filter_btn', class: 'btn btn-sm btn-outline-dark')
 
