@@ -65,27 +65,19 @@ module Samples
           name: name,
           job_item_id: exp_config["#{@environment}_job_item"],
           sub_type_id: 594,
-          community_ids: [publication.pl_identifier]
+          community_ids: [publication.pl_identifier],
+          opportunity_id: st_opportunity&.opportunity&.id,
+          opportunity_type_id: st_opportunity&.opportunity_type&.id,
+          content_type_id: st_opportunity&.content_type&.id
         }
 
         response = @pl_client.post_lead(params)
-        lead_id = JSON.parse(response.body)['id']
+        lead = JSON.parse(response.body)
+        (raise StandardError, lead.to_s) unless lead['id']
 
-        begin
-          @pl_client.update_lead(
-            lead_id, {
-              opportunity_id: st_opportunity&.opportunity&.id,
-              opportunity_type_id: st_opportunity&.opportunity_type&.id,
-              content_type_id: st_opportunity&.content_type&.id
-            }
-          )
-        rescue StandardError
-          true
-        end
-
-        lead_id
+        lead['id']
       rescue StandardError => e
-        raise Samples::LeadPostError, "[#{e.class}] -> #{e.message} at #{e.backtrace.first}"
+        raise Samples::LeadPostError, "[ LeadPostError ] -> #{e.message} at #{e.backtrace.first}"
       end
 
       def story_post(lead_id, sample, exp_config)
@@ -112,14 +104,17 @@ module Samples
         }
 
         response = @pl_client.post_story(params)
-        story_id = JSON.parse(response.body)['id']
-        @pl_client.update_story(story_id, organization_ids: sample_org_ids)
+        story = JSON.parse(response.body)
+        puts story['id']
+        (raise StandardError, story.to_s) unless story['id']
 
+        @pl_client.update_story(story['id'], organization_ids: sample_org_ids)
         sample.update!(published_at: published_at)
-        story_id
+
+        story['id']
       rescue StandardError => e
         @pl_client.delete_lead(lead_id)
-        raise Samples::StoryPostError, "[#{e.class}] -> #{e.message} at #{e.backtrace.first}".gsub('`', "'")
+        raise Samples::StoryPostError, "[ StoryPostError ] -> #{e.message} at #{e.backtrace.first}".gsub('`', "'")
       end
     end
   end

@@ -1,4 +1,4 @@
--sample_args = @iteration.sample_args || {}
+-sample_args = HashWithIndifferentAccess.new(@iteration.sample_args || {})
 
 .small
   =form_with(url: generate_article_type_iteration_samples_path(@article_type, @iteration),

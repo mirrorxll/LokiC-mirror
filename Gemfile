@@ -15,8 +15,8 @@ gem 'devise-bootstrap-views', '~> 1.0'
 gem 'font-awesome-sass', '~> 5.12.0'
 gem 'pretender'
 # background jobs
-gem 'sidekiq', '6.0.5'
-gem 'sidekiq-scheduler', '3.0.1'
+gem 'sidekiq', '6.4.1'
+gem 'sidekiq-scheduler', '3.1.1'
 # slack-api
 gem 'slack-ruby-client'
 # haml's engine
@@ -50,7 +50,7 @@ gem 'webpacker', '~> 5.0.0'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.7'
 # Use Redis adapter to run Action Cable in production
-gem 'redis', '4.1.4'
+gem 'redis', '4.6.0'
 # Use Active Storage variant
 gem 'image_processing', '~> 1.2'
 # Reduces boot times through caching; required in config/boot.rb

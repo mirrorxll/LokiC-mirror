@@ -24,4 +24,30 @@ class StoryTypesJob < ApplicationJob
     message = "Exported Stories *##{story_type.id} #{story_type.name} (#{iteration.name})*\n#{url}"
     SlackNotificationJob.perform_now(story_type.developer_fc_channel_name, message)
   end
+
+  def opportunities_attached?(story_type, iteration)
+    publication_ids = iteration.stories.pluck(:publication_id).uniq
+    st_opportunities = story_type.opportunities.where(publication_id: publication_ids)
+    return true unless st_opportunities.any? { |st_o| st_o[:opportunity_id].nil? }
+
+    url = generate_url(story_type)
+    developer = story_type.developer.slack_identifier
+    manager = Account.find_by(first_name: 'Sergey', last_name: 'Burenkov').slack_identifier
+    message = "[ LokiC ] <#{url}|Story Type ##{story_type.id}> has "\
+                'clients/publications without attached opportunities. Export was blocked!'
+    flash_message = {
+      iteration_id: iteration.id,
+      message: {
+        key: :export,
+        export: 'Story Type has clients/publications without attached opportunities.'
+      }
+    }
+    # flash message
+    StoryTypeChannel.broadcast_to(story_type, flash_message)
+    # slack message
+    ::SlackNotificationJob.perform_now(developer, message)
+    ::SlackNotificationJob.perform_now(manager, message)
+
+    false
+  end
 end
