@@ -119,8 +119,3 @@ module Samples
     end
   end
 end
-# https://lokic.locallabs.com/story_types/3086
-# https://lokic.locallabs.com/story_types/3085
-# https://lokic.locallabs.com/story_types/3183
-# https://lokic.locallabs.com/story_types/3181
-# https://lokic.locallabs.com/story_types/2988
