@@ -24,6 +24,6 @@ class Article < ApplicationRecord
   def lp_link
     return unless link?
 
-    "https://limpar.locallabs.com/editorial_factoids/#{lp_article_id}"
+    "http://limpar.locallabs.com/editorial_factoids/#{lp_article_id}"
   end
 end

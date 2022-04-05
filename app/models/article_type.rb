@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class ArticleType < ApplicationRecord
-  KIND_TYPES = %i[Person Organization State County].freeze
+  TOPIC_KINDS = %i[Person Organization State County].freeze
 
-  enum topic_kind: KIND_TYPES
+  enum topic_kind: TOPIC_KINDS
 
   after_create do
     create_template

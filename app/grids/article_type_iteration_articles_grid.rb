@@ -8,17 +8,26 @@ class ArticleTypeIterationArticlesGrid
     Article.includes(:output)
   end
 
-  filter(:output, :string, header: 'Body', left: true) do |value|
-    where('outputs.headline LIKE ?', '%' + value + '%')
+  filter(:output, :string, header: 'Body', left: true) do |value, scope|
+    outputs = ArticleOutput.where('body LIKE ?', '%' + value + '%')
+    scope.where(id: outputs.ids)
   end
+  filter(:exported_at, :datetime, range: true)
 
   column(:article, mandatory: true) do |rec|
     rec.output.body
   end
   column(:lp_link, header: "Limpar", mandatory: true) do |model|
-    link = model.link? ? "https://pipeline.locallabs.com/stories/#{model.limpar_factoid_id}" : '---'
+    link = model.link? ? "http://limpar.locallabs.com/editorial_factoids/#{model.limpar_factoid_id}" : '---'
     format(link) do
-      model.link? ? link_to('limpar', model.limpar_factoid_id, target:'_blank') : '---'
+      model.link? ? link_to('limpar', model.lp_link, target:'_blank') : '---'
     end
   end
+  column(:lokic_link, header: "LokiC", mandatory: true) do |model|
+    link = "https://lokic.locallabs.com/article_types/#{model.article_type.id}/iterations/#{model.iteration.id}/articles/#{model.id}"
+    format(link) do
+      link_to('lokic', article_type_iteration_sample_path(@article_type, @iteration, model), target:'_blank')
+    end
+  end
+  column(:exported_at, mandatory: true)
 end

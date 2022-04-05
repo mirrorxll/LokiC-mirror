@@ -30,40 +30,7 @@ module ArticleTypes
     private
 
     def download_code
-      # @code = @article_type.download_code_from_db
-      @code = <<~CODE
-        class A7
-          STAGING_TABLE = 'a0007'
-        
-          def population(options)
-            host = Mysql2::Client.new(host: '127.0.0.1', username: 'sergeydev', password: 'ni260584mss', database: 'loki_story_creator_dev')
-            arry = ('a'..'z').to_a
-            arry.each do |arr|
-              raw                         = {}
-              raw['a']                    = arr
-              raw['limpar_id']            = '1212121121211'
-              raw['limpar_year']          = 2022
-        
-              staging_insert_query = SQL.insert_on_duplicate_key(STAGING_TABLE, raw, host)
-              host.query(staging_insert_query)
-            end
-            host.close
-            ArticleTypePopulationSuccess[STAGING_TABLE]
-          end
-        
-          def creation(options)
-            articles = Articles.new(STAGING_TABLE, options)
-        
-            StagingRecords[STAGING_TABLE, options].each do |stage|
-              article = {}
-              article[:staging_row_id]   = stage[:id]
-              
-              article[:body] = stage[:a]
-              articles.insert(article)
-            end
-          end
-        end
-      CODE
+      @code = @article_type.download_code_from_db
     end
   end
 end

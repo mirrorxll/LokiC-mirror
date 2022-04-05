@@ -14,7 +14,7 @@
           =render 'change_data_set'
         .col-4.pl-0
           =form_with(model: @article_type, html: { onchange: "loadDescriptions(this);" }) do |form|
-            =form.select :topic_kind, ArticleType::KIND_TYPES, prompt: 'Select Kind', selected: @article_type&.topic_kind
+            =form.select :topic_kind, ArticleType::TOPIC_KINDS, prompt: 'Select Kind', selected: @article_type&.topic_kind
         .col-4.pl-0
           =form_with(html: { onchange: "changeTopic(this);" }) do |form|
             -if @article_type.topic
