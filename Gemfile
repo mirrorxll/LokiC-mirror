@@ -16,6 +16,7 @@ gem 'font-awesome-sass', '~> 5.12.0'
 gem 'pretender'
 # background jobs
 gem 'sidekiq', '6.4.1'
+gem 'sidekiq-scheduler', '3.1.1'
 # slack-api
 gem 'slack-ruby-client'
 # haml's engine

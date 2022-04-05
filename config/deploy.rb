@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # config valid for current version and patch releases of Capistrano
 lock '~> 3.14.1'
 
@@ -32,19 +34,46 @@ set :puma_init_active_record, true
 append :linked_dirs, 'storage', 'public/ruby_code', 'public/uploads/images', 'log'
 append :linked_files, 'config/master.key', 'config/google_drive.json'
 
-namespace :sidekiq do
-  task :restart do
+namespace :tmux do
+  task :create do
     on roles(:app) do
       within current_path do
-        execute 'sudo systemctl restart sidekiq-lokic'
+        execute 'tmux new-session -d -s sidekiq-main'
+        execute 'tmux new-session -d -s sidekiq-cron-tab'
+        execute 'tmux new-session -d -s sidekiq-story-type-factoid'
+        execute 'tmux new-session -d -s sidekiq-scrape-task'
+        execute 'tmux new-session -d -s sidekiq-work-request'
       end
     end
+  end
+
+  task :kill do
+    on roles(:app) do
+      within current_path do
+        execute 'tmux kill-session -t sidekiq-main'
+        execute 'tmux kill-session -t sidekiq-cron-tab'
+        execute 'tmux kill-session -t sidekiq-story-type-factoid'
+        execute 'tmux kill-session -t sidekiq-scrape-task'
+        execute 'tmux kill-session -t sidekiq-work-request'
+      end
+    end
+  end
+end
+
+namespace :sidekiq do
+  task :restart do
+    invoke 'sidekiq:stop'
+    invoke 'sidekiq:start'
   end
 
   task :stop do
     on roles(:app) do
       within current_path do
-        execute 'sudo systemctl stop sidekiq-lokic'
+        execute 'tmux send-keys -t sidekiq-main.0 ^C ENTER'
+        execute 'tmux send-keys -t sidekiq-cron-tab.0 ^C ENTER'
+        execute 'tmux send-keys -t sidekiq-story-type-factoid.0 ^C ENTER'
+        execute 'tmux send-keys -t sidekiq-scrape-task.0 ^C ENTER'
+        execute 'tmux send-keys -t sidekiq-work-request.0 ^C ENTER'
       end
     end
   end
@@ -52,7 +81,25 @@ namespace :sidekiq do
   task :start do
     on roles(:app) do
       within current_path do
-        execute 'sudo systemctl start sidekiq-lokic'
+        execute "tmux send-keys -t sidekiq-main.0 'cd' ENTER"
+        execute "tmux send-keys -t sidekiq-main.0 'cd LokiC/current' ENTER"
+        execute "tmux send-keys -t sidekiq-main.0 'bundle exec sidekiq -e #{fetch(:stage)} -C config/sidekiq_main.yml' ENTER"
+
+        execute "tmux send-keys -t sidekiq-cron-tab.0 'cd' ENTER"
+        execute "tmux send-keys -t sidekiq-cron-tab.0 'cd LokiC/current' ENTER"
+        execute "tmux send-keys -t sidekiq-cron-tab.0 'bundle exec sidekiq -e #{fetch(:stage)} -C config/sidekiq_cron_tab.yml' ENTER"
+
+        execute "tmux send-keys -t sidekiq-story-type-factoid.0 'cd' ENTER"
+        execute "tmux send-keys -t sidekiq-story-type-factoid.0 'cd LokiC/current' ENTER"
+        execute "tmux send-keys -t sidekiq-story-type-factoid.0 'bundle exec sidekiq -e #{fetch(:stage)} -C config/sidekiq_story_type_factoid.yml' ENTER"
+
+        execute "tmux send-keys -t sidekiq-scrape-task.0 'cd' ENTER"
+        execute "tmux send-keys -t sidekiq-scrape-task.0 'cd LokiC/current' ENTER"
+        execute "tmux send-keys -t sidekiq-scrape-task.0 'bundle exec sidekiq -e #{fetch(:stage)} -C config/sidekiq_scrape_task.yml' ENTER"
+
+        execute "tmux send-keys -t sidekiq-work-request.0 'cd' ENTER"
+        execute "tmux send-keys -t sidekiq-work-request.0 'cd LokiC/current' ENTER"
+        execute "tmux send-keys -t sidekiq-work-request.0 'bundle exec sidekiq -e #{fetch(:stage)} -C config/sidekiq_work_request.yml' ENTER"
       end
     end
   end

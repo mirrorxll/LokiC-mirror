@@ -105,7 +105,6 @@ module Samples
 
         response = @pl_client.post_story(params)
         story = JSON.parse(response.body)
-        puts story['id']
         (raise StandardError, story.to_s) unless story['id']
 
         @pl_client.update_story(story['id'], organization_ids: sample_org_ids)

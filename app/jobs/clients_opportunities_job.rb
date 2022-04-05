@@ -15,4 +15,3 @@ class ClientsOpportunitiesJob < ApplicationJob
     ClientOpportunity.where('DATE(updated_at) < CURRENT_DATE()').destroy_all
   end
 end
-
