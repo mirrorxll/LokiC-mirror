@@ -82,7 +82,7 @@ module Samples
         publication = exp_config.publication
         story_tag_ids = exp_config.tag.name.eql?('_Blank') ? [] : [exp_config.tag.pl_identifier]
         photo_bucket_id = exp_config.photo_bucket&.pl_identifier
-        story_section_ids = sections(sample.story_type, publication, cl_p_tgs).map(&:pl_identifier)
+        story_section_ids = sections(publication, cl_p_tgs).map(&:pl_identifier)
         published_at = published_at(sample.published_at.to_date)
         sample_org_ids = sample.organization_ids.delete('[ ]').split(',')
 

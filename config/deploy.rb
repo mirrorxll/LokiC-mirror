@@ -70,9 +70,9 @@ namespace :sidekiq do
     on roles(:app) do
       within current_path do
         execute 'tmux send-keys -t sidekiq-main.0 ^C ENTER'
-        execute 'tmux send-keys -t sidekiq-cron-tab.0 ^C ENTER'
         execute 'tmux send-keys -t sidekiq-scrape-task.0 ^C ENTER'
         execute 'tmux send-keys -t sidekiq-work-request.0 ^C ENTER'
+        execute 'tmux send-keys -t sidekiq-cron-tab.0 ^C ENTER'
       end
     end
   end
@@ -84,10 +84,6 @@ namespace :sidekiq do
         execute "tmux send-keys -t sidekiq-main.0 'cd LokiC/current' ENTER"
         execute "tmux send-keys -t sidekiq-main.0 'bundle exec sidekiq -e #{fetch(:stage)} -C config/sidekiq_main.yml' ENTER"
 
-        execute "tmux send-keys -t sidekiq-cron-tab.0 'cd' ENTER"
-        execute "tmux send-keys -t sidekiq-cron-tab.0 'cd LokiC/current' ENTER"
-        execute "tmux send-keys -t sidekiq-cron-tab.0 'bundle exec sidekiq -e #{fetch(:stage)} -C config/sidekiq_cron_tab.yml' ENTER"
-
         execute "tmux send-keys -t sidekiq-scrape-task.0 'cd' ENTER"
         execute "tmux send-keys -t sidekiq-scrape-task.0 'cd LokiC/current' ENTER"
         execute "tmux send-keys -t sidekiq-scrape-task.0 'bundle exec sidekiq -e #{fetch(:stage)} -C config/sidekiq_scrape_task.yml' ENTER"
@@ -95,6 +91,10 @@ namespace :sidekiq do
         execute "tmux send-keys -t sidekiq-work-request.0 'cd' ENTER"
         execute "tmux send-keys -t sidekiq-work-request.0 'cd LokiC/current' ENTER"
         execute "tmux send-keys -t sidekiq-work-request.0 'bundle exec sidekiq -e #{fetch(:stage)} -C config/sidekiq_work_request.yml' ENTER"
+
+        execute "tmux send-keys -t sidekiq-cron-tab.0 'cd' ENTER"
+        execute "tmux send-keys -t sidekiq-cron-tab.0 'cd LokiC/current' ENTER"
+        execute "tmux send-keys -t sidekiq-cron-tab.0 'bundle exec sidekiq -e #{fetch(:stage)} -C config/sidekiq_cron_tab.yml' ENTER"
       end
     end
   end
