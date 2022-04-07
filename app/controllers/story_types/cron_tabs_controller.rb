@@ -30,7 +30,7 @@ module StoryTypes
     end
 
     def setup_cron_tab
-      CronTabSetupJob.perform_later(@story_type)
+      CronTabSetupJob.perform_later
     end
   end
 end
