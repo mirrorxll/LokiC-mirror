@@ -31,6 +31,8 @@ set :puma_preload_app,        true
 set :puma_worker_timeout,     nil
 set :puma_init_active_record, true
 
+set :bundle_without, %w[development test].join(':')
+
 append :linked_dirs, 'storage', 'public/ruby_code', 'public/uploads/images', 'log'
 append :linked_files, 'config/master.key', 'config/google_drive.json'
 
