@@ -17,6 +17,7 @@ gem 'pretender'
 # background jobs
 gem 'sidekiq', '6.4.1'
 gem 'sidekiq-scheduler', '3.1.1'
+gem 'whenever', '1.0.0'
 # slack-api
 gem 'slack-ruby-client'
 # haml's engine
