@@ -107,9 +107,9 @@ namespace :deploy do
     end
   end
 
-  after 'deploy:symlink:release', 'deploy:update_crontab'
-  before :starting,     :check_revision
-  after  :finishing,    :compile_assets
-  after  :finishing,    :cleanup
-  after  :finishing,    :restart
+  before :starting,  :check_revision
+  after  :finishing, :compile_assets
+  after  :finishing, :cleanup
+  after  :finishing, :restart
+  after  :finishing, 'deploy:update_crontab'
 end
