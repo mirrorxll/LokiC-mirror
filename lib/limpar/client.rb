@@ -3,10 +3,6 @@
 require 'faraday'
 require 'faraday_middleware'
 
-require_relative 'connection.rb'
-require_relative 'request'
-require_relative 'route'
-
 module Limpar
   class Client
     include Connection

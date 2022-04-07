@@ -1,10 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'pipeline.rb'
-require_relative 'pipeline_replica.rb'
-require_relative 'mini_loki_c/connect/mysql.rb'
-require_relative 'samples/auto_feedback_tool.rb'
-require_relative 'samples/export_to_pl.rb'
 require_relative 'samples/error.rb'
 
 module Samples

@@ -1,12 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'publications/base.rb'
-require_relative 'publications/by_clients_state.rb'
-require_relative 'publications/by_org_client_id.rb'
-require_relative 'publications/metric_media.rb'
-require_relative 'publications/from_lat_lon.rb'
-require_relative 'publications/state_level.rb'
-
 module MiniLokiC
   module Population
     module Publications

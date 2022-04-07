@@ -147,43 +147,45 @@ module StoryTypes
       end
 
       # EXPORT
-      cron_tab_iteration.update!(export: false, last_export_batch_size: nil, current_account: account)
+      if opportunities_attached?(story_type, cron_tab_iteration)
+        cron_tab_iteration.update!(export: false, last_export_batch_size: nil, current_account: account)
 
-      threads_count = (cron_tab_iteration.stories.count / 75_000.0).ceil + 1
-      threads_count = threads_count > 20 ? 20 : threads_count
+        threads_count = (cron_tab_iteration.stories.count / 75_000.0).ceil + 1
+        threads_count = threads_count > 20 ? 20 : threads_count
 
-      begin
-        loop do
-          Samples[PL_TARGET].export!(cron_tab_iteration, threads_count)
+        begin
+          loop do
+            Samples[PL_TARGET].export!(cron_tab_iteration, threads_count)
 
-          break if cron_tab_iteration.reload.last_export_batch_size.zero?
+            break if cron_tab_iteration.reload.last_export_batch_size.zero?
+          end
+          SlackNotificationJob.perform_now(cron_tab_iteration, 'crontab', 'Export success. Make sure that all stories are exported')
+        rescue StandardError => e
+          export_status = nil
+          SlackNotificationJob.perform_now(cron_tab_iteration, 'crontab', e.message)
         end
-        SlackNotificationJob.perform_now(cron_tab_iteration, 'crontab', 'Export success. Make sure that all stories are exported')
-      rescue StandardError => e
-        export_status = nil
-        SlackNotificationJob.perform_now(cron_tab_iteration, 'crontab', e.message)
+
+        cron_tab_iteration.update!(export: export_status, current_account: account)
+        return if !export_status || cron_tab_iteration.story_type.sidekiq_break.reload.cancel
+
+        exp_st = ExportedStoryType.find_or_initialize_by(iteration: cron_tab_iteration)
+        exp_st.developer = account
+        exp_st.count_samples = cron_tab_iteration.stories.count
+
+        if exp_st.new_record?
+          story_type.update!(last_export: DateTime.now, current_account: account)
+
+          exp_st.week = Week.where(begin: Date.today - (Date.today.wday - 1)).first
+          exp_st.date_export = Date.today
+          exp_st.story_type = story_type
+          exp_st.first_export = cron_tab_iteration.name.eql?('Initial')
+        end
+
+        exp_st.save!
+
+        note = MiniLokiC::Formatize::Numbers.to_text(exp_st.count_samples).capitalize
+        record_to_change_history(story_type, 'exported to pipeline', note, account)
       end
-
-      cron_tab_iteration.update!(export: export_status, current_account: account)
-      return if !export_status || cron_tab_iteration.story_type.sidekiq_break.reload.cancel
-
-      exp_st = ExportedStoryType.find_or_initialize_by(iteration: cron_tab_iteration)
-      exp_st.developer = account
-      exp_st.count_samples = cron_tab_iteration.stories.count
-
-      if exp_st.new_record?
-        story_type.update!(last_export: DateTime.now, current_account: account)
-
-        exp_st.week = Week.where(begin: Date.today - (Date.today.wday - 1)).first
-        exp_st.date_export = Date.today
-        exp_st.story_type = story_type
-        exp_st.first_export = cron_tab_iteration.name.eql?('Initial')
-      end
-
-      exp_st.save!
-
-      note = MiniLokiC::Formatize::Numbers.to_text(exp_st.count_samples).capitalize
-      record_to_change_history(story_type, 'exported to pipeline', note, account)
 
       story_type.sidekiq_break.update!(cancel: false)
     rescue StandardError, ScriptError => e

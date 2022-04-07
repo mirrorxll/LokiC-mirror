@@ -1,10 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'table/columns.rb'
-require_relative 'table/index.rb'
-require_relative 'table/query.rb'
-require_relative 'table/create.rb'
-
 module Table # :nodoc:
   module_function
 

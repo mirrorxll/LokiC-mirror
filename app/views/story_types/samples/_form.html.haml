@@ -1,4 +1,5 @@
--sample_args = @iteration.sample_args || {}
+-sample_args = HashWithIndifferentAccess.new(@iteration.sample_args || {})
+
 .small.mb-3.text-danger
   You can create samples only for clients specified in the properties section above
   %br/
