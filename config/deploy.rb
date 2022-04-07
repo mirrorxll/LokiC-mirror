@@ -60,46 +60,6 @@ namespace :tmux do
   end
 end
 
-namespace :sidekiq do
-  task :restart do
-    invoke 'sidekiq:stop'
-    invoke 'sidekiq:start'
-  end
-
-  task :stop do
-    on roles(:app) do
-      within current_path do
-        execute 'tmux send-keys -t sidekiq-main.0 ^C ENTER'
-        execute 'tmux send-keys -t sidekiq-scrape-task.0 ^C ENTER'
-        execute 'tmux send-keys -t sidekiq-work-request.0 ^C ENTER'
-        execute 'tmux send-keys -t sidekiq-cron-tab.0 ^C ENTER'
-      end
-    end
-  end
-
-  task :start do
-    on roles(:app) do
-      within current_path do
-        execute "tmux send-keys -t sidekiq-main.0 'cd' ENTER"
-        execute "tmux send-keys -t sidekiq-main.0 'cd LokiC/current' ENTER"
-        execute "tmux send-keys -t sidekiq-main.0 'bundle exec sidekiq -e #{fetch(:stage)} -C config/sidekiq_main.yml' ENTER"
-
-        execute "tmux send-keys -t sidekiq-scrape-task.0 'cd' ENTER"
-        execute "tmux send-keys -t sidekiq-scrape-task.0 'cd LokiC/current' ENTER"
-        execute "tmux send-keys -t sidekiq-scrape-task.0 'bundle exec sidekiq -e #{fetch(:stage)} -C config/sidekiq_scrape_task.yml' ENTER"
-
-        execute "tmux send-keys -t sidekiq-work-request.0 'cd' ENTER"
-        execute "tmux send-keys -t sidekiq-work-request.0 'cd LokiC/current' ENTER"
-        execute "tmux send-keys -t sidekiq-work-request.0 'bundle exec sidekiq -e #{fetch(:stage)} -C config/sidekiq_work_request.yml' ENTER"
-
-        execute "tmux send-keys -t sidekiq-cron-tab.0 'cd' ENTER"
-        execute "tmux send-keys -t sidekiq-cron-tab.0 'cd LokiC/current' ENTER"
-        execute "tmux send-keys -t sidekiq-cron-tab.0 'bundle exec sidekiq -e #{fetch(:stage)} -C config/sidekiq_cron_tab.yml' ENTER"
-      end
-    end
-  end
-end
-
 namespace :puma do
   desc 'Create Directories for Puma Pids and Socket'
   task :make_dirs do

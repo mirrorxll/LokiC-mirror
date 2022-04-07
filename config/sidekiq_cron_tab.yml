@@ -1,6 +1,0 @@
-:dynamic: true
-:dynamic_every: 60
-:concurrency: 15
-
-:queues:
-  - cron_tab

@@ -1,6 +1,11 @@
-:concurrency: 20
+:concurrency: 30
 :pidfile: tmp/pids/sidekiq.pid
 
 :queues:
+  - active_storage_analysis
+  - active_storage_purge
+  - lokic
   - story_type
   - factoid
+  - scrape_task
+  - work_request

@@ -1,5 +1,0 @@
-:concurrency: 5
-:pidfile: tmp/pids/sidekiq.pid
-
-:queues:
-  - scrape_task
