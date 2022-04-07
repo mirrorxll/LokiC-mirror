@@ -26,6 +26,9 @@
 # Ignore google drive config file.
 /config/google_drive.json
 
+# Ignore schedule.rb
+/config/schedule.rb
+
 # Ignore git's files
 /.git
 

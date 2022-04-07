@@ -32,7 +32,7 @@ set :puma_worker_timeout,     nil
 set :puma_init_active_record, true
 
 append :linked_dirs, 'storage', 'public/ruby_code', 'public/uploads/images', 'log'
-append :linked_files, 'config/master.key', 'config/google_drive.json'
+append :linked_files, 'config/master.key', 'config/google_drive.json', 'config/schedule.rb'
 
 namespace :tmux do
   task :create do
@@ -139,6 +139,15 @@ namespace :deploy do
     end
   end
 
+  task :update_crontab do
+    on roles(:app) do
+      within current_path do
+        execute :bundle, :exec, :whenever, '--update-crontab'
+      end
+    end
+  end
+
+  after 'deploy:symlink:release', 'deploy:update_crontab'
   before :starting,     :check_revision
   after  :finishing,    :compile_assets
   after  :finishing,    :cleanup

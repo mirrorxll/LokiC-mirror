@@ -11,6 +11,9 @@ class SlackAccountsJob < ActiveJob::Base
       account.deleted = member['deleted']
 
       account.save!
+      account.touch
+
+      puts member['profile']['display_name']
     end
   end
 end

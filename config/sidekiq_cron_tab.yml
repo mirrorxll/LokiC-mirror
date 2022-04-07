@@ -4,9 +4,3 @@
 
 :queues:
   - cron_tab
-
-:schedule:
-  initial:
-    in: '0s'
-    queue: cron_tab
-    class: CronTabInitializerJob

@@ -1,40 +1,28 @@
 # frozen_string_literal: true
 
 namespace :story_type do
-  desc 'update story_type_id column'
-  task update_column_in_iterations: :environment do
-    StoryTypeIteration.all.each do |iter|
-      Story.where(iteration: iter).update_all(story_type_id: iter.story_type.id)
-    end
-
-    puts
+  desc 'Sync PL clients, publications, tags, sections with LokiC'
+  task clients_pubs_tags_sections: :environment do
+    StoryTypes::ClientsPubsTagsSectionsJob.perform_now
   end
 
-  desc 'update counts with additional options - key-value hashes'
-  task add_to_schedule_counts_new_options: :environment do
-    StoryTypeIteration.all.each do |iter|
-      current_schedule_counts = iter.schedule_counts || {}
-      counts = {}
-      stories = iter.stories
-
-      counts[:total] = current_schedule_counts.fetch(:total, stories.count)
-      if counts[:total].zero?
-        counts[:scheduled] = 0
-        counts[:backdated] = 0
-      else
-        published = stories.where.not(published_at: nil)
-        counts[:scheduled] = published.where(backdated: 0).count
-        counts[:backdated] = published.count - counts[:scheduled]
-      end
-      iter.update!(schedule_counts: current_schedule_counts.merge(counts))
-      print '.'
-    end
-
-    puts 'All iterations\' "schedule count" fields had updated'
+  desc 'Sync PL photo buckets with LokiC'
+  task photo_buckets: :environment do
+    StoryTypes::PhotoBucketsJob.perform_now
   end
 
-  desc 'create sidekiq_breakers for story_types'
-  task sidekiq_breakers_creation: :environment do
-    StoryType.all.each { |story_type| story_type.create_sidekiq_break unless story_type.sidekiq_break }
+  desc 'Sync PL opportunities with LokiC'
+  task opportunities: :environment do
+    StoryTypes::OpportunitiesJob.perform_now
+  end
+
+  desc 'Check has_updates presence'
+  task check_has_updates_revise: :environment do
+    StoryTypes::HasUpdatesReviseJob.perform_now
+  end
+
+  desc 'Create and execute iteration'
+  task :execute, [:story_type_id] => :environment do |_t, args|
+    StoryTypes::CronTabJob.perform_now(args.story_type_id)
   end
 end
