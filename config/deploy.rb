@@ -32,7 +32,7 @@ set :puma_worker_timeout,     nil
 set :puma_init_active_record, true
 
 append :linked_dirs, 'storage', 'public/ruby_code', 'public/uploads/images', 'log'
-append :linked_files, 'config/master.key', 'config/google_drive.json', 'config/schedule.rb'
+append :linked_files, 'config/master.key', 'config/google_drive.json'
 
 namespace :tmux do
   task :create do
