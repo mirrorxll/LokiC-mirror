@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require File.dirname(__FILE__) + '/environment.rb'
+require './' + File.dirname(__FILE__) + '/environment.rb'
 
 every '0 0 * * *' do
   rake 'slack_accounts'
