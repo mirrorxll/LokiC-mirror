@@ -102,7 +102,7 @@ namespace :deploy do
   task :update_crontab do
     on roles(:app) do
       within current_path do
-        execute :bundle, :exec, :whenever, '--update-crontab --set environment=production'
+        execute 'RAILS_ENV=production bundle exec whenever --update-crontab'
       end
     end
   end
