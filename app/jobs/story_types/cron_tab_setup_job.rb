@@ -5,7 +5,7 @@ module StoryTypes
     queue_as :cron_tab
 
     def perform
-      `whenever --update-crontab --set environment=#{Rails.env}`
+      `bundle exec whenever --write-crontab --set environment=#{Rails.env}`
     end
   end
 end

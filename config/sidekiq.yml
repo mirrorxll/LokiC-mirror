@@ -7,5 +7,6 @@
   - lokic
   - story_type
   - factoid
+  - cron_tab
   - scrape_task
   - work_request
