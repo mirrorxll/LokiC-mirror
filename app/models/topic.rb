@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Topic < ApplicationRecord
-  KIND_TYPES = %i[Person Organization Geo].freeze
+  has_and_belongs_to_many :kinds
 
-  enum kind: KIND_TYPES
+  scope :actual, -> { where(deleted_at: nil) }
 end

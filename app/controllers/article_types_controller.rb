@@ -98,7 +98,8 @@ class ArticleTypesController < ApplicationController
   end
   def exist_article_type_params
     attrs = params.require(:article_type).permit(:name,
-                                                 :topic_kind,
+                                                 :kind_id,
+                                                 :topic_id,
                                                  :source_type,
                                                  :source_name,
                                                  :source_link,

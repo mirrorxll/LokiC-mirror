@@ -1,5 +1,5 @@
-$('#description').empty();
-$('#description').append( $('<option>Select the Description</option>'));
+$('select#article_type_topic_id').empty();
+$('select#article_type_topic_id').append( $('<option>Select the Description</option>'));
 <% @topics.each do |topic| %>
-  $('#description').append($('<option value="<%= topic.id %>"><%= topic.description %></option>'));
+  $('select#article_type_topic_id').append($('<option value="<%= topic.id %>"><%= topic.description %></option>'));
 <% end %>

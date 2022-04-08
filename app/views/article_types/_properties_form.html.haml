@@ -8,19 +8,17 @@
         .col-4
           kind
         .col-4
-          description
+          topic
       .row
         .col-4.change-ds-form.pl-0
           =render 'change_data_set'
         .col-4.pl-0
-          =form_with(model: @article_type, html: { onchange: "loadDescriptions(this);" }) do |form|
-            =form.select :topic_kind, ArticleType::TOPIC_KINDS, prompt: 'Select Kind', selected: @article_type&.topic_kind
+          =form_with(url: article_type_path(@article_type), scope: :article_type, method: :put, html: { onchange: "loadDescriptions(this);" }) do |form|
+            =form.select :kind_id, Kind.sub_kinds.pluck(:name, :id), prompt: 'Select Kind'
+            =form.hidden_field :topic_id, value: nil
         .col-4.pl-0
-          =form_with(html: { onchange: "changeTopic(this);" }) do |form|
-            -if @article_type.topic
-              =form.select :description, Topic.where(kind: @article_type.topic.kind).pluck(:description), selected: @article_type&.topic&.description || 'Please select kind'
-            -else
-              =form.select :description, ['Select the Description']
+          =form_with(url: article_type_path(@article_type), scope: :article_type, method: :put, html: { onchange: "Rails.fire(this, 'submit')" }) do |form|
+            =form.select :topic_id, @article_type.kind.nil? ? [] : @article_type.kind.parent_kind.topics.actual.order(:description).pluck(:description, :id), prompt: 'Select Description'
   %hr.mt-2/
 
   #sources.row.small
@@ -50,7 +48,8 @@
 :javascript
   function loadDescriptions(form){
     var selected_kind = $('option:selected', form).val();
-    Rails.fire(form, 'submit')
+    console.log(selected_kind);
+    Rails.fire(form, 'submit');
 
     Rails.ajax({
       type: 'GET',

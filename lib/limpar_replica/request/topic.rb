@@ -10,7 +10,7 @@ module LimparReplica
       private
 
       def topics_query
-        'SELECT id, kind, description FROM topics;'
+        'SELECT id, kind, description, kinds, deleted_at FROM topics;'
       end
     end
   end

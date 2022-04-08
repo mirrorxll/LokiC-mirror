@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 class ArticleType < ApplicationRecord
-  TOPIC_KINDS = %i[Person Organization State County].freeze
-
-  enum topic_kind: TOPIC_KINDS
-
   after_create do
     create_template
     create_fact_checking_doc
@@ -20,6 +16,7 @@ class ArticleType < ApplicationRecord
   belongs_to :developer,         optional: true, class_name: 'Account'
   belongs_to :status,            optional: true
   belongs_to :current_iteration, optional: true, class_name: 'ArticleTypeIteration'
+  belongs_to :kind,              optional: true
   belongs_to :topic,             optional: true
 
   has_one :staging_table, as: :staging_tableable
