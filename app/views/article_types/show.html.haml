@@ -75,5 +75,13 @@
       .flash
       .card-body
         =render 'article_types/samples/samples'
-
+%div.accordion{id: "article_type_export_#{@iteration.id}"}
+  .card
+    .card-header
+      %div.text-center{"aria-controls" => "#export", "aria-expanded" => "false", "data-target" => "#export", "data-toggle" => "collapse", type: "button"}
+        export (iteration: #{@iteration.name})
+    #export.collapse.show{"data-parent" => "#article_type_export_#{@iteration.id}"}
+      .flash
+      .card-body.small
+        =render 'article_types/publishes/publish'
 %hr.mb-5/

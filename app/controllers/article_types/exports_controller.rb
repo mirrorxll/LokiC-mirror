@@ -5,9 +5,9 @@ module ArticleTypes
     skip_before_action :find_parent_story_type
     skip_before_action :set_story_type_iteration
 
-    before_action :render_403_editor, except: :stories, if: :editor?
-    before_action :render_403_developer, only: %i[stories submit_editor_report submit_manager_report], if: :developer?
-    before_action :show_sample_ids, only: :stories
+    before_action :render_403_editor, except: :articles, if: :editor?
+    before_action :render_403_developer, only: %i[articles submit_editor_report submit_manager_report], if: :developer?
+    before_action :show_sample_ids, only: :articles
     before_action :removal, only: :remove_exported_stories
 
     def execute
@@ -22,16 +22,16 @@ module ArticleTypes
       PurgeExportJob.perform_later(@iteration, current_account)
     end
 
-    def stories
-      @stories =
+    def articles
+      @articles =
         if params[:backdated]
-          @iteration.stories.exported
+          @iteration.articles.exported
         else
-          @iteration.stories.exported_without_backdate
+          @iteration.articles.exported_without_backdate
         end
 
-      @stories =
-        @stories.order(backdated: :asc, published_at: :asc).page(params[:page]).per(25)
+      @articles =
+        @articles.order(backdated: :asc, published_at: :asc).page(params[:page]).per(25)
                 .includes(:output, :publication)
     end
 
@@ -49,7 +49,7 @@ module ArticleTypes
     end
 
     def removal_params
-      params.require(:remove_exported_stories).permit(:reasons)
+      params.require(:remove_exported_articles).permit(:reasons)
     end
 
     def show_sample_ids
