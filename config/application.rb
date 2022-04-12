@@ -35,7 +35,7 @@ module LokiC
     # the framework and any gems in your application.
 
     # ActiveJob adapter
-    config.active_job.queue_adapter = :sidekiq
+    # config.active_job.queue_adapter = :sidekiq
 
     # Don't generate system test files.
     config.generators.system_tests = nil
