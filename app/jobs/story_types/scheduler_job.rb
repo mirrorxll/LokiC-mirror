@@ -10,7 +10,7 @@ module StoryTypes
       message = 'Success'
       story_type = iteration.story_type
       story_type.sidekiq_break.update!(cancel: false)
-      options[:account] ||= story_type.developer
+      account = Account.find_by(id: options[:account]) || story_type.developer
 
       samples = iteration.stories
 
@@ -27,7 +27,7 @@ module StoryTypes
         MiniLokiC::Creation::Scheduler::PressRelease.run(samples)
       end
 
-      record_to_change_history(story_type, 'scheduled', type, options[:account])
+      record_to_change_history(story_type, 'scheduled', type, account)
 
       status = true if iteration.reload.stories.where(published_at: nil).none?
 
@@ -47,7 +47,7 @@ module StoryTypes
 
       iteration.update!(
         schedule_counts: current_schedule_counts.merge(counts),
-        current_account: options[:account]
+        current_account: account
       )
 
       if story_type.sidekiq_break.reload.cancel
