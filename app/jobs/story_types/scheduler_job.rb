@@ -2,7 +2,10 @@
 
 module StoryTypes
   class SchedulerJob < StoryTypesJob
-    def perform(iteration, type, options = {})
+    def perform(iteration_id, type, options = {})
+      options.deep_symbolize_keys!
+
+      iteration = StoryTypeIteration.find(iteration_id)
       status = nil
       message = 'Success'
       story_type = iteration.story_type
@@ -64,7 +67,7 @@ module StoryTypes
 
       unless options[:exception]
         send_to_action_cable(iteration.story_type, :scheduler, message)
-        SlackNotificationJob.perform_now(iteration, "#{type}-scheduling", message)
+        SlackIterationNotificationJob.new.perform(iteration.id, "#{type}-scheduling", message)
       end
     end
 

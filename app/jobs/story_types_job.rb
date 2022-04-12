@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class StoryTypesJob < ApplicationJob
-  queue_as :story_type
+  sidekiq_options queue: :story_type
 
   private
 
@@ -22,7 +22,7 @@ class StoryTypesJob < ApplicationJob
     return unless story_type.developer_fc_channel_name
 
     message = "Exported Stories *##{story_type.id} #{story_type.name} (#{iteration.name})*\n#{url}"
-    SlackNotificationJob.perform_now(story_type.developer_fc_channel_name, message)
+    SlackNotificationJob.new.perform(story_type.developer_fc_channel_name, message)
   end
 
   def opportunities_attached?(story_type, iteration)
@@ -34,7 +34,7 @@ class StoryTypesJob < ApplicationJob
     developer = story_type.developer.slack_identifier
     manager = Account.find_by(first_name: 'Sergey', last_name: 'Burenkov').slack_identifier
     message = "[ LokiC ] <#{url}|Story Type ##{story_type.id}> has "\
-                'clients/publications without attached opportunities. Export was blocked!'
+              'clients/publications without attached opportunities. Export was blocked!'
     flash_message = {
       iteration_id: iteration.id,
       message: {
@@ -45,8 +45,8 @@ class StoryTypesJob < ApplicationJob
     # flash message
     StoryTypeChannel.broadcast_to(story_type, flash_message)
     # slack message
-    ::SlackNotificationJob.perform_now(developer, message)
-    ::SlackNotificationJob.perform_now(manager, message)
+    ::SlackNotificationJob.new.perform(developer, message)
+    ::SlackNotificationJob.new.perform(manager, message)
 
     false
   end

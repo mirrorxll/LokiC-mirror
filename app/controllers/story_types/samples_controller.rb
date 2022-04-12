@@ -40,7 +40,7 @@ module StoryTypes
       @iteration.update!(samples: false, current_account: current_account)
 
       send_to_action_cable(@story_type, 'samples', 'creation in the process')
-      SamplesAndAutoFeedbackJob.perform_later(@iteration, current_account, stories_params)
+      SamplesAndAutoFeedbackJob.perform_async(@iteration.id, current_account.id, stories_params)
 
       render 'story_types/creations/execute'
     end
@@ -49,7 +49,7 @@ module StoryTypes
       @iteration.update!(purge_samples: false, current_account: current_account)
 
       send_to_action_cable(@story_type, 'samples', 'purging in progress')
-      PurgeSamplesJob.perform_later(@iteration, current_account)
+      PurgeSamplesJob.perform_async(@iteration.id, current_account.id)
 
       render 'story_types/creations/purge'
     end
@@ -60,12 +60,8 @@ module StoryTypes
       @sample = Story.find(params[:id])
     end
 
-    def update_section_params
-      params.require(:section_update).permit(:message)
-    end
-
     def stories_params
-      params.require(:samples).permit(:row_ids, columns: {})
+      params.require(:samples).permit(:row_ids, columns: {}).to_hash
     end
   end
 end

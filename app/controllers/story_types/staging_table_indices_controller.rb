@@ -22,7 +22,7 @@ module StoryTypes
         @staging_table.update!(indices_modifying: true)
 
         send_to_action_cable(@story_type, 'staging_table', 'staging table modifying in progress')
-        StagingTableIndexAddJob.perform_later(@staging_table, uniq_index_column_ids)
+        StagingTableIndexAddJob.perform_async(@staging_table.id, uniq_index_column_ids)
         nil
       end
 
@@ -34,7 +34,7 @@ module StoryTypes
         @staging_table.update!(indices_modifying: true)
 
         send_to_action_cable(@story_type, 'staging_table', 'staging table modifying in progress')
-        StagingTableIndexDropJob.perform_later(@staging_table)
+        StagingTableIndexDropJob.perform_async(@staging_table.id)
         nil
       end
 
@@ -45,7 +45,7 @@ module StoryTypes
 
     def uniq_index_column_ids
       if params[:index]
-        params.require(:index).permit(column_ids: [])[:column_ids].map!(&:to_sym)
+        params.require(:index).permit(column_ids: [])[:column_ids]
       else
         []
       end

@@ -2,7 +2,7 @@
 
 module ScrapeTasks
   class SchemesTablesJob < ScrapeTasksJob
-    def perform
+    def perform(*_args)
       Host.find_each do |h|
         host_obj = Object.const_get(h.name)
 

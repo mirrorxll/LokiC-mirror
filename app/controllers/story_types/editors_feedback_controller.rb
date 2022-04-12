@@ -69,7 +69,7 @@ module StoryTypes
                    '#editors_feedback|Check it>.'
       end
 
-      ::SlackNotificationJob.perform_later(developer_pm, message)
+      ::SlackNotificationJob.perform_async(developer_pm, message)
     end
 
     def send_confirm_to_fc_channel
@@ -79,7 +79,7 @@ module StoryTypes
       message = "*Updated Story Type FCD* ##{@story_type.id} "\
                 "<#{story_type_fact_checking_doc_url(@story_type, @fcd)}|#{@story_type.name}>."
 
-      ::SlackNotificationJob.perform_later(fact_checking_channel, message)
+      ::SlackNotificationJob.perform_async(fact_checking_channel, message)
     end
   end
 end

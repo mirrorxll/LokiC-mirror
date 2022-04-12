@@ -2,9 +2,14 @@
 
 module ArticleTypes
   class CreationJob < ArticleTypesJob
-    def perform(iteration, account, options = {})
-      options[:iteration] = iteration
-      options[:type] = 'article'
+    def perform(iteration_id, account_id)
+      iteration = ArticleTypeIteration.find(iteration_id)
+      account = Account.find(account_id)
+
+      options = {
+        iteration: iteration,
+        type: 'article'
+      }
 
       status = true
       message = 'Success. All articles have been created'
@@ -23,7 +28,7 @@ module ArticleTypes
     ensure
       iteration.update!(creation: status, current_account: account)
       send_to_action_cable(iteration.article_type, :stories, message)
-      SlackNotificationJob.perform_now(iteration.article_type, iteration, 'creation', message)
+      SlackNotificationJob.new.perform(iteration.id, 'creation', message)
     end
   end
 end

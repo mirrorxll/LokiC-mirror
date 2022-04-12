@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ArticleTypesJob < ApplicationJob
-  queue_as :factoid
+  sidekiq_options queue: :factoid
 
   private
 

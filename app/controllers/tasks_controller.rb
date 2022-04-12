@@ -136,8 +136,8 @@ class TasksController < ApplicationController # :nodoc:
       message = "*<#{task_url(task)}| TASK ##{task.id}> | "\
               "Assignment to you*\n>#{task.title}"
 
-      SlackNotificationJob.perform_later(assignment.slack.identifier, message)
-      SlackNotificationJob.perform_later('hle_lokic_task_reminders', message)
+      ::SlackNotificationJob.perform_async(assignment.slack.identifier, message)
+      ::SlackNotificationJob.perform_async('hle_lokic_task_reminders', message)
     end
   end
 

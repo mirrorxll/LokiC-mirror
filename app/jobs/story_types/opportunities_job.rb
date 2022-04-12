@@ -2,9 +2,9 @@
 
 module StoryTypes
   class OpportunitiesJob < ApplicationJob
-    queue_as :cron_tab
+    sidekiq_options queue: :cron_tab
 
-    def perform
+    def perform(*_args)
       replica = PipelineReplica[:production]
 
       replica.get_agencies.each do |row|

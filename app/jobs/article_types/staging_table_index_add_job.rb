@@ -2,9 +2,11 @@
 
 module ArticleTypes
   class StagingTableIndexAddJob < ArticleTypesJob
-    def perform(staging_table, column_ids)
+    def perform(staging_table_id, column_ids)
+      staging_table = StagingTable.find(staging_table_id)
       message = "Success. Staging table's uniq index added"
-      staging_table.index.add(:staging_table_uniq_row, column_ids)
+
+      staging_table.index.add(:staging_table_uniq_row, column_ids.map!(&:to_sym))
       staging_table.sync
 
     rescue StandardError, ScriptError => e

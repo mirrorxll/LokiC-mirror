@@ -2,7 +2,9 @@
 
 module ArticleTypes
   class PurgeCreationJob < ArticleTypesJob
-    def perform(iteration, account)
+    def perform(iteration_id, account_id)
+      iteration = ArticleTypeIteration.find(iteration_id)
+      account = Account.find(account_id)
       message = 'Success. All articles have been removed'
 
       loop do
@@ -17,7 +19,7 @@ module ArticleTypes
     ensure
       iteration.update!(purge_creation: nil, current_account: account)
       send_to_action_cable(iteration.article_type, :samples, message)
-      SlackNotificationJob.perform_now(iteration.article_type, iteration, 'creation', message)
+      SlackNotificationJob.new.perform(iteration.id, 'creation', message)
     end
   end
 end

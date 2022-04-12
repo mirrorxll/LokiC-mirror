@@ -22,8 +22,8 @@ class WorkRequestsController < ApplicationController
   def create
     @request =
       WorkRequestObject.create_from!(work_request_params)
-    WorkRequests::SlackNotificationJob.perform_later(
-      @request,
+    WorkRequests::SlackNotificationJob.perform_async(
+      @request.id,
       '<!channel> Just was created a new work request. Check it'
     )
   end

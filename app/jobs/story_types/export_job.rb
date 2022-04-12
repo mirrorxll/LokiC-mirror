@@ -2,7 +2,9 @@
 
 module StoryTypes
   class ExportJob < StoryTypesJob
-    def perform(iteration, account, url = nil)
+    def perform(iteration_id, account_id, url = nil)
+      iteration = StoryTypeIteration.find(iteration_id)
+      account = Account.find(account_id)
       status = true
       message = 'Success. Make sure that all stories are exported'
       story_type = iteration.story_type
@@ -76,7 +78,7 @@ module StoryTypes
       if exe_ensure
         story_type.sidekiq_break.update!(cancel: false)
         send_to_action_cable(story_type, :export, message)
-        StoryTypes::SlackNotificationJob.perform_now(iteration, 'export', message)
+        SlackIterationNotificationJob.new.perform(iteration.id, 'export', message)
       end
     end
   end

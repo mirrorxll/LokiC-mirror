@@ -1,11 +1,13 @@
+
 # frozen_string_literal: true
 
 module StoryTypes
   class StagingTableIndexAddJob < StoryTypesJob
-    def perform(staging_table, column_ids)
+    def perform(staging_table_id, column_ids)
+      staging_table = StagingTable.find(staging_table_id)
       message = "Success. Staging table's main index added"
 
-      staging_table.index.add(:story_per_publication, column_ids)
+      staging_table.index.add(:story_per_publication, column_ids.map!(&:to_sym))
       staging_table.sync
     rescue StandardError, ScriptError => e
       message = e.message

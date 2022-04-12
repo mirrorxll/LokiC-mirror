@@ -2,21 +2,22 @@
 
 module ScrapeTasks
   class SlackNotificationJob < ScrapeTasksJob
-    def perform(task, step, raw_message, scraper = nil)
-      task_scraper = scraper || task.scraper
+    def perform(scrape_task_id, step, raw_message, scraper_id = nil)
+      scrape_task = ScrapeTask.find(scrape_task_id)
+      task_scraper = Account.find_by(id: scraper_id) || scrape_task.scraper
 
-      url = generate_url(task)
+      url = generate_url(scrape_task)
       progress_step = step.eql?('scraper') ? '' : "| #{step.capitalize}"
       scraper_name = task_scraper.name
-      message = "*<#{url}|Scrape Task ##{task.id}> #{progress_step} | #{scraper_name}*\n#{raw_message}".gsub("\n", "\n>")
+      message = "*<#{url}|Scrape Task ##{scrape_task.id}> #{progress_step} | #{scraper_name}*\n#{raw_message}".gsub("\n", "\n>")
 
-      record_to_alerts(task, step, raw_message)
+      record_to_alerts(scrape_task, step, raw_message)
 
-      ::SlackNotificationJob.perform_now('lokic_scrape_task_messages', message)
-      return if task.scraper_slack_id.nil?
+      ::SlackNotificationJob.new.perform('lokic_scrape_task_messages', message)
+      return if scrape_task.scraper_slack_id.nil?
 
       message = message.gsub(/#{Regexp.escape(" | #{scraper_name}")}/, '')
-      ::SlackNotificationJob.perform_now(task.scraper_slack_id, "*[ LokiC ]* #{message}")
+      ::SlackNotificationJob.new.perform(scrape_task.scraper_slack_id, "*[ LokiC ]* #{message}")
     end
   end
 end

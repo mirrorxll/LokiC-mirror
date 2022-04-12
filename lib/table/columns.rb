@@ -17,7 +17,7 @@
 module Table
   module Columns # :nodoc:
     HIDDEN_COLUMNS = %w[
-      id source_table_id source_id story_created client_id
+      id source_table_id source_id story_created article_created client_id
       client_name publication_id publication_name organization_ids
       publish_on created_at updated_at iter_id time_frame
     ].freeze

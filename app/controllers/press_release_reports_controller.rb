@@ -9,7 +9,7 @@ class PressReleaseReportsController < ApplicationController
   def index; end
 
   def get_report
-    PressReleaseReportJob.perform_later
+    PressReleaseReportJob.perform_async
   end
 
   def show_report

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class SlackAccountsJob < ActiveJob::Base
-  queue_as :lokic
+  sidekiq_options queue: :lokic
 
-  def perform
+  def perform(*_args)
     Slack::Web::Client.new.users_list['members'].each do |member|
       account = SlackAccount.find_or_initialize_by(identifier: member['id'])
       account.user_name = member['profile']['real_name']

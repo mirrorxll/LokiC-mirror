@@ -2,5 +2,5 @@
 
 desc 'Sync Slack accounts with LokiC'
 task slack_accounts: :environment do
-  SlackAccountsJob.perform_now
+  SlackAccountsJob.new.perform
 end

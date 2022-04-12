@@ -13,7 +13,7 @@ module StoryTypes
       render_403 && return if @story_type.staging_table_attached.nil?
 
       @story_type.update!(export_configurations_created: false, current_account: current_account)
-      ExportConfigurationsJob.perform_later(@story_type, current_account, true)
+      ExportConfigurationsJob.perform_async(@story_type.id, current_account.id, true)
     end
 
     def update_tags

@@ -2,9 +2,9 @@
 
 module StoryTypes
   class PhotoBucketsJob < ApplicationJob
-    queue_as :lokic
+    sidekiq_options queue: :lokic
 
-    def perform
+    def perform(*_args)
       PipelineReplica[:production].get_photo_buckets.each do |raw_bucket|
         bucket = PhotoBucket.find_or_initialize_by(pl_identifier: raw_bucket['id'])
         bucket.name = raw_bucket['name']

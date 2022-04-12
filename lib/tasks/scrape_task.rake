@@ -10,6 +10,6 @@ namespace :scrape_task do
 
   desc 'Sync schemes-tables with LokIC'
   task schemes_tables: :environment do
-    ScrapeTasks::SchemesTablesJob.perform_now
+    ScrapeTasks::SchemesTablesJob.new.perform
   end
 end

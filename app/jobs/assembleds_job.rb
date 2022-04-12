@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class AssembledsJob < ApplicationJob
-  queue_as :lokic
+  sidekiq_options queue: :lokic
 
   def perform(week, link)
     assembleds = Assembled.where(week: week)

@@ -36,12 +36,12 @@ module StoryTypes
 
       begin
         MiniLokiC::StoryTypeCode[story_type].execute(:population, population_args)
-        SlackNotificationJob.perform_now(cron_tab_iteration, 'crontab', 'Population success')
+        SlackIterationNotificationJob.new.perform(cron_tab_iteration.id, 'crontab', 'Population success')
       rescue StandardError => e
         staging_table.purge_current_iteration
         staging_table.default_iter_id(story_type.iteration.id)
         cron_tab_iteration.update!(population: nil, current_account: account)
-        SlackNotificationJob.perform_now(cron_tab_iteration, 'crontab', e.message)
+        SlackIterationNotificationJob.new.perform(cron_tab_iteration.id, 'crontab', e.message)
         return
       end
 
@@ -50,7 +50,7 @@ module StoryTypes
         cron_tab_iteration.update!(population: nil, current_account: account)
         message = "Population didn't add new rows to staging table. "\
                   "New iteration didn't create. CronTab execution was stopped"
-        SlackNotificationJob.perform_now(cron_tab_iteration, 'crontab', message)
+        SlackIterationNotificationJob.new.perform(cron_tab_iteration.id, 'crontab', message)
         return
       end
 
@@ -64,7 +64,7 @@ module StoryTypes
         MiniLokiC::StoryTypeExpConfigs[story_type].create_or_update!
       rescue StandardError => e
         exp_config_status = nil
-        SlackNotificationJob.perform_now(cron_tab_iteration, 'crontab', e.message)
+        SlackIterationNotificationJob.new.perform(cron_tab_iteration.id, 'crontab', e.message)
       end
 
       story_type.update!(export_configurations_created: exp_config_status, current_account: account)
@@ -87,7 +87,7 @@ module StoryTypes
         MiniLokiC::StoryTypeCode[cron_tab_iteration.story_type].execute(:creation, sample_options)
       rescue StandardError => e
         sample_status = nil
-        SlackNotificationJob.perform_now(cron_tab_iteration, 'crontab', e.message)
+        SlackIterationNotificationJob.new.perform(cron_tab_iteration.id, 'crontab', e.message)
       end
 
       Samples.auto_feedback(cron_tab_iteration, true)
@@ -113,10 +113,10 @@ module StoryTypes
 
           MiniLokiC::StoryTypeCode[cron_tab_iteration.story_type].execute(:creation, creation_options)
         end
-        SlackNotificationJob.perform_now(cron_tab_iteration, 'crontab', 'Creation success')
+        SlackIterationNotificationJob.new.perform(cron_tab_iteration.id, 'crontab', 'Creation success')
       rescue StandardError => e
         creation_status = nil
-        SlackNotificationJob.perform_now(cron_tab_iteration, 'crontab', e.message)
+        SlackIterationNotificationJob.new.perform(cron_tab_iteration.id, 'crontab', e.message)
       end
 
       cron_tab_iteration.update!(creation: creation_status, current_account: account)
@@ -140,9 +140,9 @@ module StoryTypes
 
       cron_tab_iteration.update!(schedule_counts: counts, current_account: account)
 
-      if cron_tab_iteration.stories.where(published_at: nil).limit(1).present?
+      if cron_tab_iteration.stories.reload.where(published_at: nil).limit(1).present?
         message = "Scheduling didn't complete. Please check passed params to it"
-        SlackNotificationJob.perform_now(cron_tab_iteration, 'crontab', message)
+        SlackIterationNotificationJob.new.perform(cron_tab_iteration.id, 'crontab', message)
         return
       end
 
@@ -159,10 +159,10 @@ module StoryTypes
 
             break if cron_tab_iteration.reload.last_export_batch_size.zero?
           end
-          SlackNotificationJob.perform_now(cron_tab_iteration, 'crontab', 'Export success. Make sure that all stories are exported')
+          SlackIterationNotificationJob.new.perform(cron_tab_iteration.id, 'crontab', 'Export success. Make sure that all stories are exported')
         rescue StandardError => e
           export_status = nil
-          SlackNotificationJob.perform_now(cron_tab_iteration, 'crontab', e.message)
+          SlackIterationNotificationJob.new.perform(cron_tab_iteration.id, 'crontab', e.message)
         end
 
         cron_tab_iteration.update!(export: export_status, current_account: account)
@@ -190,7 +190,7 @@ module StoryTypes
       story_type.sidekiq_break.update!(cancel: false)
     rescue StandardError, ScriptError => e
       message = "[ CronTabExecutionError ] -> #{e.message}#{" at #{e.backtrace.first}"}".gsub('`', "'")
-      SlackNotificationJob.perform_now(cron_tab_iteration, 'crontab', message)
+      SlackIterationNotificationJob.new.perform(cron_tab_iteration.id, 'crontab', message)
     end
   end
 end

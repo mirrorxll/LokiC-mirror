@@ -2,7 +2,7 @@
 
 module StoryTypes
   class RevisionTemplatesReminderJob < ApplicationJob
-    def perform
+    def perform(*_args)
       Template.revision_needed.each do |template|
         template.update!(revised: false)
         story_type = template.templateable
@@ -18,7 +18,7 @@ module StoryTypes
             "revised on #{template.revision}. Do it now to unblock export!"
           end
 
-        ::SlackNotificationJob.perform_now('lokic_editors', message)
+        ::SlackNotificationJob.new.perform('lokic_editors', message)
       end
     end
   end

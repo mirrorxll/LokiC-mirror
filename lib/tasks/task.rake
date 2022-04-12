@@ -3,6 +3,6 @@
 namespace :task do
   desc 'Confirm task receipts'
   task confirm_receipts: :environment do
-    TasksConfirmsReceiptsJob.perform_now
+    TasksConfirmsReceiptsJob.new.perform
   end
 end

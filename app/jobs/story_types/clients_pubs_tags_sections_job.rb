@@ -2,9 +2,9 @@
 
 module StoryTypes
   class ClientsPubsTagsSectionsJob < ApplicationJob
-    queue_as :cron_tab
+    sidekiq_options queue: :cron_tab
 
-    def perform
+    def perform(*_args)
       pubs_ids_statewide = MiniLokiC::Population::Publications.all_state_lvl.map { |pub| pub['id'] }
       clients_pubs_tags = PipelineReplica[:production].get_clients_publications_tags
       clients_pubs_tags.reject! { |row| row['client_name'].eql?('Metric Media') }

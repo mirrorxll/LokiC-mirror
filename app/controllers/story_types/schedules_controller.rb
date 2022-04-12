@@ -11,7 +11,7 @@ module StoryTypes
       @iteration.update!(schedule: false, current_account: current_account)
 
       send_to_action_cable(@story_type, 'scheduler', 'scheduling in progress')
-      SchedulerJob.perform_later(@iteration, :manual, { params: manual_params, account: current_account })
+      SchedulerJob.perform_async(@iteration.id, :manual, { params: manual_params, account: current_account.id })
 
       render 'hide_section'
     end
@@ -20,7 +20,7 @@ module StoryTypes
       @iteration.update!(schedule: false, current_account: current_account)
 
       send_to_action_cable(@story_type, 'scheduler', 'scheduling in progress')
-      SchedulerJob.perform_later(@iteration, :backdate, { params: backdated_params, account: current_account })
+      SchedulerJob.perform_async(@iteration.id, :backdate, { params: backdated_params, account: current_account.id })
 
       render 'hide_section'
     end
@@ -29,7 +29,7 @@ module StoryTypes
       @iteration.update!(schedule: false, current_account: current_account)
 
       send_to_action_cable(@story_type, 'scheduler', 'scheduling in progress')
-      SchedulerJob.perform_later(@iteration, :auto, { params: auto_params, account: current_account })
+      SchedulerJob.perform_async(@iteration.id, :auto, { params: auto_params, account: current_account.id })
 
       render 'hide_section'
     end

@@ -3,6 +3,6 @@
 namespace :task do
   desc 'Task reminders'
   task reminder: :environment do
-    ReminderTasksJob.perform_now
+    ReminderTasksJob.new.perform
   end
 end

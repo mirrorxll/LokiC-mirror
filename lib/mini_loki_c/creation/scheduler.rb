@@ -14,7 +14,7 @@ module MiniLokiC
         end
 
         options[:iteration].update!(schedule: false)
-        StoryTypes::SchedulerJob.perform_now(options[:iteration], :"run-from-code", { params: scheduling_rules, exception: true })
+        StoryTypes::SchedulerJob.new.perform(options[:iteration].id, :"run-from-code", { params: scheduling_rules, exception: true })
       end
 
       def self.run_press_release(staging_table, options)
@@ -23,7 +23,7 @@ module MiniLokiC
         end
 
         options[:iteration].update!(schedule: false)
-        StoryTypes::SchedulerJob.perform_now(options[:iteration], :"press_release", { exception: true })
+        StoryTypes::SchedulerJob.new.perform(options[:iteration].id, :"press_release", { exception: true })
       end
     end
   end
