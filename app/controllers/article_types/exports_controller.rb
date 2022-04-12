@@ -11,9 +11,11 @@ module ArticleTypes
     before_action :removal, only: :remove_exported_stories
 
     def execute
+      pp '++++++++++++++++++++++', params
       @iteration.update!(export: false, current_account: current_account)
-      url = stories_story_type_iteration_exports_url(params[:story_type_id], params[:iteration_id])
-      ExportJob.perform_later(@iteration, current_account, url)
+      #TODO: for what url?
+      # url = stories_story_type_iteration_exports_url(params[:story_type_id], params[:iteration_id])
+      ExportJob.perform_later(@iteration, current_account)
     end
 
     def remove_exported_stories

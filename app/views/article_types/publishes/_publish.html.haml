@@ -35,7 +35,7 @@
       -# =render 'story_types/exports/remove_exported_stories_section'
 
     -elsif @iteration.export.eql?(false)
-      =render 'story_types/spinner', description: 'export in progress'
+      -# =render 'story_types/spinner', description: 'export in progress'
     -elsif @iteration.purge_export.eql?(true)
       =render 'story_types/spinner', description: 'removing from PL in progress'
     -else
@@ -44,7 +44,7 @@
           ready to publish11: #{ready_to_publish}
       .row
         .col-10.offset-1
-          =link_to('export!', execute_story_type_iteration_exports_path(@article_type, @iteration),
+          =link_to('export!', execute_article_type_iteration_exports_path(@article_type, @iteration),
                   class: 'mt-3 mr-3 btn btn-sm btn-outline-dark',
                   method: :post, remote: true)
     -#       -if published > 0

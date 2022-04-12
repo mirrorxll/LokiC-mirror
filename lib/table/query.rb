@@ -126,5 +126,11 @@ module Table
       "ALTER TABLE #{t_name} "\
       "MODIFY COLUMN iter_id int NOT NULL DEFAULT #{iter_id};"
     end
+
+    def limpar_year(t_name, iter_id)
+      'SELECT DISTINCT limpar_year, limpar_id ' \
+      "FROM #{schema_table(t_name)} " \
+      "WHERE iter_id = #{iter_id};"
+    end
   end
 end

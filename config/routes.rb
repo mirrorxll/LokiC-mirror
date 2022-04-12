@@ -325,6 +325,12 @@ Rails.application.routes.draw do
           post   :execute, on: :collection
           delete :purge,   on: :collection
         end
+
+        resources :exports, path: :export, only: [] do
+          post   :execute,                 on: :collection
+          # delete :remove_exported_stories, on: :collection
+          # get    :stories,                 on: :collection
+        end
       end
 
       resources :topics, only: [] do
@@ -401,6 +407,7 @@ Rails.application.routes.draw do
 
   resources :shown_samples,        controller: 'story_types/shown_samples',        only: :index
   resources :exported_story_types, controller: 'story_types/exported_story_types', only: :index
+  # resources :published_factoids,   controller: 'article_types/published_factoids', only: :index
   resources :archived_story_types, controller: 'story_types/archived_story_types', only: :index
   resources :production_removals,  only: :index
 
@@ -434,9 +441,9 @@ Rails.application.routes.draw do
     get  :download, on: :collection
   end
 
-  resources :limpar_records do
-    collection do
-      get 'get_limpar_data', to: "limpar_records#get_limpar_data"
-    end
-  end
+  # resources :limpar_records do
+  #   collection do
+  #     get 'get_limpar_data', to: "limpar_records#get_limpar_data"
+  #   end
+  # end
 end
