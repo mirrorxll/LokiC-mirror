@@ -140,7 +140,7 @@ module StoryTypes
 
       cron_tab_iteration.update!(schedule_counts: counts, current_account: account)
 
-      if cron_tab_iteration.stories.reload.where(published_at: nil).limit(1).present?
+      if Story.where(iteration: cron_tab_iteration, published_at: nil).present?
         message = "Scheduling didn't complete. Please check passed params to it"
         SlackIterationNotificationJob.new.perform(cron_tab_iteration.id, 'crontab', message)
         return
