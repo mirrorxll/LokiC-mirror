@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class SlackAccountsJob < ActiveJob::Base
+class SlackAccountsJob
   sidekiq_options queue: :lokic
 
   def perform(*_args)
