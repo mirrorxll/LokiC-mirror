@@ -6,7 +6,7 @@ module StoryTypes
     skip_before_action :set_article_type_iteration
 
     before_action :cron_tab
-    after_action :setup_cron_tab, only: %i[create update]
+    after_action :setup_cron_tab, only: :update
 
     def edit
       render 'form'
@@ -30,7 +30,7 @@ module StoryTypes
     end
 
     def setup_cron_tab
-      CronTabSetupJob.perform_later(@story_type)
+      CronTabSetupJob.perform_async(@story_type.id)
     end
   end
 end

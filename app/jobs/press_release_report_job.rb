@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class PressReleaseReportJob < ApplicationJob
-  queue_as :lokic
+  sidekiq_options queue: :lokic
 
-  def perform
+  def perform(*_args)
     report_press_release = Reports::PressReleaseReport.new
 
     data = {}

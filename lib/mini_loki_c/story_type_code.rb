@@ -24,11 +24,9 @@ module MiniLokiC
     def execute(method, options = {})
       METHODS_TRACER.enable { load_story_type_class.new.public_send(method, options) }
     rescue StandardError, ScriptError => e
-      path = e.backtrace.first
-      at = path[/s#{@story_type.id}/] ? " at #{path}" : ''
-
       raise "#{method.capitalize}ExecutionError".constantize,
-            "[ #{method.capitalize}ExecutionError ] -> #{e.message}#{at}".gsub('`', "'")
+            "[ #{method.capitalize}ExecutionError ] -> #{e.message} "\
+            "at #{e.backtrace.first}".gsub('`', "'")
     end
 
     private

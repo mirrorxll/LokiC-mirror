@@ -2,7 +2,11 @@
 
 module ArticleTypes
   class SamplesJob < ArticleTypesJob
-    def perform(iteration, account, options = {})
+    def perform(iteration_id, account_id, options = {})
+      options.deep_symbolize_keys!
+
+      iteration = ArticleTypeIteration.find(iteration_id)
+      account = Account.find(account_id)
       options[:iteration] = iteration
       options[:sampled] = true
 

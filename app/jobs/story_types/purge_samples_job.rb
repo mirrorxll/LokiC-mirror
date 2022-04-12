@@ -2,7 +2,9 @@
 
 module StoryTypes
   class PurgeSamplesJob < StoryTypesJob
-    def perform(iteration, account)
+    def perform(iteration_id, account_id)
+      iteration = StoryTypeIteration.find(iteration_id)
+      account = Account.find(account_id)
       message = 'Success. samples have been removed'
 
       iteration.stories.where(sampled: true).destroy_all

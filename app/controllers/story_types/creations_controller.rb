@@ -11,7 +11,7 @@ module StoryTypes
       @iteration.update!(creation: false, current_account: current_account)
 
       send_to_action_cable(@story_type, 'samples', 'creation in the process')
-      CreationJob.perform_later(@iteration, current_account)
+      CreationJob.perform_async(@iteration.id, current_account.id)
     end
 
     def purge
@@ -21,7 +21,7 @@ module StoryTypes
         @iteration.update!(purge_creation: true, current_account: current_account)
 
         send_to_action_cable(@story_type, 'samples', 'purging in progress')
-        PurgeCreationJob.perform_later(@iteration, current_account)
+        PurgeCreationJob.perform_async(@iteration.id, current_account.id)
       end
     end
   end

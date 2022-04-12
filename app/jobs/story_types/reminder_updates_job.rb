@@ -2,10 +2,10 @@
 
 module StoryTypes
   class ReminderUpdatesJob < StoryTypesJob
-    def perform(story_types = StoryType.all)
+    def perform(*_args)
       account = Account.find_by(email: 'main@lokic.loc')
 
-      story_types.each do |st_type|
+      StoryType.all.each do |st_type|
         sleep(rand)
 
         next if st_type.developer.nil?
@@ -28,7 +28,7 @@ module StoryTypes
           new_data_flag = MiniLokiC::StoryTypeCode[st_type].check_updates
         rescue StandardError, ScriptError => e
           msg = "[ CheckUpdatesExecutionError ] -> #{e.message} at #{e.backtrace.first}".gsub('`', "'")
-          SlackReminderNotificationJob.perform_now(st_type, msg)
+          SlackReminderNotificationJob.new.perform(st_type, msg)
           next
         end
 
@@ -61,7 +61,7 @@ module StoryTypes
           "Story Type has updates! Let's make stories :)"
         end
 
-      SlackReminderNotificationJob.perform_now(story_type, message)
+      SlackReminderNotificationJob.new.perform(story_type, message)
     end
   end
 end

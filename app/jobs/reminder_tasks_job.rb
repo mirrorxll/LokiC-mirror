@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class ReminderTasksJob < ApplicationJob
-  queue_as :lokic
+  sidekiq_options queue: :lokic
 
-  def perform
+  def perform(*_args)
     day_of_week = Date.today.strftime('%A')
 
     each_day = TaskReminderFrequency.find_by(name: 'each day')
@@ -49,8 +49,8 @@ class ReminderTasksJob < ApplicationJob
         message = "*[ LokiC ] Unfinished <#{generate_task_url(task)} | Task ##{task.id}> | REMINDER | "\
           "#{assignment.name}*\n" \
           "#{task.title}".gsub("\n", "\n>")
-        SlackNotificationJob.perform_now(assignment.slack.identifier, message)
-        SlackNotificationJob.perform_now('hle_lokic_task_reminders', message)
+        SlackNotificationJob.new.perform(assignment.slack.identifier, message)
+        SlackNotificationJob.new.perform('hle_lokic_task_reminders', message)
       end
     end
 
@@ -80,8 +80,8 @@ class ReminderTasksJob < ApplicationJob
         message = "*[ LokiC ] #{deadline_message} | <#{generate_task_url(task)}|Task ##{task.id}> | "\
                 "#{account.name}*\n" \
                 "#{task.title}".gsub("\n", "\n>")
-        SlackNotificationJob.perform_now(account.slack.identifier, message)
-        SlackNotificationJob.perform_now('hle_lokic_task_reminders', message)
+        SlackNotificationJob.new.perform(account.slack.identifier, message)
+        SlackNotificationJob.new.perform('hle_lokic_task_reminders', message)
       end
     end
   end

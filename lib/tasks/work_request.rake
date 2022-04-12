@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 namespace :work_request do
-  desc 'insert initial data to lokic DB'
+  desc 'Insert initial data to lokic DB'
   task insert_initial_data: :environment do
     types = [
       { work: 1, hidden: false, name: %(Scrape) },

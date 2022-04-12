@@ -2,10 +2,10 @@
 
 module StoryTypes
   class ReminderProgressJob < StoryTypesJob
-    def perform(story_types = StoryType.all)
+    def perform(*_args)
       account = Account.find_by(email: 'main@lokic.loc')
 
-      story_types.each do |st_type|
+      StoryType.all.each do |st_type|
         sleep(rand)
 
         next if st_type.developer.nil? || st_type.status.name.in?(%w[canceled blocked done archived])
@@ -59,7 +59,7 @@ module StoryTypes
           "and attach this to the story type along with the staging table#{last_sentence}"
         end
 
-      SlackReminderNotificationJob.perform_now(story_type, message)
+      SlackReminderNotificationJob.new.perform(story_type, message)
     end
   end
 end

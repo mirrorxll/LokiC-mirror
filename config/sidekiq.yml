@@ -1,4 +1,3 @@
-:dynamic: true
 :concurrency: 30
 :pidfile: tmp/pids/sidekiq.pid
 
@@ -7,13 +6,7 @@
   - active_storage_purge
   - lokic
   - story_type
+  - factoid
   - cron_tab
   - scrape_task
-  - article_type
   - work_request
-
-:schedule:
-  initial:
-    in: '0s'
-    queue: cron_tab
-    class: CronTabInitializerJob

@@ -2,7 +2,8 @@
 
 module StoryTypes
   class StagingTableIndexDropJob < StoryTypesJob
-    def perform(staging_table)
+    def perform(staging_table_id)
+      staging_table = StagingTable.find(staging_table_id)
       message = "Success. Staging table's main index dropped"
 
       staging_table.index.drop(:story_per_publication)

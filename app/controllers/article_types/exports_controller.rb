@@ -13,13 +13,13 @@ module ArticleTypes
     def execute
       @iteration.update!(export: false, current_account: current_account)
       url = stories_story_type_iteration_exports_url(params[:story_type_id], params[:iteration_id])
-      ExportJob.perform_later(@iteration, current_account, url)
+      ExportJob.perform_async(@iteration.id, current_account.id, url)
     end
 
     def remove_exported_stories
       @iteration.update!(purge_export: true, current_account: current_account)
       @removal.update!(removal_params)
-      PurgeExportJob.perform_later(@iteration, current_account)
+      PurgeExportJob.perform_async(@iteration.id, current_account.id)
     end
 
     def stories

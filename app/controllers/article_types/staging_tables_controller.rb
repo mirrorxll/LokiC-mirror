@@ -19,7 +19,7 @@ module ArticleTypes
           "Table with name '#{@staging_table_name}' not exists."
         else
           @article_type.update!(staging_table_attached: false, current_account: current_account)
-          StagingTableAttachingJob.perform_later(@article_type, current_account, @staging_table_name)
+          StagingTableAttachingJob.perform_async(@article_type.id, current_account.id, @staging_table_name)
           nil
         end
 

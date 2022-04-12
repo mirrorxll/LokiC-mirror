@@ -15,7 +15,7 @@ module ArticleTypes
     def update
       staging_table_action do
         @staging_table.update!(columns_modifying: true)
-        StagingTableColumnsJob.perform_later(@staging_table, columns_front_params)
+        StagingTableColumnsJob.perform_async(@staging_table.id, columns_front_params)
         nil
       end
 

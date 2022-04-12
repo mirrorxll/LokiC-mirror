@@ -22,7 +22,7 @@ module StoryTypes
           @story_type.update!(staging_table_attached: false, current_account: current_account)
 
           send_to_action_cable(@story_type, 'staging_table', 'staging table attaching in progress')
-          StagingTableAttachingJob.perform_later(@story_type, current_account, @staging_table_name)
+          StagingTableAttachingJob.perform_async(@story_type.id, current_account.id, @staging_table_name)
           nil
         end
 

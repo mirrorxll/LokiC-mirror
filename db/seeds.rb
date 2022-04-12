@@ -149,11 +149,9 @@ weeks(db02_sec).each { |obj| Week.create!(obj) }
 db02.close
 db02_sec.close
 
-ClientsPublicationsTagsJob.perform_now
-ClientsTagsJob.perform_now
-SectionsJob.perform_now
-PhotoBucketsJob.perform_now
-SlackAccountsJob.perform_now
+StoryTypes::ClientsPubsTagsSectionsJob.new.perform
+StoryTypes::PhotoBucketsJob.new.perform
+SlackAccountsJob.new.perform
 
 hidden = Client.where('name LIKE :like OR name IN (:mm, :mb)',
                       like: 'MM -%', mm: 'Metric Media', mb: 'Metro Business Network')
