@@ -14,7 +14,7 @@ module StoryTypes
 
       samples = iteration.stories
 
-      case type
+      case type.to_sym
       when :manual
         MiniLokiC::Creation::Scheduler::Base.run_schedule(samples, manual_params(options[:params]))
       when :backdate

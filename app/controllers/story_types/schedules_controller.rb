@@ -51,11 +51,11 @@ module StoryTypes
     private
 
     def manual_params
-      params.require(:manual).permit!
+      params.require(:manual).permit!.to_hash
     end
 
     def backdated_params
-      params.require(:backdate).permit!
+      params.require(:backdate).permit!.to_hash
     end
 
     def type_params
@@ -63,7 +63,7 @@ module StoryTypes
     end
 
     def auto_params
-      params[:auto].blank? ? {} : params.require(:auto).permit!
+      (params[:auto].blank? ? {} : params.require(:auto).permit!).to_hash
     end
 
     def update_section_params
