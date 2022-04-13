@@ -59,7 +59,7 @@ module StoryTypes
           "and attach this to the story type along with the staging table#{last_sentence}"
         end
 
-      SlackReminderNotificationJob.new.perform(story_type, message)
+      SlackReminderNotificationJob.new.perform(story_type.id, message)
     end
   end
 end

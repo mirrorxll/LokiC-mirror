@@ -28,7 +28,7 @@ module StoryTypes
           new_data_flag = MiniLokiC::StoryTypeCode[st_type].check_updates
         rescue StandardError, ScriptError => e
           msg = "[ CheckUpdatesExecutionError ] -> #{e.message} at #{e.backtrace.first}".gsub('`', "'")
-          SlackReminderNotificationJob.new.perform(st_type, msg)
+          SlackReminderNotificationJob.new.perform(st_type.id, msg)
           next
         end
 
@@ -61,7 +61,7 @@ module StoryTypes
           "Story Type has updates! Let's make stories :)"
         end
 
-      SlackReminderNotificationJob.new.perform(story_type, message)
+      SlackReminderNotificationJob.new.perform(story_type.id, message)
     end
   end
 end
