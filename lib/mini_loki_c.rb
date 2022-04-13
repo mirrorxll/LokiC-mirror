@@ -2,6 +2,7 @@
 
 require 'svggraph'
 
+require_relative 'extended_ruby_classes.rb'
 require_relative 'mini_loki_c/error.rb'
 require_relative 'graphs/svggraph_styles_patch.rb'
 
