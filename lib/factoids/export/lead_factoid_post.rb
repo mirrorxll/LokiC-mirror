@@ -22,27 +22,35 @@ module Factoids
     module LeadFactoidPost
       private
 
-      def factoid_post(sample)
+      def factoid_post(sample, st_limpar_columns)
         article_type = sample.article_type
-        staging_table_name = article_type.staging_table.name
-        limpar_year, limpar_id = Table.get_limpar_data(staging_table_name)
+        st_limpar_year, st_limpar_id = st_limpar_columns
         factoid_kind = "#{article_type.kind.name.downcase}_id"
+        publish_date = Date.today
+        exported_date = DateTime.now
 
         params = {
           topic_id: article_type.topic.external_lp_id,
           description: article_type.topic.description,
-          year: limpar_year,
+          year: st_limpar_year,
           source_type: article_type.source_type,
           source_name: article_type.source_name,
           source_link: article_type.source_link,
-          original_publish_date: Date.today,
+          original_publish_date: publish_date,
 
-          kind: article_type.kind.parent_kind.id
+          kind: article_type.kind.parent_kind.id,
+          "#{factoid_kind}".to_sym => st_limpar_id
         }
-        params.merge!("#{factoid_kind}".to_sym => limpar_id)
         pp '===================', params
 
-        # response = @lp_client.
+        # =====================>
+        # response = @lp_client.publish_factoid(params)
+        # factoid_id = JSON.parse(response.body)['id']
+        # =====================
+        factoid_id = SecureRandom.uuid
+        # =====================>
+
+        sample.update!(limpar_factoid_id: factoid_id, exported_at: exported_date)
       end
     end
   end

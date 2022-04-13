@@ -25,6 +25,12 @@ module ArticleTypes
       pub_f.count_factoids        = iteration.articles.count
 
       pub_f.save!
+    rescue StandardError, ScriptError => e
+      status = nil
+      message = e.message
+    ensure
+      iteration.reload.update!(export: status)
+      send_to_action_cable(article_type, :export, message)
     end
   end
 end

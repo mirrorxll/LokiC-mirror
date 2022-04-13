@@ -13,6 +13,8 @@ module Factoids
     def publish!(iteration, threads_count)
       factoids_to_export = iteration.articles.to_a
       article_type = iteration.article_type
+      staging_table_name = article_type.staging_table.name
+      st_limpar_columns = Table.get_limpar_data(staging_table_name)
       main_semaphore = Mutex.new
       exported = 0
 
@@ -22,7 +24,7 @@ module Factoids
             factoid = main_semaphore.synchronize { factoids_to_export.shift }
             break if factoid.nil?
 
-            factoid_post(factoid)
+            factoid_post(factoid, st_limpar_columns)
             main_semaphore.synchronize { exported += 1 }
           end
         end
