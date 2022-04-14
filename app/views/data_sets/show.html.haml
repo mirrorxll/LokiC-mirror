@@ -18,7 +18,7 @@
       story types (#{@story_types.count})
   %li.nav-item.text-center{ style: 'width: 50%' }
     %a#articleTypesTab.nav-link{onclick: 'saveActiveTab(this);', "aria-controls" => "articleTypes", "aria-selected" => "false", "data-toggle" => "tab", :href => "#articleTypes" }
-      article types (#{@article_types.count})
+      factoid types (#{@article_types.count})
 #dataSetTabsContent.tab-content
   #storyTypes.tab-pane.fade{ "aria-labelledby" => "storyTypesTab" }
     .card.border-top-0.rounded-0.mb-5
@@ -45,7 +45,7 @@
             .row
               .col-1
               .col-5.pl-0
-                =button_to('[ create a new article type ]', new_data_set_article_type_path(@data_set),
+                =button_to('[ create a new factoid type ]', new_data_set_article_type_path(@data_set),
                            method: :get, remote: true, class: 'p-0 pb-1 btn btn-sm btn-link ml-2',
                            data: { disable_with: '...'})
           %hr.mt-1/

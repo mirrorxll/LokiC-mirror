@@ -9,6 +9,8 @@ class ArticleType < ApplicationRecord
     update(current_iteration: iter)
   end
 
+  before_update -> { tracking_changes(ArticleType) }
+
   validates_uniqueness_of :name, case_sensitive: true
 
   belongs_to :data_set,          counter_cache: true
@@ -25,6 +27,7 @@ class ArticleType < ApplicationRecord
 
   has_many :iterations, class_name: 'ArticleTypeIteration'
   has_many :articles
+  has_many :change_history, as: :history
 
   def id_name
     "##{id} #{name}"

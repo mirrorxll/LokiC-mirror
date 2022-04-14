@@ -19,6 +19,7 @@ class ArticleTypesController < ApplicationController
                    else
                      developer? ? { order: :id, descending: true, developer: current_account.id } : { order: :id, descending: true }
                    end
+    @grid_params.merge!(current_account: current_account)
 
     @article_types_grid = ArticleTypesGrid.new(@grid_params)
 

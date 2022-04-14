@@ -3,11 +3,11 @@
 .btn-group.w-100
   =link_to('edit FCD', edit_article_type_fact_checking_doc_path(@article_type, @fcd),
            class: "btn btn-sm btn-light text-dark #{disabled ? 'disabled' : ''}", remote: true)
-  =link_to('template', article_type_fact_checking_doc_template_path(@article_type, @fcd),
-           class: 'btn btn-sm btn-light text-dark', remote: true)
+  =link_to('template', article_type_template_path(@article_type, @article_type.template),
+           'data-target' => '#templatePreviewCollapse', 'data-toggle' => 'collapse',
+           class: 'btn btn-sm btn-light text-dark')
   =button_tag('send FCD to reviewers', 'data-toggle'=>'modal', 'data-target'=>'#sendFCD',
               disabled: disabled, class: 'btn btn-sm btn-light text-dark', onclick: 'hideAllPopovers();')
-
 
 #sendFCD.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "sendFCDLabel", :role => "dialog", :tabindex => "-1"}
   .modal-dialog.modal-dialog-centered{:role => "document"}

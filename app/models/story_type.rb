@@ -22,7 +22,7 @@ class StoryType < ApplicationRecord
     update(current_iteration: iter)
   end
 
-  before_update :tracking_changes
+  before_update -> { tracking_changes(StoryType) }
 
   validates_uniqueness_of :name, case_sensitive: true
 
