@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'export/lead_story_post.rb'
-
 module Samples
   class ExportToPl
     include Export::LeadStoryPost
@@ -15,6 +13,7 @@ module Samples
     end
 
     def export!(iteration, threads_count)
+      clients_publications_tags = iteration.story_type.clients_publications_tags.to_a
       stories_to_export = iteration.stories.ready_to_export.limit(10_000).to_a
       story_type = iteration.story_type
       st_opportunities = story_type.opportunities
@@ -30,7 +29,11 @@ module Samples
 
             sample.destroy and next if sample.publication.pl_identifier.in?(forbidden_mb_pubs)
 
-            lead_story_post(sample, st_opportunities)
+            lead_story_post(
+              sample,
+              clients_publications_tags,
+              st_opportunities
+            )
             main_semaphore.synchronize { exported += 1 }
           end
         end

@@ -2,10 +2,6 @@
 
 require 'nokogiri'
 
-require_relative 'auto_feedback_generator/lists.rb'
-require_relative 'auto_feedback_generator/sample_to_hash.rb'
-require_relative 'auto_feedback_generator/rules.rb'
-
 module Samples
   class AutoFeedbackTool
     include AutoFeedbackGenerator::Lists

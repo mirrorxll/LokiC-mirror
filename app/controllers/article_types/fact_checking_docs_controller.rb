@@ -37,7 +37,7 @@ module ArticleTypes
     end
 
     def send_to_reviewers_channel
-      response = ::SlackNotificationJob.perform_now('hle_reviews_queue', message_to_slack)
+      response = ::SlackNotificationJob.new.perform('hle_reviews_queue', message_to_slack)
       @fcd.update!(slack_message_ts: response[:ts])
     end
 

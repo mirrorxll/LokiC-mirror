@@ -12,7 +12,7 @@ module StoryTypes
     end
 
     def set
-      SetDefaultOpportunitiesJob.perform_later(@story_type)
+      SetDefaultOpportunitiesJob.perform_async(@story_type.id)
     end
 
     private

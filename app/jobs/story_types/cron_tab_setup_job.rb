@@ -2,18 +2,26 @@
 
 module StoryTypes
   class CronTabSetupJob < ApplicationJob
-    queue_as :cron_tab
+    sidekiq_options queue: :cron_tab
 
-    def perform(story_type)
-      cron_tab = story_type.cron_tab
-      cron_tab_name = "story_type_#{story_type.id}"
-      config = { cron: cron_tab.pattern, class: 'StoryTypes::CronTabJob', args: [story_type.id], queue: 'cron_tab' }
+    def perform(story_type_id)
+      story_type = StoryType.find(story_type_id)
+      crontab_setup = `bundle exec whenever --write-crontab --set environment=#{Rails.env}`
 
-      if cron_tab.enabled
-        Sidekiq.set_schedule(cron_tab_name, config)
-      else
-        Sidekiq.remove_schedule(cron_tab_name)
-      end
+      message =
+        case crontab_setup
+        when ''
+          story_type.cron_tab.update!(enabled: false)
+          'Crontab not set. Check your pattern and set it again or contact with manager'
+        else
+          if story_type.cron_tab.enabled
+            "Crontab set -> `#{story_type.cron_tab.pattern}`"
+          else
+            'Crontab disabled'
+          end
+        end
+
+      SlackCronTabSetupNotificationJob.new.perform(story_type_id, message)
     end
   end
 end

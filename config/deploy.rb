@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # config valid for current version and patch releases of Capistrano
 lock '~> 3.14.1'
 
@@ -32,53 +34,27 @@ set :puma_init_active_record, true
 append :linked_dirs, 'storage', 'public/ruby_code', 'public/uploads/images', 'log'
 append :linked_files, 'config/master.key', 'config/google_drive.json'
 
-namespace :sidekiq do
-  task :restart do
-    invoke 'sidekiq:stop'
-    invoke 'sidekiq:start'
-  end
-
-  task :stop do
+namespace :tmux do
+  task :create do
     on roles(:app) do
       within current_path do
-        execute 'tmux send-keys -t sidekiq-tmux.0 ^C ENTER'
-        sleep(10)
+        execute 'tmux new-session -d -s sidekiq-main'
+        execute 'tmux new-session -d -s sidekiq-cron-tab'
+        execute 'tmux new-session -d -s sidekiq-story-type-factoid'
+        execute 'tmux new-session -d -s sidekiq-scrape-task'
+        execute 'tmux new-session -d -s sidekiq-work-request'
       end
     end
   end
 
-  task :start do
+  task :kill do
     on roles(:app) do
       within current_path do
-        execute "tmux send-keys -t sidekiq-tmux.0 'cd' ENTER"
-        execute "tmux send-keys -t sidekiq-tmux.0 'cd LokiC/current' ENTER"
-        execute "tmux send-keys -t sidekiq-tmux.0 'bundle exec sidekiq -e #{fetch(:stage)} -C config/sidekiq.yml' ENTER"
-      end
-    end
-  end
-end
-
-namespace :sidekiq_cron do
-  task :restart do
-    invoke 'sidekiq_cron:stop'
-    invoke 'sidekiq_cron:start'
-  end
-
-  task :stop do
-    on roles(:app) do
-      within current_path do
-        execute 'tmux send-keys -t sidekiq-cron-tmux.0 ^C ENTER'
-        sleep(10)
-      end
-    end
-  end
-
-  task :start do
-    on roles(:app) do
-      within current_path do
-        execute "tmux send-keys -t sidekiq-cron-tmux.0 'cd' ENTER"
-        execute "tmux send-keys -t sidekiq-cron-tmux.0 'cd LokiC/current' ENTER"
-        execute "tmux send-keys -t sidekiq-cron-tmux.0 'bundle exec sidekiq -e #{fetch(:stage)} -C config/sidekiq_cron.yml' ENTER"
+        execute 'tmux kill-session -t sidekiq-main'
+        execute 'tmux kill-session -t sidekiq-cron-tab'
+        execute 'tmux kill-session -t sidekiq-story-type-factoid'
+        execute 'tmux kill-session -t sidekiq-scrape-task'
+        execute 'tmux kill-session -t sidekiq-work-request'
       end
     end
   end
@@ -123,8 +99,18 @@ namespace :deploy do
     end
   end
 
-  before :starting,     :check_revision
-  after  :finishing,    :compile_assets
-  after  :finishing,    :cleanup
-  after  :finishing,    :restart
+  task :update_crontab do
+    on roles(:app) do
+      within current_path do
+        execute "cd #{release_path} && RAILS_ENV=production bundle exec whenever --write-crontab"
+      end
+    end
+  end
+
+  before :starting,  :check_revision
+  after  :finishing, :compile_assets
+  after  :finishing, :cleanup
+  after  :finishing, :restart
+  after  :finishing, 'deploy:update_crontab'
 end
+

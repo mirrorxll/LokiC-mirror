@@ -15,11 +15,11 @@ module Samples
         %w[7:00 13:00]  # "Saturday"
       ].freeze
 
-      def lead_story_post(sample)
+      def lead_story_post(sample, cl_p_tgs, st_opportunities)
         exp_config = sample.export_configuration
 
-        lead_id = lead_post(sample, exp_config)
-        story_id = story_post(lead_id, sample, exp_config)
+        lead_id = lead_post(sample, exp_config, st_opportunities)
+        story_id = story_post(lead_id, sample, exp_config, cl_p_tgs)
 
         sample.update!(
           @pl_lead_id_key => lead_id,
@@ -40,13 +40,11 @@ module Samples
         Time.at(publish_on).strftime('%Y-%m-%dT%H:%M:%S%:z')
       end
 
-      def sections(story_type, publication)
-        clients_publications_tags = story_type.clients_publications_tags.to_a
-
-        cl_pub_tg = clients_publications_tags.find { |cpt| cpt.publication.eql?(publication) }
+      def sections(publication, cl_p_tgs)
+        cl_pub_tg = cl_p_tgs.find { |cpt| cpt.publication.eql?(publication) }
         return cl_pub_tg.sections if cl_pub_tg
 
-        aggregated_cpt = clients_publications_tags.select do |cpt|
+        aggregated_cpt = cl_p_tgs.select do |cpt|
           cpt.publication.nil? || cpt.publication.name.in?(@pub_aggregate_names)
         end
 
@@ -55,29 +53,36 @@ module Samples
         end.sections
       end
 
-      def lead_post(sample, exp_config)
+      def lead_post(sample, exp_config, st_opportunities)
         publication = exp_config.publication
         name = "#{sample.headline} -- [#{exp_config.id}."\
                "#{sample.id}::#{Date.today}.#{Time.now.to_i}]"
+        st_opportunity = st_opportunities.find_by(publication: publication)
 
         params = {
           name: name,
           job_item_id: exp_config["#{@environment}_job_item"],
           sub_type_id: 594,
-          community_ids: [publication.pl_identifier]
+          community_ids: [publication.pl_identifier],
+          opportunity_id: st_opportunity&.opportunity&.id,
+          opportunity_type_id: st_opportunity&.opportunity_type&.id,
+          content_type_id: st_opportunity&.content_type&.id
         }
 
         response = @pl_client.post_lead(params)
-        JSON.parse(response.body)['id']
+        lead = JSON.parse(response.body)
+        (raise StandardError, lead.to_s) unless lead['id']
+
+        lead['id']
       rescue StandardError => e
-        raise Samples::LeadPostError, "[#{e.class}] -> #{e.message} at #{e.backtrace.first}"
+        raise Samples::LeadPostError, "[ LeadPostError ] -> #{e.message} at #{e.backtrace.first}"
       end
 
-      def story_post(lead_id, sample, exp_config)
+      def story_post(lead_id, sample, exp_config, cl_p_tgs)
         publication = exp_config.publication
         story_tag_ids = exp_config.tag.name.eql?('_Blank') ? [] : [exp_config.tag.pl_identifier]
         photo_bucket_id = exp_config.photo_bucket&.pl_identifier
-        story_section_ids = sections(sample.story_type, publication).map(&:pl_identifier)
+        story_section_ids = sections(publication, cl_p_tgs).map(&:pl_identifier)
         published_at = published_at(sample.published_at.to_date)
         sample_org_ids = sample.organization_ids.delete('[ ]').split(',')
 
@@ -97,14 +102,16 @@ module Samples
         }
 
         response = @pl_client.post_story(params)
-        story_id = JSON.parse(response.body)['id']
-        @pl_client.update_story(story_id, organization_ids: sample_org_ids)
+        story = JSON.parse(response.body)
+        (raise StandardError, story.to_s) unless story['id']
 
+        @pl_client.update_story(story['id'], organization_ids: sample_org_ids)
         sample.update!(published_at: published_at)
-        story_id
+
+        story['id']
       rescue StandardError => e
         @pl_client.delete_lead(lead_id)
-        raise Samples::StoryPostError, "[#{e.class}] -> #{e.message} at #{e.backtrace.first}".gsub('`', "'")
+        raise Samples::StoryPostError, "[ StoryPostError ] -> #{e.message} at #{e.backtrace.first}".gsub('`', "'")
       end
     end
   end

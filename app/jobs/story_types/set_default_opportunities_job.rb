@@ -2,7 +2,8 @@
 
 module StoryTypes
   class SetDefaultOpportunitiesJob < StoryTypesJob
-    def perform(story_type)
+    def perform(story_type_id)
+      story_type = StoryType.find(story_type_id)
       opportunities = story_type.opportunities
 
       story_type.default_opportunities.each do |def_opp|

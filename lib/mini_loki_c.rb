@@ -2,21 +2,25 @@
 
 require 'svggraph'
 
+require_relative 'extended_ruby_classes.rb'
 require_relative 'mini_loki_c/error.rb'
 require_relative 'graphs/svggraph_styles_patch.rb'
-require_relative 'mini_loki_c/configuration.rb'
-require_relative 'mini_loki_c/connect/mysql.rb'
-require_relative 'mini_loki_c/extended_ruby_classes.rb'
-require_relative 'mini_loki_c/formatize.rb'
-require_relative 'mini_loki_c/population.rb'
-require_relative 'mini_loki_c/creation.rb'
-require_relative 'mini_loki_c/no_log.rb'
-require_relative 'mini_loki_c/story_type_code.rb'
-require_relative 'mini_loki_c/article_type_code.rb'
-require_relative 'mini_loki_c/common.rb'
-require_relative 'mini_loki_c/data_matching.rb'
 
 # mini lokiC rails integration
 module MiniLokiC
   extend Configuration
+end
+
+MiniLokiC.configure do |mlc|
+  # access to Mysql hosts
+  mlc.mysql_regular_user = Rails.application.credentials.mysql[:regular][:user]
+  mlc.mysql_regular_password = Rails.application.credentials.mysql[:regular][:password]
+
+  # access to Mysql PL replica host
+  mlc.mysql_pl_replica_user = Rails.application.credentials.mysql[:pl_replica][:user]
+  mlc.mysql_pl_replica_password = Rails.application.credentials.mysql[:pl_replica][:password]
+
+  # access to postgreSQL hosts
+  mlc.postgresql_user = Rails.application.credentials.postgresql[:user]
+  mlc.postgresql_password = Rails.application.credentials.postgresql[:password]
 end

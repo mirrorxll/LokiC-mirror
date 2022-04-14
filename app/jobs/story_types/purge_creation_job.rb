@@ -2,32 +2,13 @@
 
 module StoryTypes
   class PurgeCreationJob < StoryTypesJob
-    def perform(iteration, account)
+    def perform(iteration_id, account_id)
+      iteration = StoryTypeIteration.find(iteration_id)
+      account = Account.find(account_id)
       message = 'Success. All stories have been removed'
 
       loop do
-        rd, wr = IO.pipe
-
-        Process.wait(
-          fork do
-            rd.close
-
-            iteration.stories.limit(10_000).destroy_all
-          rescue StandardError, ScriptError => e
-            wr.write({ e.class.to_s => e.message }.to_json)
-          ensure
-            wr.close
-          end
-        )
-
-        wr.close
-        exception = rd.read
-        rd.close
-
-        if exception.present?
-          klass, message = JSON.parse(exception).to_a.first
-          raise Object.const_get(klass), message
-        end
+        iteration.stories.limit(10_000).destroy_all
 
         break if iteration.stories.reload.blank?
       end
@@ -42,7 +23,7 @@ module StoryTypes
     ensure
       iteration.update!(purge_creation: nil, current_account: account)
       send_to_action_cable(iteration.story_type, :samples, message)
-      StoryTypes::SlackNotificationJob.perform_now(iteration, 'creation', message)
+      SlackIterationNotificationJob.new.perform(iteration.id, 'creation', message)
     end
   end
 end

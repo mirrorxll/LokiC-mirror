@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'connection.rb'
-require_relative 'request.rb'
-
 module Pipeline
   class Base
     include Connection

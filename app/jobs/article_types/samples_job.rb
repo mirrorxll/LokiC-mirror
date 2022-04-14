@@ -2,7 +2,11 @@
 
 module ArticleTypes
   class SamplesJob < ArticleTypesJob
-    def perform(iteration, account, options = {})
+    def perform(iteration_id, account_id, options = {})
+      options.deep_symbolize_keys!
+
+      iteration = ArticleTypeIteration.find(iteration_id)
+      account = Account.find(account_id)
       options[:iteration] = iteration
       options[:sampled] = true
 
@@ -18,28 +22,7 @@ module ArticleTypes
       options = options.merge({ ids: ids.join(','), type: 'article' })
       iteration.update!(sample_args: sample_args, current_account: account)
 
-      rd, wr = IO.pipe
-
-      Process.wait(
-        fork do
-          rd.close
-
-          MiniLokiC::ArticleTypeCode[iteration.article_type].execute(:creation, options)
-        rescue StandardError, ScriptError => e
-          wr.write({ e.class.to_s => e.message }.to_json)
-        ensure
-          wr.close
-        end
-      )
-
-      wr.close
-      exception = rd.read
-      rd.close
-
-      if exception.present?
-        klass, message = JSON.parse(exception).to_a.first
-        raise Object.const_get(klass), message
-      end
+      MiniLokiC::ArticleTypeCode[iteration.article_type].execute(:creation, options)
 
       iteration.articles.where(staging_row_id: ids).update_all(sampled: true)
 

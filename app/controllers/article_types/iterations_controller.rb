@@ -37,7 +37,7 @@ module ArticleTypes
     end
 
     def purge
-      staging_table_action { @staging_table.purge }
+      staging_table_action { @staging_table.purge_current_iteration }
 
       if flash.now[:error].nil?
         @story_type.update!(export_configurations_created: nil, current_account: current_account)

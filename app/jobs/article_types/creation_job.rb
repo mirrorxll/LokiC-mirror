@@ -2,36 +2,20 @@
 
 module ArticleTypes
   class CreationJob < ArticleTypesJob
-    def perform(iteration, account, options = {})
-      options[:iteration] = iteration
-      options[:type] = 'article'
+    def perform(iteration_id, account_id)
+      iteration = ArticleTypeIteration.find(iteration_id)
+      account = Account.find(account_id)
+
+      options = {
+        iteration: iteration,
+        type: 'article'
+      }
 
       status = true
       message = 'Success. All articles have been created'
 
       loop do
-        rd, wr = IO.pipe
-
-        Process.wait(
-          fork do
-            rd.close
-
-            MiniLokiC::ArticleTypeCode[iteration.article_type].execute(:creation, options)
-          rescue StandardError, ScriptError => e
-            wr.write({ e.class.to_s => e.message }.to_json)
-          ensure
-            wr.close
-          end
-        )
-
-        wr.close
-        exception = rd.read
-        rd.close
-
-        if exception.present?
-          klass, message = JSON.parse(exception).to_a.first
-          raise Object.const_get(klass), message
-        end
+        MiniLokiC::ArticleTypeCode[iteration.article_type].execute(:creation, options)
 
         staging_table = iteration.article_type.staging_table.name
         break if Table.all_articles_created_by_iteration?(staging_table)
@@ -44,7 +28,7 @@ module ArticleTypes
     ensure
       iteration.update!(creation: status, current_account: account)
       send_to_action_cable(iteration.article_type, :stories, message)
-      SlackNotificationJob.perform_now(iteration, 'creation', message)
+      SlackNotificationJob.new.perform(iteration.id, 'creation', message)
     end
   end
 end

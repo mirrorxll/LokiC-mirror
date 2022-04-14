@@ -2,32 +2,13 @@
 
 module StoryTypes
   class PurgeSamplesJob < StoryTypesJob
-    def perform(iteration, account)
+    def perform(iteration_id, account_id)
+      iteration = StoryTypeIteration.find(iteration_id)
+      account = Account.find(account_id)
       message = 'Success. samples have been removed'
 
-      rd, wr = IO.pipe
-
-      Process.wait(
-        fork do
-          rd.close
-
-          iteration.stories.where(sampled: true).destroy_all
-          iteration.auto_feedback_confirmations.destroy_all
-        rescue StandardError, ScriptError => e
-          wr.write({ e.class.to_s => e.message }.to_json)
-        ensure
-          wr.close
-        end
-      )
-
-      wr.close
-      exception = rd.read
-      rd.close
-
-      if exception.present?
-        klass, message = JSON.parse(exception).to_a.first
-        raise Object.const_get(klass), message
-      end
+      iteration.stories.where(sampled: true).destroy_all
+      iteration.auto_feedback_confirmations.destroy_all
     rescue StandardError, ScriptError => e
       message = e.message
     ensure

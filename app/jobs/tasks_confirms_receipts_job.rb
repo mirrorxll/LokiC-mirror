@@ -1,25 +1,21 @@
 # frozen_string_literal: true
 
 class TasksConfirmsReceiptsJob < ApplicationJob
-  queue_as :lokic
+  sidekiq_options queue: :lokic
 
-  def perform
-    Process.wait(
-      fork do
-        task_assignments = TaskAssignment.where(confirmed: 0)
-        task_assignments.each do |assignment|
-          sleep(rand)
-          account = assignment.account
-          next if account.slack.nil? || account.slack.deleted
+  def perform(*_args)
+    task_assignments = TaskAssignment.where(confirmed: 0)
+    task_assignments.each do |assignment|
+      sleep(rand)
+      account = assignment.account
+      next if account.slack.nil? || account.slack.deleted
 
-          message = "*<#{generate_task_url(assignment.task)}|Task ##{assignment.task.id}> | You need confirm receipt of task | "\
-            "#{account.name}*\n" \
-            "#{assignment.task.title}".gsub("\n", "\n>")
-          SlackNotificationJob.perform_now(account.slack.identifier, message)
-          SlackNotificationJob.perform_later('hle_lokic_task_reminders', message)
-        end
-      end
-    )
+      message = "*<#{generate_task_url(assignment.task)}|Task ##{assignment.task.id}> | You need confirm receipt of task | "\
+        "#{account.name}*\n" \
+        "#{assignment.task.title}".gsub("\n", "\n>")
+      SlackNotificationJob.new.perform(account.slack.identifier, message)
+      SlackNotificationJob.new.perform('hle_lokic_task_reminders', message)
+    end
   end
 
   private

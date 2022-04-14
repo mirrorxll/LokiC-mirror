@@ -2,32 +2,13 @@
 
 module ArticleTypes
   class PurgeCreationJob < ArticleTypesJob
-    def perform(iteration, account)
-      message = 'Success. All factoids have been removed'
+    def perform(iteration_id, account_id)
+      iteration = ArticleTypeIteration.find(iteration_id)
+      account = Account.find(account_id)
+      message = 'Success. All articles have been removed'
 
       loop do
-        rd, wr = IO.pipe
-
-        Process.wait(
-          fork do
-            rd.close
-
-            iteration.articles.limit(10_000).destroy_all
-          rescue StandardError, ScriptError => e
-            wr.write({ e.class.to_s => e.message }.to_json)
-          ensure
-            wr.close
-          end
-        )
-
-        wr.close
-        exception = rd.read
-        rd.close
-
-        if exception.present?
-          klass, message = JSON.parse(exception).to_a.first
-          raise Object.const_get(klass), message
-        end
+        iteration.articles.limit(10_000).destroy_all
 
         break if iteration.articles.reload.blank?
       end
@@ -38,7 +19,7 @@ module ArticleTypes
     ensure
       iteration.update!(purge_creation: nil, current_account: account)
       send_to_action_cable(iteration.article_type, :samples, message)
-      SlackNotificationJob.perform_now(iteration, 'creation', message)
+      SlackNotificationJob.new.perform(iteration.id, 'creation', message)
     end
   end
 end

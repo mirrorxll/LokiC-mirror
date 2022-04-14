@@ -2,16 +2,17 @@
 
 module StoryTypes
   class SlackReminderNotificationJob < StoryTypesJob
-    def perform(story_type, raw_message)
+    def perform(story_type_id, raw_message)
+      story_type = StoryType.find(story_type_id)
       url = generate_url(story_type)
       developer_name = story_type.developer.name
       message = "*<#{url}|Story Type ##{story_type.id}> | #{developer_name}*\n#{raw_message}".gsub("\n", "\n>")
 
-      ::SlackNotificationJob.perform_now('lokic_reminder_messages', message)
+      ::SlackNotificationJob.new.perform('lokic_reminder_messages', message)
       return if story_type.developer.slack_identifier.nil?
 
       message = message.gsub(/#{Regexp.escape(" | #{developer_name}")}/, '')
-      ::SlackNotificationJob.perform_now(story_type.developer.slack_identifier, "*[ LokiC ]* #{message}")
+      ::SlackNotificationJob.new.perform(story_type.developer.slack_identifier, "*[ LokiC ]* #{message}")
       record_to_alerts(story_type, 'reminder', raw_message)
     end
   end

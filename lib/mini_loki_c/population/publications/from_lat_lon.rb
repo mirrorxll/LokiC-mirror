@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'query/from_lat_lon.rb'
-
 module MiniLokiC
   module Population
     module Publications

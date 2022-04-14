@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 class WorkRequestsJob < ApplicationJob
-  queue_as :work_request
+  sidekiq_options queue: :work_request
 end

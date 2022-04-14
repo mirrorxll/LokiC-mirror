@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'query/by_org_client_id.rb'
-
 module MiniLokiC
   module Population
     module Publications
