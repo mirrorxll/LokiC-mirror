@@ -19,7 +19,7 @@ module ArticleTypes
     ensure
       iteration.update!(purge_creation: nil, current_account: account)
       send_to_action_cable(iteration.article_type, :samples, message)
-      SlackNotificationJob.new.perform(iteration.id, 'creation', message)
+      SlackIterationNotificationJob.new.perform(iteration.id, 'creation', message)
     end
   end
 end
