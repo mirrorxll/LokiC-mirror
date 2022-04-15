@@ -5,7 +5,7 @@ class CreatePublishedFactoids < ActiveRecord::Migration[6.0]
       t.belongs_to :article_type
       t.belongs_to :iteration
 
-      t.date    :original_publish_date
+      t.date    :date_export
       t.integer :count_factoids
 
       t.timestamps

@@ -11,6 +11,9 @@ module ArticleTypes
 
       iteration.update!(last_export_batch_size: nil)
 
+      raise ArgumentError, 'Kind must be provided!' unless article_type.kind
+      raise ArgumentError, 'Topic must be provided!' unless article_type.topic
+
       loop do
         Factoids[].publish!(iteration, threads_count)
 
@@ -21,16 +24,31 @@ module ArticleTypes
       pub_f                       = PublishedFactoid.find_or_initialize_by(iteration: iteration)
       pub_f.article_type          = article_type
       pub_f.developer             = article_type.developer
-      pub_f.original_publish_date = Date.today
+      pub_f.date_export           = Date.today
       pub_f.count_factoids        = iteration.articles.count
 
       pub_f.save!
-    rescue StandardError, ScriptError => e
+
+      note = MiniLokiC::Formatize::Numbers.to_text(pub_f.count_factoids).capitalize
+      record_to_change_history(article_type, 'published on limpar', note, account)
+
+      if article_type.iterations.last.eql?(iteration) && !article_type.reload.status.name.in?(['canceled',
+                                                                                              'blocked',
+                                                                                              'on cron',
+                                                                                              'exported'])
+        article_type.update!(
+          status: Status.find_by(name: 'exported'),
+          current_account: account
+        )
+      end
+
+    rescue StandardError, ScriptError, ArgumentError => e
       status = nil
       message = e.message
     ensure
       iteration.reload.update!(export: status)
       send_to_action_cable(article_type, :export, message)
+      ArticleTypes::SlackNotificationJob.perform_now(iteration, 'export', message)
     end
   end
 end

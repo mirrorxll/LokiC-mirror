@@ -10,6 +10,7 @@ class ArticleType < ApplicationRecord
   end
 
   validates_uniqueness_of :name, case_sensitive: true
+  validates :source_link, :source_type, :source_name, :original_publish_date, presence: true, on: 'ArticleTypes::ExportsController#execute'
 
   belongs_to :data_set,          counter_cache: true
   belongs_to :editor,            class_name: 'Account'
@@ -26,6 +27,7 @@ class ArticleType < ApplicationRecord
   has_one_attached :code
 
   has_many :iterations, class_name: 'ArticleTypeIteration'
+  has_many :change_history, as: :history
   has_many :articles
 
   def id_name

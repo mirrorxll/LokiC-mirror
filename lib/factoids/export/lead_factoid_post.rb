@@ -26,29 +26,28 @@ module Factoids
         article_type = sample.article_type
         st_limpar_year, st_limpar_id = st_limpar_columns
         factoid_kind = "#{article_type.kind.name.downcase}_id"
-        publish_date = Date.today
         exported_date = DateTime.now
+
+        raise ArgumentError, 'LimparId must be provided!' unless st_limpar_id
+        raise ArgumentError, 'LimparYear must be provided!' unless st_limpar_year
 
         params = {
           topic_id: article_type.topic.external_lp_id,
-          description: article_type.topic.description,
+          description: sample.body,
           year: st_limpar_year,
           source_type: article_type.source_type,
           source_name: article_type.source_name,
           source_link: article_type.source_link,
-          original_publish_date: publish_date,
+          original_publish_date: article_type.original_publish_date,
 
-          kind: article_type.kind.parent_kind.id,
+          kind: article_type.kind.name,
           "#{factoid_kind}".to_sym => st_limpar_id
         }
         pp '===================', params
 
-        # =====================>
-        # response = @lp_client.publish_factoid(params)
-        # factoid_id = JSON.parse(response.body)['id']
-        # =====================
-        factoid_id = SecureRandom.uuid
-        # =====================>
+        response = @lp_client.create_editorial(params)
+        pp '111111111111111', response
+        factoid_id = JSON.parse(response.body)['data']['id']
 
         sample.update!(limpar_factoid_id: factoid_id, exported_at: exported_date)
       end

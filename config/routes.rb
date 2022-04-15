@@ -327,9 +327,9 @@ Rails.application.routes.draw do
         end
 
         resources :exports, path: :export, only: [] do
-          post   :execute,                 on: :collection
-          # delete :remove_exported_stories, on: :collection
-          # get    :stories,                 on: :collection
+          post   :execute,                  on: :collection
+          delete :remove_exported_articles, on: :collection
+          get    :articles,                 on: :collection
         end
       end
 
