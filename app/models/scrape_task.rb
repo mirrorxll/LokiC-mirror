@@ -77,8 +77,8 @@ class ScrapeTask < ApplicationRecord
       new_scraper_name = new_scraper&.name || 'not distributed'
       changes['distributed'] = "#{old_scraper_name} -> #{new_scraper_name}"
 
-      ScrapeTasks::SlackNotificationJob.perform_now(self, 'scraper', 'Unpinned', old_scraper) if old_scraper
-      ScrapeTasks::SlackNotificationJob.perform_now(self, 'scraper', 'Distributed to you', new_scraper) if new_scraper
+      ScrapeTasks::SlackNotificationJob.new.perform(id, 'scraper', 'Unpinned', old_scraper) if old_scraper
+      ScrapeTasks::SlackNotificationJob.new.perform(id, 'scraper', 'Distributed to you', new_scraper) if new_scraper
     end
 
     if status_id_changed?
@@ -86,7 +86,7 @@ class ScrapeTask < ApplicationRecord
       new_status_name = status.name.in?(%w[blocked canceled]) ? "#{status.name}: #{status_comment.reload&.body}" : status.name
       changes['progress status changed'] = "#{old_status_name} -> #{new_status_name}"
 
-      ScrapeTasks::SlackNotificationJob.perform_now(self, 'status', changes['progress status changed'], current_account)
+      ScrapeTasks::SlackNotificationJob.new.perform(id, 'status', changes['progress status changed'], current_account)
     end
 
     if frequency_id_changed?

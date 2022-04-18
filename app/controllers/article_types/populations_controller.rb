@@ -23,7 +23,7 @@ module ArticleTypes
         iteration_args = population_args.merge(current_account: current_account)
         @iteration.update!(iteration_args)
 
-        PopulationJob.perform_later(@iteration, current_account, population_args)
+        PopulationJob.perform_async(@iteration.id, current_account.id, population_args)
       end
 
       render 'article_types/staging_tables/show'
@@ -31,7 +31,7 @@ module ArticleTypes
 
     def purge
       @iteration.update!(purge_population: false, current_account: current_account)
-      PurgePopulationJob.perform_later(@staging_table, @iteration, current_account)
+      PurgePopulationJob.perform_async(@staging_table.id, @iteration.id, current_account.id)
     end
 
     private

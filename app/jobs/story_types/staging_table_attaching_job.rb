@@ -2,7 +2,9 @@
 
 module StoryTypes
   class StagingTableAttachingJob < StoryTypesJob
-    def perform(story_type, account, staging_table_name)
+    def perform(story_type_id, account_id, staging_table_name)
+      story_type = StoryType.find(story_type_id)
+      account = Account.find(account_id)
       status = true
       message = 'Success. Staging table attached'
 

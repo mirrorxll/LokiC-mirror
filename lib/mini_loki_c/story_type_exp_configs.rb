@@ -68,11 +68,8 @@ module MiniLokiC
         )
       end
     rescue StandardError, ScriptError => e
-      path = e.backtrace.first
-      at = path[/s#{@story_type.id}/] ? " at #{path}" : ''
-
       raise ExportConfigurationExecutionError,
-            "[ ExportConfigurationsExecutionError ] -> #{e.message}#{at}".gsub('`', "'")
+            "[ ExportConfigurationsExecutionError ] -> #{e.message} at #{e.backtrace.first}".gsub('`', "'")
     end
 
     private

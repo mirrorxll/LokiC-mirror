@@ -22,7 +22,7 @@ class StoryType < ApplicationRecord
     update(current_iteration: iter)
   end
 
-  before_update :tracking_changes
+  before_update -> { tracking_changes(StoryType) }
 
   validates_uniqueness_of :name, case_sensitive: true
 
@@ -153,60 +153,5 @@ class StoryType < ApplicationRecord
 
   def check_updates_developed?
     !reminder.has_updates.nil?
-  end
-
-  private
-
-  def tracking_changes
-    changes = {}
-    changes['renamed'] = "#{name_change.first} -> #{name}" if name_changed?
-
-    if developer_id_changed?
-      old_developer = Account.find_by(id: developer_id_change.first)
-
-      old_developer_name = old_developer&.name || 'not distributed'
-      new_developer_name = developer&.name || 'not distributed'
-      changes['distributed'] = "#{old_developer_name} -> #{new_developer_name}"
-
-      StoryTypes::SlackNotificationJob.perform_later(iteration, 'developer', 'Unpinned', old_developer) if old_developer
-      StoryTypes::SlackNotificationJob.perform_later(iteration, 'developer', 'Distributed to you', developer) if developer
-    end
-
-    if data_set_id_changed?
-      old_data_set_name = DataSet.find_by(id: data_set_id_change.first)&.name || 'not selected'
-      new_data_set_name = data_set&.name || 'not selected'
-      changes['data set changed'] = "#{old_data_set_name} -> #{new_data_set_name}"
-    end
-
-    if frequency_id_changed?
-      old_frequency_name = Frequency.find_by(id: frequency_id_change.first)&.name || 'not selected'
-      new_frequency_name = frequency&.name || 'not selected'
-      changes['frequency changed'] = "#{old_frequency_name} -> #{new_frequency_name}"
-    end
-
-    if photo_bucket_id_changed?
-      old_photo_bucked_name = PhotoBucket.find_by(id: photo_bucket_id_change.first)&.name || 'not selected'
-      new_photo_bucked_name = photo_bucket&.name || 'not selected'
-      changes['photo bucked changed'] = "#{old_photo_bucked_name} -> #{new_photo_bucked_name}"
-    end
-
-    if current_iteration_id_changed? && !current_iteration_id_change.first.nil?
-      old_iteration = StoryTypeIteration.find_by(id: current_iteration_id_change.first)
-      new_iteration = iteration
-
-      old_iteration_id_name = "#{old_iteration.id}|#{old_iteration.name}"
-      new_iteration_id_name = "#{new_iteration.id}|#{new_iteration.name}"
-      changes['iteration changed'] = "#{old_iteration_id_name} -> #{new_iteration_id_name}"
-    end
-
-    if status_id_changed?
-      old_status_name = Status.find_by(id: status_id_change.first).name
-      new_status_name = status.name
-      changes['progress status changed'] = "#{old_status_name} -> #{new_status_name}"
-
-      StoryTypes::SlackNotificationJob.perform_now(iteration, 'status', changes['progress status changed'], current_account)
-    end
-
-    changes.each { |ev, ch| record_to_change_history(self, ev, ch, current_account) }
   end
 end

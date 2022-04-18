@@ -2,7 +2,11 @@
 
 module StoryTypes
   class SamplesAndAutoFeedbackJob < StoryTypesJob
-    def perform(iteration, account, options = {})
+    def perform(iteration_id, account_id, options = {})
+      options.deep_symbolize_keys!
+
+      iteration = StoryTypeIteration.find(iteration_id)
+      account = Account.find(account_id)
       status = true
       story_type = iteration.story_type
       story_type.sidekiq_break.update!(cancel: false)
@@ -59,7 +63,7 @@ module StoryTypes
       story_type.sidekiq_break.update!(cancel: false)
       send_to_action_cable(story_type, :samples, message)
 
-      StoryTypes::SlackNotificationJob.perform_now(iteration, 'samples', message) if options[:cron] && status.nil?
+      SlackIterationNotificationJob.new.perform(iteration.id, 'samples', message) if options[:cron] && status.nil?
     end
   end
 end

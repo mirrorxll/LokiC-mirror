@@ -49,7 +49,7 @@ module ArticleTypes
       developer_pm = @article_type.developer&.slack&.identifier
       return if developer_pm.nil?
 
-      message = "*[ LokiC ] <#{article_type_url(@article_type)}|Article Type ##{@article_type.id}> (#{@article_type.iteration.name}) | FCD*\n>"
+      message = "*[ LokiC ] <#{article_type_url(@article_type)}|Factoid Type ##{@article_type.id}> (#{@article_type.iteration.name}) | FCD*\n>"
 
       if params[:commit].eql?('approve!')
         approvable = @fcd.approval_editors
@@ -67,17 +67,17 @@ module ArticleTypes
                    '#editors_feedback|Check it>.'
       end
 
-      ::SlackNotificationJob.perform_later(developer_pm, message)
+      ::SlackNotificationJob.perform_async(developer_pm, message)
     end
 
     def send_confirm_to_fc_channel
       fact_checking_channel = @article_type.developer&.fact_checking_channel&.name
       return unless fact_checking_channel || @feedback_collection.where(approvable: false).all?(&:confirmed)
 
-      message = "*Updated Article Type FCD* ##{@article_type.id} "\
+      message = "*Updated Factoid Type FCD* ##{@article_type.id} "\
                 "<#{article_type_fact_checking_doc_url(@article_type, @fcd)}|#{@article_type.name}>."
 
-      ::SlackNotificationJob.perform_later(fact_checking_channel, message)
+      ::SlackNotificationJob.perform_async(fact_checking_channel, message)
     end
   end
 end

@@ -20,7 +20,7 @@ module ArticleTypes
     def create
       staging_table_action do
         @staging_table.update!(indices_modifying: true)
-        StagingTableIndexAddJob.perform_later(@staging_table, uniq_index_column_ids)
+        StagingTableIndexAddJob.perform_async(@staging_table.id, uniq_index_column_ids)
         nil
       end
 
@@ -30,7 +30,7 @@ module ArticleTypes
     def destroy
       staging_table_action do
         @staging_table.update!(indices_modifying: true)
-        StagingTableIndexDropJob.perform_later(@staging_table)
+        StagingTableIndexDropJob.perform_async(@staging_table.id)
         nil
       end
 
@@ -41,7 +41,7 @@ module ArticleTypes
 
     def uniq_index_column_ids
       if params[:index]
-        params.require(:index).permit(column_ids: [])[:column_ids].map!(&:to_sym)
+        params.require(:index).permit(column_ids: [])[:column_ids]
       else
         []
       end

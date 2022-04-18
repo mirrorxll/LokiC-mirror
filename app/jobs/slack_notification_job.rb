@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SlackNotificationJob < ApplicationJob
-  queue_as :lokic
+  sidekiq_options queue: :lokic
 
   def perform(identifier, msg, thread_ts = nil)
     channel = Rails.env.production? ? identifier : 'hle_lokic_development_messages'

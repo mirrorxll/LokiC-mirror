@@ -16,14 +16,14 @@ module ArticleTypes
 
     def generate
       @iteration.update!(samples: false, current_account: current_account)
-      SamplesJob.perform_later(@iteration, current_account, stories_params)
+      SamplesJob.perform_async(@iteration.id, current_account.id, stories_params)
 
       render 'article_types/creations/execute'
     end
 
     def purge
       @iteration.update!(purge_samples: false, current_account: current_account)
-      PurgeSamplesJob.perform_later(@iteration, current_account)
+      PurgeSamplesJob.perform_async(@iteration.id, current_account.id)
 
       render 'article_types/creations/purge'
     end
@@ -34,12 +34,8 @@ module ArticleTypes
       @sample = Article.find(params[:id])
     end
 
-    def update_section_params
-      params.require(:section_update).permit(:message)
-    end
-
     def stories_params
-      params.require(:samples).permit(:row_ids, columns: {})
+      params.require(:samples).permit(:row_ids, columns: {}).to_hash
     end
   end
 end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ReportForMmJob < ApplicationJob
-  queue_as :lokic
+  sidekiq_options queue: :lokic
 
   def perform(*args)
     Report::ReportForMM.report

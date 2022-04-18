@@ -3,7 +3,11 @@
 # Execute population method on sidekiq backend
 module StoryTypes
   class PopulationJob < StoryTypesJob
-    def perform(iteration, account, options = {})
+    def perform(iteration_id, account_id, options = {})
+      options.deep_symbolize_keys!
+
+      iteration = StoryTypeIteration.find(iteration_id)
+      account = Account.find(account_id)
       status = true
       message = 'Success'
       story_type = iteration.story_type
@@ -16,9 +20,7 @@ module StoryTypes
         story_type.update!(status: Status.find_by(name: 'in progress'), current_account: account)
       end
 
-      ExportConfigurationsJob.perform_now(story_type, account)
-
-      false
+      ExportConfigurationsJob.new.perform(story_type.id, account.id)
     rescue StandardError, ScriptError => e
       status = nil
       message = e.message
@@ -27,7 +29,7 @@ module StoryTypes
       iteration.update!(population: status, current_account: account)
       story_type.sidekiq_break.update!(cancel: false)
       send_to_action_cable(story_type, :staging_table, message)
-      StoryTypes::SlackNotificationJob.perform_now(iteration, 'population', message)
+      SlackIterationNotificationJob.new.perform(iteration.id, 'population', message)
     end
 
     private

@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 require_relative 'pipeline/error.rb'
-require_relative 'pipeline/configuration.rb'
-require_relative 'pipeline/base.rb'
-require_relative 'pipeline/main_client.rb'
-require_relative 'pipeline/shapes_client.rb'
 
 # pipeline-api library.
 # It gives the HLE-developers team
@@ -22,4 +18,15 @@ module Pipeline
       raise EnvironmentError
     end
   end
+end
+
+Pipeline.configure do |pl|
+  pl.production_endpoint = Rails.application.credentials[:pipeline][:production][:endpoint]
+  pl.production_token = Rails.application.credentials[:pipeline][:production][:token]
+
+  pl.staging_endpoint = Rails.application.credentials[:pipeline][:staging][:endpoint]
+  pl.staging_token = Rails.application.credentials[:pipeline][:staging][:token]
+
+  pl.shapes_endpoint = Rails.application.credentials[:pipeline_shapes][:endpoint]
+  pl.shapes_token = Rails.application.credentials[:pipeline_shapes][:token]
 end

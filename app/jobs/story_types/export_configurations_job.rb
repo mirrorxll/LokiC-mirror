@@ -2,7 +2,9 @@
 
 module StoryTypes
   class ExportConfigurationsJob < StoryTypesJob
-    def perform(story_type, account, manual = false)
+    def perform(story_type_id, account_id, manual = false)
+      story_type = StoryType.find(story_type_id)
+      account = Account.find(account_id)
       status = true
       message = 'Success. Export configurations created'
       exp_config_counts = {}
@@ -34,7 +36,7 @@ module StoryTypes
 
       if manual
         send_to_action_cable(story_type, :properties, message)
-        StoryTypes::SlackNotificationJob.perform_now(iteration, 'export configurations', message)
+        SlackIterationNotificationJob.new.perform(iteration.id, 'export configurations', message)
       end
     end
 

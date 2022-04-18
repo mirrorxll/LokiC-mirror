@@ -64,8 +64,8 @@ class TaskCommentsController < ApplicationController
       message = "*<#{task_url(@task)}| TASK ##{@task.id}> | "\
               "#{@comment.commentator.name} add comment | Check please*\n>#{@task.title}"
 
-      SlackNotificationJob.perform_later(account.slack.identifier, message)
-      SlackNotificationJob.perform_later('hle_lokic_task_reminders', message)
+      ::SlackNotificationJob.perform_async(account.slack.identifier, message)
+      ::SlackNotificationJob.perform_async('hle_lokic_task_reminders', message)
     end
   end
 end

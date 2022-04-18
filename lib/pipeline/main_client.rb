@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'main_endpoint.rb'
-
 module Pipeline
   # Class for api requests to PL
   class MainClient < Base

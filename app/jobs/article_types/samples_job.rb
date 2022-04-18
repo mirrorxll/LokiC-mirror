@@ -2,7 +2,11 @@
 
 module ArticleTypes
   class SamplesJob < ArticleTypesJob
-    def perform(iteration, account, options = {})
+    def perform(iteration_id, account_id, options = {})
+      options.deep_symbolize_keys!
+
+      iteration = ArticleTypeIteration.find(iteration_id)
+      account = Account.find(account_id)
       options[:iteration] = iteration
       options[:sampled] = true
 
@@ -37,6 +41,7 @@ module ArticleTypes
     ensure
       iteration.update!(samples: status, current_account: account)
       send_to_action_cable(iteration.article_type, :samples, message)
+      SlackIterationNotificationJob.perform_now(iteration, 'samples', message)
     end
   end
 end

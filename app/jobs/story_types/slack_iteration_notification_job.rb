@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 module StoryTypes
-  class SlackNotificationJob < StoryTypesJob
-    def perform(iteration, step, raw_message, developer = nil)
+  class SlackIterationNotificationJob < StoryTypesJob
+    def perform(iteration_id, step, raw_message, developer_id = nil)
+      iteration = StoryTypeIteration.find(iteration_id)
       story_type = iteration.story_type
-      story_type_dev = developer || story_type.developer
+      story_type_dev = Account.find_by(id: developer_id) || story_type.developer
 
       url = generate_url(story_type)
       progress_step = step.in?(%w[developer]) ? '' : "| #{step.capitalize}"
@@ -14,11 +15,11 @@ module StoryTypes
 
       record_to_alerts(story_type, step, raw_message)
 
-      ::SlackNotificationJob.perform_now('lokic_story_type_messages', message)
+      ::SlackNotificationJob.new.perform('lokic_story_type_messages', message)
       return if story_type_dev.slack_identifier.nil? || step.eql?('status')
 
       message = message.gsub(/#{Regexp.escape(" | #{developer_name}")}/, '')
-      ::SlackNotificationJob.perform_now(story_type_dev.slack_identifier, "*[ LokiC ]* #{message}")
+      ::SlackNotificationJob.new.perform(story_type_dev.slack_identifier, "*[ LokiC ]* #{message}")
     end
   end
 end

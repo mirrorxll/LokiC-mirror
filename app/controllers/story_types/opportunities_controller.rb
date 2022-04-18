@@ -9,7 +9,7 @@ module StoryTypes
     def index; end
 
     def create
-      ChangeOpportunitiesListJob.perform_later(@story_type)
+      ChangeOpportunitiesListJob.perform_async(@story_type.id)
     end
 
     def update
