@@ -11,8 +11,7 @@ module ArticleTypes
 
       iteration.update!(last_export_batch_size: nil)
 
-      raise ArgumentError, 'Kind must be provided!' unless article_type.kind
-      raise ArgumentError, 'Topic must be provided!' unless article_type.topic
+      validate_params(article_type)
 
       loop do
         Factoids[].publish!(iteration, threads_count)
@@ -49,6 +48,14 @@ module ArticleTypes
       iteration.reload.update!(export: status)
       send_to_action_cable(article_type, :export, message)
       ArticleTypes::SlackNotificationJob.perform_now(iteration, 'export', message)
+    end
+
+    private
+
+    def validate_params(article_type)
+      %w[kind_id topic_id source_link source_type source_name original_publish_date].each do |field|
+        raise ArgumentError, "#{field} must be provided!" unless article_type.attributes["#{field}"]
+      end
     end
   end
 end

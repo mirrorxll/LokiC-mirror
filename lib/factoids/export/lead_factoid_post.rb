@@ -43,7 +43,6 @@ module Factoids
           kind: article_type.kind.name,
           "#{factoid_kind}".to_sym => st_limpar_id
         }
-        pp '===================', params
 
         response = @lp_client.create_editorial(params)
         pp '111111111111111', response
