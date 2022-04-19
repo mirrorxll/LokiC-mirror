@@ -26,8 +26,8 @@ class ApplicationRecord < ActiveRecord::Base
       new_developer_name = developer&.name || 'not distributed'
       changes['distributed'] = "#{old_developer_name} -> #{new_developer_name}"
 
-      mod::SlackIterationNotificationJob.perform_async(iteration, 'developer', 'Unpinned', old_developer) if old_developer
-      mod::SlackIterationNotificationJob.perform_async(iteration, 'developer', 'Distributed to you', developer) if developer
+      mod::SlackIterationNotificationJob.perform_async(iteration.id, 'developer', 'Unpinned', old_developer) if old_developer
+      mod::SlackIterationNotificationJob.perform_async(iteration.id, 'developer', 'Distributed to you', developer) if developer
     end
 
     if current_iteration_id_changed? && !current_iteration_id_change.first.nil?
@@ -44,7 +44,7 @@ class ApplicationRecord < ActiveRecord::Base
       new_status_name = status.name
       changes['progress status changed'] = "#{old_status_name} -> #{new_status_name}"
 
-      mod::SlackIterationNotificationJob.perform_async(iteration, 'status', changes['progress status changed'], current_account)
+      mod::SlackIterationNotificationJob.perform_async(iteration.id, 'status', changes['progress status changed'], current_account)
     end
 
     if model.eql?(StoryType)

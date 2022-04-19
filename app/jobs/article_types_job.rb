@@ -14,7 +14,6 @@ class ArticleTypesJob < ApplicationJob
       }
     }
 
-    pp '>>>>>>>>>>>>>>>>>', article_type, message_to_send
     ArticleTypeChannel.broadcast_to(article_type, message_to_send)
   end
 end

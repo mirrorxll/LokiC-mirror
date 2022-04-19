@@ -36,13 +36,13 @@
       =form_with(model: @article_type) do |form|
         .row
           .col-3.pl-0
-            =form.text_field :source_type, required: true, placeholder: 'new source_type'
+            =form.text_field :source_type, placeholder: 'new source_type'
           .col-3.pl-0
-            =form.text_field :source_name, required: true, placeholder: 'new source_name'
+            =form.text_field :source_name, placeholder: 'new source_name'
           .col-3.pl-0
-            =form.text_field :source_link, required: true, placeholder: 'new source_link'
+            =form.text_field :source_link, placeholder: 'new source_link'
           .col-3.pl-0
-            =form.date_field :original_publish_date, required: true, placeholder: 'new original_publish_date'
+            =form.date_field :original_publish_date, placeholder: 'new original_publish_date'
             =form.submit :save
 
 :javascript

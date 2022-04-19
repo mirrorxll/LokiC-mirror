@@ -41,7 +41,7 @@ module ArticleTypes
             arry.each do |arr|
               raw                         = {}
               raw['a']                    = arr
-              raw['limpar_id']            = 'f57857ec-8fba-4f54-9398-94b26c8217eb'
+              raw['limpar_id']            = '92d5c7c8-4c19-4c5f-9a81-f605d42dd921'
               raw['limpar_year']          = 2022
         
               staging_insert_query = SQL.insert_on_duplicate_key(STAGING_TABLE, raw, host)

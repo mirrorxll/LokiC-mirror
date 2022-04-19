@@ -12,7 +12,6 @@ class ArticleType < ApplicationRecord
   before_update -> { tracking_changes(ArticleType) }
 
   validates_uniqueness_of :name, case_sensitive: true
-  validates :source_link, :source_type, :source_name, :original_publish_date, presence: true, on: 'ArticleTypes::ExportsController#execute'
 
   belongs_to :data_set,          counter_cache: true
   belongs_to :editor,            class_name: 'Account'

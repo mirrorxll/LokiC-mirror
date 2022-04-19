@@ -3,7 +3,7 @@
     .row
       .col-10.offset-1
         #created_stories
-          -stories = @iteration.stories.where(sampled: true)
+          -stories = @iteration.articles.where(sampled: true)
           -if stories.count.positive?
             =render partial: 'article_types/samples/sample', collection: stories
           -else
@@ -16,7 +16,7 @@
         %hr/
         =render 'article_types/samples/stories_link'
 
-  -elsif @iteration.samples.eql?(false) || @iteration.creation.eql?(false)
+  -elsif @iteration.articles.eql?(false) || @iteration.creation.eql?(false)
     =render 'article_types/spinner', description: 'creation in the process'
   -elsif @iteration.purge_samples.eql?(true) || @iteration.purge_creation.eql?(true)
     =render 'article_types/spinner', description: 'purging in progress'

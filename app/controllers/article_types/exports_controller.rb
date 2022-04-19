@@ -10,15 +10,13 @@ module ArticleTypes
     before_action :show_sample_ids, only: :articles
 
     def execute
-      pp '++++++++++++++++++++++', params
       @iteration.update!(export: false, current_account: current_account)
-      ExportJob.perform_later(@iteration, current_account)
+      ExportJob.perform_async(@iteration.id, current_account.id)
     end
 
     def remove_exported_articles
-      pp '====================', params
       @iteration.update!(purge_export: true, current_account: current_account)
-      PurgeExportJob.perform_later(@iteration, current_account)
+      PurgeExportJob.perform_async(@iteration.id, current_account.id)
     end
 
     def articles

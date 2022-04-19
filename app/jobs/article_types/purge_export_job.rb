@@ -2,9 +2,11 @@
 
 module ArticleTypes
   class PurgeExportJob < ArticleTypesJob
-    def perform(iteration, account)
-      status = false
-      message = 'Success'
+    def perform(iteration_id, account_id)
+      iteration    = ArticleTypeIteration.find(iteration_id)
+      account      = Account.find(account_id)
+      status       = false
+      message      = 'Success'
       article_type = iteration.article_type
 
       loop do
@@ -18,8 +20,8 @@ module ArticleTypes
       note = MiniLokiC::Formatize::Numbers.to_text(iteration.articles.published.count)
       record_to_change_history(article_type, 'removed from limpar', note, account)
 
-      old_status = article_type.status.name
-      last_iteration = article_type.reload.iterations.last.eql?(iteration)
+      old_status        = article_type.status.name
+      last_iteration    = article_type.reload.iterations.last.eql?(iteration)
       changeable_status = !article_type.status.name.in?(['canceled', 'blocked', 'on cron'])
 
       if !old_status.eql?('in progress') && last_iteration && changeable_status
@@ -31,7 +33,7 @@ module ArticleTypes
     ensure
       iteration.update!(purge_export: status, export: nil)
       send_to_action_cable(iteration.article_type, :export, message)
-      ArticleTypes::SlackNotificationJob.perform_now(iteration, 'remove from limpar', message)
+      ArticleTypes::SlackIterationNotificationJob.new.perform(iteration.id, 'remove from limpar', message)
     end
   end
 end

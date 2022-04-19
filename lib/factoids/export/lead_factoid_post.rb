@@ -23,29 +23,25 @@ module Factoids
       private
 
       def factoid_post(sample, st_limpar_columns)
-        article_type = sample.article_type
+        article_type                 = sample.article_type
         st_limpar_year, st_limpar_id = st_limpar_columns
-        factoid_kind = "#{article_type.kind.name.downcase}_id"
-        exported_date = DateTime.now
+        factoid_kind                 = "#{article_type.kind.name.downcase}_id"
+        exported_date                = DateTime.now
 
         raise ArgumentError, 'LimparId must be provided!' unless st_limpar_id
-        raise ArgumentError, 'LimparYear must be provided!' unless st_limpar_year
 
         params = {
-          topic_id: article_type.topic.external_lp_id,
-          description: sample.body,
-          year: st_limpar_year,
-          source_type: article_type.source_type,
-          source_name: article_type.source_name,
-          source_link: article_type.source_link,
-          original_publish_date: article_type.original_publish_date,
-
           kind: article_type.kind.name,
-          "#{factoid_kind}".to_sym => st_limpar_id
+          "#{factoid_kind}".to_sym => st_limpar_id,
+          topic_id: article_type.topic.external_lp_id,
+          description: sample.body
         }
+        %w[source_type source_name source_link original_publish_date].each do |field|
+          params.merge!("#{field}".to_sym => article_type[field.to_sym]) if article_type[field.to_sym]
+        end
+        params.merge!(year: st_limpar_year) if st_limpar_year
 
         response = @lp_client.create_editorial(params)
-        pp '111111111111111', response
         factoid_id = JSON.parse(response.body)['data']['id']
 
         sample.update!(limpar_factoid_id: factoid_id, exported_at: exported_date)
