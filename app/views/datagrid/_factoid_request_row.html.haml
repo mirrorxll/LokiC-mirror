@@ -2,4 +2,6 @@
   -grid.html_columns.each do |column|
     -klass = datagrid_column_classes(grid, column)
     -value = datagrid_value(grid, column, asset)
-    %td{ class: klass } =value
+    -background_color = column.header.eql?('Status') ? "bg-#{status_color(ActionView::Base.full_sanitizer.sanitize(value))}" : ''
+    %td{ class: "#{klass} #{background_color}" }
+      =value
