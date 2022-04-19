@@ -21,6 +21,8 @@ class FactoidRequestsController < ApplicationController
     @factoid_request = FactoidRequestObject.create_from!(
       factoid_request_params
     )
+
+    redirect_to @factoid_request
   end
 
   def edit; end
@@ -30,6 +32,8 @@ class FactoidRequestsController < ApplicationController
       @factoid_request,
       factoid_request_params
     )
+
+    redirect_to @factoid_request
   end
 
   private

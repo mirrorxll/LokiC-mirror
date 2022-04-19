@@ -226,8 +226,7 @@
         return false;
       }
 
-      event.target.removeEventListener('submit', onSubmit)
-      Rails.fire(event.target, 'submit');
+      event.target.submit();
     }
 
     document.querySelector('#requestFactoidForm .modal-body').addEventListener('scroll', () => {
