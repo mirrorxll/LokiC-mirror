@@ -1,0 +1,244 @@
+=form_with(url: factoid_requests_path, html: { class: 'small', onkeypress: "return event.keyCode !== 13;" } ) do |f|
+  .modal-body.pt-0
+    .row
+      .col-6.border-right
+        #nameAnchor.mb-1
+        #name.card.border-0
+          .card-body
+            .font-weight-bold.mb-1
+              NAME:
+              %span.small.text-danger
+                *required
+            =f.text_field "factoid_request[name]", class: 'form-control form-control-sm'
+
+        #opportunitiesAnchor.mb-1
+        #opportunities.card.border-0
+          .card-body
+            .font-weight-bold.mb-1
+              .row
+                .col-6
+                  AGENCY:
+                .col-6
+                  OPPORTUNITY:
+            .opportunity
+              .row
+                .col-6
+                  =f.collection_select 'factoid_request[agency_id]', Agency.order(:name), :id, :name, { include_blank: '' },
+                                       {  class: 'form-control form-control-sm', onchange: 'updateOpportunitiesList(this.value)' }
+                .col-6
+                  =f.collection_select 'factoid_request[opportunity_id]', [], :id, :name, { include_blank: '' },
+                                       { class: 'form-control form-control-sm' }
+                :javascript
+                  function updateOpportunitiesList(agency_id) {
+                    console.log(agency_id);
+                    Rails.ajax({
+                      type: "GET",
+                      dataType: 'json',
+                      url: `#{api_factoid_request_opportunities_path}`,
+                      data: `factoid_request[agency_id]=${encodeURIComponent(agency_id)}`,
+                      success: function (data) {
+                        let select = document.querySelector('select[name="factoid_request[opportunity_id]"]');
+
+                        select.innerHTML = '';
+
+                        let option = document.createElement('option');
+                        option.value = '';
+                        option.innerText = '';
+                        select.appendChild(option);
+
+                        data.forEach(el => {
+                          option = document.createElement('option');
+                          option.value = el['id'];
+                          option.innerText = el['name'];
+                          select.appendChild(option);
+                        })
+                      }
+                    })
+                  }
+
+        #descriptionAnchor.mb-1
+        #description.card.border-0
+          .card-body
+            .font-weight-bold.mb-1
+              DESCRIPTION:
+            =f.text_area "factoid_request[description]"
+        :javascript
+          $('#description textarea').froalaEditor({
+            key: 'KfdolbcqsaA2wzA-13==',
+            editorClass: 'border rounded p-2',
+            toolbarInline: true,
+            toolbarButtons: ['undo', 'redo', '|', 'bold', 'italic', 'underline', 'strikeThrough', '|', 'color', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'insertLink', 'insertImage'],
+            imageUploadURL: '/images/upload',
+            imageUploadMethod: 'POST',
+            toolbarVisibleWithoutSelection: false,
+            zIndex: 3333,
+            heightMin: 100,
+            placeholderText: 'Type here....'
+          })
+
+
+        #purposeAnchor.mb-1
+        #purpose.card.border-0
+          .card-body
+            .font-weight-bold.mb-1
+              PURPOSE:
+            =f.text_area "factoid_request[purpose]"
+        :javascript
+          $('#purpose textarea').froalaEditor({
+            key: 'KfdolbcqsaA2wzA-13==',
+            editorClass: 'border rounded p-2',
+            toolbarInline: true,
+            toolbarButtons: ['undo', 'redo', '|', 'bold', 'italic', 'underline', 'strikeThrough', '|', 'color', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'insertLink', 'insertImage'],
+            imageUploadURL: '/images/upload',
+            imageUploadMethod: 'POST',
+            toolbarVisibleWithoutSelection: false,
+            heightMin: 100,
+            zIndex: 3333,
+            placeholderText: 'Type here....'
+          })
+
+
+        .row.align-items-end
+          .col-9
+            #dataSetsAnchor.mb-1
+            #dataSets.card.border-0
+              .card-body.pr-0
+                .font-weight-bold.mb-1
+                  DATA SETS:
+                .list
+                .data-sets
+                  .small.text-danger
+                    *** after typing or selecting press enter
+                  %input.w-100.form-control.form-control-sm{ list: 'dataSetList', onkeypress: 'addDataSet(event, this)' }
+                  %datalist#dataSetList
+                    -DataSet.order(:name).each do |ds|
+                      %option{ value: ds.name, data_set_id: ds.id }
+              :javascript
+                function addDataSet(event, input) {
+                  if(event.keyCode !== 13 || input.value.trim().length === 0) return false;
+                  let dataSetName = input.value;
+                  let option = [...document.querySelectorAll('#dataSetList option')].find((el) => el.getAttribute('value') === dataSetName )
+                  if(!option) return false;
+                  input.value = '';
+                  document.querySelector('#dataSets .list').insertAdjacentHTML(
+                    'beforeend',
+                    `<div class="row mb-2 align-items-center data-set-${option.getAttribute('data_set_id')}">
+                      <div class="col-1 text-right">
+                        <input name="factoid_request[tf_data_set__${option.getAttribute('data_set_id')}]" type="hidden" value="0">
+                        <input type="checkbox" value="1" name="factoid_request[tf_data_set__${option.getAttribute('data_set_id')}]" id="factoid_request[tf_data_set__${option.getAttribute('data_set_id')}]" checked>
+                      </div>
+                      <div class="col-11 pl-0 text-left">
+                        <label class="m-0" for="factoid_request[tf_data_set__${option.getAttribute('data_set_id')}]">${dataSetName}</label>
+                      </div>
+                    </div>`
+                  )
+                  option.remove();
+                }
+          .col-3
+            #frequenciesAnchor.mb-1
+            #frequencies.card.border-0
+              .card-body.pl-0
+                .font-weight-bold.mb-1
+                  FREQUENCY:
+                .frequency
+                  =f.collection_select 'factoid_request[frequency_id]', Frequency.all, :id, :name,
+                                       { include_blank: '' }, { class: 'form-control form-control-sm' }
+
+
+        #googleDocSheetLinkAnchor.mb-1
+        #googleDocSheetLink.card.border-0
+          .card-body
+            .font-weight-bold.mb-1
+              GOOGLE DOCUMENT/SPREADSHEET:
+              %span.small.text-danger
+                ***link to Google Doc or Spreadsheet
+            .google-doc-sheet-link
+              =f.text_field "factoid_request[google_doc_sheet_link]", class: 'form-control form-control-sm'
+
+
+        #priorityAnchor.mb-1
+        #priority.card.border-0
+          .card-body
+            .font-weight-bold.mb-1
+              PRIORITY:
+              %span.small.text-danger
+                *required
+            .priorities
+              -Priority.all.each do |rt|
+                .row.mb-1.align-items-center{ class: "priority-type-#{rt.id}"}
+                  .col-1.text-right
+                    =f.radio_button "factoid_request[priority_id]", rt.id
+                  .col-11.pl-0.text-left
+                    =f.label "factoid_request[priority_id]", rt.name, value: rt.id, class: 'm-0'
+
+      .col-6
+        -(1..5).each do |n|
+          %div.mb-1{ id: "templateAnchor#{n}" }
+          %div.card.border-0{ id: "createTemplate#{n}" }
+            .card-body
+              .font-weight-bold.mb-1
+                TEMPLATE #{n}:
+              =f.text_area "factoid_request[template_#{n}_body]", class: 'form-control form-control-sm w-75'
+              =f.label "factoid_request[template_#{n}_assoc]", 'Associated with:'
+              =f.select "factoid_request[template_#{n}_assoc]", options_for_select(%w[Organization Person Geo]),
+                        { include_blank: '' }, { class: 'mt-2 form-control form-control-sm w-40 d-inline-block' }
+          :javascript
+            $('#createTemplate#{n} textarea').froalaEditor({
+              key: 'KfdolbcqsaA2wzA-13==',
+              editorClass: 'border rounded p-2',
+              toolbarInline: true,
+              toolbarButtons: ['undo', 'redo', '|', 'bold', 'italic', 'underline', 'strikeThrough', '|', 'color', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'insertLink', 'insertImage'],
+              imageUploadURL: '/images/upload',
+              imageUploadMethod: 'POST',
+              toolbarVisibleWithoutSelection: false,
+              heightMin: 120,
+              zIndex: 3333,
+              placeholderText: 'Type here....'
+            })
+
+    =f.submit 'Submit', id: 'hiddenCreateButton', class: 'd-none'
+
+  :javascript
+    document.querySelector('#requestFactoidForm form').addEventListener('submit', onSubmit)
+
+    function onSubmit(event) {
+      event.preventDefault();
+
+      let sections = `#name, #priority, #googleDocSheetLink`
+      let cards = document.querySelectorAll(sections);
+      [...cards].forEach((el) => { el.classList.replace('border-danger', 'border-0') })
+
+      let name = document.querySelector('#name input').value.length > 0
+      if(!name) {
+        scrollToCard('#name')
+        return false;
+      }
+
+      let googleLink = document.querySelector('#googleDocSheetLink input').value
+      if(googleLink.length > 0 && !googleLink.match(/^https:\/\/docs.google.com\/(document|spreadsheets)/)) {
+        scrollToCard('#googleDocSheetLink')
+        return false;
+      }
+
+      let priority = [...document.querySelectorAll('#priority input[type="radio"]')].some((el) => { return el.checked; } );
+      if(!priority) {
+        scrollToCard('#priority')
+        return false;
+      }
+
+      event.target.removeEventListener('submit', onSubmit)
+      Rails.fire(event.target, 'submit');
+    }
+
+    document.querySelector('#requestFactoidForm .modal-body').addEventListener('scroll', () => {
+      [...document.querySelectorAll('input[list]')].forEach(el => { el.blur();  })
+    }, false)
+
+    function scrollToCard(id) {
+      let required = document.querySelector(id);
+
+      required.addEventListener('animationend', (ev) => { ev.target.classList.remove('touch-required-field') })
+      document.querySelector(id).classList.replace('border-0', 'border-danger')
+      document.querySelector(id).classList.add('border-danger', 'touch-required-field')
+      document.querySelector(`${id}Anchor`).scrollIntoView();
+    }

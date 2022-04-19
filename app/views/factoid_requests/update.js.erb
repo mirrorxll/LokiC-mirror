@@ -1,0 +1,5 @@
+$('#factoidRequestName').html('<%= link_to("##{@factoid_request.id} #{@factoid_request.name}", @factoid_request) %>')
+$('#factoidRequestInfo .card-body').html('<%= j render 'factoid_request_info' %>')
+$('#factoidRequestsTemplates').html('<%= j render 'templates' %>')
+
+$('#updateFactoidRequestModal').modal('hide');

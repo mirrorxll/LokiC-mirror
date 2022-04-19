@@ -2,6 +2,8 @@
   =render 'datagrid/scrape_tasks/row', grid: grid, asset: asset, options: options
 -elsif asset.is_a?(WorkRequest)
   =render 'datagrid/work_request_row', grid: grid, asset: asset, options: options
+-elsif asset.is_a?(FactoidRequestsGrid)
+  =render 'datagrid/factoid_request_row', grid: grid, asset: asset, options: options
 -elsif asset.is_a?(TaskTeamWork)
   =render 'datagrid/task_team_work_row', grid: grid, asset: asset, options: options
 -else
