@@ -203,6 +203,7 @@
 
     function onSubmit(event) {
       event.preventDefault();
+      event.stopPropagation();
 
       let sections = `#name, #priority, #googleDocSheetLink`
       let cards = document.querySelectorAll(sections);
