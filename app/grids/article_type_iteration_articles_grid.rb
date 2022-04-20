@@ -14,7 +14,7 @@ class ArticleTypeIterationArticlesGrid
   end
   filter(:exported_at, :datetime, range: true)
 
-  column(:article, mandatory: true) do |rec|
+  column(:article, header: 'Factoid', mandatory: true) do |rec|
     rec.output.body
   end
   column(:lp_link, header: "Limpar", mandatory: true) do |model|
