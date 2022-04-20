@@ -16,6 +16,19 @@
             %td.noresults{:colspan => "100%"}= I18n.t('datagrid.no_results').html_safe
   -else
     =I18n.t("datagrid.table.no_columns").html_safe
+-elsif controller_name.eql?('factoid_requests')
+  -if grid.html_columns(*options[:columns]).any?
+    =content_tag :table, class: %w(datagrid data_sets_grid table-striped w-100) do
+      %thead
+        =datagrid_header(grid, options)
+      %tbody
+        -if assets.any?
+          =datagrid_rows(grid, assets, **options)
+        -else
+          %tr
+            %td.noresults{:colspan => "100%"}= I18n.t('datagrid.no_results').html_safe
+  -else
+    =I18n.t("datagrid.table.no_columns").html_safe
 -else
   -if grid.html_columns(*options[:columns]).any?
     =content_tag :table, class: %w(datagrid data_sets_grid table-striped) do

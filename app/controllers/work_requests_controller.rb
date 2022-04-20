@@ -46,7 +46,7 @@ class WorkRequestsController < ApplicationController
   private
 
   def john_putz_slack_id
-    "<@#{Account.find(4).slack_identifier}" # John Putz slack ID
+    "<@#{Account.find(4)&.slack_identifier}" # John Putz slack ID
   end
 
   def generate_grid
