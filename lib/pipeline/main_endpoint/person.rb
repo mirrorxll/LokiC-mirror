@@ -2,7 +2,7 @@
 
 module Pipeline
   module MainEndpoint
-    # LimparPeople endpoints
+    # People endpoints
     module Person
       # https://pipeline-api-docs.locallabs.com/#get-a-person
       def get_person(id)

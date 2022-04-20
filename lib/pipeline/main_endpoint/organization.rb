@@ -2,7 +2,7 @@
 
 module Pipeline
   module MainEndpoint
-    # LimparOrganization endpoints
+    # Organization endpoints
     module Organization
       # https://pipeline-api-docs.locallabs.com/#get-all-organizations
       def get_all_organizations(params = {})

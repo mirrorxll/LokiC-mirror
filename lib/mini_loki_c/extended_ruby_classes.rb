@@ -99,7 +99,7 @@ class Array
   #   story_table = query_result.get_table(
   #     [{heading: 'Cities',
   #       column: 'city},
-  #      {heading: 'LimparPeople amount',
+  #      {heading: 'People amount',
   #       column: 'people'}])
   # @return [JSON] prepared table
   def build_table(table_columns)
