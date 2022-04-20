@@ -333,8 +333,8 @@ Rails.application.routes.draw do
       end
 
       resources :topics, only: [] do
-        patch :change, on: :member
-        get :get_descriptions, on: :collection
+        patch :change,           on: :member
+        get   :get_descriptions, on: :collection
       end
     end
   end
@@ -406,7 +406,6 @@ Rails.application.routes.draw do
 
   resources :shown_samples,        controller: 'story_types/shown_samples',        only: :index
   resources :exported_story_types, controller: 'story_types/exported_story_types', only: :index
-  # resources :published_factoids,   controller: 'article_types/published_factoids', only: :index
   resources :archived_story_types, controller: 'story_types/archived_story_types', only: :index
   resources :production_removals,  only: :index
 
@@ -439,10 +438,4 @@ Rails.application.routes.draw do
     post :upload,   on: :collection
     get  :download, on: :collection
   end
-
-  # resources :limpar_records do
-  #   collection do
-  #     get 'get_limpar_data', to: "limpar_records#get_limpar_data"
-  #   end
-  # end
 end

@@ -3,7 +3,6 @@
 require_relative 'mini_loki_c/connect/pgsql.rb'
 require_relative 'limpar_replica/client.rb'
 
-# Make sql-requests to PL staging/production replica
 module LimparReplica
   include MiniLokiC::Connect
 

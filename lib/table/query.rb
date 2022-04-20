@@ -127,6 +127,7 @@ module Table
       "MODIFY COLUMN iter_id int NOT NULL DEFAULT #{iter_id};"
     end
 
+    # returns staging table columns 'limpar_year' and 'limpar_id'
     def limpar_year(t_name, iter_id)
       'SELECT DISTINCT limpar_year, limpar_id ' \
       "FROM #{schema_table(t_name)} " \

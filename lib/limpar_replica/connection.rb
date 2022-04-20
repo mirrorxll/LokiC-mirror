@@ -5,8 +5,7 @@ module LimparReplica
     attr_reader :lp_replica
 
     def initialize(environment)
-      #TODO: if we have staging, or only  production?
-      host, database = DB_LIMPAR_LL, 'limpar' if environment.eql?(:production)
+      host, database = DB_LIMPAR_LL, 'limpar'
 
       user        = MiniLokiC.postgresql_user
       password    = MiniLokiC.postgresql_password

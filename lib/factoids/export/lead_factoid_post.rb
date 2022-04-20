@@ -23,10 +23,18 @@ module Factoids
       private
 
       def factoid_post(sample, st_limpar_columns)
+        exported_date = DateTime.now
+        params        = prepare_params(sample, st_limpar_columns)
+        response      = @lp_client.create_editorial(params)
+        factoid_id    = JSON.parse(response.body)['data']['id']
+
+        sample.update!(limpar_factoid_id: factoid_id, exported_at: exported_date)
+      end
+
+      def prepare_params(sample, st_limpar_columns)
         article_type                 = sample.article_type
         st_limpar_year, st_limpar_id = st_limpar_columns
         factoid_kind                 = "#{article_type.kind.name.downcase}_id"
-        exported_date                = DateTime.now
 
         raise ArgumentError, 'LimparId must be provided!' unless st_limpar_id
 
@@ -40,11 +48,7 @@ module Factoids
           params.merge!("#{field}".to_sym => article_type[field.to_sym]) if article_type[field.to_sym]
         end
         params.merge!(year: st_limpar_year) if st_limpar_year
-
-        response = @lp_client.create_editorial(params)
-        factoid_id = JSON.parse(response.body)['data']['id']
-
-        sample.update!(limpar_factoid_id: factoid_id, exported_at: exported_date)
+        params
       end
     end
   end
