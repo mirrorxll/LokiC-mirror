@@ -19,7 +19,7 @@ module Table
     HIDDEN_COLUMNS = %w[
       id source_table_id source_id story_created article_created client_id
       client_name publication_id publication_name organization_ids
-      publish_on created_at updated_at iter_id time_frame
+      publish_on created_at updated_at iter_id time_frame limpar_id limpar_year
     ].freeze
 
     def columns(t_name)
