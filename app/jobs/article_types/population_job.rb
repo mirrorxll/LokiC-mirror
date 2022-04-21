@@ -3,12 +3,15 @@
 # Execute population method on sidekiq backend
 module ArticleTypes
   class PopulationJob < ArticleTypesJob
-    def perform(iteration, account, options)
+    def perform(iteration_id, account_id, options)
+      options.deep_symbolize_keys!
+
+      iteration = ArticleTypeIteration.find(iteration_id)
+      account = Account.find(account_id)
       status = true
       message = 'Success'
       article_type = iteration.article_type
       population_args = population_args_to_hash(options[:population_args])
-
       MiniLokiC::ArticleTypeCode[article_type].execute(:population, population_args)
 
       unless article_type.status.name.in?(['in progress', 'on cron'])
@@ -22,7 +25,7 @@ module ArticleTypes
     ensure
       iteration.update!(population: status, current_account: account)
       send_to_action_cable(article_type, :staging_table, message)
-      SlackNotificationJob.perform_now(iteration.article_type, iteration, 'population', message)
+      SlackIterationNotificationJob.new.perform(iteration.id, 'population', message)
     end
 
     private

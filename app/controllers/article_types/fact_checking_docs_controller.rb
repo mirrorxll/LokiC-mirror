@@ -37,7 +37,7 @@ module ArticleTypes
     end
 
     def send_to_reviewers_channel
-      response = ::SlackNotificationJob.perform_now('hle_reviews_queue', message_to_slack)
+      response = ::SlackNotificationJob.new.perform('hle_reviews_queue', message_to_slack)
       @fcd.update!(slack_message_ts: response[:ts])
     end
 
@@ -58,7 +58,7 @@ module ArticleTypes
     def message_to_slack
       info = send_to_reviewers_params
 
-      "*Article Type FCD* ##{@article_type.id} <#{article_type_fact_checking_doc_url(@article_type, @fcd)}|#{@article_type.name}>.\n"\
+      "*Factoid Type FCD* ##{@article_type.id} <#{article_type_fact_checking_doc_url(@article_type, @fcd)}|#{@article_type.name}>.\n"\
       "*Developer:* #{@article_type.developer.name}.\n"\
       "#{info[:note].present? ? "*Note*: #{info[:note]}" : ''}"
     end

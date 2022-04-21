@@ -2,7 +2,8 @@
 
 module ArticleTypes
   class StagingTableIndexDropJob < ArticleTypesJob
-    def perform(staging_table)
+    def perform(staging_table_id)
+      staging_table = StagingTable.find(staging_table_id)
       message = "Success. Staging table's uniq index dropped"
       staging_table.index.drop(:staging_table_uniq_row)
       staging_table.sync

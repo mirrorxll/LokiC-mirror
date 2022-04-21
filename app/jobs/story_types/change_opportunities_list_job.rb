@@ -2,7 +2,8 @@
 
 module StoryTypes
   class ChangeOpportunitiesListJob < StoryTypesJob
-    def perform(story_type)
+    def perform(story_type_id)
+      story_type = StoryType.find(story_type_id)
       pubs = []
       exc_pubs = story_type.excepted_publications.map(&:publication)
 

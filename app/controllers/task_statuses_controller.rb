@@ -74,8 +74,8 @@ class TaskStatusesController < ApplicationController
                   "Status changed to #{@status.name}.*\n>#{@task.title}"
       end
 
-      SlackNotificationJob.perform_later(account.slack.identifier, message)
-      SlackNotificationJob.perform_later('hle_lokic_task_reminders', message)
+      ::SlackNotificationJob.perform_async(account.slack.identifier, message)
+      ::SlackNotificationJob.perform_async('hle_lokic_task_reminders', message)
     end
     MultiTasks::SlackNotifications.run(:change_status, @task)
   end

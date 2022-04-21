@@ -24,7 +24,7 @@ module StoryTypes
         @iteration.update!(iteration_args)
 
         send_to_action_cable(@story_type, 'staging_table', 'population in progress')
-        PopulationJob.perform_later(@iteration, current_account, population_args)
+        PopulationJob.perform_async(@iteration.id, current_account.id, population_args)
       end
 
       render 'story_types/staging_tables/show'

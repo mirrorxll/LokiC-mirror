@@ -3,15 +3,15 @@
 module ProgressStatusesHelper
   def status_color(name)
     case name.strip.downcase
-    when 'migrated', 'not started'
+    when /migrated|not started/
       'secondary text-white'
-    when 'in progress'
+    when /in progress/
       'primary text-white'
-    when 'exported', 'done', 'deleted'
+    when /exported|done|deleted/
       'dark text-white'
-    when 'on cron'
+    when /on cron/
       'warning'
-    when 'blocked'
+    when /blocked/
       'danger text-white'
     else
       ''

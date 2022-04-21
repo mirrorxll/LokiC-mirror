@@ -22,8 +22,8 @@ class WorkRequestsController < ApplicationController
   def create
     @request =
       WorkRequestObject.create_from!(work_request_params)
-    WorkRequests::SlackNotificationJob.perform_later(
-      @request,
+    WorkRequests::SlackNotificationJob.perform_async(
+      @request.id,
       '<!channel> Just was created a new work request. Check it'
     )
   end
@@ -46,7 +46,7 @@ class WorkRequestsController < ApplicationController
   private
 
   def john_putz_slack_id
-    "<@#{Account.find(4).slack_identifier}" # John Putz slack ID
+    "<@#{Account.find(4)&.slack_identifier}" # John Putz slack ID
   end
 
   def generate_grid

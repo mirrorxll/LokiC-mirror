@@ -7,6 +7,6 @@ class SlackAccountsController < ApplicationController
   before_action :render_403, if: :editor?
 
   def sync
-    SlackAccountsJob.perform_later
+    SlackAccountsJob.perform_async
   end
 end

@@ -2,16 +2,21 @@
 
 module StoryTypes
   class CreationJob < StoryTypesJob
-    def perform(iteration, account, options = {})
+    def perform(iteration_id, account_id)
+      iteration = StoryTypeIteration.find(iteration_id)
+      account = Account.find(account_id)
       status = true
       message = 'Success. All stories have been created'
       story_type = iteration.story_type
       staging_table = story_type.staging_table.name
       story_type.sidekiq_break.update!(cancel: false)
       publication_ids = story_type.publication_pl_ids
-      options[:iteration] = iteration
-      options[:publication_ids] = publication_ids
-      options[:type] = 'story'
+
+      options = {
+        iteration: iteration,
+        publication_ids: publication_ids,
+        type: 'story'
+      }
 
       loop do
         if story_type.sidekiq_break.reload.cancel ||
@@ -39,7 +44,7 @@ module StoryTypes
       story_type.sidekiq_break.update!(cancel: false)
       send_to_action_cable(story_type, :stories, message)
 
-      StoryTypes::SlackNotificationJob.perform_now(iteration, 'creation', message)
+      SlackIterationNotificationJob.new.perform(iteration.id, 'creation', message)
     end
 
     private

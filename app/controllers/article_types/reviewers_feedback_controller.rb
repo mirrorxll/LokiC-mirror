@@ -50,14 +50,14 @@ module ArticleTypes
       developer_pm = @article_type.developer&.slack&.identifier
       return if developer_pm.nil? || fcd_channel.nil?
 
-      message_to_dev = "*[ LokiC ] <#{article_type_url(@article_type)}|Article Type ##{@article_type.id}> (#{@article_type.iteration.name}) | FCD*\n>"
+      message_to_dev = "*[ LokiC ] <#{article_type_url(@article_type)}|Factoid Type ##{@article_type.id}> (#{@article_type.iteration.name}) | FCD*\n>"
 
       if params[:commit].eql?('approve!')
         note = ActionView::Base.full_sanitizer.sanitize(@feedback.body)
         message_to_fc_channel = "*FCD ##{@article_type.id}* "\
                                 "<#{article_type_fact_checking_doc_url(@article_type, @fcd)}|#{@article_type.name}>.\n"\
                                 "#{@feedback.body.present? ? "*Reviewer's Note*: #{note}" : ''}"
-        ::SlackNotificationJob.perform_later(fcd_channel, message_to_fc_channel)
+        ::SlackNotificationJob.perform_async(fcd_channel, message_to_fc_channel)
 
         message_to_dev += "Approved by *#{current_account.name}* and sent to *#{fcd_channel}* channel"
       else
@@ -66,7 +66,7 @@ module ArticleTypes
                          '#reviewers_feedback|Check it>.'
       end
 
-      ::SlackNotificationJob.perform_later(developer_pm, message_to_dev)
+      ::SlackNotificationJob.perform_async(developer_pm, message_to_dev)
     end
 
     def send_confirm_to_review_channel
@@ -81,7 +81,7 @@ module ArticleTypes
                 "<#{article_type_fact_checking_doc_url(@article_type, @article_type.fact_checking_doc)}"\
                 '#reviewers_feedback|Check it>.'
 
-      ::SlackNotificationJob.perform_later('hle_reviews_queue', message, @fcd.slack_message_ts)
+      ::SlackNotificationJob.perform_async('hle_reviews_queue', message, @fcd.slack_message_ts)
     end
   end
 end

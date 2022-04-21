@@ -12,14 +12,14 @@ module ArticleTypes
       flash.now[:error] =
         if @staging_table.present?
           @article_type.update!(staging_table_attached: true, current_account: current_account)
-          'Table for this article type already exist. Please update the page.'
+          'Table for this factoid type already exist. Please update the page.'
         elsif StagingTable.find_by(name: @staging_table_name)
-          "Table with name '#{@staging_table_name}' already attached to another article type."
+          "Table with name '#{@staging_table_name}' already attached to another factoid type."
         elsif @staging_table_name.present? && StagingTable.not_exists?(@staging_table_name)
           "Table with name '#{@staging_table_name}' not exists."
         else
           @article_type.update!(staging_table_attached: false, current_account: current_account)
-          StagingTableAttachingJob.perform_later(@article_type, current_account, @staging_table_name)
+          StagingTableAttachingJob.perform_async(@article_type.id, current_account.id, @staging_table_name)
           nil
         end
 

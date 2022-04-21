@@ -17,7 +17,7 @@ module StoryTypes
       url = stories_story_type_iteration_exports_url(params[:story_type_id], params[:iteration_id])
 
       send_to_action_cable(@story_type, 'export', 'export in progress')
-      ExportJob.perform_later(@iteration, current_account, url)
+      ExportJob.perform_async(@iteration.id, current_account.id, url)
     end
 
     def remove_exported_stories
@@ -25,7 +25,7 @@ module StoryTypes
       @removal.update!(removal_params)
 
       send_to_action_cable(@story_type, 'export', 'removing from PL in progress')
-      PurgeExportJob.perform_later(@iteration, current_account)
+      PurgeExportJob.perform_async(@iteration.id, current_account.id)
     end
 
     def stories
@@ -78,7 +78,7 @@ module StoryTypes
       # flash message
       StoryTypeChannel.broadcast_to(@story_type, flash_message)
       # slack message
-      ::SlackNotificationJob.perform_now(channel, message)
+      ::SlackNotificationJob.new.perform(channel, message)
 
       render json: { status: :ok }
     end
@@ -103,8 +103,8 @@ module StoryTypes
       # flash message
       StoryTypeChannel.broadcast_to(@story_type, flash_message)
       # slack message
-      ::SlackNotificationJob.perform_now(developer, message)
-      ::SlackNotificationJob.perform_now(manager, message)
+      ::SlackNotificationJob.new.perform(developer, message)
+      ::SlackNotificationJob.new.perform(manager, message)
 
       render json: { status: :ok }
     end

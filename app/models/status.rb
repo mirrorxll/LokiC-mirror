@@ -13,6 +13,15 @@ class Status < ApplicationRecord
     )
   end
 
+  def self.factoid_request_statuses
+    ordered_statuses(
+      [
+        'in progress', 'done',
+        'blocked', 'canceled'
+      ]
+    )
+  end
+
   def self.multi_task_statuses
     ordered_statuses(
       [
@@ -59,8 +68,6 @@ class Status < ApplicationRecord
       ]
     )
   end
-
-  private
 
   def self.ordered_statuses(list)
     where(name: list).order(Arel.sql("FIELD(name, '#{list.join("', '")}')"))

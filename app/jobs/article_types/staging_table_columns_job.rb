@@ -2,10 +2,11 @@
 
 module ArticleTypes
   class StagingTableColumnsJob < ArticleTypesJob
-    def perform(staging_table, columns)
+    def perform(staging_table_id, columns)
+      staging_table = StagingTable.find(staging_table_id)
       message = "Success. Staging table's columns modified"
 
-      staging_table.columns.modify(columns)
+      staging_table.columns.modify(columns.deep_symbolize_keys)
       staging_table.sync
     rescue StandardError, ScriptError => e
       message = e.message

@@ -2,7 +2,9 @@
 
 module StoryTypes
   class PurgeExportJob < StoryTypesJob
-    def perform(iteration, account)
+    def perform(iteration_id, account_id)
+      iteration = StoryTypeIteration.find(iteration_id)
+      account = Account.find(account_id)
       status = false
       message = 'Success'
       story_type = iteration.story_type
@@ -39,7 +41,7 @@ module StoryTypes
       iteration.update!(purge_export: status, export: nil)
       story_type.sidekiq_break.update!(cancel: false)
       send_to_action_cable(iteration.story_type, :export, message)
-      StoryTypes::SlackNotificationJob.perform_now(iteration, 'remove from pl', message)
+      SlackIterationNotificationJob.new.perform(iteration.id, 'remove from pl', message)
     end
   end
 end

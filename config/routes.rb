@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'sidekiq/web'
-require 'sidekiq-scheduler/web'
 
 Rails.application.routes.draw do
   root 'root#index'
@@ -31,6 +30,10 @@ Rails.application.routes.draw do
       resources :clients, only: [] do
         get :find_by_name, on: :collection
       end
+    end
+
+    scope module: :factoid_requests, path: 'factoid_requests', as: 'factoid_request' do
+      resources :opportunities, only: :index
     end
 
     scope module: :work_requests, path: 'work_requests/:id', as: 'work_request_members' do
@@ -87,6 +90,14 @@ Rails.application.routes.draw do
       end
 
       resources :sow_cells, only: [] do
+        patch :change, on: :collection
+      end
+    end
+  end
+
+  resources :factoid_requests, except: :destroy do
+    scope module: :factoid_requests do
+      resources :progress_statuses, only: [] do
         patch :change, on: :collection
       end
     end
