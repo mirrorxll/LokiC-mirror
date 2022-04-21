@@ -173,7 +173,7 @@
     $('#notificationsToParentForm').append(
         `<div id="assistant_${hex}" class="row small mt-1 mb-1" >
            <select id="task_parent[notification_to][]" style = "width:130px" class="mr-1" name="task_parent[notification_to][]">${buildSelect(accounts)}</select>
-           <div class="ml-1" id="rm_assistant_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
+           <div class="ml-1" id="rm_notification_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
          </div>`
     );
   });

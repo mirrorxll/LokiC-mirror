@@ -6,7 +6,7 @@ module MultiTasks
 
     def run(type, task)
       parent = task.parent
-      notification_to = parent.nil? ? task.notification_to : parent.notification_to
+      notification_to = parent.nil? ? task.notification_to : (parent.notification_to + task.notification_to).uniq
 
       notification_to.each do |account|
         next if account.slack.nil? || account.slack.deleted
@@ -22,8 +22,8 @@ module MultiTasks
             Messages.subtask_changed_status(task, account.name)
           end
 
-        SlackNotificationJob.perform_later(account.slack.identifier, message)
-        SlackNotificationJob.perform_later('hle_lokic_task_reminders', message)
+        SlackNotificationJob.new.perform(account.slack.identifier, message)
+        SlackNotificationJob.new.perform('hle_lokic_task_reminders', message)
       end
     end
   end

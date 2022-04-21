@@ -73,7 +73,7 @@ class TasksController < ApplicationController # :nodoc:
   end
 
   def create_subtask
-    @subtask = Task.new(subtask_params.except(:assignment_to, :assistants, :checklists))
+    @subtask = Task.new(subtask_params.except(:assignment_to, :notification_to, :assistants, :checklists))
 
     if @subtask.save!
       after_task_create(@subtask, subtask_params)
@@ -180,12 +180,13 @@ class TasksController < ApplicationController # :nodoc:
   end
 
   def subtask_params
-    task_params = params.require(:task).permit(:title, :description, :parent, :deadline, :client_id, :reminder_frequency, :access, :gather_task, :assignment_to, assistants: [], checklists: [] )
+    task_params = params.require(:task).permit(:title, :description, :parent, :deadline, :client_id, :reminder_frequency, :access, :gather_task, :sow, :pivotal_tracker_name, :pivotal_tracker_url, :assignment_to, assistants: [], notification_to: [], checklists: [] )
     task_params[:reminder_frequency] = task_params[:reminder_frequency].blank? ? nil : TaskReminderFrequency.find(task_params[:reminder_frequency])
     task_params[:parent] = task_params[:parent].blank? ? nil : Task.find(task_params[:parent])
     task_params[:client] = task_params[:client_id].blank? ? nil : ClientsReport.find(task_params[:client_id])
     task_params[:creator] = current_account
     task_params[:assistants] = task_params[:assistants].blank? ? nil: task_params[:assistants].uniq.reject(&:blank?).delete_if {|assignee| assignee == task_params[:assignment_to] }
+    task_params[:notification_to] = task_params[:notification_to].blank? ? nil : task_params[:notification_to].uniq.reject(&:blank?).delete_if {|assignee| assignee == task_params[:assignment_to] || (!task_params[:assistants].blank? && task_params[:assistants].include?(assignee)) }
     task_params
   end
 
