@@ -8,7 +8,7 @@ module StoryTypes
     before_action :find_sample, only: %i[show edit update]
 
     def index
-      @grid_params = request.parameters[:iteration_stories_grid] || {}
+      @grid_params = request.parameters[:story_type_iteration_stories_grid] || {}
 
       @iteration_stories_grid = StoryTypeIterationStoriesGrid.new(@grid_params.merge(client_ids: @story_type.clients.pluck(:name, :id))) do |scope|
         scope.where(story_type_id: params[:story_type_id], story_type_iteration_id: params[:iteration_id])

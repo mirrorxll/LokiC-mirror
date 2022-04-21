@@ -43,6 +43,22 @@ module Table
       end
     end
 
+    def add_default_article_type_columns(t_name)
+      t_name = schema_table(t_name)
+
+      loki_story_creator do |conn|
+        columns = conn.columns(t_name)
+
+        unless columns.find { |c| c.name.eql?('limpar_id') }
+          conn.add_column(t_name, :limpar_id, :string, limit: 36, after: :iter_id)
+        end
+
+        unless columns.find { |c| c.name.eql?('limpar_year') }
+          conn.add_column(t_name, :limpar_year, :integer, after: :limpar_id)
+        end
+      end
+    end
+
     def delete_useless_columns(t_name)
       t_name = schema_table(t_name)
 

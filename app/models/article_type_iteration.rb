@@ -11,9 +11,11 @@ class ArticleTypeIteration < ApplicationRecord
 
   belongs_to :article_type
 
+  has_one :published, dependent: :destroy, class_name: 'PublishedFactoid', foreign_key: :iteration_id
+
   has_many :articles
 
   def show_samples
-    samples.where(show: true)
+    articles.where(show: true)
   end
 end

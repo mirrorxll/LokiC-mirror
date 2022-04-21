@@ -18,7 +18,11 @@ module Api
     private
 
     def find_sample
-      @sample = Story.find(params[:id])
+      @sample = if params[:entity].eql?('story')
+                  Story.find(params[:id])
+                elsif params[:entity].eql?('article')
+                  Article.find(params[:id])
+                end
     end
 
     def show_samples_count
