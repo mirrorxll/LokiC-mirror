@@ -43,6 +43,7 @@ module Table
 
         added(cur_col, mod_col).each do |hex|
           col = mod_col.delete(hex)
+
           conn.add_column(t_name, col[:name], col[:type], **col[:options])
         end
 
@@ -125,6 +126,8 @@ module Table
 
     def frontend_transform(columns)
       return {} if columns.empty?
+
+      puts 111111111111111111111111
 
       params_to_hash = {}
       columns.each do |id, column|

@@ -1,28 +1,29 @@
 # frozen_string_literal: true
 
 namespace :story_type do
-  desc 'Sync PL clients, publications, tags, sections with LokiC'
-  task clients_pubs_tags_sections: :environment do
-    StoryTypes::ClientsPubsTagsSectionsJob.new.perform
+  desc "Change opportunities list for story type's properties"
+  task change_opportunities: :environment do
+    StoryTypes::ChangeOpportunitiesTask.new.perform(ENV['story_type_id'])
   end
 
-  desc 'Sync PL photo buckets with LokiC'
-  task photo_buckets: :environment do
-    StoryTypes::PhotoBucketsJob.new.perform
+  desc "Set default opportunities list for story type's properties"
+  task default_opportunities: :environment do
+    StoryTypes::DefaultOpportunitiesTask.new.perform(ENV['story_type_id'])
   end
 
-  desc 'Sync PL opportunities with LokiC'
-  task opportunities: :environment do
-    StoryTypes::OpportunitiesJob.new.perform
+  desc 'Create/update export configurations for story type'
+  task export_configurations: :environment do
+    manual = ActiveModel::Type::Boolean.new.cast(ENV['manual'])
+
+    StoryTypes::ExportConfigurationsTask.new.perform(
+      ENV['story_type_id'],
+      ENV['account_id'],
+      manual
+    )
   end
 
   desc 'Check has_updates presence'
   task check_has_updates_revise: :environment do
     StoryTypes::HasUpdatesReviseJob.new.perform
-  end
-
-  desc 'Create and execute iteration'
-  task :execute, [:story_type_id] => :environment do |_t, args|
-    StoryTypes::CronTabJob.new.perform(args.story_type_id)
   end
 end
