@@ -13,7 +13,12 @@ module StoryTypes
       render_403 && return if @story_type.staging_table_attached.nil?
 
       @story_type.update!(export_configurations_created: false, current_account: current_account)
-      ExportConfigurationsJob.perform_async(@story_type.id, current_account.id, true)
+
+      Process.spawn(
+        "cd #{Rails.root} && RAILS_ENV=#{Rails.env} "\
+        "rake story_type:export_configurations story_type_id=#{@story_type.id} "\
+        "account_id=#{current_account.id} manual=true &"
+      )
     end
 
     def update_tags
