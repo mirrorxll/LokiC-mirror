@@ -15,6 +15,7 @@ end
 every '0 9 * * *' do
   rake 'story_type:reminder'
   rake 'task:reminder'
+  rake 'topics:update_topics'
 end
 
 every '0 9,12 * * *' do
