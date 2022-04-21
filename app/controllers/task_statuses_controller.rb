@@ -77,7 +77,7 @@ class TaskStatusesController < ApplicationController
       ::SlackNotificationJob.perform_async(account.slack.identifier, message)
       ::SlackNotificationJob.perform_async('hle_lokic_task_reminders', message)
     end
-    MultiTasks::SlackNotifications.run(:change_status, @task)
+    MultiTasks::SlackNotifications.run(:change_status, @task) unless @status.name != @task.status.name
   end
 
   def create_team_work
