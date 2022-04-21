@@ -15,9 +15,14 @@ module StoryTypes
     def update
       staging_table_action do
         @staging_table.update!(columns_modifying: true)
-
         send_to_action_cable(@story_type, 'staging_table', 'staging table modifying in progress')
-        StagingTableColumnsJob.perform_async(@staging_table.id, columns_front_params)
+
+        Process.spawn(
+          "cd #{Rails.root} && RAILS_ENV=#{Rails.env} "\
+          'rake story_type:staging_table:change_columns '\
+          "staging_table_id=#{@staging_table.id} columns='#{columns_front_params.to_json}' &"
+        )
+
         nil
       end
 
@@ -27,14 +32,11 @@ module StoryTypes
     private
 
     def columns_front_params
-      columns =
-        if params[:columns]
-          params.require(:columns).permit!
-        else
-          {}
-        end
-
-      Table.columns_transform(columns, :front)
+      if params[:columns]
+        params.require(:columns).permit!.to_hash
+      else
+        {}
+      end
     end
 
     def staging_table

@@ -12,7 +12,10 @@ module StoryTypes
     end
 
     def set
-      SetDefaultOpportunitiesJob.perform_async(@story_type.id)
+      Process.spawn(
+        "cd #{Rails.root} && RAILS_ENV=#{Rails.env} "\
+        "rake story_type:default_opportunities story_type_id=#{@story_type.id} &"
+      )
     end
 
     private
