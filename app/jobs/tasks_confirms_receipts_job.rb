@@ -4,7 +4,7 @@ class TasksConfirmsReceiptsJob < ApplicationJob
   queue_as :lokic
 
   def perform
-    task_assignments = TaskAssignment.where(confirmed: 0)
+    task_assignments = TaskAssignment.where(confirmed: 0, notification_to: 0)
     task_assignments.each do |assignment|
       sleep(rand)
       account = assignment.account

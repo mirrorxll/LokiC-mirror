@@ -25,8 +25,8 @@
           .col#forms_checklists
   %hr/
 
-  .d-flex.small.font-weight-bold.text-center
-    .col-4.border-right
+  .row.small.font-weight-bold
+    .col-3.border-right
       .row.justify-content-between
         .col
           assignment to:
@@ -38,39 +38,63 @@
           assistants:
           =icon('fa', 'plus', class: 'ml-2', id: 'addAssistantSubtask')
         .col#assistantsSubtaskForm
-    .col-4
-      .row.mb-2
-        .col.text-right
-          reminder frequency:
-        .col.text-left.small
-          =form.collection_select 'task[reminder_frequency]', sorted_reminder_frequencies, :id, :name, { prompt: '' }
-      .row.mb-2
-        .col.text-right
-          client:
-        .col.text-left.small
-          =form.collection_select 'task[client_id]', ClientsReport.all.order(:name), :id, :name, { prompt: '' }, style: "width:150px"
-      .row.mb-2
-        .col.text-right
-          access to task and its subtasks:
-        .col.text-left
-          =form.check_box 'task[access]', class: 'form-check-input ml-0 mt-2', checked: true
-    .col-4
-      .row.mb-2
-        .col.text-right
-          gather_task:
-        .col.text-left.small
-          =form.text_field 'task[gather_task]', class: 'w-70'
-      .row.mb-2
-        .col.text-right
-          deadline:
-        .col.text-left.small
-          =form.date_field 'task[deadline]'
-      .row.mb-2
-        -if params[:parent_task].blank?
-          .col.text-right
-            main_task:
-          .col.text-left.small
-            =form.collection_select 'task[parent]', Task.where(parent: nil).where.not(status: Status.find_by(name: 'deleted')).order(:id), :id, :title_with_id, { prompt: '' }, style: "width:150px"
+    .col-9
+      .d-flex
+        .col-6
+          .row.mb-2
+            .col.text-right
+              reminder frequency:
+            .col.text-left.small
+              =form.collection_select 'task[reminder_frequency]', sorted_reminder_frequencies, :id, :name, { prompt: '' }
+          .row.mb-2
+            .col.text-right
+              client:
+            .col.text-left.small
+              =form.collection_select 'task[client_id]', ClientsReport.all.order(:name), :id, :name, { prompt: '' }, style: "width:150px"
+          .row.mb-2
+            .col.text-right
+              access to task and its subtasks:
+            .col.text-left
+              =form.check_box 'task[access]', class: 'form-check-input ml-0 mt-2', checked: true
+        .col-6
+          .row.mb-2
+            .col.text-right
+              gather_task:
+            .col.text-left.small
+              =form.text_field 'task[gather_task]', class: 'w-70'
+          .row.mb-2
+            .col.text-right
+              deadline:
+            .col.text-left.small
+              =form.date_field 'task[deadline]', type: :datetime
+          :javascript
+            $('input[id="task[deadline]"]').datepicker({
+              format: 'yyyy-mm-dd'
+            });
+          .row.mb-2
+            -if params[:parent_task].blank?
+              .col.text-right
+                main_task:
+              .col.text-left.small
+                =form.collection_select 'task[parent]', Task.where(parent: nil).where.not(status: Status.find_by(name: 'deleted')).order(:id), :id, :title_with_id, { prompt: '' }, style: "width:150px"
+      -#.row.font-weight-bold
+      -#  .col
+      -#    .row.mb-2.mt-2
+      -#      .col.text-right
+      -#        sow:
+      -#      .col.text-left.small
+      -#        =form.text_field 'task_parent[sow]', placeholder: 'link to google sheet', maxlength: 255, style: "width:820px", value: @task_parent.sow
+      -#    .row.mb-2
+      -#      .col.text-right
+      -#        pivotal tracker:
+      -#      .col.text-left.small
+      -#        =form.text_field 'task_parent[pivotal_tracker_name]', placeholder: 'name', maxlength: 255, style: "width:820px"
+      -#    .row.mb-2
+      -#      .col.text-right
+      -#        pivotal tracker link:
+      -#      .col.text-left.small
+      -#        =form.text_field 'task_parent[pivotal_tracker_url]', placeholder: 'link', maxlength: 255, style: "width:820px"
+
   .modal-footer.justify-content-center
     .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
       cancel

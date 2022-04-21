@@ -35,7 +35,7 @@ class TasksController < ApplicationController # :nodoc:
     parent_params = task_params[:parent]
     subtasks_params = task_params[:subtasks]
 
-    @task_parent = Task.new(parent_params.except(:assignment_to, :assistants, :checklists))
+    @task_parent = Task.new(parent_params.except(:assignment_to, :assistants, :notification_to, :checklists))
     if @task_parent.save!
       after_task_create(@task_parent, parent_params)
 
@@ -68,7 +68,9 @@ class TasksController < ApplicationController # :nodoc:
     @number_subtask = params[:number_subtask]
   end
 
-  def new_subtask; end
+  def new_subtask;
+    @task_parent = Task.find(params[:parent_task])
+  end
 
   def create_subtask
     @subtask = Task.new(subtask_params.except(:assignment_to, :assistants, :checklists))
@@ -83,6 +85,7 @@ class TasksController < ApplicationController # :nodoc:
   def after_task_create(task, params)
     task.main_assignee = Account.find(params[:assignment_to]) unless params[:assignment_to].blank?
     task.assistants << Account.find(params[:assistants]) unless params[:assistants].blank?
+    task.notification_to << Account.find(params[:notification_to]) unless params[:notification_to].blank?
     comment(task) && send_notification(task)
     task_checklists = task.checklists
     params[:checklists].each { |description| task_checklists.create!(description: description) } unless params[:checklists].blank?
@@ -130,6 +133,8 @@ class TasksController < ApplicationController # :nodoc:
   end
 
   def send_notification(task)
+    MultiTasks::SlackNotifications.run(:created, task)
+
     task.assignment_to.each do |assignment|
       next if assignment.slack.nil? || assignment.slack.deleted
 
@@ -143,25 +148,30 @@ class TasksController < ApplicationController # :nodoc:
 
   def task_params
     result_params = {}
-    parent_params = params.require(:task_parent).permit(:title, :description, :parent, :deadline, :client_id, :reminder_frequency, :access, :gather_task, :work_request, :assignment_to, assistants: [], checklists: [])
+    parent_params = params.require(:task_parent).permit(:title, :description, :parent, :deadline, :client_id, :reminder_frequency, :access, :gather_task, :work_request, :assignment_to, :sow, :pivotal_tracker_name, :pivotal_tracker_url, assistants: [], notification_to: [], checklists: [])
     parent_params[:reminder_frequency] = parent_params[:reminder_frequency].blank? ? nil : TaskReminderFrequency.find(parent_params[:reminder_frequency])
     parent_params[:client] = parent_params[:client_id].blank? ? nil : ClientsReport.find(parent_params[:client_id])
     parent_params[:work_request] = parent_params[:work_request] ? WorkRequest.find(parent_params[:work_request]) : nil
-    parent_params[:creator] = current_account
     parent_params[:assistants] = parent_params[:assistants].blank? ? nil : parent_params[:assistants].uniq.reject(&:blank?).delete_if {|assignee| assignee == parent_params[:assignment_to] }
+    parent_params[:notification_to] = parent_params[:notification_to].blank? ? nil : parent_params[:notification_to].uniq.reject(&:blank?).delete_if {|assignee| assignee == parent_params[:assignment_to] || (!parent_params[:assistants].blank? && parent_params[:assistants].include?(assignee)) }
     parent_params[:parent] = parent_params[:parent].blank? ? nil : Task.find(parent_params[:parent])
+    parent_params[:creator] = current_account
     result_params[:parent] = parent_params
 
-    subtasks_params = params.key?(:subtasks) ? params.require(:subtasks).each { |number, params| params.permit(:title, :description, :parent, :deadline, :client_id, :reminder_frequency, :access, :gather_task, :assignment_to, assistants: [], checklists: []) } : {}
+    subtasks_params = params.key?(:subtasks) ? params.require(:subtasks).each { |number, params| params.permit(:title, :description, :parent, :deadline, :client_id, :reminder_frequency, :access, :gather_task, :assignment_to, assistants: [], notification_to: [], checklists: []) } : {}
     return result_params if subtasks_params.empty? || !parent_params[:parent].blank?
 
     subtasks = []
     subtasks_params.each do |number_subtask, subtask_params|
       subtask_params = subtask_params.permit(:title, :description, :parent, :deadline, :client_id, :reminder_frequency, :access, :gather_task, :assignment_to, assistants: [], checklists: [])
       subtask_params[:client] = parent_params[:client]
+      subtask_params[:sow] = parent_params[:sow]
+      subtask_params[:pivotal_tracker_name] = parent_params[:pivotal_tracker_name]
+      subtask_params[:pivotal_tracker_url] = parent_params[:pivotal_tracker_url]
       subtask_params[:reminder_frequency] = subtask_params[:reminder_frequency].blank? ? nil : TaskReminderFrequency.find(subtask_params[:reminder_frequency])
       subtask_params[:creator] = current_account
       subtask_params[:assistants] = subtask_params[:assistants].blank? ? nil: subtask_params[:assistants].uniq.reject(&:blank?).delete_if {|assignee| assignee == subtask_params[:assignment_to] }
+
       subtasks << subtask_params
     end
 
@@ -188,7 +198,7 @@ class TasksController < ApplicationController # :nodoc:
   end
 
   def update_task_params
-    up_task_params = params.require(:task).permit(:title, :description, :deadline, :parent, :access, :client_id, :reminder_frequency, :gather_task)
+    up_task_params = params.require(:task).permit(:title, :description, :deadline, :parent, :access, :client_id, :reminder_frequency, :gather_task, :sow, :pivotal_tracker_name, :pivotal_tracker_url)
     up_task_params[:reminder_frequency] = up_task_params[:reminder_frequency].blank? ? nil : TaskReminderFrequency.find(up_task_params[:reminder_frequency])
     up_task_params[:client] = up_task_params[:client_id].blank? ? nil : ClientsReport.find(up_task_params[:client_id])
     up_task_params[:parent] = up_task_params[:parent].blank? ? nil : Task.find(up_task_params[:parent])

@@ -77,6 +77,7 @@ class TaskStatusesController < ApplicationController
       SlackNotificationJob.perform_later(account.slack.identifier, message)
       SlackNotificationJob.perform_later('hle_lokic_task_reminders', message)
     end
+    MultiTasks::SlackNotifications.run(:change_status, @task)
   end
 
   def create_team_work

@@ -67,6 +67,10 @@ class TasksGrid
     format("##{task.parent.id}") { |parent_id| link_to parent_id, task.parent } unless task.parent.nil?
   end
 
+  column(:sow, header: 'SOW', mandatory: true, order: 'sow') do |task|
+    format("Google doc") { |sow| link_to sow, task.sow } unless task.sow.nil?
+  end
+
   column(:last_comment, header: 'Last comment', order: lambda { |scope|
                                                          scope.joins(:comments).group('tasks.id')
                                                                                    .select('tasks.*, MAX(comments.created_at) as max_created_at')
