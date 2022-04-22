@@ -66,7 +66,7 @@ module StoryTypes
         iteration.update!(schedule: status)
         story_type.sidekiq_break.update!(cancel: false)
 
-        unless options[:exception]
+        unless options[:cron]
           send_to_action_cable(iteration.story_type, :scheduler, message)
           SlackIterationNotificationTask.new.perform(iteration.id, "#{type}-scheduling", message)
         end

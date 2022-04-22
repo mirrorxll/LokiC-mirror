@@ -37,7 +37,6 @@ module StoryTypes
 
         begin
           MiniLokiC::StoryTypeCode[story_type].execute(:population, population_args)
-          SlackIterationNotificationTask.new.perform(cron_tab_iteration.id, 'crontab', 'Population success')
         rescue StandardError => e
           staging_table.purge_current_iteration
           staging_table.default_iter_id(story_type.iteration.id)
@@ -114,7 +113,6 @@ module StoryTypes
 
             MiniLokiC::StoryTypeCode[cron_tab_iteration.story_type].execute(:creation, creation_options)
           end
-          SlackIterationNotificationTask.new.perform(cron_tab_iteration.id, 'crontab', 'Creation success')
         rescue StandardError, ScriptError => e
           creation_status = nil
           SlackIterationNotificationTask.new.perform(cron_tab_iteration.id, 'crontab', e.message)
@@ -142,8 +140,11 @@ module StoryTypes
         cron_tab_iteration.update!(schedule_counts: counts, current_account: account)
 
         if Story.where(iteration: cron_tab_iteration, published_at: nil).present?
-          message = "Scheduling didn't complete. Please check passed params to it"
-          SlackIterationNotificationTask.new.perform(cron_tab_iteration.id, 'crontab', message)
+          SlackIterationNotificationTask.new.perform(
+            cron_tab_iteration.id,
+            'crontab',
+            "Scheduling didn't complete. Please check passed params to it"
+          )
           return
         end
 
@@ -160,7 +161,6 @@ module StoryTypes
 
               break if cron_tab_iteration.reload.last_export_batch_size.zero?
             end
-            SlackIterationNotificationTask.new.perform(cron_tab_iteration.id, 'crontab', 'Export success. Make sure that all stories are exported')
           rescue StandardError => e
             export_status = nil
             SlackIterationNotificationTask.new.perform(cron_tab_iteration.id, 'crontab', e.message)
@@ -189,6 +189,12 @@ module StoryTypes
         end
 
         story_type.sidekiq_break.update!(cancel: false)
+
+        SlackIterationNotificationTask.new.perform(
+          cron_tab_iteration.id,
+          'crontab',
+          'CronTab execution done'
+        )
       rescue StandardError, ScriptError => e
         message = "[ CronTabExecutionError ] -> #{e.message}#{" at #{e.backtrace.first}"}".gsub('`', "'")
         SlackIterationNotificationTask.new.perform(cron_tab_iteration.id, 'crontab', message)
