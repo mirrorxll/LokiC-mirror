@@ -11,7 +11,7 @@ module Factoids
     end
 
     def publish!(iteration, threads_count)
-      factoids_to_export = iteration.articles.not_published.to_a
+      factoids_to_export = iteration.articles.not_published.limit(10_000).to_a
       article_type       = iteration.article_type
       staging_table_name = article_type.staging_table.name
       st_limpar_columns  = Table.get_limpar_data(staging_table_name)
@@ -43,11 +43,7 @@ module Factoids
             factoid = semaphore.synchronize { factoids.shift }
             break if factoid.nil?
 
-            begin
-              @lp_client.delete_editorial(factoid.limpar_factoid_id)
-            rescue Faraday::ResourceNotFound
-              true
-            end
+            @lp_client.delete_editorial(factoid.limpar_factoid_id)
 
             factoid.update!(limpar_factoid_id: nil, exported_at: nil)
           end
