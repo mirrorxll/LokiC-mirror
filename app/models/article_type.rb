@@ -18,6 +18,8 @@ class ArticleType < ApplicationRecord
   belongs_to :developer,         optional: true, class_name: 'Account'
   belongs_to :status,            optional: true
   belongs_to :current_iteration, optional: true, class_name: 'ArticleTypeIteration'
+  belongs_to :kind,              optional: true
+  belongs_to :topic,             optional: true
 
   has_one :staging_table, as: :staging_tableable
   has_one :template, as: :templateable
@@ -26,6 +28,7 @@ class ArticleType < ApplicationRecord
   has_one_attached :code
 
   has_many :iterations, class_name: 'ArticleTypeIteration'
+  has_many :change_history, as: :history
   has_many :articles
   has_many :change_history, as: :history
 

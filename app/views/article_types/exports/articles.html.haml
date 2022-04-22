@@ -4,7 +4,7 @@
       .col-1.text-right
         developer:
       .col-11
-        #{@story_type.developer.name}
+        #{@article_type.developer.name}
 
     .row
       .col-1.text-right
@@ -14,88 +14,47 @@
 
     .row.mt-3
       .col-1.mb-1.text-right
-        show samples:
+        show factoids:
       #show_samples.col-11
-
-    -if (current_account.types & %w[manager editor]).any?
-      .row.mt-3
-        .col-1.mb-1.text-right
-          editor:
-        #editor_submit.col-11
-          =link_to('post-export-report', '#', "data-toggle" => "modal",
-                   "data-target" => "#editor_questions", class: 'badge badge-light')
-          -if @iteration.exported&.editor_post_export_report
-            .small.d-inline-block.mr-3
-              submitted by #{@iteration.exported.editor_post_export_report.submitter.name}
-        =render 'modal_editor_questions'
-
-    -if current_account.types.include?('manager')
-      .row.mt-3
-        .col-1.mb-1.text-right
-          manager:
-        #manager_submit.col-11
-          =link_to('post-export-report', '#', "data-toggle" => "modal",
-                   "data-target" => "#manager_questions", class: 'badge badge-light')
-          -if @iteration.exported&.manager_post_export_report
-            .small.d-inline-block.mr-3
-              submitted by #{@iteration.exported.manager_post_export_report.submitter.name}
-      =render 'modal_manager_questions'
 
   %hr.mt-1.mb-3/
 
-  %table#exported_stories.table.table-striped.table-sm.small
+  %table#exported_factoids.table.table-striped.table-sm.small
     %thead
       %tr
         %th#headline.text-center{ :scope => "col" }
-          show sample
+          show factoid
         %th#headline{ :scope => "col" }
           headline
-        %th#pipeline{ :scope => "col" }
-          live
-        %th#pipeline{ :scope => "col" }
-          pipeline
+        %th#limpar{ :scope => "col" }
+          limpar
         %th#lokic{ :scope => "col" }
           lokic
-        %th#client{ :scope => "col" }
-          client
-        %th#publication{ :scope => "col" }
-          publication
-        %th#published_at{ :scope => "col" }
-          published_at
-        %th#backdated{ :scope => "col" }
-          backdated
+        %th#exported_at{ :scope => "col" }
+          exported_at
       %tbody
-        -@stories.each do |sample|
+        -@articles.each do |factoid|
           %tr.hovered_item
-            %td.text-center
+            %td.pl-3
               %label
-                %input{ type: 'checkbox', id: sample.pl_story_id, disabled: sample.backdated,
-                        onchange: "saveShowSampleChoice(this.id, #{sample.id}, this.checked)" }
-                =sample.pl_story_id
+                %input{ type: 'checkbox', id: factoid.limpar_factoid_id,
+                        onchange: "saveShowSampleChoice(this.id, #{factoid.id}, this.checked)" }
+                =factoid.limpar_factoid_id
             %td
-              =sample.headline
+              =factoid.body
             %td
-              =sample.link? && sample.published_at <= Date.today ? link_to('live', sample.live_link, target:'_blank') : '---'
+              =factoid.link? ? link_to('limpar', factoid.lp_link, target:'_blank') : '---'
             %td
-              =sample.link? ? link_to('pipeline', sample.pl_link, target:'_blank') : '---'
+              =link_to('lokic', article_type_iteration_sample_url(@article_type, @iteration, factoid), target:'_blank')
             %td
-              =link_to('lokic', story_type_iteration_sample_url(@story_type, @iteration, sample), target:'_blank')
-            %td
-              =sample.client_name
-            %td
-              =sample.publication_name
-            %td
-              =sample.published_at ? sample.published_at.strftime('%F') : '---'
-            %td
-              =sample.backdated ? 'yes' : 'no'
+              =factoid.exported_at ? factoid.exported_at.strftime('%F') : '---'
 
   %hr.mb-3/
   .small
-    =paginate @stories, window: 3
+    =paginate @articles, window: 3
   %hr/
 
-  -target = Rails.env.production? ? 'pipeline' : 'pipeline-staging'
-  -pl_endpoint = "https://#{target}.locallabs.com/stories/"
+  -lp_endpoint = 'http://limpar.locallabs.com/editorial_factoids/'
 
   :javascript
     (() => { sessionStorage['showSampleIds'] = '#{raw(@show_sample_ids.to_json)}' }).call();
@@ -141,7 +100,7 @@
 
         link = document.createElement('a');
         link.innerText = key;
-        link.href = `#{pl_endpoint}${key}`;
+        link.href = `#{lp_endpoint}${key}`;
         link.target = '_blank';
 
         span.appendChild(link);
@@ -177,7 +136,7 @@
         type: "PUT",
         dataType: 'json',
         url: `#{root_url}api/shown_samples/${lokicId}`,
-        data: `commit=${commit}`,
+        data: `commit=${commit}&entity=article`,
         success: function (_data) {
           if (isCheckBox) {
             fillShowSamplesList();
@@ -202,4 +161,4 @@
   %hr/
   .row
     .col-12.text-center.alert.alert-danger
-      Export process not ended or developer #{"#{@story_type.developer.name} "}is making some changes for this iteration
+      Export process not ended or developer #{"#{@article_type.developer.name} "}is making some changes for this iteration
