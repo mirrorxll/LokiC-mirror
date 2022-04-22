@@ -336,6 +336,17 @@ Rails.application.routes.draw do
           post   :execute, on: :collection
           delete :purge,   on: :collection
         end
+
+        resources :exports, path: :export, only: [] do
+          post   :execute,                  on: :collection
+          delete :remove_exported_articles, on: :collection
+          get    :articles,                 on: :collection
+        end
+      end
+
+      resources :topics, only: [] do
+        patch :change,           on: :member
+        get   :get_descriptions, on: :collection
       end
     end
   end
