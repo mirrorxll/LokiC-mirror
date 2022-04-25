@@ -170,16 +170,23 @@ module StoryTypes
           return if !export_status || cron_tab_iteration.story_type.sidekiq_break.reload.cancel
 
           exp_st = ExportedStoryType.find_or_initialize_by(iteration: cron_tab_iteration)
+          exp_st.story_type = story_type
+          exp_st.first_export = cron_tab_iteration.name.eql?('Initial')
           exp_st.developer = account
           exp_st.count_samples = cron_tab_iteration.stories.count
 
           if exp_st.new_record?
             story_type.update!(last_export: DateTime.now, current_account: account)
 
-            exp_st.week = Week.where(begin: Date.today - (Date.today.wday - 1)).first
+            week_start = Date.today - (Date.today.wday - 1)
+            week_end = week_start + 6
+
+            exp_st.week = Week.find_or_create_by!(
+              begin: week_start,
+              end: week_end
+            )
+
             exp_st.date_export = Date.today
-            exp_st.story_type = story_type
-            exp_st.first_export = cron_tab_iteration.name.eql?('Initial')
           end
 
           exp_st.save!

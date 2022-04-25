@@ -28,14 +28,20 @@ module StoryTypes
 
           exp_st = ExportedStoryType.find_or_initialize_by(iteration: iteration)
           exp_st.story_type = story_type
-          exp_st.developer = story_type.developer
           exp_st.first_export = iteration.name.eql?('Initial')
+          exp_st.developer = account
           exp_st.count_samples = iteration.stories.count
 
           if exp_st.new_record?
             story_type.update!(last_export: DateTime.now, current_account: account)
 
-            exp_st.week = Week.where(begin: Date.today - (Date.today.wday - 1)).first
+            week_start = Date.today - (Date.today.wday - 1)
+            week_end = week_start + 6
+
+            exp_st.week = Week.find_or_create_by!(
+              begin: week_start,
+              end: week_end
+            )
             exp_st.date_export = Date.today
           end
 
