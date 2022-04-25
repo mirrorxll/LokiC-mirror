@@ -63,17 +63,17 @@
             .col-3.text-right
               sow:
             .col.small
-              =form.text_field 'task_parent[sow]', placeholder: 'link to google sheet', maxlength: 255, style: "width:450px", value: @work_request.sow.nil? ? '' : @work_request.sow
+              =form.text_field 'task_parent[sow]', placeholder: 'link to google sheet', maxlength: 255, style: "width:95%", value: @work_request.sow.nil? ? '' : @work_request.sow
           .row.mb-2
             .col-3.text-right
               pivotal tracker:
             .col.small
-              =form.text_field 'task_parent[pivotal_tracker_name]', placeholder: 'name', maxlength: 255, style: "width:450px"
+              =form.text_field 'task_parent[pivotal_tracker_name]', placeholder: 'name', maxlength: 255, style: "width:95%"
           .row.mb-2
             .col-3.text-right
               pivotal tracker link:
             .col.small
-              =form.text_field 'task_parent[pivotal_tracker_url]', placeholder: 'link', maxlength: 255, style: "width:450px"
+              =form.text_field 'task_parent[pivotal_tracker_url]', placeholder: 'link', maxlength: 255, style: "width:95%"
 
     #checklistsParent.accordion.mt-2.d-none
       .card.small

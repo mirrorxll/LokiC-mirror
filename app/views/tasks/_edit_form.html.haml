@@ -72,17 +72,17 @@
         .col-3.text-right
           sow:
         .col.text-left.small
-          =form.text_field 'task[sow]', placeholder: 'link to google sheet', maxlength: 255, style: "width:500px", value: @task.sow
+          =form.text_field 'task[sow]', placeholder: 'link to google sheet', maxlength: 255, style: "width:95%", value: @task.sow
       .row.mb-2
         .col-3.text-right
           pivotal tracker:
         .col.text-left.small
-          =form.text_field 'task[pivotal_tracker_name]', placeholder: 'name', maxlength: 255, style: "width:500px", value: @task.pivotal_tracker_name
+          =form.text_field 'task[pivotal_tracker_name]', placeholder: 'name', maxlength: 255, style: "width:95%", value: @task.pivotal_tracker_name
       .row.mb-2
         .col-3.text-right
           pivotal tracker link:
         .col.text-left.small
-          =form.text_field 'task[pivotal_tracker_url]', placeholder: 'link', maxlength: 255, style: "width:500px", value: @task.pivotal_tracker_url
+          =form.text_field 'task[pivotal_tracker_url]', placeholder: 'link', maxlength: 255, style: "width:95%", value: @task.pivotal_tracker_url
 
   %hr/
   .modal-footer
