@@ -85,7 +85,7 @@ class StoryTypesGrid
   end
   filter(:condition1, :dynamic, left: false, header: 'Dynamic condition 1')
   filter(:condition2, :dynamic, left: false, header: 'Dynamic condition 2')
-  filter(:date_export, :datetime, range: true, type: 'date') do |value, scope|
+  filter(:first_export, :datetime, range: true, type: 'date') do |value, scope|
     scope.where('exported_story_types.first_export': true)
          .where('exported_story_types.date_export': value.first..value.last)
   end
