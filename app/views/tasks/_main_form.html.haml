@@ -4,52 +4,82 @@
       =form.text_field 'task_parent[title]', placeholder: 'main task title', id: 'newTaskNameParent', class: 'form-control form-control-sm', required: true, maxlength: 500
       #newTaskNameParentFeedback.text-danger.text-center.d-none
         Task with this title already created by you. Let's use something else
-  .d-flex.small.font-weight-bold
-    .col-4.border-right
+  .row.small.font-weight-bold
+    .col-3.border-right
       .row.justify-content-between
         .col
           assignment to:
         .col
-          .row.mt-1.small
+          .row.small
             =form.collection_select 'task_parent[assignment_to]', current_account.types.include?('developer') ? [current_account] : Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }, style: "width:130px"
-      .row.justify-content-between.mt-1
+      %hr
+      .row.justify-content-between
         .col
           assistants:
           =icon('fa', 'plus', class: 'ml-2', id: 'addAssistantParent')
         .col#assistantsParentForm
-    .col-4
-      .row.mb-2
-        .col.text-right
-          reminder frequency:
-        .col.text-left.small
-          =form.collection_select 'task_parent[reminder_frequency]', sorted_reminder_frequencies, :id, :name, { prompt: '' }
-      .row.mb-2
-        .col.text-right
-          client:
-        .col.text-left.small
-          =form.collection_select 'task_parent[client_id]', ClientsReport.all.order(:name), :id, :name, { prompt: '' }, style: "width:150px"
-      .row.mb-2.font-weight-normal
-        .col.text-right
-          =link_to('[ checklists ]', nil, onclick: "showChecklistsParent(event)")
-        .col.text-left
-    .col-4
-      .row.mb-2
-        .col.text-right
-          deadline:
-        .col.text-left.small
-          =form.date_field 'task_parent[deadline]'
-      .row.mb-2
-        .col.text-right
-          access to task and its subtasks:
-        .col.text-left
-          =form.check_box 'task_parent[access]', class: 'form-check-input ml-0 mt-2', checked: true
+      %hr
+      .row.justify-content-between
+        .col
+          notifications to:
+          =icon('fa', 'plus', class: 'ml-2', id: 'addNotificationsToParent')
+        .col#notificationsToParentForm
+    .col-9
       .row
-        .col.text-right
-          main task:
-        .col.text-left.small
-          =form.collection_select 'task_parent[parent]', Task.where(parent: nil).where.not(status: Status.find_by(name: 'deleted')).order(:id), :id, :title_with_id, { prompt: '' }, style: "width:150px", onchange: "hideSubtasks(this);"
-      .row.small.justify-content-center
-        (If you select a main task, you won't be able to add subtasks)
+        .col-6
+          .row.mb-2
+            .col-5
+              reminder frequency:
+            .col.text-left.small
+              =form.collection_select 'task_parent[reminder_frequency]', sorted_reminder_frequencies, :id, :name, { prompt: '' }
+          .row.mb-2
+            .col-5
+              client:
+            .col.text-left.small
+              =form.collection_select 'task_parent[client_id]', ClientsReport.all.order(:name), :id, :name, { prompt: '' }, style: "width:150px"
+          .row.mb-2.font-weight-normal
+            .col.text-left
+              =link_to('[ checklists ]', nil, onclick: "showChecklistsParent(event)")
+            .col.text-left
+        .col-6
+          .row.mb-2
+            .col-7.text-right
+              deadline:
+            .col.text-left.small
+              =form.date_field 'task_parent[deadline]', type: :datetime
+          :javascript
+            $('input[id="task_parent[deadline]"]').datepicker({
+              format: 'yyyy-mm-dd'
+            });
+          .row.mb-2
+            .col-7.text-right
+              access to task and its subtasks:
+            .col.text-left
+              =form.check_box 'task_parent[access]', class: 'form-check-input ml-0', checked: true
+          .row
+            .col-7.text-right
+              main task:
+            .col.text-left.small
+              =form.collection_select 'task_parent[parent]', Task.where(parent: nil).where.not(status: Status.find_by(name: 'deleted')).order(:id), :id, :title_with_id, { prompt: '' }, style: "width:150px", onchange: "hideSubtasks(this);"
+          .row.small.justify-content-center
+            (If you select a main task, you won't be able to add subtasks)
+      .row.font-weight-bold
+        .col
+          .row.mb-2.mt-2
+            .col-2
+              sow:
+            .col.small
+              =form.text_field 'task_parent[sow]', placeholder: 'link to google sheet', maxlength: 255, style: "width:95%"
+          .row.mb-2
+            .col-2
+              pivotal tracker:
+            .col.small
+              =form.text_field 'task_parent[pivotal_tracker_name]', placeholder: 'name', maxlength: 255, style: "width:95%"
+          .row.mb-2
+            .col-2
+              pivotal tracker link:
+            .col.small
+              =form.text_field 'task_parent[pivotal_tracker_url]', placeholder: 'link', maxlength: 255, style: "width:95%"
   #checklistsParent.accordion.mt-2.d-none
     .card.small
       .card-header.p-1
@@ -137,9 +167,15 @@
     );
   });
 
-  $('#deleteParentAssistant').click(function () {
-    let assignments = document.getElementById('assistantsParent')
-    assignments.removeChild(assignments.lastChild)
+  $('#addNotificationsToParent').click(function () {
+    let hex = secureRandom(6);
+
+    $('#notificationsToParentForm').append(
+        `<div id="assistant_${hex}" class="row small mt-1 mb-1" >
+           <select id="task_parent[notification_to][]" style = "width:130px" class="mr-1" name="task_parent[notification_to][]">${buildSelect(accounts)}</select>
+           <div class="ml-1" id="rm_notification_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
+         </div>`
+    );
   });
 
   function buildSelect(options) {

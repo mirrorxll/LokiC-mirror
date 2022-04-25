@@ -11,10 +11,11 @@ class TaskAssignmentsController < ApplicationController
   def edit; end
 
   def update
-    return if assistants_params.blank? && assignment_to_params.blank?
+    return if assistants_params.blank? && assignment_to_params.blank? && notification_to_params.blank?
 
-    new_assignments = new_assignments(@task, Account.find(assistants_params + [assignment_to_params]))
+    new_assignments = new_assignments(@task, Account.find(assistants_params + [assignment_to_params]), notification_to_params)
     update_assignments(@task, new_assignments, assignment_to_params)
+    update_notification_to(@task, notification_to_params)
     send_notification(new_assignments)
     comment(new_assignments)
   end
@@ -31,9 +32,13 @@ class TaskAssignmentsController < ApplicationController
     @status = Status.find(params[:status_id])
   end
 
-  def new_assignments(task, assignments)
+  def new_assignments(task, assignments, notification_to)
     old_assignments = TaskAssignment.where(task: task, account: (task.assignment_to - assignments))
     old_assignments.destroy_all unless old_assignments.empty?
+
+    old_notification = TaskAssignment.where(task: task, account: (task.notification_to - notification_to), notification_to: 1)
+    old_notification.destroy_all unless old_notification.empty?
+
 
     assignments - task.assignment_to
   end
@@ -47,6 +52,14 @@ class TaskAssignmentsController < ApplicationController
       old_main_assignee = TaskAssignment.find_by(task: task, main: true)
       old_main_assignee.update(main: false) unless old_main_assignee.blank?
       TaskAssignment.find_by(task: task, account: new_main_assignee).update(main: true)
+    end
+  end
+
+  def update_notification_to(task, notification_to)
+    task.notification_to.destroy_all && return if notification_to.empty?
+    Account.find(notification_to).each do |account|
+      next if TaskAssignment.find_by(task: task, account: account)
+      TaskAssignment.create(task: task, account: account, notification_to: true)
     end
   end
 
@@ -78,5 +91,9 @@ class TaskAssignmentsController < ApplicationController
 
   def assistants_params
     params[:assistants].present? ? params.require(:assistants) : []
+  end
+
+  def notification_to_params
+    params[:notification_to].present? ? params.require(:notification_to) : []
   end
 end

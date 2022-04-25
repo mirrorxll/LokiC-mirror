@@ -7,7 +7,7 @@
 %hr
 -task.subtasks.each do |subtask|
   .row.small.col
-    =link_to parent_title(subtask.title), task_path(subtask)
+    =link_to title(subtask.title), task_path(subtask)
   .row.small.col-10
     -subtask.assignments.each do |assignment|
       .col-6.font-weight-bold

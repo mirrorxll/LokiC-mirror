@@ -26,9 +26,11 @@ module TasksHelper
     end
   end
 
-  def parent_title(title)
+  def title(title)
     title.length > 40 ? title.first(40) + '...' : title
   end
+
+
 
   def status_for_user(task)
     assignment = TaskAssignment.find_by(task: task, account: current_account)
