@@ -61,7 +61,7 @@ module StoryTypes
         story_type.update!(export_configurations_created: false, current_account: account)
 
         begin
-          MiniLokiC::StoryTypeExpConfigs[story_type].create_or_update!
+          StoryTypes::ExportConfigurationsTask.new.perform(story_type_id, account.id)
         rescue StandardError => e
           exp_config_status = nil
           SlackIterationNotificationTask.new.perform(cron_tab_iteration.id, 'crontab', e.message)
