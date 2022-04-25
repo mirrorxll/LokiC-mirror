@@ -32,6 +32,10 @@ Rails.application.routes.draw do
       end
     end
 
+    scope module: :factoid_requests, path: 'factoid_requests', as: 'factoid_request' do
+      resources :opportunities, only: :index
+    end
+
     scope module: :work_requests, path: 'work_requests/:id', as: 'work_request_members' do
       resources :project_statuses, only: [] do
         get :all_deleted, on: :collection
@@ -86,6 +90,14 @@ Rails.application.routes.draw do
       end
 
       resources :sow_cells, only: [] do
+        patch :change, on: :collection
+      end
+    end
+  end
+
+  resources :factoid_requests, except: :destroy do
+    scope module: :factoid_requests do
+      resources :progress_statuses, only: [] do
         patch :change, on: :collection
       end
     end
@@ -324,6 +336,17 @@ Rails.application.routes.draw do
           post   :execute, on: :collection
           delete :purge,   on: :collection
         end
+
+        resources :exports, path: :export, only: [] do
+          post   :execute,                  on: :collection
+          delete :remove_exported_articles, on: :collection
+          get    :articles,                 on: :collection
+        end
+      end
+
+      resources :topics, only: [] do
+        patch :change,           on: :member
+        get   :get_descriptions, on: :collection
       end
     end
   end

@@ -4,20 +4,20 @@ namespace :story_type do
   namespace :reminder do
     desc 'Update reminders'
     task updates: :environment do
-      StoryTypes::ReminderUpdatesJob.new.perform
+      StoryTypes::ReminderUpdatesTask.new.perform
     end
 
     desc 'Progress reminders'
     task progress: :environment do
-      StoryTypes::ReminderProgressJob.new.perform
+      StoryTypes::ReminderProgressTask.new.perform
     end
 
     desc 'Template revision reminders'
     task template_revision: :environment do
-      StoryTypes::RevisionTemplatesReminderJob.new.perform
+      StoryTypes::RevisionTemplatesReminderTask.new.perform
     end
   end
 
   desc 'Update/Progress/Template revision reminders'
-  task reminder: %w[reminder:updates reminder:progress reminder:template_revision]
+  task reminder: %w[reminder:template_revision reminder:updates reminder:progress]
 end

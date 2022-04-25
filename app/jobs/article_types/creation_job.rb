@@ -12,7 +12,7 @@ module ArticleTypes
       }
 
       status = true
-      message = 'Success. All articles have been created'
+      message = 'Success. All factoids have been created'
 
       loop do
         MiniLokiC::ArticleTypeCode[iteration.article_type].execute(:creation, options)

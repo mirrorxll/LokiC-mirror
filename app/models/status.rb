@@ -13,6 +13,15 @@ class Status < ApplicationRecord
     )
   end
 
+  def self.factoid_request_statuses
+    ordered_statuses(
+      [
+        'in progress', 'done',
+        'blocked', 'canceled'
+      ]
+    )
+  end
+
   def self.multi_task_statuses
     ordered_statuses(
       [

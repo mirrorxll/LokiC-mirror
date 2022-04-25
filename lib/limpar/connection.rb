@@ -32,7 +32,7 @@ module Limpar
 
       Faraday::Connection.new(endpoint, request) do |c|
         c.request :retry, retry_options
-        #c.response :raise_error
+        c.response :raise_error
         #c.response :logger
       end
     end

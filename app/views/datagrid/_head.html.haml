@@ -6,6 +6,8 @@
         =datagrid_order_for(grid, column, options) if column.supports_order? && options[:order]
 -elsif grid.is_a?(WorkRequestsGrid)
   =render 'datagrid/work_request_head', grid: grid, options: options
+-elsif grid.is_a?(FactoidRequestsGrid)
+  =render 'datagrid/factoid_request_head', grid: grid, options: options
 -else
   %tr
     -grid.html_columns(*options[:columns]).each do |column|

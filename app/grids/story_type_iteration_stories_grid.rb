@@ -22,7 +22,7 @@ class StoryTypeIterationStoriesGrid
     end
   end
   filter(:publication, :enum, select: :pubs_select, header: 'Publication name', left: true)
-  filter(:published_at, :date, multiple: ',')
+  filter(:published_at, :datetime, range: true)
   filter(:pl_staging_story_id, :integer, header: 'Pipeline ids', multiple: ',')
   # column(:id, header: "id", mandatory: true)
   column(:headline, order: 'outputs.headline, samples.id', mandatory: true)

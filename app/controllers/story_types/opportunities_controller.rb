@@ -9,7 +9,10 @@ module StoryTypes
     def index; end
 
     def create
-      ChangeOpportunitiesListJob.perform_async(@story_type.id)
+      Process.spawn(
+        "cd #{Rails.root} && RAILS_ENV=#{Rails.env} "\
+        "rake story_type:change_opportunities story_type_id=#{@story_type.id} &"
+      )
     end
 
     def update
