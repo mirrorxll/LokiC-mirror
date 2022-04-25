@@ -13,6 +13,7 @@ class StoryTypesGrid
       :clients_publications_tags,
       :clients, :tags, :reminder,
       :cron_tab, :template,
+      :exported_story_types,
       data_set: %i[state category]
     ).order(
       Arel.sql("CASE WHEN reminders.check_updates = false AND cron_tabs.enabled = false THEN '1' END DESC,
@@ -84,6 +85,10 @@ class StoryTypesGrid
   end
   filter(:condition1, :dynamic, left: false, header: 'Dynamic condition 1')
   filter(:condition2, :dynamic, left: false, header: 'Dynamic condition 2')
+  filter(:date_export, :datetime, range: true, type: 'date') do |value, scope|
+    scope.where('exported_story_types.first_export': true)
+         .where('exported_story_types.date_export': value.first..value.last)
+  end
   column_names_filter(header: 'Extra Columns', left: false, checkboxes: false)
   dynamic do
     column(:level, preload: :level, header: 'Level') do |record|
@@ -127,6 +132,9 @@ class StoryTypesGrid
   end
   column(:status, mandatory: true, order: 'statuses.name') do |record|
     record.status.name
+  end
+  column(:first_export, mandatory: true, order: 'exported_story_types.date_export') do |record|
+    record.exported_story_types.first_export.first&.date_export
   end
   column(:last_export, mandatory: true) do |record|
     record.last_export&.to_date
