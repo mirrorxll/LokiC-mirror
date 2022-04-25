@@ -80,6 +80,10 @@
               pivotal tracker link:
             .col.small
               =form.text_field 'task_parent[pivotal_tracker_url]', placeholder: 'link', maxlength: 255, style: "width:825px"
+      .row
+        .text-secondary.small.mt-2.mb-2
+          =link_to('[add client/tag]', '#', id: 'add_client', class: 'badge badge-pill badge-light text-secondary')
+        #clients_publications_tags
   #checklistsParent.accordion.mt-2.d-none
     .card.small
       .card-header.p-1
@@ -105,6 +109,8 @@
     .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
       cancel
     =form.submit :create, class: 'btn btn-sm btn-outline-success'
+
+=javascript_pack_tag 'tasks/ag_oppt_rev_tp_form.js'
 
 :javascript
   $('#task_description').froalaEditor({
