@@ -1,6 +1,6 @@
 -task.subtasks.each do |subtask|
   .row.font-weight-bold.small.col
-    =parent_title(subtask.title)
+    =title(subtask.title)
   .row.small.col-10
     -subtask.assignments.each do |assignment|
       .col-6

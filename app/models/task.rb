@@ -29,12 +29,15 @@ class Task < ApplicationRecord # :nodoc:
   has_one :main_task_assignment, -> { where(main: true) }, class_name: 'TaskAssignment'
   has_one :main_assignee, through: :main_task_assignment, source: :account
 
-  has_many :task_assistants, -> { where(main: false) }, class_name: 'TaskAssignment'
+  has_many :task_assistants, -> { where(main: false, notification_to: false) }, class_name: 'TaskAssignment'
   has_many :assistants, through: :task_assistants, source: :account
+
+  has_many :assignments_notifications, -> { where(notification_to: true) }, class_name: 'TaskAssignment'
+  has_many :notification_to, through: :assignments_notifications, source: :account
 
   has_many :checklists, class_name: 'TaskChecklist'
 
-  has_many :assignments, class_name: 'TaskAssignment'
+  has_many :assignments, -> { where(notification_to: false) }, class_name: 'TaskAssignment'
   has_many :assignment_to, through: :assignments, source: :account
 
   has_many :comments, -> { where(commentable_type: 'Task') }, as: :commentable, class_name: 'Comment'

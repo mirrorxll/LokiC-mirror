@@ -9,7 +9,7 @@
           .col-3.font-weight-bold
             main task:
           .col-9
-            =link_to parent_title(@task.parent.title), task_path(@task.parent), title: @task.parent.title
+            =link_to title(@task.parent.title), task_path(@task.parent), title: @task.parent.title
       -if @task.work_request
         -work_request = @task.work_request
         .row.mb-2
@@ -17,6 +17,24 @@
             w. request:
           .col-9
             =link_to('click', work_request)
+      -unless @task.sow.blank?
+        -sow = @task.sow
+        .row.mb-2
+          .col-3.font-weight-bold
+            sow:
+          .col-9
+            =link_to('click', sow, target: :_blank)
+      -pivotal_tracker_name = @task.pivotal_tracker_name
+      -pivotal_tracker_url = @task.pivotal_tracker_url
+      -if !pivotal_tracker_name.blank? || !pivotal_tracker_url.blank?
+        .row.mb-2
+          .col-3.font-weight-bold
+            pt. tracker:
+          .col-9
+            -if pivotal_tracker_url.blank?
+              =title(pivotal_tracker_name)
+            -else
+              =link_to("#{pivotal_tracker_name.blank? ? 'click' : title(pivotal_tracker_name)}", pivotal_tracker_url, target: :_blank)
       .row.mb-2
         .col-3.font-weight-bold
           client:
