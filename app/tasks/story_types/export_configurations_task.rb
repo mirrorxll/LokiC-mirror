@@ -31,6 +31,8 @@ module StoryTypes
     rescue StandardError, ScriptError => e
       status = nil
       message = e.message
+
+      raise e unless manual
     ensure
       story_type.update!(export_configurations_created: status, current_account: account)
 

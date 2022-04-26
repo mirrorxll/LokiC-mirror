@@ -1,4 +1,4 @@
-=form_with(url: task_path(@task), method: :patch, html: { onkeypress: "return event.keyCode !== 13;" }) do |form|
+=form_with(url: task_path(@task), method: :patch, class: 'p-3', html: { onkeypress: "return event.keyCode !== 13;" }) do |form|
   .row.small
     .col
       .form-group
@@ -30,7 +30,7 @@
   %hr/
 
   .d-flex.small.font-weight-bold.text-center
-    .col-6
+    .col-3
       .row.mb-2
         .col.text-right
           reminder frequency:
@@ -46,7 +46,7 @@
           access to task and its subtasks:
         .col.text-left
           =form.check_box 'task[access]', class: 'form-check-input ml-0 mt-1', checked: @task.access
-    .col-6
+    .col-3
       .row.mb-2
         .col.text-right
           gather_task:
@@ -56,13 +56,34 @@
         .col.text-right
           deadline:
         .col.text-left.small
-          =form.date_field 'task[deadline]', value: @task.deadline
+          =form.date_field 'task[deadline]', value: @task.deadline, type: :datetime
+      :javascript
+        $('input[id="task[deadline]"]').datepicker({
+          format: 'yyyy-mm-dd'
+        });
       .row.mb-2
         -if params[:parent_task].blank?
           .col.text-right
             main_task:
           .col.text-left.small
             =form.collection_select 'task[parent]', Task.where(parent: nil).where.not(status: Status.find_by(name: 'deleted')).order(:id) - [@task], :id, :title_with_id, { selected: @task.parent.nil? ? '' : @task.parent.id, prompt: '' }, style: "width:150px"
+    .col-6
+      .row.mb-2
+        .col-3.text-right
+          sow:
+        .col.text-left.small
+          =form.text_field 'task[sow]', placeholder: 'link to google sheet', maxlength: 255, style: "width:95%", value: @task.sow
+      .row.mb-2
+        .col-3.text-right
+          pivotal tracker:
+        .col.text-left.small
+          =form.text_field 'task[pivotal_tracker_name]', placeholder: 'name', maxlength: 255, style: "width:95%", value: @task.pivotal_tracker_name
+      .row.mb-2
+        .col-3.text-right
+          pivotal tracker link:
+        .col.text-left.small
+          =form.text_field 'task[pivotal_tracker_url]', placeholder: 'link', maxlength: 255, style: "width:95%", value: @task.pivotal_tracker_url
+
   %hr/
   .modal-footer
     =link_to( 'close', '#', class: 'ml-auto btn btn-sm btn-outline-secondary',

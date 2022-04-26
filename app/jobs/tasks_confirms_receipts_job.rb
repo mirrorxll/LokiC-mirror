@@ -3,8 +3,9 @@
 class TasksConfirmsReceiptsJob < ApplicationJob
   sidekiq_options queue: :lokic
 
-  def perform(*_args)
-    task_assignments = TaskAssignment.where(confirmed: 0)
+  def perform
+    task_assignments = TaskAssignment.where(confirmed: 0, notification_to: 0)
+
     task_assignments.each do |assignment|
       sleep(rand)
       account = assignment.account

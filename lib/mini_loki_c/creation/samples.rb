@@ -9,7 +9,7 @@ module MiniLokiC
         @sampled = options[:sampled]
         @iteration = options[:iteration]
         @story_type = @iteration.story_type
-        @export_configs = @story_type.export_configurations.joins(:publication)
+        @export_configs = ExportConfiguration.where(story_type_id: @story_type).includes(:publication)
       end
 
       def insert(sample)
