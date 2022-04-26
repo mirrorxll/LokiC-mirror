@@ -139,6 +139,14 @@ class StoryTypesGrid
   column(:last_export, mandatory: true) do |record|
     record.last_export&.to_date
   end
+  column(:time_frame,
+         :order => proc { |scope| scope.left_outer_joins(stories: :time_frame).select('time_frames.frame')}) do |record|
+    stories       = record.stories.exported
+    time_frames   = stories.joins(:time_frame).pluck('time_frames.frame')
+    sorted_frames = time_frames.sort_by { |frame| [frame.split(':')[-1].to_i, frame.split(':')[1].to_i] }
+
+    sorted_frames.last
+  end
   column(:has_updates,
          mandatory: true,
          order: Arel.sql("CASE WHEN reminders.check_updates = false AND cron_tabs.enabled = false THEN '1' END DESC,
