@@ -9,10 +9,10 @@ module Api
       def create
         json =
           if @scrape_task.tasks.exists?(@task.id)
-            { exist: true }
+            { already_attach: true }
           else
             @scrape_task.tasks << @task
-            { exist: false, id: @task.id, name: @task.title }
+            { already_attached: false, id: @task.id, name: @task.title, subtask: @task.subtask? }
           end
 
         render json: json

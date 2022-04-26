@@ -1,11 +1,9 @@
--attached_tasks = @scrape_task.tasks
-
 %input.underline-input.w-100.p-0{ list: 'tasks', onkeypress: 'taskByEnterPress(event, this)' }
 %datalist#tasks
-  -tasks = (attached_tasks.present? ? Task.where("id NOT IN (#{attached_tasks.ids.join(',')}) AND parent_task_id is null") : Task.where(parent: nil))
+  -attached_tasks = @scrape_task.tasks
+  -tasks = attached_tasks.present? ? Task.where("id NOT IN (#{attached_tasks.ids.join(',')})") : Task.all
   -tasks.each do |t|
-    %option{ value: t.subtask? ? "--> ##{t.id} #{t.title}" : "##{t.id} #{t.title}" }
-
+    %option{ value: t.subtask? ? "S ##{t.id} #{t.title}" : "P ##{t.id} #{t.title}" }
 :javascript
   function taskByEnterPress(event, input) {
     if(event.keyCode !== 13 || input.value.trim().length === 0) return false;
@@ -14,9 +12,9 @@
       type: "POST",
       dataType: 'script',
       url: `#{api_scrape_tasks_tasks_path(@scrape_task)}`,
-      data: `task_title=${encodeURIComponent(input.value.replace(/#\d+\s/, ''))}`,
+      data: `task_title=${encodeURIComponent(input.value.replace(/[PS]\s\#\d+\s|/, ''))}`,
       success: (data) => {
-        if(data['exist']) return false;
+        if(data['already_attached']) return false;
 
         let tasks = document.querySelector('#includedTasks');
 
@@ -28,7 +26,7 @@
              </a>
              &nbsp;|&nbsp;
              <a data-toggle="tooltip" 'data-placement'="top", title="${data['name']}" target="_blank" rel="noopener noreferrer" href="/tasks/${data['id']}">
-               \#${data['id']} ${data['name']}
+               ${data['subtask'] ? 'S' : 'P'} \#${data['id']} ${data['name']}
              </a>
              <br/>
           </div>`

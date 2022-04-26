@@ -74,11 +74,12 @@
 
 .row.mb-1
   .col-3.pr-0.text-right.font-weight-bold
-    multi task:
+    multi tasks:
   .col-9
     -if @scrape_task.tasks.present?
-      -@scrape_task.tasks.each do |mt|
-        =link_to("##{mt.id} #{mt.title}", mt)
+      -@scrape_task.tasks.each do |t|
+        -name = t.subtask? ? "S ##{t.id} #{t.title}" : "P ##{t.id} #{t.title}"
+        =link_to(name, t)
         %br/
 .row.mb-4
   .col-3.pr-0.text-right.font-weight-bold
