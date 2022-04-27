@@ -27,7 +27,7 @@ module StoryTypes
         last_iteration = story_type.reload.iterations.last.eql?(iteration)
         changeable_status = !story_type.status.name.in?(['canceled', 'blocked', 'on cron'])
 
-        Rake::Task['story_type:setup:set_max_time_frame'].execute({ story_type_id: story_type.id })
+        StoryTypes::Iterations::SetMaxTimeFrameTask.new.perform(story_type.id)
 
         if !old_status.eql?('in progress') && last_iteration && changeable_status
           story_type.update!(status: Status.find_by(name: 'in progress'), last_status_changed_at: Time.now, current_account: account)
