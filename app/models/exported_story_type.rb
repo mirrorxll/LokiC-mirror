@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ExportedStoryType < SecondaryRecord
-  self.table_name = 'lokic_secondary_dev.exported_story_types'
+  self.table_name = "#{Rails.configuration.database_configuration[Rails.env]['secondary']['database']}.exported_story_types"
 
   belongs_to :developer, class_name: 'Account'
   belongs_to :story_type
