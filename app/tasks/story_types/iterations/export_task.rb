@@ -47,6 +47,8 @@ module StoryTypes
 
           exp_st.save!
 
+          Rake::Task['story_type:setup:set_max_time_frame'].execute({ story_type_id: story_type.id })
+
           note = MiniLokiC::Formatize::Numbers.to_text(exp_st.count_samples).capitalize
           record_to_change_history(story_type, 'exported to pipeline', note, account)
 
@@ -88,6 +90,8 @@ module StoryTypes
           SlackIterationNotificationTask.new.perform(iteration.id, 'export', message)
         end
       end
+
+
     end
   end
 end
