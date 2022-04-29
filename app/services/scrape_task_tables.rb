@@ -2,7 +2,7 @@
 
 class ScrapeTaskTables
   def self.attach(scrape_task, params)
-    new(scrape_task, params).send(:create)
+    new(scrape_task, params).send(:attach)
   end
 
   private
@@ -14,19 +14,19 @@ class ScrapeTaskTables
     @table_names = params[:names]&.keep_if(&:present?) || []
   end
 
-  def create
+  def attach
     @table_names.each_with_object([]) do |name, object|
       table = TableLocation.find_or_initialize_by(
         parent: @scrape_task,
         host: @host,
         schema: @schema,
-        name: name
+        table_name: name
       )
       next if table.persisted?
 
       table.save!
 
-      object << { id: table.id, name: table.full_name.downcase }
+      object << { id: table.id, location: table.full_name.downcase }
     end
   end
 end

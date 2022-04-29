@@ -2,11 +2,12 @@
 
 module Api
   module ScrapeTasks
-    class TablesController < ApiController
-      before_action :open_connection, only: %i[index show]
-      after_action  :close_connection, only: %i[index show]
+    class TableLocationsController < ApiController
+      before_action :open_connection, only: :index
+      after_action  :close_connection, only: :index
+
       before_action :find_scrape_task, only: %i[create destroy]
-      before_action :find_table, only: :destroy
+      before_action :find_table_location, only: %i[destroy]
 
       def index
         tables = @connection.query('show tables;').to_a.map { |row| row.values[0] }
@@ -14,22 +15,14 @@ module Api
         render json: { table_names: tables }
       end
 
-      def show
-
-      end
-
       def create
-        tables = ScrapeTaskTables.attach(@scrape_task, table_params)
+        tables = ScrapeTaskTables.attach(@scrape_task, table_location_params)
 
-        render json: { tables: tables }
-      end
-
-      def update
-
+        render json: { locations: tables }
       end
 
       def destroy
-        render json: { not_deleted: !@table.destroy }
+        render json: { not_deleted: !@table_location.destroy }
       end
 
       private
@@ -45,7 +38,7 @@ module Api
         @connection.close
       end
 
-      def table_params
+      def table_location_params
         params.require(:tables).permit(:host_id, :schema_id, names: [])
       end
 
@@ -53,8 +46,8 @@ module Api
         @scrape_task = ScrapeTask.find(params[:scrape_task_id])
       end
 
-      def find_table
-        @table = TableLocation.find(params[:id])
+      def find_table_location
+        @table_location = TableLocation.find(params[:id])
       end
     end
   end

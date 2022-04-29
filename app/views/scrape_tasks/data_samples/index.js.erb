@@ -1,0 +1,3 @@
+<% @locations_columns.each do |location, columns| %>
+  $('#dataSamplesModal .table-views').append('<%= j render partial: 'table', locals: { location: location, columns: columns } %>')
+<% end %>

@@ -13,6 +13,7 @@
     "codemirror": "5.55.0",
     "cron-validator": "1.2.0",
     "cronstrue": "^1.108.0",
+    "datatables.net-bs4": "^1.11.5",
     "font-awesome": "4.7.0",
     "froala-editor": "2.9.1",
     "jquery": "3.6.0",

@@ -24,10 +24,10 @@
             scrapeTaskId.multipleSelect();
             scrapeTaskId.multipleSelect('disable');
 
-        =f.label :location, 'location', class: 'small mb-0 mt-2'
-        =f.text_field :location, class: 'mb-2 form-control form-control-sm',
-                      value: @scrape_task ? @scrape_task.data_set_location : @data_set.location,
-                      id: 'dataSetLocation', oninput: ''
+        -# =f.label :location, 'location', class: 'small mb-0 mt-2'
+        -# =f.text_field :location, class: 'mb-2 form-control form-control-sm',
+        -#               value: @scrape_task ? @scrape_task.data_set_location : @data_set.location,
+        -#               id: 'dataSetLocation', oninput: ''
 
         =f.label :slack_channel, 'slack channel', class: 'small mb-0 mb-0 mt-2'
         =f.text_field :slack_channel, class: 'mb-1 form-control form-control-sm'

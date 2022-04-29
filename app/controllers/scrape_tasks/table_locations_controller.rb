@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ScrapeTasks
-  class TablesController < ApplicationController
+  class TableLocationsController < ApplicationController
     skip_before_action :find_parent_story_type
     skip_before_action :find_parent_article_type
     skip_before_action :set_story_type_iteration

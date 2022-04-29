@@ -22,18 +22,18 @@
     Rails.ajax({
       type: "POST",
       dataType: 'json',
-      url: `#{api_scrape_tasks_tables_path(@scrape_task)}`,
+      url: `#{api_scrape_tasks_table_locations_path(@scrape_task)}`,
       data: `tables[host_id]=${encodeURIComponent(host_id)}&tables[schema_id]=${encodeURIComponent(schema_id)}&${names}`,
       success: (data) => {
-        data['tables'].forEach((table) => {
+        data['locations'].forEach((table) => {
           document.querySelector('#includedTables').insertAdjacentHTML(
             'beforeend',
-            `<div class="text-truncate table-${table['id']}">
-               <a onclick="excludeTableFromScrapeTask(event, ${table['id']});" href="#">
+            `<div class="text-truncate table-location-${table['id']}">
+               <a onclick="excludeTableLocationFromScrapeTask(event, ${table['id']});" href="#">
                  [ X ]
                </a>
                &nbsp;|&nbsp;
-               <a data-toggle="tooltip" data-placement="top" title="${table['name']}" href="#">${table['name']}</a>
+               <a data-toggle="tooltip" data-placement="top" title="${table['location']}" href="#">${table['location']}</a>
                <br/>
             </div>`
           );
@@ -117,7 +117,7 @@
     Rails.ajax({
       type: "GET",
       dataType: 'json',
-      url: `#{api_scrape_tasks_tables_path(@scrape_task)}`,
+      url: `#{api_scrape_tasks_table_locations_path(@scrape_task)}`,
       data: `host_id=${encodeURIComponent(host.value)}&schema_id=${encodeURIComponent(schema.value)}`,
       success: (data) => {
         data['table_names'].forEach((item) => {
