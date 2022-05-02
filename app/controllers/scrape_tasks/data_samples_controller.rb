@@ -9,12 +9,17 @@ module ScrapeTasks
 
     before_action :find_scrape_task
 
-    def create
-      if @scrape_task.data_sample
+    def index
+      connections = {}
 
-      else
+      @locations_columns = @scrape_task.table_locations.each_with_object({}) do |loc, obj|
+        connections[loc.host_name] ||= MiniLokiC::Connect::Mysql.on(Object.const_get(loc.host_name))
+        query = "SHOW COLUMNS FROM `#{loc.schema_name}`.`#{loc.table_name}`;"
 
+        obj[loc.full_name] = { id: loc.id, list: connections[loc.host_name].query(query).to_a }
       end
+
+      connections.each_value(&:close)
     end
 
     private

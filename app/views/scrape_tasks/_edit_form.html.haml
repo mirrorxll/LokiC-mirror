@@ -189,9 +189,8 @@
     .col-2.pr-0.text-right.font-weight-bold
       TABLES:
     .col-4.border-right
-      -tables = @scrape_task.table_locations
       #includedTables
-        =render partial: 'table', collection: tables
+        =render partial: 'table_location', collection: @scrape_task.table_locations
       :javascript
         function addRemoveMarginToTables() {
           let tables = document.querySelector('#includedTables');
@@ -204,24 +203,24 @@
         }
         addRemoveMarginToTables();
 
-        function excludeTableFromScrapeTask(event, table_id) {
+        function excludeTableLocationFromScrapeTask(event, table_id) {
           event.preventDefault();
 
           Rails.ajax({
             type: "DELETE",
             dataType: 'json',
-            url: `/api/scrape_tasks/#{@scrape_task.id}/tables/${table_id}`,
+            url: `/api/scrape_tasks/#{@scrape_task.id}/table_locations/${table_id}`,
             success: (data) => {
               if(data['not_deleted']) return false;
 
-              document.querySelector(`#includedTables .table-${table_id}`).remove();
+              document.querySelector(`#includedTables .table-location-${table_id}`).remove();
               addRemoveMarginToTables();
             }
           });
         }
       #addTables
         .form-loader-button
-          =link_to('[ add tables ]', new_scrape_task_table_path(@scrape_task), onclick: 'showTablesSpinner()', remote: true)
+          =link_to('[ add tables ]', new_scrape_task_table_location_path(@scrape_task), onclick: 'showTablesSpinner()', remote: true)
           .loadingSpinner.d-none
             .spinner-border.spinner-border-sm.text-secondary
               %span.sr-only

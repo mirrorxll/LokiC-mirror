@@ -1,0 +1,40 @@
+-# locals: { location: location, columns: columns }
+
+// SHOW COLUMNS FROM result's columns
+//  :Field
+//  :Type
+//  :Null
+//  :Key
+//  :Default
+//  :Extra
+
+%hr/
+%h5.text-center
+  =location.downcase
+
+%table.table.table-stripe.table-bordered.table-hover{ style: 'min-width: 99.9%;', id: "dataSample#{columns[:id]}"}
+  %thead.thead-dark
+    %tr
+      -columns[:list].each do |col|
+        %th
+          =col['Field']
+%hr/
+
+
+:javascript
+  $("#dataSample#{columns[:id]}").DataTable({
+    serverSide: true,
+    ajax: `/api/scrape_tasks/#{@scrape_task.id}/data_samples/#{columns[:id]}`,
+    info: false,
+    scrollX: true,
+    searching: false,
+    ordering: false,
+    processing: true,
+    pagingType: "full_numbers",
+    dom: "<'row'<'col-sm-12'tr>>" +
+         "<'row mt-1'<'col-4 offset-4 mt-1'p><'col-3 text-right'l>>",
+    drawCallback: () => {
+      $('#dataSample#{columns[:id]}_paginate ul.pagination').css('justify-content', 'center');
+      $('#dataSample#{columns[:id]}_length label').addClass('mt-2');
+    }
+  });

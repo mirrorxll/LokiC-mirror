@@ -54,14 +54,16 @@ Rails.application.routes.draw do
       get :names, on: :collection
       get :data_set_locations, on: :collection
     end
+
     scope module: :scrape_tasks, path: 'scrape_tasks/:scrape_task_id', as: 'scrape_tasks' do
-      resources :tasks,   only: %i[create destroy]
-      resources :tables
       resources :schemas, only: :index
+      resources :table_locations, only: %i[index create destroy]
+      resources :data_samples, only: :show
+      resources :tasks, only: %i[create destroy]
     end
 
     resources :tasks, only: [] do
-      get :titles,   on: :collection
+      get :titles, on: :collection
       get :subtasks, on: :member
 
     end
@@ -374,11 +376,11 @@ Rails.application.routes.draw do
         delete :exclude
       end
 
-      resources :tasks,  only: :new
+      resources :tasks, only: :new
 
-      resources :tables, only: :new
+      resources :table_locations, only: :new
 
-      resources :data_samples, only: :create
+      resources :data_samples, only: %i[index]
     end
   end
 

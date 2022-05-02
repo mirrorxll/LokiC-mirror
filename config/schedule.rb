@@ -26,7 +26,7 @@ every '0 * * * *' do
   rake 'check_has_updates_revise'
 end
 
-every '0 */2 * * *' do
+every '0 5,10,15,20 * * *' do
   rake 'scrape_task:schemes_tables'
 end
 
