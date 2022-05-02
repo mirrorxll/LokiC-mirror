@@ -8,21 +8,17 @@
 //  :Default
 //  :Extra
 
-%hr/
-%h5.text-center
-  =location.downcase
-
-%table.table.table-stripe.table-bordered.table-hover{ style: 'min-width: 99.9%;', id: "dataSample#{columns[:id]}"}
-  %thead.thead-dark
-    %tr
-      -columns[:list].each do |col|
-        %th
-          =col['Field']
-%hr/
+.tab-pane.fade.show{ class: (index.zero? ? 'active' : ''), id: "dataSample#{index}" }
+  %table.table.table-stripe.table-bordered.table-hover{ style: 'min-width: 99.9%;', id: "dataSampleTable#{columns[:id]}"}
+    %thead.thead-dark
+      %tr
+        -columns[:list].each do |col|
+          %th
+            =col['Field']
 
 
 :javascript
-  $("#dataSample#{columns[:id]}").DataTable({
+  $("#dataSampleTable#{columns[:id]}").DataTable({
     serverSide: true,
     ajax: `/api/scrape_tasks/#{@scrape_task.id}/data_samples/#{columns[:id]}`,
     info: false,

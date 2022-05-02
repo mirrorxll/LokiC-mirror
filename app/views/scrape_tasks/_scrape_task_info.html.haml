@@ -172,8 +172,6 @@
   .modal-dialog.modal-dialog-scrollable.modal-fullscreen
     .modal-content
       .modal-header
-        %h5#dataSamplesLabel.modal-title
-          ="##{@scrape_task.id} #{@scrape_task.name}"
         %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
           %span{"aria-hidden" => "true"} ×
       .modal-body
@@ -182,6 +180,8 @@
             .spinner-border.small{ style: "width: 3rem; height: 3rem;" }
               %span.sr-only
         .table-views
+          %ul#dataSampleTabs.nav.nav-tabs.flex-nowrap.overflow-auto
+          #dataSampleTabsContent.tab-content
 
       .modal-footer
 
@@ -198,6 +198,7 @@
   });
 
   $('#dataSamplesModal').on('hidden.bs.modal', () => {
-      $('#dataSamplesModal .loading').removeClass('d-none');
-      $('#dataSamplesModal .table-views').empty();
+    $('#dataSamplesModal .loading').removeClass('d-none');
+    $('#dataSampleTabs').empty();
+    $('#dataSampleTabsContent').empty();
   });
