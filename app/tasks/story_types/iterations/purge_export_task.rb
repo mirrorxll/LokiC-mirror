@@ -18,6 +18,10 @@ module StoryTypes
         end
 
         iteration.exported&.destroy
+        story_type.update!(last_export: story_type.exported_story_types.last&.date_export)
+
+        StoryTypes::Iterations::SetNextExportDateTask.new.perform(story_type.id)
+
         iteration.production_removals.last.update!(status: true)
 
         note = MiniLokiC::Formatize::Numbers.to_text(iteration.stories.ready_to_export.count)

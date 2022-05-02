@@ -139,6 +139,21 @@ class StoryTypesGrid
   column(:last_export, mandatory: true) do |record|
     record.last_export&.to_date
   end
+  column(:next_export) do |record|
+    next_export = record.next_export&.to_date
+    if next_export
+      frequency = record.frequency&.name
+      gap       = %w[daily weekly].include?(frequency) ? 1.week : 1.month
+      color     = if next_export >= Date.today
+                    ' bg-success'
+                  elsif next_export < Date.today && next_export >= Date.today - gap
+                    ' bg-warning'
+                  else
+                    ' bg-danger'
+                  end
+    end
+    next_export ? { date: next_export, color: color } : nil
+  end
   column(:time_frame, order: 'max_time_frame') { |record| record.max_time_frame }
   column(:has_updates,
          mandatory: true,
@@ -178,5 +193,16 @@ class StoryTypesGrid
   end
   column(:updated_at) do |record|
     record.updated_at&.to_date
+  end
+end
+
+def get_color(next_date, freq)
+  gap = %w[daily weekly].include?(freq) ? 1.week : 1.month
+  if next_date >= Date.today
+    ' bg-success'
+  elsif next_date < Date.today && next_date >= Date.today - gap
+    ' bg-warning'
+  else
+    ' bg-danger'
   end
 end
