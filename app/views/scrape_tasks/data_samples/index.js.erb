@@ -1,3 +1,19 @@
-<% @locations_columns.each do |location, columns| %>
-  $('#dataSamplesModal .table-views').append('<%= j render partial: 'table', locals: { location: location, columns: columns } %>')
+//%ul#dataSampleTabs.nav.nav-tabs.small
+//  %li.nav-item.text-center{ style: 'width: 50%' }
+//    %a#scrapeInstructionTab.nav-link.active{"aria-selected" => "true", "data-toggle" => "tab", :href => "#scrapeInstruction", :role => "tab"} Instruction
+
+//#dataSampleTabsContent.tab-content
+//  #scrapeInstruction.tab-pane.fade.show.active
+
+<% @locations_columns.each_with_index do |(location, columns), index| %>
+  $('#dataSampleTabs').append('<%= j render partial: 'tab', locals: { index: index, location: location } %>')
+  $('#dataSampleTabsContent').append('<%= j render partial: 'table', locals: { index: index, location: location, columns: columns } %>')
 <% end %>
+
+$('#dataSampleTabs a[data-toggle="tab"]').on('show.bs.tab', (e) => {
+    let currentTabIndex = e.target.getAttribute('tab_index');
+    let previousTabIndex = e.relatedTarget.getAttribute('tab_index');
+
+    $(`.data-samples-${currentTabIndex}`).removeClass('d-none');
+    $(`.data-samples-${previousTabIndex}`).addClass('d-none');
+})
