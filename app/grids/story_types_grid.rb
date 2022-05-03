@@ -14,6 +14,7 @@ class StoryTypesGrid
       :clients, :tags, :reminder,
       :cron_tab, :template,
       :exported_story_types,
+      opportunities: [opportunity: :agency],
       data_set: %i[state category]
     ).order(
       Arel.sql("CASE WHEN reminders.check_updates = false AND cron_tabs.enabled = false THEN '1' END DESC,
@@ -83,6 +84,12 @@ class StoryTypesGrid
 
     scope.where(id: stories_story_types_ids)
   end
+  filter(:agency, :enum, left: true, select: Agency.all.order(:name).pluck(:name, :id)) do |value, scope|
+    scope.where('agencies.id': value)
+  end
+  filter(:opportunity, :enum, left: true, select: Opportunity.all.order(:name).pluck(:name, :id)) do |value, scope|
+    scope.where('story_type_opportunities.opportunity_id': value)
+  end
   filter(:condition1, :dynamic, left: false, header: 'Dynamic condition 1')
   filter(:condition2, :dynamic, left: false, header: 'Dynamic condition 2')
   filter(:first_export, :datetime, range: true, type: 'date') do |value, scope|
@@ -133,7 +140,7 @@ class StoryTypesGrid
   column(:status, mandatory: true, order: 'statuses.name') do |record|
     record.status.name
   end
-  column(:first_export, mandatory: true, order: 'exported_story_types.date_export') do |record|
+  column(:first_export, order: 'exported_story_types.date_export') do |record|
     record.exported_story_types.first_export.first&.date_export
   end
   column(:last_export, mandatory: true) do |record|
@@ -193,16 +200,5 @@ class StoryTypesGrid
   end
   column(:updated_at) do |record|
     record.updated_at&.to_date
-  end
-end
-
-def get_color(next_date, freq)
-  gap = %w[daily weekly].include?(freq) ? 1.week : 1.month
-  if next_date >= Date.today
-    ' bg-success'
-  elsif next_date < Date.today && next_date >= Date.today - gap
-    ' bg-warning'
-  else
-    ' bg-danger'
   end
 end

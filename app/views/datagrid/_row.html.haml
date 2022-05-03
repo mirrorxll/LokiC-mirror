@@ -25,7 +25,7 @@
           -value = value ? 'Yes' : 'No'
       -elsif column.name.eql?(:next_export)
         -if value
-          -background_color = value.try(:[], :color)
-          -value = value.try(:[], :date)
+          -background_color = value[:color]
+          -value = value[:date]
       %td{ class: "#{klass} #{background_color}" }
         =value
