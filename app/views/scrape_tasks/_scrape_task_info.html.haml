@@ -161,7 +161,7 @@
       =link_to('show data view(s)', '#', "data-target" => "#dataSamplesModal", "data-toggle" => "modal")
   #tableLocations.col-9
     -@scrape_task.table_locations.each do |tl|
-      =tl.full_name.downcase
+      =tl.full_name
       %br/
 
 -if @data_set
