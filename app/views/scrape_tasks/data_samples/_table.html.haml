@@ -9,7 +9,7 @@
 //  :Extra
 
 .tab-pane.fade.show{ class: (index.zero? ? 'active' : ''), id: "dataSample#{index}" }
-  %table.table.table-stripe.table-bordered.table-hover{ style: 'min-width: 99.9%;', id: "dataSampleTable#{columns[:id]}"}
+  %table.table.table-stripe.table-bordered.table-hover{ style: 'min-width: 99.9%;', id: "dataSampleTable#{index}"}
     %thead.thead-dark
       %tr
         -columns[:list].each do |col|
@@ -18,19 +18,34 @@
 
 
 :javascript
-  $("#dataSampleTable#{columns[:id]}").DataTable({
+  $("#dataSampleTable#{index}").DataTable({
     serverSide: true,
-    ajax: `/api/scrape_tasks/#{@scrape_task.id}/data_samples/#{columns[:id]}`,
-    info: false,
-    scrollX: true,
+    ajax: {
+      url: `/api/scrape_tasks/#{@scrape_task.id}/data_samples/#{columns[:id]}`,
+      data: (data) => {
+        delete data.columns;
+        delete data.search;
+      }
+    },
     searching: false,
     ordering: false,
     processing: true,
     pagingType: "full_numbers",
     dom: "<'row'<'col-sm-12'tr>>" +
-         "<'row mt-1'<'col-4 offset-4 mt-1'p><'col-3 text-right'l>>",
-    drawCallback: () => {
-      $('#dataSample#{columns[:id]}_paginate ul.pagination').css('justify-content', 'center');
-      $('#dataSample#{columns[:id]}_length label').addClass('mt-2');
+         "<'data-samples-#{index} d-none row justify-content-between align-items-center 'lpi>",
+    drawCallback: (data) => {
+      let dataLPI = $('.data-samples-#{index}');
+      dataLPI.appendTo('#dataSamplesModal .modal-footer');
+
+      if(#{index.zero?})
+        dataLPI.removeClass('d-none');
+
+      if(data['iDraw'] === 1)
+        $('#dataSampleTabs a[tab_index="#{index}"]').removeClass('disabled');
+
+      $('#dataSampleTable#{index}_paginate .pagination').addClass('m-0 d-flex justify-content-center');
+      $('#dataSampleTable#{index}_length label').addClass('d-flex align-items-center m-0');
+      $('#dataSampleTable#{index}_length select').addClass('ml-1 mr-1');
+
     }
   });

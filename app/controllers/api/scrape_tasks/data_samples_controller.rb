@@ -3,21 +3,27 @@
 module Api
   module ScrapeTasks
     class DataSamplesController < ApiController
-      before_action :find_table_location, only: %i[show destroy]
-      before_action :open_connection, only: %i[index show]
-      after_action  :close_connection, only: %i[index show]
-
-      before_action :find_scrape_task, only: %i[create destroy]
+      before_action :find_table_location, only: %i[show]
+      before_action :open_connection, only: %i[show]
+      after_action  :close_connection, only: %i[show]
 
       def show
         data_borders = data_sample_params
-        data = @connection.query(
-          data_query(data_borders),
-          as: :array
-        ).to_a
+        data = @connection.query(data_query(data_borders), as: :array).to_a
+
+        total_records =
+          if data_borders[:draw].eql?('1')
+            total = @connection.query(total_records_query, as: :array).first[0]
+            @table_location.update!(total_records: total)
+            total
+          else
+            @table_location.total_records
+          end
 
         render json: {
           draw: data_borders[:draw],
+          recordsTotal: total_records,
+          recordsFiltered: total_records,
           data: data
         }
       end
@@ -35,10 +41,6 @@ module Api
         @connection.close
       end
 
-      def find_scrape_task
-        @scrape_task = ScrapeTask.find(params[:scrape_task_id])
-      end
-
       def find_table_location
         @table_location = TableLocation.find(params[:id])
       end
@@ -47,9 +49,13 @@ module Api
         { draw: params[:draw], start: params[:start], length: params[:length] }
       end
 
+      def total_records_query
+        "SELECT COUNT(*) count FROM `#{@table_location.table_name}`;"
+      end
+
       def data_query(data_borders)
         "SELECT *
-         FROM #{@table_location.table_name}
+         FROM `#{@table_location.table_name}`
          LIMIT #{data_borders[:length]} OFFSET #{data_borders[:start]};"
       end
     end

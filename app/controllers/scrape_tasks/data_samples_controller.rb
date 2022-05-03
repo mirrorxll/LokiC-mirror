@@ -29,3 +29,8 @@ module ScrapeTasks
     end
   end
 end
+
+ArticleType.all.each do |factoid|
+  staging_table = factoid.staging_table
+  Table.add_default_article_type_columns(staging_table.name) if staging_table
+end

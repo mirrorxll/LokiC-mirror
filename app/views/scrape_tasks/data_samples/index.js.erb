@@ -9,3 +9,11 @@
   $('#dataSampleTabs').append('<%= j render partial: 'tab', locals: { index: index, location: location } %>')
   $('#dataSampleTabsContent').append('<%= j render partial: 'table', locals: { index: index, location: location, columns: columns } %>')
 <% end %>
+
+$('#dataSampleTabs a[data-toggle="tab"]').on('show.bs.tab', (e) => {
+    let currentTabIndex = e.target.getAttribute('tab_index');
+    let previousTabIndex = e.relatedTarget.getAttribute('tab_index');
+
+    $(`.data-samples-${currentTabIndex}`).removeClass('d-none');
+    $(`.data-samples-${previousTabIndex}`).addClass('d-none');
+})
