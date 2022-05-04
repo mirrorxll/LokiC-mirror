@@ -17,4 +17,6 @@ class DataSet < ApplicationRecord # :nodoc:
   has_many :change_history, as: :history
   has_many :alerts, as: :alert
   has_many :article_types
+  has_many :table_locations, -> { includes(:host, :schema).order('hosts.name, schemas.name, table_locations.table_name') },
+           as: :parent, dependent: :destroy
 end

@@ -21,7 +21,7 @@
   $("#dataSampleTable#{index}").DataTable({
     serverSide: true,
     ajax: {
-      url: `/api/scrape_tasks/#{@scrape_task.id}/data_samples/#{columns[:id]}`,
+      url: `/api/data_samples/#{columns[:table_location_id]}`,
       data: (data) => {
         delete data.columns;
         delete data.search;
