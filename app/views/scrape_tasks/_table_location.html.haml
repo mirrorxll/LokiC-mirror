@@ -1,5 +1,0 @@
-%div{ class: "text-truncate table-location-#{table_location.id}" }
-  =link_to('[ X ]', '#', onclick: "excludeTableLocationFromScrapeTask(event, #{table_location.id});")
-  &nbsp|&nbsp
-  =link_to(table_location.full_name,
-           '#', 'data-toggle' => "tooltip", title: table_location.table_name)

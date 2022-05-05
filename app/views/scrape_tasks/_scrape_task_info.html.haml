@@ -168,7 +168,7 @@
   #scrapeTaskDataSetForm
     =render 'data_set'
 
-#dataSamplesModal.p-0.modal.fade{ 'data-backdrop' => "static", "aria-hidden" => "true", "aria-labelledby" => "dataSamplesLabel" }
+#dataSamplesModal.p-0.modal.fade{ 'data-backdrop' => "static", "aria-hidden" => "true", "aria-labelledby" => "scrapeTaskDataSamplesLabel" }
   .modal-dialog.modal-dialog-scrollable.modal-fullscreen
     .modal-content
       .modal-header.pb-0
@@ -187,7 +187,7 @@
       Rails.ajax({
         type: "GET",
         dataType: 'script',
-        url: `#{scrape_task_data_samples_path(@scrape_task)}`,
+        url: '/data_sample_columns?model=ScrapeTask&model_id=#{@scrape_task.id}',
         success: () => {
           let loading = $('#dataSamplesModal .loading');
           loading.removeClass('d-flex');

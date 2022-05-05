@@ -3,5 +3,5 @@
 class Schema < ApplicationRecord
   belongs_to :host
 
-  has_many :table_locations, as: :parent, dependent: :destroy
+  has_many :table_locations
 end

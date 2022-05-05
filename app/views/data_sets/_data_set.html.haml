@@ -3,7 +3,7 @@
     %div{ class: action_name.eql?('properties') ? 'col-12' : 'col-6' }
       .card.small
         .card-header.p-2
-          data
+          main info
         .card-body
           .row.mb-2
             .col-4.pr-0.text-right.font-weight-bold
@@ -41,25 +41,69 @@
               comment:
             .col-8
               =@data_set.comment ? @data_set.comment.gsub("\n",'<br>').html_safe : ''
+          .row.mt-2
+            .col-4.pr-0.text-right.font-weight-bold
+              photo bucket:
+            .col-8
+              =@data_set.photo_bucket&.name
+          .row
+            .col-4.pr-0.text-right.font-weight-bold
+              client (tag):
+            .col-8
+              -@data_set.client_publication_tags.each do |row|
+                -if row.publication.nil?
+                  ="#{row.client.name}(all publications) - #{row.tag.name}"
+                -else
+                  ="#{row.client.name}(#{row.publication.name}) - #{row.tag.name}"
+                %br/
 
     -if !action_name.eql?('properties')
-      .col-6
-        .card.small
+      .col-6.small
+        .card
           .card-header.p-2
-            default properties:
+            table location(s):
           .card-body
-            .row.pb-2
-              .col-3.text-right.font-weight-bold
-                photo bucket:
-              .col-9
-                =@data_set.photo_bucket&.name
-            .row
-              .col-3.text-right.font-weight-bold
-                client (tag):
-              .col-9
-                -@data_set.client_publication_tags.each do |row|
-                  -if row.publication.nil?
-                    ="#{row.client.name}(all publications) - #{row.tag.name}"
-                  -else
-                    ="#{row.client.name}(#{row.publication.name}) - #{row.tag.name}"
-                  %br/
+            -if @data_set.table_locations.present?
+              .d-block
+                =link_to('show data view(s)', '#', "data-target" => "#dataSamplesModal", "data-toggle" => "modal")
+            -@data_set.table_locations.each do |tl|
+              =tl.full_name
+              %br/
+
+        #dataSamplesModal.p-0.modal.fade{ 'data-backdrop' => "static", "aria-hidden" => "true", "aria-labelledby" => "scrapeTaskDataSamplesLabel" }
+          .modal-dialog.modal-dialog-scrollable.modal-fullscreen
+            .modal-content
+              .modal-header.pb-0
+                %ul#dataSampleTabs.nav.nav-tabs.flex-nowrap.overflow-auto.border-0{ style: 'padding: 1px;'}
+                %button.close{ "aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+                  %span{"aria-hidden" => "true"} ×
+              .modal-body.pt-0
+                .loading.d-flex.justify-content-center.align-items-center{ style: 'width: 100%; height: 100%;'}
+                  .spinner-border.small{ style: "width: 3rem; height: 3rem;" }
+                    %span.sr-only
+                #dataSampleTabsContent.tab-content
+              .modal-footer.d-block
+
+        :javascript
+          $('#dataSamplesModal').on('show.bs.modal', () => {
+              Rails.ajax({
+                type: "GET",
+                dataType: 'script',
+                url: '/data_sample_columns?model=DataSet&model_id=#{@data_set.id}',
+                success: () => {
+                  let loading = $('#dataSamplesModal .loading');
+                  loading.removeClass('d-flex');
+                  loading.addClass('d-none');
+                }
+              })
+          });
+
+          $('#dataSamplesModal').on('hidden.bs.modal', () => {
+            let loading = $('#dataSamplesModal .loading');
+            loading.addClass('d-flex');
+            loading.removeClass('d-none');
+
+            $('#dataSampleTabs').empty();
+            $('#dataSampleTabsContent').empty();
+            $('#dataSamplesModal .modal-footer div[class^="data-samples-"]').remove();
+          });

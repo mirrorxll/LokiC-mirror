@@ -189,11 +189,11 @@
     .col-2.pr-0.text-right.font-weight-bold
       TABLES:
     .col-4.border-right
-      #includedTables
-        =render partial: 'table_location', collection: @scrape_task.table_locations
+      #includedTablesToScrapeTask
+        =render partial: 'table_locations/table_location', collection: @scrape_task.table_locations, locals: { model: 'ScrapeTask' }
       :javascript
         function addRemoveMarginToTables() {
-          let tables = document.querySelector('#includedTables');
+          let tables = document.querySelector('#includedTablesToScrapeTask');
 
           if(tables.innerText.trim() === '') {
             tables.classList.remove('mb-2');
@@ -209,25 +209,26 @@
           Rails.ajax({
             type: "DELETE",
             dataType: 'json',
-            url: `/api/scrape_tasks/#{@scrape_task.id}/table_locations/${table_id}`,
+            url: `/api/table_locations/${table_id}?model=ScrapeTask&model_id=#{@scrape_task.id}`,
             success: (data) => {
               if(data['not_deleted']) return false;
 
-              document.querySelector(`#includedTables .table-location-${table_id}`).remove();
+              document.querySelector(`#includedTablesToScrapeTask .table-location-${table_id}`).remove();
               addRemoveMarginToTables();
             }
           });
         }
-      #addTables
+      #addTablesToScrapeTask
         .form-loader-button
-          =link_to('[ add tables ]', new_scrape_task_table_location_path(@scrape_task), onclick: 'showTablesSpinner()', remote: true)
+          =link_to('[ add tables ]', new_table_location_path(model: 'ScrapeTask', model_id: @scrape_task.id),
+                   onclick: 'showTablesSpinner()', remote: true)
           .loadingSpinner.d-none
             .spinner-border.spinner-border-sm.text-secondary
               %span.sr-only
           :javascript
             function showTablesSpinner() {
-              document.querySelector('#addTables .loadingSpinner').classList.remove('d-none');
-              document.querySelector('#addTables a').classList.add('d-none');
+              document.querySelector('#addTablesToScrapeTask .loadingSpinner').classList.remove('d-none');
+              document.querySelector('#addTablesToScrapeTask a').classList.add('d-none');
             }
         .form
     .col-4
