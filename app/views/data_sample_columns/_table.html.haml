@@ -32,20 +32,21 @@
     processing: true,
     pagingType: "full_numbers",
     dom: "<'row'<'col-sm-12'tr>>" +
-         "<'data-samples-#{index} d-none row justify-content-between align-items-center 'lpi>",
+         "<'data-samples-footer#{index} d-none row justify-content-between align-items-center 'lpi>",
     drawCallback: (data) => {
-      let dataLPI = $('.data-samples-#{index}');
+      let dataLPI = $('.data-samples-footer#{index}');
+      let dataTab = $('#dataSampleTabs a[tab_index="#{index}"]');
+
       dataLPI.appendTo('#dataSamplesModal .modal-footer');
 
-      if(#{index.zero?})
+      if(#{index.zero?} && dataTab.hasClass('active'))
         dataLPI.removeClass('d-none');
 
       if(data['iDraw'] === 1)
-        $('#dataSampleTabs a[tab_index="#{index}"]').removeClass('disabled');
+        dataTab.removeClass('disabled');
 
       $('#dataSampleTable#{index}_paginate .pagination').addClass('m-0 d-flex justify-content-center');
       $('#dataSampleTable#{index}_length label').addClass('d-flex align-items-center m-0');
       $('#dataSampleTable#{index}_length select').addClass('ml-1 mr-1');
-
     }
   });
