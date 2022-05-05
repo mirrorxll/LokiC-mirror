@@ -66,9 +66,20 @@ class Story < ApplicationRecord
   def self.ready_to_export
     where("pl_#{PL_TARGET}_story_id" => nil)
       .joins(:export_configuration, :publication, :output)
-      .where(backdated: false).where.not(published_at: nil).order(:published_at)
+      .where(backdated: false).where.not(published_at: nil)
       .where.not(export_configurations: { tag: nil })
+      .order(:published_at)
   end
+
+  def self.backdated_to_export
+    where("pl_#{PL_TARGET}_story_id" => nil)
+      .joins(:export_configuration, :publication, :output)
+      .where(backdated: false).where.not(published_at: nil)
+      .where.not(export_configurations: { tag: nil })
+      .where("stories.created_at > '2021-08-30' AND DATE(published_at) < (current_date() - 2)")
+      .order(:published_at)
+  end
+
 
   def self.not_exported
     where("pl_#{PL_TARGET}_story_id" => nil)

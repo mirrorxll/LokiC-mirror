@@ -10,6 +10,7 @@ every '0 0 * * *' do
   rake 'clients_pubs_tags_sections'
   rake 'photo_buckets'
   rake 'opportunities'
+  rake 'story_type:backdate:export'
 end
 
 every '0 9 * * *' do
