@@ -1,0 +1,4 @@
+%div{ class: "text-truncate table-location-#{table_location.id}" }
+  =link_to('[ X ]', '#', onclick: "excludeTableLocationFrom#{model}(event, #{table_location.id});")
+  &nbsp|&nbsp
+  =table_location.full_name
