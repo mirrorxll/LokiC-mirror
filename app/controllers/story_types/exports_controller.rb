@@ -39,15 +39,8 @@ module StoryTypes
 
     def stories
       @stories =
-        if params[:backdated]
-          @iteration.stories.exported
-        else
-          @iteration.stories.exported_without_backdate
-        end
-
-      @stories =
-        @stories.order(backdated: :asc, published_at: :asc).page(params[:page]).per(25)
-                .includes(:output, :publication)
+        @iteration.stories.includes(:output, :publication)
+                  .order(backdated: :asc, published_at: :asc).page(params[:page]).per(25)
     end
 
     private
@@ -69,7 +62,7 @@ module StoryTypes
 
     def show_sample_ids
       @show_sample_ids = {}
-      @iteration.show_samples.map { |smpl| @show_sample_ids[smpl.pl_story_id] = smpl.id }
+      @iteration.show_samples.map { |smpl| @show_sample_ids[smpl.id] = smpl.pl_story_id || smpl.id }
     end
 
     def revision_reminder
