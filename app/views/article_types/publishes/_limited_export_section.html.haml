@@ -1,0 +1,6 @@
+.row
+  .col-3.offset-1.mt-3
+    #limited_export_form.collapse
+      =form_with(url: execute_article_type_iteration_exports_path(@article_type, @iteration)) do |f|
+        =f.text_field :chunk, class: 'w-100', required: true
+        =f.submit 'publish with limit', class: 'mt-1 btn btn-sm btn-outline-dark w-100'

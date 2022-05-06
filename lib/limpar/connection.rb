@@ -5,13 +5,13 @@ module Limpar
     private
 
     def auth_token
-
       response = Faraday.post("#{endpoint}/authenticate") do |r|
         r.headers = { 'Content-Type': 'application/json' }
         r.body = { email: email, password: password }.to_json
       end
+      @token = JSON.parse(response.body)['token']
 
-      "Bearer #{JSON.parse(response.body)['token']}"
+      "Bearer #{@token}"
     end
 
     def connection
@@ -25,7 +25,7 @@ module Limpar
       retry_options = {
         exceptions: [Faraday::UnauthorizedError],
         max: 6,
-        interval: 1,
+        interval: 2,
         backoff_factor: 2,
         retry_block: proc { |env| env.request_headers['Authorization'] = auth_token }
       }

@@ -2,6 +2,7 @@
 
 require 'faraday'
 require 'faraday_middleware'
+require 'faraday/retry'
 
 module Limpar
   class Client

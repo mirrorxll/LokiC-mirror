@@ -10,8 +10,14 @@ module Factoids
       @lp_client = Limpar::Client.new
     end
 
-    def publish!(iteration, threads_count)
-      factoids_to_export = iteration.articles.not_published.limit(10_000).to_a
+    def publish!(iteration, threads_count, chunk)
+      factoids_to_export = iteration.articles.not_published
+      factoids_to_export = if chunk
+                             factoids_to_export.limit(chunk).to_a
+                           else
+                             factoids_to_export.limit(10_000).to_a
+                           end
+
       article_type       = iteration.article_type
       staging_table_name = article_type.staging_table.name
       st_limpar_columns  = Table.get_limpar_data(staging_table_name)
@@ -24,13 +30,15 @@ module Factoids
             factoid = main_semaphore.synchronize { factoids_to_export.shift }
             break if factoid.nil?
 
-            factoid_post(factoid, st_limpar_columns)
+            limpar_columns = st_limpar_columns.select { |col| col['id'].eql?(factoid.staging_row_id) }
+            factoid_post(factoid, limpar_columns.first)
             main_semaphore.synchronize { exported += 1 }
           end
         end
       end
       threads.each(&:join)
-      iteration.update!(last_export_batch_size: 0)
+      exported = 0 if chunk
+      iteration.update!(last_export_batch_size: exported)
     end
 
     def unpublish!(iteration)
