@@ -6,10 +6,6 @@ module Factoids
   class ExportToLp
     include Export::LeadFactoidPost
 
-    def initialize
-      @lp_client = Limpar::Client.new
-    end
-
     def publish!(iteration, threads_count, chunk)
       factoids_to_export = iteration.articles.not_published
       factoids_to_export = if chunk
@@ -26,12 +22,13 @@ module Factoids
 
       threads = Array.new(threads_count) do
         Thread.new do
+          lp_client = Limpar::Client.new
           loop do
             factoid = main_semaphore.synchronize { factoids_to_export.shift }
             break if factoid.nil?
 
             limpar_columns = st_limpar_columns.select { |col| col['id'].eql?(factoid.staging_row_id) }
-            factoid_post(factoid, limpar_columns.first)
+            factoid_post(factoid, limpar_columns.first, lp_client)
             main_semaphore.synchronize { exported += 1 }
           end
         end
@@ -47,11 +44,12 @@ module Factoids
 
       threads = Array.new(5) do
         Thread.new do
+          lp_client = Limpar::Client.new
           loop do
             factoid = semaphore.synchronize { factoids.shift }
             break if factoid.nil?
 
-            @lp_client.delete_editorial(factoid.limpar_factoid_id)
+            lp_client.delete_editorial(factoid.limpar_factoid_id)
 
             factoid.update!(limpar_factoid_id: nil, exported_at: nil)
           end

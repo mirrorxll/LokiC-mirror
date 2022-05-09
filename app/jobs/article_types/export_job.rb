@@ -18,9 +18,13 @@ module ArticleTypes
       raise ArgumentError, 'limit must be a number greater than zero' if chunk && chunk.to_i.zero?
 
       loop do
-        Factoids[].publish!(iteration, threads_count, chunk)
+        Factoids::ExportToLp.new.publish!(iteration, threads_count, chunk)
 
         last_export_batch = iteration.reload.last_export_batch_size.zero?
+        if last_export_batch && chunk.nil? && iteration.articles.not_published.count > 0
+          Factoids::ExportToLp.new.publish!(iteration, threads_count, nil)
+        end
+
         break if last_export_batch
       end
 

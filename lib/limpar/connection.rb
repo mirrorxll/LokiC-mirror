@@ -25,7 +25,7 @@ module Limpar
       retry_options = {
         exceptions: [Faraday::UnauthorizedError],
         max: 6,
-        interval: 2,
+        interval: 1,
         backoff_factor: 2,
         retry_block: proc { |env| env.request_headers['Authorization'] = auth_token }
       }

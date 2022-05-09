@@ -22,11 +22,11 @@ module Factoids
     module LeadFactoidPost
       private
 
-      def factoid_post(sample, limpar_columns)
+      def factoid_post(sample, limpar_columns, lp_client)
         exported_date = DateTime.now
         params        = prepare_params(sample, limpar_columns)
       begin
-        response      = @lp_client.create_editorial(params)
+        response      = lp_client.create_editorial(params)
       rescue Faraday::UnauthorizedError
         return
       end
