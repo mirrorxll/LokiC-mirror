@@ -22,18 +22,23 @@ module Factoids
     module LeadFactoidPost
       private
 
-      def factoid_post(sample, st_limpar_columns)
+      def factoid_post(sample, limpar_columns, lp_client)
         exported_date = DateTime.now
-        params        = prepare_params(sample, st_limpar_columns)
-        response      = @lp_client.create_editorial(params)
+        params        = prepare_params(sample, limpar_columns)
+      begin
+        response      = lp_client.create_editorial(params)
+      rescue Faraday::UnauthorizedError
+        return
+      end
         factoid_id    = JSON.parse(response.body)['data']['id']
 
         sample.update!(limpar_factoid_id: factoid_id, exported_at: exported_date)
       end
 
-      def prepare_params(sample, st_limpar_columns)
+      def prepare_params(sample, limpar_columns)
         article_type                 = sample.article_type
-        st_limpar_year, st_limpar_id = st_limpar_columns
+        st_limpar_id                 = limpar_columns['limpar_id']
+        st_limpar_year               = limpar_columns['limpar_year']
         factoid_kind                 = "#{article_type.kind.name.downcase}_id"
 
         raise ArgumentError, 'LimparId must be provided!' unless st_limpar_id
