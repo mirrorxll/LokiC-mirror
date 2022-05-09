@@ -13,7 +13,7 @@ module ArticleTypes
       loop do
         break if iteration.articles.reload.published.count.zero?
 
-        Factoids[].unpublish!(iteration)
+        Factoids::ExportToLp.new.unpublish!(iteration)
       end
 
       iteration.published&.destroy
