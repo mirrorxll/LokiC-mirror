@@ -21,9 +21,9 @@ module ArticleTypes
         Factoids::ExportToLp.new.publish!(iteration, threads_count, chunk)
 
         last_export_batch = iteration.reload.last_export_batch_size.zero?
-        if last_export_batch && chunk.nil? && iteration.articles.not_published.count > 0
-          Factoids::ExportToLp.new.publish!(iteration, threads_count, nil)
-        end
+        # if last_export_batch && chunk.nil? && iteration.articles.reload.not_published.count > 0
+        #   Factoids::ExportToLp.new.publish!(iteration, threads_count, nil)
+        # end
 
         break if last_export_batch
       end
