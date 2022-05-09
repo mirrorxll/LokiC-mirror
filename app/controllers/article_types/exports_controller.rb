@@ -11,7 +11,7 @@ module ArticleTypes
 
     def execute
       @iteration.update!(export: false, current_account: current_account)
-      ExportJob.perform_async(@iteration.id, current_account.id)
+      ExportJob.perform_async(@iteration.id, current_account.id, params[:chunk])
     end
 
     def remove_exported_articles

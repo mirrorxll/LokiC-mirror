@@ -2,7 +2,7 @@
 
 module ArticleTypes
   class ExportJob < ArticleTypesJob
-    def perform(iteration_id, account_id)
+    def perform(iteration_id, account_id, chunk)
       iteration     = ArticleTypeIteration.find(iteration_id)
       account       = Account.find(account_id)
       status        = true
@@ -15,11 +15,16 @@ module ArticleTypes
 
       raise ArgumentError, 'Kind must be provided!' unless article_type.kind
       raise ArgumentError, 'Topic must be provided!' unless article_type.topic
+      raise ArgumentError, 'limit must be a number greater than zero' if chunk && chunk.to_i.zero?
 
       loop do
-        Factoids[].publish!(iteration, threads_count)
+        Factoids::ExportToLp.new.publish!(iteration, threads_count, chunk)
 
         last_export_batch = iteration.reload.last_export_batch_size.zero?
+        if last_export_batch && chunk.nil? && iteration.articles.not_published.count > 0
+          Factoids::ExportToLp.new.publish!(iteration, threads_count, nil)
+        end
+
         break if last_export_batch
       end
 
