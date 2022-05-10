@@ -14,8 +14,7 @@
       %tr
         -columns[:list].each do |col|
           %th
-            =col['Field']
-
+            =col
 
 :javascript
   $("#dataSampleTable#{index}").DataTable({
@@ -28,7 +27,6 @@
       }
     },
     searching: false,
-    ordering: false,
     processing: true,
     pagingType: "full_numbers",
     dom: "<'row'<'col-sm-12'tr>>" +
