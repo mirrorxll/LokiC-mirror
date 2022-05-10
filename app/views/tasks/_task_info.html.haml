@@ -71,3 +71,10 @@
           =@task.created_at.strftime('%F')
       #done
         =render 'done', task: @task
+      -agency_opportunity_revenue_types = @task.agency_opportunity_revenue_types
+      -unless agency_opportunity_revenue_types.blank?
+        .row.col.font-weight-bold.mb-2
+          agency / opportunity:
+        -agency_opportunity_revenue_types.each do |row|
+          .row.col.mb-2
+            =row.agency.name + ' / ' + row.opportunity.name + ' - ' + MiniLokiC::Formatize::Percents.format_percentage(row.percents) + '%'

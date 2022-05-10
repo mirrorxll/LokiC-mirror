@@ -50,6 +50,14 @@ Rails.application.routes.draw do
       resources :client_tags, path: :tags, as: :tags, only: :index
     end
 
+    resources :main_opportunities, only: :index do
+      resources :main_opportunity_revenue_types, path: :revenue_types, as: :revenue_types, only: :index
+    end
+
+    resources :main_agencies, only: :index do
+      resources :main_agency_opportunities, path: :opportunities, as: :opportunities, only: :index
+    end
+
     resources :scrape_tasks, only: [] do
       get :names, on: :collection
       get :data_set_locations, on: :collection

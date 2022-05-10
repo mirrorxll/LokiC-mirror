@@ -68,7 +68,7 @@ class TasksGrid
   end
 
   column(:sow, header: 'SOW', mandatory: true, order: 'sow') do |task|
-    format("Google doc") { |sow| link_to sow, task.sow } unless task.sow.nil?
+    format("Google doc") { |sow| link_to sow, task.sow } unless task.sow.blank?
   end
 
   column(:last_comment, header: 'Last comment', order: lambda { |scope|

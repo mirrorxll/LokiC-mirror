@@ -212,7 +212,6 @@ function addTagsToSelectGroup(tagsSelect, tags) {
     }
 }
 
-
 function removeClientTag(e) {
     e.target.parentNode.parentNode.remove();
 }

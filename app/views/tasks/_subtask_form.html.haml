@@ -49,31 +49,32 @@
       .d-flex
         .col-6
           .row.mb-2
-            .col.text-right
+            .col-4
               reminder frequency:
             .col.text-left.small
               =form.collection_select 'task[reminder_frequency]', sorted_reminder_frequencies, :id, :name, { prompt: '' }
           .row.mb-2
-            .col.text-right
+            .col-4
               client:
             .col.text-left.small
               =form.collection_select 'task[client_id]', ClientsReport.all.order(:name), :id, :name, { prompt: '' }, style: "width:150px"
           .row.mb-2
-            .col.text-right
-              access to task and its subtasks:
-            .col.text-left
-              =form.check_box 'task[access]', class: 'form-check-input ml-0 mt-2', checked: true
-        .col-6
-          .row.mb-2
-            .col.text-right
+            .col-4
               gather_task:
             .col.text-left.small
               =form.text_field 'task[gather_task]', class: 'w-70'
+        .col-6
           .row.mb-2
             .col.text-right
               deadline:
             .col.text-left.small
               =form.date_field 'task[deadline]', type: :datetime
+          .row.mb-2
+            .col.text-right
+              access to task and its subtasks:
+            .col.text-left
+              =form.check_box 'task[access]', class: 'form-check-input ml-0 mt-1', checked: true
+
           :javascript
             $('input[id="task[deadline]"]').datepicker({
               format: 'yyyy-mm-dd'
@@ -84,28 +85,41 @@
                 main_task:
               .col.text-left.small
                 =form.collection_select 'task[parent]', Task.where(parent: nil).where.not(status: Status.find_by(name: 'deleted')).order(:id), :id, :title_with_id, { prompt: '' }, style: "width:150px"
-      .row.font-weight-bold
+      %hr
+      .d-flex
+        .col-12
+          .row.font-weight-bold.col
+            .row.mb-2.mt-2
+              .col-2
+                sow:
+              .col.text-left.small
+                =form.text_field 'task[sow]', placeholder: 'link to google sheet', maxlength: 255, class: 'w-100', value: @task_parent.sow
+            .row.mb-2
+              .col-2
+                pivotal tracker:
+              .col.text-left.small
+                =form.text_field 'task[pivotal_tracker_name]', placeholder: 'name', maxlength: 255, class: 'w-100'
+            .row.mb-2
+              .col-2
+                pivotal tracker link:
+              .col.text-left.small
+                =form.text_field 'task[pivotal_tracker_url]', placeholder: 'link', maxlength: 255, class: 'w-100'
+      %hr
+      .row.col
+        .col.font-weight-normal.mb-2
+          =link_to '[ add agency/opportunity/revenue_type ]', '#' , class: 'add_agency', id: 'add_agency_task'
+      .row
         .col
-          .row.mb-2.mt-2
-            .col-3.text-right
-              sow:
-            .col.small
-              =form.text_field 'task[sow]', placeholder: 'link to google sheet', maxlength: 255, class: 'w-100', value: @task_parent.sow
-          .row.mb-2
-            .col-3.text-right
-              pivotal tracker:
-            .col.small
-              =form.text_field 'task[pivotal_tracker_name]', placeholder: 'name', maxlength: 255, class: 'w-100'
-          .row.mb-2
-            .col-3.text-right
-              pivotal tracker link:
-            .col-9.small
-              =form.text_field 'task[pivotal_tracker_url]', placeholder: 'link', maxlength: 255, class: 'w-100'
-
+          #agency_opportunity_revenue_types_task.col.mb-2
+            =render 'task_agencies_opportunities/edit_form', agency_opportunity_revenue_types:  @task_parent.agency_opportunity_revenue_types, form: form
+          #agenciesPercentsFeedback.text-danger.text-center.font-weight-normal.d-none
+            Total of percents must be 100
   .modal-footer.justify-content-center
     .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
       cancel
     =form.submit :create, class: 'btn btn-sm btn-outline-success'
+
+=render 'task_agencies_opportunities/form', task: 'task'
 
 :javascript
   var accounts = #{raw Account.all.order([:first_name, :last_name]).map{ |account| [account.first_name.to_s + ' ' + account.last_name.to_s, account.id]} };
@@ -171,7 +185,15 @@
     return !names.find(el => lowName === el.toLowerCase());
   }
 
-  document.querySelector('#newTaskName').addEventListener('input', delay(() => {
+  document.querySelector('#form_new_task').addEventListener('input', delay(() => {
+    let percentInputs = document.getElementsByClassName('agencies_percents');
+    let percentFeedback = document.querySelector('#agenciesPercentsFeedback');
+
+    for (let i = 0; i < percentInputs.length; i++) {
+      percentInputs[i].classList.remove('border', 'border-danger');
+    }
+    percentFeedback.classList.add('d-none');
+
     Rails.ajax({
       type: 'GET',
       dataType: 'json',
@@ -205,6 +227,25 @@
     let nameFeedback = form.querySelector('#newTaskNameFeedback');
     let submitButton = form.querySelector('input[type="submit"]');
 
+    let percentInputs = document.getElementsByClassName('agencies_percents');
+    let percentFeedback = document.querySelector('#agenciesPercentsFeedback');
+
+    let sum = 0;
+    for (var i = 0; i < percentInputs.length; i++) {
+      sum += parseFloat(percentInputs[i].value)
+    }
+
+    if(Math.round(sum) === 100 || percentInputs.length === 0) {
+    }
+    else
+    {
+      for (let i = 0; i < percentInputs.length; i++) {
+        percentInputs[i].classList.add('border', 'border-danger');
+      }
+      percentFeedback.classList.remove('d-none');
+      return;
+    }
+
     Rails.ajax({
       type: 'GET',
       dataType: 'json',
@@ -236,3 +277,4 @@
          </div>`
     );
   });
+
