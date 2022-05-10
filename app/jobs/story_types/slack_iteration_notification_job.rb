@@ -5,7 +5,7 @@ module StoryTypes
     def perform(iteration_id, step, raw_message, developer_id = nil)
       iteration = StoryTypeIteration.find(iteration_id)
       story_type = iteration.story_type
-      story_type_dev = Account.find_by(id: developer_id) || story_type.developerwork_requests
+      story_type_dev = Account.find_by(id: developer_id) || story_type.developer
 
       url = generate_url(story_type)
       progress_step = step.in?(%w[developer]) ? '' : "| #{step.capitalize}"
