@@ -24,11 +24,6 @@
             scrapeTaskId.multipleSelect();
             scrapeTaskId.multipleSelect('disable');
 
-        =f.label :location, 'location', class: 'small mb-0 mt-2'
-        =f.text_field :location, class: 'mb-2 form-control form-control-sm',
-                      value: @scrape_task ? @scrape_task.data_set_location : @data_set.location,
-                      id: 'dataSetLocation', oninput: ''
-
         =f.label :slack_channel, 'slack channel', class: 'small mb-0 mb-0 mt-2'
         =f.text_field :slack_channel, class: 'mb-1 form-control form-control-sm'
 
@@ -89,6 +84,51 @@
                 .col-1.pl-1.my-auto
                   %strong.remove_x
                     x
+
+        -if @data_set.persisted?
+          .small
+            %hr/
+            #includedTablesToDataSet
+              =render partial: 'table_locations/table_location', collection: @data_set.table_locations, locals: { model: 'DataSet'}
+            :javascript
+              function addRemoveMarginToTables() {
+                let tables = document.querySelector('#includedTablesToDataSet');
+                if(tables.innerText.trim() === '') {
+                  tables.classList.remove('mb-2');
+                } else {
+                  tables.classList.add('mb-2');
+                }
+              }
+              addRemoveMarginToTables();
+
+              function excludeTableLocationFromDataSet(event, table_id) {
+                event.preventDefault();
+                Rails.ajax({
+                  type: "DELETE",
+                  dataType: 'json',
+                  url: `/api/table_locations/${table_id}?model=DataSet&model_id=#{@data_set.id}`,
+                  success: (data) => {
+                    if(data['not_deleted']) return false;
+                    document.querySelector(`#includedTablesToDataSet .table-location-${table_id}`).remove();
+                    addRemoveMarginToTables();
+                  }
+                });
+              }
+            #addTablesToDataSet
+              .form-loader-button
+                =link_to('[ add tables ]', new_table_location_path(model: 'DataSet', model_id: @data_set.id), onclick: 'showTablesSpinner()', remote: true)
+                .loadingSpinner.d-none
+                  .spinner-border.spinner-border-sm.text-secondary
+                    %span.sr-only
+                :javascript
+                  function showTablesSpinner() {
+                    document.querySelector('#addTablesToDataSet .loadingSpinner').classList.remove('d-none');
+                    document.querySelector('#addTablesToDataSet a').classList.add('d-none');
+                  }
+              .form
+            %hr/
+
+
     %hr.mb-2/
     .text-center
       =f.submit @data_set.new_record? ? 'create' : 'update',

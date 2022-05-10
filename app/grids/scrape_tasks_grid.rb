@@ -32,8 +32,11 @@ class ScrapeTasksGrid
   states = State.all.map { |r| [r.name, r.id] }
   filter(:state, :enum, multiple: true, select: states)
 
-  accounts = Account.joins(:account_types).where(account_types: { name: 'scraper' })
+  accounts = Account.joins(:assigned_scrape_tasks).distinct
   filter(:scraper, :enum, multiple: true, select: accounts.map { |r| [r.name, r.id] }.sort)
+
+  accounts = Account.joins(:created_scrape_tasks).distinct
+  filter(:creator, :enum, multiple: true, select: accounts.map { |r| [r.name, r.id] }.sort)
 
   statuses = Status.scrape_task_statuses_for_grid.pluck(:name, :id)
   filter(:status, :enum, multiple: true, select: statuses)
@@ -44,8 +47,8 @@ class ScrapeTasksGrid
   end
 
   filter(:with_data_location, :xboolean, header: 'With data location?') do |value, scope|
-    values = [nil, '', ' ', '  ', '   ', '    ']
-    value ? scope.where.not(data_set_location: values) : scope.where(data_set_location: values)
+    scp = scope.includes(:table_locations)
+    value ? scp.where.not(table_locations: { id: nil }) : scp.where(table_locations: { id: nil })
   end
 
   filter(:with_dataset, :xboolean, header: 'With dataset?') do |value, scope|

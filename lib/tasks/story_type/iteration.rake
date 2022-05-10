@@ -69,7 +69,7 @@ namespace :story_type do
       StoryTypes::Iterations::ExportTask.new.perform(
         ENV['iteration_id'],
         ENV['account_id'],
-        ENV['url']
+        { url: ENV['url'] }
       )
     end
 

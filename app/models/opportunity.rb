@@ -8,4 +8,6 @@ class Opportunity < ApplicationRecord
   has_many :opportunity_opportunity_types, -> { where(archived_at: nil) }
   has_many :opportunity_types, through: :opportunity_opportunity_types
   has_many :factoid_requests
+  has_many :opportunity_revenue_types
+  has_many :revenue_types, through: :opportunity_revenue_types
 end

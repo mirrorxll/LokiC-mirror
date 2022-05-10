@@ -3,7 +3,7 @@
     -klass = datagrid_column_classes(grid, column)
     -value = datagrid_value(grid, column, asset)
 
-    -if klass.start_with?('id ') && asset.table_locations.blank?
+    -if klass.start_with?('id') && asset.table_locations.blank?
       -background_color = "bg-danger"
     -elsif klass.eql?('status')
       -background_color = "bg-#{status_color(ActionView::Base.full_sanitizer.sanitize(value))}"

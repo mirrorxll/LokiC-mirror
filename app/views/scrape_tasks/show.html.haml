@@ -47,12 +47,6 @@
           .modal-body
             =render 'data_sets/form'
 
-    -#.conversation.col-5.align-self-stretch
-      .card.h-100
-        .card-header.p-1.pl-2
-          conversation
-        .card-body
-
   #scrapeTaskEdit.modal.fade{ 'data-keyboard' => "false", "aria-hidden" => "true",
                               "aria-labelledby" => "scrapeTaskEdit", tabindex: "-1" }
     .modal-dialog.modal-dialog-centered.modal-xl
@@ -68,12 +62,10 @@
   #scrapeEvaluationDocAnchor
 
   %ul#scrapeTaskTabs.nav.nav-tabs.small
-    %li.nav-item.text-center{ style: 'width: 33%' }
+    %li.nav-item.text-center{ style: 'width: 50%' }
       %a#scrapeInstructionTab.nav-link.active{"aria-selected" => "true", "data-toggle" => "tab", :href => "#scrapeInstruction", :role => "tab"} Instruction
-    %li.nav-item.text-center{ style: 'width: 33%' }
+    %li.nav-item.text-center{ style: 'width: 50%' }
       %a#scrapeEvaluationDocTab.nav-link{"aria-selected" => "false", "data-toggle" => "tab", :href => "#scrapeEvaluationDoc", :role => "tab"} Evaluation Document
-    %li.nav-item.text-center{ style: 'width: 33%' }
-      %a#dataSampleTab.nav-link{"aria-selected" => "false", "data-toggle" => "tab", :href => "#dataSample", :role => "tab"} Data Sample (TO DO)
 
   #scrapeTaskTabsContent.tab-content
     #scrapeInstruction.tab-pane.fade.show.active
@@ -118,7 +110,3 @@
             el.setAttribute('target', '_black');
             el.setAttribute('rel', 'noopener noreferrer');
           })
-
-    #dataSample.tab-pane.fade.show
-      .card.border-top-0.rounded-top-0.mb-5
-        #evaluationDocEdit.small

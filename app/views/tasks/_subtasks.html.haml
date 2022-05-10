@@ -14,6 +14,8 @@
           =link_to subtask.title, task_path(subtask)
         %td
           =subtask.assignment_to.pluck(:first_name, :last_name).map { |r| [r[0] + ' ' + r[1]] }.join(', ')
+        %td
+          =subtask.deadline
         -if subtask.status.name.eql?('done')
           %td
             =subtask.sum_hours

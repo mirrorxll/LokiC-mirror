@@ -39,6 +39,14 @@ class DataSetsController < ApplicationController # :nodoc:
   def create
     @data_set = current_account.data_sets.create!(data_set_params)
 
+    @data_set.scrape_task&.table_locations&.each do |table_loc|
+      @data_set.table_locations.create!(
+        host: table_loc&.host,
+        schema: table_loc&.schema,
+        table_name: table_loc&.table_name
+      )
+    end
+
     respond_to do |f|
       f.html { redirect_to @data_set }
       f.js   { render 'data_set_from_scrape_task' }

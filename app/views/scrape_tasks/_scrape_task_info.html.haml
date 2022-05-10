@@ -156,11 +156,52 @@
 .row.mb-1
   .col-3.pr-0.text-right.font-weight-bold
     table location(s):
+    %br/
+    -if @scrape_task.table_locations.present?
+      =link_to('show data view(s)', '#', "data-target" => "#dataSamplesModal", "data-toggle" => "modal")
   #tableLocations.col-9
     -@scrape_task.table_locations.each do |tl|
-      =tl.full_name.downcase
+      =tl.full_name
       %br/
 
 -if @data_set
   #scrapeTaskDataSetForm
     =render 'data_set'
+
+#dataSamplesModal.p-0.modal.fade{ 'data-backdrop' => "static", "aria-hidden" => "true", "aria-labelledby" => "scrapeTaskDataSamplesLabel" }
+  .modal-dialog.modal-dialog-scrollable.modal-fullscreen
+    .modal-content
+      .modal-header.pb-0
+        %ul#dataSampleTabs.nav.nav-tabs.flex-nowrap.overflow-auto.border-0{ style: 'padding: 1px;'}
+        %button.close{ "aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+          %span{"aria-hidden" => "true"} ×
+      .modal-body.pt-0
+        .loading.d-flex.justify-content-center.align-items-center{ style: 'width: 100%; height: 100%;'}
+          .spinner-border.small{ style: "width: 3rem; height: 3rem;" }
+            %span.sr-only
+        #dataSampleTabsContent.tab-content
+      .modal-footer.d-block
+
+:javascript
+  $('#dataSamplesModal').on('show.bs.modal', () => {
+      Rails.ajax({
+        type: "GET",
+        dataType: 'script',
+        url: '/data_sample_columns?model=ScrapeTask&model_id=#{@scrape_task.id}',
+        success: () => {
+          let loading = $('#dataSamplesModal .loading');
+          loading.removeClass('d-flex');
+          loading.addClass('d-none');
+        }
+      })
+  });
+
+  $('#dataSamplesModal').on('hidden.bs.modal', () => {
+    let loading = $('#dataSamplesModal .loading');
+    loading.addClass('d-flex');
+    loading.removeClass('d-none');
+
+    $('#dataSampleTabs').empty();
+    $('#dataSampleTabsContent').empty();
+    $('#dataSamplesModal .modal-footer div[class^="data-samples-footer"]').remove();
+  });

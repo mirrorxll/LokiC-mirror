@@ -3,7 +3,7 @@
 module StoryTypes
   module Iterations
     class ExportTask < StoryTypesTask
-      def perform(iteration_id, account_id, url = nil)
+      def perform(iteration_id, account_id, options = {})
         iteration = StoryTypeIteration.find(iteration_id)
         account = Account.find(account_id)
         status = true
@@ -20,7 +20,7 @@ module StoryTypes
           iteration.update!(last_export_batch_size: nil)
 
           loop do
-            Samples[PL_TARGET].export!(iteration, threads_count)
+            Samples[PL_TARGET].export!(iteration, { threads_count: threads_count })
 
             last_export_batch = iteration.reload.last_export_batch_size.zero?
             break if last_export_batch
@@ -63,8 +63,8 @@ module StoryTypes
               )
             end
 
-            if Rails.env.production? && url && !iteration.name.match?(/CT\d{8}/)
-              send_report_to_editors_slack(iteration, url)
+            if Rails.env.production? && options[:url] && !iteration.name.match?(/CT\d{8}/)
+              send_report_to_editors_slack(iteration, options[:url])
             end
           end
         else

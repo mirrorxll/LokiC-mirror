@@ -157,7 +157,7 @@ module StoryTypes
 
           begin
             loop do
-              Samples[PL_TARGET].export!(cron_tab_iteration, threads_count)
+              Samples[PL_TARGET].export!(cron_tab_iteration, { threads_count: threads_count })
 
               break if cron_tab_iteration.reload.last_export_batch_size.zero?
             end

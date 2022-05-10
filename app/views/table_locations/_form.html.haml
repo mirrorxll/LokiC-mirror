@@ -8,7 +8,6 @@
 .loadingSpinner.d-inline-block.ml-1.invisible
   .spinner-border.spinner-border-sm.text-secondary
     %span.sr-only
-%hr/
 
 :javascript
   function attachTablesToScrapeTask(event) {
@@ -22,18 +21,18 @@
     Rails.ajax({
       type: "POST",
       dataType: 'json',
-      url: `#{api_scrape_tasks_tables_path(@scrape_task)}`,
-      data: `tables[host_id]=${encodeURIComponent(host_id)}&tables[schema_id]=${encodeURIComponent(schema_id)}&${names}`,
+      url: `#{api_table_locations_path}`,
+      data: `model=#{@model.class}&model_id=#{@model.id}&tables[host_id]=${encodeURIComponent(host_id)}&tables[schema_id]=${encodeURIComponent(schema_id)}&${names}`,
       success: (data) => {
-        data['tables'].forEach((table) => {
-          document.querySelector('#includedTables').insertAdjacentHTML(
+        data['locations'].forEach((table) => {
+          document.querySelector('#includedTablesTo#{@model.class}').insertAdjacentHTML(
             'beforeend',
-            `<div class="text-truncate table-${table['id']}">
-               <a onclick="excludeTableFromScrapeTask(event, ${table['id']});" href="#">
+            `<div class="text-truncate table-location-${table['id']}">
+               <a onclick="excludeTableLocationFrom#{@model.class}(event, ${table['id']});" href="#">
                  [ X ]
                </a>
                &nbsp;|&nbsp;
-               <a data-toggle="tooltip" data-placement="top" title="${table['name']}" href="#">${table['name']}</a>
+               ${table['location']}
                <br/>
             </div>`
           );
@@ -66,7 +65,7 @@
   });
 
   function loadSchemas(host) {
-    let spinner = document.querySelector('#addTables .loadingSpinner');
+    let spinner = document.querySelector('#addTablesTo#{@model.class} .loadingSpinner');
     let schema = document.querySelector('#tables_schema_id');
     let tableNames = document.querySelector('#tables_names');
 
@@ -82,7 +81,7 @@
     Rails.ajax({
       type: "GET",
       dataType: 'json',
-      url: `#{api_scrape_tasks_schemas_path(@scrape_task)}`,
+      url: `#{api_schemas_path}`,
       data: `host_id=${encodeURIComponent(host.value)}`,
       success: (data) => {
         let option = document.createElement("option");
@@ -104,7 +103,7 @@
   }
 
   function loadTables(schema) {
-    let spinner = document.querySelector('#addTables .loadingSpinner');
+    let spinner = document.querySelector('#addTablesTo#{@model.class} .loadingSpinner');
     let host = document.querySelector('#tables_host_id');
     let tableNames = document.querySelector('#tables_names');
 
@@ -117,7 +116,7 @@
     Rails.ajax({
       type: "GET",
       dataType: 'json',
-      url: `#{api_scrape_tasks_tables_path(@scrape_task)}`,
+      url: `#{api_table_locations_path}`,
       data: `host_id=${encodeURIComponent(host.value)}&schema_id=${encodeURIComponent(schema.value)}`,
       success: (data) => {
         data['table_names'].forEach((item) => {

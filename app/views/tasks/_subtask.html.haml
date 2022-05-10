@@ -26,22 +26,31 @@
               assistants:
               =icon('fa', 'plus', class: 'ml-2', id: "addAssistant_#{number_subtask}", onclick: "addAssistant(#{number_subtask})")
             .col{ id: "assistantsForm_#{number_subtask}" }
-        .col-4
-          .row.mb-2
-            .col.text-right
-              reminder frequency:
-            .col.text-left.small
-              =select_tag "subtasks[#{number_subtask}][reminder_frequency]", options_from_collection_for_select(sorted_reminder_frequencies, :id, :name), { prompt: '' }
-          .row.mb-2
-            .col.text-right
-              =link_to('[ checklists ]', nil, onclick: "showChecklists(event, '#{number_subtask}')")
-            .col.text-left
-        .col-4
-          .row.mb-2
-            .col.text-right
-              deadline:
-            .col.text-left.small
-              =date_field_tag "subtasks[#{number_subtask}][deadline]"
+        .col-8
+          .row
+            .col-6
+              .row.mb-2
+                .col
+                  reminder frequency:
+                .col.small
+                  =select_tag "subtasks[#{number_subtask}][reminder_frequency]", options_from_collection_for_select(sorted_reminder_frequencies, :id, :name), { prompt: '' }
+              .row.mb-2
+                .col.font-weight-normal
+                  =link_to('[ checklists ]', nil, onclick: "showChecklists(event, '#{number_subtask}')")
+                .col
+            .col-6
+              .row.mb-2
+                .col
+                  deadline:
+                .col.small
+                  =date_field_tag "subtasks[#{number_subtask}][deadline]"
+          %hr
+          .row
+            .col.font-weight-normal.mb-2
+              =link_to '[ add agency/opportunity/revenue_type ]', '#' , class: 'add_agency', id: "add_agency_subtask_#{number_subtask}"
+          .row
+            .col
+              %div{ id: "agency_opportunity_revenue_types_subtask_#{number_subtask}" }
 
       .accordion.mt-2.mb-3.d-none{ id: "checklists_#{number_subtask}" }
         .card.small
@@ -55,12 +64,11 @@
           .collapse{ id: "checklists#{number_subtask}Collapse", "data-parent" => "#checklists_#{number_subtask}", class: 'show'}
             .row.mt-2.mb-2
               .col{ id: "checklistsForms_#{number_subtask}" }
-
       .row.col.small.mt-2
         .form-group
           =text_area_tag "subtasks[#{number_subtask}][description]", '', class: 'form-control', id: "descriptionSubtask#{number_subtask}"
 
-
+=render 'task_agencies_opportunities/form', task: "subtask_#{number_subtask}"
 
 :javascript
   var accounts = #{raw Account.all.order([:first_name, :last_name]).map{ |account| [account.first_name.to_s + ' ' + account.last_name.to_s, account.id]} };
@@ -90,7 +98,6 @@
 
   function removeSubtask(elem) {
     let subtask = elem.getAttribute('subtask');
-    console.log(subtask);
     let accordionItem = document.getElementById(`accordion_${subtask}`);
     accordionItem.remove();
   }
