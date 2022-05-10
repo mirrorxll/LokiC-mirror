@@ -180,7 +180,7 @@ Rails.application.routes.draw do
   end
 
   resources :table_locations, only: :new
-  resources :data_sample_columns, only: %i[index]
+  resources :data_samples, only: %i[index]
 
   resources :article_types, except: %i[new create] do
     get   :properties_form

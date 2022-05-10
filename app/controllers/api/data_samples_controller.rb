@@ -45,7 +45,7 @@ module Api
     end
 
     def data_sample_params
-      { draw: params[:draw], start: params[:start], length: params[:length] }
+      { draw: params[:draw], start: params[:start], length: params[:length], order: params[:order]&.fetch('0') }
     end
 
     def total_records_query
@@ -53,9 +53,14 @@ module Api
     end
 
     def data_query(data_borders)
-      "SELECT *
-       FROM `#{@table_location.table_name}`
-       LIMIT #{data_borders[:length]} OFFSET #{data_borders[:start]};"
+      query = "SELECT * FROM `#{@table_location.table_name}`"
+
+      if data_borders[:order]
+        order = data_borders[:order]
+        query += " ORDER BY `#{@table_location.table_columns[order[:column].to_i]}` #{order[:dir].upcase}"
+      end
+
+      "#{query} LIMIT #{data_borders[:length]} OFFSET #{data_borders[:start]};"
     end
   end
 end

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class TableLocation < ApplicationRecord
+  serialize :table_columns, Array
+
   belongs_to :parent, polymorphic: true
   belongs_to :host
   belongs_to :schema

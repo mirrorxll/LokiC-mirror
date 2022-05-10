@@ -187,7 +187,7 @@
       Rails.ajax({
         type: "GET",
         dataType: 'script',
-        url: '/data_sample_columns?model=ScrapeTask&model_id=#{@scrape_task.id}',
+        url: '/data_samples?model=ScrapeTask&model_id=#{@scrape_task.id}',
         success: () => {
           let loading = $('#dataSamplesModal .loading');
           loading.removeClass('d-flex');
