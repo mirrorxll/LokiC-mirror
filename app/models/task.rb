@@ -45,7 +45,39 @@ class Task < ApplicationRecord # :nodoc:
 
   has_many :notes, class_name: 'TaskNote'
 
+  has_many :agency_opportunity_revenue_types, class_name: 'TaskAgencyOpportunityRevenueType'
+
   has_and_belongs_to_many :scrape_tasks
+
+  def agency_opportunity_hours
+    tasks = subtasks_full_depth << self
+    result = tasks.filter_map do |task|
+      agency_opportunity_revenue_types = task.agency_opportunity_revenue_types
+      next if agency_opportunity_revenue_types.empty?
+      agency_opportunity_revenue_types.map do |row|
+        {
+          hours: task.assignments.sum(:hours) * row.percents / 100,
+          agency: row.agency,
+          opportunity: row.opportunity
+        }
+      end
+    end.flatten
+    result_uniq = result.uniq { |row| [row[:agency], row[:opportunity]] }
+
+    result_uniq.map do |row|
+      {
+        hours: result.select { |res| res[:agency] == row[:agency] && res[:opportunity] == row[:opportunity] }.sum { |res| res[:hours] },
+        agency: row[:agency],
+        opportunity: row[:opportunity]
+      }
+    end
+  end
+
+  def subtasks_full_depth
+    subtasks.flat_map do |subtask|
+      subtask.subtasks_full_depth << subtask
+    end
+  end
 
   def assignment_to_or_creator?(account)
     account.in?(assignment_to) || account.eql?(creator)

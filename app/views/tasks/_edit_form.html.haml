@@ -28,32 +28,31 @@
                   .delete_checklist.ml-2{ onclick: "removeDate(this)" }
                     =icon('fa', 'minus')
   %hr/
-
-  .d-flex.small.font-weight-bold.text-center
-    .col-3
+  .row.small.font-weight-bold
+    .col-3.border-right
       .row.mb-2
-        .col.text-right
+        .col
           reminder frequency:
         .col.text-left.small
-          =form.collection_select 'task[reminder_frequency]', sorted_reminder_frequencies, :id, :name, { selected: @task.reminder_frequency.nil? ? '' : @task.reminder_frequency.id, prompt: '' }
+          =form.collection_select 'task[reminder_frequency]', sorted_reminder_frequencies, :id, :name, { selected: @task.reminder_frequency.nil? ? '' : @task.reminder_frequency.id, prompt: '' }, class: 'w-100'
       .row.mb-2
-        .col.text-right
+        .col
           client:
         .col.text-left.small
-          =form.collection_select 'task[client_id]', ClientsReport.all.order(:name), :id, :name, { selected: @task.client.nil? ? '' : @task.client.id, prompt: '' }, style: "width:150px"
+          =form.collection_select 'task[client_id]', ClientsReport.all.order(:name), :id, :name, { selected: @task.client.nil? ? '' : @task.client.id, prompt: '' }, class: 'w-100'
+      -if params[:parent_task].blank?
+        .row.mb-2
+          .col
+            main_task:
+          .col.text-left.small
+            =form.collection_select 'task[parent]', Task.where.not(status: Status.find_by(name: 'deleted')).order(:id) - [@task], :id, :title_with_id, { selected: @task.parent.nil? ? '' : @task.parent.id, prompt: '' }, class: 'w-100'
       .row.mb-2
-        .col.text-right
-          access to task and its subtasks:
-        .col.text-left
-          =form.check_box 'task[access]', class: 'form-check-input ml-0 mt-1', checked: @task.access
-    .col-3
-      .row.mb-2
-        .col.text-right
+        .col
           gather_task:
         .col.text-left.small
           =form.text_field 'task[gather_task]', value: @task.gather_task
       .row.mb-2
-        .col.text-right
+        .col
           deadline:
         .col.text-left.small
           =form.date_field 'task[deadline]', value: @task.deadline, type: :datetime
@@ -62,33 +61,43 @@
           format: 'yyyy-mm-dd'
         });
       .row.mb-2
-        -if params[:parent_task].blank?
-          .col.text-right
-            main_task:
-          .col.text-left.small
-            =form.collection_select 'task[parent]', Task.where(parent: nil).where.not(status: Status.find_by(name: 'deleted')).order(:id) - [@task], :id, :title_with_id, { selected: @task.parent.nil? ? '' : @task.parent.id, prompt: '' }, style: "width:150px"
-    .col-6
+        .col
+          access to task and its subtasks:
+        .col.text-left
+          =form.check_box 'task[access]', class: 'form-check-input ml-0 mt-1', checked: @task.access
+    .col-9
       .row.mb-2
-        .col-3.text-right
+        .col-2
           sow:
-        .col.text-left.small
-          =form.text_field 'task[sow]', placeholder: 'link to google sheet', maxlength: 255, style: "width:500px", value: @task.sow
+        .col.small
+          =form.text_field 'task[sow]', placeholder: 'link to google sheet', maxlength: 255, class: 'w-100', value: @task.sow
       .row.mb-2
-        .col-3.text-right
+        .col-2
           pivotal tracker:
-        .col.text-left.small
-          =form.text_field 'task[pivotal_tracker_name]', placeholder: 'name', maxlength: 255, style: "width:500px", value: @task.pivotal_tracker_name
+        .col.small
+          =form.text_field 'task[pivotal_tracker_name]', placeholder: 'name', maxlength: 255, class: "w-100", value: @task.pivotal_tracker_name
       .row.mb-2
-        .col-3.text-right
+        .col-2
           pivotal tracker link:
-        .col.text-left.small
-          =form.text_field 'task[pivotal_tracker_url]', placeholder: 'link', maxlength: 255, style: "width:500px", value: @task.pivotal_tracker_url
+        .col.small
+          =form.text_field 'task[pivotal_tracker_url]', placeholder: 'link', maxlength: 255, class: "w-100", value: @task.pivotal_tracker_url
+      %hr
+      .row
+        .col.font-weight-normal.mb-2
+          =link_to '[ add agency/opportunity/revenue_type ]', '#' , class: 'add_agency', id: 'add_agency_task'
+      .row
+        .col
+          #agency_opportunity_revenue_types_task.mb-2
+            =render 'task_agencies_opportunities/edit_form', agency_opportunity_revenue_types:  @task.agency_opportunity_revenue_types, form: form
+          #agenciesPercentsFeedback.text-danger.text-center.font-weight-normal.d-none
+            Total of percents must be 100
 
-  %hr/
   .modal-footer
     =link_to( 'close', '#', class: 'ml-auto btn btn-sm btn-outline-secondary',
               'data-dismiss' => 'modal')
     =form.submit 'save changes', class: 'mr-auto btn btn-sm btn-outline-success'
+
+=render 'task_agencies_opportunities/form', task: 'task'
 
 :javascript
   $('#task').on('hidden.bs.modal', function () {

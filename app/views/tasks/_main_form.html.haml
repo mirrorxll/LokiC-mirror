@@ -1,4 +1,4 @@
-=form_with(url: tasks_path, id: 'newTaskParent',  html: { onkeypress: "return event.keyCode !== 13;" }, class: 'p-3', subtaskCount: 0 ) do |form|
+=form_with(url: tasks_path, id: 'newTaskParent',  html: { onkeypress: "return event.keyCode !== 13;" }, class: 'p-3 w-100', subtaskCount: 0 ) do |form|
   .row.col.small
     .form-group
       =form.text_field 'task_parent[title]', placeholder: 'main task title', id: 'newTaskNameParent', class: 'form-control form-control-sm', required: true, maxlength: 500
@@ -63,6 +63,7 @@
               =form.collection_select 'task_parent[parent]', Task.where(parent: nil).where.not(status: Status.find_by(name: 'deleted')).order(:id), :id, :title_with_id, { prompt: '' }, style: "width:150px", onchange: "hideSubtasks(this);"
           .row.small.justify-content-center
             (If you select a main task, you won't be able to add subtasks)
+      %hr
       .row.font-weight-bold
         .col
           .row.mb-2.mt-2
@@ -80,10 +81,16 @@
               pivotal tracker link:
             .col.small
               =form.text_field 'task_parent[pivotal_tracker_url]', placeholder: 'link', maxlength: 255, style: "width:825px"
+      %hr
       .row
-        .text-secondary.small.mt-2.mb-2
-          =link_to('[add client/tag]', '#', id: 'add_client', class: 'badge badge-pill badge-light text-secondary')
-        #clients_publications_tags
+        .col.font-weight-normal.mb-2
+          =link_to '[ add agency/opportunity/revenue_type ]', '#' , class: 'add_agency', id: 'add_agency_task_parent'
+      .row
+        .col
+          #agency_opportunity_revenue_types_task_parent
+          #agenciesPercentsFeedback.text-danger.text-center.font-weight-normal.d-none
+            Total of percents must be 100
+
   #checklistsParent.accordion.mt-2.d-none
     .card.small
       .card-header.p-1
@@ -110,7 +117,7 @@
       cancel
     =form.submit :create, class: 'btn btn-sm btn-outline-success'
 
-=javascript_pack_tag 'tasks/ag_oppt_rev_tp_form.js'
+=render 'task_agencies_opportunities/form', task: 'task_parent'
 
 :javascript
   $('#task_description').froalaEditor({
@@ -223,6 +230,14 @@
   }
 
   document.querySelector('#newTaskParent').addEventListener('input', delay(() => {
+    let percentInputs = document.getElementsByClassName('agencies_percents');
+    let percentFeedback = document.querySelector('#agenciesPercentsFeedback');
+
+    for (let i = 0; i < percentInputs.length; i++) {
+      percentInputs[i].classList.remove('border', 'border-danger');
+    }
+    percentFeedback.classList.add('d-none');
+
     Rails.ajax({
       type: 'GET',
       dataType: 'json',
@@ -256,6 +271,25 @@
     let nameFeedback = document.querySelector('#newTaskNameParentFeedback');
     let submitButton = document.querySelector('#newTaskParent input[type="submit"]');
 
+    let percentInputs = document.getElementsByClassName('agencies_percents');
+    let percentFeedback = document.querySelector('#agenciesPercentsFeedback');
+
+    let sum = 0;
+    for (var i = 0; i < percentInputs.length; i++) {
+      sum += parseFloat(percentInputs[i].value)
+    }
+
+    if(Math.round(sum) === 100 || percentInputs.length === 0) {
+    }
+    else
+    {
+      for (let i = 0; i < percentInputs.length; i++) {
+        percentInputs[i].classList.add('border', 'border-danger');
+      }
+      percentFeedback.classList.remove('d-none');
+      return;
+    }
+
     Rails.ajax({
       type: 'GET',
       dataType: 'json',
@@ -276,7 +310,6 @@
     })
   }
   document.querySelector('#newTaskParent').addEventListener('submit', onSubmit)
-
 
   $('#addСhecklistParent').click(function () {
     let hex = secureRandom(6);
