@@ -1,0 +1,133 @@
+%hr/
+=select :tables, :host_id,  Host.pluck(:name, :id), { include_blank: '' }, { class: 'form-control form-control-sm mb-1', onchange: 'loadSchemas(this)' }
+=select :tables, :schema_id, [], {}, { class: 'form-control form-control-sm', onchange: 'loadTables(this)' }
+=select :tables, :names, [], {}, { class: 'form-control form-control-sm mt-1', multiple: 'multiple' }
+%button#tablesAttachButton{ class: 'btn btn-sm btn-dark mt-1', onclick: 'attachTablesToScrapeTask(event);'}
+  attach
+
+.loadingSpinner.d-inline-block.ml-1.invisible
+  .spinner-border.spinner-border-sm.text-secondary
+    %span.sr-only
+
+:javascript
+  function attachTablesToScrapeTask(event) {
+    event.preventDefault();
+
+    let host_id = document.querySelector('#tables_host_id').value;
+    let schema_id = document.querySelector('#tables_schema_id').value;
+    let selectedNamesOptions =  [...document.querySelector('#tables_names').options].filter(x => x.selected);
+    let names = [...selectedNamesOptions].map(x => `tables[names][]=${encodeURIComponent(x.value)}` ).join('&');
+
+    Rails.ajax({
+      type: "POST",
+      dataType: 'json',
+      url: `#{api_table_locations_path}`,
+      data: `model=#{@model.class}&model_id=#{@model.id}&tables[host_id]=${encodeURIComponent(host_id)}&tables[schema_id]=${encodeURIComponent(schema_id)}&${names}`,
+      success: (data) => {
+        data['locations'].forEach((table) => {
+          document.querySelector('#includedTablesTo#{@model.class}').insertAdjacentHTML(
+            'beforeend',
+            `<div class="text-truncate table-location-${table['id']}">
+               <a onclick="excludeTableLocationFrom#{@model.class}(event, ${table['id']});" href="#">
+                 [ X ]
+               </a>
+               &nbsp;|&nbsp;
+               ${table['location']}
+               <br/>
+            </div>`
+          );
+          addRemoveMarginToTables();
+        })
+      }
+    });
+  }
+  $('#tables_host_id').multipleSelect({
+    maxHeight: '14',
+    maxHeightUnit: 'row',
+    placeholder: 'host',
+    position: 'top'
+  });
+
+  $('#tables_schema_id').multipleSelect({
+    filter: true,
+    maxHeight: '14',
+    maxHeightUnit: 'row',
+    placeholder: 'schema',
+    position: 'top'
+  });
+
+  $('#tables_names').multipleSelect({
+    filter: true,
+    maxHeight: '7',
+    maxHeightUnit: 'row',
+    placeholder: 'names',
+    position: 'top'
+  });
+
+  function loadSchemas(host) {
+    let spinner = document.querySelector('#addTablesTo#{@model.class} .loadingSpinner');
+    let schema = document.querySelector('#tables_schema_id');
+    let tableNames = document.querySelector('#tables_names');
+
+    spinner.classList.remove('invisible');
+    schema.options.length = 0;
+    tableNames.options.length = 0;
+
+    $('#tables_schema_id').multipleSelect('refresh');
+    $('#tables_names').multipleSelect('refresh');
+
+    if(host.value === '') return false;
+
+    Rails.ajax({
+      type: "GET",
+      dataType: 'json',
+      url: `#{api_schemas_path}`,
+      data: `host_id=${encodeURIComponent(host.value)}`,
+      success: (data) => {
+        let option = document.createElement("option");
+
+        schema.innerHTML = '';
+        schema.appendChild(option);
+
+        data['schemas'].forEach((item) => {
+          option = document.createElement("option");
+          option.setAttribute("value", item['id']);
+          option.text = item['name'];
+          schema.appendChild(option)
+        });
+
+        spinner.classList.add('invisible');
+        $('#tables_schema_id').multipleSelect('refresh');
+      }
+    });
+  }
+
+  function loadTables(schema) {
+    let spinner = document.querySelector('#addTablesTo#{@model.class} .loadingSpinner');
+    let host = document.querySelector('#tables_host_id');
+    let tableNames = document.querySelector('#tables_names');
+
+    spinner.classList.remove('invisible');
+    tableNames.options.length = 0;
+    $('#tables_names').multipleSelect('refresh');
+
+    if(schema.value === '') return false;
+
+    Rails.ajax({
+      type: "GET",
+      dataType: 'json',
+      url: `#{api_table_locations_path}`,
+      data: `host_id=${encodeURIComponent(host.value)}&schema_id=${encodeURIComponent(schema.value)}`,
+      success: (data) => {
+        data['table_names'].forEach((item) => {
+          let option = document.createElement("option");
+          option.setAttribute("value", item);
+          option.text = item;
+          tableNames.appendChild(option)
+        });
+
+        spinner.classList.add('invisible');
+        $('#tables_names').multipleSelect('refresh');
+      }
+    });
+  }

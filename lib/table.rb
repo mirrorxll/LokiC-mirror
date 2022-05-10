@@ -119,4 +119,10 @@ module Table # :nodoc:
 
     nil
   end
+
+  def get_limpar_data(t_name)
+    curr_iter    = curr_iter_id(t_name)
+    select_query = limpar_year(t_name, curr_iter)
+    loki_story_creator { |conn| conn.exec_query(select_query).to_a }
+  end
 end

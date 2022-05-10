@@ -32,12 +32,11 @@ class ScrapeTask < ApplicationRecord
   has_one :status_comment,         -> { where(subtype: 'status comment') }, as: :commentable, class_name: 'Comment'
   has_one :general_comment,        -> { where(subtype: 'general comment') }, as: :commentable, class_name: 'Comment'
   has_one :data_set
-  has_one :data_sample
 
   has_many :change_history, as: :history
   has_many :alerts, as: :alert
-  has_many :data_set_locations, as: :data_set_location
-  has_many :table_locations, as: :parent, dependent: :destroy
+  has_many :table_locations, -> { includes(:host, :schema).order('hosts.name, schemas.name, table_locations.table_name') },
+           as: :parent, dependent: :destroy
 
   has_and_belongs_to_many :tags, class_name: 'ScrapeTaskTag'
   has_and_belongs_to_many :tasks
@@ -105,12 +104,6 @@ class ScrapeTask < ApplicationRecord
       old_gather_task_name = gather_task_change.first || 'not attached'
       new_gather_task_name = gather_task || 'not attached'
       changes['gather task changed'] = "#{old_gather_task_name} -> #{new_gather_task_name}"
-    end
-
-    if data_set_location_changed?
-      old_location = data_set_location_change.first.present? ? data_set_location_change.first : 'not attached'
-      new_location = data_set_location.present? ? data_set_location : 'not attached'
-      changes['data set location changed'] = "#{old_location} -> #{new_location}"
     end
 
     changes.each { |ev, ch| record_to_change_history(self, ev, ch, current_account) }

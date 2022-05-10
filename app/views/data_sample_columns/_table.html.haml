@@ -1,0 +1,52 @@
+-# locals: { location: location, columns: columns }
+
+// SHOW COLUMNS FROM result's columns
+//  :Field
+//  :Type
+//  :Null
+//  :Key
+//  :Default
+//  :Extra
+
+.tab-pane.fade.show{ class: (index.zero? ? 'active' : ''), id: "dataSample#{index}" }
+  %table.table.table-stripe.table-bordered.table-hover{ style: 'min-width: 99.9%;', id: "dataSampleTable#{index}"}
+    %thead.thead-dark
+      %tr
+        -columns[:list].each do |col|
+          %th
+            =col['Field']
+
+
+:javascript
+  $("#dataSampleTable#{index}").DataTable({
+    serverSide: true,
+    ajax: {
+      url: `/api/data_samples/#{columns[:table_location_id]}`,
+      data: (data) => {
+        delete data.columns;
+        delete data.search;
+      }
+    },
+    searching: false,
+    ordering: false,
+    processing: true,
+    pagingType: "full_numbers",
+    dom: "<'row'<'col-sm-12'tr>>" +
+         "<'data-samples-footer#{index} d-none row justify-content-between align-items-center 'lpi>",
+    drawCallback: (data) => {
+      let dataLPI = $('.data-samples-footer#{index}');
+      let dataTab = $('#dataSampleTabs a[tab_index="#{index}"]');
+
+      dataLPI.appendTo('#dataSamplesModal .modal-footer');
+
+      if(#{index.zero?} && dataTab.hasClass('active'))
+        dataLPI.removeClass('d-none');
+
+      if(data['iDraw'] === 1)
+        dataTab.removeClass('disabled');
+
+      $('#dataSampleTable#{index}_paginate .pagination').addClass('m-0 d-flex justify-content-center');
+      $('#dataSampleTable#{index}_length label').addClass('d-flex align-items-center m-0');
+      $('#dataSampleTable#{index}_length select').addClass('ml-1 mr-1');
+    }
+  });

@@ -9,6 +9,7 @@ require("@rails/activestorage").start();
 require("channels");
 require("trix");
 require("@rails/actiontext");
+require("datatables.net-bs4");
 
 import 'bootstrap';
 import '../stylesheets/application';

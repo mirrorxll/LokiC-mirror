@@ -20,9 +20,14 @@ module StoryTypes
     def create
       staging_table_action do
         @staging_table.update!(indices_modifying: true)
-
         send_to_action_cable(@story_type, 'staging_table', 'staging table modifying in progress')
-        StagingTableIndexAddJob.perform_async(@staging_table.id, uniq_index_column_ids)
+
+        Process.spawn(
+          "cd #{Rails.root} && RAILS_ENV=#{Rails.env} "\
+          'rake story_type:staging_table:add_index '\
+          "staging_table_id=#{@staging_table.id} columns='#{uniq_index_column_params.to_json}' &"
+        )
+
         nil
       end
 
@@ -32,9 +37,13 @@ module StoryTypes
     def destroy
       staging_table_action do
         @staging_table.update!(indices_modifying: true)
-
         send_to_action_cable(@story_type, 'staging_table', 'staging table modifying in progress')
-        StagingTableIndexDropJob.perform_async(@staging_table.id)
+
+        Process.spawn(
+          "cd #{Rails.root} && RAILS_ENV=#{Rails.env} "\
+          "rake story_type:staging_table:drop_index staging_table_id=#{@staging_table.id} &"
+        )
+
         nil
       end
 
@@ -43,7 +52,7 @@ module StoryTypes
 
     private
 
-    def uniq_index_column_ids
+    def uniq_index_column_params
       if params[:index]
         params.require(:index).permit(column_ids: [])[:column_ids]
       else
@@ -56,4 +65,3 @@ module StoryTypes
     end
   end
 end
-

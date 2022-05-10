@@ -21,6 +21,8 @@ class Account < ApplicationRecord # :nodoc:
   has_many :assigned_scrape_tasks, foreign_key: :scraper_id,   class_name: 'ScrapeTask'
   has_many :production_removals
   has_many :comments, foreign_key: :commentator_id
+  has_many :assigned_scrape_tasks, class_name: 'ScrapeTask', foreign_key: :scraper_id
+  has_many :created_scrape_tasks,  class_name: 'ScrapeTask', foreign_key: :creator_id
 
   def name
     "#{first_name} #{last_name}"

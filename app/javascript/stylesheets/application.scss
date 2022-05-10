@@ -20,10 +20,12 @@ $fa-font-path: "~font-awesome/fonts";
 @import "~multiple-select/dist/multiple-select";
 @import "~multiple-select/dist/themes/bootstrap";
 @import "node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.standalone";
+@import "~datatables.net-bs4/css/dataTables.bootstrap4.min";
 
 @media (min-width: 100px) {
   .modal-fullscreen {
     max-width: 97%;
+    min-height: 94%;
   }
 
   .modal-70percent {

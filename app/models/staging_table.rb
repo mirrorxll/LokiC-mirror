@@ -12,6 +12,7 @@ class StagingTable < ApplicationRecord # :nodoc:
       delete_useless_columns
       add_story_created
     elsif article_type?
+      default_article_type_columns
       add_article_created
     end
 
@@ -98,6 +99,10 @@ class StagingTable < ApplicationRecord # :nodoc:
 
   def default_story_type_columns
     Table.add_default_story_type_columns(name)
+  end
+
+  def default_article_type_columns
+    Table.add_default_article_type_columns(name)
   end
 
   def delete_useless_columns

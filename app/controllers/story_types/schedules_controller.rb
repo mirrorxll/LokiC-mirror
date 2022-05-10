@@ -9,9 +9,15 @@ module StoryTypes
 
     def manual
       @iteration.update!(schedule: false, current_account: current_account)
-
       send_to_action_cable(@story_type, 'scheduler', 'scheduling in progress')
-      SchedulerJob.perform_async(@iteration.id, :manual, { params: manual_params, account: current_account.id })
+
+      options = { params: manual_params, account: current_account.id }
+
+      Process.spawn(
+        "cd #{Rails.root} && RAILS_ENV=#{Rails.env} "\
+        'rake story_type:iteration:scheduling '\
+        "iteration_id=#{@iteration.id} type=manual options='#{options.to_json}' &"
+      )
 
       render 'hide_section'
     end
@@ -20,7 +26,14 @@ module StoryTypes
       @iteration.update!(schedule: false, current_account: current_account)
 
       send_to_action_cable(@story_type, 'scheduler', 'scheduling in progress')
-      SchedulerJob.perform_async(@iteration.id, :backdate, { params: backdated_params, account: current_account.id })
+
+      options = { params: backdated_params, account: current_account.id }
+
+      Process.spawn(
+        "cd #{Rails.root} && RAILS_ENV=#{Rails.env} "\
+        'rake story_type:iteration:scheduling '\
+        "iteration_id=#{@iteration.id} type=backdate options='#{options.to_json}' &"
+      )
 
       render 'hide_section'
     end
@@ -29,7 +42,14 @@ module StoryTypes
       @iteration.update!(schedule: false, current_account: current_account)
 
       send_to_action_cable(@story_type, 'scheduler', 'scheduling in progress')
-      SchedulerJob.perform_async(@iteration.id, :auto, { params: auto_params, account: current_account.id })
+
+      options = { params: auto_params, account: current_account.id }
+
+      Process.spawn(
+        "cd #{Rails.root} && RAILS_ENV=#{Rails.env} "\
+        'rake story_type:iteration:scheduling '\
+        "iteration_id=#{@iteration.id} type=auto options='#{options.to_json}' &"
+      )
 
       render 'hide_section'
     end
