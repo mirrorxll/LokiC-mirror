@@ -55,7 +55,7 @@ module Api
     def data_query(data_borders)
       query = "SELECT * FROM `#{@table_location.table_name}`"
 
-      if data_borders[:order]
+      if !data_borders[:draw].eql?('1') && data_borders[:order]
         order = data_borders[:order]
         query += " ORDER BY `#{@table_location.table_columns[order[:column].to_i]}` #{order[:dir].upcase}"
       end
