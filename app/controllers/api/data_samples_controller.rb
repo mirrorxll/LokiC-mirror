@@ -10,6 +10,8 @@ module Api
       data_borders = data_sample_params
       data = @connection.query(data_query(data_borders), as: :array).to_a
 
+      data.map! { |a| a.map! { |a2| CGI.escapeHTML(a2.to_s) } }
+
       total_records =
         if data_borders[:draw].eql?('1')
           total = @connection.query(total_records_query, as: :array).first[0]
