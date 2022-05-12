@@ -19,6 +19,7 @@ module Factoids
       st_limpar_columns  = Table.get_limpar_data(staging_table_name)
       main_semaphore     = Mutex.new
       exported           = 0
+      has_error          = false
 
       threads = Array.new(threads_count) do
         Thread.new do
@@ -28,7 +29,16 @@ module Factoids
             break if factoid.nil?
 
             limpar_columns = st_limpar_columns.select { |col| col['id'].eql?(factoid.staging_row_id) }
+          begin
             factoid_post(factoid, limpar_columns.first, lp_client)
+          rescue Faraday::UnprocessableEntityError => e
+            has_error = true
+            message   = prepare_error_message(factoid, e)
+
+            raise StandardError, message
+          end
+            break if has_error
+
             main_semaphore.synchronize { exported += 1 }
           end
         end
@@ -56,6 +66,18 @@ module Factoids
         end
       end
       threads.each(&:join)
+    end
+
+    private
+
+    def prepare_error_message(factoid, e)
+      responce = JSON.parse(e.response[:body])['errors']
+      errors   = []
+      responce.each do |error|
+        errors << "#{error['source']['attribute']} => #{error['detail']}"
+      end
+
+      "Factoid #{factoid.id} has #{errors.size > 1 ? 'errors' : 'an error'}: #{errors.join('; ')}"
     end
   end
 end
