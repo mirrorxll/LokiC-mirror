@@ -89,7 +89,7 @@
               Rails.ajax({
                 type: "GET",
                 dataType: 'script',
-                url: '/data_sample_columns?model=DataSet&model_id=#{@data_set.id}',
+                url: '/data_samples?model=DataSet&model_id=#{@data_set.id}',
                 success: () => {
                   let loading = $('#dataSamplesModal .loading');
                   loading.removeClass('d-flex');

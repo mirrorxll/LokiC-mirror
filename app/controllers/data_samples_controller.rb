@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DataSampleColumnsController < ApplicationController
+class DataSamplesController < ApplicationController
   skip_before_action :find_parent_story_type
   skip_before_action :find_parent_article_type
   skip_before_action :set_story_type_iteration
@@ -14,8 +14,11 @@ class DataSampleColumnsController < ApplicationController
     @locations_columns = @model.table_locations.each_with_object({}) do |loc, obj|
       connections[loc.host_name] ||= MiniLokiC::Connect::Mysql.on(Object.const_get(loc.host_name))
       query = "SHOW COLUMNS FROM `#{loc.schema_name}`.`#{loc.table_name}`;"
+      columns = connections[loc.host_name].query(query).to_a.map { |col| col['Field'] }
 
-      obj[loc.full_name] = { table_location_id: loc.id, list: connections[loc.host_name].query(query).to_a }
+      loc.update!(table_columns: columns)
+
+      obj[loc.full_name] = { table_location_id: loc.id, list: columns }
     end
 
     connections.each_value(&:close)
