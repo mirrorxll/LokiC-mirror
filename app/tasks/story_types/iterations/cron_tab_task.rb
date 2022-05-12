@@ -108,10 +108,10 @@ module StoryTypes
 
         begin
           loop do
-            break if Table.all_stories_created_by_iteration?(staging_table.name, st_publication_pl_ids) ||
-                     story_type.sidekiq_break.cancel
-
             MiniLokiC::StoryTypeCode[cron_tab_iteration.story_type].execute(:creation, creation_options)
+
+            break if story_type.sidekiq_break.cancel ||
+                     Table.all_stories_created_by_iteration?(staging_table.name, st_publication_pl_ids)
           end
         rescue StandardError, ScriptError => e
           creation_status = nil

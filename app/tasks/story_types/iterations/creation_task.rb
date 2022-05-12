@@ -20,12 +20,10 @@ module StoryTypes
         }
 
         loop do
-          if story_type.sidekiq_break.reload.cancel ||
-             Table.all_stories_created_by_iteration?(staging_table, publication_ids)
-            break
-          end
-
           MiniLokiC::StoryTypeCode[iteration.story_type].execute(:creation, options)
+
+          break if story_type.sidekiq_break.reload.cancel ||
+                   Table.all_stories_created_by_iteration?(staging_table, publication_ids)
         end
 
         iteration.update!(schedule_counts: schedule_counts(iteration), current_account: account)
