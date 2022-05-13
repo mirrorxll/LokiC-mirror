@@ -14,7 +14,7 @@ class DataSetsController < ApplicationController # :nodoc:
   after_action  :create_hidden_scrape_task, only: :create
 
   def index
-    @tab_title = 'LokiC::Data Sets'
+    @tab_title = 'LokiC :: DataSets'
     @data_set = DataSet.new
     @data_sets_grid = DataSetsGrid.new(params[:data_sets_grid])
     respond_to do |f|
@@ -31,7 +31,7 @@ class DataSetsController < ApplicationController # :nodoc:
   end
 
   def show
-    @tab_title = @data_set.name
+    @tab_title = "LokiC :: DataSet ##{@data_set.id} <#{@data_set.name}>"
     @story_types = @data_set.story_types.order(id: :desc)
     @article_types = @data_set.article_types.order(id: :desc)
   end

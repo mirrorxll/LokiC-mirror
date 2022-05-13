@@ -6,7 +6,9 @@ class PressReleaseReportsController < ApplicationController
   skip_before_action :set_story_type_iteration
   skip_before_action :set_article_type_iteration
 
-  def index; end
+  def index
+    @tab_title = "LokiC :: PressReleaseReports"
+  end
 
   def get_report
     PressReleaseReportJob.perform_async

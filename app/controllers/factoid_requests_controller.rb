@@ -10,10 +10,13 @@ class FactoidRequestsController < ApplicationController
   before_action :find_factoid_request, only: %i[show edit update archive unarchive]
 
   def index
+    @tab_title = 'LokiC :: RequestedFactoids'
     @grid.scope { |sc| sc.page(params[:page]).per(100) }
   end
 
-  def show; end
+  def show
+    @tab_title = "LokiC :: RequestedFactoid ##{@factoid_request.id} <#{@factoid_request.name}>"
+  end
 
   def new; end
 

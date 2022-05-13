@@ -41,6 +41,7 @@ module StoryTypes
       @stories =
         @iteration.stories.includes(:output, :publication)
                   .order(backdated: :asc, published_at: :asc).page(params[:page]).per(25)
+      @tab_title = "LokiC :: StoryType ##{@story_type.id} :: Stories"
     end
 
     private
