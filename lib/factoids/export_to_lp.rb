@@ -58,9 +58,11 @@ module Factoids
           loop do
             factoid = semaphore.synchronize { factoids.shift }
             break if factoid.nil?
-
+          begin
             lp_client.delete_editorial(factoid.limpar_factoid_id)
-
+          rescue Faraday::ResourceNotFound
+            true
+          end
             factoid.update!(limpar_factoid_id: nil, exported_at: nil)
           end
         end
