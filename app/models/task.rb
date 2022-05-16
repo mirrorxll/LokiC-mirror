@@ -80,7 +80,7 @@ class Task < ApplicationRecord # :nodoc:
   end
 
   def assignment_to_or_creator?(account)
-    account.in?(assignment_to) || account.eql?(creator)
+    account.in?(assignment_to) || account.eql?(creator) || account.in?(notification_to)
   end
 
   def creator?(account)
