@@ -11,6 +11,7 @@ class ScrapeTasksController < ApplicationController
   before_action :find_data_set,    only: %i[show edit cancel_edit evaluate], if: :manager?
 
   def index
+    @tab_title = "LokiC :: ScrapeTasks"
     respond_to do |f|
       f.html do
         @scrape_tasks_grid.scope { |scope| scope.page(params[:page]).per(30) }
@@ -18,7 +19,9 @@ class ScrapeTasksController < ApplicationController
     end
   end
 
-  def show; end
+  def show
+    @tab_title = "LokiC :: ScrapeTask ##{@scrape_task.id} <#{@scrape_task.name}>"
+  end
 
   def create
     @scrape_task = ScrapeTask.new(create_scrape_task_params)

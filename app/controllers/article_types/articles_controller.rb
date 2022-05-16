@@ -12,7 +12,7 @@ module ArticleTypes
         scope.where(article_type_id: params[:article_type_id], article_type_iteration_id: params[:iteration_id])
       end
 
-      @tab_title = "LokiC::Factoids ##{@article_type.id} #{@article_type.name}"
+      @tab_title = "LokiC :: Factoids ##{@article_type.id} <#{@article_type.name}>"
       respond_to do |f|
         f.html do
           @iteration_articles_grid.scope { |scope| scope.page(params[:page]).per(50) }

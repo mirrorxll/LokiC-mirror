@@ -24,7 +24,7 @@
                       class: 'btn btn-sm btn-outline-dark', method: :patch, remote: true)
         .col-6#manipulate
           .btn-group
-            -if @iteration.population.eql?(true)
+            -if @iteration.population.eql?(true) && !@iteration.samples.eql?(true)
               =link_to('purge staging table', purge_article_type_iteration_populations_path(@article_type, @iteration),
                         class: 'btn btn-sm btn-outline-danger', method: :delete,  remote: true,
                         data: { confirm: 'PURGE CURRENT ITERATION: You sure?' })

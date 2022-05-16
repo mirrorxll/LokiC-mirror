@@ -18,6 +18,10 @@ module StoryTypes
         end
 
         iteration.exported&.destroy
+        story_type.update!(last_export: story_type.exported_story_types.last&.date_export)
+
+        StoryTypes::Iterations::SetNextExportDateTask.new.perform(story_type.id)
+
         iteration.production_removals.last.update!(status: true)
 
         note = MiniLokiC::Formatize::Numbers.to_text(iteration.stories.ready_to_export.count)
@@ -26,6 +30,8 @@ module StoryTypes
         old_status = story_type.status.name
         last_iteration = story_type.reload.iterations.last.eql?(iteration)
         changeable_status = !story_type.status.name.in?(['canceled', 'blocked', 'on cron'])
+
+        StoryTypes::Iterations::SetMaxTimeFrameTask.new.perform(story_type.id)
 
         if !old_status.eql?('in progress') && last_iteration && changeable_status
           story_type.update!(status: Status.find_by(name: 'in progress'), last_status_changed_at: Time.now, current_account: account)

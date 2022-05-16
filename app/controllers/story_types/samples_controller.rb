@@ -15,7 +15,7 @@ module StoryTypes
       end
 
       @stories_count = [@iteration.stories.scheduled_count, @iteration.stories.backdated_count]
-      @tab_title = "LokiC::Samples ##{@story_type.id} #{@story_type.name}"
+      @tab_title = "LokiC :: StoryType ##{@story_type.id} :: Samples"
       respond_to do |f|
         f.html do
           @iteration_stories_grid.scope { |scope| scope.page(params[:page]) }
@@ -28,7 +28,7 @@ module StoryTypes
     end
 
     def show
-      @tab_title = @sample.headline
+      @tab_title = "LokiC :: StoryType ##{@story_type.id} :: Story ##{@sample.id}"
 
       respond_to do |format|
         format.html { render 'show' }

@@ -9,6 +9,7 @@ class TaskTrackingHoursController < ApplicationController
   before_action :grid, only: :index
 
   def index
+    @tab_title = "LokiC :: TaskTrackingHours"
     respond_to do |f|
       f.html do
         @grid.scope { |scope| scope.page(params[:page]).per(20) }

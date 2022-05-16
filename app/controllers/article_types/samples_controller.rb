@@ -8,6 +8,7 @@ module ArticleTypes
     before_action :find_sample, only: %i[show edit update]
 
     def show
+      @tab_title = "LokiC :: FactoidType ##{@article_type.id} :: Factoid ##{@sample.id}"
       respond_to do |format|
         format.html { render 'show' }
         format.js { render 'to_tab' }

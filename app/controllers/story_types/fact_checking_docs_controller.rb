@@ -8,7 +8,7 @@ module StoryTypes
     before_action :find_fcd, except: :template
 
     def show
-      @tab_title = "LokiC::FCD ##{@story_type.id} #{@story_type.name}"
+      @tab_title = "LokiC :: StoryType ##{@story_type.id} :: FCD"
     end
 
     def edit; end

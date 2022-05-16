@@ -1,8 +1,10 @@
 .container-fluid.pt-5
   %hr/
-  #header.d-flex.justify-content-between.align-items-center
-    Scrape Tasks
-    .buttons
+  #header.d-flex.justify-content-between.align-items-center.row.mt-3
+    #total.col-8
+      Total:
+      =@scrape_tasks_grid.assets.total_count
+    .buttons.col-4.text-right
       =link_to('filter', '#filter', 'aria-controls' => 'scrape_task_filter',
                'aria-expanded' => false, data: { toggle: "collapse", target: "#filter" },
                type: "button", class: 'btn btn-sm btn-outline-dark mr-2')

@@ -12,6 +12,7 @@ class TasksController < ApplicationController # :nodoc:
   before_action :find_note, only: :show
   
   def index
+    @tab_title = "LokiC :: Tasks"
     respond_to do |f|
       f.html do
         @grid.scope do |scope|
@@ -25,6 +26,7 @@ class TasksController < ApplicationController # :nodoc:
     render_401 unless manager? || @task.access_for?(current_account)
 
     @comments = @task.comments.order(created_at: :desc)
+    @tab_title = "LokiC :: Task ##{@task.id} <#{@task.title}>"
   end
 
   def new
