@@ -35,6 +35,8 @@ module StoryTypes
           if exp_st.new_record?
             story_type.update!(last_export: DateTime.now, current_account: account)
 
+            StoryTypes::Iterations::SetNextExportDateTask.new.perform(story_type.id)
+
             week_start = Date.today - (Date.today.wday - 1)
             week_end = week_start + 6
 
@@ -46,6 +48,8 @@ module StoryTypes
           end
 
           exp_st.save!
+
+          StoryTypes::Iterations::SetMaxTimeFrameTask.new.perform(story_type.id)
 
           note = MiniLokiC::Formatize::Numbers.to_text(exp_st.count_samples).capitalize
           record_to_change_history(story_type, 'exported to pipeline', note, account)

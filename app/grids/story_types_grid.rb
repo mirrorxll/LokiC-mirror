@@ -13,6 +13,8 @@ class StoryTypesGrid
       :clients_publications_tags,
       :clients, :tags, :reminder,
       :cron_tab, :template,
+      :exported_story_types,
+      opportunities: [opportunity: :agency],
       data_set: %i[state category]
     ).order(
       Arel.sql("CASE WHEN reminders.check_updates = false AND cron_tabs.enabled = false THEN '1' END DESC,
@@ -82,6 +84,16 @@ class StoryTypesGrid
 
     scope.where(id: stories_story_types_ids)
   end
+  filter(:agency, :enum, multiple: true, select: Agency.all.order(:name).pluck(:name, :id)) do |value, scope|
+    scope.where('agencies.id': value)
+  end
+  filter(:opportunity, :enum, multiple: true, select: Opportunity.all.order(:name).pluck(:name, :id)) do |value, scope|
+    scope.where('story_type_opportunities.opportunity_id': value)
+  end
+  filter(:first_export, :datetime, range: true, type: 'date') do |value, scope|
+    scope.where('exported_story_types.first_export': true)
+         .where('exported_story_types.date_export': value.first..value.last)
+  end
   filter(:condition1, :dynamic, left: false, header: 'Dynamic condition 1')
   filter(:condition2, :dynamic, left: false, header: 'Dynamic condition 2')
   column_names_filter(header: 'Extra Columns', left: false, checkboxes: false)
@@ -128,9 +140,28 @@ class StoryTypesGrid
   column(:status, mandatory: true, order: 'statuses.name') do |record|
     record.status.name
   end
+  column(:first_export, order: 'exported_story_types.date_export') do |record|
+    record.exported_story_types.first_export.first&.date_export
+  end
   column(:last_export, mandatory: true) do |record|
     record.last_export&.to_date
   end
+  column(:next_export) do |record|
+    next_export = record.next_export&.to_date
+    if next_export
+      frequency = record.frequency&.name
+      gap       = %w[daily weekly].include?(frequency) ? 1.week : 1.month
+      color     = if next_export >= Date.today
+                    ' bg-success'
+                  elsif next_export < Date.today && next_export >= Date.today - gap
+                    ' bg-warning'
+                  else
+                    ' bg-danger'
+                  end
+    end
+    next_export ? { date: next_export, color: color } : nil
+  end
+  column(:time_frame, order: 'max_time_frame') { |record| record.max_time_frame }
   column(:has_updates,
          mandatory: true,
          order: Arel.sql("CASE WHEN reminders.check_updates = false AND cron_tabs.enabled = false THEN '1' END DESC,

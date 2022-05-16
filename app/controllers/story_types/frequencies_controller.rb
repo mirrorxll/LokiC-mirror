@@ -8,6 +8,8 @@ module StoryTypes
     before_action :render_403, if: :developer?
     before_action :find_frequency, only: :include
 
+    after_action :set_next_export_date
+
     def include
       render_403 && return if @story_type.frequency
 
@@ -24,6 +26,10 @@ module StoryTypes
 
     def find_frequency
       @frequency = Frequency.find(params[:id])
+    end
+
+    def set_next_export_date
+      StoryTypes::Iterations::SetNextExportDateTask.new.perform(@story_type.id)
     end
   end
 end

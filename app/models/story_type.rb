@@ -57,6 +57,7 @@ class StoryType < ApplicationRecord
   has_many :alerts, as: :alert
   has_many :default_opportunities, class_name: 'StoryTypeDefaultOpportunity'
   has_many :opportunities, class_name: 'StoryTypeOpportunity'
+  has_many :exported_story_types
 
   scope :with_developer, -> { where.not(developer: nil) }
   scope :with_code, -> { joins(:code_attachment) }
