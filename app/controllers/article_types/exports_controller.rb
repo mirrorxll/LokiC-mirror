@@ -21,6 +21,7 @@ module ArticleTypes
 
     def articles
       @articles = @iteration.articles.published.order(exported_at: :asc).page(params[:page]).per(25)
+      @tab_title = "LokiC :: FactoidType ##{@article_type.id} :: Factoids"
     end
 
     private

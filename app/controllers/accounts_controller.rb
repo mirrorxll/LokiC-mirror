@@ -7,6 +7,7 @@ class AccountsController < ApplicationController
   skip_before_action :set_article_type_iteration
 
   def index
+    @tab_title = "LokiC :: Accounts"
     @accounts = Account.order(:id).includes(:account_types)
   end
 

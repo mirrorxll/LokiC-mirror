@@ -11,6 +11,10 @@ class RegistrationsController < Devise::RegistrationsController # :nodoc:
     redirect_to new_account_session_path
   end
 
+  def edit
+    @tab_title = "LokiC :: Profile"
+  end
+
   def update
     super
     slack_account = SlackAccount.find_by(slack_account_params)

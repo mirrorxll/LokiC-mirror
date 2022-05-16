@@ -21,7 +21,7 @@ class StoryTypesController < ApplicationController # :nodoc:
     @grid_params.merge!({ current_account: current_account, env: env })
 
     @story_types_grid = StoryTypesGrid.new(@grid_params) { |scope| scope.where(archived: false) }
-
+    @tab_title = 'LokiC :: StoryTypes'
     respond_to do |f|
       f.html do
         @story_types_grid.scope { |scope| scope.page(params[:page]).per(50) }
@@ -39,7 +39,7 @@ class StoryTypesController < ApplicationController # :nodoc:
   end
 
   def show
-    @tab_title = "LokiC::##{@story_type.id} #{@story_type.name}"
+    @tab_title = "LokiC :: StoryType ##{@story_type.id} <#{@story_type.name}>"
   end
 
   def new

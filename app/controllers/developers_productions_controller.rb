@@ -7,6 +7,7 @@ class DevelopersProductionsController < ApplicationController # :nodoc:
   skip_before_action :set_article_type_iteration
 
   def exported_counts
+    @tab_title = 'LokiC :: DevelopersProduction :: Count of Stories'
     @rows_reports = ExportedStoryType.begin_date(Date.today.prev_month)
 
     filter_params_counts.each do |key, value|
@@ -22,6 +23,7 @@ class DevelopersProductionsController < ApplicationController # :nodoc:
   end
 
   def scores
+    @tab_title = 'LokiC :: DevelopersProduction :: Developers Score'
     default_date = Date.today.prev_month < Date.parse('2020-11-02') ? '2020-11-02' : Date.today.prev_month
     @exported_story_types = ExportedStoryType.begin_date(default_date)
 
