@@ -84,18 +84,18 @@ class StoryTypesGrid
 
     scope.where(id: stories_story_types_ids)
   end
-  filter(:agency, :enum, left: true, select: Agency.all.order(:name).pluck(:name, :id)) do |value, scope|
+  filter(:agency, :enum, multiple: true, select: Agency.all.order(:name).pluck(:name, :id)) do |value, scope|
     scope.where('agencies.id': value)
   end
-  filter(:opportunity, :enum, left: true, select: Opportunity.all.order(:name).pluck(:name, :id)) do |value, scope|
+  filter(:opportunity, :enum, multiple: true, select: Opportunity.all.order(:name).pluck(:name, :id)) do |value, scope|
     scope.where('story_type_opportunities.opportunity_id': value)
   end
-  filter(:condition1, :dynamic, left: false, header: 'Dynamic condition 1')
-  filter(:condition2, :dynamic, left: false, header: 'Dynamic condition 2')
   filter(:first_export, :datetime, range: true, type: 'date') do |value, scope|
     scope.where('exported_story_types.first_export': true)
          .where('exported_story_types.date_export': value.first..value.last)
   end
+  filter(:condition1, :dynamic, left: false, header: 'Dynamic condition 1')
+  filter(:condition2, :dynamic, left: false, header: 'Dynamic condition 2')
   column_names_filter(header: 'Extra Columns', left: false, checkboxes: false)
   dynamic do
     column(:level, preload: :level, header: 'Level') do |record|
