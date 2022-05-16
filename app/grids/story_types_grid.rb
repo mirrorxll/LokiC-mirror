@@ -14,7 +14,7 @@ class StoryTypesGrid
       :clients, :tags, :reminder,
       :cron_tab, :template,
       :exported_story_types,
-      opportunities: [opportunity: :agency],
+      # opportunities: [opportunity: :agency],
       data_set: %i[state category]
     ).order(
       Arel.sql("CASE WHEN reminders.check_updates = false AND cron_tabs.enabled = false THEN '1' END DESC,
@@ -84,12 +84,12 @@ class StoryTypesGrid
 
     scope.where(id: stories_story_types_ids)
   end
-  filter(:agency, :enum, multiple: true, select: Agency.all.order(:name).pluck(:name, :id)) do |value, scope|
-    scope.where('agencies.id': value)
-  end
-  filter(:opportunity, :enum, multiple: true, select: Opportunity.all.order(:name).pluck(:name, :id)) do |value, scope|
-    scope.where('story_type_opportunities.opportunity_id': value)
-  end
+  # filter(:agency, :enum, multiple: true, select: Agency.all.order(:name).pluck(:name, :id)) do |value, scope|
+  #   scope.where('agencies.id': value)
+  # end
+  # filter(:opportunity, :enum, multiple: true, select: Opportunity.all.order(:name).pluck(:name, :id)) do |value, scope|
+  #   scope.where('story_type_opportunities.opportunity_id': value)
+  # end
   filter(:first_export, :datetime, range: true, type: 'date') do |value, scope|
     scope.where('exported_story_types.first_export': true)
          .where('exported_story_types.date_export': value.first..value.last)
