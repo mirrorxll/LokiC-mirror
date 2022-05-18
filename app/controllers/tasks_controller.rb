@@ -14,7 +14,7 @@ class TasksController < ApplicationController # :nodoc:
   def index
     respond_to do |f|
       f.html do
-        @grid.scope do |scope|
+        @tasks_grid.scope do |scope|
           scope.page(params[:page]).per(20)
         end
       end
@@ -158,12 +158,14 @@ class TasksController < ApplicationController # :nodoc:
     grid_params[:status] =
       if grid_params[:status].blank? && grid_params[:deleted_tasks] != 'YES'
         Status.multi_task_statuses_for_grid
-      elsif grid_params[:status].length == 1
+      elsif grid_params[:deleted_tasks].eql?('YES')
+        Status.find_by(name: 'deleted')
+      elsif grid_params[:status].any?
         grid_params[:status]
       end
     grid_params[:current_account] = current_account
 
-    @grid = TasksGrid.new(grid_params.except(:collapse, :type))
+    @tasks_grid = TasksGrid.new(grid_params.except(:collapse, :type))
   end
 
   def find_task
