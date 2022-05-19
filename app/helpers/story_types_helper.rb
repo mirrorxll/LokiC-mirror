@@ -22,6 +22,6 @@ module StoryTypesHelper # :nodoc:
   end
 
   def manager_or_editor
-    (current_account.types & %w[manager editor]).present?
+    (@current_account.types & %w[manager editor]).present?
   end
 end

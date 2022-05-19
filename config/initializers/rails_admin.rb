@@ -14,10 +14,9 @@ RailsAdmin.config do |config|
   # this is the way to whitelist the models
   config.included_models =
     %w[
-      Account AccountType ArticleType ArticleTypeIteration Assembled
+      ArticleType ArticleTypeIteration Assembled
       Client ClientsReport Comment CronTab DataSet DataSetCategory
       Frequency Level PhotoBucket Publication Reminder ScrapeTask SlackAccount StagingTable
       State Status StoryType StoryTypeIteration Tag Task TimeFrame
     ]
 end
-

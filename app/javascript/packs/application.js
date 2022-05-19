@@ -40,6 +40,12 @@ document.addEventListener('turbolinks:load', () => {
     if ($(e.target).data('toggle') !== 'popover' && $(e.target).parents('.popover.fade.show').length === 0)
       $('[data-toggle="popover"]').popover('hide');
   });
+
+  window.setTimeout(function() {
+    $("#headerAlert, #headerNotice").fadeTo(500, 0).slideUp(500, function(){
+      $(this).remove();
+    });
+  }, 5000);
 });
 
 // Uncomment to copy all static images under ../images to the output folder and reference

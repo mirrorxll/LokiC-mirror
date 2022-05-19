@@ -42,7 +42,7 @@ class FactoidRequestsController < ApplicationController
   private
 
   def generate_grid
-    default = manager? ? {} : { requester: current_account.id }
+    default = manager? ? {} : { requester: @current_account.id }
     @grid = request.parameters[:factoid_requests_grid] || default
     @grid = FactoidRequestsGrid.new(@grid)
   end
@@ -50,7 +50,7 @@ class FactoidRequestsController < ApplicationController
   def factoid_request_params
     params
       .require(:factoid_request).permit!
-      .merge({ account: current_account })
+      .merge({ account: @current_account })
   end
 
   def find_factoid_request

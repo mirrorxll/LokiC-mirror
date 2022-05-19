@@ -5,15 +5,17 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.7.1'
 
+# ENV variables
 gem 'dotenv-rails'
+
+# authentication
+gem 'bcrypt', '3.1.13'
+gem 'pretender'
 
 gem 'rails_admin', '~> 3.0'
 
 # front-end
-gem 'devise'
-gem 'devise-bootstrap-views', '~> 1.0'
 gem 'font-awesome-sass', '~> 5.12.0'
-gem 'pretender'
 # background jobs
 gem 'sidekiq', '6.4.1'
 gem 'sidekiq-scheduler', '3.1.1'

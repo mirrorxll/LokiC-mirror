@@ -14,9 +14,8 @@
              type: "button", id: '#crt_upd_data_set_btn', class: 'btn btn-sm btn-outline-dark')
 
 #dataSetForm.collapse
-  .container
-    .mt-4
-    =render 'form'
+  .mt-4
+  =render 'form'
 
 #filter_form.collapse
   =datagrid_form_for @data_sets_grid, url: data_sets_path

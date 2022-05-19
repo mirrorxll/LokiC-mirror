@@ -1,15 +1,20 @@
-.row.mt-3
-  %table.table.table-hover
-    %thead
-      %tr
-        %th id
-        %th User
-        %th Role
-        %th Login
-    %tbody
-      - @accounts.each do |account|
-        %tr
-          %th #{account.id}
-          %td #{account.name}
-          %td #{account.account_types.map(&:name).join(',')}
-          %td Log in as #{link_to account.name, impersonate_account_path(account), method: :post}
+%hr/
+.row.m-2.align-items-center
+  .col-6
+    Accounts
+  .col-6.text-right
+    %button.btn.btn-sm.btn-outline-dark{ "data-target" => "#requestWorkForm", "data-toggle" => "modal" }
+      create account
+%hr/
+
+.row
+  .col-12.small
+    =datagrid_table(@accounts_grid)
+
+#newAccountForm.modal.fade{ 'data-backdrop' => "static", "aria-hidden" => "true", "aria-labelledby" => "newAccountForm" }
+  .modal-dialog.modal-lg
+    .modal-content
+      .modal-header
+        %h5.modal-title New Account
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+          %span{"aria-hidden" => "true"} ×

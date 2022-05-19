@@ -4,23 +4,30 @@ require 'action_text'
 
 class ApplicationController < ActionController::Base
   helper ActionText::Engine.helpers
+  helper_method :current_account
 
-  impersonates :account
+  before_action :authenticate_user!
 
-  before_action :configure_permitted_parameters, if: :devise_controller?
-  before_action :authenticate_account!
-
-  before_action :find_parent_story_type, unless: :devise_controller?
-  before_action :set_story_type_iteration, unless: :devise_controller?
-  before_action :find_parent_article_type, unless: :devise_controller?
-  before_action :set_article_type_iteration, unless: :devise_controller?
+  before_action :find_parent_story_type
+  before_action :set_story_type_iteration
+  before_action :find_parent_article_type
+  before_action :set_article_type_iteration
 
   private
 
-  def configure_permitted_parameters
-    devise_parameter_sanitizer.permit :sign_in, keys: %i[email password remember_me]
-    devise_parameter_sanitizer.permit :account_update, keys: %i[email first_name last_name password password_confirmation current_password]
+  def authenticate_user!
+    return unless ((cookies.encrypted[:remember_me] || session[:auth_token]) && current_account).nil?
+
+    cookies.delete(:remember_me)
+    session[:auth_token] = nil
+    redirect_to sign_in_path
   end
+
+  def current_account
+    @current_account ||= Account.find_by(auth_token: cookies.encrypted[:remember_me] || session[:auth_token])
+  end
+  helper_method :current_account
+  impersonates :account
 
   def find_parent_story_type
     @story_type = StoryType.find(params[:story_type_id])
@@ -49,46 +56,46 @@ class ApplicationController < ActionController::Base
   end
 
   def manager?
-    current_account.types.include?('manager')
+    @current_account.types.include?('manager')
   end
 
   def editor?
-    current_account.types.include?('editor')
+    @current_account.types.include?('editor')
   end
 
   def developer?
-    current_account.types.include?('developer')
+    @current_account.types.include?('developer')
   end
 
   def scraper?
-    current_account.types.include?('scraper')
+    @current_account.types.include?('scraper')
   end
 
   def only_scraper?
-    acc_types = current_account.types
+    acc_types = @current_account.types
     acc_types.count.eql?(1) && acc_types.first.eql?('scraper')
   end
 
   def outside_manager?
-    current_account.types.include?('outside manager')
+    @current_account.types.include?('outside manager')
   end
 
   def client?
-    current_account.types.include?('client')
+    @current_account.types.include?('client')
   end
 
   def guest_1?
-    current_account.types.include?('guest-1')
+    @current_account.types.include?('guest-1')
   end
 
   def guest_2?
-    current_account.types.include?('guest-2')
+    @current_account.types.include?('guest-2')
   end
 
   def staging_table_action(&block)
     flash.now[:staging_table] =
       if @staging_table.nil? || StagingTable.not_exists?(@staging_table.name)
-        @story_type.update!(staging_table_attached: nil, current_account: current_account)
+        @story_type.update!(staging_table_attached: nil, current_account: @current_account)
         @staging_table&.destroy
         staging_table_deleted
       else

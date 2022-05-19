@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 class Account < ApplicationRecord # :nodoc:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
+  alias_attribute :password_digest, :encrypted_password
 
-  has_and_belongs_to_many :account_types
+  has_secure_password
+
+  before_create { generate_token(:auth_token) }
 
   has_one :slack, class_name: 'SlackAccount'
   has_one :fact_checking_channel
@@ -23,6 +23,18 @@ class Account < ApplicationRecord # :nodoc:
   has_many :comments, foreign_key: :commentator_id
   has_many :assigned_scrape_tasks, class_name: 'ScrapeTask', foreign_key: :scraper_id
   has_many :created_scrape_tasks,  class_name: 'ScrapeTask', foreign_key: :creator_id
+
+  has_and_belongs_to_many :account_types
+
+  validates :email, presence: true, format: { with: /\A[^@\s]+@[^@\s]+\z/, message: 'Invalid' }
+  validates_uniqueness_of :email, case_sensitive: true
+
+  def generate_token(column)
+    loop do
+      self[column] = SecureRandom.urlsafe_base64
+      break unless Account.exists?(column => self[column])
+    end
+  end
 
   def name
     "#{first_name} #{last_name}"

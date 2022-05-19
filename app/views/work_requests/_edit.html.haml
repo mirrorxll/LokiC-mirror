@@ -677,6 +677,7 @@
       Rails.fire(event.target, 'submit');
       document.querySelector('#updateWorkRequestModal form').addEventListener('submit', onSubmit)
     }
+    document.querySelector('#updateWorkRequestModal form').addEventListener('submit', onSubmit)
 
     document.querySelector('#updateWorkRequestModal').addEventListener('scroll', () => {
       document.querySelectorAll('input[list]').forEach(el => { el.blur();  })
@@ -695,4 +696,3 @@
       document.querySelector(`${id}Anchor`).scrollIntoView();
     }
 
-    document.querySelector('#updateWorkRequestModal form').addEventListener('submit', onSubmit)

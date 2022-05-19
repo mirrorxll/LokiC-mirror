@@ -5,18 +5,32 @@ require 'sidekiq/web'
 Rails.application.routes.draw do
   root 'root#index'
 
-  devise_for :accounts, controllers: { registrations: 'registrations', sessions: 'sessions' }
-
   mount ActionCable.server, at: '/cable'
+  mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
+  mount Sidekiq::Web => '/sidekiq'
 
-  authenticate :account, ->(u) { u.types.include?('manager') } do
-    mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
-    mount Sidekiq::Web => '/sidekiq'
-  end
+  # create/destroy user session
+  get    'sign_in',  to: 'authenticates/sessions#new'
+  post   'sign_in',  to: 'authenticates/sessions#create'
+  delete 'sign_out', to: 'authenticates/sessions#destroy'
 
-  resources :accounts, only: [:index] do
-    post :impersonate,        on: :member
-    post :stop_impersonating, on: :collection
+  # reset user password
+  get   'send_password_reset_email', to: 'authenticates/passwords#new'
+  post  'send_password_reset_email', to: 'authenticates/passwords#create'
+  get   'password_reset',            to: 'authenticates/passwords#edit'
+  patch 'password_reset',            to: 'authenticates/passwords#update'
+
+  # edit user profile
+  get   'profile', to: 'authenticates/registrations#edit'
+  patch 'profile', to: 'authenticates/registrations#update'
+
+  resources :accounts do
+    scope module: :accounts do
+      resources :roles, only: %i[index new create update]
+      resources :access_levels, only: %i[index new create update]
+
+      resource :impersonate, only: %i[create destroy]
+    end
   end
 
   namespace :api, constraints: { format: :json } do
@@ -28,7 +42,7 @@ Rails.application.routes.draw do
 
     scope module: :work_requests, path: 'work_requests', as: 'work_request_collections' do
       resources :clients, only: [] do
-        get :find_by_name, on: :collection
+        get :find_by_name, on: :collection, path: 'bla_bla_bla'
       end
     end
 
@@ -74,7 +88,6 @@ Rails.application.routes.draw do
     resources :tasks, only: [] do
       get :titles, on: :collection
       get :subtasks, on: :member
-
     end
 
     scope module: :tasks, path: 'tasks/:task_id', as: 'tasks' do
@@ -90,10 +103,8 @@ Rails.application.routes.draw do
   end
 
   resources :work_requests, except: :destroy do
-    authenticate :account, ->(u) { u.types.include?('manager') } do
-      patch :archive,   on: :member
-      patch :unarchive, on: :member
-    end
+    patch :archive,   on: :member
+    patch :unarchive, on: :member
 
     scope module: :work_requests do
       resources :progress_statuses, only: [] do
@@ -433,7 +444,7 @@ Rails.application.routes.draw do
   end
 
   resources :press_release_reports, path: '/press_release_report', only: %i[index] do
-    get :get_report,  on: :collection
+    get :get_report, on: :collection
     post :show_report, on: :collection
   end
 
