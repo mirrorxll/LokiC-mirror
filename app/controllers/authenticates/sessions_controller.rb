@@ -3,6 +3,7 @@
 module Authenticates
   class SessionsController < AuthenticatesController
     skip_before_action :authenticate_user!, except: :destroy
+    skip_before_action :redirect_to_root, only: :destroy
 
     before_action :find_account_by_email, only: :create
 
