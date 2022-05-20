@@ -20,6 +20,7 @@ import datepicker from 'bootstrap-datepicker';
 import multipleSelect from 'multiple-select';
 import Chart from 'chart.js/auto';
 global.Chart = Chart;
+global.toastr = require("toastr")
 
 window.Rails = Rails;
 window.jQuery = $;

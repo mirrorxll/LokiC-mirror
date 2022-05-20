@@ -17,18 +17,22 @@ class TasksGrid
     scope.where('description RLIKE ?', value)
   end
 
-  filter(:assignment_to, :enum, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] }) do |value, scope|
-    scope.joins(assignments: [:account]).where('account_id= ?', value)
+  filter(:assignment_to, :enum, multiple: true, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] }) do |value, scope|
+    scope.where('task_assignments.account_id': value)
   end
 
-  filter(:creator, :enum, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
-  filter(:status, :enum, select: Status.where(name: ['not started', 'in progress', 'blocked', 'canceled', 'done']).pluck(:name, :id).map { |r| [r[0], r[1]] })
+  filter(:creator, :enum, multiple: true, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
+  filter(:status, :enum, multiple: true, select: Status.where(name: ['not started', 'in progress', 'blocked', 'canceled', 'done']).pluck(:name, :id))
   filter(:deadline, :datetime, header: 'Deadline >= ?', multiple: ',')
 
   status_deleted = Status.find_by(name: 'deleted')
 
   filter(:deleted_tasks, :xboolean, left: true) do |value, scope|
     value ? scope.where(status: status_deleted) : scope.where.not(status: status_deleted)
+  end
+  filter(:confirmed, :xboolean, left: true) do |value, scope, grid|
+    scope = scope.where('task_assignments.account_id': grid.current_account.id)
+    value ? scope.where('task_assignments.confirmed': true) : scope.where.not('task_assignments.confirmed': true)
   end
 
   # Columns
