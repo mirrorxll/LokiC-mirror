@@ -3,9 +3,9 @@
     .text-center.mb-5
       LokiC
     .form-group
-      =f.email_field :email, placeholder: 'email', class: 'form-control form-control-sm', required: true
+      =f.email_field :email, placeholder: 'email', class: 'form-control form-control-sm', required: true, autocomplete: 'email'
       .m-1
-      =f.password_field :password, placeholder: 'password', class: 'form-control form-control-sm', required: true
+      =f.password_field :password, placeholder: 'password', class: 'form-control form-control-sm', required: true, autocomplete: 'current-password'
     .form-group.form-check.small
       .row
         .col.pr-0

@@ -3,7 +3,7 @@
     .text-center.mb-5
       LokiC :: Password Reset
     .form-group
-      =f.email_field :email, placeholder: 'email', class: 'form-control form-control-sm', required: true
+      =f.email_field :email, placeholder: 'email', class: 'form-control form-control-sm', required: true, autocomplete: 'off'
     .form-group
       =f.submit 'Send Email with Instructions', class: 'btn btn-sm btn-outline-dark w-100'
     .form-group.small
