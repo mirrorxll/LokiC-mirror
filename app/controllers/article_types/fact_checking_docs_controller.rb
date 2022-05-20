@@ -8,7 +8,7 @@ module ArticleTypes
     before_action :find_fcd, except: :template
 
     def show
-      @tab_title = "LokiC::FCD ##{@article_type.id} #{@article_type.name}"
+      @tab_title = "LokiC :: FactoidType ##{@article_type.id} :: FCD"
     end
 
     def edit; end

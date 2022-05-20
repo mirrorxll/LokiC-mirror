@@ -1,6 +1,6 @@
 %div{ id: "data_set", data_set_id: @article_type.data_set.id }
 %div{ id: "article_type", article_type_id: @article_type.id }
-
+-@title = "#{@article_type.id} #{@article_type.name}"
 %hr
 .row
   .col-12.text-center
@@ -76,6 +76,7 @@
       .flash
       .card-body
         =render 'article_types/samples/samples'
+
 %div.accordion{id: "article_type_export_#{@iteration.id}"}
   .card
     .card-header

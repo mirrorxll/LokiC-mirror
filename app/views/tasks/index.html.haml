@@ -1,5 +1,8 @@
 .row.m-2.justify-content-between.mt-3
-  .text-left
+  #total.col
+    Total:
+    =@grid.assets.total_count
+  .text-right.col-10.align-self-end
     -if current_account.types.include?('manager')
       =link_to 'all tasks',
                url_for(@tasks_grid.to_param => { order: :id, descending: true, collapse: true }),
@@ -10,11 +13,9 @@
     =link_to('tasks created by you',
              url_for(@tasks_grid.to_param => { creator: current_account, order: :id, descending: true, collapse: true }),
              class: 'btn btn-sm btn-outline-dark')
-
-  .text-right
     =link_to('filter tasks', '#filter_form', 'aria-controls' => 'filter_form',
              'aria-expanded' => false, data: { toggle: "collapse", target: "#filter_form" },
-              type: "button", class: 'btn btn-sm btn-outline-dark')
+              type: "button", class: 'btn btn-sm btn-outline-dark ml-5')
     =link_to('create new task',
            new_task_path,
            class: 'btn btn-sm btn-outline-dark',

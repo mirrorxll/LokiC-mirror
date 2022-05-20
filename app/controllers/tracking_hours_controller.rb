@@ -9,6 +9,7 @@ class TrackingHoursController < ApplicationController # :nodoc:
   before_action :find_week, only: %i[index create confirm assembleds google_sheets properties import_data]
 
   def index
+    @tab_title = "LokiC :: TrackingHours :: #{@week.to_text}"
     @rows_reports = row_reports(@week)
   end
 
@@ -59,6 +60,7 @@ class TrackingHoursController < ApplicationController # :nodoc:
   end
 
   def assembleds
+    @tab_title = "LokiC :: TrackingHours Assembled :: #{@week.to_text}"
     @assemleds = Assembled.where(week: @week)
     @link = LinkAssembled.find_by(week: @week)
   end

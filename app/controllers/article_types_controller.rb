@@ -22,7 +22,7 @@ class ArticleTypesController < ApplicationController
     @grid_params.merge!(current_account: current_account)
 
     @article_types_grid = ArticleTypesGrid.new(@grid_params)
-
+    @tab_title = 'LokiC :: FactoidTypes'
     respond_to do |f|
       f.html do
         @article_types_grid.scope { |scope| scope.page(params[:page]).per(50) }
@@ -40,7 +40,7 @@ class ArticleTypesController < ApplicationController
   end
 
   def show
-    @tab_title = "LokiC::##{@article_type.id} #{@article_type.name}"
+    @tab_title = "LokiC :: FactoidType ##{@article_type.id} <#{@article_type.name}>"
   end
 
   def new; end

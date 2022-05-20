@@ -10,10 +10,12 @@ class WorkRequestsController < ApplicationController
   before_action :find_work_request, only: %i[show edit update archive unarchive]
 
   def index
+    @tab_title = 'LokiC :: WorkRequests'
     @grid.scope { |sc| sc.page(params[:page]).per(100) }
   end
 
   def show
+    @tab_title = "LokiC :: WorkRequest ##{@work_request.id} <#{@work_request.project_order_name.body}>"
     @delete_status = Status.find_by(name: 'deleted')
   end
 
