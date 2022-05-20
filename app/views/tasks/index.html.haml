@@ -1,7 +1,7 @@
 .row.m-2.justify-content-between.mt-3
   #total.col
     Total:
-    =@grid.assets.total_count
+    =@tasks_grid.assets.total_count
   .text-right.col-10.align-self-end
     -if current_account.types.include?('manager')
       =link_to 'all tasks',
