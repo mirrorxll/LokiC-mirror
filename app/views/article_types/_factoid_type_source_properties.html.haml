@@ -16,10 +16,13 @@
     .col-6
       source name
   .row
-    .col-6.pb-3
-      =@article_type.source_type || 'not_set'
-    .col-6.pb-3
-      =@article_type.source_name || 'not_set'
+    -[@article_type&.source_type, @article_type.source_name].each do |prop|
+      .col-6.pb-3
+        -if prop
+          =prop
+        -else
+          .text-danger.font-italic
+            not set
 
   .row.mb-2.font-weight-bold
     .col-6
@@ -27,8 +30,11 @@
     .col-6
       original publish date
   .row
-    .col-6
-      =@article_type.source_link || 'not_set'
-    .col-6
-      =@article_type.original_publish_date || 'not_set'
+    -[@article_type&.source_link, @article_type.original_publish_date].each do |prop|
+      .col-6
+        -if prop
+          =prop
+        -else
+          .text-danger.font-italic
+            not set
   %hr/
