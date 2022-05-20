@@ -42,12 +42,6 @@ module Authenticates
         redirect_to sign_in_path, notice: 'Password updated'
       end
     end
-
-    private
-
-    def find_account_by_reset_token
-      @account = Account.find_by(reset_password_token: params[:token])
-    end
   end
 end
 
