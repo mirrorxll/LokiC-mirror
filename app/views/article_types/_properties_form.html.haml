@@ -33,7 +33,7 @@
           source link
         .col-3
           original publish date
-      =form_with(model: @article_type) do |form|
+      =form_with(model: @article_type, html: { onsubmit: "closeModalFunction();" } ) do |form|
         .row
           .col-3
             =form.text_field :source_type, placeholder: 'new source_type', class: 'w-100'
@@ -69,4 +69,8 @@
       dataType: 'script',
       url: `${window.location.origin}/article_types/#{@article_type.id}/topics/${selected_desc}/change`
     });
+  }
+
+  function closeModalFunction(){
+    $('#articleTypePropertiesForm').modal('hide');
   }

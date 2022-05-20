@@ -1,0 +1,34 @@
+#factoid_type_source_properties
+  .row.mb-2.font-weight-bold
+    .col-6
+      kind
+    .col-6
+      topic
+  .row
+    .col-6
+      =@article_type.kind.name
+    .col-6
+      =@article_type.topic.description
+  %hr/
+  .row.mb-2.font-weight-bold
+    .col-6
+      source type
+    .col-6
+      source name
+  .row
+    .col-6.pb-3
+      =@article_type.source_type || 'not_set'
+    .col-6.pb-3
+      =@article_type.source_name || 'not_set'
+
+  .row.mb-2.font-weight-bold
+    .col-6
+      source link
+    .col-6
+      original publish date
+  .row
+    .col-6
+      =@article_type.source_link || 'not_set'
+    .col-6
+      =@article_type.original_publish_date || 'not_set'
+  %hr/
