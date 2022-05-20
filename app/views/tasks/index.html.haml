@@ -1,17 +1,17 @@
 .row.m-2.justify-content-between.mt-3
   #total.col
     Total:
-    =@grid.assets.total_count
+    =@tasks_grid.assets.total_count
   .text-right.col-10.align-self-end
     -if current_account.types.include?('manager')
       =link_to 'all tasks',
-               url_for(@grid.to_param => { order: :id, descending: true, collapse: true }),
+               url_for(@tasks_grid.to_param => { order: :id, descending: true, collapse: true }),
                class: 'btn btn-sm btn-outline-dark'
     =link_to 'your tasks',
-             url_for(@grid.to_param => { assignment_to: current_account, order: :id, descending: true, collapse: true }),
+             url_for(@tasks_grid.to_param => { assignment_to: current_account, order: :id, descending: true, collapse: true }),
              class: 'btn btn-sm btn-outline-dark', id: 'your_task'
     =link_to('tasks created by you',
-             url_for(@grid.to_param => { creator: current_account, order: :id, descending: true, collapse: true }),
+             url_for(@tasks_grid.to_param => { creator: current_account, order: :id, descending: true, collapse: true }),
              class: 'btn btn-sm btn-outline-dark')
     =link_to('filter tasks', '#filter_form', 'aria-controls' => 'filter_form',
              'aria-expanded' => false, data: { toggle: "collapse", target: "#filter_form" },
@@ -23,17 +23,17 @@
 %hr/
 
 #filter_form{ class: collapse(params[:tasks_grid]) }
-  =datagrid_form_for @grid, url: tasks_path
+  =datagrid_form_for @tasks_grid, url: tasks_path
 
 .row
   .col-12
     #scrapeTasks
       #grid_wrapper
-        =datagrid_table(@grid)
+        =datagrid_table(@tasks_grid)
 
 .row.mt-3.col-12
   #pagination
-    =paginate @grid.assets
+    =paginate @tasks_grid.assets
 
 =render 'tasks/task_modal'
 

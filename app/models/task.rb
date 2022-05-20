@@ -47,6 +47,8 @@ class Task < ApplicationRecord # :nodoc:
 
   has_many :agency_opportunity_revenue_types, class_name: 'TaskAgencyOpportunityRevenueType'
 
+  scope :ongoing, -> { where(status: Status.multi_task_statuses_for_grid) }
+
   has_and_belongs_to_many :scrape_tasks
 
   def agency_opportunity_hours

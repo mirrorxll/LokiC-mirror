@@ -22,4 +22,16 @@ module ApplicationHelper
       record.scraper.eql?(current_account)
     end
   end
+
+  def toastr_flash
+    flash.each_with_object([]) do |(type, message), flash_messages|
+      type = 'warning' if type.include?('task_notification')
+      text = '<script>' \
+                "toastr.#{type}('#{message}', 'Unconfirmed task notification', " \
+                                "{ showMethod: 'slideDown', hideMethod: 'slideUp', closeMethod: 'slideUp', " \
+                                'timeOut: 0, extendedTimeOut: 0, closeButton: true, tapToDismiss: false }) ' \
+             '</script>'
+      flash_messages << text.html_safe if message
+    end.join("\n").html_safe
+  end
 end

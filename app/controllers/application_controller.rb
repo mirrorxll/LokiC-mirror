@@ -15,6 +15,8 @@ class ApplicationController < ActionController::Base
   before_action :find_parent_article_type, unless: :devise_controller?
   before_action :set_article_type_iteration, unless: :devise_controller?
 
+  before_action :check_tasks
+
   private
 
   def configure_permitted_parameters
@@ -136,5 +138,16 @@ class ApplicationController < ActionController::Base
   def generate_url(model)
     host = Rails.env.production? ? 'https://lokic.locallabs.com' : 'http://localhost:3000'
     "#{host}#{Rails.application.routes.url_helpers.send("#{model.class.to_s.underscore}_path", model)}"
+  end
+
+  def check_tasks
+    tasks = Task.ongoing
+                .joins(:assignment_to)
+                .where('task_assignments.confirmed': false, 'task_assignments.account_id': current_account)
+    tasks.each_with_index do |task, i|
+      creator                             = "#{task.creator.first_name} #{task.creator.last_name}"
+      message                             = "Task #{task.title} assigned to you by #{creator}"
+      flash.now["task_notification_#{i}"] = view_context.link_to(message, task).html_safe
+    end
   end
 end
