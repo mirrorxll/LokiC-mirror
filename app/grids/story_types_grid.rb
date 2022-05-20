@@ -84,12 +84,14 @@ class StoryTypesGrid
 
     scope.where(id: stories_story_types_ids)
   end
-  # filter(:agency, :enum, multiple: true, select: Agency.all.order(:name).pluck(:name, :id)) do |value, scope|
-  #   scope.where('agencies.id': value)
-  # end
-  # filter(:opportunity, :enum, multiple: true, select: Opportunity.all.order(:name).pluck(:name, :id)) do |value, scope|
-  #   scope.where('story_type_opportunities.opportunity_id': value)
-  # end
+  filter(:agency, :enum, multiple: true, select: Agency.all.order(:name).pluck(:name, :id)) do |value, scope|
+    agencies = Agency.where(id: value)
+    scope.includes(opportunities: [opportunity: :agency]).where('agencies.id': agencies.ids)
+  end
+  filter(:opportunity, :enum, multiple: true, select: Opportunity.all.order(:name).pluck(:name, :id)) do |value, scope|
+    opportunities = Opportunity.where(id: value)
+    scope.includes(:opportunities).where('story_type_opportunities.opportunity_id': opportunities.ids)
+  end
   filter(:first_export, :datetime, range: true, type: 'date') do |value, scope|
     scope.where('exported_story_types.first_export': true)
          .where('exported_story_types.date_export': value.first..value.last)

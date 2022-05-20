@@ -62,7 +62,7 @@
         .card
           .card-header.p-2
             table location(s):
-          .card-body
+          .card-body.overflow-auto
             -if @data_set.table_locations.present?
               .d-block
                 =link_to('show data view(s)', '#', "data-target" => "#dataSamplesModal", "data-toggle" => "modal")

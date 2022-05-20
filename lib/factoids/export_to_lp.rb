@@ -17,6 +17,9 @@ module Factoids
       article_type       = iteration.article_type
       staging_table_name = article_type.staging_table.name
       st_limpar_columns  = Table.get_limpar_data(staging_table_name)
+
+      raise StandardError, 'Check correctness of data in the staging table!' unless st_data_validation(st_limpar_columns)
+
       main_semaphore     = Mutex.new
       exported           = 0
       has_error          = false
@@ -71,6 +74,10 @@ module Factoids
     end
 
     private
+
+    def st_data_validation(st_data)
+      st_data.map { |row| row['limpar_id'].present? }.all?
+    end
 
     def prepare_error_message(factoid, e)
       responce = JSON.parse(e.response[:body])['errors']
