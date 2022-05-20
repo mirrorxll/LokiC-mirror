@@ -1,0 +1,69 @@
+.row.mt-3.small
+  .col-6.offset-3.pt-5
+    =form_with(model: current_account, url: profile_path, method: :patch) do |f|
+      .form-group
+        .row.align-items-center
+          .col-3.pr-0.text-right.font-weight-bold
+            EMAIL:
+          .col-6
+            =f.email_field :email, class: 'form-control form-control-sm', readonly: true, disabled: true
+      .form-group.mb-0
+        .row.align-items-center
+          .col-3.pr-0.text-right.font-weight-bold
+            NAME:
+          .col-6
+            .d-flex
+              =f.text_field :first_name, class: 'form-control form-control-sm mr-2'
+              =f.text_field :last_name, class: 'form-control form-control-sm'
+      .row
+        .col-6.offset-3
+          %hr/
+      .form-group
+        .row.align-items-center
+          .col-3.pr-0.text-right.font-weight-bold
+            SLACK ACCOUNT:
+          .col-6
+            -slack_accounts = SlackAccount.order(:user_name).where(account: nil, deleted: false)
+            =select_tag 'slack_account[identifier]',
+                        options_from_collection_for_select(slack_accounts, :identifier, :user_name),
+                        { include_blank: '-- not set --', class: 'form-control form-control-sm',
+                          selected: current_account&.slack&.identifier }
+            :javascript
+              $('#slack_account_identifier').multipleSelect({
+                filter: true
+              });
+      .form-group.mb-0
+        .row.align-items-center
+          .col-3.pr-0.text-right.font-weight-bold
+            FCD SLACK CHANNEL:
+          .col-6
+            -fcd_channels = FactCheckingChannel.order(:name).where(account: nil)
+            =select_tag 'fcd_slack_channel[id]',
+                        options_from_collection_for_select(fcd_channels, :id, :name),
+                        {  include_blank: '-- not set --', class: 'form-control form-control-sm',
+                           selected: current_account&.fact_checking_channel&.id }
+          :javascript
+            $('#fcd_channel_id').multipleSelect({
+              filter: true
+            });
+      .row
+        .col-6.offset-3
+          %hr/
+      .form-group
+        .row.align-items-center
+          .col-3.pr-0.text-right.font-weight-bold
+            PASSWORD:
+          .col-6
+            =password_field_tag 'password[new]', nil, autocomplete: 'new-password',
+                                class: 'form-control form-control-sm'
+      .form-group
+        .row.align-items-center
+          .col-3.pr-0.text-right.font-weight-bold
+            PASSWORD CONFIRMATION:
+          .col-6
+            =password_field_tag 'password[confirmation]', nil, autocomplete: 'new-password',
+                                class: 'form-control form-control-sm'
+      .form-group
+        .row
+          .col-6.offset-3
+            =f.submit 'Update', class: 'btn btn-sm btn-outline-dark'

@@ -6,6 +6,7 @@ module Authenticates
 
     before_action :find_account_by_email, only: %i[edit create]
     before_action :find_account_by_reset_token, only: %i[update]
+    before_action :tab_title, only: %i[new edit]
 
     def new; end
 
@@ -24,11 +25,13 @@ module Authenticates
       end
     end
 
-    def edit; end
+    def edit
+      redirect_to send_password_reset_email_path, alert: 'Invalid email' unless @account
+    end
 
     def update
       if @account.nil? || @account.reset_password_sent_at < DateTime.now - 2.hours
-        redirect_to send_password_reset_email_path, alert: 'Password reset token has expired'
+        redirect_to send_password_reset_email_path, alert: "Password reset token isn't valid"
       elsif params[:password] != params[:password_confirmation]
         flash.now[:alert] = 'Password and password confirmation must match!'
         render :edit
@@ -40,6 +43,12 @@ module Authenticates
         )
         redirect_to sign_in_path, notice: 'Password updated'
       end
+    end
+
+    private
+
+    def tab_title
+      @tab_title = 'LokiC :: Password Reset'
     end
   end
 end

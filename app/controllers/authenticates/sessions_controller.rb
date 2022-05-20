@@ -7,14 +7,16 @@ module Authenticates
 
     before_action :find_account_by_email, only: :create
 
-    def new; end
+    def new
+      @tab_title = 'LokiC :: Sign In'
+    end
 
     def create
       if @account.present? && @account.authenticate(params[:password])
         if params[:remember_me].eql?('1')
           cookies.encrypted[:remember_me] = {
             value: @account.auth_token,
-            expires: DateTime.now + 1.week
+            expires: DateTime.now + 10.days
           }
         end
         session[:auth_token] = @account.auth_token
