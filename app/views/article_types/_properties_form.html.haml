@@ -13,14 +13,13 @@
           =render 'change_data_set'
         .col-4.pl-0
           =form_with(url: article_type_path(@article_type), scope: :article_type, method: :put, html: { onchange: "loadDescriptions(this);" }) do |form|
-            =form.select :kind_id, Kind.sub_kinds.pluck(:name, :id), prompt: 'Select Kind', class: 'w-75'
+            =form.select :kind_id, Kind.sub_kinds.pluck(:name, :id), { prompt: 'Select Kind' }, { class: 'w-75' }
             =form.hidden_field :topic_id, value: nil
         .col-4.pl-0
           =form_with(url: article_type_path(@article_type), scope: :article_type, method: :put, html: { onchange: "Rails.fire(this, 'submit')" }) do |form|
             =form.select :topic_id,
                          @article_type.kind.nil? ? [] : @article_type.kind.parent_kind.topics.actual.order(:description).pluck(:description, :id),
-                         prompt: 'Select Description',
-                         class: 'w-75'
+                         { prompt: 'Select Description' } , { class: 'w-75' }
   %hr.mt-2/
 
   #sources.row.small
