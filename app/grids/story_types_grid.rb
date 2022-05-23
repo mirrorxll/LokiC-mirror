@@ -123,7 +123,7 @@ class StoryTypesGrid
   end
   column(:data_set, mandatory: true, order: 'data_sets.name') do |record, scope|
     if (scope.current_account.types & %w[manager editor]).present?
-      format(record.data_set) { |value| link_to value&.name, value }
+      format(record.data_set) { |value| link_to value&.name, data_set_path(value, :anchor => "storyTypes") }
     else
       record.data_set&.name
     end

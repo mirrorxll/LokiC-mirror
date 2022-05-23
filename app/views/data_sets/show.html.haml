@@ -57,8 +57,12 @@
 
 :javascript
   (() => {
-    if(!sessionStorage['dataSetActiveTab'])
+    var anchor = $(location).attr('hash');
+    if ((anchor.length > 0) && (['#storyTypes', '#articleTypes'].indexOf(anchor) >= 0)) {
+      sessionStorage['dataSetActiveTab'] = `${anchor}Tab`;
+    } else if(!sessionStorage['dataSetActiveTab']) {
       sessionStorage['dataSetActiveTab'] = '#storyTypesTab';
+    }
   })();
 
   (() => {

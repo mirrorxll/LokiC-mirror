@@ -24,8 +24,3 @@
 .row.mt-3.col-12
   #pagination
     =paginate @story_types_grid.assets
-
-:javascript
-  (() => {
-    sessionStorage['dataSetActiveTab'] = '#storyTypesTab';
-  })();
