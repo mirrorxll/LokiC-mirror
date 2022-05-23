@@ -42,7 +42,7 @@ document.addEventListener('turbolinks:load', () => {
   });
 
   window.setTimeout(function() {
-    $("#headerAlert, #headerNotice").fadeTo(500, 0).slideUp(500, function(){
+    $(".headerAlert, .headerNotice").fadeTo(500, 0).slideUp(500, function(){
       $(this).remove();
     });
   }, 15000);

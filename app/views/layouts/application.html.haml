@@ -110,7 +110,7 @@
     -if alert
       .d-flex.justify-content-center.mt-5.fixed-top.small
         .col-3
-          #headerAlert.alert.alert-danger.alert-dismissible.fade.show{:role => "alert"}
+          .headerAlert.alert.alert-danger.alert-dismissible.fade.show{:role => "alert"}
             =alert
             %button.close{"aria-label" => "Close", "data-dismiss" => "alert", :type => "button"}
               %span{"aria-hidden" => "true"} ×
@@ -118,7 +118,7 @@
     -if notice
       .d-flex.justify-content-center.mt-5.fixed-top.small
         .col-3
-          #headerNotice.alert.alert-success.alert-dismissible.fade.show{:role => "alert"}
+          .headerNotice.alert.alert-success.alert-dismissible.fade.show{:role => "alert"}
             =notice
             %button.close{"aria-label" => "Close", "data-dismiss" => "alert", :type => "button"}
               %span{"aria-hidden" => "true"} ×

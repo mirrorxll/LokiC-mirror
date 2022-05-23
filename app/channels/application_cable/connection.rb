@@ -9,7 +9,11 @@ module ApplicationCable
     private
 
     def find_verified_account
-      env['warden'].user || reject_unauthorized_connection
+      if cookies.encrypted[:remember_me] || session[:auth_token]
+        Account.find_by(auth_token: cookies.encrypted[:remember_me] || session[:auth_token])
+      else
+        reject_unauthorized_connection
+      end
     end
   end
 end

@@ -28,6 +28,7 @@ class Account < ApplicationRecord # :nodoc:
 
   validates :email, presence: true, format: { with: /\A[^@\s]+@[^@\s]+\z/, message: 'Invalid' }
   validates_uniqueness_of :email, case_sensitive: true
+  validates :password, length: { minimum: 6, maximum: 20 }
 
   def generate_token(column)
     loop do
