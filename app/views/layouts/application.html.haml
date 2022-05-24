@@ -50,12 +50,18 @@
                     #navbarDropdown1.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
                       management
                     .dropdown-menu{"aria-labelledby" => "navbarDropdown1"}
+                      -if current_account.eql?(true_account)
+                        .dropdown-item
+                          =link_to('accounts', accounts_path, class: 'nav-link small')
+                      -else
+                        .dropdown-item
+                          =link_to("back to #{true_account.name}", account_impersonate_path(true_account), method: :delete, class: 'nav-link small')
+                      .dropdown-item
+                        =link_to('admin panel', rails_admin_path, class: 'nav-link small', target: '_blank')
                       .dropdown-item
                         =link_to('requested work', work_requests_path(archived: false), class: 'nav-link small')
                       .dropdown-item
                         =link_to('requested factoids', factoid_requests_path, class: 'nav-link small')
-                      .dropdown-item
-                        =link_to('admin panel', rails_admin_path, class: 'nav-link small', target: '_blank')
                       .dropdown-item
                         =link_to('sidekiq panel', sidekiq_web_path, class: 'nav-link small', target: '_blank')
                       .dropdown-item
@@ -91,37 +97,33 @@
                   =link_to('multi tasks', tasks_path, class: 'nav-link')
 
                 %li.nav-item.active
-                  =link_to('tracking hours', tracking_hours_path(week: current_week, developer: @current_account), class: 'nav-link')
+                  =link_to('tracking hours', tracking_hours_path(week: current_week, developer: current_account), class: 'nav-link')
 
               %li.nav-item.dropdown.ml-auto
                 #navbarDropdown3.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
-                  =@current_account.name
+                  =current_account.name
                 .dropdown-menu.dropdown-menu-right{"aria-labelledby" => "navbarDropdown"}
-                  -if acc_types.include?('manager')
-                    .dropdown-item
-                      =link_to('login as', accounts_path, class: 'nav-link small')
-                  -if current_account != true_account
-                    =link_to("back to #{true_account.name}", stop_impersonating_accounts_path, method: :post, class: 'nav-link small')
                   .dropdown-item
                     =link_to('edit profile', profile_path, class: 'nav-link small')
                   .dropdown-item
                     =link_to('sign out', sign_out_path, class: 'nav-link small', method: :delete)
 
-    -if alert
-      .d-flex.justify-content-center.mt-5.fixed-top.small
-        .col-3
-          .headerAlert.alert.alert-danger.alert-dismissible.fade.show{:role => "alert"}
-            =alert
-            %button.close{"aria-label" => "Close", "data-dismiss" => "alert", :type => "button"}
-              %span{"aria-hidden" => "true"} ×
+    -# -if alert
+    -#  .d-flex.justify-content-center.mt-5.fixed-top.small
+    -#    .col-3
+    -#      .headerAlert.alert.alert-danger.alert-dismissible.fade.show{:role => "alert"}
+    -#        =alert
+    -#        %button.close{"aria-label" => "Close", "data-dismiss" => "alert", :type => "button"}
+    -#          %span{"aria-hidden" => "true"} ×
 
-    -if notice
-      .d-flex.justify-content-center.mt-5.fixed-top.small
-        .col-3
-          .headerNotice.alert.alert-success.alert-dismissible.fade.show{:role => "alert"}
-            =notice
-            %button.close{"aria-label" => "Close", "data-dismiss" => "alert", :type => "button"}
-              %span{"aria-hidden" => "true"} ×
+    -# -if notice
+    -#   .d-flex.justify-content-center.mt-5.fixed-top.small
+    -#     .col-3
+    -#       .headerNotice.alert.alert-success.alert-dismissible.fade.show{:role => "alert"}
+    -#         =notice
+    -#         %button.close{"aria-label" => "Close", "data-dismiss" => "alert", :type => "button"}
+    -#           %span{"aria-hidden" => "true"} ×
 
     %div.container-fluid
       =yield
+    =toastr_flash

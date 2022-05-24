@@ -13,35 +13,44 @@ module Authenticates
     def create
       if @account
         @account.generate_token(:reset_password_token)
-        @account.update!(reset_password_sent_at: DateTime.now)
+        @account.update(reset_password_sent_at: DateTime.now)
 
         AccountMailer.with(account: @account).password_reset.deliver_now
 
-        redirect_to password_reset_path(email: params[:email]),
-                    notice: 'Password reset token has been sent to the email provided'
+        flash[:success] = { password_reset: 'token has been sent to the email provided' }
+        redirect_to password_reset_path(email: params[:email])
       else
-        flash.now[:alert] = 'Account with this email not found'
+        flash.now[:error] = { password_reset: 'account with this email not found' }
         render :new
       end
     end
 
     def edit
-      redirect_to send_password_reset_email_path, alert: 'Invalid email' unless @account
+      return if @account
+
+      flash[:error] = { password_reset: 'invalid email' }
+      redirect_to send_password_reset_email_path
     end
 
     def update
       if @account.nil? || @account.reset_password_sent_at < DateTime.now - 2.hours
-        redirect_to send_password_reset_email_path, alert: "Password reset token isn't valid"
-      elsif params[:password] != params[:password_confirmation]
-        flash.now[:alert] = 'Password and password confirmation must match!'
-        render :edit
+        flash[:error] = { password_reset: "password reset token isn't valid" }
+        redirect_to send_password_reset_email_path
       else
-        @account.update!(
+        @account.update(
           password: params[:password],
+          password_confirmation: params[:password_confirmation],
           reset_password_token: nil,
           reset_password_sent_at: nil
         )
-        redirect_to sign_in_path, notice: 'Password updated'
+
+        if @account.errors.any?
+          flash.now[:error] = @account.errors
+          render :edit and return
+        end
+
+        flash[:success] = { success: 'profile updated' }
+        redirect_to sign_in_path
       end
     end
 

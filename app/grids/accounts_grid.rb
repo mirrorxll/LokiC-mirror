@@ -21,7 +21,7 @@ class AccountsGrid
   end
   column(:login, mandatory: true) do |record|
     format(record) do
-      link_to('login', account_impersonates_path(record), method: :post)
+      link_to('login', account_impersonate_path(record), method: :post)
     end
   end
 end

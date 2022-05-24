@@ -28,14 +28,13 @@ module Authenticates
         fcd_slack_channel.update!(account: current_account)
       end
 
-      message =
-        if current_account.errors.any?
-          { alert: current_account.errors.values }
-        else
-          { notice: :success }
-        end
+      if current_account.errors.any?
+        flash[:error] = current_account.errors
+      else
+        flash[:success] = { success: 'profile updated' }
+      end
 
-      redirect_to profile_path, message
+      redirect_to profile_path
     end
 
     private

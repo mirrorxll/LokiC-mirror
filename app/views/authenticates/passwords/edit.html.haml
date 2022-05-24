@@ -4,15 +4,16 @@
       LokiC :: Password Reset
     .form-group
       =f.text_field :email, placeholder: 'email', class: 'form-control form-control-sm',
-                    disabled: true, readonly: true, value: @account&.email
+                    disabled: true, readonly: true, value: @account.email
     .form-group
       =f.text_field :token, placeholder: 'token', class: 'form-control form-control-sm',
                     required: true, autocomplete: 'off'
     .form-group
       =f.password_field :password, placeholder: 'password', class: 'form-control form-control-sm',
-                        required: true, autocomplete: 'new-password'
+                        required: true, autocomplete: 'new-password', minlength: 6, maxlength: 20
       .m-1
       =f.password_field :password_confirmation, placeholder: 'password confirmation',
-                        class: 'form-control form-control-sm', required: true, autocomplete: 'new-password'
+                        class: 'form-control form-control-sm', required: true, autocomplete: 'new-password',
+                        minlength: 6, maxlength: 20
     .form-group
       =f.submit 'Reset', class: 'btn btn-sm btn-outline-dark w-100'

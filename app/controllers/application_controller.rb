@@ -13,6 +13,8 @@ class ApplicationController < ActionController::Base
   before_action :find_parent_article_type
   before_action :set_article_type_iteration
 
+  before_action :unconfirmed_multitasks
+
   private
 
   def authenticate_user!
@@ -143,5 +145,19 @@ class ApplicationController < ActionController::Base
   def generate_url(model)
     host = Rails.env.production? ? 'https://lokic.locallabs.com' : 'http://localhost:3000'
     "#{host}#{Rails.application.routes.url_helpers.send("#{model.class.to_s.underscore}_path", model)}"
+  end
+
+  def unconfirmed_multitasks
+    tasks = Task.ongoing.joins(:assignment_to).where(
+      'task_assignments.confirmed': false,
+      'task_assignments.account_id': current_account
+    )
+
+    flash.now[:warning] = tasks.each_with_object({ unconfirmed_multitask: [] }) do |task, warnings|
+      warnings[:unconfirmed_multitask] << view_context.link_to(
+        "#{task.title} assigned to you by #{task.creator.name}",
+        task
+      ).html_safe
+    end
   end
 end

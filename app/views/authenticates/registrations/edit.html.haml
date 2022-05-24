@@ -53,14 +53,14 @@
             PASSWORD:
           .col-6
             =password_field_tag 'secure[password]', nil, autocomplete: 'new-password',
-                                class: 'form-control form-control-sm', minlength: 3, maxlength: 20
+                                class: 'form-control form-control-sm', minlength: 6, maxlength: 20
         .m-2
         .row.align-items-center
           .col-3.pr-0.text-right.font-weight-bold
             PASSWORD CONFIRMATION:
           .col-6
             =password_field_tag 'secure[password_confirmation]', nil, autocomplete: 'new-password',
-                                class: 'form-control form-control-sm', minlength: 3, maxlength: 20
+                                class: 'form-control form-control-sm', minlength: 6, maxlength: 20
         .row.m-0
           .col-6.offset-3
             %small.text-secondary

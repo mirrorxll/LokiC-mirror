@@ -23,7 +23,7 @@ module Authenticates
 
         redirect_to root_path
       else
-        flash.now[:alert] = 'Invalid email or password'
+        flash.now[:error] = { sign_in: 'invalid email or password' }
         render :new
       end
     end
@@ -31,7 +31,9 @@ module Authenticates
     def destroy
       session[:auth_token] = nil
       cookies.delete(:remember_me)
-      redirect_to sign_in_path, alert: 'Signed out'
+
+      flash[:success] = { sign_out: 'success' }
+      redirect_to sign_in_path
     end
   end
 end
