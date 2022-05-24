@@ -22,8 +22,3 @@
 .row.mt-3.col-12
   #pagination
     =paginate @article_types_grid.assets
-
-:javascript
-  (() => {
-    sessionStorage['dataSetActiveTab'] = '#articleTypesTab';
-  })();

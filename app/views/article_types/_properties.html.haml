@@ -9,7 +9,8 @@
           =link_to @article_type.data_set.name, data_set_path(@article_type.data_set), class: 'no-link'
           .d-inline-block.mr-2.ml-2{id: "story_type_#{@article_type.id}_properties"}
             -# =link_to(icon('fa', 'sliders'), story_type_properties_form_path(@story_type), remote: true)
-            %button{ onclick: 'loadEditForm(this);', type: 'button', class: 'p-0 pb-1 btn btn-sm btn-link ml-2', 'data-toggle' => "modal", 'data-target' => "#articleTypePropertiesForm" }
+            %button{ onclick: 'loadEditForm(this);', type: 'button',
+                     class: 'p-0 pb-1 btn btn-sm btn-link ml-2', 'data-toggle' => "modal", 'data-target' => "#articleTypePropertiesForm" }
               =icon('fa', 'sliders')
             :javascript
               function loadEditForm(button) {
@@ -25,6 +26,7 @@
         =link_to icon('fa', 'info-circle'), properties_data_set_path(@article_type.data_set), remote: true
     %hr/
 
+    =render 'article_types/factoid_type_source_properties'
     .row.mb-2.font-weight-bold
       .col-6
         editor

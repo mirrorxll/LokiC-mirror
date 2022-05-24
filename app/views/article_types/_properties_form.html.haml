@@ -1,30 +1,30 @@
 .properties-form
   #changeDataSet_template.row.small
-    .col-1
-    .col-11
-      .row.font-weight-bold
+    .col-10.offset-1
+      .row.font-weight-bold.text-center
         .col-4.pl-0
           data set
         .col-4
           kind
         .col-4
           topic
-      .row
+      .row.text-center
         .col-4.change-ds-form.pl-0
           =render 'change_data_set'
         .col-4.pl-0
           =form_with(url: article_type_path(@article_type), scope: :article_type, method: :put, html: { onchange: "loadDescriptions(this);" }) do |form|
-            =form.select :kind_id, Kind.sub_kinds.pluck(:name, :id), prompt: 'Select Kind'
+            =form.select :kind_id, Kind.sub_kinds.pluck(:name, :id), { prompt: 'Select Kind' }, { class: 'w-75' }
             =form.hidden_field :topic_id, value: nil
         .col-4.pl-0
           =form_with(url: article_type_path(@article_type), scope: :article_type, method: :put, html: { onchange: "Rails.fire(this, 'submit')" }) do |form|
-            =form.select :topic_id, @article_type.kind.nil? ? [] : @article_type.kind.parent_kind.topics.actual.order(:description).pluck(:description, :id), prompt: 'Select Description'
+            =form.select :topic_id,
+                         @article_type.kind.nil? ? [] : @article_type.kind.parent_kind.topics.actual.order(:description).pluck(:description, :id),
+                         { prompt: 'Select Description' } , { class: 'w-75' }
   %hr.mt-2/
 
   #sources.row.small
-    .col-1
-    .col-11
-      .row.font-weight-bold
+    .col-10.offset-1
+      .row.font-weight-bold.text-center
         .col-3.pl-0
           source type
         .col-3
@@ -33,17 +33,19 @@
           source link
         .col-3
           original publish date
-      =form_with(model: @article_type) do |form|
+      =form_with(model: @article_type, html: { onsubmit: "closeModalFunction();" } ) do |form|
         .row
-          .col-3.pl-0
-            =form.text_field :source_type, placeholder: 'new source_type'
-          .col-3.pl-0
-            =form.text_field :source_name, placeholder: 'new source_name'
-          .col-3.pl-0
-            =form.text_field :source_link, placeholder: 'new source_link'
-          .col-3.pl-0
-            =form.date_field :original_publish_date, placeholder: 'new original_publish_date'
-            =form.submit :save
+          .col-3
+            =form.text_field :source_type, placeholder: 'new source_type', class: 'w-100'
+          .col-3
+            =form.text_field :source_name, placeholder: 'new source_name', class: 'w-100'
+          .col-3
+            =form.text_field :source_link, placeholder: 'new source_link', class: 'w-100'
+          .col-3
+            =form.date_field :original_publish_date, placeholder: 'new original_publish_date', class: 'w-100'
+          .w-100.mt-3
+          .col.d-inline-flex.justify-content-center
+            =form.submit :save, class: 'btn btn-outline-success btn-sm w-20'
 
 :javascript
   function loadDescriptions(form){
@@ -67,4 +69,8 @@
       dataType: 'script',
       url: `${window.location.origin}/article_types/#{@article_type.id}/topics/${selected_desc}/change`
     });
+  }
+
+  function closeModalFunction(){
+    $('#articleTypePropertiesForm').modal('hide');
   }

@@ -64,7 +64,8 @@ class Status < ApplicationRecord
         'in progress', 'exported',
         'on cron', 'blocked',
         'canceled', 'done',
-        'archived'
+        'archived', 'not_started',
+        'migrated'
       ]
     )
   end
