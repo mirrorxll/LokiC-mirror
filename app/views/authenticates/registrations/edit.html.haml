@@ -1,5 +1,5 @@
 .row.mt-3.small
-  .col-6.offset-3.pt-5
+  .col-sm-10.offset-sm-2.col-lg-6.offset-lg-3.pt-5
     =form_with(model: current_account, url: profile_path, method: :patch, local: true) do |f|
       .form-group.m-0
         .row.align-items-center
@@ -25,7 +25,7 @@
           .col-3.pr-0.text-right.font-weight-bold
             SLACK ACCOUNT:
           .col-6
-            -slack_accounts = SlackAccount.order(:user_name)
+            -slack_accounts = SlackAccount.order(:user_name).where(deleted: 0)
             =select_tag 'slack_account[identifier]',
                         options_from_collection_for_select(slack_accounts, :identifier, :user_name, current_account&.slack&.identifier),
                         { include_blank: '-- not set --', class: 'form-control form-control-sm' }
@@ -75,4 +75,4 @@
       .form-group.mt-2
         .row
           .col-6.offset-3
-            =f.submit 'Update', class: 'btn btn-sm btn-outline-dark'
+            =f.submit 'UPDATE', class: 'btn btn-sm btn-outline-dark w-100'

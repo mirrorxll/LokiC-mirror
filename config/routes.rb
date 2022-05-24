@@ -102,25 +102,17 @@ Rails.application.routes.draw do
     get 'all_statewide_publications_scope_id', to: 'publications#all_statewide_pubs_scope_id'
   end
 
-  resources :work_requests, except: :destroy do
-    patch :archive,   on: :member
-    patch :unarchive, on: :member
-
-    scope module: :work_requests do
-      resources :progress_statuses, only: [] do
-        patch :change, on: :collection
-      end
-
-      resources :sow_cells, only: [] do
-        patch :change, on: :collection
-      end
+  scope module: :work_requests do
+    resources :work_requests, controller: :main, except: :destroy do
+      resource :archive, only: :update
+      resource :progress_status, only: :update
+      resource :sow_cell, only: :update
     end
   end
-  resources :factoid_requests, except: :destroy do
-    scope module: :factoid_requests do
-      resources :progress_statuses, only: [] do
-        patch :change, on: :collection
-      end
+
+  scope module: :factoid_requests do
+    resources :factoid_requests, controller: :main, except: :destroy do
+      resource :progress_status, only: :update
     end
   end
 

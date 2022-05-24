@@ -59,5 +59,9 @@ module Authenticates
     def tab_title
       @tab_title = 'LokiC :: Password Reset'
     end
+
+    def find_account_by_reset_token
+      @account = Account.find_by(reset_password_token: params[:token])
+    end
   end
 end

@@ -1,7 +1,7 @@
 .login_container.d-flex.justify-content-center.align-items-center
   =form_with(url: password_reset_path, class: 'col-sm-8 col-xl-3 p-4 border rounded-lg', method: :patch, local: true) do |f|
     .text-center.mb-4
-      LokiC :: Password Reset
+      LOKIC :: PASSWORD RESET
     .form-group
       =f.text_field :email, placeholder: 'email', class: 'form-control form-control-sm',
                     disabled: true, readonly: true, value: @account.email
@@ -16,4 +16,4 @@
                         class: 'form-control form-control-sm', required: true, autocomplete: 'new-password',
                         minlength: 6, maxlength: 20
     .form-group
-      =f.submit 'Reset', class: 'btn btn-sm btn-outline-dark w-100'
+      =f.submit 'RESET', class: 'btn btn-sm btn-outline-dark w-100'

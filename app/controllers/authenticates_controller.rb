@@ -14,10 +14,6 @@ class AuthenticatesController < ApplicationController
     @account = Account.find_by(email: params[:email])
   end
 
-  def find_account_by_reset_token
-    @account = Account.find_by(reset_password_token: params[:token])
-  end
-
   def redirect_to_root
     redirect_to root_path
   end

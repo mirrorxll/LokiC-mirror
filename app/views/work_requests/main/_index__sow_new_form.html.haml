@@ -44,7 +44,7 @@
     Rails.ajax({
       type: "PATCH",
       dataType: 'script',
-      url: `#{change_work_request_sow_cells_path(work_request)}`,
+      url: `#{work_request_sow_cell_path(work_request)}`,
       data: `work_request[sow]=${encodeURIComponent(value)}`
     });
   }

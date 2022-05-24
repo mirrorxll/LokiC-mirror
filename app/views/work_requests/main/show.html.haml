@@ -33,12 +33,12 @@
           #archiveWorkRequest.d-inline-block.mr-2
             -if current_account.types.include?('manager') && @work_request.projects.all? { |p| p.status.name.eql?('deleted') }
               -if @work_request.archived
-                =link_to('[ unarchive ]', unarchive_work_request_path(@work_request),
+                =link_to('[ unarchive ]', work_request_archive_path(@work_request, archived: false),
                          class: 'p-0 btn btn-sm text-danger small',
                          onclick: 'archiveSpinnerAnimation()',
                          method: :patch, remote: true)
               -else
-                =link_to('[ archive ]', archive_work_request_path(@work_request),
+                =link_to('[ archive ]', work_request_archive_path(@work_request, archived: true),
                        data: { confirm: "Work Request will be hidden from Work Requests' queue. Continue?" },
                        class: 'p-0 btn btn-sm text-danger small',
                        onclick: 'archiveSpinnerAnimation()',

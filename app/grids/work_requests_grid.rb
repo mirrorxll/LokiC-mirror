@@ -63,7 +63,7 @@ class WorkRequestsGrid
           'data-toggle' => 'popover',
           'data-placement' => 'top',
           'data-html' => 'true',
-          'data-content' => (render 'work_requests/index__date_form', work_request: r, key: 'eta').to_s
+          'data-content' => (render 'work_requests/main/index__date_form', work_request: r, key: 'eta').to_s
         )
       end
     end
@@ -79,7 +79,7 @@ class WorkRequestsGrid
           'data-toggle' => 'popover',
           'data-placement' => 'top',
           'data-html' => 'true',
-          'data-content' => (render 'work_requests/index__date_form', work_request: r, key: 'last_invoice').to_s
+          'data-content' => (render 'work_requests/main/index__date_form', work_request: r, key: 'last_invoice').to_s
         )
       end
     end
