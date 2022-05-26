@@ -1,28 +1,31 @@
 %hr/
-.row.m-2.align-items-center
+#header.row.justify-content-between.align-items-center.mt-3
   .col-6
-    Work Requests
-  .col-6.text-right
-    -if current_account.types.include?('manager')
-      .btn-group
-        =link_to 'all requested work', work_requests_path(archived: false),
-                   class: 'btn btn-sm btn-outline-dark'
-        =link_to('requested work by you',
-                   url_for(@grid.to_param => { requester: current_account.id }, archived: false),
-                   class: 'btn btn-sm btn-outline-dark')
-        =link_to('archived work requests', work_requests_path(archived: true),
-                   class: 'mr-3 btn btn-sm btn-outline-danger')
-    %button.btn.btn-sm.btn-outline-dark{ "data-target" => "#requestWorkForm", "data-toggle" => "modal" }
-      create request work
+    Total:
+    =@grid.assets.total_count
+  .col-6.text-right.text-uppercase
+    .btn-group.mr-3
+      -%w[yours all archived].each do |list|
+        -outline = (params[:list].nil? && list.eql?('yours')) || params[:list].eql?(list) ? '' : '-outline'
+        =link_to(list, url_for(list: list), class: "btn btn-sm btn#{outline}-dark")
+    .btn-group
+      =link_to('filter', '#', class: 'disabled btn btn-sm btn-outline-dark',
+               "data-target" => "#requestWorkForm", "data-toggle" => "modal")
+      =link_to('create', '#', class: 'btn btn-sm btn-outline-dark',
+               "data-target" => "#requestWorkForm", "data-toggle" => "modal")
 %hr/
 
-.row
-  .col-12.small
+#filter.mt-3.mb-3.collapse{ class: (params[:scrape_tasks_grid] ? 'show' : '') }
+  =datagrid_form_for @grid, url: work_requests_path(archived: false)
+
+.row.small.mb-5
+  .col-12
     =datagrid_table(@grid)
 
-.row.mt-3.col-12
-  #pagination
-    =paginate @grid.assets
+.fixed-bottom.bg-light
+  .row
+    .col-12.p-2
+      =paginate @grid.assets
 
 #requestWorkForm.modal.fade{ 'data-backdrop' => "static", "aria-hidden" => "true", "aria-labelledby" => "requestWorkForm" }
   .modal-dialog.modal-lg
@@ -32,31 +35,3 @@
         %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
           %span{"aria-hidden" => "true"} ×
       =render 'new', modal: true
-
-:javascript
-  function submitForm(event) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    let form = event.target;
-    let input = form.querySelector('input[type="number"], input[type="date"]');
-
-    let target = input.id.split('__');
-    let valueType = target.at(0);
-    let valueId = target.at(-1);
-    let value = form.querySelector(`input[type="${input.type}"]`).value
-
-    if(value.length === 0) {
-      if(input.type === 'number') {
-        value = '**'
-      } else {
-        value = '****-**-**'
-      }
-    }
-
-    document.querySelector(`\#${valueType}${valueId} u`).innerText = value;
-
-    form.removeEventListener('submit', submitForm);
-    Rails.fire(form, 'submit');
-    form.addEventListener('submit', submitForm)
-  }

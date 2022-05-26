@@ -6,7 +6,7 @@
 -#    remote:        data-remote
 -#    paginator:     the paginator that renders the pagination tags inside
 
-.small.mb-3
+.small
   = paginator.render do
     %nav.pagination.justify-content-center
       = first_page_tag unless current_page.first?

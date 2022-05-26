@@ -6,25 +6,18 @@ class WorkRequestsGrid
   # Scope
   scope { WorkRequest.order(id: :desc) }
 
-  accounts = Account.all.map { |a| [a.name, a.id] }
-  filter(:requester, :default, select: accounts) do |value, scope|
-    scope.where(requester_id: value)
-  end
-
+  # Filter
+  filter(:requester_id)
+  filter(:archived)
   # Columns
+
+  column(:id, order: false)
+
   priorities = Priority.all.each_with_object({}) do |p, hash|
     hash[p.name] = p.name.split(' - ').first
   end
-  column(:priority) do |req|
+  column(:priority, order: false) do |req|
     priorities[req.priority.name]
-  end
-
-  column(:clients) do |req|
-    req.clients.map(&:name).join('<br/>').html_safe
-  end
-
-  column(:who_requested, header: 'Who requested?') do |req|
-    req.requester.name
   end
 
   column(:status, html: true) do |req|
@@ -53,7 +46,22 @@ class WorkRequestsGrid
     end
   end
 
-  column(:eta, header: 'ETA') do |req|
+  column(:project_order_name, header: 'name', order: true) do |req|
+    format(req) do
+      name = req.project_order_name.body.truncate(30)
+      link_to(name, req)
+    end
+  end
+
+  column(:clients) do |req|
+    req.clients.map(&:name).join('<br/>').html_safe
+  end
+
+  column(:who_requested, header: 'Who requested?') do |req|
+    req.requester.name
+  end
+
+  column(:eta, header: 'ETA', order: false) do |req|
     format(req) do |r|
       content_tag(:div, id: "eta#{r.id}", class: 'text-center') do
         content_tag(
@@ -69,7 +77,7 @@ class WorkRequestsGrid
     end
   end
 
-  column(:last_invoice) do |req|
+  column(:last_invoice, order: false) do |req|
     format(req) do |r|
       content_tag(:div, id: "last_invoice#{r.id}", class: 'text-center') do
         content_tag(

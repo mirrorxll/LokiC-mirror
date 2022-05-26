@@ -7,7 +7,7 @@ module WorkRequests
 
     def index
       @tab_title = 'LokiC :: WorkRequests'
-      @grid.scope { |sc| sc.page(params[:page]).per(30) }
+      @grid.scope { |sc| sc.page(params[:page]).per(3) }
     end
 
     def show
@@ -40,25 +40,24 @@ module WorkRequests
     end
 
     def generate_grid
-      default = manager? ? {} : { requester: current_account.id }
-      @grid = request.parameters[:work_requests_grid] || default
-      @grid = WorkRequestsGrid.new(@grid) do |scope|
-        archived = params[:archived].nil? ? false : params[:archived]
-        scope.where(archived: archived)
-      end
-
-      @grid.column(:project_order_name, after: :priority) do |req|
-        WorkRequestsGrid.format(req) do
-          name = req.project_order_name.body
-          truncated = "##{req.id} #{name.truncate(30)}"
-          link_to(truncated, req)
+      default =
+        case params[:list]
+        when 'all'
+          { archived: false }
+        when 'yours', nil
+          { requester_id: current_account.id, archived: false }
+        when 'archived'
+          { archived: true }
         end
-      end
+      filter_params = params[:work_requests_grid] || default
 
+      @grid = WorkRequestsGrid.new(filter_params)
       return unless manager?
 
-      @grid.column(:sow, header: 'SOW', after: :project_order_name) do |req|
-        WorkRequestsGrid.format(req) { (render 'work_requests/main/sow_cell', work_request: req, default: req.default_sow).to_s }
+      @grid.column(:sow, header: 'SOW', order: false, after: :project_order_name) do |req|
+        WorkRequestsGrid.format(req) do
+          (render 'work_requests/main/sow_cell', work_request: req, default: req.default_sow).to_s
+        end
       end
     end
 

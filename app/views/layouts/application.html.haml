@@ -10,7 +10,7 @@
     =javascript_pack_tag  'application', 'data-turbolinks-track': 'reload'
   %body
     -if current_account
-      %nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.small.justify-content-center.text-uppercase
+      %nav.navbar.fixed-top.navbar-expand-lg.navbar-dark.bg-dark.small.justify-content-center.text-uppercase
         .small
           =link_to('lokic', root_path, class: 'navbar-brand')
         %button.navbar-toggler{"aria-controls" => "navbarNavDropdown", "aria-expanded" => "false",
@@ -20,7 +20,7 @@
         #navbarNavDropdown.collapse.navbar-collapse
           %ul.navbar-nav.w-100.align-items-center
             %li.nav-item{ class: controller.is_a?(WorkRequestsController) ? 'active' : '' }
-              =link_to('work requests', work_requests_path(archived: false), class: 'nav-link')
+              =link_to('work requests', work_requests_path(list: :yours), class: 'nav-link')
 
             %li.nav-item{ class: controller.is_a?(FactoidRequestsController) ? 'active' : '' }
               =link_to('factoid requests', factoid_requests_path, class: 'nav-link')
@@ -44,7 +44,7 @@
               .nav-link{ style: 'text-transform: none;'}
                 =current_account.name
 
-            %li.nav-item.active.dropdown.pr-lg-2.mr-lg-2{ class: true_account.types.include?('manager') ? "border-lg-right" : '' }
+            %li.nav-item.active.dropdown{ class: true_account.types.include?('manager') ? "border-lg-right pr-lg-2 mr-lg-2" : '' }
               #navbarDropdown3.nav-link.text-center{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
                 =icon('fa', 'user-circle', class: 'fa-2x')
               .dropdown-menu.dropdown-menu-right.text-sm-center.text-lg-right{"aria-labelledby" => "navbarDropdown"}
@@ -58,13 +58,13 @@
             -if true_account.types.include?('manager')
               %li.nav-item.active
                 -if current_account.eql?(true_account)
-                  =link_to(icon('fa', 'vcard', class: 'fa-2x'), accounts_path, class: 'nav-link small')
+                  =link_to(icon('fa', 'address-book-o', class: 'fa-2x'), accounts_path, class: 'nav-link small')
                 -else
                   =link_to(icon('fa', 'share', class: 'fa-2x text-light'), account_impersonate_path(true_account), method: :delete, class: 'nav-link small text-dark text-dark')
 
               %li.nav-item.active.dropdown
                 #navbarDropdown1.nav-link.text-center{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
-                  =icon('fa', 'ravelry', class: 'fa-2x')
+                  =icon('fa', 'bars', class: 'fa-2x')
                 .dropdown-menu.dropdown-menu-right.text-sm-center.text-lg-right{"aria-labelledby" => "navbarDropdown1"}
                   .dropdown-item
                     =link_to('admin panel', rails_admin_path, class: 'nav-link small text-dark', target: '_blank')
@@ -79,7 +79,7 @@
                   .dropdown-item
                     =link_to('press release report', press_release_reports_path, class: 'nav-link small text-dark')
 
-    %div.container-fluid
+    %div.mt-5.pt-2.container-fluid
       =yield
     :javascript
       toastr.remove();
