@@ -5,7 +5,7 @@ module WorkRequests
     before_action :find_work_request
 
     def update
-      @work_request.update!(archived: params[:archived])
+      @request.update!(archived: params[:archived])
     end
   end
 end

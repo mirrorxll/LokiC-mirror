@@ -32,17 +32,11 @@ class FactoidRequestObject
       priority: Priority.find_by(id: @prm[:priority_id])
     }
 
-    @request.update!(params)
-
-    @request.description.update!(body: @prm[:description])
-    @request.purpose.update!(body: @prm[:purpose])
-
     @data_sets.each { |ds| @request.data_sets << ds unless @request.data_sets.exists?(ds.id) }
 
-    (1..5).each do |n|
-      @request.public_send("template_#{n}_body").update!(body: @prm[:"template_#{n}_body"])
-      @request.public_send("template_#{n}_assoc").update!(body: @prm[:"template_#{n}_assoc"])
-    end
+    @request.update!(params)
+    @request.description.update!(body: @prm[:description])
+    @request.purpose.update!(body: @prm[:purpose])
 
     @request
   end

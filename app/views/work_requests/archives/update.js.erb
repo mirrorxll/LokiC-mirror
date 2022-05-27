@@ -2,7 +2,7 @@ $('#archiveWorkRequest').html('<%=
   if params[:archived].eql?('false')
     link_to(
       '[ archive ]',
-      work_request_archive_path(@work_request, archived: true),
+      work_request_archive_path(@request, archived: true),
       data: { confirm: "Work Request will be hidden from Work Requests' queue. Continue?" },
       class: 'p-0 btn btn-sm text-danger small',
       onclick: 'archiveSpinnerAnimation()',
@@ -11,7 +11,7 @@ $('#archiveWorkRequest').html('<%=
   else
     link_to(
       '[ unarchive ]',
-      work_request_archive_path(@work_request, archived: false),
+      work_request_archive_path(@request, archived: false),
       class: 'p-0 btn btn-sm text-danger small',
       onclick: 'archiveSpinnerAnimation()',
       method: :patch, remote: true
@@ -19,5 +19,5 @@ $('#archiveWorkRequest').html('<%=
   end
    %>')
 
-document.querySelector('#createProject button').disabled = <%= params[:archived].eql?('true') %>;
+document.querySelector('#createMultiTask button').disabled = <%= params[:archived].eql?('true') %>;
 document.querySelector('#editWorkRequest button').disabled = <%= params[:archived].eql?('true') %>;

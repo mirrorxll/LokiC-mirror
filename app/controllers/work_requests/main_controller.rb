@@ -7,47 +7,39 @@ module WorkRequests
 
     def index
       @tab_title = 'LokiC :: WorkRequests'
-      @grid.scope { |sc| sc.page(params[:page]).per(3) }
+      @grid.scope { |sc| sc.page(params[:page]).per(30) }
     end
 
     def show
-      @tab_title = "LokiC :: WorkRequest ##{@work_request.id} <#{@work_request.project_order_name.body}>"
+      @tab_title = "LokiC :: WorkRequest ##{@request.id} <#{@request.project_order_name.body}>"
       @delete_status = Status.find_by(name: 'deleted')
     end
-
-    def new; end
 
     def create
       @request =
         WorkRequestObject.create_from!(work_request_params)
-      WorkRequests::SlackNotificationJob.perform_async(
-        @request.id,
-        '<!channel> Just was created a new work request. Check it'
-      )
+
+      redirect_to @request
     end
 
-    def edit; end
-
     def update
-      @work_request =
-        WorkRequestObject.update_from!(@work_request, work_request_params)
+      @request =
+        WorkRequestObject.update_from!(@request, work_request_params)
+
+      redirect_to @request
     end
 
     private
-
-    def john_putz_slack_id
-      "<@#{Account.find(4)&.slack_identifier}" # John Putz slack ID
-    end
 
     def generate_grid
       default =
         case params[:list]
         when 'all'
           { archived: false }
-        when 'yours', nil
-          { requester_id: current_account.id, archived: false }
         when 'archived'
           { archived: true }
+        else
+          { requester_id: current_account.id, archived: false }
         end
       filter_params = params[:work_requests_grid] || default
 
@@ -65,10 +57,6 @@ module WorkRequests
       params
         .require(:work_request).permit!
         .merge({ account: current_account })
-    end
-
-    def find_work_request
-      @work_request = WorkRequest.find(params[:id])
     end
   end
 end

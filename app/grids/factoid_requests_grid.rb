@@ -6,10 +6,8 @@ class FactoidRequestsGrid
   # Scope
   scope { FactoidRequest.order(id: :desc) }
 
-  accounts = Account.all.map { |a| [a.name, a.id] }
-  filter(:requester, :default, select: accounts) do |value, scope|
-    scope.where(requester_id: value)
-  end
+  # Filter
+  filter(:requester_id)
 
   # Columns
   column(:id, order: false)

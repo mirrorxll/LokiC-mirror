@@ -1,1 +1,1 @@
-$('#sow<%= @work_request.id %>').replaceWith('<%= j render 'work_requests/sow_cell', work_request: @work_request, default: @work_request.default_sow %>');
+$('#sow<%= @request.id %>').replaceWith('<%= j render 'work_requests/sow_cell', work_request: @request, default: @request.default_sow %>');

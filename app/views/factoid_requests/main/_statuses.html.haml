@@ -1,7 +1,7 @@
--if correct_account?(@factoid_request)
+-if correct_account?(@request)
   .dropdown.p-1
-    %button#factoidRequestStatusButton.dropdown-toggle.border.rounded{ class: "bg-#{status_color(@factoid_request.status.name)}", "aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :type => "button"}
-      =@factoid_request.status.name
+    %button#factoidRequestStatusButton.dropdown-toggle.border.rounded{ class: "bg-#{status_color(@request.status.name)}", "aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :type => "button"}
+      =@request.status.name
     .small.dropdown-menu.manual-dropdown-menu.dropdown-menu-right{ "aria-labelledby" => "factoidRequestStatusButton" }
       -Status.factoid_request_statuses.each do |s|
         .dropdown-item.small{status_id: s.id, onclick: 'changeRequestStatus(this);'}
@@ -32,7 +32,7 @@
       Rails.ajax({
         type: "PATCH",
         dataType: 'script',
-        url: `#{factoid_request_progress_status_path(@factoid_request)}`,
+        url: `#{factoid_request_progress_status_path(@request)}`,
         data: `status_id=${statusId}` + (reasons ? `&reasons=${reasons}` : '')
       })
     }
@@ -40,5 +40,5 @@
 -else
   .d-inline-block
     status:
-  #statusButton.d-inline-block.border.text-center.rounded.pl-2.pr-2{ class: "bg-#{status_color(@factoid_request.status.name)}" }
-    =@factoid_request.status.name
+  #statusButton.d-inline-block.border.text-center.rounded.pl-2.pr-2{ class: "bg-#{status_color(@request.status.name)}" }
+    =@request.status.name

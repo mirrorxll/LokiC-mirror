@@ -51,7 +51,7 @@ Rails.application.routes.draw do
     end
 
     scope module: :work_requests, path: 'work_requests/:id', as: 'work_request_members' do
-      resources :project_statuses, only: [] do
+      resources :multi_task_statuses, only: [] do
         get :all_deleted, on: :collection
       end
     end

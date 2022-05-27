@@ -5,13 +5,13 @@ module WorkRequests
     before_action :find_work_request
 
     def update
-      @work_request.update(sow_params)
+      @request.update(sow_params)
     end
 
     private
 
     def find_work_request
-      @work_request = WorkRequest.find(params[:work_request_id])
+      @request = WorkRequest.find(params[:work_request_id])
     end
 
     def sow_params

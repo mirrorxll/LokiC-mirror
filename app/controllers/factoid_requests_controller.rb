@@ -9,6 +9,6 @@ class FactoidRequestsController < ApplicationController
   private
 
   def find_factoid_request
-    @factoid_request = FactoidRequest.find(params[:id] || params[:factoid_request_id])
+    @request = FactoidRequest.find(params[:id] || params[:factoid_request_id])
   end
 end

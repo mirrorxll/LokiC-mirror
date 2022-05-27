@@ -11,6 +11,6 @@ class WorkRequestsController < ApplicationController
   private
 
   def find_work_request
-    @work_request = WorkRequest.find(params[:id] || params[:work_request_id])
+    @request = WorkRequest.find(params[:id] || params[:work_request_id])
   end
 end

@@ -1,8 +1,8 @@
-=form_with(url: tasks_path, id: 'newTaskParent',  html: { onkeypress: "return event.keyCode !== 13;" }, class: 'p-3', subtaskCount: 0 ) do |form|
-  =hidden_field_tag 'task_parent[work_request]', @work_request.id
+=form_with(url: tasks_path, id: 'newMultiTaskParent',  html: { onkeypress: "return event.keyCode !== 13;" }, class: 'p-3', subtaskCount: 0 ) do |form|
+  =hidden_field_tag 'task_parent[work_request]', @request.id
   .row.small.col
     .form-group
-      =form.text_field 'task_parent[title]', placeholder: 'title', id: 'newTaskNameParent', class: 'form-control form-control-sm', required: true, maxlength: 500, value: @work_request.project_order_name.nil? ? '' : @work_request.project_order_name.body
+      =form.text_field 'task_parent[title]', placeholder: 'title', id: 'newTaskNameParent', class: 'form-control form-control-sm', required: true, maxlength: 500, value: @request.project_order_name.nil? ? '' : @request.project_order_name.body
       #newTaskNameParentFeedback.text-danger.text-center.d-none
         Task with this title already created by you. Let's use something else
   .row.small.font-weight-bold
@@ -64,7 +64,7 @@
             .col-3
               sow:
             .col.small
-              =form.text_field 'task_parent[sow]', placeholder: 'link to google sheet', maxlength: 255, class: 'w-100', value: @work_request.sow.nil? ? '' : @work_request.sow
+              =form.text_field 'task_parent[sow]', placeholder: 'link to google sheet', maxlength: 255, class: 'w-100', value: @request.sow.nil? ? '' : @request.sow
           .row.mb-2
             .col-3
               pivotal tracker:
@@ -106,10 +106,7 @@
   .row.col.small.font-weight-bold.justify-content-center.mb-2.mt-2
     =link_to '[ add subtask ]', nil, onclick: 'addSubtask(event);'
 
-  .row.col.small.modal-footer.justify-content-center
-    .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
-      cancel
-    =form.submit :create, class: 'btn btn-sm btn-outline-success'
+    =form.submit :create, id: 'hiddenCreateMultiTaskButton', class: 'btn btn-sm btn-outline-success'
 
 =render 'task_agencies_opportunities/form', task: 'task_parent'
 
@@ -128,10 +125,10 @@
   function addSubtask(e) {
     e.preventDefault();
 
-    newTaskParent = document.getElementById('newTaskParent')
-    let countSubtask = newTaskParent.getAttribute('subtaskCount');
+    let newMultiTaskParent = document.getElementById('newMultiTaskParent')
+    let countSubtask = newMultiTaskParent.getAttribute('subtaskCount');
     let newCountSubtask = Number(countSubtask) + 1;
-    newTaskParent.setAttribute('subtaskCount', newCountSubtask)
+    newMultiTaskParent.setAttribute('subtaskCount', newCountSubtask)
 
     Rails.ajax({
         type: "GET",
@@ -207,7 +204,7 @@
     return !names.find(el => lowName === el.toLowerCase());
   }
 
-  document.querySelector('#newTaskParent').addEventListener('input', delay(() => {
+  document.querySelector('#newMultiTaskParent').addEventListener('input', delay(() => {
     let percentInputs = document.getElementsByClassName('agencies_percents');
     let percentFeedback = document.querySelector('#agenciesPercentsFeedback');
 
@@ -224,7 +221,7 @@
       success: (names) => {
         let nameInput = document.querySelector('#newTaskNameParent');
         let nameFeedback = document.querySelector('#newTaskNameParentFeedback');
-        let submitButton = document.querySelector('#newTaskParent input[type="submit"]');
+        let submitButton = document.querySelector('#newMultiTaskParent input[type="submit"]');
         let nameIsUniq = isUniq(nameInput.value, names);
 
         if(nameIsUniq === true) {
@@ -247,7 +244,7 @@
     let form = ev.target;
     let nameInput = form.querySelector('#newTaskNameParent');
     let nameFeedback = form.querySelector('#newTaskNameParentFeedback');
-    let submitButton = form.querySelector('#newTaskParent input[type="submit"]');
+    let submitButton = form.querySelector('#newMultiTaskParent input[type="submit"]');
 
   let percentInputs = document.getElementsByClassName('agencies_percents');
     let percentFeedback = document.querySelector('#agenciesPercentsFeedback');
@@ -287,7 +284,7 @@
       }
     })
   }
-  document.querySelector('#newTaskParent').addEventListener('submit', onSubmit)
+  document.querySelector('#newMultiTaskParent').addEventListener('submit', onSubmit)
 
   $('#addСhecklistParent').click(function () {
     let hex = secureRandom(6);

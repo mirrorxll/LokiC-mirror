@@ -9,8 +9,8 @@ class WorkRequestsGrid
   # Filter
   filter(:requester_id)
   filter(:archived)
-  # Columns
 
+  # Columns
   column(:id, order: false)
 
   priorities = Priority.all.each_with_object({}) do |p, hash|

@@ -1,7 +1,7 @@
 -(1..5).each do |n|
   .card.mb-3
     .card-header.p-1
-      -assoc = @factoid_request.public_send("template_#{n}_assoc")&.body
+      -assoc = @request.public_send("template_#{n}_assoc")&.body
       -if assoc.present?
         Template #{n} associated with
         %span.font-weight-bold
@@ -11,4 +11,4 @@
     .card-body
       .row
         .col-10.offset-1
-          =@factoid_request.public_send("template_#{n}_body")&.body.html_safe
+          =@request.public_send("template_#{n}_body")&.body&.html_safe
