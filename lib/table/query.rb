@@ -133,5 +133,11 @@ module Table
       "FROM #{schema_table(t_name)} " \
       "WHERE iter_id = #{iter_id};"
     end
+
+    # deletes rows in staging table
+    def delete_st_table_rows(t_name, iter_id, rows)
+      q = "DELETE FROM #{schema_table(t_name)} WHERE iter_id = #{iter_id} AND id IN (#{rows.join(', ')});"
+      pp '=====================', q
+    end
   end
 end
