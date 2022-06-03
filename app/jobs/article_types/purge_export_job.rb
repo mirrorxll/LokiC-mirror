@@ -2,7 +2,7 @@
 
 module ArticleTypes
   class PurgeExportJob < ArticleTypesJob
-    def perform(iteration_id, account_id)
+    def perform(iteration_id, account_id, factoid_ids = nil)
       iteration     = ArticleTypeIteration.find(iteration_id)
       account       = Account.find(account_id)
       purge_status  = false
@@ -13,7 +13,12 @@ module ArticleTypes
       loop do
         break if iteration.articles.reload.published.count.zero?
 
-        Factoids::ExportToLp.new.unpublish!(iteration)
+        Factoids::ExportToLp.new.unpublish!(iteration, factoid_ids)
+
+        if factoid_ids
+          export_status = true
+          break
+        end
       end
 
       iteration.published&.destroy

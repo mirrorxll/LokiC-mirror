@@ -51,15 +51,21 @@ module Factoids
       iteration.update!(last_export_batch_size: exported)
     end
 
-    def unpublish!(iteration)
+    def unpublish!(iteration, factoid_ids)
       semaphore = Mutex.new
-      factoids  = iteration.articles.published.limit(10_000).to_a
+      factoids  = if factoid_ids
+                    iteration.articles.published.where(limpar_factoid_id: factoid_ids).limit(10_000).to_a
+                  else
+                    iteration.articles.published.limit(10_000).to_a
+                  end
 
+      pp '>>>>>>>>>>>>', factoids
       threads = Array.new(5) do
         Thread.new do
           lp_client = Limpar::Client.new
           loop do
             factoid = semaphore.synchronize { factoids.shift }
+            pp '***', factoid
             break if factoid.nil?
           begin
             lp_client.delete_editorial(factoid.limpar_factoid_id)
