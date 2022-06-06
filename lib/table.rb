@@ -128,6 +128,7 @@ module Table # :nodoc:
 
   def delete_rows_from_st_table(t_name, rows)
     curr_iter    = curr_iter_id(t_name)
-    delete_st_table_rows(t_name, curr_iter, rows)
+    delete_query = delete_st_table_rows(t_name, curr_iter, rows)
+    loki_story_creator { |conn| conn.exec_query(delete_query) }
   end
 end

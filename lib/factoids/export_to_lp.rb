@@ -59,15 +59,11 @@ module Factoids
                     iteration.articles.published.limit(10_000).to_a
                   end
 
-      # pp '=== FACTOIDS ==='*10, factoids
-
       threads = Array.new(5) do
         Thread.new do
           lp_client = Limpar::Client.new
           loop do
-
             factoid = semaphore.synchronize { factoids.shift }
-            # pp '=== FACTOID ==='*10, factoid
             break if factoid.nil?
           begin
             lp_client.delete_editorial(factoid.limpar_factoid_id)

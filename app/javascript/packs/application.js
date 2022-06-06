@@ -10,6 +10,7 @@ require("channels");
 require("trix");
 require("@rails/actiontext");
 require("datatables.net-bs4");
+require('./factoids/purge');
 
 import 'bootstrap';
 import '../stylesheets/application';

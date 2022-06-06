@@ -1,4 +1,5 @@
-%div{ id: "iteration_exported_factoids", iteration_exported_factoids_id: @iteration.id }
+%div{ id: "iteration_exported_factoids", iteration_exported_factoids_id: @iteration.id, article_type_id: @article_type.id }
+#cover-spin
 -if @iteration.export
   #info.small.pt-3.pb-3
     .row
@@ -13,8 +14,11 @@
         #{@iteration.name}
     .row
       .col
-        =button_tag 'Select all', onclick: "selectAll();"
-        =button_tag 'Delete', onclick: "deleteSelected();"
+        Select all/Deselect all
+        -# =check_box_tag 'select_all_checkbox'
+        =button_tag 'Select all', id: 'select_all_button', data: { checked: false }
+        =button_tag 'Delete', id: 'delete_selected'
+        =hidden_field_tag 'trigger', false
 
   %hr.mt-1.mb-3/
 
@@ -25,29 +29,6 @@
   .small
     =paginate @articles, window: 3
   %hr/
-
-  :javascript
-    function selectAll(){
-      document.querySelectorAll('input[type="checkbox"]').forEach(elem => {
-        elem.checked = true;
-      });
-    }
-
-    function deleteSelected() {
-      if (!confirm('Are you sure?')) return;
-
-      var values = [];
-      document.querySelectorAll('input[type="checkbox"]').forEach(elem => {
-        if (elem.checked) { values.push(elem.id) }
-      });
-      Rails.ajax({
-        type: "DELETE",
-        dataType: 'script',
-        url: `#{remove_selected_factoids_article_type_iteration_exports_path(@article_type, @iteration)}`,
-        data: `factoids_ids=${values}`
-      })
-    }
-
 -else
   %hr/
   .row

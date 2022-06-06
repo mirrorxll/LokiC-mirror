@@ -24,6 +24,7 @@ module ArticleTypes
       @tab_title = "LokiC :: FactoidType ##{@article_type.id} :: Factoids"
     end
 
+    # remove factoids from Limpar, 'articles' table and staging table
     def remove_selected_factoids
       @iteration.update!(purge_export: true, current_account: current_account)
       send_to_factoids_action_cable(@article_type, @iteration, 'export', 'exported_factoids', 'removing factoids')
