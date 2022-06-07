@@ -162,7 +162,7 @@ class TasksController < ApplicationController # :nodoc:
         Status.multi_task_statuses_for_grid
       elsif grid_params[:deleted_tasks].eql?('YES')
         Status.find_by(name: 'deleted')
-      elsif grid_params[:status].any?
+      elsif grid_params[:status].is_a?(Array) && grid_params[:status].any?
         grid_params[:status]
       end
     grid_params[:current_account] = current_account
