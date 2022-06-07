@@ -14,9 +14,7 @@
         #{@iteration.name}
     .row
       .col
-        Select all/Deselect all
-        -# =check_box_tag 'select_all_checkbox'
-        =button_tag 'Select all', id: 'select_all_button', data: { checked: false }
+        =button_tag 'Select all', id: 'select_all_button'
         =button_tag 'Delete', id: 'delete_selected'
         =hidden_field_tag 'trigger', false
 
