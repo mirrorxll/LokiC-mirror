@@ -17,6 +17,7 @@ module ArticleTypes
 
     def remove_exported_articles
       @iteration.update!(purge_export: true, current_account: current_account)
+      send_to_factoids_action_cable(@article_type, @iteration, 'export', 'exported_factoids', 'removing factoids')
       PurgeExportJob.perform_async(@iteration.id, current_account.id)
     end
 
