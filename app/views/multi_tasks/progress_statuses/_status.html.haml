@@ -1,0 +1,62 @@
+-status = status_for_user(task)
+.current_progress_status
+  =link_to(status.name, '#',
+        class: "badge badge-pill badge-#{status_color(status.name)}")
+
+.change_progress_status_form.d-none
+  =form_with(url: change_multi_task_progress_statuses_path(task), id: 'status_form',
+             html: { class: 'd-inline', onchange: "statusSubmit();" }, method: :patch) do |form|
+    =form.collection_select :status_id, Status.multi_task_statuses, :id, :name, { prompt: '' , selected: status.id }
+
+:javascript
+  document.querySelector('.current_progress_status a').addEventListener('click', function (evt) {
+    var clickable = #{!task.assignment_to.empty? || current_account.in?(task.assignment_to)};
+    if (!clickable) return;
+
+    evt.preventDefault();
+    evt.target.parentNode.classList.add('d-none');
+    document.getElementsByClassName('change_progress_status_form')[0].classList.remove('d-none');
+    return false;
+  });
+
+  function statusSubmit() {
+    let select = document.getElementById('status_id');
+    let status = select.options[select.selectedIndex].text;
+    let status_form = document.getElementById('status_form');
+    let taskId = #{task.id};
+
+    if(status === 'deleted') {
+      message = confirm("Are you sure you want to delete the task?");
+      if (!message) {
+        return false;
+      } else {
+        submit(status_form);
+      }
+    }
+    else if (['blocked', 'canceled'].includes(status)) {
+      $('#comment .modal-body').html("#{ j render 'multi_tasks/progress_statuses/comment_form' }");
+      $('#comment').modal('show');
+    }
+    else if (status === 'done') {
+      let assignment = #{@multi_task.assignment_to.include?(current_account)};
+      let has_checklists = #{@multi_task.has_checklists?};
+      let main_assignee = #{@multi_task.main_assignee.eql?(current_account)};
+
+      if(main_assignee && has_checklists) {
+        $('#checklists_confirms').modal('show');
+      }
+      else if(assignment) {
+        $('#hours').modal('show');
+      }
+      else {
+        return false;
+      }
+    }
+    else {
+      submit(status_form);
+    }
+  };
+
+  function submit(form) {
+    Rails.fire(form, 'submit');
+  }

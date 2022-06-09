@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module ArticleTypes
+module FactoidTypes
   class StagingTableIndexAddJob < ArticleTypesJob
     def perform(staging_table_id, column_ids)
       staging_table = StagingTable.find(staging_table_id)

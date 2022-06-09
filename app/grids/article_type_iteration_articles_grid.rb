@@ -26,7 +26,7 @@ class ArticleTypeIterationArticlesGrid
   column(:lokic_link, header: "LokiC", mandatory: true) do |model|
     link = "https://lokic.locallabs.com/article_types/#{model.article_type.id}/iterations/#{model.iteration.id}/articles/#{model.id}"
     format(link) do
-      link_to('lokic', article_type_iteration_sample_path(@article_type, @iteration, model), target:'_blank')
+      link_to('lokic', article_type_iteration_sample_path(@factoid_type, @iteration, model), target:'_blank')
     end
   end
   column(:exported_at, mandatory: true)

@@ -1,6 +1,7 @@
 $fa-font-path: "~font-awesome/fonts";
 
 @import "~bootstrap/scss/bootstrap";
+@import "accounts";
 @import "login";
 @import "datagrid";
 @import "data_set";
@@ -15,8 +16,7 @@ $fa-font-path: "~font-awesome/fonts";
 @import "scrape_task";
 @import "work_requesting_form";
 @import "toastr/toastr";
-@import "media"
-;
+@import "media";
 @import '~font-awesome/scss/font-awesome';
 @import "actiontext";
 @import "~trix";
@@ -24,6 +24,7 @@ $fa-font-path: "~font-awesome/fonts";
 @import "~multiple-select/dist/themes/bootstrap";
 @import "node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.standalone";
 @import "~datatables.net-bs4/css/dataTables.bootstrap4.min";
+@import 'select2/dist/css/select2.css';
 
 @media (min-width: 100px) {
   .modal-fullscreen {

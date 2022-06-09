@@ -1,7 +1,0 @@
--if !@article_type.iteration.eql?(@iteration)
-  \---
--elsif @article_type.code.attached?
-  =render 'article_types/codes/code'
--else
-  -if correct_account?(@article_type)
-    =render 'article_types/codes/form'

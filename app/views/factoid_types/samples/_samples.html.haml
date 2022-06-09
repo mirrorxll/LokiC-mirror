@@ -1,0 +1,41 @@
+-if @factoid_type.iteration.population
+  -if !@factoid_type.iteration.eql?(@iteration)
+    .row
+      .col-10.offset-1
+        #created_stories
+          -stories = @iteration.articles.where(sampled: true)
+          -if stories.count.positive?
+            =render partial: 'article_types/samples/sample', collection: stories
+          -else
+            .small
+              Samples were not created.
+          %hr/
+
+    .row
+      .col-10.offset-1
+        %hr/
+        =render 'article_types/samples/stories_link'
+
+  -elsif @iteration.articles.eql?(false) || @iteration.creation.eql?(false)
+    =render 'article_types/spinner', description: 'creation in the process'
+  -elsif @iteration.purge_samples.eql?(true) || @iteration.purge_creation.eql?(true)
+    =render 'article_types/spinner', description: 'purging in progress'
+  -else
+    - samples = @iteration.articles.where(sampled: true)
+    .row
+      .col-10.offset-1
+        #stories_form
+          =render 'article_types/samples/form', samples: samples
+        %hr/
+    .row
+      .col-10.offset-1
+        #created_stories
+          -if samples.count.positive?
+            =render partial: 'article_types/samples/sample', collection: samples
+          -else
+            .small
+              Samples were not created.
+        %hr/
+
+    #fcd__create_destroy_all_stories
+      =render 'article_types/samples/fcd_create_stories_buttons', samples: samples

@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
 module StoryTypes
-  class TemplatesController < ApplicationController
+  class TemplatesController < StoryTypesController
     skip_before_action :find_parent_article_type
     skip_before_action :set_article_type_iteration
 
-    before_action :render_403, except: :show, if: :developer?
     before_action :update_template, only: %i[update save]
     after_action :send_notification, only: :update, if: -> { @story_type.developer.present? }
 

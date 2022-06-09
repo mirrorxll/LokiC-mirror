@@ -4,7 +4,7 @@
   .card.card-body
     =form_for grid, options do |f|
       .row.small
-        -if controller_name == 'tasks' && !current_account.types.include?('manager')
+        -if controller_name == 'tasks'
           -grid.filters.select{ |filter| !filter.name.to_s.in?(%w(assignment_to creator deleted_tasks)) }.each do |filter|
             .col-4.mb-3
               =f.datagrid_label filter

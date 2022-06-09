@@ -19,6 +19,9 @@ import cronstrue from 'cronstrue';
 import datepicker from 'bootstrap-datepicker';
 import multipleSelect from 'multiple-select';
 import Chart from 'chart.js/auto';
+
+import 'select2'
+
 global.Chart = Chart;
 global.toastr = require("toastr")
 

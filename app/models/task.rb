@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Task < ApplicationRecord # :nodoc:
+  self.table_name = 'tasks'
+
   before_create do
     self.status = Status.find_by(name: 'not started')
   end
@@ -56,6 +58,7 @@ class Task < ApplicationRecord # :nodoc:
     result = tasks.filter_map do |task|
       agency_opportunity_revenue_types = task.agency_opportunity_revenue_types
       next if agency_opportunity_revenue_types.empty?
+
       agency_opportunity_revenue_types.map do |row|
         {
           hours: task.assignments.sum(:hours) * row.percents / 100,
@@ -94,7 +97,7 @@ class Task < ApplicationRecord # :nodoc:
     return false unless access
 
     subtasks.each { |subtask| return true if subtask.assignment_to_or_creator?(account) }
-    parent.subtasks.each { |subtask| return true if subtask.assignment_to_or_creator?(account) } if parent
+    parent&.subtasks&.each { |subtask| return true if subtask.assignment_to_or_creator?(account) }
     false
   end
 
@@ -126,7 +129,7 @@ class Task < ApplicationRecord # :nodoc:
   end
 
   def sum_hours
-    sprintf('%g', assignments.sum(:hours).to_s) + ' hours'
+    format('%g', assignments.sum(:hours).to_s) + ' hours'
   end
 
   def subtask?

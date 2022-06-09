@@ -11,25 +11,25 @@ module FactoidRequests
     end
 
     def show
-      @tab_title = "LokiC :: RequestedFactoid ##{@request.id} <#{@request.name}>"
+      @tab_title = "LokiC :: RequestedFactoid ##{@factoid_request.id} <#{@factoid_request.name}>"
     end
 
     def new; end
 
     def create
-      @request =
+      @factoid_request =
         FactoidRequestObject.create_from!(factoid_request_params)
 
-      redirect_to @request
+      redirect_to @factoid_request
     end
 
     def edit; end
 
     def update
-      @request =
-        FactoidRequestObject.update_from!(@request, factoid_request_params)
+      @factoid_request =
+        FactoidRequestObject.update_from!(@factoid_request, factoid_request_params)
 
-      redirect_to @request
+      redirect_to @factoid_request
     end
 
     private

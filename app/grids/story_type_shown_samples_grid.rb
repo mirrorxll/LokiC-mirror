@@ -13,7 +13,7 @@ class StoryTypeShownSamplesGrid
   accounts = Account.all
   filter(:developer, :enum, select: accounts.map { |r| [r.name, r.id] })
 
-  accounts = Account.joins(:account_types).where(account_types: { name: %i[manager editor] })
+  accounts = Account.all
   filter(:editor, :enum, select: accounts.map { |r| [r.name, r.id] })
 
   datasets = DataSet.all.order(:name)

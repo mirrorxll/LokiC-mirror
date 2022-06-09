@@ -20,6 +20,7 @@
     "multiple-select": "1.5.2",
     "popper.js": "1.16.1",
     "rails_admin": "3.0.0",
+    "select2": "^4.1.0-rc.0",
     "stimulus": "1.1.1",
     "toastr": "^2.1.4",
     "trix": "1.2.0",

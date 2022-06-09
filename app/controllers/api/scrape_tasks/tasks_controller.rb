@@ -8,11 +8,11 @@ module Api
 
       def create
         json =
-          if @scrape_task.tasks.exists?(@task.id)
+          if @scrape_task.tasks.exists?(@multi_task.id)
             { already_attach: true }
           else
-            @scrape_task.tasks << @task
-            { already_attached: false, id: @task.id, name: @task.title, subtask: @task.subtask? }
+            @scrape_task.tasks << @multi_task
+            { already_attached: false, id: @multi_task.id, name: @multi_task.title, subtask: @multi_task.subtask? }
           end
 
         render json: json
@@ -20,8 +20,8 @@ module Api
 
       def destroy
         not_exist =
-          if @scrape_task.tasks.exists?(@task.id)
-            @scrape_task.tasks.destroy(@task)
+          if @scrape_task.tasks.exists?(@multi_task.id)
+            @scrape_task.tasks.destroy(@multi_task)
             false
           else
             true
@@ -37,7 +37,7 @@ module Api
       end
 
       def find_task
-        @task =
+        @multi_task =
           if params[:task_title]
             Task.find_by(title: params[:task_title])
           else

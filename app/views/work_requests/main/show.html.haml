@@ -1,15 +1,15 @@
-%div{ id: "workRequest", work_request_id: @request.id }
+%div{ id: "workRequest", work_request_id: @work_request.id }
 
 %hr/
 #workRequestName.text-center
-  =link_to("##{@request.id} #{@request.project_order_name.body}", @request)
+  =link_to("##{@work_request.id} #{@work_request.project_order_name.body}", @work_request)
 %hr.mb-0/
 
 .d-flex.justify-content-between.align-items-center.mb-3.small
   .text-secondary
-    created by #{@request.requester.name}
+    created by #{@work_request.requester.name}
   .text-secondary
-    created at: #{@request.created_at}
+    created at: #{@work_request.created_at}
 
 .row.mb-5.align-items-stretch
   #workRequestInfo.col-lg-8.small
@@ -20,17 +20,17 @@
           .d-flex.align-items-center
             #editWorkRequest
               .d-inline-block.mr-2.small
-                %button{ type: 'button', class: 'p-0 ml-1 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#updateWorkRequestModal", disabled: @request.archived}
+                %button{ type: 'button', class: 'p-0 ml-1 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#updateWorkRequestModal", disabled: @work_request.archived}
                   [ edit ]
             #archiveWorkRequest.d-inline-block.mr-2
-              -if @request.multi_tasks.all? { |p| p.status.name.eql?('deleted') }
-                -if @request.archived
-                  =link_to('[ unarchive ]', work_request_archive_path(@request, archived: false),
+              -if @work_request.multi_tasks.all? { |p| p.status.name.eql?('deleted') }
+                -if @work_request.archived
+                  =link_to('[ unarchive ]', work_request_archive_path(@work_request, archived: false),
                            class: 'p-0 btn btn-sm text-danger small',
                            onclick: 'archiveSpinnerAnimation()',
                            method: :patch, remote: true)
                 -else
-                  =link_to('[ archive ]', work_request_archive_path(@request, archived: true),
+                  =link_to('[ archive ]', work_request_archive_path(@work_request, archived: true),
                          data: { confirm: "Work Request will be hidden from Work Requests' queue. Continue?" },
                          class: 'p-0 btn btn-sm text-danger small',
                          onclick: 'archiveSpinnerAnimation()',
@@ -44,7 +44,7 @@
                         </div>
                       `
                   }
-              -elsif @request.archived
+              -elsif @work_request.archived
                 .badge.badge-pill.badge-danger
                   archived
             #workRequestStatus.d-inline-block
@@ -57,17 +57,17 @@
         .d-flex.justify-content-between.align-items-center
           MULTI TASKS
           #createMultiTask.small
-            %button{ type: 'button', class: 'p-0 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#createMultiTaskModal", disabled: @request.archived }
+            %button{ type: 'button', class: 'p-0 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#createMultiTaskModal", disabled: @work_request.archived }
               [ create ]
       .card-body
-        -@request.multi_tasks.order(created_at: :desc).each do |p|
+        -@work_request.multi_tasks.order(created_at: :desc).each do |p|
           .row.align-items-center{ class: "multi-task-#{p.id}"}
             .col-2.text-right.pr-0
               .text-danger{ class: "multi-task-delete" }
                 -if p.status.name.eql?('deleted')
                   deleted
                 -else
-                  =link_to('[ delete ]', '#', onclick: "markMultiTaskAsDeleted(event, this, #{@request.id}, #{p.id}, #{@delete_status.id});")
+                  =link_to('[ delete ]', '#', onclick: "markMultiTaskAsDeleted(event, this, #{@work_request.id}, #{p.id}, #{@delete_status.id});")
                   .d-none{ class: "processing" }
                     .loadingSpinner.spinner-border.spinner-border-sm.text-secondary
                       %span.sr-only
@@ -155,7 +155,7 @@
           =render 'work_request_info', static: false
         .w-60
           .editable.overflow-scroll.h-94.pr-2.pb-3.pl-2
-            =render 'tasks/form_for_work_request', work_request_id: @request.id
+            =render 'tasks/form_for_work_request', work_request_id: @work_request.id
       .modal-footer.justify-content-center
         =link_to('CREATE', '#', id: 'createMultiTaskButton', class: 'btn btn-sm btn-dark')
         .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }

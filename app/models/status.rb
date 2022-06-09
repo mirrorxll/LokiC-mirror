@@ -2,6 +2,16 @@
 
 class Status < ApplicationRecord
   has_many :story_types
+  has_many :accounts
+
+  def self.account_statuses
+    ordered_statuses(
+      %w[
+        active
+        deactivated
+      ]
+    )
+  end
 
   def self.work_request_statuses
     ordered_statuses(

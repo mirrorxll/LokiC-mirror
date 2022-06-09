@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module StoryTypes
-  class ExportedStoryTypesController < ApplicationController # :nodoc:
+  class ExportedStoryTypesController < StoryTypesController # :nodoc:
     skip_before_action :find_parent_story_type
     skip_before_action :find_parent_article_type
     skip_before_action :set_article_type_iteration
@@ -11,9 +11,9 @@ module StoryTypes
     before_action :manager_report,  only: :submit_manager_report
 
     def index
-      @grid_params = request.parameters[:exported_story_types_grid] || {}
-      @exported_story_types_grid = ExportedStoryTypesGrid.new(@grid_params)
-      @exported_story_types_grid.scope { |scope| scope.page(params[:page]).per(50) }
+      @grid = request.parameters[:exported_story_types_grid] || {}
+      @exported_story_types_grid = ExportedStoryTypesGrid.new(@grid)
+      @exported_story_types_grid.scope { |scope| scope.page(params[:page]).per(30) }
     end
 
     def show_editor_report

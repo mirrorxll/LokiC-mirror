@@ -1,0 +1,47 @@
+%hr/
+#header.row.justify-content-between.align-items-center.mt-3
+  .col-6
+    Total:
+    =@grid.assets.total_count
+  .col-6.text-right.text-uppercase
+    .btn-group.mr-3
+      -lists = %w[active deactivated]
+      -lists.each do |list|
+        -filled = (!params[:list].in?(lists) && list.eql?('active')) || params[:list].eql?(list) ? '' : '-outline'
+        =link_to(list, url_for(list: list), class: "btn btn-sm btn#{filled}-dark")
+    .btn-group
+      =link_to('filter', '#', class: 'disabled btn btn-sm btn-outline-dark',
+               "data-target" => "#createFactoidRequestModal", "data-toggle" => "modal")
+      =link_to('create', '#', class: 'btn btn-sm btn-outline-dark',
+               "data-target" => "#createAccountModal", "data-toggle" => "modal")
+%hr/
+
+.row.small.mb-5
+  .col-12
+    =datagrid_table(@grid)
+
+.fixed-bottom.bg-light
+  .row
+    .col-12.p-2
+      =paginate @grid.assets
+
+#createAccountModal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "createAccountModal",
+                                'data-backdrop' => 'static', "data-keyboard" => "false" }
+  .modal-dialog.modal-lg
+    .modal-content
+      .modal-header
+        NEW ACCOUNT
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+          %span{"aria-hidden" => "true"} ×
+      .modal-body
+        =render 'new'
+      .modal-footer.justify-content-center
+        =link_to('CREATE', '#', id: 'createButton', class: 'btn btn-sm btn-dark')
+        .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+          CANCEL
+
+:javascript
+  document.querySelector('#createButton').addEventListener('click', (event) => {
+    event.preventDefault();
+    document.querySelector('#hiddenCreateButton').click();
+  }, false);

@@ -1,0 +1,5 @@
+<% if @account.errors.any? %>
+  <%= toastr_js_flash(error: @account.errors) %>
+<% else %>
+  window.location.assign('<%= account_path(@account) %>')
+<% end %>

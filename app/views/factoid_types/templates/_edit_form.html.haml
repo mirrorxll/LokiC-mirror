@@ -1,0 +1,12 @@
+=form_with(model: [@factoid_type, @factoid_type.template]) do |form|
+  .field.small
+    =form.text_area :body, id: 'articletype-template-body', value: @factoid_type.template.body
+  .modal-footer
+    =link_to( 'close', '#', class: 'ml-auto btn btn-sm btn-outline-secondary',
+              'data-dismiss' => 'modal', data: { confirm: 'All changes shall be lost. Close?'})
+    =form.submit 'save changes', class: 'mr-auto btn btn-sm btn-outline-success'
+
+:javascript
+  $('#template').on('hidden.bs.modal', function () {
+    $('#template .modal-body').empty();
+  });

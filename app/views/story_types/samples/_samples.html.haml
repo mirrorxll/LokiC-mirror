@@ -30,12 +30,11 @@
     =render 'story_types/spinner', description: 'purging in progress'
   -else
     - samples = @iteration.stories.where(sampled: true)
-    -if correct_account?(@story_type)
-      .row
-        .col-10.offset-1
-          #stories_form
-            =render 'story_types/samples/form', samples: samples
-          %hr/
+    .row
+      .col-10.offset-1
+        #stories_form
+          =render 'story_types/samples/form', samples: samples
+        %hr/
     .row
       .col-10.offset-1
         #created_stories

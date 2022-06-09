@@ -113,4 +113,3 @@ namespace :deploy do
   after  :finishing, :restart
   after  :finishing, 'deploy:update_crontab'
 end
-

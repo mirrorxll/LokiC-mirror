@@ -1,0 +1,129 @@
+=form_with(url: task_path(@multi_task), method: :patch, class: 'p-3', html: { onkeypress: "return event.keyCode !== 13;" }) do |form|
+  .row.small
+    .col
+      .form-group
+        =form.text_field 'task[title]', placeholder: 'title', class: 'form-control', required: true, value: @multi_task.title, maxlength: 500
+      .form-group
+        =form.text_area 'task[description]', id: 'task_description', value: @multi_task.description
+  %hr/
+
+  #checklists.accordion.mt-2
+    .card.small
+      .card-header.p-1
+        %div.row
+          .col-1
+            =icon('fa', 'plus', id: 'add_checklist')
+          .col-11.text-right
+            %div{"aria-controls" => "#checklistsCollapse", "aria-expanded" => "true", "data-target" => "#checklistsCollapse", "data-toggle" => "collapse", type: "button"}
+              checklists
+      #checklistsCollapse.collapse{"data-parent" => "#checklists", class: 'show'}
+        .row.mt-2.mb-2
+          .col#forms_checklists
+            -if @multi_task.checklists.exists?
+              -@multi_task.checklists.each do |checklist|
+                .row.justify-content-center.small.mt-2
+                  .mt-1.mr-2.small
+                    =icon('fa', 'circle')
+                  =form.text_field "checklists[#{checklist.id}]", style: 'width: 90%;', maxlength: 255, require: true, value: checklist.description
+                  .delete_checklist.ml-2{ onclick: "removeDate(this)" }
+                    =icon('fa', 'minus')
+  %hr/
+  .row.small.font-weight-bold
+    .col-3.border-right
+      .row.mb-2
+        .col
+          reminder frequency:
+        .col.text-left.small
+          =form.collection_select 'task[reminder_frequency]', sorted_reminder_frequencies, :id, :name, { selected: @multi_task.reminder_frequency.nil? ? '' : @multi_task.reminder_frequency.id, prompt: '' }, class: 'w-100'
+      .row.mb-2
+        .col
+          client:
+        .col.text-left.small
+          =form.collection_select 'task[client_id]', ClientsReport.all.order(:name), :id, :name, { selected: @multi_task.client.nil? ? '' : @multi_task.client.id, prompt: '' }, class: 'w-100'
+      -if params[:parent_task].blank?
+        .row.mb-2
+          .col
+            main_task:
+          .col.text-left.small
+            =form.collection_select 'task[parent]', Task.where.not(status: Status.find_by(name: 'deleted')).order(:id) - [@multi_task], :id, :title_with_id, { selected: @multi_task.parent.nil? ? '' : @multi_task.parent.id, prompt: '' }, class: 'w-100'
+      .row.mb-2
+        .col
+          gather_task:
+        .col.text-left.small
+          =form.text_field 'task[gather_task]', value: @multi_task.gather_task
+      .row.mb-2
+        .col
+          deadline:
+        .col.text-left.small
+          =form.date_field 'task[deadline]', value: @multi_task.deadline, type: :datetime
+      :javascript
+        $('input[id="task[deadline]"]').datepicker({
+          format: 'yyyy-mm-dd'
+        });
+      .row.mb-2
+        .col
+          access to task and its subtasks:
+        .col.text-left
+          =form.check_box 'task[access]', class: 'form-check-input ml-0 mt-1', checked: @multi_task.access
+    .col-9
+      .row.mb-2
+        .col-2
+          sow:
+        .col.small
+          =form.text_field 'task[sow]', placeholder: 'link to google sheet', maxlength: 255, class: 'w-100', value: @multi_task.sow
+      .row.mb-2
+        .col-2
+          pivotal tracker:
+        .col.small
+          =form.text_field 'task[pivotal_tracker_name]', placeholder: 'name', maxlength: 255, class: "w-100", value: @multi_task.pivotal_tracker_name
+      .row.mb-2
+        .col-2
+          pivotal tracker link:
+        .col.small
+          =form.text_field 'task[pivotal_tracker_url]', placeholder: 'link', maxlength: 255, class: "w-100", value: @multi_task.pivotal_tracker_url
+      %hr
+      .row
+        .col.font-weight-normal.mb-2
+          =link_to '[ add agency/opportunity/revenue_type ]', '#' , class: 'add_agency', id: 'add_agency_task'
+      .row
+        .col
+          #agency_opportunity_revenue_types_task.mb-2
+            =render 'multi_tasks/agencies_opportunities/edit_form', agency_opportunity_revenue_types:  @multi_task.agency_opportunity_revenue_types, form: form
+          #agenciesPercentsFeedback.text-danger.text-center.font-weight-normal.d-none
+            Total of percents must be 100
+
+  .modal-footer
+    =link_to( 'close', '#', class: 'ml-auto btn btn-sm btn-outline-secondary',
+              'data-dismiss' => 'modal')
+    =form.submit 'save changes', class: 'mr-auto btn btn-sm btn-outline-success'
+
+=render 'multi_tasks/agencies_opportunities/form', task: 'task'
+
+:javascript
+  $('#task').on('hidden.bs.modal', function () {
+    $('#task .modal-body').empty();
+  });
+
+  $('#add_checklist').click(function () {
+    let hex = secureRandom(6);
+
+    $('#forms_checklists').append(
+        `<div id="assignment_${hex}" class="row small justify-content-center mt-2">
+           <div class="small mt-1 mr-2"><i class="fa fa-circle"></i></div>
+           <input id="checklists[new_${hex}]" style='width: 90%' require=true maxlength="255" name="checklists[new_${hex}]"></input>
+           <div class="ml-2" id="rm_checklist_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
+         </div>`
+    );
+  });
+
+  function secureRandom(n) {
+    let result = '';
+    while (n--){
+      result += Math.floor(Math.random() * 16).toString(16);
+    }
+    return result;
+  }
+
+  function removeDate(elem) {
+    $(elem.parentNode).remove();
+  }

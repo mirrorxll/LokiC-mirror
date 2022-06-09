@@ -2,8 +2,10 @@
 
 module Accounts
   class ImpersonatesController < AccountsController
+    before_action :find_account, only: :create
+
     def create
-      impersonate_account Account.find(params[:account_id])
+      impersonate_account(@account)
       redirect_back fallback_location: root_path
     end
 

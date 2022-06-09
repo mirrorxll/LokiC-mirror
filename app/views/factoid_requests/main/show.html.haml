@@ -1,15 +1,15 @@
-%div{ id: "factoidRequest", factoid_request_id: @request.id }
+%div{ id: "factoidRequest", factoid_request_id: @factoid_request.id }
 
 %hr/
 #factoidRequestName.text-center
-  =link_to("##{@request.id} #{@request.name}", @request)
+  =link_to("##{@factoid_request.id} #{@factoid_request.name}", @factoid_request)
 %hr.mb-0/
 
 .d-flex.justify-content-between.align-items-center.mb-3.small
   .text-secondary
-    created by #{@request.requester.name}
+    created by #{@factoid_request.requester.name}
   .text-secondary
-    created at: #{@request.created_at}
+    created at: #{@factoid_request.created_at}
 
 #factoidRequestInfo.mt-4.mb-4.small
   .card
@@ -26,8 +26,8 @@
     .card-body
       =render 'factoid_request_info'
 
-#factoidRequestsTemplates.small
-  =render 'templates'
+#factoidRequestTemplates.small
+  =render partial: 'factoid_requests/templates/template', collection: (1..5)
 
 #updateFactoidRequestModal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "createWorkRequestModal",
                                        'data-backdrop' => 'static', "data-keyboard" => "false" }

@@ -5,23 +5,32 @@ class AccountsGrid
 
   # Scope
   scope do
-    Account.all
+    Account.order(id: :desc)
   end
 
+  # filter
+  filter(:status_id)
+
+  # columns
   column(:id, mandatory: true, header: 'ID', order: false)
-  column(:status, mandatory: true) do |record|
-    %w[active deactivated].sample
+  column(:name, mandatory: true) do |account|
+    format(account) { link_to(account.name, account) }
   end
-  column(:name, mandatory: true, &:name)
-  column(:roles, mandatory: true) do |record|
-    'ddd'
+  column(:slack, mandatory: true) do |account|
+    format(account.slack_identifier) do |slack_id|
+      if slack_id
+        link_to(account.slack&.user_name, "https://slack.com/app_redirect?channel=#{slack_id}", target: '_blank')
+      else
+        '---'
+      end
+    end
   end
-  column(:online, mandatory: true) do |record|
-    %w[online offline].sample
+  column(:roles, mandatory: true) do |account|
+    ''
   end
-  column(:login, mandatory: true) do |record|
-    format(record) do
-      link_to('login', account_impersonate_path(record), method: :post)
+  column(:login, mandatory: true) do |account|
+    format(account) do
+      link_to('login', account_impersonate_path(account), method: :post)
     end
   end
 end

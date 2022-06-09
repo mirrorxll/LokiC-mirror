@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module ArticleTypes
+module FactoidTypes
   class StagingTableAttachingJob < ArticleTypesJob
     def perform(article_type_id, account_id, staging_table_name)
       article_type = ArticleType.find(article_type_id)

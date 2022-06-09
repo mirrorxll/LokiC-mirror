@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
 module StoryTypes
-  class PhotoBucketsController < ApplicationController # :nodoc:
+  class PhotoBucketsController < StoryTypesController # :nodoc:
     skip_before_action :find_parent_article_type
     skip_before_action :set_article_type_iteration
 
-    before_action :render_403, if: :developer?
     before_action :find_photo_bucket, only: :include
 
     def include

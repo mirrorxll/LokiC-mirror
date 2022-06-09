@@ -18,7 +18,7 @@
 %hr/
 
 #filter.mt-3.mb-3.collapse{ class: (params[:scrape_tasks_grid] ? 'show' : '') }
-  =datagrid_form_for @grid, url: work_requests_path(archived: false)
+  =datagrid_form_for @grid, url: factoid_requests_path
 
 .row.small.mb-5
   .col-12
@@ -34,7 +34,7 @@
   .modal-dialog.modal-dialog-scrollable.modal-lg
     .modal-content
       .modal-header
-        FACTOID REQUEST FORM -- HLE
+        NEW FACTOID REQUEST
         %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
           %span{"aria-hidden" => "true"} ×
       .modal-body

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module ArticleTypes
+module FactoidTypes
   class ExportJob < ArticleTypesJob
     def perform(iteration_id, account_id, chunk)
       iteration     = ArticleTypeIteration.find(iteration_id)

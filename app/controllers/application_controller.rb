@@ -36,7 +36,7 @@ class ApplicationController < ActionController::Base
   end
 
   def find_parent_article_type
-    @article_type = ArticleType.find(params[:article_type_id])
+    @factoid_type = ArticleType.find(params[:article_type_id])
   end
 
   def set_story_type_iteration
@@ -53,45 +53,8 @@ class ApplicationController < ActionController::Base
       if params[:iteration_id]
         ArticleTypeIteration.find(params[:iteration_id])
       else
-        @article_type.iteration
+        @factoid_type.iteration
       end
-  end
-
-  def manager?
-    @current_account.types.include?('manager')
-  end
-
-  def editor?
-    @current_account.types.include?('editor')
-  end
-
-  def developer?
-    @current_account.types.include?('developer')
-  end
-
-  def scraper?
-    @current_account.types.include?('scraper')
-  end
-
-  def only_scraper?
-    acc_types = @current_account.types
-    acc_types.count.eql?(1) && acc_types.first.eql?('scraper')
-  end
-
-  def outside_manager?
-    @current_account.types.include?('outside manager')
-  end
-
-  def client?
-    @current_account.types.include?('client')
-  end
-
-  def guest_1?
-    @current_account.types.include?('guest-1')
-  end
-
-  def guest_2?
-    @current_account.types.include?('guest-2')
   end
 
   def staging_table_action(&block)
@@ -156,7 +119,7 @@ class ApplicationController < ActionController::Base
     flash.now[:warning] = tasks.each_with_object({ unconfirmed_multitask: [] }) do |task, warnings|
       warnings[:unconfirmed_multitask] << view_context.link_to(
         "#{task.title} assigned to you by #{task.creator.name}",
-        task
+        multi_task_path(task)
       ).html_safe
     end
   end

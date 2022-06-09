@@ -14,8 +14,6 @@ module Accounts
     end
 
     def destroy
-      stop_impersonating_account
-      redirect_to root_path
     end
   end
 end

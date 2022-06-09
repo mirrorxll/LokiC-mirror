@@ -1,11 +1,10 @@
--if correct_account?(@request)
-  .dropdown
-    %button#workRequestStatusButton.dropdown-toggle.border.rounded{ class: "bg-#{status_color(@request.status.name)}", "aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :type => "button"}
-      =@request.status.name
-    .small.dropdown-menu.manual-dropdown-menu.dropdown-menu-right{ "aria-labelledby" => "workRequestStatusButton" }
-      -Status.work_request_statuses.each do |s|
-        .dropdown-item.small{status_id: s.id, onclick: 'changeRequestStatus(this);'}
-          =s.name
+.dropdown
+  %button#workRequestStatusButton.dropdown-toggle.border.rounded{ class: "bg-#{status_color(@work_request.status.name)}", "aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :type => "button"}
+    =@work_request.status.name
+  .small.dropdown-menu.manual-dropdown-menu.dropdown-menu-right{ "aria-labelledby" => "workRequestStatusButton" }
+    -Status.work_request_statuses.each do |s|
+      .dropdown-item.small{status_id: s.id, onclick: 'changeRequestStatus(this);'}
+        =s.name
 
   :javascript
     function changeRequestStatus(status) {
@@ -32,13 +31,7 @@
       Rails.ajax({
         type: "PATCH",
         dataType: 'script',
-        url: `#{work_request_progress_status_path(@request)}`,
+        url: `#{work_request_progress_status_path(@work_request)}`,
         data: `status_id=${statusId}` + (reasons ? `&reasons=${reasons}` : '')
       })
     }
-
--else
-  .d-inline-block
-    status:
-  #statusButton.d-inline-block.border.text-center.rounded.pl-2.pr-2{ class: "bg-#{status_color(@request.status.name)}" }
-    =@request.status.name

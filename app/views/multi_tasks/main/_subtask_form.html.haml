@@ -1,0 +1,280 @@
+=form_with(url: create_subtask_multi_tasks_path, id: 'form_new_task', class: 'p-3',  html: { onkeypress: "return event.keyCode !== 13;" } ) do |form|
+  .row.small
+    .col
+      .form-group
+        =form.text_field 'task[title]', placeholder: 'title', id: 'newTaskName', class: 'form-control form-control-sm', required: true, maxlength: 500
+        #newTaskNameFeedback.text-danger.text-center.d-none
+          Task with this title already created by you. Let's use something else
+      .form-group
+        =form.text_area 'task[description]', class: 'form-control', id: 'task_description'
+      .form-group
+        =form.hidden_field 'task[parent]', value: params[:parent_task]
+  %hr/
+
+  #checklists.accordion.mt-2
+    .card.small
+      .card-header.p-1
+        %div.row
+          .col-1
+            =icon('fa', 'plus', id: 'add_checklist')
+          .col-11.text-right
+            %div{"aria-controls" => "#checklistsCollapse", "aria-expanded" => "true", "data-target" => "#checklistsCollapse", "data-toggle" => "collapse", type: "button"}
+              checklists
+      #checklistsCollapse.collapse{"data-parent" => "#checklists", class: 'show'}
+        .row.mt-2.mb-2
+          .col#forms_checklists
+  %hr/
+
+  .row.small.font-weight-bold
+    .col-3.border-right
+      .row.justify-content-between
+        .col
+          assignment to:
+        .col
+          .row.small
+            =form.collection_select 'task[assignment_to]', Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }, style: "width:130px"
+      %hr
+      .row.justify-content-between
+        .col
+          assistants:
+          =icon('fa', 'plus', class: 'ml-2', id: 'addAssistantSubtask')
+        .col#assistantsSubtaskForm
+      %hr
+      .row.justify-content-between
+        .col
+          notifications to:
+          =icon('fa', 'plus', class: 'ml-2', id: 'addNotificationsToSubtask')
+        .col#notificationsToSubtaskForm
+    .col-9
+      .d-flex
+        .col-6
+          .row.mb-2
+            .col-4
+              reminder frequency:
+            .col.text-left.small
+              =form.collection_select 'task[reminder_frequency]', sorted_reminder_frequencies, :id, :name, { prompt: '' }
+          .row.mb-2
+            .col-4
+              client:
+            .col.text-left.small
+              =form.collection_select 'task[client_id]', ClientsReport.all.order(:name), :id, :name, { prompt: '' }, style: "width:150px"
+          .row.mb-2
+            .col-4
+              gather_task:
+            .col.text-left.small
+              =form.text_field 'task[gather_task]', class: 'w-70'
+        .col-6
+          .row.mb-2
+            .col.text-right
+              deadline:
+            .col.text-left.small
+              =form.date_field 'task[deadline]', type: :datetime
+          .row.mb-2
+            .col.text-right
+              access to task and its subtasks:
+            .col.text-left
+              =form.check_box 'task[access]', class: 'form-check-input ml-0 mt-1', checked: true
+
+          :javascript
+            $('input[id="task[deadline]"]').datepicker({
+              format: 'yyyy-mm-dd'
+            });
+          .row.mb-2
+            -if params[:parent_task].blank?
+              .col.text-right
+                main_task:
+              .col.text-left.small
+                =form.collection_select 'task[parent]', Task.where(parent: nil).where.not(status: Status.find_by(name: 'deleted')).order(:id), :id, :title_with_id, { prompt: '' }, style: "width:150px"
+      %hr
+      .d-flex
+        .col-12
+          .row.font-weight-bold.col
+            .row.mb-2.mt-2
+              .col-2
+                sow:
+              .col.text-left.small
+                =form.text_field 'task[sow]', placeholder: 'link to google sheet', maxlength: 255, class: 'w-100', value: @multi_task_parent.sow
+            .row.mb-2
+              .col-2
+                pivotal tracker:
+              .col.text-left.small
+                =form.text_field 'task[pivotal_tracker_name]', placeholder: 'name', maxlength: 255, class: 'w-100'
+            .row.mb-2
+              .col-2
+                pivotal tracker link:
+              .col.text-left.small
+                =form.text_field 'task[pivotal_tracker_url]', placeholder: 'link', maxlength: 255, class: 'w-100'
+      %hr
+      .row.col
+        .col.font-weight-normal.mb-2
+          =link_to '[ add agency/opportunity/revenue_type ]', '#' , class: 'add_agency', id: 'add_agency_task'
+      .row
+        .col
+          #agency_opportunity_revenue_types_task.col.mb-2
+            =render 'task_agencies_opportunities/edit_form', agency_opportunity_revenue_types:  @multi_task_parent.agency_opportunity_revenue_types, form: form
+          #agenciesPercentsFeedback.text-danger.text-center.font-weight-normal.d-none
+            Total of percents must be 100
+  .modal-footer.justify-content-center
+    .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+      cancel
+    =form.submit :create, class: 'btn btn-sm btn-outline-success'
+
+=render 'multi_tasks/agencies_opportunities/form', task: 'task'
+
+:javascript
+  var accounts = #{raw Account.all.order([:first_name, :last_name]).map{ |account| [account.first_name.to_s + ' ' + account.last_name.to_s, account.id]} };
+  var current_account_id = #{raw current_account.id}
+
+  $('#addAssistantSubtask').click(function () {
+    let hex = secureRandom(6);
+
+    $('#assistantsSubtaskForm').append(
+        `<div id="assistant_${hex}" class="row small mt-1 mb-1" >
+           <select id="task[assistants][]" style = "width:130px" class="mr-1" name="task[assistants][]">${buildSelect(accounts)}</select>
+           <div class="ml-1" id="rm_assistant_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
+         </div>`
+    );
+  });
+
+  $('#addNotificationsToSubtask').click(function () {
+    let hex = secureRandom(6);
+
+    $('#notificationsToSubtaskForm').append(
+        `<div id="assistant_${hex}" class="row small mt-1 mb-1" >
+           <select id="task[notification_to][]" style = "width:130px" class="mr-1" name="task[notification_to][]">${buildSelect(accounts)}</select>
+           <div class="ml-1" id="rm_notification_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
+         </div>`
+    );
+  });
+
+  function buildSelect(options) {
+    var $select = $('');
+    $select += ('<option value="' + '' + '">' + '' + '</option>');
+    for (var i = 0; i < options.length; i++) {
+      $select += ('<option value="' + options[i][1] + '">' + options[i][0] + '</option>');
+    }
+    return $select;
+  }
+
+  function removeDate(elem) {
+    $(elem.parentNode).remove();
+  }
+
+  function secureRandom(n) {
+    let result = '';
+    while (n--){
+      result += Math.floor(Math.random() * 16).toString(16);
+    }
+    return result;
+  }
+
+  $('#task').on('hidden.bs.modal', function () {
+    $('#task .modal-body').empty();
+  });
+
+  function delay(fn, ms) {
+    let timer = 0;
+    return function(...args) {
+      clearTimeout(timer);
+      timer = setTimeout(fn.bind(this, ...args), ms || 0)
+    }
+  }
+
+  function isUniq(name, names) {
+    let lowName = name.toLowerCase();
+    return !names.find(el => lowName === el.toLowerCase());
+  }
+
+  document.querySelector('#form_new_task').addEventListener('input', delay(() => {
+    let percentInputs = document.getElementsByClassName('agencies_percents');
+    let percentFeedback = document.querySelector('#agenciesPercentsFeedback');
+
+    for (let i = 0; i < percentInputs.length; i++) {
+      percentInputs[i].classList.remove('border', 'border-danger');
+    }
+    percentFeedback.classList.add('d-none');
+
+    Rails.ajax({
+      type: 'GET',
+      dataType: 'json',
+      url: `#{root_url}api/tasks/titles`,
+      data: `creator_id=${current_account_id}`,
+      success: (names) => {
+        let nameInput = document.querySelector('#newTaskName');
+        let nameFeedback = document.querySelector('#newTaskNameFeedback');
+        let submitButton = document.querySelector('#form_new_task input[type="submit"]');
+        let nameIsUniq = isUniq(nameInput.value, names);
+
+        if(nameIsUniq === true) {
+          nameInput.classList.remove('border', 'border-danger');
+          nameFeedback.classList.add('d-none');
+          submitButton.disabled = false;
+        } else {
+          nameInput.classList.add('border', 'border-danger');
+          nameFeedback.classList.remove('d-none');
+          submitButton.disabled = true;
+        }
+      }
+    })
+  }, 500));
+
+  function onSubmit(ev) {
+    ev.preventDefault();
+    ev.stopPropagation();
+
+    let form = ev.target;
+    let nameInput = form.querySelector('#newTaskName');
+    let nameFeedback = form.querySelector('#newTaskNameFeedback');
+    let submitButton = form.querySelector('input[type="submit"]');
+
+    let percentInputs = document.getElementsByClassName('agencies_percents');
+    let percentFeedback = document.querySelector('#agenciesPercentsFeedback');
+
+    let sum = 0;
+    for (var i = 0; i < percentInputs.length; i++) {
+      sum += parseFloat(percentInputs[i].value)
+    }
+
+    if(Math.round(sum) === 100 || percentInputs.length === 0) {
+    }
+    else
+    {
+      for (let i = 0; i < percentInputs.length; i++) {
+        percentInputs[i].classList.add('border', 'border-danger');
+      }
+      percentFeedback.classList.remove('d-none');
+      return;
+    }
+
+    Rails.ajax({
+      type: 'GET',
+      dataType: 'json',
+      url: `#{root_url}api/tasks/titles`,
+      data: `creator_id=${current_account_id}`,
+      success: (names) => {
+        let nameIsUniq = isUniq(nameInput.value, names);
+
+        if(nameIsUniq) {
+          form.removeEventListener('submit', onSubmit)
+          Rails.fire(form, 'submit')
+        } else {
+          nameInput.classList.add('border', 'border-danger');
+          nameFeedback.classList.remove('d-none');
+          submitButton.disabled = true;
+        }
+      }
+    })
+  }
+  document.querySelector('#form_new_task').addEventListener('submit', onSubmit)
+
+  $('#add_checklist').click(function () {
+    let hex = secureRandom(6);
+    $('#forms_checklists').append(
+        `<div id="assignment_${hex}" class="row small justify-content-center mt-2">
+           <div class="small mt-1 mr-2"><i class="fa fa-circle"></i></div>
+           <input id="task[checklists][]" style='width: 90%' required=required maxlength="255" name="task[checklists][]"></input>
+           <div class="ml-2" id="rm_checklist_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
+         </div>`
+    );
+  });
+

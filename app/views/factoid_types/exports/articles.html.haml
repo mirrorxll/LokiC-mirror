@@ -1,0 +1,164 @@
+-if @iteration.export
+  #info.small.pt-3.pb-3
+    .row
+      .col-1.text-right
+        developer:
+      .col-11
+        #{@factoid_type.developer.name}
+
+    .row
+      .col-1.text-right
+        iteration:
+      .col-11
+        #{@iteration.name}
+
+    .row.mt-3
+      .col-1.mb-1.text-right
+        show factoids:
+      #show_samples.col-11
+
+  %hr.mt-1.mb-3/
+
+  %table#exported_factoids.table.table-striped.table-sm.small
+    %thead
+      %tr
+        %th#headline.text-center{ :scope => "col" }
+          show factoid
+        %th#headline{ :scope => "col" }
+          headline
+        %th#limpar{ :scope => "col" }
+          limpar
+        %th#lokic{ :scope => "col" }
+          lokic
+        %th#exported_at{ :scope => "col" }
+          exported_at
+      %tbody
+        -@articles.each do |factoid|
+          %tr.hovered_item
+            %td.pl-3
+              %label
+                %input{ type: 'checkbox', id: factoid.limpar_factoid_id,
+                        onchange: "saveShowSampleChoice(this.id, #{factoid.id}, this.checked)" }
+                =factoid.limpar_factoid_id
+            %td
+              =factoid.body
+            %td
+              =factoid.link? ? link_to('limpar', factoid.lp_link, target:'_blank') : '---'
+            %td
+              =link_to('lokic', article_type_iteration_sample_url(@factoid_type, @iteration, factoid), target:'_blank')
+            %td
+              =factoid.exported_at ? factoid.exported_at.strftime('%F') : '---'
+
+  %hr.mb-3/
+  .small
+    =paginate @articles, window: 3
+  %hr/
+
+  -lp_endpoint = 'http://limpar.locallabs.com/editorial_factoids/'
+
+  :javascript
+    (() => { sessionStorage['showSampleIds'] = '#{raw(@show_sample_ids.to_json)}' }).call();
+
+    function fillCheckedBoxes() {
+      let checkBox = null;
+      let showSampleIds = JSON.parse(sessionStorage['showSampleIds']);
+
+      for(const key in showSampleIds) {
+        checkBox = document.getElementById(key);
+        if (checkBox) { checkBox.checked = true; }
+      }
+    }
+    fillCheckedBoxes();
+
+    function checkBoxesOnOff(showSampleIds) {
+      let checkBoxesState = Object.keys(showSampleIds).length === 3
+
+      document.querySelectorAll('input[type="checkbox"]').forEach(elem => {
+        if (!elem.checked) { elem.disabled = checkBoxesState; }
+      })
+      return checkBoxesState;
+    }
+    checkBoxesOnOff(JSON.parse(sessionStorage['showSampleIds']));
+
+    function fillShowSamplesList() {
+      let showSampleIds = JSON.parse(sessionStorage['showSampleIds']);
+      let showSamples = document.getElementById('show_samples');
+      let link = null;
+      let span = null;
+      let showSampleBlock = null;
+
+      showSamples.innerHTML = '';
+
+      for(const key in showSampleIds) {
+        showSampleBlock = document.createElement('div')
+        showSampleBlock.id = `ss${key}`;
+        showSampleBlock.setAttribute('lokic', showSampleIds[key])
+        showSampleBlock.className = 'd-inline-block mr-3'
+
+        span = document.createElement('span');
+        span.className = "badge badge-light";
+
+        link = document.createElement('a');
+        link.innerText = key;
+        link.href = `#{lp_endpoint}${key}`;
+        link.target = '_blank';
+
+        span.appendChild(link);
+        showSampleBlock.appendChild(span);
+
+        span = document.createElement('span');
+        span.className = 'd-inline-block ml-1 mb-1 mouse-hover';
+        span.onclick = removeShowSample;
+        span.innerText = 'x';
+        showSampleBlock.appendChild(span);
+
+        showSamples.appendChild(showSampleBlock);
+      }
+    }
+    fillShowSamplesList();
+
+    function saveShowSampleChoice(checkboxId, lokicId, checked, isCheckBox = true) {
+      let showSampleIds = JSON.parse(sessionStorage['showSampleIds']);
+      let commit = null;
+
+      if(checked) {
+        showSampleIds[checkboxId] = lokicId;
+        commit = 'show';
+      } else {
+        delete showSampleIds[checkboxId];
+        commit = 'hide';
+      }
+
+      checkBoxesOnOff(showSampleIds);
+      sessionStorage['showSampleIds'] = JSON.stringify(showSampleIds);
+
+      Rails.ajax({
+        type: "PUT",
+        dataType: 'json',
+        url: `#{root_url}api/shown_samples/${lokicId}`,
+        data: `commit=${commit}&entity=article`,
+        success: function (_data) {
+          if (isCheckBox) {
+            fillShowSamplesList();
+            fillCheckedBoxes();
+          }
+        }
+      })
+    }
+
+    function removeShowSample() {
+      let showSample = this.parentNode;
+      let sampleId = showSample.id.replace('ss', '');
+      let lokicId = showSample.getAttribute('lokic')
+      let checkBox = document.getElementById(sampleId)
+
+      if (checkBox) { checkBox.checked = false; }
+      showSample.remove();
+
+      saveShowSampleChoice(sampleId, lokicId, false, false)
+    }
+-else
+  %hr/
+  .row
+    .col-12.text-center.alert.alert-danger
+      Export process not ended or developer #{"#{@factoid_type.developer.name} "}is making some changes for this iteration

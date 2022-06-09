@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
 module StoryTypes
-  class ExportsController < ApplicationController
+  class ExportsController < StoryTypesController
     skip_before_action :find_parent_article_type
     skip_before_action :set_article_type_iteration
 
-    before_action :render_403_editor, except: :stories, if: :editor?
-    before_action :render_403_developer, only: %i[stories submit_editor_report submit_manager_report], if: :developer?
     before_action :show_sample_ids, only: :stories
     before_action :removal, only: :remove_exported_stories
     before_action :revision_reminder, only: :execute, if: :template_with_expired_revision
@@ -40,7 +38,7 @@ module StoryTypes
     def stories
       @stories =
         @iteration.stories.includes(:output, :publication)
-                  .order(backdated: :asc, published_at: :asc).page(params[:page]).per(25)
+                  .order(backdated: :asc, published_at: :asc).page(params[:page]).per(30)
       @tab_title = "LokiC :: StoryType ##{@story_type.id} :: Stories"
     end
 

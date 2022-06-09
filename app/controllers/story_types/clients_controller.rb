@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
 module StoryTypes
-  class ClientsController < ApplicationController # :nodoc:
+  class ClientsController < StoryTypesController # :nodoc:
     skip_before_action :find_parent_article_type
     skip_before_action :set_article_type_iteration
     skip_before_action :set_story_type_iteration
 
-    before_action :render_403, if: :developer?
     before_action :find_client
     before_action :all_local_publications, only: :include
 

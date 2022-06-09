@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Execute population method on sidekiq backend
-module ArticleTypes
+module FactoidTypes
   class PopulationJob < ArticleTypesJob
     def perform(iteration_id, account_id, options)
       options.deep_symbolize_keys!

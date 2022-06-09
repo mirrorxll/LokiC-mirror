@@ -6,42 +6,42 @@
   .col-3.pr-0.text-right.font-weight-bold
     AGENCY:
   .col-9
-    =@request.agency&.name
+    =@factoid_request.agency&.name
 .row.mb-1
   .col-3.pr-0.text-right.font-weight-bold
     OPPORTUNITY:
   .col-9
-    =@request.opportunity&.name
+    =@factoid_request.opportunity&.name
 .row.mt-1
   .col-3.pr-0.text-right.font-weight-bold
     DESCRIPTION:
   .col-9
-    =@request.description&.body.html_safe
+    =@factoid_request.description&.body.html_safe
 .row
   .col-3.pr-0.text-right.font-weight-bold
     PURPOSE:
   .col-9
-    =@request.purpose&.body.html_safe
+    =@factoid_request.purpose&.body.html_safe
 .row
   .col-3.pr-0.text-right.font-weight-bold
     DATA SETS:
   .col-9
-    -@request.data_sets.each do |ds|
+    -@factoid_request.data_sets.each do |ds|
       =link_to(ds.name, ds, target: '_blank')
       %br/
 .row.mt-1.text-break
   .col-3.pr-0.text-right.font-weight-bold
     GOOGLE DOCUMENT/SPREADSHEETS:
   .col-9
-    -if @request.google_doc_sheet_link.present?
-      =link_to(nil, @request.google_doc_sheet_link)
+    -if @factoid_request.google_doc_sheet_link.present?
+      =link_to(nil, @factoid_request.google_doc_sheet_link)
 .row.mt-1.text-break
   .col-3.pr-0.text-right.font-weight-bold
     PRIORITY:
   .col-9
-    =@request.priority.name.split(' - ').first
+    =@factoid_request.priority.name.split(' - ').first
 .row.mb-4.text-break
   .col-3.pr-0.text-right.font-weight-bold
     FREQUENCY:
   .col-9
-    =@request.frequency&.name
+    =@factoid_request.frequency&.name

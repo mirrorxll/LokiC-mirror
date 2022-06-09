@@ -1,4 +1,4 @@
-=form_with(url: factoid_request_path(@request), method: 'PUT', html: { class: 'small', onkeypress: "return event.keyCode !== 13;" } ) do |f|
+=form_with(url: factoid_request_path(@factoid_request), method: 'PUT', html: { class: 'small', onkeypress: "return event.keyCode !== 13;" } ) do |f|
   #nameAnchor.mb-1
   #name.card
     .card-body
@@ -6,7 +6,7 @@
         NAME:
         %span.small.text-danger
           *required
-      =f.text_field "factoid_request[name]", class: 'form-control form-control-sm', value: @request.name
+      =f.text_field "factoid_request[name]", class: 'form-control form-control-sm', value: @factoid_request.name
 
   #opportunitiesAnchor.mb-3
   #opportunities.card
@@ -21,12 +21,12 @@
         .row
           .col-6
             =f.collection_select 'factoid_request[agency_id]', Agency.order(:name), :id, :name,
-                                 { include_blank: '', selected: @request.agency&.id },
+                                 { include_blank: '', selected: @factoid_request.agency&.id },
                                  { class: 'form-control form-control-sm', onchange: 'updateOpportunitiesList(this.value)' }
           .col-6
-            -opportunities = @request.agency&.opportunities || []
+            -opportunities = @factoid_request.agency&.opportunities || []
             =f.collection_select 'factoid_request[opportunity_id]', opportunities, :id, :name,
-                                 { include_blank: '', selected: @request.opportunity&.id },
+                                 { include_blank: '', selected: @factoid_request.opportunity&.id },
                                  { class: 'form-control form-control-sm' }
           :javascript
             function updateOpportunitiesList(agency_id) {
@@ -61,7 +61,7 @@
     .card-body
       .font-weight-bold.mb-1
         DESCRIPTION:
-      =f.text_area "factoid_request[description]", value: @request.description&.body
+      =f.text_area "factoid_request[description]", value: @factoid_request.description&.body
   :javascript
     $('#description textarea').froalaEditor({
       key: 'KfdolbcqsaA2wzA-13==',
@@ -82,7 +82,7 @@
     .card-body
       .font-weight-bold.mb-1
         PURPOSE:
-      =f.text_area "factoid_request[purpose]", value: @request.description&.body
+      =f.text_area "factoid_request[purpose]", value: @factoid_request.description&.body
   :javascript
     $('#purpose textarea').froalaEditor({
       key: 'KfdolbcqsaA2wzA-13==',
@@ -104,7 +104,7 @@
       .font-weight-bold.mb-1
         DATA SETS:
       .list
-        -@request.data_sets.each do |ds|
+        -@factoid_request.data_sets.each do |ds|
           .row.mb-2.align-items-center{ class: "data-set-#{ds.id}"}
             .col-1.text-right
               =f.check_box "factoid_request[tf_data_set__#{ds.id}]", checked: true
@@ -146,7 +146,7 @@
         FREQUENCY:
       .frequency
         =f.collection_select 'factoid_request[frequency_id]', Frequency.all, :id, :name,
-                             { include_blank: '', selected: @request.frequency&.id },
+                             { include_blank: '', selected: @factoid_request.frequency&.id },
                              { class: 'w-50 form-control form-control-sm' }
 
   #googleDocSheetLinkAnchor.mb-3
@@ -158,7 +158,7 @@
           ***link to Google Doc or Spreadsheet
       .google-doc-sheet-link
         =f.text_field "factoid_request[google_doc_sheet_link]", class: 'form-control form-control-sm',
-                      value: @request.google_doc_sheet_link
+                      value: @factoid_request.google_doc_sheet_link
 
   #priorityAnchor.mb-3
   #priority.card
@@ -171,7 +171,7 @@
         -Priority.all.each do |pr|
           .row.mb-1.align-items-center{ class: "revenue-type-#{pr.id}"}
             .col-1.text-right
-              =f.radio_button "factoid_request[priority_id]", pr.id, checked: @request.priority.eql?(pr)
+              =f.radio_button "factoid_request[priority_id]", pr.id, checked: @factoid_request.priority.eql?(pr)
             .col-11.pl-0.text-left
               =f.label "factoid_request[priority_id]", pr.name, value: pr.id, class: 'm-0'
 

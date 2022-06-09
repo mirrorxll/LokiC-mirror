@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module StoryTypes
-  class OpportunitiesController < ApplicationController
+  class OpportunitiesController < StoryTypesController
     skip_before_action :find_parent_article_type
     skip_before_action :set_article_type_iteration
     skip_before_action :set_story_type_iteration

@@ -1,0 +1,81 @@
+%hr/
+.row.justify-content-center
+  =link_to("##{@multi_task.id} #{@multi_task.title}", multi_task_path(@multi_task))
+%hr/
+
+.row
+  .col#assignments
+    =render 'multi_tasks/assignments/assignments', task: @multi_task
+  .col#task_status.text-right
+    =render 'multi_tasks/progress_statuses/status', task: @multi_task
+
+.row.mt-3
+  .col-5
+    .mb-1
+      =render 'task_info'
+      #confirms
+        =render 'multi_tasks/receipts/confirm_receipts', task: @multi_task
+  .col-7
+    .card{style: 'height: 375px;'}
+      .card-header.p-1
+        .d-flex.justify-content-between.small
+          comments
+          -if current_account.eql?(@multi_task.creator) || current_account.in?(@multi_task.assignment_to)
+            #comment_form
+              =link_to('[ add comment ]',
+                       new_multi_task_comment_path(@multi_task, subtype: 'user comment'),
+                       remote: true)
+      .card-body
+        =render 'comments', comments: @comments
+
+-if current_account.eql?(@multi_task.creator) || current_account.in?(@multi_task.assignment_to)
+  #notes.accordion.mt-2
+    .card.small
+      .card-header.p-1
+        %div.row
+          .col-11
+            %div{"aria-controls" => "#notesCollapse", "aria-expanded" => "true", "data-target" => "#notesCollapse", "data-toggle" => "collapse", type: "button"}
+              notes
+          .col-1.text-right#linkEditNote
+            -unless @note.nil?
+              =render 'multi_tasks/notes/link_edit', note: @note
+      #notesCollapse.collapse{"data-parent" => "#notes"}
+        =render 'multi_tasks/notes/note', note: @note
+
+#subtasks.accordion.mt-2
+  .card.small
+    .card-header.p-1
+      %div.row
+        .col-11
+          %div{"aria-controls" => "#subtasksCollapse", "aria-expanded" => "true", "data-target" => "#subtasksCollapse", "data-toggle" => "collapse", type: "button"}
+            subtasks
+        .col-1.text-right
+          -if @multi_task.creator?(current_account)
+            =link_to '[ create ]', new_subtask_multi_tasks_path(parent_task: @multi_task), remote: true
+    #subtasksCollapse.collapse{"data-parent" => "#subtasks", class: @multi_task.subtasks.count > 0 ? 'show' : '' }
+      =render 'subtasks'
+
+.card.mt-2
+  .card-header.p-1
+    .d-flex.justify-content-between.small
+      info
+      -if @multi_task.creator?(current_account)
+        =link_to '[ edit task ]', edit_multi_task_path(@multi_task), remote: true
+  .card-body
+    #body
+      .row.small.mb-3
+        .col-10.offset-1
+          .fr-view
+            -if @multi_task.checklists.exists?
+              %ul
+                -@multi_task.checklists.each do |checklist|
+                  %li.mb-2
+                    =checklist.description
+              %hr.mt-3.mb-3
+            =@multi_task.description&.html_safe
+
+=render 'multi_tasks/checklists/confirms'
+=render 'multi_tasks/tracking_hours/hours_form'
+
+=render 'multi_tasks/main/task_modal'
+=render 'multi_tasks/comments/comment_modal'

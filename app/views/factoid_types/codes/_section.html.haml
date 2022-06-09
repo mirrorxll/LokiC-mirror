@@ -1,0 +1,6 @@
+-if !@factoid_type.iteration.eql?(@iteration)
+  \---
+-elsif @factoid_type.code.attached?
+  =render 'article_types/codes/code'
+-else
+  =render 'article_types/codes/form'

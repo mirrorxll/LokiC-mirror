@@ -1,8 +1,0 @@
-$('#task_status').html(`<%= j render 'task_statuses/status', task: @task %>`);
-$('#done').html(`<%= j render 'tasks/done', task: @task %>`);
-<%-if @comment %>
-  $('#comments').prepend(`<%= j render 'task_comments/comment', comment: @comment %>`);
-<%-end %>
-$('#comment').modal('hide');
-$('#task_done').modal('hide');
-$('#hours').modal('hide');

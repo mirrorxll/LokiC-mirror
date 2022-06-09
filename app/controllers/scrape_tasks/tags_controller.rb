@@ -1,12 +1,7 @@
 # frozen_string_literal: true
 
 module ScrapeTasks
-  class TagsController < ApplicationController
-    skip_before_action :find_parent_story_type
-    skip_before_action :find_parent_article_type
-    skip_before_action :set_story_type_iteration
-    skip_before_action :set_article_type_iteration
-
+  class TagsController < ScrapeTasksController
     before_action :find_scrape_task
     before_action :find_or_create_tag_by_name, only: :include
     before_action :find_tag, only: :exclude

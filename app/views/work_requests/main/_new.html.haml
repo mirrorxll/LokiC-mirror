@@ -186,13 +186,13 @@
   =f.submit 'Submit', id: 'hiddenCreateButton', class: 'd-none'
 
 :javascript
-    document.querySelector('#createWorkRequestModal form').addEventListener('submit', onSubmit)
+  document.querySelector('#createWorkRequestModal form').addEventListener('submit', onSubmit)
 
   function onSubmit(event) {
     event.preventDefault();
     event.stopPropagation();
 
-    let sections = `#projectOrderName, #projectOrderDetails, #priority#{current_account.types.include?('manager') ? ', #sow' : ''}`
+    let sections = `#projectOrderName, #projectOrderDetails, #priority, #sow`
     let cards = document.querySelectorAll(sections);
     [...cards].forEach((el) => { el.classList.remove('border-danger') })
 

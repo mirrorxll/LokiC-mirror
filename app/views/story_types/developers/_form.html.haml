@@ -1,5 +1,5 @@
 %div{id: "story_type_#{story_type.id}_developer"}
   =form_with(url: include_story_type_developers_path(story_type), method: :patch,
              html: { onchange: "Rails.fire(this, 'submit')" }) do |form|
-    =form.collection_select :developer_id, Account.includes(:account_types).where(account_types: { name: 'developer' }).order(:first_name, :last_name),
+    =form.collection_select :developer_id, Account.all.order(:first_name, :last_name),
                             :id, :name, { prompt: '' }, { name: :id }

@@ -1,0 +1,5 @@
+.row.col.d-block.m-2
+  -if note.nil?
+    =render 'multi_tasks/notes/form'
+  -else
+    =note.body.html_safe

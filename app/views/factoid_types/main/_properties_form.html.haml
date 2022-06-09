@@ -1,0 +1,70 @@
+.properties-form
+  #changeDataSet_template.row.small
+    .col-1
+    .col-11
+      .row.font-weight-bold
+        .col-4.pl-0
+          data set
+        .col-4
+          kind
+        .col-4
+          topic
+      .row
+        .col-4.change-ds-form.pl-0
+          =render 'change_data_set'
+        .col-4.pl-0
+          =form_with(url: article_type_path(@factoid_type), scope: :article_type, method: :put, html: { onchange: "loadDescriptions(this);" }) do |form|
+            =form.select :kind_id, Kind.sub_kinds.pluck(:name, :id), prompt: 'Select Kind'
+            =form.hidden_field :topic_id, value: nil
+        .col-4.pl-0
+          =form_with(url: article_type_path(@factoid_type), scope: :article_type, method: :put, html: { onchange: "Rails.fire(this, 'submit')" }) do |form|
+            =form.select :topic_id, @factoid_type.kind.nil? ? [] : @factoid_type.kind.parent_kind.topics.actual.order(:description).pluck(:description, :id), prompt: 'Select Description'
+  %hr.mt-2/
+
+  #sources.row.small
+    .col-1
+    .col-11
+      .row.font-weight-bold
+        .col-3.pl-0
+          source type
+        .col-3
+          source name
+        .col-3
+          source link
+        .col-3
+          original publish date
+      =form_with(model: @factoid_type) do |form|
+        .row
+          .col-3.pl-0
+            =form.text_field :source_type, placeholder: 'new source_type'
+          .col-3.pl-0
+            =form.text_field :source_name, placeholder: 'new source_name'
+          .col-3.pl-0
+            =form.text_field :source_link, placeholder: 'new source_link'
+          .col-3.pl-0
+            =form.date_field :original_publish_date, placeholder: 'new original_publish_date'
+            =form.submit :save
+
+:javascript
+  function loadDescriptions(form){
+    var selected_kind = $('option:selected', form).val();
+    console.log(selected_kind);
+    Rails.fire(form, 'submit');
+
+    Rails.ajax({
+      type: 'GET',
+      dataType: 'script',
+      url: `#{get_descriptions_article_type_topics_path(@factoid_type.id)}`,
+      data: `kind=${selected_kind}`
+    });
+  }
+
+  function changeTopic(elem){
+    var selected_desc = $('option:selected', elem).val();
+
+    Rails.ajax({
+      type: 'PATCH',
+      dataType: 'script',
+      url: `${window.location.origin}/article_types/#{@factoid_type.id}/topics/${selected_desc}/change`
+    });
+  }

@@ -1,7 +1,0 @@
-.row
-  .col-12
-    -if correct_account?(@article_type)
-      =link_to('[ reload ]', reload_article_type_codes_path(@article_type),
-               class: 'p-0 btn btn-sm btn-link', method: :put, data: { disable_with: '[ ... ]'}, remote: true)
-    =link_to('[ download ]', rails_blob_path(@article_type.code), class: 'p-0 btn btn-sm btn-link')
-    =link_to('[ show ]', article_type_codes_path(@article_type), class: 'p-0 btn btn-sm btn-link', remote: true)

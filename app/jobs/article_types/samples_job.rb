@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module ArticleTypes
+module FactoidTypes
   class SamplesJob < ArticleTypesJob
     def perform(iteration_id, account_id, options = {})
       options.deep_symbolize_keys!

@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
 module StoryTypes
-  class SamplesController < ApplicationController # :nodoc:
+  class SamplesController < StoryTypesController # :nodoc:
     skip_before_action :find_parent_article_type
     skip_before_action :set_article_type_iteration
 
     before_action :find_sample, only: %i[show edit update]
 
     def index
-      @grid_params = request.parameters[:story_type_iteration_stories_grid] || {}
+      @grid = request.parameters[:story_type_iteration_stories_grid] || {}
 
-      @iteration_stories_grid = StoryTypeIterationStoriesGrid.new(@grid_params.merge(client_ids: @story_type.clients.pluck(:name, :id))) do |scope|
+      @iteration_stories_grid = StoryTypeIterationStoriesGrid.new(@grid.merge(client_ids: @story_type.clients.pluck(:name, :id))) do |scope|
         scope.where(story_type_id: params[:story_type_id], story_type_iteration_id: params[:iteration_id])
       end
 

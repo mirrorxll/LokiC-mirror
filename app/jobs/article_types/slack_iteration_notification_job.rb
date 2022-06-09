@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module ArticleTypes
+module FactoidTypes
   class SlackIterationNotificationJob < ArticleTypesJob
     def perform(iteration_id, step, raw_message, developer_id = nil)
       iteration        = ArticleTypeIteration.find(iteration_id)

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module ArticleTypes
+module FactoidTypes
   class PurgeCreationJob < ArticleTypesJob
     def perform(iteration_id, account_id)
       iteration = ArticleTypeIteration.find(iteration_id)

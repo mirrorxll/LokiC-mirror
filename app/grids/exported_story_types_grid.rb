@@ -15,7 +15,7 @@ class ExportedStoryTypesGrid
   accounts = Account.all.map { |r| [r.name, r.id] }.sort
   filter(:developer, :enum, select: accounts)
 
-  accounts = Account.joins(:account_types).where(account_types: { name: %i[manager editor] }).map { |r| [r.name, r.id] }.sort
+  accounts = Account.all.map { |r| [r.name, r.id] }.sort
   filter(:editor, :enum, select: accounts) do |value, scope|
     story_type_ids = StoryType.where(editor_id: value).ids
     scope.where(story_type_id: story_type_ids)

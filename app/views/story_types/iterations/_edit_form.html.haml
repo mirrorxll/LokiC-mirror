@@ -1,8 +1,7 @@
--if correct_account?(@story_type)
-  .small
-    .d-flex.flex-row
-      =form_with(url: story_type_iteration_path(@story_type, iteration), method: :patch) do |form|
-        =form.text_field 'iteration[name]', placeholder: 'new name', required: true
-        =form.submit :rename
-      -if @story_type.iteration != iteration
-        =button_to('apply', apply_story_type_iteration_path(@story_type, iteration), method: :patch)
+.small
+  .d-flex.flex-row
+    =form_with(url: story_type_iteration_path(@story_type, iteration), method: :patch) do |form|
+      =form.text_field 'iteration[name]', placeholder: 'new name', required: true
+      =form.submit :rename
+    -if @story_type.iteration != iteration
+      =button_to('apply', apply_story_type_iteration_path(@story_type, iteration), method: :patch)

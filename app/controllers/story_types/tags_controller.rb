@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
 module StoryTypes
-  class TagsController < ApplicationController # :nodoc:
+  class TagsController < StoryTypesController # :nodoc:
     skip_before_action :find_parent_article_type
     skip_before_action :set_article_type_iteration
 
-    before_action :render_403, if: :developer?
     before_action :find_client_publication_tag
     before_action :find_tag, only: :include
 

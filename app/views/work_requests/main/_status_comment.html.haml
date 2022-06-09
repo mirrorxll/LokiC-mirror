@@ -1,7 +1,7 @@
--if @request.status.name.in?(%w[blocked canceled])
+-if @work_request.status.name.in?(%w[blocked canceled])
   .row.mb-4
     .col-2.pr-0.text-right.text-danger.font-weight-bold
-      #{@request.status.name.capitalize}. Why?
+      #{@work_request.status.name.capitalize}. Why?
     .col-10
-      =@request.status_comment&.body
+      =@work_request.status_comment&.body
   %hr/

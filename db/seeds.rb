@@ -1,25 +1,40 @@
 # frozen_string_literal: true
 
-def account_type(db02)
-  query = 'SELECT name FROM account_types;'
-  db02.query(query).to_a
+def account_roles
+  [
+    'manager',
+    'hle content manager',
+    'hle fc checker',
+    'hle content developer',
+    'scrape manager',
+    'scrape developer',
+    'client',
+    'guest',
+    'data reviewer',
+    'data cleaner'
+  ]
+end
+
+def account_branch
+  [
+    'work requests',
+    'factoid requests',
+    'multi tasks',
+    'scrape tasks',
+    'data sets',
+    'story types',
+    'factoid types',
+    'accounts'
+  ]
+end
+
+def account_branch_access_levels
+  %w[manager user]
 end
 
 def account(db02)
-  count = AccountType.all.count
-  query = "SELECT first_name, last_name FROM accounts ORDER BY id LIMIT #{count};"
-  response = db02.query(query).to_a
-
-  accounts = []
-  response.zip(AccountType.pluck(:name)).each do |a, b|
-    record = {}
-    record[:first_name] = a['first_name']
-    record[:last_name] = a['last_name']
-    record[:email] = "#{b.parameterize.underscore}@lokic.loc"
-    record[:password] = '123456'
-    accounts << record
-  end
-  accounts
+  query = 'SELECT email, first_name, last_name FROM accounts;'
+  db02.query(query).to_a
 end
 
 def frequency(db02)
@@ -39,7 +54,7 @@ end
 
 def status(db02)
   query = 'SELECT name FROM statuses;'
-  db02.query(query).to_a
+  db02.query(query).to_a + [{ name: 'active' }, { name: 'deactivated' }]
 end
 
 def level(db02)
@@ -98,53 +113,56 @@ end
 db02 = MiniLokiC::Connect::Mysql.on(DB02, 'lokic')
 db02_sec = MiniLokiC::Connect::Mysql.on(DB02, 'lokic_secondary')
 
-puts 'Account Types'
-account_type(db02).each { |obj| AccountType.create!(obj) }
-
-puts 'Accounts'
-account(db02).each { | obj | Account.create!(obj) }
+puts 'Account Roles/Branches'
+account_roles.each { |role| Role.find_or_create_by!(name: role) }
+account_branch.each do |branch|
+  Branch.find_or_create_by!(name: branch)
+  account_branch_access_levels.each do |lvl|
+    AccessLevel.find_or_create_by!(name: lvl)
+  end
+end
 
 puts 'Frequencies'
-frequency(db02).each { |obj| Frequency.create!(obj) }
+frequency(db02).each { |obj| Frequency.find_or_create_by!(obj) }
 
 puts 'States'
-state(db02).each { |obj| State.create!(obj) }
+state(db02).each { |obj| State.find_or_create_by!(obj) }
 
 puts 'Data Set Categories'
-data_set_category(db02).each { |obj| DataSetCategory.create!(obj) }
+data_set_category(db02).each { |obj| DataSetCategory.find_or_create_by!(obj) }
 
 puts 'Statuses'
-status(db02).each { |obj| Status.create!(obj) }
+status(db02).each { |obj| Status.find_or_create_by!(obj) }
 
 puts 'Levels'
-level(db02).each { |obj| Level.create!(obj) }
+level(db02).each { |obj| Level.find_or_create_by!(obj) }
 
 puts 'Fact Checking Channels'
 Account.all.each { |acc| acc.create_fact_checking_channel(name: "fcd_#{acc.first_name.downcase}_#{acc.last_name.downcase}") }
 
 puts 'Work Types'
-work_type(db02).each { |obj| WorkType.create!(obj) }
+work_type(db02).each { |obj| WorkType.find_or_create_by!(obj) }
 
 puts 'Underwriting Projects'
-underwriting_project(db02).each { |obj| UnderwritingProject.create!(obj) }
+underwriting_project(db02).each { |obj| UnderwritingProject.find_or_create_by!(obj) }
 
 puts 'Revenue Types'
-revenue_type(db02).each { |obj| RevenueType.create!(obj) }
+revenue_type(db02).each { |obj| RevenueType.find_or_create_by!(obj) }
 
 puts 'Priorities'
-priority(db02).each { |obj| Priority.create!(obj) }
+priority(db02).each { |obj| Priority.find_or_create_by!(obj) }
 
 puts 'Invoice Types'
-invoice_type(db02).each { |obj| InvoiceType.create!(obj) }
+invoice_type(db02).each { |obj| InvoiceType.find_or_create_by!(obj) }
 
 puts 'Invoice Frequencies'
-invoice_frequency(db02).each { |obj| InvoiceFrequency.create!(obj) }
+invoice_frequency(db02).each { |obj| InvoiceFrequency.find_or_create_by!(obj) }
 
 puts 'Task Reminder Frequencies'
-task_reminder_frequency(db02).each { |obj| TaskReminderFrequency.create!(obj) }
+task_reminder_frequency(db02).each { |obj| TaskReminderFrequency.find_or_create_by!(obj) }
 
 puts 'Weeks'
-weeks(db02_sec).each { |obj| Week.create!(obj) }
+weeks(db02_sec).each { |obj| Week.find_or_create_by!(obj) }
 
 db02.close
 db02_sec.close
@@ -156,7 +174,6 @@ SlackAccountsJob.new.perform
 hidden = Client.where('name LIKE :like OR name IN (:mm, :mb)',
                       like: 'MM -%', mm: 'Metric Media', mb: 'Metro Business Network')
 hidden.update_all(hidden_for_story_type: false)
-
 
 # ============ FeedBack rules for stories ============
 rules = {
@@ -253,4 +270,4 @@ rules = {
 }
 
 puts 'Auto-feedback'
-rules.each { |rule, output| AutoFeedback.create!(rule: rule, output: output) }
+rules.each { |rule, output| AutoFeedback.find_or_create_by!(rule: rule, output: output) }

@@ -22,7 +22,7 @@
               =icon('fa', 'inbox', class: 'ml-2', 'data-container' => 'body', 'data-toggle' => 'popover',
                     'data-placement' => 'right', 'data-content' => "old name -> #{staging_table.old_name}")
 
-      -if @iteration.eql?(@story_type.iteration) && correct_account?(@story_type)
+      -if @iteration.eql?(@story_type.iteration)
         .row#staging_table_control
           .col-1#sync
             .btn-group

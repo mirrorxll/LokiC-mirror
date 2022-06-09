@@ -11,13 +11,13 @@ module Api
       end
 
       def update
-        render json: { success: @task.update(status: @status) }
+        render json: { success: @multi_task.update(status: @status) }
       end
 
       private
 
       def find_task
-        @task = Task.find(params[:task_id])
+        @multi_task = Task.find(params[:task_id])
       end
 
       def find_status

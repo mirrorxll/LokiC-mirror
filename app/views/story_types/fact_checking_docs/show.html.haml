@@ -1,5 +1,4 @@
 -if @iteration.auto_feedback_confirmations.all?(&:confirmed)
-  -account_types = current_account.types
   -reviewers_feedback = @fcd.reviewers_feedback
   -editors_feedback = @fcd.editors_feedback
   %hr/
@@ -14,9 +13,8 @@
         %ov.breadcrumb.mb-0
           %li.breadcrumb-item
             =link_to('home', root_url)
-          -if current_account.types.include?('editor')
-            %li.breadcrumb-item
-              =link_to('data set', data_set_path(@story_type.data_set))
+          %li.breadcrumb-item
+            =link_to('data set', data_set_path(@story_type.data_set))
           %li.breadcrumb-item
             =link_to('story type', story_type_path(@story_type))
           %li.breadcrumb-item.active{ 'area-current' => 'page' }
@@ -159,4 +157,4 @@
   .row
     .col-12.text-center.alert.alert-danger
       First...confirm all auto-feedback.
-=render 'story_types/template_modal'
+=render 'story_types/main/template_modal'

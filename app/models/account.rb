@@ -5,10 +5,28 @@ class Account < ApplicationRecord # :nodoc:
 
   has_secure_password
 
-  before_create { generate_token(:auth_token) }
+  before_create do
+    generate_token(:auth_token)
+    self.status = Status.find_by(name: 'active')
+  end
+
+  after_create do
+    guest_access = AccessLevel.find_by(name: 'user')
+    Branch.find_each do |b|
+      AccountBranchAccessLevel.create(
+        account: self,
+        branch: b,
+        access_level: guest_access
+      )
+    end
+  end
+
+  belongs_to :status, optional: true
+  belongs_to :creator, class_name: 'Account', optional: true
 
   has_one :slack, class_name: 'SlackAccount'
   has_one :fact_checking_channel
+  has_one :status_comment, -> { where(subtype: 'status comment') }, as: :commentable, class_name: 'Comment'
 
   has_many :data_sets
   has_many :sheriffs,              foreign_key: :sheriff_id,   class_name: 'DataSet'
@@ -23,8 +41,9 @@ class Account < ApplicationRecord # :nodoc:
   has_many :comments, foreign_key: :commentator_id
   has_many :assigned_scrape_tasks, class_name: 'ScrapeTask', foreign_key: :scraper_id
   has_many :created_scrape_tasks,  class_name: 'ScrapeTask', foreign_key: :creator_id
+  has_many :branch_access_levels, class_name: 'AccountBranchAccessLevel'
 
-  has_and_belongs_to_many :account_types
+  has_and_belongs_to_many :roles
 
   validates :email, presence: true, format: { with: /\A[^@\s]+@[^@\s]+\z/, message: 'Invalid' }
   validates_uniqueness_of :email, case_sensitive: true
@@ -39,10 +58,6 @@ class Account < ApplicationRecord # :nodoc:
 
   def name
     "#{first_name} #{last_name}"
-  end
-
-  def types
-    account_types.map(&:name)
   end
 
   def slack_identifier

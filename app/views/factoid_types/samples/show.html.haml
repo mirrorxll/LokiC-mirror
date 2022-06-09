@@ -1,0 +1,29 @@
+%hr/
+.row
+  .col-12.text-center
+    %b #{@factoid_type.id_name}
+%hr/
+-if @factoid_type.code.attached?
+  .row
+    .col-10.offset-1
+      =link_to("factoid type's code", article_type_codes_path(@factoid_type),
+               class: 'btn btn-sm btn-outline-dark', remote: true)
+%hr/
+%hr/
+#article_sample
+  .row.small
+    .col-1.p-0.text-right.font-weight-bold
+      body:
+    .col-10
+      =@sample.output.body.html_safe
+
+=render 'article_types/codes/modal_ruby_code'
+
+:javascript
+  (()=> {
+    let svgTags = document.getElementsByTagName('svg');
+
+    for(let i = 0; i < svgTags.length; i++) {
+      svgTags[i].parentNode.classList.add(`svg_graph_lokic_${i}`)
+    }
+  })();

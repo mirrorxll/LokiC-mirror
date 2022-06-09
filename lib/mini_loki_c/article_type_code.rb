@@ -8,7 +8,7 @@ module MiniLokiC
     end
 
     def download
-      query = "SELECT file_blob b FROM hle_file_article_type_blobs WHERE article_type_id = #{@article_type.id};"
+      query = "SELECT file_blob b FROM hle_file_article_type_blobs WHERE article_type_id = #{@factoid_type.id};"
       blob = Connect::Mysql.exec_query(DB02, 'loki_storycreator', query).first
 
       blob && blob['b']
@@ -25,15 +25,15 @@ module MiniLokiC
     private
 
     def initialize(article_type)
-      @article_type = article_type
+      @factoid_type = article_type
     end
 
     def load_article_type_class
-      file = "#{Rails.root}/public/ruby_code/a#{@article_type.id}.rb"
-      File.open(file, 'wb') { |f| f.write(@article_type.code.download) }
+      file = "#{Rails.root}/public/ruby_code/a#{@factoid_type.id}.rb"
+      File.open(file, 'wb') { |f| f.write(@factoid_type.code.download) }
 
       load file
-      article_type_class = Object.const_get("A#{@article_type.id}")
+      article_type_class = Object.const_get("A#{@factoid_type.id}")
 
       article_type_class.include(
         MiniLokiC::Connect,

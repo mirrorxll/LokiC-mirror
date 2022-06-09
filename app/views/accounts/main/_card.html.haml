@@ -1,0 +1,26 @@
+.col-4.col-lg-3.mb-4{ id: "#{card.branch.name.tr(' ', '_').camelize(:lower)}Branch" }
+  .card{ class: card.branch.name.tr(' ', '-') }
+    .card-body{ class: "bg-#{card.enabled ? 'light' : 'white'}" }
+      %h5.card-title{ class: "text-#{card.enabled ? 'dark' : 'muted'}" }
+        =card.branch.name.upcase
+      .card-subtitle.mb-2.text-muted.mb-2
+        =card.access_level.name.upcase
+      .d-flex.justify-content-between
+        .btn-group.btn-group-sm
+          .btn.btn-sm{ class: "btn-outline-#{card.enabled ? 'dark' : 'secondary disabled'}" }
+            SHOW
+          .btn.btn-sm{ class: "btn-outline-#{card.enabled ? 'dark' : 'secondary disabled'}" }
+            CONFIGURE
+        .btn-group.btn-group-sm
+          -if card.enabled
+            .btn.btn-success.disabled ON
+            =link_to('OFF', account_branch_access_level_url(@account, card.branch), method: :delete,
+                       remote: true, data: { confirm: "#{@account.name} will lose access to #{card.branch.name}. Are you sure?" },
+                       class: 'btn btn-outline-success')
+
+          -else
+            =form_with(url: account_branch_access_levels_path(@account),
+                       data: { confirm: "#{@account.name} will have access to #{card.branch.name}. Are you sure?" }) do |f|
+              =f.hidden_field :branch_id, value: card.branch.id
+              =f.submit 'ON', class: 'btn btn-sm btn-outline-secondary'
+            .btn.btn-sm.btn-secondary.disabled OFF

@@ -11,22 +11,22 @@ module WorkRequests
     end
 
     def show
-      @tab_title = "LokiC :: WorkRequest ##{@request.id} <#{@request.project_order_name.body}>"
+      @tab_title = "LokiC :: WorkRequest ##{@work_request.id} <#{@work_request.project_order_name.body}>"
       @delete_status = Status.find_by(name: 'deleted')
     end
 
     def create
-      @request =
+      @work_request =
         WorkRequestObject.create_from!(work_request_params)
 
-      redirect_to @request
+      redirect_to @work_request
     end
 
     def update
-      @request =
-        WorkRequestObject.update_from!(@request, work_request_params)
+      @work_request =
+        WorkRequestObject.update_from!(@work_request, work_request_params)
 
-      redirect_to @request
+      redirect_to @work_request
     end
 
     private
@@ -44,7 +44,6 @@ module WorkRequests
       filter_params = params[:work_requests_grid] || default
 
       @grid = WorkRequestsGrid.new(filter_params)
-      return unless manager?
 
       @grid.column(:sow, header: 'SOW', order: false, after: :project_order_name) do |req|
         WorkRequestsGrid.format(req) do

@@ -1,4 +1,4 @@
-=form_with(url: work_request_path(@request), method: :patch, local: true, html: { onkeypress: "return event.keyCode !== 13;" } ) do |f|
+=form_with(url: work_request_path(@work_request), method: :patch, local: true, html: { onkeypress: "return event.keyCode !== 13;" } ) do |f|
   #projectOrderNameAnchor.mb-1
   #projectOrderName.card
     .card-body
@@ -7,11 +7,11 @@
         %span.small.text-danger
           *required
       =f.text_field "work_request[project_order_name]", class: 'form-control form-control-sm w-75',
-                    value: @request.project_order_name.body, maxlength: 2000
+                    value: @work_request.project_order_name.body, maxlength: 2000
 
   #clientsAnchor.mb-3
   #clients.card
-    -clients = @request.clients
+    -clients = @work_request.clients
     .card-body
       .font-weight-bold.mb-2
         CLIENTS:
@@ -108,8 +108,8 @@
         %span.small.text-danger
           *required
       =f.text_area "work_request[project_order_details]", class: 'form-control form-control-sm w-75',
-                   value: @request.project_order_details.body&.gsub(/\\n/, '\n'),
-                   rows: @request.project_order_details.body&.count("\n") + 1, onkeypress: 'newLine(event, this);'
+                   value: @work_request.project_order_details.body&.gsub(/\\n/, '\n'),
+                   rows: @work_request.project_order_details.body&.count("\n") + 1, onkeypress: 'newLine(event, this);'
 
   :javascript
     $('#projectOrderDetails textarea').froalaEditor({
@@ -131,8 +131,8 @@
       .font-weight-bold.mb-2
         MOST WORRIED DETAILS:
       =f.text_area "work_request[most_worried_details]", class: 'form-control form-control-sm w-75',
-                   value: @request.most_worried_details.body&.gsub(/\\n/, '\n'), maxlength: 2000,
-                   rows: @request.most_worried_details.body&.count("\n") + 1, onkeypress: 'newLine(event, this);'
+                   value: @work_request.most_worried_details.body&.gsub(/\\n/, '\n'), maxlength: 2000,
+                   rows: @work_request.most_worried_details.body&.count("\n") + 1, onkeypress: 'newLine(event, this);'
 
   :javascript
     $('#mostWorriedDetails textarea').froalaEditor({
@@ -154,7 +154,7 @@
       .font-weight-bold.mb-2
         GOAL DEADLINE:
       =f.date_field "work_request[goal_deadline]", class: 'form-control form-control-sm w-50',
-                    value: @request.goal_deadline
+                    value: @work_request.goal_deadline
 
 
 
@@ -164,7 +164,7 @@
       .font-weight-bold.mb-2
         FINAL DEADLINE:
       =f.date_field "work_request[final_deadline]", class: 'form-control form-control-sm w-50',
-                    value: @request.final_deadline
+                    value: @work_request.final_deadline
 
 
 
@@ -174,7 +174,7 @@
       .font-weight-bold.mb-2
         LAST INVOICE:
       =f.date_field "work_request[last_invoice]", class: 'form-control form-control-sm w-50',
-                    value: @request.last_invoice
+                    value: @work_request.last_invoice
 
 
 
@@ -189,7 +189,7 @@
         -Priority.all.each do |pr|
           .row.mb-2.align-items-center{ class: "revenue-type-#{pr.id}"}
             .col-1.text-right
-              =f.radio_button "work_request[priority]", pr.id, checked: @request.priority.eql?(pr)
+              =f.radio_button "work_request[priority]", pr.id, checked: @work_request.priority.eql?(pr)
             .col-11.pl-0.text-left
               =f.label "work_request[priority]", pr.name, value: pr.id, class: 'm-0'
 
@@ -202,7 +202,7 @@
     event.preventDefault();
     event.stopPropagation();
 
-    let sections = `#projectOrderName, #projectOrderDetails, #priority#{current_account.types.include?('manager') ? ', #sow' : ''}`
+    let sections = `#projectOrderName, #projectOrderDetails, #priority, #sow`
     let cards = document.querySelectorAll(sections);
     [...cards].forEach((el) => { el.classList.remove('border-danger') })
 
