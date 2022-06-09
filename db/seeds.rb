@@ -2,16 +2,16 @@
 
 def account_roles
   [
-    'manager',
-    'hle content manager',
-    'hle fc checker',
-    'hle content developer',
-    'scrape manager',
-    'scrape developer',
-    'client',
-    'guest',
-    'data reviewer',
-    'data cleaner'
+    'Manager',
+    'HLE Content Manager',
+    'HLE FCD Checker',
+    'HLE Content Developer',
+    'Scrape Manager',
+    'Data Reviewer',
+    'Data Cleaner',
+    'Scrape Developer',
+    'Client',
+    'Guest'
   ]
 end
 
@@ -30,11 +30,6 @@ end
 
 def account_branch_access_levels
   %w[manager user]
-end
-
-def account(db02)
-  query = 'SELECT email, first_name, last_name FROM accounts;'
-  db02.query(query).to_a
 end
 
 def frequency(db02)
@@ -163,6 +158,17 @@ task_reminder_frequency(db02).each { |obj| TaskReminderFrequency.find_or_create_
 
 puts 'Weeks'
 weeks(db02_sec).each { |obj| Week.find_or_create_by!(obj) }
+
+unless Account.first
+  puts 'First Account'
+  Account.reset_column_information
+  Account.create(
+    email: 'lokic@locallabs.com',
+    first_name: 'Loki',
+    last_name: 'C',
+    password: SecureRandom.hex(3)
+  )
+end
 
 db02.close
 db02_sec.close

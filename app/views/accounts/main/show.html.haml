@@ -11,7 +11,7 @@
   .text-secondary
     created at: #{@account.created_at}
 
-#accountInfo.mt-4.small
+#accountInfo.mt-4
   .card
     .card-header.p-1
       .d-flex.justify-content-between.align-items-center
@@ -27,6 +27,17 @@
                 [ edit ]
     .card-body.pb-0
       -unless @account.status.name.eql?('deactivated')
+        #roles.row.small
+          .col-sm-2.col-lg-1.text-right
+            %span.font-weight-bold
+              ROLES:
+            %br/
+            =link_to('[ edit ]', edit_account_roles_path(@account), class: 'btn btn-sm btn-link p-0', remote: true)
+          .col.pl-0
+            -@account.roles.each do |r|
+              =r.name
+              %br
+        %hr/
         .row
           =render partial: 'accounts/main/card', collection: @account.branch_access_levels.includes(:branch, :access_level)
 
