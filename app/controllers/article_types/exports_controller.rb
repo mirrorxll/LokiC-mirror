@@ -29,7 +29,12 @@ module ArticleTypes
     def remove_selected_factoids
       @iteration.update!(purge_export: true, current_account: current_account)
       send_to_factoids_action_cable(@article_type, @iteration, 'export', 'exported_factoids', 'removing factoids')
-      PurgeFactoidsJob.new.perform(@iteration.id, current_account.id, @factoid_ids)
+
+      Process.spawn(
+        "cd #{Rails.root} && RAILS_ENV=#{Rails.env} "\
+        "rake factoid_type:iteration:purge_exported_factoids iteration_id=#{@iteration.id} "\
+        "account_id=#{current_account.id} factoid_ids=#{@factoid_ids} &"
+      )
     end
 
     def update_section; end
@@ -41,7 +46,7 @@ module ArticleTypes
     end
 
     def get_factoid_ids
-      @factoid_ids = params[:factoids_ids].split(',')
+      @factoid_ids = params[:factoids_ids]
     end
   end
 end

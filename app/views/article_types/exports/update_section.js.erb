@@ -1,4 +1,5 @@
 $('#cover-spin').hide();
+$('button#delete_selected').attr('disabled', true);
 let factoidsBody = $('#exported_factoids');
 factoidsBody.empty();
 factoidsBody.html('<%= j render 'article_types/exports/factoids_table' %>')

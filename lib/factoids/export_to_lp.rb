@@ -70,7 +70,11 @@ module Factoids
           rescue Faraday::ResourceNotFound
             true
           end
-            factoid.update!(limpar_factoid_id: nil, exported_at: nil)
+            if factoid_ids
+              factoid.destroy
+            else
+              factoid.update!(limpar_factoid_id: nil, exported_at: nil)
+            end
           end
         end
       end

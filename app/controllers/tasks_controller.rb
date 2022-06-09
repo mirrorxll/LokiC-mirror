@@ -16,7 +16,7 @@ class TasksController < ApplicationController # :nodoc:
     respond_to do |f|
       f.html do
         @tasks_grid.scope do |scope|
-          scope.page(params[:page]).per(20)
+          scope.page(params[:page]).per(2)
         end
       end
     end
@@ -157,17 +157,14 @@ class TasksController < ApplicationController # :nodoc:
       else
         manager? ? { order: :id, descending: true } : { assignment_to: current_account.id, order: :id, descending: true }
       end
-    grid_params[:status] =
-      if grid_params[:status].blank? && grid_params[:deleted_tasks] != 'YES'
-        Status.multi_task_statuses_for_grid
-      elsif grid_params[:deleted_tasks].eql?('YES')
-        Status.find_by(name: 'deleted')
-      elsif grid_params[:status].is_a?(Array) && grid_params[:status].any?
-        grid_params[:status]
-      end
-    grid_params[:current_account] = current_account
 
-    @tasks_grid = TasksGrid.new(grid_params.except(:collapse, :type))
+    @tasks_grid = TasksGrid.new(grid_params.except(:collapse, :type).merge(current_account: current_account)) do |scope|
+      if grid_params[:deleted_tasks].eql?('YES')
+        scope.where('statuses.name': 'deleted')
+      else
+        scope.where.not('statuses.name': 'deleted')
+      end
+    end
   end
 
   def find_task
