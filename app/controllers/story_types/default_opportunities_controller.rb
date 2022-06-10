@@ -18,6 +18,10 @@ module StoryTypes
       )
     end
 
+    def fill_in_default_opportunity
+
+    end
+
     private
 
     def st_def_opportunity_params
