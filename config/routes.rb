@@ -303,7 +303,8 @@ Rails.application.routes.draw do
       end
 
       resources :default_opportunities do
-        patch :set, on: :collection
+        patch :set,                  on: :collection
+        patch :update_opportunities, on: :collection
       end
 
       resources :opportunities
