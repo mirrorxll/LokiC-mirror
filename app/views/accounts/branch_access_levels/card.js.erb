@@ -1,7 +1,0 @@
-<% if flash.now[:error] %>
-  <%= toastr_js_flash %>
-<% else %>
-  $('#<%= @branch_access_level.branch.name.tr(' ', '_').camelize(:lower) %>Branch').replaceWith(
-      '<%= j render partial: 'accounts/main/card', locals: { card: @branch_access_level } %>'
-  )
-<% end %>

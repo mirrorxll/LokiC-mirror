@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-def account_roles
+def roles
   [
     'Manager',
     'HLE Content Manager',
@@ -15,21 +15,21 @@ def account_roles
   ]
 end
 
-def account_branch
-  [
-    'work requests',
-    'factoid requests',
-    'multi tasks',
-    'scrape tasks',
-    'data sets',
-    'story types',
-    'factoid types',
-    'accounts'
+def branches
+  %i[
+    work_requests
+    factoid_requests
+    multi_tasks
+    scrape_tasks
+    data_sets
+    story_types
+    factoid_types
+    accounts
   ]
 end
 
-def account_branch_access_levels
-  %w[manager user]
+def access_levels
+  %i[manager user guest]
 end
 
 def frequency(db02)
@@ -109,11 +109,16 @@ db02 = MiniLokiC::Connect::Mysql.on(DB02, 'lokic')
 db02_sec = MiniLokiC::Connect::Mysql.on(DB02, 'lokic_secondary')
 
 puts 'Account Roles/Branches'
-account_roles.each { |role| Role.find_or_create_by!(name: role) }
-account_branch.each do |branch|
-  Branch.find_or_create_by!(name: branch)
-  account_branch_access_levels.each do |lvl|
-    AccessLevel.find_or_create_by!(name: lvl)
+roles.each { |role| Role.find_or_create_by!(name: role) }
+branches.each do |branch_name|
+  branch = Branch.find_or_create_by!(name: branch_name)
+
+  access_levels.each do |lvl_name|
+    AccessLevel.find_or_create_by!(
+      branch: branch,
+      name: lvl_name,
+      permissions: AccessLevels::PERMISSIONS[lvl_name][branch_name]
+    )
   end
 end
 
@@ -173,13 +178,13 @@ end
 db02.close
 db02_sec.close
 
-StoryTypes::ClientsPubsTagsSectionsJob.new.perform
-StoryTypes::PhotoBucketsJob.new.perform
-SlackAccountsJob.new.perform
-
-hidden = Client.where('name LIKE :like OR name IN (:mm, :mb)',
-                      like: 'MM -%', mm: 'Metric Media', mb: 'Metro Business Network')
-hidden.update_all(hidden_for_story_type: false)
+# StoryTypes::ClientsPubsTagsSectionsJob.new.perform
+# StoryTypes::PhotoBucketsJob.new.perform
+# SlackAccountsJob.new.perform
+#
+# hidden = Client.where('name LIKE :like OR name IN (:mm, :mb)',
+#                       like: 'MM -%', mm: 'Metric Media', mb: 'Metro Business Network')
+# hidden.update_all(hidden_for_story_type: false)
 
 # ============ FeedBack rules for stories ============
 rules = {

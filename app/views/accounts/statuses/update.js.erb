@@ -8,8 +8,10 @@ $('#accountStatusComment').html('<%= j render 'accounts/main/status_comment' %>'
       body.empty();
     <% else %>
       body.html(
-          `<div class='row'>
-            <%= j render partial: 'accounts/main/card', collection: @account.branch_access_levels.includes(:branch, :access_level)  %>
+          `<%= j render 'accounts/roles/roles' %>
+          <hr>
+          <div class='row'>
+            <%= j render partial: 'accounts/main/card', collection: @account.cards.includes(:branch, :access_level)  %>
           </div>`
       )
     <% end %>

@@ -11,12 +11,13 @@ class Account < ApplicationRecord # :nodoc:
   end
 
   after_create do
-    guest_access = AccessLevel.find_by(name: 'user')
     Branch.find_each do |b|
-      AccountBranchAccessLevel.create(
+      user_access = AccessLevel.find_by(branch: b, name: 'guest')
+
+      AccountCard.create!(
         account: self,
         branch: b,
-        access_level: guest_access
+        access_level: user_access
       )
     end
   end
@@ -41,7 +42,7 @@ class Account < ApplicationRecord # :nodoc:
   has_many :comments, foreign_key: :commentator_id
   has_many :assigned_scrape_tasks, class_name: 'ScrapeTask', foreign_key: :scraper_id
   has_many :created_scrape_tasks,  class_name: 'ScrapeTask', foreign_key: :creator_id
-  has_many :branch_access_levels, class_name: 'AccountBranchAccessLevel'
+  has_many :cards, class_name: 'AccountCard'
 
   has_and_belongs_to_many :roles
 

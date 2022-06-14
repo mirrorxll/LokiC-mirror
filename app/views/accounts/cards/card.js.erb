@@ -1,0 +1,5 @@
+<% if flash.now[:error] %>
+  <%= toastr_js_flash %>
+<% else %>
+  $('#card<%= @card.id %>').replaceWith('<%= j render partial: 'accounts/cards/card', locals: { card: @card } %>')
+<% end %>

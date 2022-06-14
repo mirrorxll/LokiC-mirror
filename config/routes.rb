@@ -27,8 +27,12 @@ Rails.application.routes.draw do
   scope module: :accounts do
     resources :accounts, controller: :main, except: :destroy do
       resource  :status, only: :update
-      resources :branch_access_levels, only: %i[create update destroy]
-      resource :roles, only: %i[show edit update]
+      resource  :roles, only: %i[show edit update]
+      resources :cards, only: %i[create destroy] do
+        scope module: :cards do
+          resources :access_levels, only: %i[edit update]
+        end
+      end
     end
   end
 
