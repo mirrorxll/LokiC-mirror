@@ -1,45 +1,35 @@
-# frozen_string_literal: true
-
 module Accounts
   module AccessLevelsHelper
-    def permissions_keys(branch, form, hash)
-      content_tag(:ul, class: 'mb-2') do
-        html = []
-
-        hash.each do |access, value|
-          html << content_tag(:li) do
-            key = content_tag(:p, "#{access.humanize}:", class: 'm-0')
-            value.is_a?(Hash) ? (key + permissions_keys(branch, form, value)) : key
-          end
-        end
-
-        html.join.html_safe
-      end
-    end
-
-    def permissions_values(branch, form, hash)
-      content_tag(:ul, style: 'list-style-type: none;', class: 'mb-2 pl-0') do
-        html = []
-
-        hash.each do |access, value|
-          html << content_tag(:li) do
-            case value
-            when Hash
-              form.check_box("#{branch}[#{access}]") + permissions_values(branch, form, value)
-            when Array
-              value.map do |v|
-                content_tag(:div, class: 'form-check form-check-inline') do
-                  (form.check_box("#{branch}[#{access}]", class: 'form-check-input') +
-                    form.label("#{branch}[#{access}]", v, class: 'form-check-label')).html_safe
-                end
-              end.join.html_safe
+    def permissions_table(form, hash, prefix = '', deep = 0)
+      content_tag(:ul) do
+        hash.map do |key, access|
+          raw_prefix =
+            case deep
+            when 0
+              "#{prefix}[%%%]"
             else
-              form.check_box("#{branch}[#{access}]")
+              pos = prefix.index(']')
+              "#{prefix}".insert(pos, '[%%%]')
             end
-          end
-        end
+          container = raw_prefix.sub(/%{3}/, key)
 
-        html.join.html_safe
+          content_tag(:li) do
+
+            row = form.label(container, class: 'form-check-label w-100') do
+              content_tag(:div, class: 'btn-light', style: 'display: flex; justify-content: space-between;') do
+                title = content_tag(:span, key.humanize.downcase)
+                content = content_tag(:div, class: 'form-check form-check-inline') do
+                  form.check_box(container, class: 'form-check-input', style: 'margin-right: 120px;')
+                end
+
+                title + content
+              end
+            end
+            sub_ul = access.is_a?(Hash) ? permissions_table(form, access, container, deep + 1) : ''
+
+            (row + sub_ul)
+          end
+        end.reduce(:+)
       end
     end
   end

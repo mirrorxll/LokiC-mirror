@@ -5,7 +5,7 @@ module AccessLevels
     manager: {
       work_requests: {
         index: {
-          list: %i[your all archived],
+          list: { your: true, all: true, archived: true },
           create: true
         },
         show: {
@@ -18,7 +18,7 @@ module AccessLevels
       },
       factoid_requests: {
         index: {
-          list: %i[your all archived],
+          list: { your: true, all: true, archived: true },
           create: true
         },
         show: {
@@ -29,7 +29,7 @@ module AccessLevels
       },
       multi_tasks: {
         index: {
-          list: %i[your all assigned archived],
+          list: { your: true, all: true, assigned: true, archived: true },
           create: true
         },
         show: {
@@ -45,7 +45,7 @@ module AccessLevels
       },
       scrape_tasks: {
         index: {
-          list: %i[your all archived],
+          list: { your: true, all: true, archived: true },
           create: true
         },
         show: {
@@ -60,7 +60,7 @@ module AccessLevels
       },
       data_sets: {
         index: {
-          list: %i[your all archived],
+          list: { your: true, all: true, archived: true },
           create: true
         },
         show: {
@@ -78,7 +78,7 @@ module AccessLevels
       },
       story_types: {
         index: {
-          list: %i[your all archived],
+          list: { your: true, all: true, archived: true },
           create: true
         },
         show: {
@@ -93,7 +93,7 @@ module AccessLevels
       },
       factoid_types: {
         index: {
-          list: %i[your all archived],
+          list: { your: true, all: true, archived: true },
           create: true
         },
         show: {
@@ -106,7 +106,7 @@ module AccessLevels
       },
       accounts: {
         index: {
-          list: %i[active deactivated],
+          list: { active: true, deactivated: true },
           create: true,
           impersonate: true
         },
@@ -124,7 +124,7 @@ module AccessLevels
     user: {
       work_requests: {
         index: {
-          list: %i[your],
+          list: { your: true, all: false, archived: false },
           create: true
         },
         show: {
@@ -137,7 +137,7 @@ module AccessLevels
       },
       factoid_requests: {
         index: {
-          list: %i[your],
+          list: { your: true, all: false, archived: false },
           create: true
         },
         show: {
@@ -148,7 +148,7 @@ module AccessLevels
       },
       multi_tasks: {
         index: {
-          list: %i[your assigned],
+          list: { your: true, all: false, assigned: true, archived: false },
           create: true
         },
         show: {
@@ -164,7 +164,7 @@ module AccessLevels
       },
       scrape_tasks: {
         index: {
-          list: %i[your all],
+          list: { your: true, all: true, archived: false },
           create: false
         },
         show: {
@@ -179,7 +179,7 @@ module AccessLevels
       },
       data_sets: {
         index: {
-          list: %i[your all archived],
+          list: { your: true, all: true, archived: true },
           create: true
         },
         show: {
@@ -197,7 +197,7 @@ module AccessLevels
       },
       story_types: {
         index: {
-          list: %i[your all archived],
+          list: { your: true, all: true, archived: false },
           create: true
         },
         show: {
@@ -212,7 +212,7 @@ module AccessLevels
       },
       factoid_types: {
         index: {
-          list: %i[your all archived],
+          list: { your: true, all: true, archived: false },
           create: true
         },
         show: {
@@ -224,7 +224,7 @@ module AccessLevels
       },
       accounts: {
         index: {
-          list: %i[active],
+          list: { active: true, deactivated: false },
           create: false,
           impersonate: true
         },
