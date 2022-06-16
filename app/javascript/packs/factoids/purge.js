@@ -3,9 +3,9 @@ $(document).on('change', ("input[type='checkbox']"), function() {
     var disabled_button = $('button#delete_selected');
 
     if (checked.length > 0) {
-        disabled_button.attr('disabled', false)
+        disabled_button.attr('disabled', false);
     } else {
-        disabled_button.attr('disabled', true)
+        disabled_button.attr('disabled', true);
     }
 });
 

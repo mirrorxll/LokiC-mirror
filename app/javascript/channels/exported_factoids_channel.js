@@ -5,6 +5,7 @@ $(document).on("turbolinks:load", function() {
 
     if(!exportedFactoids.length) return false
 
+    let articleTypeId = exportedFactoids.attr('article_type_id');
     let articleTypeIterationId = exportedFactoids.attr('iteration_exported_factoids_id');
 
     consumer.subscriptions.create(
@@ -31,7 +32,7 @@ $(document).on("turbolinks:load", function() {
 
     function update_section(data) {
         $.ajax({
-            url: `${window.location.origin}/article_types/8/iterations/${articleTypeIterationId}/export/update_section`,
+            url: `${window.location.origin}/article_types/${articleTypeId}/iterations/${articleTypeIterationId}/export/update_section`,
             method: 'patch',
             dataType: 'script',
             data: data

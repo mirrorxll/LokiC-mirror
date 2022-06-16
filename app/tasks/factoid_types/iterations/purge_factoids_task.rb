@@ -22,9 +22,16 @@ module FactoidTypes
       rescue StandardError, ScriptError => e
         message = e.message
       ensure
-        iteration.update!(purge_export: false)
-        send_to_action_cable(iteration.article_type, :export, message)
-
+        if iteration.articles.count.zero?
+          %w[population population_args purge_population samples sample_args purge_samples creation
+             purge_creation export purge_export last_export_batch_size].each do |prop|
+            iteration.update!(prop.to_sym => nil)
+          end
+          send_to_action_cable(iteration.article_type, :staging_table, message)
+        else
+          iteration.update!(purge_export: false)
+          send_to_action_cable(iteration.article_type, :export, message)
+        end
         SlackIterationNotificationTask.new.perform(iteration.id, 'remove from everywhere', message)
       end
     end
