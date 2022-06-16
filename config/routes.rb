@@ -259,6 +259,8 @@ Rails.application.routes.draw do
         resources :exports, path: :export, only: [] do
           post   :execute,                  on: :collection
           delete :remove_exported_articles, on: :collection
+          delete :remove_selected_factoids, on: :collection
+          patch  :update_section,           on: :collection
           get    :articles,                 on: :collection
         end
       end

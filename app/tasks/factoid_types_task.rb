@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-class ArticleTypesJob < ApplicationJob
-  sidekiq_options queue: :factoid
-
+class FactoidTypesTask < ApplicationTask
   private
 
   def send_to_action_cable(article_type, section, message)
