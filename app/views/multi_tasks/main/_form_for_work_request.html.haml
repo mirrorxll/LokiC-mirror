@@ -1,8 +1,8 @@
-=form_with(url: tasks_path, id: 'newMultiTaskParent',  html: { onkeypress: "return event.keyCode !== 13;" }, class: 'p-3', subtaskCount: 0 ) do |form|
-  =hidden_field_tag 'task_parent[work_request]', @request.id
+=form_with(url: multi_tasks_path, id: 'newMultiTaskParent',  html: { onkeypress: "return event.keyCode !== 13;" }, class: 'p-3', subtaskCount: 0 ) do |form|
+  =hidden_field_tag 'task_parent[work_request]', @work_request.id
   .row.small.col
     .form-group
-      =form.text_field 'task_parent[title]', placeholder: 'title', id: 'newTaskNameParent', class: 'form-control form-control-sm', required: true, maxlength: 500, value: @request.project_order_name.nil? ? '' : @request.project_order_name.body
+      =form.text_field 'task_parent[title]', placeholder: 'title', id: 'newTaskNameParent', class: 'form-control form-control-sm', required: true, maxlength: 500, value: @work_request.project_order_name.nil? ? '' : @work_request.project_order_name.body
       #newTaskNameParentFeedback.text-danger.text-center.d-none
         Task with this title already created by you. Let's use something else
   .row.small.font-weight-bold
@@ -64,7 +64,7 @@
             .col-3
               sow:
             .col.small
-              =form.text_field 'task_parent[sow]', placeholder: 'link to google sheet', maxlength: 255, class: 'w-100', value: @request.sow.nil? ? '' : @request.sow
+              =form.text_field 'task_parent[sow]', placeholder: 'link to google sheet', maxlength: 255, class: 'w-100', value: @work_request.sow.nil? ? '' : @work_request.sow
           .row.mb-2
             .col-3
               pivotal tracker:

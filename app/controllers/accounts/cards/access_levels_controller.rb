@@ -3,14 +3,18 @@
 module Accounts
   module Cards
     class AccessLevelsController < CardsController
-      before_action :find_access_level
+      before_action :find_access_level, only: :show
 
-      def edit; end
+      def show; end
+
+      def new; end
+
+      def create; end
 
       private
 
       def find_access_level
-        p @access_level = AccessLevel.find(params[:id])
+        @access_level = AccessLevel.find(params[:id])
       end
     end
   end

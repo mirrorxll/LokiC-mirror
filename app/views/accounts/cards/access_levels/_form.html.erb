@@ -1,9 +1,5 @@
-<% if access_level.read_only? %>
-  <h1 class="text-center">READ ONLY!</h1>
-<% else %>
-    <%= form_with(url: account_card_access_level_path(account, card, access_level), method: :patch) do |f| %>
-      <div class="pl-lg-5 pl-lg-5 pr-lg-5 pr-lg-5 ml-lg-5 ml-lg-5 mr-lg-5 mr-lg-5">
-        <%= permissions_table(f, access_level.permissions.sort, access_level.branch.name) %>
-      </div>
-    <% end %>
+<%= form_with(url: account_card_access_level_path(account, card)) do |f| %>
+    <div class="pl-lg-5 pr-lg-5 ml-lg-5 mr-lg-5">
+      <%= permissions_table(f, access_level.permissions.sort, access_level.branch.name) %>
+    </div>
 <% end %>

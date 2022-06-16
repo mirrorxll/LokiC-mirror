@@ -155,7 +155,7 @@
           =render 'work_request_info', static: false
         .w-60
           .editable.overflow-scroll.h-94.pr-2.pb-3.pl-2
-            =render 'tasks/form_for_work_request', work_request_id: @work_request.id
+            =render 'multi_tasks/main/form_for_work_request', work_request: @work_request
       .modal-footer.justify-content-center
         =link_to('CREATE', '#', id: 'createMultiTaskButton', class: 'btn btn-sm btn-dark')
         .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }

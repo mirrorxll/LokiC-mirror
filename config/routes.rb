@@ -30,7 +30,7 @@ Rails.application.routes.draw do
       resource  :roles, only: %i[show edit update]
       resources :cards, only: %i[create destroy] do
         scope module: :cards do
-          resources :access_levels, only: %i[edit update]
+          resources :access_levels, only: %i[show new create edit update]
         end
       end
     end

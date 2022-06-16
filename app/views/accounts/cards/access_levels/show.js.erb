@@ -1,0 +1,2 @@
+$("#editAccessLevel<%= @card.id %> .table-form")
+    .html('<%= j render partial: 'accounts/cards/access_levels/table', locals: { account: @account, card: @card, access_level: @access_level } %>');

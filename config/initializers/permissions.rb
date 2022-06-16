@@ -4,119 +4,76 @@ module AccessLevels
   PERMISSIONS = {
     manager: {
       work_requests: {
-        index: {
-          list: { your: true, all: true, archived: true },
-          create: true
-        },
-        show: {
-          edit: true,
-          archive: true,
-          progress_status: true,
-          billed_for_entire_project?: true,
-          eta: true
-        }
+        list: { your: true, all: true, archived: true },
+        new: true,
+        edit: true,
+        archive: true,
+        progress_status: true,
+        billed_for_entire_project?: { show: { edit: true } },
+        eta: { show: { edit: true } }
       },
       factoid_requests: {
-        index: {
-          list: { your: true, all: true, archived: true },
-          create: true
-        },
-        show: {
-          edit: true,
-          progress_status: true,
-          templates: { edit: true }
-        }
+        list: { your: true, all: true, archived: true },
+        new: true,
+        edit: true,
+        progress_status: true,
+        templates: true
       },
       multi_tasks: {
-        index: {
-          list: { your: true, all: true, assigned: true, archived: true },
-          create: true
-        },
-        show: {
-          edit: true,
-          assignment_to: true,
-          assistants_to: true,
-          notifications_to: true,
-          progress_status: true,
-          comments: true,
-          confirm_receipts: true,
-          sub_tasks: { create: true }
-        }
+        list: { your: true, all: true, assigned: true, archived: true },
+        new: true,
+        edit: true,
+        assignment_to: true,
+        assistants_to: true,
+        notifications_to: true,
+        progress_status: true,
+        comments: true,
+        confirm_receipts: true
       },
       scrape_tasks: {
-        index: {
-          list: { your: true, all: true, archived: true },
-          create: true
-        },
-        show: {
-          edit: true,
-          assignment_to: true,
-          progress_status: true,
-          tags: { edit: true },
-          instructions: { edit: true },
-          evaluation_document: { edit: true },
-          data_sets: { create: true }
-        }
+        list: { your: true, all: true, archived: true },
+        new: true,
+        edit: true,
+        assignment_to: true,
+        progress_status: true,
+        tags: true,
+        instructions: true,
+        evaluation_document: true
       },
       data_sets: {
-        index: {
-          list: { your: true, all: true, archived: true },
-          create: true
-        },
-        show: {
-          table_locations: true,
-          story_types: {
-            create: true,
-            assignment_to: true
-          },
-          factoid_types: {
-            create: true,
-            assignment_to: true
-          },
-          edit: true
-        }
+        list: { your: true, all: true, archived: true },
+        new: true,
+        edit: true,
+        table_locations: true
       },
       story_types: {
-        index: {
-          list: { your: true, all: true, archived: true },
-          create: true
-        },
-        show: {
-          edit: true,
-          assignment_to: true,
-          iterations: true,
-          progress_status: true,
-          comment: true,
-          gather_task_id: true,
-          template: true
-        }
+        list: { your: true, all: true, archived: true },
+        new: true,
+        edit: true,
+        assignment_to: true,
+        iterations: true,
+        progress_status: true,
+        comment: true,
+        gather_task_id: true,
+        template: true
       },
       factoid_types: {
-        index: {
-          list: { your: true, all: true, archived: true },
-          create: true
-        },
-        show: {
-          edit: true,
-          assignment_to: true,
-          iterations: true,
-          progress_status: true,
-          template: true
-        }
+        list: { your: true, all: true, archived: true },
+        new: true,
+        edit: true,
+        assignment_to: true,
+        iterations: true,
+        progress_status: true,
+        template: true
       },
       accounts: {
-        index: {
-          list: { active: true, deactivated: true },
-          create: true,
-          impersonate: true
-        },
-        show: {
-          edit: true,
-          impersonate: true,
-          status: true,
-          roles: { edit: true },
-          branches: { edit: true }
-        }
+        list: { active: true, deactivated: true },
+        new: true,
+        edit: true,
+        impersonate: true,
+        status: true,
+        roles: true,
+        branches: true
       }
     },
 
@@ -125,7 +82,7 @@ module AccessLevels
       work_requests: {
         index: {
           list: { your: true, all: false, archived: false },
-          create: true
+          new: true
         },
         show: {
           edit: true,
@@ -138,7 +95,7 @@ module AccessLevels
       factoid_requests: {
         index: {
           list: { your: true, all: false, archived: false },
-          create: true
+          new: true
         },
         show: {
           edit: true,
@@ -149,23 +106,23 @@ module AccessLevels
       multi_tasks: {
         index: {
           list: { your: true, all: false, assigned: true, archived: false },
-          create: true
+          new: true
         },
         show: {
+          edit: true,
           assignment_to: true,
           assistants_to: true,
           notifications_to: true,
           progress_status: true,
           comments: true,
           confirm_receipts: true,
-          sub_tasks: true,
-          edit: true
+          sub_tasks: false
         }
       },
       scrape_tasks: {
         index: {
           list: { your: true, all: true, archived: false },
-          create: false
+          new: false
         },
         show: {
           edit: false,
@@ -180,16 +137,16 @@ module AccessLevels
       data_sets: {
         index: {
           list: { your: true, all: true, archived: true },
-          create: true
+          new: true
         },
         show: {
           table_locations: true,
           story_types: {
-            create: true,
+            new: true,
             assignment_to: true
           },
           factoid_types: {
-            create: true,
+            new: true,
             assignment_to: true
           },
           edit: true
@@ -198,7 +155,7 @@ module AccessLevels
       story_types: {
         index: {
           list: { your: true, all: true, archived: false },
-          create: true
+          new: true
         },
         show: {
           edit: true,
@@ -213,7 +170,7 @@ module AccessLevels
       factoid_types: {
         index: {
           list: { your: true, all: true, archived: false },
-          create: true
+          new: true
         },
         show: {
           assignment_to: true,
@@ -225,7 +182,7 @@ module AccessLevels
       accounts: {
         index: {
           list: { active: true, deactivated: false },
-          create: false,
+          new: false,
           impersonate: true
         },
         show: {
@@ -239,14 +196,14 @@ module AccessLevels
     },
 
     guest: {
-      work_requests: { read_only: true },
-      factoid_requests: { read_only: true },
-      multi_tasks: { read_only: true },
-      scrape_tasks: { read_only: true },
-      data_sets: { read_only: true },
-      story_types: { read_only: true },
-      factoid_types: { read_only: true },
-      accounts: { read_only: true }
+      work_requests: {},
+      factoid_requests: {},
+      multi_tasks: {},
+      scrape_tasks: {},
+      data_sets: {},
+      story_types: {},
+      factoid_types: {},
+      accounts: {}
     }
   }.with_indifferent_access.freeze
 end

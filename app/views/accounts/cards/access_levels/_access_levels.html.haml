@@ -1,0 +1,23 @@
+.row.small.access-level
+  .col-sm-3.col-lg-3.text-right
+    %span.font-weight-bold ACCESS LEVEL:
+    %br/
+    =link_to('[ add ]', new_account_card_access_level_path(account, card), class: 'btn btn-sm btn-link p-0', remote: true)
+    =link_to('[ edit ]', edit_account_card_access_level_path(account, card), class: 'btn btn-sm btn-link p-0', remote: true)
+  .col-sm-8.col-lg-6
+    .d-flex.justify-content-between.align-items-center
+      =collection_select(:access_level, :id, card.branch.access_levels, :id, :name, {},
+                         class: 'form-control form-control-sm d-inline-block access-selector',
+                         selected: access_level.id)
+      :javascript
+        (() => {
+          let select = document.querySelector('\##{"editAccessLevel#{card.id}"} .access-selector');
+
+          select.addEventListener('change', () => {
+            Rails.ajax({
+              type: "GET",
+              dataType: 'script',
+              url: `/accounts/#{account.id}/cards/#{card.id}/access_levels/${select.value}/`
+            });
+          });
+        })();

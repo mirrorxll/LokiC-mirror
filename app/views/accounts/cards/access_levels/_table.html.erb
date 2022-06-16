@@ -1,0 +1,7 @@
+<% if access_level.guest? %>
+  <h1 class="text-center">READ ONLY!</h1>
+<% else %>
+  <div class="pl-lg-5 pr-lg-5 ml-lg-5 mr-lg-5">
+    <%= permissions_table(access_level.permissions.sort) %>
+  </div>
+<% end %>

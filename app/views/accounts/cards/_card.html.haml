@@ -56,30 +56,12 @@
               ="#{card_name} -- EDIT PERMISSIONS"
               %button.close{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
                 %span{ "aria-hidden" => "true" } ×
-            .modal-body.position-relative
-              .row.small.align-items-center.access-level
-                .col-sm-3.col-lg-3.p-sm-0.text-right.font-weight-bold
-                  %span ACCESS LEVEL:
-                .col-sm-8.col-lg-6
-                  .d-flex.justify-content-between.align-items-center
-                    =collection_select(:access_level, :id, card.branch.access_levels, :id, :name, {},
-                                       class: 'form-control form-control-sm d-inline-block access-selector')
-                    =text_field(:access_level, :render, class: 'form-control form-control-sm d-inline-block ml-3 align-self-stretch')
-                    :javascript
-                      (() => {
-                        let select = document.querySelector('\##{"editAccessLevel#{card.id}"} .access-selector');
-
-                        select.addEventListener('change', () => {
-                          Rails.ajax({
-                            type: "GET",
-                            dataType: 'script',
-                            url: `/accounts/#{@account.id}/cards/#{card.id}/access_levels/${select.value}/edit`
-                          });
-                        });
-                      })();
+            .modal-body
+              =render partial: 'accounts/cards/access_levels/access_levels',
+                      locals: { account: @account, card: card, access_level: card.access_level }
               %hr.mt-5/
-              .form
-                =render partial: 'accounts/cards/access_levels/form',
+              .table-form
+                =render partial: 'accounts/cards/access_levels/table',
                         locals: { account: @account, card: card, access_level: card.access_level }
 
             .modal-footer.justify-content-center

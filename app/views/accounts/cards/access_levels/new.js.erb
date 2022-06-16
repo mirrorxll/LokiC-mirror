@@ -1,0 +1,3 @@
+$('#editAccessLevel<%= @card.id %> .access-level>:first-child>a').addClass('disabled');
+$('#editAccessLevel<%= @card.id %> .table-form')
+    .html('<%= j render 'accounts/cards/access_levels/form', { account: @account, card: @card, access_level: @access_level } %>');
