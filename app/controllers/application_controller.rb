@@ -131,6 +131,11 @@ class ApplicationController < ActionController::Base
     StoryTypeChannel.broadcast_to(story_type, { spinner: true, section: section, message: message })
   end
 
+  def send_to_factoids_action_cable(article_type, iteration, at_section, it_section, message)
+    ArticleTypeChannel.broadcast_to(article_type, { spinner: true, section: at_section, message: message })
+    ExportedFactoidsChannel.broadcast_to(iteration, { spinner: true, section: it_section, message: message })
+  end
+
   def template_with_expired_revision
     @iteration.story_type.template.expired_revision?
   end

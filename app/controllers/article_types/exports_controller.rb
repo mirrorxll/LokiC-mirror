@@ -7,7 +7,8 @@ module ArticleTypes
 
     before_action :render_403_editor, except: :articles, if: :editor?
     before_action :render_403_developer, only: %i[articles submit_editor_report submit_manager_report], if: :developer?
-    before_action :show_sample_ids, only: :articles
+    before_action :get_factoid_ids, only: :remove_selected_factoids
+    before_action :get_factoids, only: [:articles, :update_section]
 
     def execute
       @iteration.update!(export: false, current_account: current_account)
@@ -16,19 +17,36 @@ module ArticleTypes
 
     def remove_exported_articles
       @iteration.update!(purge_export: true, current_account: current_account)
+      send_to_factoids_action_cable(@article_type, @iteration, 'export', 'exported_factoids', 'removing factoids')
       PurgeExportJob.perform_async(@iteration.id, current_account.id)
     end
 
     def articles
-      @articles = @iteration.articles.published.order(exported_at: :asc).page(params[:page]).per(25)
       @tab_title = "LokiC :: FactoidType ##{@article_type.id} :: Factoids"
     end
 
+    # remove factoids from Limpar, 'articles' table and staging table
+    def remove_selected_factoids
+      @iteration.update!(purge_export: true, current_account: current_account)
+      send_to_factoids_action_cable(@article_type, @iteration, 'export', 'exported_factoids', 'removing factoids')
+
+      Process.spawn(
+        "cd #{Rails.root} && RAILS_ENV=#{Rails.env} "\
+        "rake factoid_type:iteration:purge_exported_factoids iteration_id=#{@iteration.id} "\
+        "account_id=#{current_account.id} factoid_ids=#{@factoid_ids} &"
+      )
+    end
+
+    def update_section; end
+
     private
 
-    def show_sample_ids
-      @show_sample_ids = {}
-      @iteration.show_samples.map { |smpl| @show_sample_ids[smpl.lp_article_id] = smpl.id }
+    def get_factoids
+      @articles  = @iteration.articles.published.order(exported_at: :asc, id: :asc).page(params[:page]).per(25)
+    end
+
+    def get_factoid_ids
+      @factoid_ids = params[:factoids_ids]
     end
   end
 end
