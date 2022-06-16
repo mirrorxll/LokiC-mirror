@@ -18,6 +18,10 @@ module StoryTypes
       )
     end
 
+    def update_opportunities
+      UpdateOpportunitiesService.perform(update_opportunities_params.merge(story_type_id: @story_type.id))
+    end
+
     private
 
     def st_def_opportunity_params
@@ -27,6 +31,10 @@ module StoryTypes
         :opportunity_type_id,
         :content_type_id
       ).to_h
+    end
+
+    def update_opportunities_params
+      params.require(:update_opportunities).permit(:opportunity_id, :opportunity_type_id, :content_type_id)
     end
   end
 end

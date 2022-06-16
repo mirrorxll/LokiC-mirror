@@ -118,7 +118,22 @@
   .row
     .col-1
     .col-2.pl-0.small
-      =button_to('update opportunity list', story_type_opportunities_path(@story_type), remote: true)
+      .header
+        .row.font-weight-bold
+          .col
+            control
+      .list
+        %hr.m-1/
+        .row.small
+          .col-12.mb-1
+            =button_to('update opportunity list', story_type_opportunities_path(@story_type), remote: true,
+                        class: 'w-100')
+          .col-12.mb-1
+            =button_to('update all list as first row', {}, id: 'update_opportunities', remote: true,
+                        class: 'w-100 mt-1', disabled: true)
+          .col-12.mb-1
+            =button_to('set default values', set_story_type_default_opportunities_path(@story_type),
+                       method: :patch, remote: true, class: 'w-100 mt-1')
     .col-8.default-opportunities
       .header.small
         .row.font-weight-bold
@@ -132,9 +147,6 @@
             content type
       .list
         =render partial: 'story_types/default_opportunities/story_type_default_opportunity', collection:  @story_type.default_opportunities
-      .small.mt-2
-        =button_to('set default values', set_story_type_default_opportunities_path(@story_type),
-                   method: :patch, remote: true)
 
 .opportunities
   %hr/

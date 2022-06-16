@@ -24,7 +24,7 @@ every '0 9,12 * * *' do
 end
 
 every '0 * * * *' do
-  rake 'check_has_updates_revise'
+  rake 'story_type:check_has_updates_revise'
 end
 
 every '0 5,10,15,20 * * *' do
