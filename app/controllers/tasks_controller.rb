@@ -16,7 +16,7 @@ class TasksController < ApplicationController # :nodoc:
     respond_to do |f|
       f.html do
         @tasks_grid.scope do |scope|
-          scope.page(params[:page]).per(2)
+          scope.page(params[:page]).per(20)
         end
       end
     end
