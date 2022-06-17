@@ -4,23 +4,23 @@ module AccessLevels
   PERMISSIONS = {
     manager: {
       work_requests: {
-        list: { your: true, all: true, archived: true },
+        grid: { your: true, all: true, archived: true },
         new: true,
         edit: true,
         archive: true,
         progress_status: true,
-        billed_for_entire_project?: { show: { edit: true } },
-        eta: { show: { edit: true } }
+        billed_for_entire_project?: { show: true, edit: true },
+        eta: { show: true, edit: true }
       },
       factoid_requests: {
-        list: { your: true, all: true, archived: true },
+        grid: { your: true, all: true, archived: true },
         new: true,
         edit: true,
         progress_status: true,
         templates: true
       },
       multi_tasks: {
-        list: { your: true, all: true, assigned: true, archived: true },
+        grid: { assigned: true, your: true, all: true, archived: true },
         new: true,
         edit: true,
         assignment_to: true,
@@ -28,26 +28,27 @@ module AccessLevels
         notifications_to: true,
         progress_status: true,
         comments: true,
-        confirm_receipts: true
+        confirm_receipts: true,
+        sub_tasks: { show: true, new: true }
       },
       scrape_tasks: {
-        list: { your: true, all: true, archived: true },
+        grid: { assigned: true, your: true, all: true, archived: true },
         new: true,
         edit: true,
         assignment_to: true,
         progress_status: true,
-        tags: true,
+        tags: { show: true, edit: true },
         instructions: true,
         evaluation_document: true
       },
       data_sets: {
-        list: { your: true, all: true, archived: true },
+        grid: { assigned: true, your: true, all: true, archived: true },
         new: true,
         edit: true,
         table_locations: true
       },
       story_types: {
-        list: { your: true, all: true, archived: true },
+        grid: { assigned: true, your: true, all: true, archived: true },
         new: true,
         edit: true,
         assignment_to: true,
@@ -58,152 +59,148 @@ module AccessLevels
         template: true
       },
       factoid_types: {
-        list: { your: true, all: true, archived: true },
+        grid: { assigned: true, your: true, all: true, archived: true },
         new: true,
         edit: true,
         assignment_to: true,
         iterations: true,
         progress_status: true,
         template: true
-      },
-      accounts: {
-        list: { active: true, deactivated: true },
-        new: true,
-        edit: true,
-        impersonate: true,
-        status: true,
-        roles: true,
-        branches: true
       }
     },
 
-
     user: {
       work_requests: {
-        index: {
-          list: { your: true, all: false, archived: false },
-          new: true
-        },
-        show: {
-          edit: true,
-          archive: false,
-          progress_status: true,
-          billed_for_entire_project?: false,
-          eta: false
-        }
+        grid: { your: true, all: false, archived: false },
+        new: true,
+        edit: true,
+        archive: false,
+        progress_status: false,
+        billed_for_entire_project?: { show: false, edit: false },
+        eta: { show: false, edit: false }
       },
       factoid_requests: {
-        index: {
-          list: { your: true, all: false, archived: false },
-          new: true
-        },
-        show: {
-          edit: true,
-          progress_status: true,
-          templates: { edit: true }
-        }
+        grid: { your: true, all: false, archived: false },
+        new: true,
+        edit: true,
+        progress_status: false,
+        templates: true
       },
       multi_tasks: {
-        index: {
-          list: { your: true, all: false, assigned: true, archived: false },
-          new: true
-        },
-        show: {
-          edit: true,
-          assignment_to: true,
-          assistants_to: true,
-          notifications_to: true,
-          progress_status: true,
-          comments: true,
-          confirm_receipts: true,
-          sub_tasks: false
-        }
+        grid: { assigned: true, your: true, all: false, archived: false },
+        new: true,
+        edit: true,
+        assignment_to: true,
+        assistants_to: true,
+        notifications_to: true,
+        progress_status: true,
+        comments: true,
+        confirm_receipts: true,
+        sub_tasks: { show: true, new: true }
       },
       scrape_tasks: {
-        index: {
-          list: { your: true, all: true, archived: false },
-          new: false
-        },
-        show: {
-          edit: false,
-          assignment_to: false,
-          progress_status: true,
-          tags: { edit: false },
-          instructions: { edit: false },
-          evaluation_document: { edit: false },
-          data_sets: false
-        }
+        grid: { assigned: true, your: false, all: false, archived: false },
+        new: false,
+        edit: false,
+        assignment_to: false,
+        progress_status: true,
+        tags: { show: false, edit: false },
+        instructions: false,
+        evaluation_document: false
       },
       data_sets: {
-        index: {
-          list: { your: true, all: true, archived: true },
-          new: true
-        },
-        show: {
-          table_locations: true,
-          story_types: {
-            new: true,
-            assignment_to: true
-          },
-          factoid_types: {
-            new: true,
-            assignment_to: true
-          },
-          edit: true
-        }
+        grid: { assigned: true, your: false, all: true, archived: false },
+        new: true,
+        edit: true,
+        table_locations: true
       },
       story_types: {
-        index: {
-          list: { your: true, all: true, archived: false },
-          new: true
-        },
-        show: {
-          edit: true,
-          assignment_to: true,
-          iterations: true,
-          progress_status: true,
-          comment: true,
-          gather_task_id: true,
-          template: true
-        }
+        grid: { assigned: true, your: false, all: true, archived: false },
+        new: false,
+        edit: false,
+        assignment_to: false,
+        iterations: true,
+        progress_status: true,
+        comment: false,
+        gather_task_id: false,
+        template: false
       },
       factoid_types: {
-        index: {
-          list: { your: true, all: true, archived: false },
-          new: true
-        },
-        show: {
-          assignment_to: true,
-          iterations: true,
-          progress_status: true,
-          template: true
-        }
-      },
-      accounts: {
-        index: {
-          list: { active: true, deactivated: false },
-          new: false,
-          impersonate: true
-        },
-        show: {
-          edit: false,
-          impersonate: true,
-          status: false,
-          roles: { edit: false },
-          branches: { edit: false }
-        }
+        grid: { assigned: true, your: false, all: true, archived: false },
+        new: false,
+        edit: false,
+        assignment_to: false,
+        iterations: true,
+        progress_status: true,
+        template: false
       }
     },
 
     guest: {
-      work_requests: {},
-      factoid_requests: {},
-      multi_tasks: {},
-      scrape_tasks: {},
-      data_sets: {},
-      story_types: {},
-      factoid_types: {},
-      accounts: {}
+      work_requests: {
+        grid: { your: false, all: true, archived: false },
+        new: false,
+        edit: false,
+        archive: false,
+        progress_status: false,
+        billed_for_entire_project?: { show: false, edit: false },
+        eta: { show: false, edit: false }
+      },
+      factoid_requests: {
+        grid: { your: false, all: true, archived: false },
+        new: false,
+        edit: false,
+        progress_status: false,
+        templates: false
+      },
+      multi_tasks: {
+        grid: { assigned: false, your: false, all: true, archived: false },
+        new: false,
+        edit: false,
+        assignment_to: false,
+        assistants_to: false,
+        notifications_to: false,
+        progress_status: false,
+        comments: false,
+        confirm_receipts: false,
+        sub_tasks: { show: false, new: false }
+      },
+      scrape_tasks: {
+        grid: { assigned: false, your: false, all: true, archived: false },
+        new: false,
+        edit: false,
+        assignment_to: false,
+        progress_status: false,
+        tags: { show: false, edit: false },
+        instructions: false,
+        evaluation_document: false
+      },
+      data_sets: {
+        grid: { assigned: false, your: false, all: true, archived: false },
+        new: false,
+        edit: false,
+        table_locations: false
+      },
+      story_types: {
+        grid: { assigned: false, your: false, all: true, archived: false },
+        new: false,
+        edit: false,
+        assignment_to: false,
+        iterations: false,
+        progress_status: false,
+        comment: false,
+        gather_task_id: false,
+        template: false
+      },
+      factoid_types: {
+        grid: { assigned: false, your: false, all: true, archived: false },
+        new: false,
+        edit: false,
+        assignment_to: false,
+        iterations: false,
+        progress_status: false,
+        template: false
+      }
     }
-  }.with_indifferent_access.freeze
+  }.freeze
 end

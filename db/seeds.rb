@@ -24,7 +24,6 @@ def branches
     data_sets
     story_types
     factoid_types
-    accounts
   ]
 end
 
@@ -117,7 +116,8 @@ branches.each do |branch_name|
     AccessLevel.find_or_create_by!(
       branch: branch,
       name: lvl_name,
-      permissions: AccessLevels::PERMISSIONS[lvl_name][branch_name]
+      permissions: AccessLevels::PERMISSIONS[lvl_name][branch_name],
+      lock: true
     )
   end
 end

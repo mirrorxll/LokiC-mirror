@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class AccessLevel < ApplicationRecord
+  serialize :permissions, Hash
+
   belongs_to :branch
 
   has_many :account_cards

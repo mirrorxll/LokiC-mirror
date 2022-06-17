@@ -8,7 +8,7 @@ module Accounts
 
           content_tag(:li) do
             row = content_tag(:div, class: 'btn-light', style: 'display: flex; justify-content: space-between;') do
-              title = content_tag(:span, key.humanize.downcase)
+              title = content_tag(:span, key.to_s.humanize.downcase)
               content =
                 if access.class.in?([TrueClass, FalseClass])
                   icon = access ? 'check' : 'times'
@@ -27,26 +27,24 @@ module Accounts
       end
     end
 
-    def permissions_form(form, hash, disabled = true, prefix = '', deep = 0)
+    def permissions_form(form, hash, prefix = '')
       content_tag(:ul) do
         hash.map do |key, access|
-          raw_prefix =
-            deep.zero? ? "#{prefix}[%%%]" : String.new(prefix).insert(prefix.index(']'), '[%%%]')
-          container = raw_prefix.sub(/%{3}/, key)
+          pos = prefix.index(']')
+          raw_prefix = String.new(prefix).insert(pos, '[%%%]')
+          container = raw_prefix.sub(/%{3}/, key.to_s)
 
           content_tag(:li) do
             row = form.label(container, class: 'form-check-label w-100') do
               content_tag(:div, class: 'btn-light', style: 'display: flex; justify-content: space-between;') do
-                title = content_tag(:span, key.humanize.downcase)
+                title = content_tag(:span, key.to_s.humanize.downcase)
                 content =
                   if access.class.in?([TrueClass, FalseClass])
                     content_tag(:div, class: 'form-check form-check-inline') do
                       form.check_box(
                         container,
                         class: 'form-check-input',
-                        style: 'margin-right: 120px;',
-                        checked: access,
-                        disabled: disabled
+                        style: 'margin-right: 120px;'
                       )
                     end
                   else
@@ -56,7 +54,7 @@ module Accounts
                 title + content
               end
             end
-            sub_ul = access.is_a?(Hash) ? permissions_form(form, access, disabled, container, deep + 1) : ''
+            sub_ul = access.is_a?(Hash) ? permissions_form(form, access, container) : ''
 
             (row + sub_ul)
           end

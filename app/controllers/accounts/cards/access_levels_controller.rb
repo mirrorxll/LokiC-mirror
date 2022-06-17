@@ -7,9 +7,18 @@ module Accounts
 
       def show; end
 
-      def new; end
+      def new
+        @access_level_template =
+          @card.branch.access_levels.find_by(name: 'manager').permissions
+      end
 
-      def create; end
+      def create
+
+      end
+
+      def edit; end
+
+      def update; end
 
       private
 

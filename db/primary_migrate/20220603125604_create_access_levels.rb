@@ -4,7 +4,8 @@ class CreateAccessLevels < ActiveRecord::Migration[6.0]
       t.belongs_to :branch
 
       t.string  :name
-      t.json    :permissions
+      t.text    :permissions
+      t.boolean :lock
       t.timestamps
     end
 
