@@ -5,8 +5,9 @@ module StoryTypes
     class SetNextExportDateTask < StoryTypesTask
       def perform(story_type_id)
         story_type  = StoryType.find(story_type_id)
-        last_export = story_type&.last_export
+        last_export = story_type.last_export
         frequency   = story_type.frequency&.name
+
         if last_export && frequency
           next_date   = case frequency
                         when 'daily'

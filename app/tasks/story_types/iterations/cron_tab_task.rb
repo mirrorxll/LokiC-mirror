@@ -191,6 +191,10 @@ module StoryTypes
 
           exp_st.save!
 
+
+          StoryTypes::Iterations::SetNextExportDateTask.new.perform(story_type.id)
+          StoryTypes::Iterations::SetMaxTimeFrameTask.new.perform(story_type.id)
+
           note = MiniLokiC::Formatize::Numbers.to_text(exp_st.count_samples).capitalize
           record_to_change_history(story_type, 'exported to pipeline', note, account)
         end
