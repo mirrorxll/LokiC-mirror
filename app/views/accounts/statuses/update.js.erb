@@ -11,7 +11,7 @@ $('#accountStatusComment').html('<%= j render 'accounts/main/status_comment' %>'
           `<%= j render 'accounts/roles/roles' %>
           <hr>
           <div class='row'>
-            <%= j render partial: 'accounts/main/card', collection: @account.cards.includes(:branch, :access_level)  %>
+            <%= j render partial: 'accounts/cards/card', collection: @account.cards.includes(:branch, :access_level)  %>
           </div>`
       )
     <% end %>

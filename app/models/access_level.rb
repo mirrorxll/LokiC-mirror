@@ -7,6 +7,7 @@ class AccessLevel < ApplicationRecord
 
   has_many :account_cards
 
+  validates :name, presence: true
   validates_uniqueness_of :branch_id, scope: :name, case_sensitive: true
 
   def guest?

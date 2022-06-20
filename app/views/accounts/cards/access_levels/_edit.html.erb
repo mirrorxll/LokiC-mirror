@@ -1,0 +1,18 @@
+<%= form_with(url: account_card_access_level_path(account, card, access_level), method: :patch) do |f| %>
+  <div class="row align-items-center small">
+    <div class="col-sm-3 col-lg-3 text-right p-0">
+      <span class="font-weight-bold">NAME:</span>
+    </div>
+    <div class=".col-sm-8 col-lg-6">
+      <%= f.text_field "access_level[name]", class: 'form-control form-control-sm', required: true, value: access_level.name %>
+    </div>
+  </div>
+  <hr>
+  <div class="pl-lg-5 pr-lg-5 ml-lg-5 mr-lg-5">
+    <%= permissions_form(f, access_level.permissions, "access_level[permissions]", checked: true) %>
+    <div class="text-center">
+      <%= f.submit '[ update ]', class: 'btn btn-sm btn-link p-0' %>
+      <%= link_to('[ cancel ]', account_card_access_level_path(account, card, card.access_level), class: 'btn btn-sm btn-link text-secondary p-0', remote: true) %>
+    </div>
+  </div>
+<% end %>

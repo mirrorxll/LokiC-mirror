@@ -8,9 +8,8 @@
                class: "btn btn-sm btn-link p-0#{access_level.lock ? ' disabled' : '' }", remote: true)
     .col-sm-8.col-lg-6
       .d-flex.justify-content-between.align-items-center
-        =collection_select(:access_level, :id, card.branch.access_levels, :id, :name, {},
-                           class: 'form-control form-control-sm d-inline-block access-selector w-50',
-                           selected: access_level.id)
+        =collection_select(:access_level, :id, card.branch.access_levels, :id, :name, { selected: access_level.id },
+                           { class: 'form-control form-control-sm d-inline-block access-selector w-50' })
         :javascript
           (() => {
             let select = document.querySelector('\##{"editAccessLevel#{card.id}"} .access-selector');

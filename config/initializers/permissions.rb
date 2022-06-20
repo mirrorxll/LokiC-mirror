@@ -45,6 +45,8 @@ module AccessLevels
         grid: { assigned: true, your: true, all: true, archived: true },
         new: true,
         edit: true,
+        assignment_to_sheriff: true,
+        assignment_to_responsible: true,
         table_locations: true
       },
       story_types: {
@@ -112,6 +114,8 @@ module AccessLevels
         grid: { assigned: true, your: false, all: true, archived: false },
         new: true,
         edit: true,
+        assignment_to_sheriff: true,
+        assignment_to_responsible: true,
         table_locations: true
       },
       story_types: {
@@ -179,6 +183,8 @@ module AccessLevels
         grid: { assigned: false, your: false, all: true, archived: false },
         new: false,
         edit: false,
+        assignment_to_sheriff: false,
+        assignment_to_responsible: false,
         table_locations: false
       },
       story_types: {

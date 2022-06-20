@@ -1,0 +1,8 @@
+<% if @card.errors.any? %>
+  <%= toastr_js_flash(error: @card.errors) %>
+<% else %>
+  $("#editAccessLevel<%= @card.id %>").on('hidden.bs.modal', () => {
+      $('#card<%= @card.id %>').replaceWith('<%= j render partial: 'accounts/cards/card', locals: { card: @card } %>')
+  });
+  $("#editAccessLevel<%= @card.id %>").modal('hide');
+<% end %>

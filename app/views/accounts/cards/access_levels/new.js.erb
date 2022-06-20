@@ -1,4 +1,4 @@
+$($("#editAccessLevel<%= @card.id %> .modal-footer")).addClass('d-none');
 $('#editAccessLevel<%= @card.id %> .access-level>.row>:first-child>a').addClass('disabled');
-
 $('#editAccessLevel<%= @card.id %> .modal-body')
-    .html('<%= j render 'accounts/cards/access_levels/form', { account: @account, card: @card, template: @access_level_template } %>');
+    .html('<%= j render 'accounts/cards/access_levels/new', { account: @account, card: @card, template: @access_level_template } %>');

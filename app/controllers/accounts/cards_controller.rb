@@ -15,6 +15,10 @@ module Accounts
       render 'card'
     end
 
+    def update
+      @card.update(access_level_params)
+    end
+
     def destroy
       if @card.enabled
         @card.update(enabled: false)
@@ -29,6 +33,10 @@ module Accounts
 
     def find_card
       @card = @account.cards.find(params[:card_id] || params[:id])
+    end
+
+    def access_level_params
+      params.require(:card).permit(:access_level_id)
     end
   end
 end

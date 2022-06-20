@@ -4,16 +4,16 @@
       <span class="font-weight-bold">NAME:</span>
     </div>
     <div class=".col-sm-8 col-lg-6">
-      <%= f.text_field "access_level[name]", class: 'form-control form-control-sm' %>
+      <%= f.hidden_field "access_level[branch_id]", value: card.branch.id %>
+      <%= f.text_field "access_level[name]", class: 'form-control form-control-sm', required: true %>
     </div>
   </div>
   <hr>
   <div class="pl-lg-5 pr-lg-5 ml-lg-5 mr-lg-5">
-    <%= permissions_form(f, template, "access_level[#{card.branch.name}]") %>
+    <%= permissions_form(f, template, "access_level[permissions]") %>
     <div class="text-center">
       <%= f.submit '[ create ]', class: 'btn btn-sm btn-link p-0' %>
       <%= link_to('[ cancel ]', account_card_access_level_path(account, card, card.access_level), class: 'btn btn-sm btn-link text-secondary p-0', remote: true) %>
     </div>
   </div>
 <% end %>
-

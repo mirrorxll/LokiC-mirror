@@ -27,7 +27,7 @@ module Accounts
       end
     end
 
-    def permissions_form(form, hash, prefix = '')
+    def permissions_form(form, hash, prefix = '', checked: false)
       content_tag(:ul) do
         hash.map do |key, access|
           pos = prefix.index(']')
@@ -43,6 +43,7 @@ module Accounts
                     content_tag(:div, class: 'form-check form-check-inline') do
                       form.check_box(
                         container,
+                        checked: (checked ? access : false),
                         class: 'form-check-input',
                         style: 'margin-right: 120px;'
                       )
@@ -54,7 +55,7 @@ module Accounts
                 title + content
               end
             end
-            sub_ul = access.is_a?(Hash) ? permissions_form(form, access, container) : ''
+            sub_ul = access.is_a?(Hash) ? permissions_form(form, access, container, checked: checked) : ''
 
             (row + sub_ul)
           end
