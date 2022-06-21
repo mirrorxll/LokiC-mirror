@@ -10,29 +10,29 @@
               sheriff:
             .col-8
               .current_sheriff
-                -if @data_set.sheriff&.name
-                  =@data_set.sheriff&.name
+                -if @data_set.sheriff
+                  =@data_set.sheriff.name
                   =link_to('x', '#')
                 -else
                   =link_to('+', '#')
               .change_sheriff_form.d-none
                 =form_with(url: data_set_path(@data_set), method: :patch, html: { onchange: "Rails.fire(this, 'submit')" } ) do |f|
-                  =f.collection_select 'data_set[sheriff_id]', Account.all.sort_by(&:name), :id, :name, { include_blank: '-- not set --', selected: @data_set.sheriff_id }#, { class: 'mb-1 form-control form-control-sm' }, selected: @data_set.sheriff_id
-
-              :javascript
-                document.querySelector('#data_set_info a[href="#"]').addEventListener('click', function (evt) {
-                  evt.preventDefault();
-                  evt.target.parentNode.classList.add('d-none');
-                  document.getElementsByClassName('change_sheriff_form')[0].classList.remove('d-none');
-                  return false;
-                })
-              -# =button_to(@data_set.sheriff&.name, data_set_path(@data_set), type: :select, method: :patch, remote: true)
-              -# =@data_set.sheriff&.name
+                  =f.collection_select 'data_set[sheriff_id]', Account.all.sort_by(&:name), :id, :name,
+                                       { include_blank: '-- not set --', selected: @data_set.sheriff_id }
           .row.mb-2
             .col-4.pr-0.text-right.font-weight-bold
-              responsible_editor:
+              responsible editor:
             .col-8
-              =@data_set.responsible_editor&.name
+              .current_responsible_editor
+                -if @data_set.responsible_editor
+                  =@data_set.responsible_editor.name
+                  =link_to('x', '#')
+                -else
+                  =link_to('+', '#')
+              .change_responsible_editor_form.d-none
+                =form_with(url: data_set_path(@data_set), method: :patch, html: { onchange: "Rails.fire(this, 'submit')" } ) do |f|
+                  =f.collection_select 'data_set[responsible_editor_id]', Account.all.sort_by(&:name), :id, :name, { include_blank: '-- not set --', selected: @data_set.responsible_editor_id }
+
           .row.mb-2
             .col-4.pr-0.text-right.font-weight-bold
               scrape task:
