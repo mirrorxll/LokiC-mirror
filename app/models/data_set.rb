@@ -3,6 +3,7 @@
 class DataSet < ApplicationRecord # :nodoc:
   belongs_to :account
   belongs_to :sheriff, class_name: 'Account', optional: true
+  belongs_to :responsible_editor, class_name: 'Account', optional: true
   belongs_to :state, optional: true
   belongs_to :category, class_name: 'DataSetCategory', optional: true
   belongs_to :scrape_task, optional: true
