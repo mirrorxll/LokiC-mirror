@@ -31,8 +31,8 @@
                   =link_to('+', '#')
               .change_responsible_editor_form.d-none
                 =form_with(url: data_set_path(@data_set), method: :patch, html: { onchange: "Rails.fire(this, 'submit')" } ) do |f|
-                  =f.collection_select 'data_set[responsible_editor_id]', Account.all.sort_by(&:name), :id, :name, { include_blank: '-- not set --', selected: @data_set.responsible_editor_id }
-
+                  =f.collection_select 'data_set[responsible_editor_id]', Account.get_accounts(:editor).sort_by(&:name),
+                                       :id, :name, { include_blank: '-- not set --', selected: @data_set.responsible_editor_id }
           .row.mb-2
             .col-4.pr-0.text-right.font-weight-bold
               scrape task:
@@ -49,11 +49,6 @@
               slack channel:
             .col-8
               =@data_set.slack_channel
-          -#.row.mb-2
-          -#  .col-4.pr-0.text-right.font-weight-bold
-          -#    sheriff:
-          -#  .col-8
-          -#    =@data_set.sheriff&.name
           .row.mb-2
             .col-4.pr-0.text-right.font-weight-bold
               state:

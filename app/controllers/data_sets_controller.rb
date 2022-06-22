@@ -56,7 +56,10 @@ class DataSetsController < ApplicationController # :nodoc:
   def edit; end
 
   def update
-    redirect_to @data_set if @data_set.update!(data_set_params)
+    respond_to do |f|
+      f.html { redirect_to @data_set }
+      f.js   { render 'update' }
+    end if @data_set.update(data_set_params)
   end
 
   def destroy

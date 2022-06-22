@@ -25,6 +25,8 @@ class Account < ApplicationRecord # :nodoc:
   has_many :assigned_scrape_tasks, foreign_key: :scraper_id,            class_name: 'ScrapeTask'
   has_many :created_scrape_tasks,  foreign_key: :creator_id,            class_name: 'ScrapeTask'
 
+  scope :get_accounts, -> (account_type) { joins(:account_types).where('account_types.name': account_type) }
+
   def name
     "#{first_name} #{last_name}"
   end
