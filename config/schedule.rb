@@ -27,6 +27,10 @@ every '0 * * * *' do
   rake 'story_type:check_has_updates_revise'
 end
 
+every '10 * * * *' do
+  rake 'story_type:setup:time_frames_and_next_export'
+end
+
 every '0 5,10,15,20 * * *' do
   rake 'scrape_task:schemes_tables'
 end

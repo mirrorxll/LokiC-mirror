@@ -52,8 +52,9 @@ class Status < ApplicationRecord
   def self.scrape_task_statuses_for_grid
     ordered_statuses(
       [
-        'in progress', 'on checking',
-        'done', 'blocked', 'canceled'
+        'not started', 'in progress',
+        'on checking', 'done', 'blocked',
+        'canceled'
       ]
     )
   end
