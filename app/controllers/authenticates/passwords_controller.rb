@@ -2,7 +2,7 @@
 
 module Authenticates
   class PasswordsController < AuthenticatesController
-    skip_before_action :authenticate_user!
+    skip_before_action :authenticate_account!
 
     before_action :find_account_by_email, only: %i[edit create]
     before_action :find_account_by_reset_token, only: %i[update]

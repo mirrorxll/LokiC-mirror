@@ -3,42 +3,8 @@
 -# assets - Array of database Entities
 -# options - passed options Hash
 
--if controller_name.in?(%w[scrape_tasks task_tracking_hours tasks shown_samples exported_story_types production_removals])
-  -if grid.html_columns(*options[:columns]).any?
-    =content_tag :table, class: %w(datagrid table table-striped table-bordered table-sm) do
-      %thead
-        =datagrid_header(grid, options)
-      %tbody
-        -if assets.any?
-          =datagrid_rows(grid, assets, **options)
-        -else
-          %tr
-            %td.noresults{:colspan => "100%"}= I18n.t('datagrid.no_results').html_safe
-  -else
-    =I18n.t("datagrid.table.no_columns").html_safe
--elsif controller_name.eql?('factoid_requests')
-  -if grid.html_columns(*options[:columns]).any?
-    =content_tag :table, class: %w(datagrid data_sets_grid table-striped w-100) do
-      %thead
-        =datagrid_header(grid, options)
-      %tbody
-        -if assets.any?
-          =datagrid_rows(grid, assets, **options)
-        -else
-          %tr
-            %td.noresults{:colspan => "100%"}= I18n.t('datagrid.no_results').html_safe
-  -else
-    =I18n.t("datagrid.table.no_columns").html_safe
--else
-  -if grid.html_columns(*options[:columns]).any?
-    =content_tag :table, class: %w(datagrid data_sets_grid table-striped) do
-      %thead
-        =datagrid_header(grid, options)
-      %tbody
-        -if assets.any?
-          =datagrid_rows(grid, assets, **options)
-        -else
-          %tr
-            %td.noresults{:colspan => "100%"}= I18n.t('datagrid.no_results').html_safe
-  -else
-    =I18n.t("datagrid.table.no_columns").html_safe
+-case grid
+-when AccountsGrid
+  =render 'datagrid/accounts/table', grid: grid, assets: assets, options: options
+-when WorkRequestsGrid
+  =render 'datagrid/work_requests/table', grid: grid, assets: assets, options: options

@@ -1,31 +1,37 @@
--if asset.is_a?(WorkRequest)
-  =render 'datagrid/work_request/row', grid: grid, asset: asset, options: options
--elsif asset.is_a?(FactoidRequestsGrid)
-  =render 'datagrid/factoid_request/row', grid: grid, asset: asset, options: options
--elsif asset.is_a?(ScrapeTask)
-  =render 'datagrid/scrape_tasks/row', grid: grid, asset: asset, options: options
--elsif asset.is_a?(TaskTeamWork)
-  =render 'datagrid/task_team_work_row', grid: grid, asset: asset, options: options
--else
-  %tr
-    -grid.html_columns.each do |column|
-      -klass = datagrid_column_classes(grid, column)
-      -value = datagrid_value(grid, column, asset)
-      -if column.header.eql?('Status')
-        -background_color = "bg-#{status_color(ActionView::Base.full_sanitizer.sanitize(value))}"
-      -elsif column.header.eql?('Has updates')
-        -background_color = 'text-center'
-        -if value == 'not_realized'
-          -background_color += ' bg-danger'
-          -value = 'Not realized'
-        -elsif value == 'on_cron'
-          -value = '---'
-        -else
-          -background_color += value ? ' bg-warning' : ''
-          -value = value ? 'Yes' : 'No'
-      -elsif column.name.eql?(:next_export)
-        -if value
-          -background_color = value[:color]
-          -value = value[:date]
-      %td{ class: "#{klass} #{background_color}" }
-        =value
+-# -if asset.is_a?(WorkRequest)
+-#   =render 'datagrid/work_request/row', grid: grid, asset: asset, options: options
+-# -elsif asset.is_a?(FactoidRequestsGrid)
+-#   =render 'datagrid/factoid_request/row', grid: grid, asset: asset, options: options
+-# -elsif asset.is_a?(ScrapeTask)
+-#   =render 'datagrid/scrape_tasks/row', grid: grid, asset: asset, options: options
+-# -elsif asset.is_a?(TaskTeamWork)
+-#   =render 'datagrid/task_team_work_row', grid: grid, asset: asset, options: options
+-# -else
+-#   %tr
+-#     -grid.html_columns.each do |column|
+-#       -klass = datagrid_column_classes(grid, column)
+-#       -value = datagrid_value(grid, column, asset)
+-#       -if column.header.eql?('Status')
+-#         -background_color = "bg-#{status_color(ActionView::Base.full_sanitizer.sanitize(value))}"
+-#       -elsif column.header.eql?('Has updates')
+-#         -background_color = 'text-center'
+-#         -if value == 'not_realized'
+-#           -background_color += ' bg-danger'
+-#           -value = 'Not realized'
+-#         -elsif value == 'on_cron'
+-#           -value = '---'
+-#         -else
+-#           -background_color += value ? ' bg-warning' : ''
+-#           -value = value ? 'Yes' : 'No'
+-#       -elsif column.name.eql?(:next_export)
+-#         -if value
+-#           -background_color = value[:color]
+-#           -value = value[:date]
+-#       %td{ class: "#{klass} #{background_color}" }
+-#         =value
+
+-case asset
+-when Account
+  =render 'datagrid/accounts/row', grid: grid, asset: asset, options: options
+-when WorkRequest
+  =render 'datagrid/work_requests/row', grid: grid, asset: asset, options: options

@@ -16,7 +16,7 @@ def roles
 end
 
 def branches
-  %i[
+  %w[
     work_requests
     factoid_requests
     multi_tasks
@@ -28,7 +28,7 @@ def branches
 end
 
 def access_levels
-  %i[manager user guest]
+  %w[manager user guest]
 end
 
 def frequency(db02)
@@ -108,7 +108,7 @@ db02 = MiniLokiC::Connect::Mysql.on(DB02, 'lokic')
 db02_sec = MiniLokiC::Connect::Mysql.on(DB02, 'lokic_secondary')
 
 puts 'Account Roles/Branches'
-roles.each { |role| Role.find_or_create_by!(name: role) }
+roles.each { |role| AccountRole.find_or_create_by!(name: role) }
 branches.each do |branch_name|
   branch = Branch.find_or_create_by!(name: branch_name)
 

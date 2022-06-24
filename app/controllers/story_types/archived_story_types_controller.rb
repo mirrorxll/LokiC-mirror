@@ -8,11 +8,7 @@ module StoryTypes
     skip_before_action :set_article_type_iteration
 
     def index
-      @grid = if request.parameters[:archived_story_types_grid]
-                       request.parameters[:archived_story_types_grid]
-                     else
-                       {}
-                     end
+      @grid = request.parameters[:archived_story_types_grid] || {}
 
       @archived_story_types_grid = ArchivedStoryTypesGrid.new(@grid, &:archived)
 

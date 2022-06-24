@@ -2,7 +2,7 @@
 
 module Authenticates
   class SessionsController < AuthenticatesController
-    skip_before_action :authenticate_user!, except: :destroy
+    skip_before_action :authenticate_account!, except: :destroy
     skip_before_action :redirect_to_root, only: :destroy
 
     before_action :find_account_by_email, only: :create
@@ -21,7 +21,8 @@ module Authenticates
         end
         session[:auth_token] = @account.auth_token
 
-        redirect_to root_path
+        redirect_to session[:return_to] || root_path
+        session[:return_to] = nil
       else
         flash.now[:error] = { sign_in: 'invalid email or password' }
         render :new

@@ -1,21 +1,32 @@
-=form_with(url: api_work_request_path(work_request), method: :patch) do |f|
-  =f.date_field "work_request[#{key}]", id: "#{key}__#{work_request.id}",
-                style: 'width: 130px;', class: 'underline-input rounded-0 p-0'
-  =button_tag class: 'btn p-0' do
+%div{id: "#{key}_form_#{work_request.id}" }
+  =date_field_tag :work_request, key, style: 'width: 130px;', class: 'underline-input rounded-0 p-0'
+  %button{ class: 'btn p-0' }
     =icon('fa', 'pencil')
 
-:javascript
-  (() => {
-    let input = document.querySelector(`\##{key}__#{work_request.id}`)
-    let target = input.id.split('__');
-    let valueType = target.at(0);
-    let valueId = target.at(-1);
+  :javascript
+    (() => {
+      let parent = document.querySelector(`\##{key}_#{work_request.id}`);
+      let form = document.querySelector(`\##{key}_form_#{work_request.id}`);
+      let input = form.querySelector(`input`);
+      let button = form.querySelector(`button`);
 
-    input.form.addEventListener('submit', submitForm);
-    input.value = document.querySelector(`\#${valueType}${valueId} u`).innerText;
+      input.value = parent.innerText;
 
-    let popoverBody = document.querySelector('.popover-body');
-    popoverBody.classList.add('p-1');
-    popoverBody.parentNode.classList.add('mb-0');
-    document.querySelector('.arrow')?.remove();
-  })();
+      button.addEventListener('click', () => {
+        Rails.ajax({
+          type: "PATCH",
+          dataType: 'json',
+          url: `#{api_work_request_path(work_request)}`,
+          data: `work_request[#{key}]=${input.value}`,
+          success: (data) => {
+            if(data['success'])
+              console.log(input.value);
+              if(input.value.length > 0) {
+                parent.innerText = input.value;
+              } else {
+                parent.innerText = '****-**-**'
+              }
+          }
+        })
+      });
+    })();

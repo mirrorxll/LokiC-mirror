@@ -208,5 +208,5 @@ module AccessLevels
         template: false
       }
     }
-  }.freeze
+  }.deep_stringify_keys.freeze
 end

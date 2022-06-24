@@ -6,55 +6,34 @@ class ApplicationController < ActionController::Base
   helper ActionText::Engine.helpers
   helper_method :current_account
 
-  before_action :authenticate_user!
-
-  before_action :find_parent_story_type
-  before_action :set_story_type_iteration
-  before_action :find_parent_article_type
-  before_action :set_article_type_iteration
-
-  before_action :unconfirmed_multitasks
+  before_action :authenticate_account!
+  before_action :unconfirmed_multi_tasks
 
   private
 
-  def authenticate_user!
+  def authenticate_account!
     return unless ((cookies.encrypted[:remember_me] || session[:auth_token]) && current_account).nil?
 
     cookies.delete(:remember_me)
     session[:auth_token] = nil
+    session[:return_to] = request.fullpath
     redirect_to sign_in_path
   end
 
   def current_account
     @current_account ||= Account.find_by(auth_token: cookies.encrypted[:remember_me] || session[:auth_token])
   end
-  helper_method :current_account
   impersonates :account
 
-  def find_parent_story_type
-    @story_type = StoryType.find(params[:story_type_id])
-  end
+  # callback authorize! called for 'work_requests', 'factoid_requests',
+  # 'multi_tasks', 'scrape_tasks', 'data_sets', 'story_types', 'factoid_types'
+  def authorize!(branch_name)
+    @card = current_account.cards.find_by(branch: Branch.find_by(name: branch_name))
+    @permissions = @card.access_level.permissions
+    return if @card.enabled
 
-  def find_parent_article_type
-    @factoid_type = ArticleType.find(params[:article_type_id])
-  end
-
-  def set_story_type_iteration
-    @iteration =
-      if params[:iteration_id]
-        StoryTypeIteration.find(params[:iteration_id])
-      else
-        @story_type.iteration
-      end
-  end
-
-  def set_article_type_iteration
-    @iteration =
-      if params[:iteration_id]
-        ArticleTypeIteration.find(params[:iteration_id])
-      else
-        @factoid_type.iteration
-      end
+    flash[:error] = { "#{branch_name}": :unauthorized }
+    redirect_to root_path
   end
 
   def staging_table_action(&block)
@@ -72,14 +51,6 @@ class ApplicationController < ActionController::Base
 
   def staging_table_deleted
     'The Table for this story type has been dropped. Please update the page'
-  end
-
-  def record_to_change_history(model, event, note, account)
-    model.change_history.create!(event: event, note: note, account: account)
-  end
-
-  def record_to_alerts(model, subtype, message)
-    model.alerts.create!(subtype: subtype.downcase, message: message)
   end
 
   # this respond to methods like:
@@ -101,23 +72,19 @@ class ApplicationController < ActionController::Base
     StoryTypeChannel.broadcast_to(story_type, { spinner: true, section: section, message: message })
   end
 
-  def template_with_expired_revision
-    @iteration.story_type.template.expired_revision?
-  end
-
   def generate_url(model)
     host = Rails.env.production? ? 'https://lokic.locallabs.com' : 'http://localhost:3000'
     "#{host}#{Rails.application.routes.url_helpers.send("#{model.class.to_s.underscore}_path", model)}"
   end
 
-  def unconfirmed_multitasks
+  def unconfirmed_multi_tasks
     tasks = Task.ongoing.joins(:assignment_to).where(
       'task_assignments.confirmed': false,
       'task_assignments.account_id': current_account
     )
 
-    flash.now[:warning] = tasks.each_with_object({ unconfirmed_multitask: [] }) do |task, warnings|
-      warnings[:unconfirmed_multitask] << view_context.link_to(
+    flash.now[:warning] = tasks.each_with_object({ unconfirmed_multi_task: [] }) do |task, warnings|
+      warnings[:unconfirmed_multi_task] << view_context.link_to(
         "#{task.title} assigned to you by #{task.creator.name}",
         multi_task_path(task)
       ).html_safe

@@ -44,6 +44,10 @@ module StoryTypes
 
     private
 
+    def template_with_expired_revision
+      @iteration.story_type.template.expired_revision?
+    end
+
     def removal
       recent_removal = @iteration.production_removals.last
 

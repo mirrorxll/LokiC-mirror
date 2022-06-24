@@ -44,7 +44,7 @@ class Account < ApplicationRecord # :nodoc:
   has_many :created_scrape_tasks,  class_name: 'ScrapeTask', foreign_key: :creator_id
   has_many :cards, class_name: 'AccountCard'
 
-  has_and_belongs_to_many :roles
+  has_and_belongs_to_many :roles, class_name: 'AccountRole'
 
   validates :email, presence: true, format: { with: /\A[^@\s]+@[^@\s]+\z/, message: 'Invalid' }
   validates_uniqueness_of :email, case_sensitive: true
@@ -63,5 +63,53 @@ class Account < ApplicationRecord # :nodoc:
 
   def slack_identifier
     slack&.identifier
+  end
+
+  def role_names
+    roles.map(&:name)
+  end
+
+  def manager?
+    role_names.include?('Manager')
+  end
+
+  def hle_content_manager?
+    role_names.include?('HLE Content Manager')
+  end
+
+  def hle_fcd_checker?
+    role_names.include?('HLE FCD Checker')
+  end
+
+  def hle_content_developer?
+    role_names.include?('HLE Content Developer')
+  end
+
+  def scrape_manager?
+    role_names.include?('Scrape Manager')
+  end
+
+  def data_reviewer?
+    role_names.include?('Data Reviewer')
+  end
+
+  def data_cleaner?
+    role_names.include?('Data Cleaner')
+  end
+
+  def scrape_developer?
+    role_names.include?('Scrape Developer')
+  end
+
+  def client?
+    role_names.include?('Client')
+  end
+
+  def guest?
+    role_names.include?('Guest')
+  end
+
+  def branch_names
+    cards.where(enabled: true).includes(:branch).map { |card| card.branch.name }
   end
 end

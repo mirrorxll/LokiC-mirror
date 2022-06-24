@@ -5,7 +5,7 @@ class CreateAccessLevels < ActiveRecord::Migration[6.0]
 
       t.string  :name
       t.text    :permissions
-      t.boolean :lock
+      t.boolean :lock, default: false
       t.timestamps
     end
 

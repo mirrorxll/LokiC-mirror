@@ -12,7 +12,7 @@ module Accounts
       @account.roles.clear
 
       roles_params.each do |id, state|
-        @account.roles << Role.find(id) if state.eql?('1')
+        @account.roles << AccountRole.find(id) if state.eql?('1')
       end
 
       render 'accounts/roles/show'

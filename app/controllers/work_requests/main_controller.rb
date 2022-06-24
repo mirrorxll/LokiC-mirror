@@ -2,12 +2,17 @@
 
 module WorkRequests
   class MainController < WorkRequestsController
-    skip_before_action :find_work_request, only: %i[index new create]
+    before_action :find_work_request, only: %i[show update]
+
+    before_action :grid_lists, only: %i[index show]
+    before_action :current_list, only: :index
     before_action :generate_grid, only: :index
+
+    before_action :check_access, only: :show
+    before_action :multi_tasks_access, only: :show
 
     def index
       @tab_title = 'LokiC :: WorkRequests'
-      @grid.scope { |sc| sc.page(params[:page]).per(30) }
     end
 
     def show
@@ -31,25 +36,39 @@ module WorkRequests
 
     private
 
+    def grid_lists
+      @lists = HashWithIndifferentAccess.new
+
+      @lists['your'] = { requester_id: current_account.id, archived: false } if @permissions['grid']['your']
+      @lists['all'] = { archived: false }                                    if @permissions['grid']['all']
+      @lists['archived'] = { archived: true }                                if @permissions['grid']['archived']
+    end
+
+    def current_list
+      keys = @lists.keys
+      @current_list = keys.include?(params[:list]) ? params[:list] : keys.first
+    end
+
     def generate_grid
-      default =
-        case params[:list]
-        when 'all'
-          { archived: false }
-        when 'archived'
-          { archived: true }
-        else
-          { requester_id: current_account.id, archived: false }
-        end
-      filter_params = params[:work_requests_grid] || default
+      return unless @current_list
 
-      @grid = WorkRequestsGrid.new(filter_params)
+      @grid = WorkRequestsGrid.new(params[:work_requests_grid] || @lists[@current_list])
 
-      @grid.column(:sow, header: 'SOW', order: false, after: :project_order_name) do |req|
-        WorkRequestsGrid.format(req) do
-          (render 'work_requests/main/sow_cell', work_request: req, default: req.default_sow).to_s
-        end
-      end
+      @grid.scope { |sc| sc.page(params[:page]).per(30) }
+    end
+
+    def check_access
+      return if @lists[:your] && @work_request.requester.eql?(current_account)
+      return if @lists[:all] && !@work_request.archived
+      return if @lists[:archived] && @work_request.archived
+
+      flash[:error] = { work_requests: :unauthorized }
+      redirect_to root_path
+    end
+
+    def multi_tasks_access
+      card = current_account.cards.find_by(branch: Branch.find_by(name: 'multi_tasks'))
+      @multi_tasks_permissions = card.access_level.permissions if card.enabled
     end
 
     def work_request_params

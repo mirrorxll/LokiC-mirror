@@ -1,5 +1,5 @@
 <%= form_with(url: account_roles_path(@account), method: :put) do |f| %>
-  <% Role.all.each do |r| %>
+  <% AccountRole.all.each do |r| %>
     <%= f.check_box "roles[#{r.id}]", checked: @account.roles.exists?(r.id)  %>
     <%= f.label "roles[#{r.id}]", r.name %>
     <br>

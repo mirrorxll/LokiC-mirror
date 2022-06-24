@@ -3,7 +3,7 @@
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
-  root 'root#index'
+  root 'home#index'
 
   mount ActionCable.server, at: '/cable'
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'

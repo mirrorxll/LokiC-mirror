@@ -26,6 +26,10 @@ $fa-font-path: "~font-awesome/fonts";
 @import "~datatables.net-bs4/css/dataTables.bootstrap4.min";
 @import 'select2/dist/css/select2.css';
 
+body {
+  font-family: 'Ubuntu', sans-serif;
+}
+
 @media (min-width: 100px) {
   .modal-fullscreen {
     max-width: 97%;
