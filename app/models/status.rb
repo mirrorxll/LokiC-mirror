@@ -65,8 +65,20 @@ class Status < ApplicationRecord
         'in progress', 'exported',
         'on cron', 'blocked',
         'canceled', 'done',
-        'archived', 'not_started',
+        'archived', 'not started',
         'migrated'
+      ]
+    )
+  end
+
+  def self.all_story_type_statuses
+    ordered_statuses(
+      [
+        'not started', 'in progress',
+        'exported', 'on cron',
+        'blocked', 'canceled',
+        'migrated', 'inactive',
+        'done', 'archived'
       ]
     )
   end

@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
   before_action :find_parent_article_type, unless: :devise_controller?
   before_action :set_article_type_iteration, unless: :devise_controller?
 
-  before_action :check_tasks
+  before_action :unconfirmed_multitasks
 
   private
 
@@ -145,14 +145,24 @@ class ApplicationController < ActionController::Base
     "#{host}#{Rails.application.routes.url_helpers.send("#{model.class.to_s.underscore}_path", model)}"
   end
 
-  def check_tasks
-    tasks = Task.ongoing
-                .joins(:assignment_to)
-                .where('task_assignments.confirmed': false, 'task_assignments.account_id': current_account)
-    tasks.each_with_index do |task, i|
-      creator                             = "#{task.creator.first_name} #{task.creator.last_name}"
-      message                             = "Task #{task.title} assigned to you by #{creator}"
-      flash.now["task_notification_#{i}"] = view_context.link_to(message, task).html_safe
+  def unconfirmed_multitasks
+    return if cookies[:unconfirmed_multitask_toasts_lock]
+
+    cookies.encrypted[:unconfirmed_multitask_toasts_lock] = {
+      value: true,
+      expires: DateTime.now + 15.minute
+    }
+
+    tasks = Task.ongoing.joins(:assignment_to).where(
+      'task_assignments.confirmed': false,
+      'task_assignments.account_id': current_account
+    )
+
+    flash.now[:warning] = tasks.each_with_object({ unconfirmed_multitask: [] }) do |task, warnings|
+      warnings[:unconfirmed_multitask] << view_context.link_to(
+        "#{task.title} assigned to you by #{task.creator.name}",
+        task_path(task)
+      ).html_safe
     end
   end
 end
