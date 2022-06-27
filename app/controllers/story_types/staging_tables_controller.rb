@@ -2,9 +2,6 @@
 
 module StoryTypes
   class StagingTablesController < StoryTypesController # :nodoc:
-    skip_before_action :find_parent_article_type
-    skip_before_action :set_article_type_iteration
-
     before_action :staging_table_name_from_params, only: :create
     before_action :staging_table
 

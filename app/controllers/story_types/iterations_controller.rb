@@ -2,9 +2,7 @@
 
 module StoryTypes
   class IterationsController < StoryTypesController
-    skip_before_action :find_parent_article_type
     skip_before_action :set_story_type_iteration
-    skip_before_action :set_article_type_iteration
 
     before_action :find_iteration, only: %i[show update apply purge]
     before_action :find_staging_table, only: :purge

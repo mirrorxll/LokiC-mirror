@@ -2,10 +2,7 @@
 
 module StoryTypes
   class MainController < StoryTypesController # :nodoc:
-    skip_before_action :find_parent_story_type, except: :properties_form
-    skip_before_action :find_parent_article_type
     skip_before_action :set_story_type_iteration
-    skip_before_action :set_article_type_iteration
 
     before_action :find_data_set,            only: %i[new create]
     before_action :find_story_type,          except: %i[index new create properties_form]

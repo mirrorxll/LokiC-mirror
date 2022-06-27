@@ -2,9 +2,6 @@
 
 module StoryTypes
   class ExportsController < StoryTypesController
-    skip_before_action :find_parent_article_type
-    skip_before_action :set_article_type_iteration
-
     before_action :show_sample_ids, only: :stories
     before_action :removal, only: :remove_exported_stories
     before_action :revision_reminder, only: :execute, if: :template_with_expired_revision

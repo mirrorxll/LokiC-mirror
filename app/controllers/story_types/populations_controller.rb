@@ -2,9 +2,6 @@
 
 module StoryTypes
   class PopulationsController < StoryTypesController # :nodoc:
-    skip_before_action :find_parent_article_type
-    skip_before_action :set_article_type_iteration
-
     before_action :staging_table
 
     def execute

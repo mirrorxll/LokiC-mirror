@@ -2,10 +2,6 @@
 
 module StoryTypes
   class SchedulesController < StoryTypesController # :nodoc:
-    skip_before_action :find_parent_article_type
-    skip_before_action :set_article_type_iteration
-
-
     def manual
       @iteration.update!(schedule: false, current_account: current_account)
       send_to_action_cable(@story_type, 'scheduler', 'scheduling in progress')

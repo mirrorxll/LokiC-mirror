@@ -2,9 +2,6 @@
 
 module FactoidTypes
   class ArticlesController < FactoidTypesController # :nodoc:
-    skip_before_action :find_parent_story_type
-    skip_before_action :set_story_type_iteration
-
     def index
       @grid = request.parameters[:article_type_iteration_articles_grid] || {}
 

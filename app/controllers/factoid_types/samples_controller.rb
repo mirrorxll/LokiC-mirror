@@ -2,9 +2,6 @@
 
 module FactoidTypes
   class SamplesController < FactoidTypesController # :nodoc:
-    skip_before_action :find_parent_story_type
-    skip_before_action :set_story_type_iteration
-
     before_action :find_sample, only: %i[show edit update]
 
     def show

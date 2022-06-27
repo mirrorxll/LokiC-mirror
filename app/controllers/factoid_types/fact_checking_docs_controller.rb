@@ -2,9 +2,6 @@
 
 module FactoidTypes
   class FactCheckingDocsController < FactoidTypesController
-    skip_before_action :find_parent_story_type
-    skip_before_action :set_story_type_iteration
-
     before_action :find_fcd, except: :template
 
     def show

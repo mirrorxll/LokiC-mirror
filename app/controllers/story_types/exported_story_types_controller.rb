@@ -2,10 +2,6 @@
 
 module StoryTypes
   class ExportedStoryTypesController < StoryTypesController # :nodoc:
-    skip_before_action :find_parent_story_type
-    skip_before_action :find_parent_article_type
-    skip_before_action :set_article_type_iteration
-
     before_action :set_story_type_iteration,   except: :index
     before_action :editor_report,   only: :submit_editor_report
     before_action :manager_report,  only: :submit_manager_report

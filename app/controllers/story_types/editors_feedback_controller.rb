@@ -2,9 +2,6 @@
 
 module StoryTypes
   class EditorsFeedbackController < StoryTypesController
-    skip_before_action :find_parent_article_type
-    skip_before_action :set_article_type_iteration
-
     before_action :find_fcd, only: %i[create confirm]
     before_action :find_feedback_collection, only: %i[create confirm]
     after_action  :send_notification_to_dev, only: :create

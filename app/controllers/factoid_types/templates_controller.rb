@@ -2,9 +2,6 @@
 
 module FactoidTypes
   class TemplatesController < FactoidTypesController
-    skip_before_action :find_parent_story_type
-    skip_before_action :set_story_type_iteration
-
     before_action :update_template, only: %i[update save]
 
     after_action :send_notification, only: :update, if: -> { @factoid_type.developer.present? }

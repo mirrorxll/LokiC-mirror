@@ -2,9 +2,6 @@
 
 module FactoidTypes
   class ReviewersFeedbackController < FactoidTypesController
-    skip_before_action :find_parent_story_type
-    skip_before_action :set_story_type_iteration
-
     before_action :find_fcd,                       only: %i[create confirm]
     before_action :find_feedback,                  only: %i[create confirm]
     after_action  :send_notifications,             only: :create

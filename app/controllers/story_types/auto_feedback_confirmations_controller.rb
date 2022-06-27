@@ -2,9 +2,6 @@
 
 module StoryTypes
   class AutoFeedbackConfirmationsController < StoryTypesController
-    skip_before_action :find_parent_article_type
-    skip_before_action :set_article_type_iteration
-
     before_action :find_auto_feedback
 
     def confirm

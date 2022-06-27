@@ -2,9 +2,6 @@
 
 module StoryTypes
   class SamplesController < StoryTypesController # :nodoc:
-    skip_before_action :find_parent_article_type
-    skip_before_action :set_article_type_iteration
-
     before_action :find_sample, only: %i[show edit update]
 
     def index
