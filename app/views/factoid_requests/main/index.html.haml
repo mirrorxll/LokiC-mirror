@@ -1,33 +1,39 @@
 %hr/
-#header.row.justify-content-between.align-items-center.mt-3
-  .col-6
-    Total:
-    =@grid.assets.total_count
-  .col-6.text-right.text-uppercase
+#header.d-flex.justify-content-between.align-items-center.mt-3
+  %span
+    -if @current_list
+      Total: #{@grid.assets.total_count}
+  %span.font-weight-bold
+    FACTOID REQUESTS
+  .d-inline-block.text-right.text-uppercase
     .btn-group.mr-3
-      -lists = %w[yours all]
-      -lists.each do |list|
-        -filled = (!params[:list].in?(lists) && list.eql?('yours')) || params[:list].eql?(list) ? '' : '-outline'
-        =link_to(list, url_for(list: list), class: "btn btn-sm btn#{filled}-dark")
-      =link_to('archived', url_for(list: :archived), class: "disabled btn btn-sm btn-outline-dark")
+      -if @current_list
+        -@lists.each_key do |list|
+          -filled = @current_list.eql?(list) ? '' : '-outline'
+          =link_to(list, url_for(list: list), class: "btn btn-sm btn#{filled}-dark")
     .btn-group
-      =link_to('filter', '#', class: 'disabled btn btn-sm btn-outline-dark',
-               "data-target" => "#createFactoidRequestModal", "data-toggle" => "modal")
-      =link_to('create', '#', class: 'btn btn-sm btn-outline-dark',
-               "data-target" => "#createFactoidRequestModal", "data-toggle" => "modal")
+      -if @current_list
+        %button.disabled.btn.btn-sm.btn-outline-dark
+          FILTER
+        -# =link_to('filter', '#', class: 'disabled btn btn-sm btn-outline-dark',
+        -#         "data-target" => "#createWorkRequestModal", "data-toggle" => "modal")
+      -if @permissions['new']
+        =link_to('create', '#', class: 'btn btn-sm btn-outline-dark',
+                 "data-target" => "#createFactoidRequestModal", "data-toggle" => "modal")
 %hr/
 
-#filter.mt-3.mb-3.collapse{ class: (params[:scrape_tasks_grid] ? 'show' : '') }
-  =datagrid_form_for @grid, url: factoid_requests_path
+-if @current_list
+  -##filter.mt-3.mb-3.collapse{ class: (params[:work_requests_grid] ? 'show' : '') }
+  -#  =datagrid_form_for @grid, url: work_requests_path(list: @current_list)
 
-.row.small.mb-5
-  .col-12
-    =datagrid_table(@grid)
+  .row.small.mb-5
+    .col-12
+      =datagrid_table(@grid)
 
-.fixed-bottom.bg-light
-  .row
-    .col-12.p-2
-      =paginate @grid.assets
+  .fixed-bottom.bg-light
+    .row
+      .col-12.p-2
+        =paginate @grid.assets
 
 #createFactoidRequestModal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "createWorkRequestModal",
                                        'data-backdrop' => 'static', "data-keyboard" => "false" }

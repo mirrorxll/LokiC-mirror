@@ -6,5 +6,5 @@
       -if assets.any?
         =datagrid_rows(grid, assets, **options)
       -else
-        %tr
+        %tr.text-center
           %td.noresults{:colspan => "100%"}= I18n.t('datagrid.no_results').html_safe

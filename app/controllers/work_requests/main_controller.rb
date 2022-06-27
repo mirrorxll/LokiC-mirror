@@ -8,7 +8,7 @@ module WorkRequests
     before_action :current_list, only: :index
     before_action :generate_grid, only: :index
 
-    before_action :check_access, only: :show
+    before_action :access_to_show, only: :show
     before_action :multi_tasks_access, only: :show
 
     def index
@@ -57,10 +57,10 @@ module WorkRequests
       @grid.scope { |sc| sc.page(params[:page]).per(30) }
     end
 
-    def check_access
-      return if @lists[:your] && @work_request.requester.eql?(current_account)
-      return if @lists[:all] && !@work_request.archived
-      return if @lists[:archived] && @work_request.archived
+    def access_to_show
+      return if @lists['your'] && @work_request.requester.eql?(current_account)
+      return if @lists['all'] && !@work_request.archived
+      return if @lists['archived'] && @work_request.archived
 
       flash[:error] = { work_requests: :unauthorized }
       redirect_to root_path

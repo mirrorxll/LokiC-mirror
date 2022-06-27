@@ -17,36 +17,40 @@
       .d-flex.justify-content-between.align-items-center
         MAIN INFO
         .d-flex.align-items-center
-          #factoidRequestStatus.d-inline-block
-            =render 'statuses'
           #editFactoidRequest
-            .d-inline-block.mr-2.small
-              %button{ type: 'button', class: 'p-0 ml-1 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#updateFactoidRequestModal" }
-                [ edit ]
+            -if @permissions['edit']
+              .d-inline-block.mr-2.small
+                %button{ type: 'button', class: 'p-0 ml-1 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#updateFactoidRequestModal" }
+                  [ edit ]
+          #factoidRequestStatus.d-inline-block
+            -if @permissions['progress_status']
+              =render 'statuses'
+            -else
+              =@factoid_request.status.name
     .card-body
       =render 'factoid_request_info'
 
 #factoidRequestTemplates.small
   =render partial: 'factoid_requests/templates/template', collection: (1..5)
 
-#updateFactoidRequestModal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "createWorkRequestModal",
-                                       'data-backdrop' => 'static', "data-keyboard" => "false" }
-  .modal-dialog.modal-dialog-scrollable.modal-lg
-    .modal-content
-      .modal-header
-        UPDATE FACTOID REQUEST
-        %button.close{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
-          %span{ "aria-hidden" => "true" } ×
-      .modal-body
-        =render 'edit'
-      .modal-footer.justify-content-center
-        =link_to('UPDATE', '#', id: 'updateFactoidRequestButton', class: 'btn btn-sm btn-dark')
-        .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
-          CANCEL
+-if @permissions['edit']
+  #updateFactoidRequestModal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "createWorkRequestModal",
+                                                 'data-backdrop' => 'static', "data-keyboard" => "false" }
+    .modal-dialog.modal-dialog-scrollable.modal-lg
+      .modal-content
+        .modal-header
+          UPDATE FACTOID REQUEST
+          %button.close{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+            %span{ "aria-hidden" => "true" } ×
+        .modal-body
+          =render 'edit'
+        .modal-footer.justify-content-center
+          =link_to('UPDATE', '#', id: 'updateFactoidRequestButton', class: 'btn btn-sm btn-dark')
+          .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+            CANCEL
 
-:javascript
-  document.querySelector('#updateFactoidRequestButton').addEventListener('click', (event) => {
-    event.preventDefault();
-
-    document.querySelector('#hiddenUpdateButton').click();
-  }, false);
+  :javascript
+    document.querySelector('#updateFactoidRequestButton').addEventListener('click', (event) => {
+      event.preventDefault();
+      document.querySelector('#hiddenUpdateButton').click();
+    }, false);

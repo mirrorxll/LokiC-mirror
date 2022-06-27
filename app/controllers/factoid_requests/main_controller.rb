@@ -2,16 +2,20 @@
 
 module FactoidRequests
   class MainController < FactoidRequestsController
+    before_action :find_factoid_request, only: %i[show edit update]
+
+    before_action :grid_lists, only: %i[index show]
+    before_action :current_list, only: :index
     before_action :generate_grid, only: :index
-    before_action :find_factoid_request, only: %i[show edit update archive unarchive]
+
+    before_action :access_to_show, only: :show
 
     def index
       @tab_title = 'LokiC :: FactoidRequests'
-      @grid.scope { |sc| sc.page(params[:page]).per(30) }
     end
 
     def show
-      @tab_title = "LokiC :: RequestedFactoid ##{@factoid_request.id} <#{@factoid_request.name}>"
+      @tab_title = "LokiC :: FactoidRequest ##{@factoid_request.id} <#{@factoid_request.name}>"
     end
 
     def new; end
@@ -34,17 +38,33 @@ module FactoidRequests
 
     private
 
-    def generate_grid
-      default =
-        case params[:list]
-        when 'all'
-          {}
-        else
-          { requester_id: current_account.id }
-        end
-      filter_params = params[:factoid_requests_grid] || default
+    def grid_lists
+      @lists = HashWithIndifferentAccess.new
 
-      @grid = FactoidRequestsGrid.new(filter_params)
+      @lists['your'] = { requester_id: current_account.id } if @permissions['grid']['your']
+      @lists['all'] = {}                                    if @permissions['grid']['all']
+      # @lists['archived'] = { archived: true }               if @permissions['grid']['archived']
+    end
+
+    def current_list
+      keys = @lists.keys
+      @current_list = keys.include?(params[:list]) ? params[:list] : keys.first
+    end
+
+    def generate_grid
+      return unless @current_list
+
+      @grid = FactoidRequestsGrid.new(params[:factoid_requests_grid] || @lists[@current_list])
+      @grid.scope { |sc| sc.page(params[:page]).per(30) }
+    end
+
+    def access_to_show
+      return if @lists['your'] && @factoid_request.requester.eql?(current_account)
+      return if @lists['all'] && !@factoid_request.archived
+      # return if @lists[:archived] && @work_request.archived
+
+      flash[:error] = { factoid_requests: :unauthorized }
+      redirect_to root_path
     end
 
     def factoid_request_params
