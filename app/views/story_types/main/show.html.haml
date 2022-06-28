@@ -5,15 +5,8 @@
 .row
   .col-12.text-center
     #story_type_name
-      %b ##{@story_type.id} #{@story_type.name}
-%hr/
-
-%nav{ 'area-label' => 'breadcrumb' }
-  %ov.breadcrumb
-    %li.breadcrumb-item
-      =link_to('home', root_url)
-    %li.breadcrumb-item.active{ 'area-current' => 'page' }
-      story type
+      =link_to(story_type_path(@story_type)) do
+        %b ##{@story_type.id} #{@story_type.name}
 %hr/
 
 .row
@@ -34,64 +27,68 @@
       =render 'story_types/progress_statuses/status'
 %hr/
 
-#story_type_template.accordion
-  .card.small
-    .card-header
-      %div.text-center{ "aria-controls" => "#template_preview", "aria-expanded" => "true",
-                        "data-target" => "#template_preview", "data-toggle" => "collapse", type: "button" }
-        template
-    #template_preview.collapse.show{"data-parent" => "#story_type_template"}
+.row.mb-2
+  #story_type_template.col.card.small.p-0.ml-3.mr-3
+    .card-header.d-flex.justify-content-between
+      TEMPLATE
+      =button_to('Edit', edit_story_type_template_path(@story_type, @story_type.template), method: :get, remote: true)
+    #template_preview.h-100
       .card-body.small
         =render 'story_types/main/template'
 
-#story_type_properties.accordion
-  .card
-    .card-header
-      %div.text-center{"aria-controls" => "#properties", "aria-expanded" => "false", "data-target" => "#properties", "data-toggle" => "collapse", type: "button"}
-        properties
-    #properties.collapse.show{"data-parent" => "#story_type_properties"}
-      .flash
-      .card-body
-        =render 'story_types/main/properties'
+  .col
+    #story_type_properties
+      .card.small
+        .card-header
+          PROPERTIES
+        #properties.collapse.show{"data-parent" => "#story_type_properties"}
+          .flash
+          .card-body
+            =render 'story_types/main/properties'
 
-#story_type_staging_table.accordion
-  .card
-    .card-header
-      %div.text-center{"aria-controls" => "#staging_table", "aria-expanded" => "false", "data-target" => "#staging_table", "data-toggle" => "collapse", type: "button"}
-        staging table
-    #staging_table.collapse.show{"data-parent" => "#story_type_staging_table"}
-      .flash
-      .card-body
-        =render 'story_types/staging_tables/staging_table'
+.row
+  .col
+    #story_type_staging_table.accordion
+      .card
+        .card-header
+          %div.text-center{"aria-controls" => "#staging_table", "aria-expanded" => "false", "data-target" => "#staging_table", "data-toggle" => "collapse", type: "button"}
+            staging table
+        #staging_table.collapse.show{"data-parent" => "#story_type_staging_table"}
+          .flash
+          .card-body
+            =render 'story_types/staging_tables/staging_table'
+  .col
+    %div.accordion{id: "story_type_samples_#{@iteration.id}"}
+      .card
+        .card-header
+          %div.text-center{"aria-controls" => "#samles", "aria-expanded" => "false", "data-target" => "#samples", "data-toggle" => "collapse", type: "button"}
+            samples (iteration: #{@iteration.name})
+        #samples.collapse.show{"data-parent" => "#story_type_samples_#{@iteration.id}"}
+          .flash
+          .card-body
+            =render 'story_types/samples/samples'
 
-%div.accordion{id: "story_type_samples_#{@iteration.id}"}
-  .card
-    .card-header
-      %div.text-center{"aria-controls" => "#samles", "aria-expanded" => "false", "data-target" => "#samples", "data-toggle" => "collapse", type: "button"}
-        samples (iteration: #{@iteration.name})
-    #samples.collapse.show{"data-parent" => "#story_type_samples_#{@iteration.id}"}
-      .flash
-      .card-body
-        =render 'story_types/samples/samples'
+.row
+  .col
+    %div.accordion{id: "story_type_scheduler_#{@iteration.id}"}
+      .card
+        .card-header
+          %div.text-center{"aria-controls" => "#scheduler", "aria-expanded" => "false", "data-target" => "#scheduler", "data-toggle" => "collapse", type: "button"}
+            scheduler (iteration: #{@iteration.name})
+        #scheduler.collapse.show{"data-parent" => "#story_type_scheduler_#{@iteration.id}"}
+          .flash
+          .card-body
+            =render 'story_types/schedules/scheduler'
 
-%div.accordion{id: "story_type_scheduler_#{@iteration.id}"}
-  .card
-    .card-header
-      %div.text-center{"aria-controls" => "#scheduler", "aria-expanded" => "false", "data-target" => "#scheduler", "data-toggle" => "collapse", type: "button"}
-        scheduler (iteration: #{@iteration.name})
-    #scheduler.collapse.show{"data-parent" => "#story_type_scheduler_#{@iteration.id}"}
-      .flash
-      .card-body
-        =render 'story_types/schedules/scheduler'
-
-  %div.accordion{id: "story_type_export_#{@iteration.id}"}
-    .card
-      .card-header
-        %div.text-center{"aria-controls" => "#export", "aria-expanded" => "false", "data-target" => "#export", "data-toggle" => "collapse", type: "button"}
-          export (iteration: #{@iteration.name})
-      #export.collapse.show{"data-parent" => "#story_type_export_#{@iteration.id}"}
-        .flash
-        .card-body.small
-          =render 'story_types/exports/export'
+  .col
+    %div.accordion{id: "story_type_export_#{@iteration.id}"}
+      .card
+        .card-header
+          %div.text-center{"aria-controls" => "#export", "aria-expanded" => "false", "data-target" => "#export", "data-toggle" => "collapse", type: "button"}
+            export (iteration: #{@iteration.name})
+        #export.collapse.show{"data-parent" => "#story_type_export_#{@iteration.id}"}
+          .flash
+          .card-body.small
+            =render 'story_types/exports/export'
 %hr.mb-5/
 =render 'story_types/main/template_modal'

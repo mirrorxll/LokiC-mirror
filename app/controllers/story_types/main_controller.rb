@@ -10,26 +10,12 @@ module StoryTypes
     before_action :message,                  only: :update_sections
     before_action :find_current_data_set,    only: :change_data_set
 
+    before_action :grid_lists, only: %i[index show]
+    before_action :current_list, only: :index
+    before_action :generate_grid, only: :index
+
     def index
-      @grid = request.parameters[:story_types_grid] || {}
-      @grid.merge!({ current_account: current_account, env: env })
-
-      @grid = StoryTypesGrid.new(@grid) { |scope| scope.where(archived: false) }
       @tab_title = 'LokiC :: StoryTypes'
-      respond_to do |f|
-        f.html do
-          @grid.scope { |scope| scope.page(params[:page]).per(30) }
-        end
-
-        f.csv do
-          send_data(
-            @grid.to_csv,
-            type: 'text/csv',
-            disposition: 'inline',
-            filename: "lokic_story_types_#{Time.now}.csv"
-          )
-        end
-      end
     end
 
     def show
@@ -65,6 +51,29 @@ module StoryTypes
     def update_sections; end
 
     private
+
+    def grid_lists
+      @lists = HashWithIndifferentAccess.new
+
+      @lists['all'] = {}     if @permissions['grid']['all']
+      @lists['archived'] = { archived: true } if @permissions['grid']['archived']
+    end
+
+    def current_list
+      keys = @lists.keys
+      @current_list = keys.include?(params[:list]) ? params[:list] : keys.first
+    end
+
+    def generate_grid
+      return unless @current_list
+
+      grid_params = request.parameters[:story_types_grid] || {}
+      grid_params.merge!({ current_account: current_account, env: env })
+
+      @grid = StoryTypesGrid.new(grid_params) { |scope| scope.where(@lists[@current_list]) }
+
+      @grid.scope { |sc| sc.page(params[:page]).per(30) }
+    end
 
     def check_access
       redirect_to root_path

@@ -9,3 +9,10 @@
 label.only_exported {
   width: auto;
 }
+
+#template_preview.h-100 > .card-body.small {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+}

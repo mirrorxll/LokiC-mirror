@@ -1,14 +1,11 @@
-%hr/
+%hr.w-100
 .row
   .col-10.offset-1
     =@story_type.template.body.html_safe
-%hr.mb-2/
-
-.row
+.row.border-top.pt-3.ml-0.mr-0
   .col-10.offset-1
     .d-inline-block.font-weight-bold
       static year in template / next revision date:
     .d-inline-block#templateStaticYearRevision
       =render 'story_types/main/static_year__revision', show_edit_form: false
   .col-1.p-0{id: "story_type_#{@story_type.id}_template"}
-    =button_to('Edit', edit_story_type_template_path(@story_type, @story_type.template), method: :get, remote: true)
