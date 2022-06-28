@@ -36,15 +36,14 @@
       .card-body.small
         =render 'story_types/main/template'
 
-  .col
-    #story_type_properties
-      .card.small
-        .card-header
-          PROPERTIES
-        #properties.collapse.show{"data-parent" => "#story_type_properties"}
-          .flash
-          .card-body
-            =render 'story_types/main/properties'
+  #story_type_properties.col.card.small.p-0.ml-3.mr-3
+    .card-header.d-flex.justify-content-between
+      PROPERTIES
+      =button_to('Edit', story_type_properties_form_path(@story_type), method: :get, remote: true, data: { toggle: "modal", target: '#storyTypePropertiesForm' })
+    #properties
+      .flash
+      .card-body
+        =render 'story_types/main/properties'
 
 .row
   .col

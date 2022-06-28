@@ -2,9 +2,9 @@
   %hr/
   .row.mb-1.font-weight-bold.col-12
     comment
-    -if @story_type.developer == current_account and ['blocked','canceled'].include?(@story_type.status.name)
-      .col-1.p-0.text-center
-        =link_to(icon('fa', 'pencil', class: ' fa-xs text-dark'), edit_story_type_path(@story_type), remote: true, "data-toggle": "collapse", role: "button", href: "#commentForm", "aria-expanded": "false", "aria-controls": "commentForm")
+    -# -if @story_type.developer == current_account and ['blocked','canceled'].include?(@story_type.status.name)
+    .col-1.p-0.text-center
+      =link_to(icon('fa', 'pencil', class: ' fa-xs text-dark'), edit_story_type_path(@story_type), remote: true, "data-toggle": "collapse", role: "button", href: "#commentForm", "aria-expanded": "false", "aria-controls": "commentForm")
   .row.col-12
     #commentForm.text-left.collapse
       =form_with(model: @story_type, class: 'form') do |form|
@@ -21,11 +21,6 @@
     %a.p-0.btn.btn-sm.btn-link.d-inline-block.font-weight-normal{"aria-controls" => "collapseProperties", "aria-expanded" => "false", "data-toggle" => "collapse", href: "#collapseProperties", role: "button"}
       [ additional properties ]
   #collapseProperties.collapse
-    .row.mb-1.font-weight-bold.col-12
-      current iteration id
-    .row.col-12
-      =@iteration.id
-    %hr/
     .row.mb-1.font-weight-bold.col-12
       gather task id
       .col-1.p-0.text-center

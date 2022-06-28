@@ -5,7 +5,7 @@ module StoryTypes
     skip_before_action :set_story_type_iteration
 
     before_action :find_data_set,            only: %i[new create]
-    before_action :find_story_type,          except: %i[index new create properties_form]
+    before_action :find_story_type,          except: %i[index new create]
     before_action :set_story_type_iteration, except: %i[index new create properties_form change_data_set]
     before_action :message,                  only: :update_sections
     before_action :find_current_data_set,    only: :change_data_set
