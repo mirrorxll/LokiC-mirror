@@ -1,30 +1,33 @@
 =form_with(url: multi_task_assignments_path(task), html: { class: 'd-inline' }, method: :patch) do |form|
-  .row.small.font-weight-bold
-    .col-3
-      assignment to:
-    .col-9
-      .row.small
-        =form.collection_select 'assignment_to', Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' , selected: task.main_assignee.nil? ? '' : task.main_assignee.id, class: 'small'}
-  .row.small.font-weight-bold.mt-3
-    .col-3
-      assistants:
-      =icon('fa', 'plus', class: 'ml-2', id: 'addAssistantTask')
-    .col-9#assistantsTaskForm.small
-      -task.assistants.each  do |assistant|
-        .row.mt-1
-          =form.collection_select 'assistants[]', Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' , selected: assistant.id, class: 'small'}
-          .ml-1{ onclick: "removeDate(this)" }
-            =icon('fa', 'minus')
-  .row.small.font-weight-bold.mt-3.mb-1
-    .col-3
-      notification to:
-      =icon('fa', 'plus', class: 'ml-2', id: 'addNotificationToTask')
-    .col-9#notificationToTaskForm.small
-      -task.notification_to.each  do |assistant|
-        .row.mt-1
-          =form.collection_select 'notification_to[]', Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' , selected: assistant.id, class: 'small'}
-          .ml-1{ onclick: "removeDate(this)" }
-            =icon('fa', 'minus')
+  -if @permissions['assignment_to_form']
+    .row.small.font-weight-bold
+      .col-3
+        assignment to:
+      .col-9
+        .row.small
+          =form.collection_select 'assignment_to', Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' , selected: task.main_assignee.nil? ? '' : task.main_assignee.id, class: 'small'}
+  -if @permissions['assistants_form']
+    .row.small.font-weight-bold.mt-3
+      .col-3
+        assistants:
+        =icon('fa', 'plus', class: 'ml-2', id: 'addAssistantTask')
+      .col-9#assistantsTaskForm.small
+        -task.assistants.each  do |assistant|
+          .row.mt-1
+            =form.collection_select 'assistants[]', Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' , selected: assistant.id, class: 'small'}
+            .ml-1{ onclick: "removeDate(this)" }
+              =icon('fa', 'minus')
+  -if @permissions['notifications_to_form']
+    .row.small.font-weight-bold.mt-3.mb-1
+      .col-3
+        notification to:
+        =icon('fa', 'plus', class: 'ml-2', id: 'addNotificationToTask')
+      .col-9#notificationToTaskForm.small
+        -task.notification_to.each  do |assistant|
+          .row.mt-1
+            =form.collection_select 'notification_to[]', Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' , selected: assistant.id, class: 'small'}
+            .ml-1{ onclick: "removeDate(this)" }
+              =icon('fa', 'minus')
 
   =form.submit 'update', class: 'small mt-1 btn btn-sm btn-outline-dark'
   =link_to('cancel', cancel_multi_task_assignments_path(task), method: :get, remote: true, class: 'small mt-1 btn btn-sm btn-outline-dark')

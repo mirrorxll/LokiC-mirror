@@ -39,11 +39,12 @@ module FactoidRequests
     private
 
     def grid_lists
+      statuses = Status.factoid_request_statuses(created: true)
       @lists = HashWithIndifferentAccess.new
 
-      @lists['your'] = { requester_id: current_account.id } if @permissions['grid']['your']
-      @lists['all'] = {}                                    if @permissions['grid']['all']
-      # @lists['archived'] = { archived: true }               if @permissions['grid']['archived']
+      @lists['created'] = { requester_id: current_account.id, status: statuses }  if @permissions['grid']['created']
+      @lists['all'] = { status: statuses }                                        if @permissions['grid']['all']
+      @lists['archived'] = { status: Status.find_by(name: 'archived') }           if @permissions['grid']['archived']
     end
 
     def current_list
@@ -59,12 +60,14 @@ module FactoidRequests
     end
 
     def access_to_show
-      return if @lists['your'] && @factoid_request.requester.eql?(current_account)
-      return if @lists['all'] && !@factoid_request.archived
-      # return if @lists[:archived] && @work_request.archived
+      archived = Status.find_by(name: 'archived')
+
+      return if @lists['created'] && @factoid_request.requester.eql?(current_account)
+      return if @lists['all'] && @factoid_request.status != archived
+      return if @lists['archived'] && @work_request.status.eql?(archived)
 
       flash[:error] = { factoid_requests: :unauthorized }
-      redirect_to root_path
+      redirect_back fallback_location: root_path
     end
 
     def factoid_request_params

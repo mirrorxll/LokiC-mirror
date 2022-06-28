@@ -7,8 +7,11 @@
   .col#assignments
     =render 'multi_tasks/assignments/assignments', task: @multi_task
   .col#task_status.text-right
-    =render 'multi_tasks/progress_statuses/status', task: @multi_task
-
+    -if @permissions['progress_status']
+      -if @permissions['progress_status']['edit_form']
+        =render 'multi_tasks/progress_statuses/status', task: @multi_task
+      -else @permissions['progress_status']['show']
+        =@multi_task.status.name
 .row.mt-3
   .col-5
     .mb-1
@@ -59,7 +62,7 @@
   .card-header.p-1
     .d-flex.justify-content-between.small
       info
-      -if @multi_task.creator?(current_account)
+      -if @permissions['edit_form'] && @multi_task.creator?(current_account)
         =link_to '[ edit task ]', edit_multi_task_path(@multi_task), remote: true
   .card-body
     #body

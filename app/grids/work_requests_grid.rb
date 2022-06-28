@@ -8,7 +8,7 @@ class WorkRequestsGrid
 
   # Filter
   filter(:requester_id)
-  filter(:archived)
+  filter(:status)
 
   # Columns
   column(:id, header: 'id')

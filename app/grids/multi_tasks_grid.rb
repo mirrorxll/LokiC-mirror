@@ -26,11 +26,6 @@ class MultiTasksGrid
   filter(:status, :enum, multiple: true, select: Status.where(name: ['not started', 'in progress', 'blocked', 'canceled', 'done']).pluck(:name, :id))
   filter(:deadline, :datetime, header: 'Deadline >= ?', multiple: ',')
 
-  status_deleted = Status.find_by(name: 'deleted')
-
-  filter(:deleted_tasks, :xboolean, left: true) do |value, scope|
-    value ? scope.where(status: status_deleted) : scope.where.not(status: status_deleted)
-  end
   filter(:confirmed, :xboolean, left: true) do |value, scope, grid|
     scope = scope.where('task_assignments.account_id': grid.current_account.id)
     value ? scope.where('task_assignments.confirmed': true) : scope.where.not('task_assignments.confirmed': true)

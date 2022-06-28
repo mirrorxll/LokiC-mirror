@@ -4,208 +4,193 @@ module AccessLevels
   PERMISSIONS = {
     manager: {
       work_requests: {
-        grid: { your: true, all: true, archived: true },
-        new: true,
-        edit: true,
-        archive: true,
-        progress_status: true,
-        billed_for_entire_project?: { show: true, edit: true },
-        eta: { show: true, edit: true }
+        grid: { created: true, all: true, archived: true },
+        new_form: true,
+        edit_form: true,
+        progress_status: { show: true, edit_form: true },
+        billed_for_entire_project: { show: true, edit_form: true },
+        eta: { show: true, edit_form: true }
       },
       factoid_requests: {
-        grid: { your: true, all: true, archived: true },
-        new: true,
-        edit: true,
-        progress_status: true,
-        templates: true
+        grid: { created: true, all: true, archived: true },
+        new_form: true,
+        edit_form: true,
+        progress_status: { show: true, edit_form: true },
+        templates: { show: true, edit_form: true }
       },
       multi_tasks: {
-        grid: { assigned: true, your: true, all: true, archived: true },
-        new: true,
-        edit: true,
-        assignment_to: true,
-        assistants_to: true,
-        notifications_to: true,
-        progress_status: true,
-        comments: true,
-        confirm_receipts: true,
-        sub_tasks: { show: true, new: true }
+        grid: { assigned: true, created: true, all: true, archived: true },
+        new_form: true,
+        edit_form: true,
+        assignment_to_form: true,
+        assistants_form: true,
+        notifications_to_form: true,
+        progress_status: { show: true, edit_form: true },
+        comments: { show: true, new_form: true, edit_form: true, delete: true },
+        notes: { show: true, new_form: true },
+        sub_tasks: { show: true, new_form: true }
       },
       scrape_tasks: {
-        grid: { assigned: true, your: true, all: true, archived: true },
-        new: true,
-        edit: true,
-        assignment_to: true,
-        progress_status: true,
-        tags: { show: true, edit: true },
-        instructions: true,
-        evaluation_document: true
+        grid: { assigned: true, created: true, all: true, archived: true },
+        new_form: true,
+        edit_form: true,
+        progress_status: { show: true, edit_form: true },
+        tags: { show: true, edit_form: true },
+        assignment_to_form: true,
+        instructions: { show: true, edit_form: true },
+        evaluation_document: { show: true, edit_form: true }
       },
       data_sets: {
-        grid: { assigned: true, your: true, all: true, archived: true },
-        new: true,
-        edit: true,
-        assignment_to_sheriff: true,
-        assignment_to_responsible: true,
-        table_locations: true
+        grid: { assigned: true, created: true, all: true, archived: true },
+        new_form: true,
+        edit_form: true,
+        assignment_to_sheriff_form: true,
+        assignment_to_responsible_form: true,
+        table_locations: { show: true, edit_form: true }
       },
       story_types: {
-        grid: { assigned: true, your: true, all: true, archived: true },
-        new: true,
-        edit: true,
-        assignment_to: true,
-        iterations: true,
-        progress_status: true,
-        comment: true,
-        gather_task_id: true,
-        template: true
+        grid: { assigned: true, created: true, all: true, archived: true },
+        new_form: true,
+        edit_form: true,
+        assignment_to_form: true,
+        iterations: { show: true, new_form: true, edit_form: true },
+        progress_status: { show: true, edit_form: true }
       },
       factoid_types: {
-        grid: { assigned: true, your: true, all: true, archived: true },
-        new: true,
-        edit: true,
-        assignment_to: true,
-        iterations: true,
-        progress_status: true,
-        template: true
+        grid: { assigned: true, created: true, all: true, archived: true },
+        new_form: true,
+        edit_form: true,
+        assignment_to_form: true,
+        iterations: { show: true, new_form: true, edit_form: true },
+        progress_status: { show: true, edit_form: true }
       }
     },
 
     user: {
       work_requests: {
-        grid: { your: true, all: false, archived: false },
-        new: true,
-        edit: true,
-        archive: false,
-        progress_status: false,
-        billed_for_entire_project?: { show: false, edit: false },
-        eta: { show: false, edit: false }
+        grid: { created: true, all: false, archived: false },
+        new_form: true,
+        edit_form: true,
+        progress_status: { show: true, edit_form: true },
+        billed_for_entire_project: { show: false, edit_form: false },
+        eta: { show: false, edit_form: false }
       },
       factoid_requests: {
-        grid: { your: true, all: false, archived: false },
-        new: true,
-        edit: true,
-        progress_status: false,
-        templates: true
+        grid: { created: true, all: false, archived: false },
+        new_form: true,
+        edit_form: true,
+        progress_status: { show: true, edit_form: true },
+        templates: { show: true, edit_form: true }
       },
       multi_tasks: {
-        grid: { assigned: true, your: true, all: false, archived: false },
-        new: true,
-        edit: true,
-        assignment_to: true,
-        assistants_to: true,
-        notifications_to: true,
-        progress_status: true,
-        comments: true,
-        confirm_receipts: true,
-        sub_tasks: { show: true, new: true }
+        grid: { assigned: true, created: true, all: false, archived: false },
+        new_form: true,
+        edit_form: true,
+        assignment_to_form: true,
+        assistants_form: true,
+        notifications_to_form: true,
+        progress_status: { show: true, edit_form: true },
+        comments: { show: true, new_form: true, edit_form: true, delete: true },
+        notes: { show: true, new_form: true },
+        sub_tasks: { show: true, new_form: true }
       },
       scrape_tasks: {
-        grid: { assigned: true, your: false, all: false, archived: false },
-        new: false,
-        edit: false,
-        assignment_to: false,
-        progress_status: true,
-        tags: { show: false, edit: false },
-        instructions: false,
-        evaluation_document: false
+        grid: { assigned: true, created: false, all: false, archived: false },
+        new_form: false,
+        edit_form: false,
+        progress_status: { show: true, edit_form: true },
+        tags: { show: false, edit_form: false },
+        assignment_to_form: false,
+        instructions: { show: true, edit_form: false },
+        evaluation_document: { show: true, edit_form: false }
       },
       data_sets: {
-        grid: { assigned: true, your: false, all: true, archived: false },
-        new: true,
-        edit: true,
-        assignment_to_sheriff: true,
-        assignment_to_responsible: true,
-        table_locations: true
+        grid: { assigned: true, created: false, all: true, archived: false },
+        new_form: false,
+        edit_form: false,
+        assignment_to_sheriff_form: false,
+        assignment_to_responsible_form: false,
+        table_locations: { show: true, edit_form: true }
       },
       story_types: {
-        grid: { assigned: true, your: false, all: true, archived: false },
-        new: false,
-        edit: false,
-        assignment_to: false,
-        iterations: true,
-        progress_status: true,
-        comment: false,
-        gather_task_id: false,
-        template: false
+        grid: { assigned: true, created: false, all: true, archived: false },
+        new_form: false,
+        edit_form: false,
+        assignment_to_form: false,
+        iterations: { show: true, new_form: true, edit_form: true },
+        progress_status: { show: true, edit_form: true }
       },
       factoid_types: {
-        grid: { assigned: true, your: false, all: true, archived: false },
-        new: false,
-        edit: false,
-        assignment_to: false,
-        iterations: true,
-        progress_status: true,
-        template: false
+        grid: { assigned: true, created: false, all: true, archived: false },
+        new_form: false,
+        edit_form: false,
+        assignment_to_form: false,
+        iterations: { show: true, new_form: true, edit_form: true },
+        progress_status: { show: true, edit_form: true }
       }
     },
 
     guest: {
       work_requests: {
-        grid: { your: false, all: true, archived: false },
-        new: false,
-        edit: false,
-        archive: false,
-        progress_status: false,
-        billed_for_entire_project?: { show: false, edit: false },
-        eta: { show: false, edit: false }
+        grid: { created: false, all: true, archived: false },
+        new_form: false,
+        edit_form: false,
+        progress_status: { show: true, edit_form: false },
+        billed_for_entire_project: { show: false, edit_form: false },
+        eta: { show: false, edit_form: false }
       },
       factoid_requests: {
-        grid: { your: false, all: true, archived: false },
-        new: false,
-        edit: false,
-        progress_status: false,
-        templates: false
+        grid: { created: false, all: false, archived: false },
+        new_form: false,
+        edit_form: false,
+        progress_status: { show: true, edit_form: false },
+        templates: { show: true, edit_form: false }
       },
       multi_tasks: {
-        grid: { assigned: false, your: false, all: true, archived: false },
-        new: false,
-        edit: false,
-        assignment_to: false,
-        assistants_to: false,
-        notifications_to: false,
-        progress_status: false,
-        comments: false,
-        confirm_receipts: false,
-        sub_tasks: { show: false, new: false }
+        grid: { assigned: false, created: false, all: true, archived: false },
+        new_form: false,
+        edit_form: false,
+        assignment_to_form: false,
+        assistants_form: false,
+        notifications_to_form: false,
+        progress_status: { show: true, edit_form: false },
+        comments: { show: true, new_form: false, edit_form: false, delete: false },
+        notes: { show: true, new_form: false },
+        sub_tasks: { show: true, new_form: false }
       },
       scrape_tasks: {
-        grid: { assigned: false, your: false, all: true, archived: false },
-        new: false,
-        edit: false,
-        assignment_to: false,
-        progress_status: false,
-        tags: { show: false, edit: false },
-        instructions: false,
-        evaluation_document: false
+        grid: { assigned: false, created: false, all: true, archived: false },
+        new_form: false,
+        edit_form: false,
+        progress_status: { show: true, edit_form: false },
+        tags: { show: false, edit_form: false },
+        assignment_to_form: false,
+        instructions: { show: true, edit_form: false },
+        evaluation_document: { show: true, edit_form: false }
       },
       data_sets: {
-        grid: { assigned: false, your: false, all: true, archived: false },
-        new: false,
-        edit: false,
-        assignment_to_sheriff: false,
-        assignment_to_responsible: false,
-        table_locations: false
+        grid: { assigned: false, created: false, all: true, archived: false },
+        new_form: false,
+        edit_form: false,
+        assignment_to_sheriff_form: false,
+        assignment_to_responsible_form: false,
+        table_locations: { show: true, edit_form: false }
       },
       story_types: {
-        grid: { assigned: false, your: false, all: true, archived: false },
-        new: false,
-        edit: false,
-        assignment_to: false,
-        iterations: false,
-        progress_status: false,
-        comment: false,
-        gather_task_id: false,
-        template: false
+        grid: { assigned: false, created: false, all: true, archived: false },
+        new_form: false,
+        edit_form: false,
+        assignment_to_form: false,
+        iterations: { show: true, new_form: false, edit_form: false },
+        progress_status: { show: true, edit_form: false }
       },
       factoid_types: {
-        grid: { assigned: false, your: false, all: true, archived: false },
-        new: false,
-        edit: false,
-        assignment_to: false,
-        iterations: false,
-        progress_status: false,
-        template: false
+        grid: { assigned: false, created: false, all: true, archived: false },
+        new_form: false,
+        edit_form: false,
+        assignment_to_form: false,
+        iterations: { show: true, new_form: false, edit_form: false },
+        progress_status: { show: true, edit_form: false }
       }
     }
   }.deep_stringify_keys.freeze

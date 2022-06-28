@@ -13,14 +13,14 @@ module MultiTasks
     before_action :find_note, only: :show
 
     def index
-      @tab_title = 'LokiC :: Tasks'
+      @tab_title = 'LokiC :: MultiTasks'
     end
 
     def show
       render_401 unless @multi_task.access_for?(current_account)
 
       @comments = @multi_task.comments.order(created_at: :desc)
-      @tab_title = "LokiC :: Task ##{@multi_task.id} <#{@multi_task.title}>"
+      @tab_title = "LokiC :: MultiTask ##{@multi_task.id} <#{@multi_task.title}>"
     end
 
     def new
@@ -79,12 +79,13 @@ module MultiTasks
     private
 
     def grid_lists
+      statuses = Status.multi_task_statuses
       @lists = HashWithIndifferentAccess.new
 
-      @lists['assigned'] = { assignment_to: current_account.id } if @permissions['grid']['assigned']
-      @lists['your'] = { creator_id: current_account.id }        if @permissions['grid']['your']
-      @lists['all'] = {}                                         if @permissions['grid']['all']
-      # @lists['archived'] = { archived: true }                  if @permissions['grid']['archived']
+      @lists['assigned'] = { assignment_to: current_account.id, status: statuses }  if @permissions['grid']['assigned']
+      @lists['created'] = { creator_id: current_account.id, status: statuses }      if @permissions['grid']['created']
+      @lists['all'] = { status: statuses }                                          if @permissions['grid']['all']
+      @lists['archived'] = { status: Status.find_by(name: 'deleted') }              if @permissions['grid']['archived']
     end
 
     def current_list
@@ -95,15 +96,22 @@ module MultiTasks
     def generate_grid
       return unless @current_list
 
-      filter_params = params[:multi_tasks_grid] || @lists[@current_list]
-      filter_params[:status] =
-        if filter_params[:status].blank? && filter_params[:deleted_tasks] != 'YES'
-          Status.multi_task_statuses_for_grid
-        elsif filter_params[:deleted_tasks].eql?('YES')
-          Status.find_by(name: 'deleted')
-        elsif filter_params[:status].any?
-          filter_params[:status]
-        end
+      filter_params = {}
+
+      if params[:multi_tasks_grid]
+        filter_params.merge!(params[:multi_tasks_grid])
+        filter_params[:status] =
+          if filter_params[:status].blank? && filter_params[:deleted_tasks] != 'YES'
+            Status.multi_task_statuses
+          elsif filter_params[:deleted_tasks].eql?('YES')
+            Status.find_by(name: 'deleted')
+          elsif filter_params[:status].any?
+            filter_params[:status]
+          end
+      else
+        filter_params = @lists[@current_list]
+      end
+
       filter_params[:current_account] = current_account
 
       @grid = MultiTasksGrid.new(filter_params.except(:collapse, :type))
@@ -111,13 +119,15 @@ module MultiTasks
     end
 
     def access_to_show
-      return if @lists['assigned'] && @factoid_request.requester.eql?(current_account)
-      return if @lists['your'] && @factoid_request.requester.eql?(current_account)
-      return if @lists['all'] && !@factoid_request.archived
-      # return if @lists[:archived] && @work_request.archived
+      status_deleted = Status.find_by(name: 'deleted')
+
+      return if @lists['assigned'] && @multi_task.assignment_to.include?(current_account)
+      return if @lists['created'] && @multi_task.creator.eql?(current_account)
+      return if @lists['all'] && @multi_task.status != status_deleted
+      return if @lists['archived'] && @multi_task.status.eql?(status_deleted)
 
       flash[:error] = { multi_task: :unauthorized }
-      redirect_to root_path
+      redirect_back fallback_location: root_path
     end
 
     def update_agencies_opportunities(agencies_opportunities)

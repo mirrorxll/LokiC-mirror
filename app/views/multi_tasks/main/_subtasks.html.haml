@@ -11,7 +11,7 @@
           %td{ class: "bg-#{status_color(subtask.status.name)}" }
             =subtask.status.name
         %td
-          =link_to subtask.title, task_path(subtask)
+          =link_to subtask.title, multi_task_path(subtask)
         %td
           =subtask.assignment_to.pluck(:first_name, :last_name).map { |r| [r[0] + ' ' + r[1]] }.join(', ')
         %td

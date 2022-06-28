@@ -6,4 +6,6 @@
   -assignment_to.each do |assignment|
     .badge{ class: "#{assignment.notification_to ? 'badge-secondary' : 'badge-info' }" }
       =assignment.account.name
-=link_to '[ edit ]', edit_multi_task_assignments_path(task), remote: true, class: 'small'
+
+-if [@permissions['assignment_to_form'], @permissions['assistants_form'], @permissions['notifications_to_form']].any?
+  =link_to '[ edit ]', edit_multi_task_assignments_path(task), remote: true, class: 'small'

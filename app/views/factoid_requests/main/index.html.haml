@@ -7,7 +7,7 @@
     FACTOID REQUESTS
   .d-inline-block.text-right.text-uppercase
     .btn-group.mr-3
-      -if @current_list
+      -if @current_list && @lists.length > 1
         -@lists.each_key do |list|
           -filled = @current_list.eql?(list) ? '' : '-outline'
           =link_to(list, url_for(list: list), class: "btn btn-sm btn#{filled}-dark")
@@ -15,9 +15,9 @@
       -if @current_list
         %button.disabled.btn.btn-sm.btn-outline-dark
           FILTER
-        -# =link_to('filter', '#', class: 'disabled btn btn-sm btn-outline-dark',
-        -#         "data-target" => "#createWorkRequestModal", "data-toggle" => "modal")
-      -if @permissions['new']
+          -# =link_to('filter', '#', class: 'disabled btn btn-sm btn-outline-dark',
+          -#      "data-target" => "#filter", "data-toggle" => "modal")
+      -if @permissions['new_form']
         =link_to('create', '#', class: 'btn btn-sm btn-outline-dark',
                  "data-target" => "#createFactoidRequestModal", "data-toggle" => "modal")
 %hr/
@@ -35,24 +35,24 @@
       .col-12.p-2
         =paginate @grid.assets
 
-#createFactoidRequestModal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "createWorkRequestModal",
-                                       'data-backdrop' => 'static', "data-keyboard" => "false" }
-  .modal-dialog.modal-dialog-scrollable.modal-lg
-    .modal-content
-      .modal-header
-        NEW FACTOID REQUEST
-        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
-          %span{"aria-hidden" => "true"} ×
-      .modal-body
-        =render 'new'
-      .modal-footer.justify-content-center
-        =link_to('CREATE', '#', id: 'createFactoidRequestButton', class: 'btn btn-sm btn-dark')
-        .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
-          CANCEL
+-if @permissions['new_form']
+  #createFactoidRequestModal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "createWorkRequestModal",
+                                         'data-backdrop' => 'static', "data-keyboard" => "false" }
+    .modal-dialog.modal-dialog-scrollable.modal-lg
+      .modal-content
+        .modal-header
+          NEW FACTOID REQUEST
+          %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+            %span{"aria-hidden" => "true"} ×
+        .modal-body
+          =render 'new'
+        .modal-footer.justify-content-center
+          =link_to('CREATE', '#', id: 'createFactoidRequestButton', class: 'btn btn-sm btn-dark')
+          .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+            CANCEL
 
-:javascript
-  document.querySelector('#createFactoidRequestButton').addEventListener('click', (event) => {
-    event.preventDefault();
-    document.querySelector('#hiddenCreateButton').click();
-  }, false);
-
+  :javascript
+    document.querySelector('#createFactoidRequestButton').addEventListener('click', (event) => {
+      event.preventDefault();
+      document.querySelector('#hiddenCreateButton').click();
+    }, false);

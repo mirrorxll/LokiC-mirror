@@ -19,82 +19,29 @@
           MAIN INFO
           .d-flex.align-items-center
             #editWorkRequest
-              -if @permissions['edit']
+              -if @permissions['edit_form']
                 .d-inline-block.mr-2.small
                   %button{ type: 'button', class: 'p-0 ml-1 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#updateWorkRequestModal", disabled: @work_request.archived}
                     [ edit ]
-            #archiveWorkRequest.d-inline-block.mr-2
-              -if @permissions['archive'] && @work_request.multi_tasks.all? { |p| p.status.name.eql?('deleted') }
-                -if @work_request.archived
-                  =link_to('[ unarchive ]', work_request_archive_path(@work_request, archived: false),
-                           class: 'p-0 btn btn-sm text-danger small',
-                           onclick: 'archiveSpinnerAnimation()',
-                           method: :patch, remote: true)
-                -else
-                  =link_to('[ archive ]', work_request_archive_path(@work_request, archived: true),
-                         class: 'p-0 btn btn-sm text-danger small',
-                         onclick: 'archiveSpinnerAnimation(event, this)',
-                         method: :patch, remote: true)
-                :javascript
-                  function archiveSpinnerAnimation(event, link) {
-                    event.preventDefault();
-
-                    if(confirm("Work Request will be hidden from Work Requests' queue. Continue?")) {
-                      document.querySelector('#archiveWorkRequest').innerHTML = `
-                        <div class = "spinner-border spinner-border-sm text-secondary">
-                          <span class="sr-only"></span>
-                        </div>
-                      `
-                      link.removeEventListener('click')
-                      link.click();
-                    }
-                  }
-              -elsif @work_request.archived
-                .badge.badge-pill.badge-danger
-                  archived
             #workRequestStatus.d-inline-block
-              -if @permissions['progress_status']
-                =render 'statuses'
-              -else
-                =@work_request.status.name
+              -if @permissions['progress_status']['show']
+                -if @permissions['progress_status']['edit_form']
+                  =render 'statuses'
+                -else
+                  =@work_request.status.name
       .card-body
         =render 'work_request_info', static: true
   -if @multi_tasks_permissions
-    #workRequestMultiTasks.col-lg-4.pl-lg-0.p-3.p-lg-0.small
+    #workRequestMultiTasks.col-lg-4.pl-lg-0.mt-sm-3.mt-lg-0
       .card.h-100
-        .card-header.p-1
+        .card-header.p-1.small
           .d-flex.justify-content-between.align-items-center
             MULTI TASKS
             #createMultiTask.small
-              -if @multi_tasks_permissions['new']
+              -if @multi_tasks_permissions['new_form']
                 %button{ type: 'button', class: 'p-0 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#createMultiTaskModal", disabled: @work_request.archived }
                   [ create ]
-                #createMultiTaskModal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "createMultiTaskModal",
-                                      'data-backdrop' => 'static', "data-keyboard" => "false" }
-                  .modal-dialog.modal-dialog-scrollable.modal-fullscreen
-                    .modal-content
-                      .modal-header
-                        NEW MULTI TASK
-                        %button.close{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
-                          %span{ "aria-hidden" => "true" } ×
-                      .modal-body.d-flex
-                        .preview.overflow-scroll.small.w-40.pt-3.pr-3.pb-3
-                          =render 'work_request_info', static: false
-                        .w-60
-                          .editable.overflow-scroll.h-94.pr-2.pb-3.pl-2
-                            =render 'multi_tasks/main/form_for_work_request', work_request: @work_request
-                      .modal-footer.justify-content-center
-                        =link_to('CREATE', '#', id: 'createMultiTaskButton', class: 'btn btn-sm btn-dark')
-                        .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
-                          CANCEL
-
-                :javascript
-                  document.querySelector('#createMultiTaskButton').addEventListener('click', (event) => {
-                    event.preventDefault();
-                    document.querySelector('#hiddenCreateMultiTaskButton').click();
-                  }, false);
-
-        .card-body
+        .card-body.small
           -@work_request.multi_tasks.order(created_at: :desc).each do |p|
             .row.align-items-center{ class: "multi-task-#{p.id}"}
               .col-2.text-right.pr-0
@@ -151,10 +98,9 @@
                 .badge.badge-pill{ class: "status badge-#{status_color(p.status.name)}" }
                   =p.status.name
               .col-8.p-0
-                =link_to_if(current_account.types.include?('manager'),
-                            p.title, p, target: '_blank', rel: 'noopener noreferrer')
+                =link_to(p.title, multi_task_path(p), target: '_blank', rel: 'noopener noreferrer')
 
--if @permissions['edit']
+-if @permissions['edit_form']
   #updateWorkRequestModal.modal.fade.pr-0{ "aria-hidden" => "true", "aria-labelledby" => "updateWorkRequestModalLabel",
                                            'data-backdrop' => 'static', "data-keyboard" => "false" }
     .modal-dialog.modal-dialog-scrollable.modal-lg
@@ -177,3 +123,28 @@
     }, false);
 
 
+-if @multi_tasks_permissions['new_form']
+  #createMultiTaskModal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "createMultiTaskModal",
+                                      'data-backdrop' => 'static', "data-keyboard" => "false" }
+    .modal-dialog.modal-dialog-scrollable.modal-fullscreen
+      .modal-content
+        .modal-header
+          NEW MULTI TASK
+          %button.close{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+            %span{ "aria-hidden" => "true" } ×
+        .modal-body.d-flex
+          .preview.overflow-scroll.small.w-40.pt-3.pr-3.pb-3
+            =render 'work_request_info', static: false
+          .w-60
+            .editable.overflow-scroll.h-94.pr-2.pb-3.pl-2
+              =render 'multi_tasks/main/form_for_work_request', work_request: @work_request
+        .modal-footer.justify-content-center
+          =link_to('CREATE', '#', id: 'createMultiTaskButton', class: 'btn btn-sm btn-dark')
+          .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+            CANCEL
+
+  :javascript
+    document.querySelector('#createMultiTaskButton').addEventListener('click', (event) => {
+      event.preventDefault();
+      document.querySelector('#hiddenCreateMultiTaskButton').click();
+    }, false);

@@ -78,7 +78,7 @@ class ApplicationController < ActionController::Base
   end
 
   def unconfirmed_multi_tasks
-    tasks = Task.ongoing.joins(:assignment_to).where(
+    tasks = Task.ongoing.joins(:assignment_to).where.not(creator: current_account).where(
       'task_assignments.confirmed': false,
       'task_assignments.account_id': current_account
     )
