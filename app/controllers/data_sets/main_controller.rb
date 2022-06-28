@@ -6,22 +6,14 @@ module DataSets
     after_action  :set_default_props, only: %i[create update]
     after_action  :create_hidden_scrape_task, only: :create
 
+    before_action :grid_lists, only: %i[index show]
+    before_action :current_list, only: :index
+    before_action :generate_grid, only: :index
+    before_action :find_data_set, except: %i[index create]
+
     def index
       @tab_title = 'LokiC :: DataSets'
       @data_set = DataSet.new
-      @grid = DataSetsGrid.new(params[:data_sets_grid])
-
-      respond_to do |f|
-        f.html do
-          @grid.scope { |scope| scope.page(params[:page]).per(30) }
-        end
-        f.csv do
-          send_data @grid.to_csv,
-                    type: 'text/csv',
-                    disposition: 'inline',
-                    filename: "LokiC_DataSets_#{Time.now}.csv"
-        end
-      end
     end
 
     def show
@@ -60,6 +52,27 @@ module DataSets
     def properties; end
 
     private
+
+    def grid_lists
+      @lists = HashWithIndifferentAccess.new
+
+      @lists['all'] = {}     if @permissions['grid']['all']
+      # @lists['archived'] = { archived: true } if @permissions['grid']['archived']
+    end
+
+    def current_list
+      keys = @lists.keys
+      @current_list = keys.include?(params[:list]) ? params[:list] : keys.first
+    end
+
+    def generate_grid
+      return unless @current_list
+
+      @grid = DataSetsGrid.new(params[:data_sets_grid] || @lists[@current_list])
+
+      @grid.scope { |sc| sc.page(params[:page]).per(30) }
+    end
+
 
     def find_data_set
       @data_set = DataSet.find(params[:id])
