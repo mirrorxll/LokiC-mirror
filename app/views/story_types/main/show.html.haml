@@ -27,6 +27,13 @@
       =render 'story_types/progress_statuses/status'
 %hr/
 
+.d-flex.justify-content-between.align-items-center.mb-3.small.mt-n3
+  .text-secondary
+    -# TODO: who is creator of the ST
+    created by #{@story_type.name}
+  .text-secondary
+    created at: #{@story_type.created_at}
+
 .row.mb-2
   #story_type_template.col.card.small.p-0.ml-3.mr-3
     .card-header.d-flex.justify-content-between
@@ -40,9 +47,9 @@
     .card-header.d-flex.justify-content-between
       PROPERTIES
       =button_to('Edit', story_type_properties_form_path(@story_type), method: :get, remote: true, data: { toggle: "modal", target: '#storyTypePropertiesForm' })
-    #properties
+    #properties.h-100
       .flash
-      .card-body
+      .card-body.h-100
         =render 'story_types/main/properties'
 
 .row

@@ -10,6 +10,7 @@ require("channels");
 require("trix");
 require("@rails/actiontext");
 require("datatables.net-bs4");
+require("./story_types/comment_editing");
 
 import 'bootstrap';
 import '../stylesheets/application';

@@ -1,7 +1,15 @@
 .row.mb-1.font-weight-bold
-  .col-12
+  .col-6
     data set
+  .col-5
+    current iteration
 .row
-  .col-12
-    =link_to @story_type.data_set.name, data_set_path(@story_type.data_set), class: 'no-link'
-    =link_to icon('fa', 'info-circle'), properties_data_set_path(@story_type.data_set), remote: true
+  .col-6
+    -# TODO: find out roles, which may change DS
+    -if ['Manager', 'HLE Content Manager'].any? { |role| current_account.roles.pluck(:name).include?(role) }
+      =link_to @story_type.data_set.name, data_set_path(@story_type.data_set), class: 'no-link'
+      =link_to icon('fa', 'info-circle'), properties_data_set_path(@story_type.data_set), remote: true
+    -else
+      =@story_type.data_set.name
+  .col-5
+    =@iteration.id

@@ -10,7 +10,7 @@ label.only_exported {
   width: auto;
 }
 
-#template_preview.h-100 > .card-body.small {
+#template_preview.h-100 > .card-body.small, #properties.h-100 > .card-body {
   display: flex;
   flex-direction: column;
   height: 100%;
