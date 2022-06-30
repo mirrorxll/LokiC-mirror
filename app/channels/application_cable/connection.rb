@@ -9,8 +9,9 @@ module ApplicationCable
     private
 
     def find_verified_account
-      if cookies.encrypted[:remember_me] || session[:auth_token]
-        Account.find_by(auth_token: cookies.encrypted[:remember_me] || session[:auth_token])
+      # TODO: return to session, if needed
+      if cookies.encrypted[:remember_me] || cookies.encrypted[:_loki_c_session]['auth_token']
+        Account.find_by(auth_token: cookies.encrypted[:remember_me] || cookies.encrypted[:_loki_c_session]['auth_token'])
       else
         reject_unauthorized_connection
       end
