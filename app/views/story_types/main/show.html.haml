@@ -29,8 +29,7 @@
 
 .d-flex.justify-content-between.align-items-center.mb-3.small.mt-n3
   .text-secondary
-    -# TODO: who is creator of the ST
-    created by #{@story_type.name}
+    created by #{@story_type.editor&.name}
   .text-secondary
     created at: #{@story_type.created_at}
 

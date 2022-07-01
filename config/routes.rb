@@ -196,10 +196,11 @@ Rails.application.routes.draw do
 
   scope module: :story_types do
     resources :story_types, controller: :main do
+      resource :change_data_set, only: :update
       get   :properties_form
       get   :canceling_edit,  on: :member
       patch :update_sections, on: :member
-      patch :change_data_set, on: :member
+      # patch :change_data_set, on: :member
 
       resources :templates, path: :template, only: %i[show edit update] do
         patch :save, on: :member

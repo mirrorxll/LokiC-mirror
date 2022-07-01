@@ -13,3 +13,9 @@
       -else
         .text-danger.font-italic
           not set
+.row.mb-1.font-weight-bold.mt-3
+  .col
+    developer
+.row
+  .col-12
+    =@story_type.developer ? @story_type.developer.name: '---'

@@ -58,7 +58,8 @@ module AccessLevels
         progress_status: true,
         comment: true,
         gather_task_id: true,
-        template: true
+        template: true,
+        change_data_set: true
       },
       factoid_types: {
         grid: { assigned: true, your: true, all: true, archived: true },
@@ -127,7 +128,8 @@ module AccessLevels
         progress_status: true,
         comment: false,
         gather_task_id: false,
-        template: false
+        template: false,
+        change_data_set: true
       },
       factoid_types: {
         grid: { assigned: true, your: false, all: true, archived: false },
@@ -196,7 +198,8 @@ module AccessLevels
         progress_status: false,
         comment: false,
         gather_task_id: false,
-        template: false
+        template: false,
+        change_data_set: true
       },
       factoid_types: {
         grid: { assigned: false, your: false, all: true, archived: false },
