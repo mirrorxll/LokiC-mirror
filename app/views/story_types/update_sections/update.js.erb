@@ -20,13 +20,13 @@
     let stBody = $('#staging_table .card-body');
 
     <% if flash.now[:staging_table] %>
-      stFlash.html(
+    stFlash.html(
         `<div class="alert alert-<%= flash_color(flash.now[:staging_table]) %> text-center">
           <%= flash.now[:staging_table].gsub('`', "'") %>
         </div>`
-      )
+    )
     <% else %>
-      stFlash.empty();
+    stFlash.empty();
     <% end %>
     stBody.html('<%= j render 'story_types/staging_tables/staging_table'%>')
 
@@ -36,13 +36,13 @@
 
     <% stories = flash.now[:samples] || flash.now[:stories] %>
     <% if stories %>
-      samplesFlash.html(
+    samplesFlash.html(
         `<div class="alert alert-<%= flash_color(stories) %> text-center">
           <%= stories.gsub('`', "'") %>
         </div>`
-      )
+    )
     <% else %>
-      samplesFlash.empty();
+    samplesFlash.empty();
     <% end %>
     samplesBody.html('<%= j render 'story_types/samples/samples' %>')
 
@@ -51,13 +51,13 @@
     let scheduleBody = $('#scheduler .card-body');
 
     <% if flash.now[:scheduler] %>
-      scheduleFlash.html(
+    scheduleFlash.html(
         `<div class="alert alert-<%= flash_color(flash.now[:scheduler]) %> text-center">
           <%= flash.now[:scheduler].gsub('`', "'") %>
         </div>`
     )
     <% else %>
-      scheduleFlash.empty();
+    scheduleFlash.empty();
     <% end %>
     scheduleBody.html('<%= j render 'story_types/schedules/scheduler'%>')
 
@@ -66,13 +66,13 @@
     let exportBody = $('#export .card-body');
 
     <% if flash.now[:export] %>
-      exportFlash.html(
+    exportFlash.html(
         `<div class="alert alert-<%= flash_color(flash.now[:export]) %> text-center">
             <%= flash.now[:export].gsub('`', "'") %>
         </div>`
     )
     <% else %>
-      exportFlash.empty();
+    exportFlash.empty();
     <% end %>
     exportBody.html('<%= j render 'story_types/exports/export' %>')
 })()

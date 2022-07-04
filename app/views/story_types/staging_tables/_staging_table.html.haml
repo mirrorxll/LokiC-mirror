@@ -1,59 +1,54 @@
 -if @story_type.staging_table_attached.eql?(false)
-  =render 'story_types/spinner', description: 'staging table attaching in progress'
+  =render 'story_types/main/spinner', description: 'staging table attaching in progress'
 -elsif @story_type.staging_table_attached.nil?
   =render 'story_types/staging_tables/form'
 -elsif @story_type.staging_table.columns_modifying.eql?(true)
-  =render 'story_types/spinner', description: 'staging table modifying in progress'
+  =render 'story_types/main/spinner', description: 'staging table modifying in progress'
 -elsif @story_type.staging_table.indices_modifying.eql?(true)
-  =render 'story_types/spinner', description: 'staging table modifying in progress'
+  =render 'story_types/main/spinner', description: 'staging table modifying in progress'
 -elsif @iteration.population.eql?(false)
-  =render 'story_types/spinner', description: 'population in progress'
+  =render 'story_types/main/spinner', description: 'population in progress'
 -else
   -staging_table = @story_type.staging_table
   -columns = staging_table.columns.list
   -uniq_index = staging_table.index.list
-  .row.small
+  .row.small.border-top.mt-3.ml-0.mr-0.pt-3
     .col-10.offset-1
-      .row#staging_table_name
-        .col-12
-          %p
-            =staging_table.name
-            -if staging_table.old_name
-              =icon('fa', 'inbox', class: 'ml-2', 'data-container' => 'body', 'data-toggle' => 'popover',
-                    'data-placement' => 'right', 'data-content' => "old name -> #{staging_table.old_name}")
+      #staging_table_name
+        .row.mb-1.font-weight-bold
+          .col-12
+            %p
+              =staging_table.name
+              -if staging_table.old_name
+                =icon('fa', 'inbox', class: 'ml-2', 'data-container' => 'body', 'data-toggle' => 'popover',
+                      'data-placement' => 'right', 'data-content' => "old name -> #{staging_table.old_name}")
 
-      -if @iteration.eql?(@story_type.iteration)
-        .row#staging_table_control
-          .col-1#sync
+    -if @iteration.eql?(@story_type.iteration)
+      #staging_table_control.col-10.offset-1.align-items-center
+        .row
+          #sync.col-3
             .btn-group
               =link_to('sync', sync_story_type_staging_table_path(@story_type, staging_table),
                         class: 'btn btn-sm btn-outline-dark', method: :patch, remote: true)
-          .col-6#manipulate
-            .btn-group
-              -if @iteration.population.eql?(true) && !@iteration.schedule.eql?(true)
-                =link_to('purge current iteration', purge_story_type_iteration_path(@story_type, @iteration),
-                          class: 'btn btn-sm btn-outline-danger', method: :delete,  remote: true,
-                          data: { confirm: 'PURGE CURRENT ITERATION: You sure?' })
-          .col-5.text-right#exec_population
+          #exec_population.col-9.text-right
             =render 'story_types/populations/form'
-        %hr/
-        .row#columns__index
-          .col-12
-            .btn-group.mb-2
-              #edit_columns
-                =link_to('edit column list',
-                         edit_story_type_staging_table_columns_path(@story_type, staging_table, staging_table.columns),
-                         class: 'btn btn-sm btn-outline-dark', remote: true)
-              #edit_index.mb-2.ml-2
-                -if staging_table.index.list.empty?
-                  =link_to("add unique 'story per publication' index",
-                           new_story_type_staging_table_index_path(@story_type, staging_table),
-                           class: "btn btn-sm btn-outline-dark #{columns.empty? ? 'disabled': ''}", remote: true)
-                -else
-                  =link_to("drop unique 'story per publication' index",
-                           story_type_staging_table_index_path(@story_type, staging_table, staging_table.index),
-                           class: 'btn btn-sm btn-outline-dark', method: :delete, remote: true)
-          %br
+  #columns__index.row.border-top.mt-3.ml-0.mr-0.pt-3
+    .col-10.offset-1.mb-2.d-flex.justify-content-between
+      #edit_columns
+        =link_to('edit column list',
+                 edit_story_type_staging_table_columns_path(@story_type, staging_table, staging_table.columns),
+                 class: 'btn btn-sm btn-outline-dark', remote: true)
+      #edit_index.mb-2.ml-2
+        -if staging_table.index.list.empty?
+          =link_to("add unique 'story per publication' index",
+                   new_story_type_staging_table_index_path(@story_type, staging_table),
+                   class: "btn btn-sm btn-outline-dark #{columns.empty? ? 'disabled': ''}", remote: true)
+        -else
+          =link_to("drop unique 'story per publication' index",
+                   story_type_staging_table_index_path(@story_type, staging_table, staging_table.index),
+                   class: 'btn btn-sm btn-outline-dark', method: :delete, remote: true)
+    %br
+    .col-10.offset-1
       .row.font-weight-bold
         .col-6 name
         .col-6 type
@@ -65,10 +60,11 @@
           .col-6
             #{col[:type]} #{col[:options].values.all?(nil) ? '' : "(#{col[:options].values.compact.join(',')})"}
 
-      %hr.mt-0/
+  .row.border-top.mt-3.ml-0.mr-0.pt-3.align-items-end
+    .col-10.offset-1
       .row
         .col-6
-          %p story per publication uniq index: #{'index is empty or not set' unless uniq_index.present?}
+          story per publication uniq index: #{'index is empty or not set' unless uniq_index.present?}
         .col-6
           -uniq_index.each do |index|
             =index

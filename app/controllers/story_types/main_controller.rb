@@ -4,9 +4,7 @@ module StoryTypes
   class MainController < StoryTypesController # :nodoc:
     before_action :find_data_set,            only: %i[new create]
     before_action :find_story_type,          except: %i[index new create]
-    before_action :set_story_type_iteration, except: %i[index new create properties_form change_data_set]
-    before_action :message,                  only: :update_sections
-    # before_action :find_current_data_set,    only: :change_data_set
+    before_action :set_story_type_iteration, except: %i[index new create]
 
     before_action :grid_lists, only: %i[index show]
     before_action :current_list, only: :index
@@ -39,14 +37,6 @@ module StoryTypes
     def update
       @story_type.update!(exist_story_type_params)
     end
-
-    def properties_form; end
-
-    # def change_data_set
-    #   @story_type.update!(change_data_set_params)
-    # end
-
-    def update_sections; end
 
     private
 
@@ -109,21 +99,6 @@ module StoryTypes
       return {} unless params[:filter]
 
       params.require(:filter).slice(:data_set, :developer, :frequency, :status)
-    end
-
-    # def change_data_set_params
-    #   attrs = params.require(:story_type).permit(:data_set_id)
-    #   attrs[:current_account] = current_account
-    #   attrs
-    # end
-
-    def find_current_data_set
-      @current_data_set = DataSet.find(params[:current_data_set_page_id])
-    end
-
-    def message
-      @key = params[:message][:key].to_sym
-      flash.now[@key] = params[:message][@key]
     end
 
     def env

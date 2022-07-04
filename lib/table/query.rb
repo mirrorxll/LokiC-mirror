@@ -9,7 +9,7 @@ module Table
       when 'production'
         'loki_storycreator'
       when 'development'
-        'loki_story_creator_dev'
+        'loki_story_creator_dev_up'
       when 'test'
         'loki_story_creator_test'
       end

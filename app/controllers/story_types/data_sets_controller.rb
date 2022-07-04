@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module StoryTypes
-  class ChangeDataSetsController < StoryTypesController
+  class DataSetsController < StoryTypesController
     before_action :find_current_data_set
 
     def update

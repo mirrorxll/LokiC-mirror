@@ -35,7 +35,7 @@
 
 .row.mb-2
   #story_type_template.col.card.small.p-0.ml-3.mr-3
-    .card-header.d-flex.justify-content-between
+    .card-header.d-flex.justify-content-between.align-items-center
       TEMPLATE
       =button_to('Edit', edit_story_type_template_path(@story_type, @story_type.template), method: :get, remote: true)
     #template_preview.h-100
@@ -43,25 +43,27 @@
         =render 'story_types/main/template'
 
   #story_type_properties.col.card.small.p-0.ml-3.mr-3
-    .card-header.d-flex.justify-content-between
+    .card-header.d-flex.justify-content-between.align-items-center
       PROPERTIES
-      =button_to('Edit', story_type_properties_form_path(@story_type), method: :get, remote: true, data: { toggle: "modal", target: '#storyTypePropertiesForm' })
+      =button_to('Edit', story_type_property_form_path(@story_type), method: :get, remote: true,
+                 data: { toggle: 'modal', target: '#storyTypePropertiesForm' })
     #properties.h-100
       .flash
-      .card-body.h-100
-        =render 'story_types/main/properties'
+      .card-body.h-100.d-flex.flex-column
+        =render 'story_types/properties/properties'
 
-.row
-  .col
-    #story_type_staging_table.accordion
-      .card
-        .card-header
-          %div.text-center{"aria-controls" => "#staging_table", "aria-expanded" => "false", "data-target" => "#staging_table", "data-toggle" => "collapse", type: "button"}
-            staging table
-        #staging_table.collapse.show{"data-parent" => "#story_type_staging_table"}
-          .flash
-          .card-body
-            =render 'story_types/staging_tables/staging_table'
+.row.mb-2
+  #story_type_staging_table.col.card.small.p-0.ml-3.mr-3
+    .card-header.d-flex.justify-content-between.align-items-center
+      STAGING TABLE
+      -# -if @iteration.population.eql?(true) && !@iteration.schedule.eql?(true)
+      =link_to('purge current iteration', purge_story_type_iteration_path(@story_type, @iteration),
+                          class: 'btn btn-sm btn-outline-danger', method: :delete,  remote: true,
+                          data: { confirm: 'PURGE CURRENT ITERATION: You sure?' })
+    #staging_table.h-100
+      .flash
+      .card-body.h-100
+        =render 'story_types/staging_tables/staging_table'
   .col
     %div.accordion{id: "story_type_samples_#{@iteration.id}"}
       .card
