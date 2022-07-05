@@ -47,8 +47,9 @@
   #story_type_properties.col-lg.col-md-12.card.p-0.ml-3.mr-3
     .card-header.d-flex.justify-content-between.align-items-center
       PROPERTIES
-      =button_to('Edit', story_type_property_form_path(@story_type), method: :get, remote: true,
-                 data: { toggle: 'modal', target: '#storyTypePropertiesForm' })
+      -if current_account_is_a?('Manager')
+        =button_to('Edit', story_type_property_form_path(@story_type), method: :get, remote: true,
+                   data: { toggle: 'modal', target: '#storyTypePropertiesForm' })
     #properties.h-100
       .flash
       .card-body.d-flex.flex-column
@@ -70,7 +71,7 @@
   #story_type_samples.col-lg.col-md-12.card.p-0.ml-3.mr-3
     .card-header.d-flex.justify-content-between.align-items-center
       SAMPLES (iteration: #{@iteration.name})
-      -if @iteration.creation && has_created_stories?(@iteration)
+      -if @iteration.creation && !@iteration.schedule.eql?(true) && has_created_stories?(@iteration)
         =render 'story_types/samples/purge_stories'
     #samples
       .flash
@@ -94,7 +95,11 @@
 
   #story_type_export.col-lg.col-md-12.card.p-0.ml-3.mr-3
     .card-header.d-flex.justify-content-between.align-items-center
-      export (iteration: #{@iteration.name})
+      EXPORT (iteration: #{@iteration.name})
+      -if purge_export_availability
+        =link_to('remove exported stories', '#', 'aria-controls' => 'remove_exported_stories_form',
+                     'aria-expanded' => false, data: { toggle: "collapse", target: "#remove_exported_stories_form" },
+                     type: "button", class: 'btn btn-sm btn-outline-danger')
     #export
       .flash
       .card-body.d-flex.flex-column
