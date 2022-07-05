@@ -25,17 +25,16 @@
         =render 'story_types/samples/stories_link'
 
   -elsif @iteration.samples.eql?(false) || @iteration.creation.eql?(false)
-    =render 'story_types/spinner', description: 'creation in the process'
+    =render 'story_types/main/spinner', description: 'creation in the process'
   -elsif @iteration.purge_creation.eql?(true)
-    =render 'story_types/spinner', description: 'purging in progress'
+    =render 'story_types/main/spinner', description: 'purging in progress'
   -else
     - samples = @iteration.stories.where(sampled: true)
-    .row
+    .row.border-top.mt-3.ml-0.mr-0.pt-3
       .col-10.offset-1
         #stories_form
           =render 'story_types/samples/form', samples: samples
-        %hr/
-    .row
+    .row.border-top.mt-3.ml-0.mr-0.pt-3
       .col-10.offset-1
         #created_stories
           -if samples.count.positive?

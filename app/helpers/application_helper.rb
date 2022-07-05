@@ -44,4 +44,11 @@ module ApplicationHelper
 
     toasts.join("\n").html_safe
   end
+
+  def current_account_is_a?(*names)
+    names.map do |name|
+      role = AccountRole.find_by(name: name)
+      current_account.roles.include?(role)
+    end.any?
+  end
 end

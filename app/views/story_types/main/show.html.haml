@@ -33,69 +33,71 @@
   .text-secondary
     created at: #{@story_type.created_at}
 
-.row.mb-2
-  #story_type_template.col.card.small.p-0.ml-3.mr-3
+.row.small.mb-2.justify-content-md-center
+  #story_type_template.col-lg.col-md-12.card.p-0.ml-3.mr-3
     .card-header.d-flex.justify-content-between.align-items-center
       TEMPLATE
-      =button_to('Edit', edit_story_type_template_path(@story_type, @story_type.template), method: :get, remote: true)
+      -#TODO: about roles
+      -if current_account_is_a?('Manager')
+        =button_to('Edit', edit_story_type_template_path(@story_type, @story_type.template), method: :get, remote: true)
     #template_preview.h-100
-      .card-body.small
+      .card-body.h-100.d-flex.flex-column.justify-content-between
         =render 'story_types/main/template'
 
-  #story_type_properties.col.card.small.p-0.ml-3.mr-3
+  #story_type_properties.col-lg.col-md-12.card.p-0.ml-3.mr-3
     .card-header.d-flex.justify-content-between.align-items-center
       PROPERTIES
       =button_to('Edit', story_type_property_form_path(@story_type), method: :get, remote: true,
                  data: { toggle: 'modal', target: '#storyTypePropertiesForm' })
     #properties.h-100
       .flash
-      .card-body.h-100.d-flex.flex-column
+      .card-body.d-flex.flex-column
         =render 'story_types/properties/properties'
 
-.row.mb-2
-  #story_type_staging_table.col.card.small.p-0.ml-3.mr-3
+.row.small.mb-2.justify-content-md-center
+  #story_type_staging_table.col-lg.col-md-12.card.p-0.ml-3.mr-3
     .card-header.d-flex.justify-content-between.align-items-center
       STAGING TABLE
-      -# -if @iteration.population.eql?(true) && !@iteration.schedule.eql?(true)
-      =link_to('purge current iteration', purge_story_type_iteration_path(@story_type, @iteration),
-                          class: 'btn btn-sm btn-outline-danger', method: :delete,  remote: true,
-                          data: { confirm: 'PURGE CURRENT ITERATION: You sure?' })
+      -if @iteration.population.eql?(true) && !@iteration.schedule.eql?(true)
+        =link_to('purge current iteration', purge_story_type_iteration_path(@story_type, @iteration),
+                 class: 'btn btn-sm btn-outline-danger', method: :delete,  remote: true,
+                 data: { confirm: 'PURGE CURRENT ITERATION: You sure?' })
     #staging_table.h-100
       .flash
-      .card-body.h-100
+      .card-body.d-flex.flex-column
         =render 'story_types/staging_tables/staging_table'
-  .col
-    %div.accordion{id: "story_type_samples_#{@iteration.id}"}
-      .card
-        .card-header
-          %div.text-center{"aria-controls" => "#samles", "aria-expanded" => "false", "data-target" => "#samples", "data-toggle" => "collapse", type: "button"}
-            samples (iteration: #{@iteration.name})
-        #samples.collapse.show{"data-parent" => "#story_type_samples_#{@iteration.id}"}
-          .flash
-          .card-body
-            =render 'story_types/samples/samples'
 
-.row
-  .col
-    %div.accordion{id: "story_type_scheduler_#{@iteration.id}"}
-      .card
-        .card-header
-          %div.text-center{"aria-controls" => "#scheduler", "aria-expanded" => "false", "data-target" => "#scheduler", "data-toggle" => "collapse", type: "button"}
-            scheduler (iteration: #{@iteration.name})
-        #scheduler.collapse.show{"data-parent" => "#story_type_scheduler_#{@iteration.id}"}
-          .flash
-          .card-body
-            =render 'story_types/schedules/scheduler'
+  #story_type_samples.col-lg.col-md-12.card.p-0.ml-3.mr-3
+    .card-header.d-flex.justify-content-between.align-items-center
+      SAMPLES (iteration: #{@iteration.name})
+      -if @iteration.creation && has_created_stories?(@iteration)
+        =render 'story_types/samples/purge_stories'
+    #samples
+      .flash
+      .card-body.d-flex.flex-column
+        =render 'story_types/samples/samples'
 
-  .col
-    %div.accordion{id: "story_type_export_#{@iteration.id}"}
-      .card
-        .card-header
-          %div.text-center{"aria-controls" => "#export", "aria-expanded" => "false", "data-target" => "#export", "data-toggle" => "collapse", type: "button"}
-            export (iteration: #{@iteration.name})
-        #export.collapse.show{"data-parent" => "#story_type_export_#{@iteration.id}"}
-          .flash
-          .card-body.small
-            =render 'story_types/exports/export'
+.row.small.mb-2.justify-content-md-center
+  #story_type_scheduler.col-lg.col-md-12.card.p-0.ml-3.mr-3
+    .card-header.d-flex.justify-content-between.align-items-center
+      SCHEDULER (iteration: #{@iteration.name})
+      -if @iteration.stories.where.not(published_at: nil).count > 1 && @iteration.export.nil?
+        -if @story_type.iteration.eql?(@iteration)
+          =link_to('purge schedule',
+                   purge_story_type_iteration_schedules_path(@story_type, @iteration),
+                   id: 'purge_schedule', class: 'btn btn-sm btn-outline-danger',
+                   method: :patch, remote: true)
+    #scheduler
+      .flash
+      .card-body.d-flex.flex-column
+        =render 'story_types/schedules/scheduler'
+
+  #story_type_export.col-lg.col-md-12.card.p-0.ml-3.mr-3
+    .card-header.d-flex.justify-content-between.align-items-center
+      export (iteration: #{@iteration.name})
+    #export
+      .flash
+      .card-body.d-flex.flex-column
+        =render 'story_types/exports/export'
 %hr.mb-5/
 =render 'story_types/main/template_modal'
