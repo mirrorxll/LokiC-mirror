@@ -4,6 +4,7 @@ module StoryTypes
   module Iterations
     class ExportTask < StoryTypesTask
       def perform(iteration_id, account_id, options = {})
+        sleep 5
         iteration = StoryTypeIteration.find(iteration_id)
         account = Account.find(account_id)
         status = true

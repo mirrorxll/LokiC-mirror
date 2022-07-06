@@ -1,7 +1,7 @@
 module StoryTypes::ShowHelper
   def purge_export_availability
     stories = @iteration.stories.where(backdated: false)
-    if @story_type.staging_table && @iteration.creation && @iteration.schedule &&
+    if @story_type.iteration.eql?(@iteration) && @story_type.staging_table && @iteration.creation && @iteration.schedule
       if @iteration.export.eql?(true) && !@iteration.purge_export.eql?(true)
         story = stories.where.not(published_at: nil).order(:published_at).first
         return true unless story && story.published_at <= Time.now

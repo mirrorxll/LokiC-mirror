@@ -1,6 +1,9 @@
 (function () {
     $('#story_type_status').html(`<%= j render 'story_types/progress_statuses/status' %>`);
 
+    let templateBody = $('#story_type_template .card-body');
+    templateBody.html('<%= j render 'story_types/main/template' %>');
+
     let expConfFlash = $('#story_type_properties .flash');
     let expConfBody = $('#story_type_properties .card-body');
 
@@ -15,7 +18,6 @@
     <% end %>
     expConfBody.html('<%= j render 'story_types/properties/properties'%>')
 
-
     let stFlash = $('#staging_table .flash');
     let stBody = $('#staging_table .card-body');
 
@@ -29,7 +31,6 @@
     stFlash.empty();
     <% end %>
     stBody.html('<%= j render 'story_types/staging_tables/staging_table'%>')
-
 
     let samplesFlash = $('#samples .flash');
     let samplesBody = $('#samples .card-body');
@@ -46,7 +47,7 @@
     <% end %>
     samplesBody.html('<%= j render 'story_types/samples/samples' %>')
 
-
+    let schedulerControl = $('#story_type_scheduler #scheduler_control');
     let scheduleFlash = $('#scheduler .flash');
     let scheduleBody = $('#scheduler .card-body');
 
@@ -59,9 +60,10 @@
     <% else %>
     scheduleFlash.empty();
     <% end %>
+    schedulerControl.html('<%= j render 'story_types/schedules/scheduler_control' %>');
     scheduleBody.html('<%= j render 'story_types/schedules/scheduler'%>')
 
-
+    let exportControl = $('#story_type_export #export_control');
     let exportFlash = $('#export .flash');
     let exportBody = $('#export .card-body');
 
@@ -74,5 +76,6 @@
     <% else %>
     exportFlash.empty();
     <% end %>
-    exportBody.html('<%= j render 'story_types/exports/export' %>')
+    exportControl.html('<%= j render 'story_types/exports/export_control' %>');
+    exportBody.html('<%= j render 'story_types/exports/export' %>');
 })()
