@@ -33,8 +33,8 @@
   .text-secondary
     created at: #{@story_type.created_at}
 
-.row.small.mb-2.justify-content-md-center
-  #story_type_template.col-lg.col-md-12.card.p-0.ml-3.mr-3
+.row.small.justify-content-md-center.justify-content-lg-start.mx-0
+  #story_type_template.col-lg-6.col-md-12.card.p-0.my-2
     .card-header.d-flex.justify-content-between.align-items-center
       TEMPLATE
       -#TODO: about roles
@@ -44,7 +44,7 @@
       .card-body.h-100.d-flex.flex-column.justify-content-between
         =render 'story_types/main/template'
 
-  #story_type_properties.col-lg.col-md-12.card.p-0.ml-3.mr-3
+  #story_type_properties.col-lg-6.col-md-12.card.p-0.my-2
     .card-header.d-flex.justify-content-between.align-items-center
       PROPERTIES
       -if current_account_is_a?('Manager')
@@ -55,8 +55,8 @@
       .card-body.d-flex.flex-column
         =render 'story_types/properties/properties'
 
-.row.small.mb-2.justify-content-md-center
-  #story_type_staging_table.col-lg.col-md-12.card.p-0.ml-3.mr-3
+.row.small.justify-content-md-center.justify-content-lg-start.mx-0
+  #story_type_staging_table.col-lg-6.col-md-12.card.p-0.my-2
     .card-header.d-flex.justify-content-between.align-items-center
       STAGING TABLE
       -if @iteration.population.eql?(true) && !@iteration.schedule.eql?(true)
@@ -68,7 +68,7 @@
       .card-body.d-flex.flex-column
         =render 'story_types/staging_tables/staging_table'
 
-  #story_type_samples.col-lg.col-md-12.card.p-0.ml-3.mr-3
+  #story_type_samples.col-lg-6.col-md-12.card.p-0.my-2
     .card-header.d-flex.justify-content-between.align-items-center
       SAMPLES (iteration: #{@iteration.name})
       -if @iteration.creation && !@iteration.schedule.eql?(true) && has_created_stories?(@iteration)
@@ -78,25 +78,27 @@
       .card-body.d-flex.flex-column
         =render 'story_types/samples/samples'
 
-.row.small.mb-2.justify-content-md-center
-  #story_type_scheduler.col-lg.col-md-12.card.p-0.ml-3.mr-3
-    .card-header.d-flex.justify-content-between.align-items-center
-      SCHEDULER (iteration: #{@iteration.name})
-      #scheduler_control
-        =render 'story_types/schedules/scheduler_control'
-    #scheduler
-      .flash
-      .card-body.d-flex.flex-column
-        =render 'story_types/schedules/scheduler'
+.row.small.justify-content-md-center.justify-content-lg-start.mx-0
+  -if @iteration.creation
+    #story_type_scheduler.col-lg-6.col-md-12.card.p-0.my-2
+      .card-header.d-flex.justify-content-between.align-items-center
+        SCHEDULER (iteration: #{@iteration.name})
+        #scheduler_control
+          =render 'story_types/schedules/scheduler_control'
+      #scheduler
+        .flash
+        .card-body.d-flex.flex-column.text-center
+          =render 'story_types/schedules/scheduler'
 
-  #story_type_export.col-lg.col-md-12.card.p-0.ml-3.mr-3
-    .card-header.d-flex.justify-content-between.align-items-center
-      EXPORT (iteration: #{@iteration.name})
-      #export_control
-        =render 'story_types/exports/export_control'
-    #export
-      .flash
-      .card-body.d-flex.flex-column.text-center
-        =render 'story_types/exports/export'
+  -if @iteration.schedule
+    #story_type_export.col-lg-6.col-md-12.card.p-0.my-2
+      .card-header.d-flex.justify-content-between.align-items-center
+        EXPORT (iteration: #{@iteration.name})
+        #export_control
+          =render 'story_types/exports/export_control'
+      #export
+        .flash
+        .card-body.d-flex.flex-column.text-center
+          =render 'story_types/exports/export'
 %hr.mb-5/
 =render 'story_types/main/template_modal'
