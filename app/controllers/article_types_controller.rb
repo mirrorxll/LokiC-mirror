@@ -107,6 +107,7 @@ class ArticleTypesController < ApplicationController
                                                  :source_link,
                                                  :original_publish_date).reject { |_, v| v.blank? }
     attrs[:current_account] = current_account
+    attrs[:topic_id] = nil if attrs[:topic_id].blank?
     attrs
   end
 
