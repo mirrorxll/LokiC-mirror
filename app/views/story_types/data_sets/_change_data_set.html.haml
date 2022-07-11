@@ -1,6 +1,9 @@
 .current_data_set
-  =link_to(@story_type.data_set.name, @story_type.data_set)
-  =link_to('x', '#')
+  -if current_account_permissions('data_sets')['edit']
+    =link_to(@story_type.data_set.name, @story_type.data_set)
+    =link_to('x', '#')
+  -else
+    =@story_type.data_set.name
 .change_data_set_form.d-none
   =form_with(url: story_type_data_set_path(@story_type), method: :patch, html: { onchange: "Rails.fire(this, 'submit')"}) do |f|
     =f.collection_select 'story_type[data_set_id]', DataSet.order(name: :asc), :id, :name, selected: @story_type.data_set.id

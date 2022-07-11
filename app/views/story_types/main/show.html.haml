@@ -37,8 +37,8 @@
   #story_type_template.col-lg-6.col-md-12.card.p-0.my-2
     .card-header.d-flex.justify-content-between.align-items-center
       TEMPLATE
-      -#TODO: about roles
-      -if current_account_is_a?('Manager')
+      -#TODO: if this is correct implementation of user permissions?
+      -if current_account_permissions('story_types')['edit']
         =button_to('Edit', edit_story_type_template_path(@story_type, @story_type.template), method: :get, remote: true)
     #template_preview.h-100
       .card-body.h-100.d-flex.flex-column.justify-content-between
@@ -47,7 +47,8 @@
   #story_type_properties.col-lg-6.col-md-12.card.p-0.my-2
     .card-header.d-flex.justify-content-between.align-items-center
       PROPERTIES
-      -if current_account_is_a?('Manager')
+      -#TODO: if this is correct implementation of user permissions?
+      -if current_account_permissions('story_types')['edit']
         =button_to('Edit', story_type_property_form_path(@story_type), method: :get, remote: true,
                    data: { toggle: 'modal', target: '#storyTypePropertiesForm' })
     #properties.h-100
@@ -68,15 +69,16 @@
       .card-body.d-flex.flex-column
         =render 'story_types/staging_tables/staging_table'
 
-  #story_type_samples.col-lg-6.col-md-12.card.p-0.my-2
-    .card-header.d-flex.justify-content-between.align-items-center
-      SAMPLES (iteration: #{@iteration.name})
-      -if @iteration.creation && !@iteration.schedule.eql?(true) && has_created_stories?(@iteration)
-        =render 'story_types/samples/purge_stories'
-    #samples
-      .flash
-      .card-body.d-flex.flex-column
-        =render 'story_types/samples/samples'
+  -if @iteration.population
+    #story_type_samples.col-lg-6.col-md-12.card.p-0.my-2
+      .card-header.d-flex.justify-content-between.align-items-center
+        SAMPLES (iteration: #{@iteration.name})
+        -if @iteration.creation && !@iteration.schedule.eql?(true) && has_created_stories?(@iteration)
+          =render 'story_types/samples/purge_stories'
+      #samples
+        .flash
+        .card-body.d-flex.flex-column
+          =render 'story_types/samples/samples'
 
 .row.small.justify-content-md-center.justify-content-lg-start.mx-0
   -if @iteration.creation
