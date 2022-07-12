@@ -42,7 +42,7 @@ module StoryTypes
         )
       end
 
-      render 'story_types/main/update_sections'
+      render 'story_types/update_sections/update'
     end
 
     private

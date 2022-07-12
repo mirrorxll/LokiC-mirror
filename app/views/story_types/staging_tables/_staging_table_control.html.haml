@@ -1,0 +1,4 @@
+-if @iteration.population.eql?(true) && !@iteration.schedule.eql?(true) && !@iteration.stories.count.positive?
+  =link_to('purge current iteration', purge_story_type_iteration_path(@story_type, @iteration),
+               class: 'btn btn-sm btn-outline-danger', method: :delete,  remote: true,
+               data: { confirm: 'PURGE CURRENT ITERATION: You sure?' })

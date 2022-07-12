@@ -21,7 +21,7 @@ module StoryTypes
           story_type.update!(status: Status.find_by(name: 'in progress'), current_account: account)
         end
 
-        # ExportConfigurationsTask.new.perform(story_type.id, account.id)
+        ExportConfigurationsTask.new.perform(story_type.id, account.id)
       rescue StandardError, ScriptError => e
         status = nil
         message = e.message

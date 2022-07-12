@@ -18,64 +18,64 @@
     <% end %>
     expConfBody.html('<%= j render 'story_types/properties/properties'%>')
 
-    let stFlash = $('#staging_table .flash');
-    let stBody = $('#staging_table .card-body');
+    // updating staging_table section //
+    let stSection = $('#staging_table_section');
+    stSection.html('<%= j render 'story_types/main/staging_table_section' %>');
 
+    let stFlash = $('#staging_table .flash');
     <% if flash.now[:staging_table] %>
-    stFlash.html(
-        `<div class="alert alert-<%= flash_color(flash.now[:staging_table]) %> text-center">
-          <%= flash.now[:staging_table].gsub('`', "'") %>
-        </div>`
-    )
+      stFlash.html(
+          `<div class="alert alert-<%= flash_color(flash.now[:staging_table]) %> text-center">
+            <%= flash.now[:staging_table].gsub('`', "'") %>
+          </div>`
+      )
     <% else %>
-    stFlash.empty();
+      stFlash.empty();
     <% end %>
-    stBody.html('<%= j render 'story_types/staging_tables/staging_table'%>')
+
+    // updating samples section //
+    let samplesSection = $('#samples_section');
+    samplesSection.html('<%= j render 'story_types/main/samples_section' %>')
 
     let samplesFlash = $('#samples .flash');
-    let samplesBody = $('#samples .card-body');
-
     <% stories = flash.now[:samples] || flash.now[:stories] %>
     <% if stories %>
-    samplesFlash.html(
-        `<div class="alert alert-<%= flash_color(stories) %> text-center">
-          <%= stories.gsub('`', "'") %>
-        </div>`
-    )
+      samplesFlash.html(
+          `<div class="alert alert-<%= flash_color(stories) %> text-center">
+            <%= stories.gsub('`', "'") %>
+          </div>`
+      )
     <% else %>
-    samplesFlash.empty();
+      samplesFlash.empty();
     <% end %>
-    samplesBody.html('<%= j render 'story_types/samples/samples' %>')
 
-    let schedulerControl = $('#story_type_scheduler #scheduler_control');
+    // updating scheduler section //
+    let schedulerSection = $('#scheduler_section');
+    schedulerSection.html('<%= j render 'story_types/main/scheduler_section' %>');
+
     let scheduleFlash = $('#scheduler .flash');
-    let scheduleBody = $('#scheduler .card-body');
-
     <% if flash.now[:scheduler] %>
-    scheduleFlash.html(
-        `<div class="alert alert-<%= flash_color(flash.now[:scheduler]) %> text-center">
-          <%= flash.now[:scheduler].gsub('`', "'") %>
-        </div>`
-    )
+      scheduleFlash.html(
+          `<div class="alert alert-<%= flash_color(flash.now[:scheduler]) %> text-center">
+            <%= flash.now[:scheduler].gsub('`', "'") %>
+          </div>`
+      )
     <% else %>
-    scheduleFlash.empty();
+      scheduleFlash.empty();
     <% end %>
-    schedulerControl.html('<%= j render 'story_types/schedules/scheduler_control' %>');
-    scheduleBody.html('<%= j render 'story_types/schedules/scheduler'%>')
 
-    let exportControl = $('#story_type_export #export_control');
+    // updating export section //
+    let exportSection = $('#export_section');
+    exportSection.html('<%= j render 'story_types/main/export_section' %>');
+
     let exportFlash = $('#export .flash');
-    let exportBody = $('#export .card-body');
-
     <% if flash.now[:export] %>
-    exportFlash.html(
-        `<div class="alert alert-<%= flash_color(flash.now[:export]) %> text-center">
-            <%= flash.now[:export].gsub('`', "'") %>
-        </div>`
-    )
+      exportFlash.html(
+          `<div class="alert alert-<%= flash_color(flash.now[:export]) %> text-center">
+              <%= flash.now[:export].gsub('`', "'") %>
+          </div>`
+      )
     <% else %>
-    exportFlash.empty();
+      exportFlash.empty();
     <% end %>
-    exportControl.html('<%= j render 'story_types/exports/export_control' %>');
-    exportBody.html('<%= j render 'story_types/exports/export' %>');
 })()

@@ -6,5 +6,6 @@
   )
 <% end %>
 
-$('#scheduler .card-body').html('<%= j render 'story_types/schedules/scheduler' %>');
-$('#export .card-body').empty();
+$('#scheduler_section').html('<%= j render 'story_types/main/scheduler_section' %>');
+$('#samples_control').html('<%= j render 'story_types/samples/samples_control' %>')
+$('#export_section').empty();

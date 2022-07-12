@@ -47,7 +47,6 @@ module StoryTypes
                 raw['time_frame']        = Frame[:annually, Date.today.to_s]
             
                 raw['a']                 = arr
-                sleep 1
                 return if SidekiqBreak[self.class.to_s]
                 
                 staging_insert_query = SQL.insert_on_duplicate_key(STAGING_TABLE, raw)

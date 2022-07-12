@@ -34,73 +34,20 @@
     created at: #{@story_type.created_at}
 
 .row.small.justify-content-md-center.justify-content-lg-start.mx-0
-  #story_type_template.col-lg-6.col-md-12.card.p-0.my-2
-    .card-header.d-flex.justify-content-between.align-items-center
-      TEMPLATE
-      -#TODO: if this is correct implementation of user permissions?
-      -if current_account_permissions('story_types')['edit']
-        =button_to('Edit', edit_story_type_template_path(@story_type, @story_type.template), method: :get, remote: true)
-    #template_preview.h-100
-      .card-body.h-100.d-flex.flex-column.justify-content-between
-        =render 'story_types/main/template'
-
-  #story_type_properties.col-lg-6.col-md-12.card.p-0.my-2
-    .card-header.d-flex.justify-content-between.align-items-center
-      PROPERTIES
-      -#TODO: if this is correct implementation of user permissions?
-      -if current_account_permissions('story_types')['edit']
-        =button_to('Edit', story_type_property_form_path(@story_type), method: :get, remote: true,
-                   data: { toggle: 'modal', target: '#storyTypePropertiesForm' })
-    #properties.h-100
-      .flash
-      .card-body.d-flex.flex-column
-        =render 'story_types/properties/properties'
+  =render 'story_types/main/template_section'
+  =render 'story_types/main/properties_section'
 
 .row.small.justify-content-md-center.justify-content-lg-start.mx-0
-  #story_type_staging_table.col-lg-6.col-md-12.card.p-0.my-2
-    .card-header.d-flex.justify-content-between.align-items-center
-      STAGING TABLE
-      -if @iteration.population.eql?(true) && !@iteration.schedule.eql?(true)
-        =link_to('purge current iteration', purge_story_type_iteration_path(@story_type, @iteration),
-                 class: 'btn btn-sm btn-outline-danger', method: :delete,  remote: true,
-                 data: { confirm: 'PURGE CURRENT ITERATION: You sure?' })
-    #staging_table.h-100
-      .flash
-      .card-body.d-flex.flex-column
-        =render 'story_types/staging_tables/staging_table'
-
-  -if @iteration.population
-    #story_type_samples.col-lg-6.col-md-12.card.p-0.my-2
-      .card-header.d-flex.justify-content-between.align-items-center
-        SAMPLES (iteration: #{@iteration.name})
-        -if @iteration.creation && !@iteration.schedule.eql?(true) && has_created_stories?(@iteration)
-          =render 'story_types/samples/purge_stories'
-      #samples
-        .flash
-        .card-body.d-flex.flex-column
-          =render 'story_types/samples/samples'
+  #staging_table_section.col-lg-6.col-md-12.p-0.my-2
+    =render 'story_types/main/staging_table_section'
+  #samples_section.col-lg-6.col-md-12.p-0.my-2
+    =render 'story_types/main/samples_section'
 
 .row.small.justify-content-md-center.justify-content-lg-start.mx-0
-  -if @iteration.creation
-    #story_type_scheduler.col-lg-6.col-md-12.card.p-0.my-2
-      .card-header.d-flex.justify-content-between.align-items-center
-        SCHEDULER (iteration: #{@iteration.name})
-        #scheduler_control
-          =render 'story_types/schedules/scheduler_control'
-      #scheduler
-        .flash
-        .card-body.d-flex.flex-column.text-center
-          =render 'story_types/schedules/scheduler'
+  #scheduler_section.col-lg-6.col-md-12.p-0.my-2
+    =render 'story_types/main/scheduler_section'
+  #export_section.col-lg-6.col-md-12.p-0.my-2
+    =render 'story_types/main/export_section'
 
-  -if @iteration.schedule
-    #story_type_export.col-lg-6.col-md-12.card.p-0.my-2
-      .card-header.d-flex.justify-content-between.align-items-center
-        EXPORT (iteration: #{@iteration.name})
-        #export_control
-          =render 'story_types/exports/export_control'
-      #export
-        .flash
-        .card-body.d-flex.flex-column.text-center
-          =render 'story_types/exports/export'
 %hr.mb-5/
 =render 'story_types/main/template_modal'
