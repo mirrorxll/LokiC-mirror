@@ -1,5 +1,6 @@
 $('#story_type_samples_<%= @iteration.id %> .flash').empty();
 $('#story_type_samples_<%= @iteration.id %> .card-body')
     .html('<%= j render 'story_types/main/spinner', description: 'purging in the process' %>');
+$('#story_type_iterations').empty();
 $('#samples_control').empty();
 $('#scheduler_section').empty();

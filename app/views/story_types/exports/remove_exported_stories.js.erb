@@ -1,7 +1,2 @@
-$('#export .flash, #story_type_export #export_control').each(function() {
-    if (this) { $(this).empty(); }
-});
-$('#template_preview #cover-spin, #properties #cover-spin, #staging_table #cover-spin, #samples #cover-spin, #scheduler #cover-spin').each(function() {
-    $(this).show();
-});
-$('#export .card-body').html('<%= j render 'story_types/main/spinner', description: 'removing from PL in progress' %>')
+$('#export_control').empty();
+$('#export .card-body').html('<%= j render 'story_types/main/spinner', description: 'removing from PL in progress' %>');

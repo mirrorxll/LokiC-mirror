@@ -1,22 +1,28 @@
 (function () {
+    $('#story_type_iterations').html('<%= j render partial: 'story_types/iterations/iteration',
+                                                   collection: @story_type.iterations.where(cron_tab: [nil, false]),
+                                                   current_iteration: @story_type.iteration %>');
+
+    $('#new_story_type_iteration').html('<%= j render 'story_types/iterations/new_iteration' %>');
     $('#story_type_status').html(`<%= j render 'story_types/progress_statuses/status' %>`);
 
     let templateBody = $('#story_type_template .card-body');
     templateBody.html('<%= j render 'story_types/main/template' %>');
 
-    let expConfFlash = $('#story_type_properties .flash');
-    let expConfBody = $('#story_type_properties .card-body');
+    // updating properties section //
+    let propSection = $('#properties_section');
+    propSection.html('<%= j render 'story_types/main/properties_section' %>')
 
+    let expConfFlash = $('#story_type_properties .flash');
     <% if flash.now[:properties] %>
-    expConfFlash.html(
-        `<div class="alert alert-<%= flash_color(flash.now[:properties]) %> text-center">
-          <%= flash.now[:properties].gsub('`', "'") %>
-        </div>`
-    )
+      expConfFlash.html(
+          `<div class="alert alert-<%= flash_color(flash.now[:properties]) %> text-center">
+            <%= flash.now[:properties].gsub('`', "'") %>
+          </div>`
+      )
     <% else %>
-    expConfFlash.empty();
+      expConfFlash.empty();
     <% end %>
-    expConfBody.html('<%= j render 'story_types/properties/properties'%>')
 
     // updating staging_table section //
     let stSection = $('#staging_table_section');

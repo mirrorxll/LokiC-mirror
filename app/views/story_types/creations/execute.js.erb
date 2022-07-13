@@ -1,5 +1,9 @@
 $('#story_type_samples_<%= @iteration.id %> .flash').empty();
 $('#story_type_samples_<%= @iteration.id %> .card-body')
     .html('<%= j render 'story_types/main/spinner', description: 'creation in the process' %>');
+$('#story_type_iterations').empty();
+$('#properties_control').empty();
+$('#story_type_code').empty();
 $('#staging_table_control').empty();
-
+$('#edit_columns').empty();
+$('#edit_index').empty();

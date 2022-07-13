@@ -1,6 +1,10 @@
 .row.small
   .col-12
-    =link_to('[ reload ]', reload_story_type_codes_path(@story_type),
-             class: 'p-0 btn btn-sm btn-link', method: :put, data: { disable_with: '[ ... ]'}, remote: true)
+    -if blocked_item?
+      =link_to('[ reload ]', reload_story_type_codes_path(@story_type),
+               class: 'p-0 btn btn-sm btn-link', method: :put, data: { disable_with: '[ ... ]'}, remote: true)
+    -else
+      =link_to('[ reload ]', reload_story_type_codes_path(@story_type),
+               class: 'p-0 btn btn-sm btn-link disabled', method: :put, data: { disable_with: '[ ... ]'}, remote: true)
     =link_to('[ download ]', url_for(@story_type.code), class: 'p-0 btn btn-sm btn-link')
     =link_to('[ show ]', story_type_codes_path(@story_type), class: 'p-0 btn btn-sm btn-link', remote: true)

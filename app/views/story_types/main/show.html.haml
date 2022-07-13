@@ -11,17 +11,12 @@
 
 .row
   .col-10
-    #story_type_iterations
+    #story_type_iterations.d-inline
       =render partial: 'story_types/iterations/iteration',
               collection: @story_type.iterations.where(cron_tab: [nil, false]),
               current_iteration: @story_type.iteration
-
-      .badge.badge-pill.badge-light{'data-container' => 'body',
-                                    'data-toggle' => 'popover',
-                                    'data-placement' => 'top',
-                                    'data-html' => 'true',
-                                    'data-content' => "#{ render 'story_types/iterations/new_form' }" }
-        new iteration
+    #new_story_type_iteration.d-inline
+      =render 'story_types/iterations/new_iteration'
   .col-2.text-right
     #story_type_status
       =render 'story_types/progress_statuses/status'
@@ -34,8 +29,10 @@
     created at: #{@story_type.created_at}
 
 .row.small.justify-content-md-center.justify-content-lg-start.mx-0
-  =render 'story_types/main/template_section'
-  =render 'story_types/main/properties_section'
+  #template_section.col-lg-6.col-md-12.p-0.my-2
+    =render 'story_types/main/template_section'
+  #properties_section.col-lg-6.col-md-12.p-0.my-2
+    =render 'story_types/main/properties_section'
 
 .row.small.justify-content-md-center.justify-content-lg-start.mx-0
   #staging_table_section.col-lg-6.col-md-12.p-0.my-2

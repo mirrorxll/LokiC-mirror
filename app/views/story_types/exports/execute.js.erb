@@ -1,7 +1,2 @@
-$('#export .flash, #scheduler .flash').each(function() {
-    if (this) { $(this).empty(); }
-});
-$('#template_preview #cover-spin, #properties #cover-spin, #staging_table #cover-spin, #samples #cover-spin, #scheduler #cover-spin').each(function() {
-    $(this).show();
-});
+$('#scheduler_control').empty();
 $('#export .card-body').html('<%= j render 'story_types/main/spinner', description: 'export in progress' %>');

@@ -71,7 +71,7 @@ module StoryTypes
               sample[:teaser]   = 'teaser'
               sample[:body]     = foo
         
-              sleep 1
+              sleep 5
               return if SidekiqBreak[self.class.to_s]
 
               samples.insert(sample)
