@@ -10,9 +10,5 @@
                                                         'data-content' => "#{render 'story_types/iterations/edit_form', iteration: iteration}" }
       =iter_name
 -else
-   -if blocked_item?
-      =link_to(iter_name, story_type_path(@story_type, iteration_id: iteration),
-               class: "badge badge-pill badge-dark")
-   -else
-      =link_to(iter_name, story_type_path(@story_type, iteration_id: iteration),
-               class: "badge badge-pill badge-dark btn disabled")
+   =link_to(iter_name, story_type_path(@story_type, iteration_id: iteration),
+            class: "badge badge-pill badge-dark #{blocked_item? ? '' : 'btn disabled'}")

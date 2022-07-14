@@ -1,6 +1,7 @@
 module StoryTypes::ShowHelper
   def blocked_item?
-    true unless @iteration.population.eql?(false) || @iteration.samples.eql?(false)
+    true unless @iteration.population.eql?(false) || @iteration.samples.eql?(false) || @iteration.purge_samples.eql?(false) || @iteration.creation.eql?(false)
+    # @iteration.population.eql?(true) && !@iteration.schedule.eql?(true) && !@iteration.stories.count.positive?
   end
 
   def purge_export_availability

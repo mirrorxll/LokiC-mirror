@@ -4,7 +4,7 @@ module StoryTypes
   class CreationsController < StoryTypesController # :nodoc:
     def execute
       @iteration.update!(creation: false, current_account: current_account)
-      send_to_action_cable(@story_type, 'samples', 'creation in the process2222222222222222')
+      send_to_action_cable(@story_type, 'samples', 'creation in the process')
 
       Process.spawn(
         "cd #{Rails.root} && RAILS_ENV=#{Rails.env} "\
