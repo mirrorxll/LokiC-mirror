@@ -17,7 +17,7 @@
             =form.collection_select 'assistants[]', Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' , selected: assistant.id, class: 'small'}
             .ml-1{ onclick: "removeDate(this)" }
               =icon('fa', 'minus')
-  -if @permissions['notifications_to_form']
+  -if @permissions['notification_to_form']
     .row.small.font-weight-bold.mt-3.mb-1
       .col-3
         notification to:

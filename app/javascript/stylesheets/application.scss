@@ -198,3 +198,10 @@ div.enum_filter > div.ms-drop li {
 .w-250px {
   width: 250px;
 }
+
+.disabled-link{
+  cursor: default;
+  pointer-events: none;
+  text-decoration: none;
+  color: grey;
+}

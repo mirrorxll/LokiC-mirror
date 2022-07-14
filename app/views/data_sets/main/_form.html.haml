@@ -93,7 +93,7 @@
             :javascript
               function addRemoveMarginToTables() {
                 let tables = document.querySelector('#includedTablesToDataSet');
-                if(tables.innerText.trim() === '') {
+                if(tables.textContent.trim() === '') {
                   tables.classList.remove('mb-2');
                 } else {
                   tables.classList.add('mb-2');

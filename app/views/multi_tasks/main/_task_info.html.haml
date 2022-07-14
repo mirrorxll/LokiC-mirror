@@ -4,19 +4,20 @@
       .d-flex.justify-content-between.small
         main info
     .card-body.small
-      -if @multi_task.parent
+      -if @multi_task.parent && @permissions['sub_tasks']['show']
         .row.mb-2
           .col-3.font-weight-bold
             main task:
           .col-9
             =link_to title(@multi_task.parent.title), multi_task_path(@multi_task.parent), title: @multi_task.parent.title
-      -if @multi_task.work_request
-        -work_request = @multi_task.work_request
-        .row.mb-2
-          .col-3.font-weight-bold
-            w. request:
-          .col-9
-            =link_to('click', work_request)
+      -if @work_requests_permissions
+        -if @multi_task.work_request
+          -work_request = @multi_task.work_request
+          .row.mb-2
+            .col-3.font-weight-bold
+              w. request:
+            .col-9
+              =link_to('click', work_request)
       -unless @multi_task.sow.blank?
         -sow = @multi_task.sow
         .row.mb-2

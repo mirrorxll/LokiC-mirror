@@ -1,29 +1,26 @@
-.access-levels
-  .row.small
-    .col-sm-3.col-lg-3.text-right.p-0
-      %span.font-weight-bold ACCESS LEVEL:
-      %br/
-      =link_to('[ add ]', new_account_card_access_level_path(account, card), class: 'btn btn-sm btn-link p-0', remote: true)
-      =link_to('[ edit ]', edit_account_card_access_level_path(account, card, access_level),
-               class: "btn btn-sm btn-link p-0#{access_level.lock ? ' disabled' : '' }", remote: true)
-    .col-sm-8.col-lg-6
-      .d-flex.justify-content-between.align-items-center
-        =collection_select(:access_level, :id, card.branch.access_levels, :id, :name, { selected: access_level.id },
-                           { class: 'form-control form-control-sm d-inline-block access-selector w-50' })
-        :javascript
-          (() => {
-            let select = document.querySelector('\##{"editAccessLevel#{card.id}"} .access-selector');
+.access-levels.card.small
+  .card-body
+    %b.d-inline-block.mb-2
+      ACCESS LEVEL:
+    =link_to(icon('fa', 'plus-square'), new_account_card_access_level_path(account, card),
+             class: 'p-0 ml-2', remote: true)
+    =link_to(icon('fa', 'pencil-square'), edit_account_card_access_level_path(account, card, access_level),
+             class: "p-0 ml-2#{access_level.lock ? ' disabled-link' : '' }", remote: true)
+    =collection_select(:access_level, :id, card.branch.access_levels, :id, :name, { selected: access_level.id },
+                       { class: 'form-control form-control-sm access-selector' })
+    :javascript
+        (() => {
+          let select = document.querySelector('\##{"editAccessLevel#{card.id}"} .access-selector');
 
-            select.addEventListener('change', () => {
-              Rails.ajax({
-                type: "GET",
-                dataType: 'script',
-                url: `/accounts/#{account.id}/cards/#{card.id}/access_levels/${select.value}/`
-              });
+          select.addEventListener('change', () => {
+            Rails.ajax({
+              type: "GET",
+              dataType: 'script',
+              url: `/accounts/#{account.id}/cards/#{card.id}/access_levels/${select.value}/`
             });
-          })();
+          });
+        })();
 
 %hr/
 .table-form
-  .pl-lg-5.pr-lg-5.ml-lg-5.mr-lg-5
-    =permissions_table(access_level.permissions)
+  =permissions_table(access_level.permissions)

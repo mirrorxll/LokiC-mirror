@@ -1,0 +1,4 @@
+$('#tags>.col').html(
+    '<%= @scrape_task.tags.map { |tag| "<div class=\"badge badge-pill badge-info mr-1\"> #{tag.name} </div>" }.join('<span> <span/>').html_safe %>'
+);
+$('#tags>:first-child>a').removeClass('disabled-link');

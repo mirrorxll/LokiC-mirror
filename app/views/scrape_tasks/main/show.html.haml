@@ -5,22 +5,29 @@
   =link_to("##{@scrape_task.id} #{@scrape_task.name}", @scrape_task)
 %hr.mb-0/
 
-.d-flex.justify-content-between.align-items-center.mb-3.small
+.d-flex.justify-content-between.align-items-center.small
   .text-secondary
     created by #{@scrape_task.creator.name}
   .text-secondary
     created at: #{@scrape_task.created_at}#{@scrape_task.updated_early? ? " | updated at: #{@scrape_task.updated_at}" : ""}
 
-#scrappingData.row.mb-5.small
-  .info.col-12.pr-0
-    .card
-      .card-header.p-0
-        .d-flex.justify-content-between.align-items-center
-          .d-inline-block.pl-2
-            main info
-          .d-inline-block
-            .d-inline-block.mr-2.small
-              %button{ onclick: 'loadEditForm();', type: 'button', class: 'p-0 pb-1 btn btn-sm btn-link ml-2', 'data-toggle' => "modal", 'data-target' => "#scrapeTaskEdit" }
+#scrappingInfo.mt-4.mb-4
+  .card
+    .card-header.p-1.small
+      .d-flex.justify-content-between.align-items-center
+        MAIN INFO
+        #scrapeTaskStatusComment
+          =render 'status_comment'
+        .d-flex.align-items-center
+          -if @permissions['progress_status'].values.any?
+            #scrapeTaskStatus.d-inline-block
+              -if @permissions['progress_status']['edit_form']
+                =render 'statuses'
+              -elsif @permissions['progress_status']['show']
+                =@scrape_task.status.name
+          -if @permissions['edit_form']
+            #editScrapeTask
+              %button{ onclick: 'loadEditForm();', type: 'button', class: 'p-0 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#scrapeTaskEdit" }
                 [ edit ]
               :javascript
                 function loadEditForm() {
@@ -30,20 +37,8 @@
                     url: `#{edit_scrape_task_path(@scrape_task)}`
                   })
                 }
-
-            #scrapeTaskStatus.d-inline-block
-              =render 'statuses'
-      .card-body
-        =render 'scrape_task_info'
-
--if @data_set
-  #dataSetForm.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "data_set_form",
-                             role: "dialog", tabindex: "-1", 'data-backdrop' => 'static',
-                             'data-keyboard' => "false" }
-    .modal-dialog.modal-dialog-centered.modal-xl
-      .modal-content
-        .modal-body
-          =render 'data_sets/form'
+    .card-body
+      =render 'scrape_task_info'
 
 #scrapeTaskEdit.modal.fade{ 'data-keyboard' => "false", "aria-hidden" => "true",
                             "aria-labelledby" => "scrapeTaskEdit", tabindex: "-1" }

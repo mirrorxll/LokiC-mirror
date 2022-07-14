@@ -178,6 +178,10 @@ end
 db02.close
 db02_sec.close
 
+puts 'Hosts/Schemas/Tables'
+%w[DB01 DB02 DB04 DB06 DB07 DB08 DB10 DB13 DB14 DB15].each { |h| Host.find_or_create_by(name: h) }
+SchemasTablesTask.new.perform
+
 # StoryTypes::ClientsPubsTagsSectionsJob.new.perform
 # StoryTypes::PhotoBucketsJob.new.perform
 # SlackAccountsJob.new.perform

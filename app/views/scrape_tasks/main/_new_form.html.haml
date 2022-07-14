@@ -1,8 +1,8 @@
 =form_with(model: ScrapeTask.new, html: { id: 'newScrapeTaskForm'}) do |f|
-  #newScrapeTaskModal.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "properties",
+  #createScrapeTaskModal.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "properties",
                                      role: "dialog", tabindex: "-1", 'data-backdrop' => 'static',
                                      'data-keyboard' => 'true'}
-    .modal-dialog.modal-dialog-centered
+    .modal-dialog.modal-dialog-scrollable
       .modal-content
         .modal-header
           %h5.modal-title

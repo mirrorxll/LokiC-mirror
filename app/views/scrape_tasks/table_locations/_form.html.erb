@@ -1,0 +1,44 @@
+<hr class="mt-0">
+
+<%= form_with(url: scrape_task_table_locations_path(@scrape_task), method: :patch, html: { class: 'ml-3', onkeypress: "return event.keyCode !== 13;" } ) do |f| %>
+  <div class="form-group form-check mb-2">
+    <% @scrape_task.table_locations.each do |t| %>
+      <%= f.check_box "table_locations[#{t.host_id}_#{t.schema_id}_#{t.sql_table_id}]", class: 'form-check-input', checked: true  %>
+      <%= f.label "table_locations[#{t.host_id}_#{t.schema_id}_#{t.sql_table_id}]", t.full_name, class: 'form-check-label' %>
+      <br/>
+    <% end %>
+  </div>
+
+  <div id="tableLocationsInputsBlock" class="d-flex mb-2">
+    <span>ADD: </span>
+    <div class="form-group mb-0">
+      <select id='hosts' class="underline-input pt-0">
+        <option selected value></option>
+        <% Host.all.each do |host| %>
+          <option value="<%= host.id %>"><%= host.name %></option>
+        <% end %>
+      </select>
+
+      <select id="schemas" class="underline-input pt-0">
+      </select>
+
+      <br>
+
+      <input id="tableNamesFilterInput" class="underline-input pt-0 mt-2 mb-2 w-100">
+
+      <select id="tableNamesFilterSelect" multiple class="form-control form-control-sm" size="10" style="resize: vertical;">
+      </select>
+
+      <div class="small"> *** press enter </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.submit '[ save ]', class: 'btn btn-sm btn-link p-0' %>
+    <%= link_to('[ cancel ]', scrape_task_table_locations_path, class: 'btn btn-sm btn-link text-secondary p-0', remote: true) %>
+  </div>
+<% end %>
+
+<hr class="mb-0">
+
+<%= javascript_pack_tag 'scrape_tasks/table_locations/form' %>

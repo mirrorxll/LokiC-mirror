@@ -18,16 +18,16 @@
         .d-flex.justify-content-between.align-items-center
           MAIN INFO
           .d-flex.align-items-center
-            #editWorkRequest
-              -if @permissions['edit_form']
+            -if @permissions['edit_form']
+              #editWorkRequest
                 .d-inline-block.mr-2.small
                   %button{ type: 'button', class: 'p-0 ml-1 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#updateWorkRequestModal", disabled: @work_request.archived}
                     [ edit ]
-            #workRequestStatus.d-inline-block
-              -if @permissions['progress_status']['show']
+            -if @permissions['progress_status'].values.any?
+              #workRequestStatus.d-inline-block
                 -if @permissions['progress_status']['edit_form']
                   =render 'statuses'
-                -else
+                -elsif @permissions['progress_status']['show']
                   =@work_request.status.name
       .card-body
         =render 'work_request_info', static: true
@@ -123,7 +123,7 @@
     }, false);
 
 
--if @multi_tasks_permissions['new_form']
+-if @multi_tasks_permissions && @multi_tasks_permissions['new_form']
   #createMultiTaskModal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "createMultiTaskModal",
                                       'data-backdrop' => 'static', "data-keyboard" => "false" }
     .modal-dialog.modal-dialog-scrollable.modal-fullscreen

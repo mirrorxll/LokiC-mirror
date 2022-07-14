@@ -5,7 +5,7 @@
   =link_to(@account.name, @account)
 %hr.mb-0/
 
-.d-flex.justify-content-between.align-items-center.mb-3.small
+.d-flex.justify-content-between.align-items-center.small
   .text-secondary
     created by #{@account.creator&.name}
   .text-secondary
@@ -22,7 +22,7 @@
           #accountStatus.d-inline-block
             =render 'accounts/main/statuses'
           #editAccount
-            .d-inline-block.mr-2.small
+            .d-inline-block.mr-2
               %button{ type: 'button', class: 'p-0 ml-1 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#editAccountModal" }
                 [ edit ]
     .card-body.pb-0

@@ -78,13 +78,6 @@ Rails.application.routes.draw do
       resources :main_agency_opportunities, path: :opportunities, as: :opportunities, only: :index
     end
 
-    resources :scrape_tasks, only: [] do
-      get :names, on: :collection
-      get :data_set_locations, on: :collection
-    end
-
-    resources :schemas, only: :index
-    resources :table_locations, only: %i[index create destroy]
     resources :data_samples, only: :show
 
     scope module: :scrape_tasks, path: 'scrape_tasks/:scrape_task_id', as: 'scrape_tasks' do
@@ -106,6 +99,12 @@ Rails.application.routes.draw do
     get 'all_publications_scope_id', to: 'publications#all_pubs_scope_id'
     get 'all_local_publications_scope_id', to: 'publications#all_local_pubs_scope_id'
     get 'all_statewide_publications_scope_id', to: 'publications#all_statewide_pubs_scope_id'
+  end
+
+  resources :schemas, only: :index do
+    scope module: :schemas do
+      resources :sql_tables, only: %i[index create destroy]
+    end
   end
 
   scope module: :work_requests do
@@ -176,12 +175,12 @@ Rails.application.routes.draw do
         patch :autosave
       end
 
-      resources :tags, only: [] do
-        post :include, on: :collection
-        delete :exclude
-      end
-
-      resources :multi_tasks, only: :new
+      resource :scraper, only: %i[show edit update]
+      resource :tags, only: %i[show edit update]
+      resource :multi_tasks, only: %i[show edit update]
+      resource :data_sets, only: %i[show edit update]
+      resource :table_locations, only: %i[show edit update]
+      resource :data_samples, only: :show
     end
   end
 

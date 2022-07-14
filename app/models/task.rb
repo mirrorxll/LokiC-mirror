@@ -4,7 +4,7 @@ class Task < ApplicationRecord # :nodoc:
   self.table_name = 'tasks'
 
   before_create do
-    self.status = Status.find_by(name: 'not started')
+    self.status = Status.find_by(name: 'created and in queue')
   end
 
   before_save do
@@ -138,5 +138,12 @@ class Task < ApplicationRecord # :nodoc:
 
   def note(account)
     notes.find_by(creator: account)
+  end
+end
+old_status = Status.find_by(name: 'created and in queue')
+new_status = Status.find_by(name: 'created and in queue')
+[WorkRequest, FactoidRequest, Task, ScrapeTask, StoryType, ArticleType].each do |branch|
+  branch.where(status: old_status).each do |i|
+    i.update(status: new_status)
   end
 end

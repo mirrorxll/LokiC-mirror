@@ -12,7 +12,7 @@ module Accounts
               content =
                 if access.class.in?([TrueClass, FalseClass])
                   icon = access ? 'check' : 'times'
-                  content_tag(:span, icon('fa', icon), class: 'd-inline-block', style: 'width: 120px;')
+                  content_tag(:span, icon('fa', icon), class: 'd-inline-block', style: 'width: 30px;')
                 else
                   content_tag(:span, '&#8203;'.html_safe)
                 end
@@ -45,7 +45,7 @@ module Accounts
                         container,
                         checked: (checked ? access : false),
                         class: 'form-check-input',
-                        style: 'margin-right: 120px;'
+                        style: 'margin-right: 30px;'
                       )
                     end
                   else

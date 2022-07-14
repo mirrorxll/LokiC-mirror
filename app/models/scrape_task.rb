@@ -2,7 +2,7 @@
 
 class ScrapeTask < ApplicationRecord
   before_create do
-    self.status = Status.find_by(name: 'not started')
+    self.status = Status.find_by(name: 'created and in queue')
 
     build_datasource_comment(subtype: 'datasource comment')
     build_scrape_ability_comment(subtype: 'scrape ability comment')
@@ -35,11 +35,12 @@ class ScrapeTask < ApplicationRecord
 
   has_many :change_history, as: :history
   has_many :alerts, as: :alert
-  has_many :table_locations, -> { includes(:host, :schema).order('hosts.name, schemas.name, table_locations.table_name') },
+  has_many :table_locations, -> { includes(:host, :schema, :sql_table).order('hosts.name, schemas.name, sql_tables.name') },
            as: :parent, dependent: :destroy
 
   has_and_belongs_to_many :tags, class_name: 'ScrapeTaskTag'
-  has_and_belongs_to_many :tasks
+  has_and_belongs_to_many :multi_tasks, class_name: 'Task'
+  has_and_belongs_to_many :data_sets
 
   def updated_early?
     updated_at > created_at

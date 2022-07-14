@@ -69,7 +69,7 @@ window.$('#add_client').on('click', (e)=> {
 
     let x = document.createElement('strong')
     x.className = 'remove_x'
-    x.innerText = 'x'
+    x.textContent = 'x'
     x.addEventListener('click', removeClientTag )
 
     let removeCol = document.createElement('div')
@@ -115,7 +115,7 @@ function addClientsToSelectGroup(uId, clientsFromApi = null) {
         for (let i = 0; i < clients.length; i++) {
             option = document.createElement("option");
             option.setAttribute("value", clients[i].id);
-            option.text = clients[i].name;
+            option.textContent = clients[i].name;
             select.appendChild(option);
         }
     } else {
@@ -158,7 +158,7 @@ function addPublicationsToSelectGroup(publicationsSelect, publications) {
     for (let i = 0; i < publications.length; i++) {
         option = document.createElement("option");
         option.setAttribute("value", publications[i].id);
-        option.text = publications[i].name;
+        option.textContent = publications[i].name;
         publicationsSelect.appendChild(option);
     }
 }
@@ -206,7 +206,7 @@ function addTagsToSelectGroup(tagsSelect, tags) {
         for(let i = 0; i < tags_for_pub.length; i++) {
             option = document.createElement("option");
             option.setAttribute("value", tags_for_pub[i][1]);
-            option.text = tags_for_pub[i][0];
+            option.textContent = tags_for_pub[i][0];
             optGroup.appendChild(option);
         }
     }

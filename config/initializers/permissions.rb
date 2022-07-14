@@ -24,10 +24,10 @@ module AccessLevels
         edit_form: true,
         assignment_to_form: true,
         assistants_form: true,
-        notifications_to_form: true,
+        notification_to_form: true,
         progress_status: { show: true, edit_form: true },
         comments: { show: true, new_form: true, edit_form: true, delete: true },
-        notes: { show: true, new_form: true },
+        notes: { show: true, new_form: true, edit_form: true },
         sub_tasks: { show: true, new_form: true }
       },
       scrape_tasks: {
@@ -88,10 +88,10 @@ module AccessLevels
         edit_form: true,
         assignment_to_form: true,
         assistants_form: true,
-        notifications_to_form: true,
+        notification_to_form: true,
         progress_status: { show: true, edit_form: true },
         comments: { show: true, new_form: true, edit_form: true, delete: true },
-        notes: { show: true, new_form: true },
+        notes: { show: true, new_form: true, edit_form: true },
         sub_tasks: { show: true, new_form: true }
       },
       scrape_tasks: {
@@ -140,7 +140,7 @@ module AccessLevels
         eta: { show: false, edit_form: false }
       },
       factoid_requests: {
-        grid: { created: false, all: false, archived: false },
+        grid: { created: false, all: true, archived: false },
         new_form: false,
         edit_form: false,
         progress_status: { show: true, edit_form: false },
@@ -152,10 +152,10 @@ module AccessLevels
         edit_form: false,
         assignment_to_form: false,
         assistants_form: false,
-        notifications_to_form: false,
+        notification_to_form: false,
         progress_status: { show: true, edit_form: false },
         comments: { show: true, new_form: false, edit_form: false, delete: false },
-        notes: { show: true, new_form: false },
+        notes: { show: true, new_form: true, edit_form: true },
         sub_tasks: { show: true, new_form: false }
       },
       scrape_tasks: {

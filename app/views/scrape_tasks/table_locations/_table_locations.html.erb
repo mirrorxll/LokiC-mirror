@@ -1,0 +1,63 @@
+<div id="tableLocations" class="row mb-3">
+  <div class="col-3 text-right">
+    <b>TABLE LOCATIONS:</b>
+    <%= link_to(icon('fa', 'pencil-square'), edit_scrape_task_table_locations_path(@scrape_task), class: 'p-0 ml-2', remote: true) %>
+    <% if @scrape_task.table_locations.present? %>
+      <br>
+      <%= link_to('show data view(s)', '#', "data-target" => "#dataSamplesModal", "data-toggle" => "modal") %>
+
+      <div id="dataSamplesModal" class="p-0 modal fade" data-backdrop="static" aria-hidden="true" aria-labelledby="scrapeTaskDataSamplesLabel">
+        <div class="modal-dialog modal-dialog-scrollable modal-fullscreen">
+          <div class="modal-content">
+            <div class="modal-header pb-0">
+              <ul id="dataSampleTabs" class="nav nav-tabs flex-nowrap overflow-auto border-0" style="padding: 1px;"></ul>
+              <button class="close" aria-label="Close" data-dismiss="modal" type="button">
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div class="modal-body pt-0">
+              <div class="loading d-flex justify-content-center align-items-center" style="width: 100%; height: 100%;">
+                <div class="spinner-border small" style="width: 3rem; height: 3rem;">
+                  <span class="sr-only"></span>
+                </div>
+              </div>
+              <div id="dataSampleTabsContent" class="tab-content"></div>
+            </div>
+            <div class="modal-footer d-block"></div>
+          </div>
+        </div>
+      </div>
+
+      <script type="text/javascript" charset="utf-8">
+          $('#dataSamplesModal').on('show.bs.modal', () => {
+              Rails.ajax({
+                  type: "GET",
+                  dataType: 'script',
+                  url: '/data_samples?model=ScrapeTask&model_id=<%= @scrape_task.id %>',
+                  success: () => {
+                      let loading = $('#dataSamplesModal .loading');
+                      loading.removeClass('d-flex');
+                      loading.addClass('d-none');
+                  }
+              })
+          }).on('hidden.bs.modal', () => {
+              let loading = $('#dataSamplesModal .loading');
+              loading.addClass('d-flex');
+              loading.removeClass('d-none');
+
+              $('#dataSampleTabs').empty();
+              $('#dataSampleTabsContent').empty();
+              $('#dataSamplesModal .modal-footer div[class^="data-samples-footer"]').remove();
+          });
+      </script>
+  <% end %>
+
+  </div>
+
+  <div class="col d-flex align-items-center">
+    <% @scrape_task.table_locations.each do |tl| %>
+      <%= tl.full_name %>
+      <br/>
+    <% end %>
+  </div>
+</div>

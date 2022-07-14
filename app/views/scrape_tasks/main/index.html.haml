@@ -1,57 +1,55 @@
 %hr/
-#header.row.justify-content-between.align-items-center.mt-3
-  .col-6
-    Total:
-    =@grid.assets.total_count
-  .col-6.text-right.text-uppercase
+#header.d-flex.justify-content-between.align-items-center.mt-3
+  %span
+    -if @current_list
+      Total: #{@grid.assets.total_count}
+  %span.font-weight-bold
+    SCRAPE TASKS
+  .d-inline-block.text-right.text-uppercase
     .btn-group.mr-3
-      -lists = %w[assigned yours all archived]
-      -lists.each do |list|
-        -filled = (!params[:list].in?(lists) && list.eql?('yours')) || params[:list].eql?(list) ? '' : '-outline'
-        =link_to(list, url_for(list: list), class: "btn btn-sm btn#{filled}-dark")
+      -if @current_list && @lists.length > 1
+        -@lists.each_key do |list|
+          -filled = @current_list.eql?(list) ? '' : '-outline'
+          =link_to(list, url_for(list: list), class: "btn btn-sm btn#{filled}-dark")
     .btn-group
-      =link_to('filter', '#', class: 'btn btn-sm btn-outline-dark',
-               "data-target" => "#filterScrapeTasks", "data-toggle" => "collapse")
-      =link_to('create', '#', class: 'btn btn-sm btn-outline-dark',
-               "data-target" => "#createScrapeTaskModal", "data-toggle" => "modal")
+      -if @current_list
+        =link_to('filter', '#', class: 'btn btn-sm btn-outline-dark',
+                 "data-target" => "#filter", "data-toggle" => "collapse")
+      -if @permissions['new_form']
+        =link_to('create', '#', class: 'btn btn-sm btn-outline-dark',
+                 "data-target" => "#createScrapeTaskModal", "data-toggle" => "modal")
 %hr/
 
-#filterScrapeTasks.mt-3.mb-3.collapse{ class: (params[:scrape_tasks_grid] ? 'show' : '') }
-  =datagrid_form_for @grid, url: scrape_tasks_path
+-if @current_list
+  #filter.mt-3.mb-3.collapse{ class: (params[:scrape_tasks_grid] ? 'show' : '') }
+    =datagrid_form_for @grid, url: scrape_tasks_path
 
-.row.small.mb-5
-  .col-12
-    =datagrid_table(@grid)
-
-.fixed-bottom.bg-light
-  .row
-    .col-12.p-2
-      =paginate @grid.assets
-
-=render 'scrape_tasks/main/new_form'
-
-.fixed-bottom.bg-white
-  .row.mt-2
+  .row.small.mb-5
     .col-12
-      =paginate @grid.assets
+      =datagrid_table(@grid)
 
-:javascript
-  document.querySelector('.navbar').classList.add('fixed-top');
+  .fixed-bottom.bg-light
+    .row
+      .col-12.p-2
+        =paginate @grid.assets
 
-  $('#filterScrapeTasks').on('show.bs.collapse', () => {
-    sessionStorage['filter_show'] = true;
-  });
+  :javascript
+    (() => {
+      let filter = $('#filter');
+      filter.on('show.bs.collapse', () => {
+        sessionStorage['filter_show'] = true;
+      });
 
-  $('#filterScrapeTasks').on('hide.bs.collapse', () => {
-    sessionStorage['filter_show'] = false;
-  });
+      filter.on('hide.bs.collapse', () => {
+        sessionStorage['filter_show'] = false;
+      });
 
-  (() => {
-    let filterClasses = document.querySelector('#filterScrapeTasks').classList;
+      if(JSON.parse(sessionStorage['filter_show'])) {
+        filter.addClass('show');
+      } else {
+        filter.removeClass('show');
+      }
+    })();
 
-    if(JSON.parse(sessionStorage['filter_show'])) {
-      filterClasses.add('show');
-    } else {
-      filterClasses.remove('show');
-    }
-  })();
+-if @permissions['new_form']
+  =render 'scrape_tasks/main/new_form'

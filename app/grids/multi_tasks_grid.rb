@@ -23,7 +23,7 @@ class MultiTasksGrid
   end
 
   filter(:creator, :enum, multiple: true, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
-  filter(:status, :enum, multiple: true, select: Status.where(name: ['not started', 'in progress', 'blocked', 'canceled', 'done']).pluck(:name, :id))
+  filter(:status, :enum, multiple: true, select: Status.where(name: ['created and in queue', 'in progress', 'blocked', 'canceled', 'done']).pluck(:name, :id))
   filter(:deadline, :datetime, header: 'Deadline >= ?', multiple: ',')
 
   filter(:confirmed, :xboolean, left: true) do |value, scope, grid|

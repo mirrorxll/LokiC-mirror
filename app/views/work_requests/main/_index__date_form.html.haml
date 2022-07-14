@@ -10,7 +10,7 @@
       let input = form.querySelector(`input`);
       let button = form.querySelector(`button`);
 
-      input.value = parent.innerText;
+      input.value = parent.textContent;
 
       button.addEventListener('click', () => {
         Rails.ajax({
@@ -22,9 +22,9 @@
             if(data['success'])
               console.log(input.value);
               if(input.value.length > 0) {
-                parent.innerText = input.value;
+                parent.textContent = input.value;
               } else {
-                parent.innerText = '****-**-**'
+                parent.textContent = '****-**-**'
               }
           }
         })

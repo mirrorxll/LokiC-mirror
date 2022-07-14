@@ -79,7 +79,7 @@ module MultiTasks
     private
 
     def grid_lists
-      statuses = Status.multi_task_statuses
+      statuses = Status.multi_task_statuses(created: true)
       @lists = HashWithIndifferentAccess.new
 
       @lists['assigned'] = { assignment_to: current_account.id, status: statuses }  if @permissions['grid']['assigned']
@@ -128,6 +128,11 @@ module MultiTasks
 
       flash[:error] = { multi_task: :unauthorized }
       redirect_back fallback_location: root_path
+    end
+
+    def work_requests_access
+      card = current_account.cards.find_by(branch: Branch.find_by(name: 'work_requests'))
+      @work_requests_permissions = card.access_level.permissions if card.enabled
     end
 
     def update_agencies_opportunities(agencies_opportunities)

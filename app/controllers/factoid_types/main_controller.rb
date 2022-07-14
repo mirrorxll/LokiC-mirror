@@ -81,7 +81,7 @@ module FactoidTypes
 
       {
         name: permitted[:name],
-        status: Status.find_by(name: 'not started'),
+        status: Status.find_by(name: 'created and in queue'),
         editor: current_account,
         current_account: current_account
       }

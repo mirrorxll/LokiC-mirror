@@ -1,2 +1,2 @@
 $('#roles>.col').html('<%= @account.roles.map(&:name).join('<br>').html_safe %>');
-$('#roles>:first-child>a').removeClass('disabled');
+$('#roles>:first-child>a').removeClass('disabled-link');

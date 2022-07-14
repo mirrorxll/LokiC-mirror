@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ScrapeTasks
-  class SchemesTablesJob < ScrapeTasksJob
+  class SchemasTablesJob < ScrapeTasksJob
     def perform(*_args)
       Host.find_each do |h|
         host_obj = Object.const_get(h.name)

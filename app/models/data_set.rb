@@ -19,4 +19,6 @@ class DataSet < ApplicationRecord # :nodoc:
   has_many :article_types
   has_many :table_locations, -> { includes(:host, :schema).order('hosts.name, schemas.name, table_locations.table_name') },
            as: :parent, dependent: :destroy
+
+  has_and_belongs_to_many :scrape_tasks
 end

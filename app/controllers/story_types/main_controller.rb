@@ -77,7 +77,7 @@ module StoryTypes
     def new_story_type_params
       permitted = params.require(:story_type).permit(:name, :comment, :gather_task, :migrated)
       migrated = permitted[:migrated].eql?('1')
-      status_name = migrated ? 'migrated' : 'not started'
+      status_name = migrated ? 'migrated' : 'created and in queue'
 
       {
         editor: current_account,
