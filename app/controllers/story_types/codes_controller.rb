@@ -59,7 +59,6 @@ module StoryTypes
           def creation(options)
             samples = Samples.new(STAGING_TABLE, options)
             StagingRecords[STAGING_TABLE, options].each do |stage|
-              pp "> "*50, stage
               sample                    = {}
               sample[:staging_row_id]   = stage['id']
               sample[:publication_id]   = stage['publication_id']
@@ -71,7 +70,6 @@ module StoryTypes
               sample[:teaser]   = 'teaser'
               sample[:body]     = foo
         
-              sleep 5
               return if SidekiqBreak[self.class.to_s]
 
               samples.insert(sample)

@@ -4,6 +4,7 @@ module StoryTypes
   module Iterations
     class PurgeCreationTask < StoryTypesTask
       def perform(iteration_id, account_id)
+        sleep 10
         iteration = StoryTypeIteration.find(iteration_id)
         account = Account.find(account_id)
         message = 'Success. All stories have been removed'

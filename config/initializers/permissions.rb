@@ -59,7 +59,8 @@ module AccessLevels
         comment: true,
         gather_task_id: true,
         template: true,
-        change_data_set: true
+        change_data_set: true,
+        fcd_review: true
       },
       factoid_types: {
         grid: { assigned: true, your: true, all: true, archived: true },

@@ -1,4 +1,4 @@
--if @iteration.creation
+-if @iteration.creation && !@iteration.purge_creation.eql?(true)
   #story_type_scheduler.card.h-100
     .card-header.d-flex.justify-content-between.align-items-center
       SCHEDULER (iteration: #{@iteration.name})

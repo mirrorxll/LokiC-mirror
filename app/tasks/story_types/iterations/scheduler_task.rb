@@ -4,6 +4,7 @@ module StoryTypes
   module Iterations
     class SchedulerTask < StoryTypesTask
       def perform(iteration_id, type, options = {})
+        sleep 15
         options.deep_symbolize_keys!
 
         iteration = StoryTypeIteration.find(iteration_id)
