@@ -19,7 +19,7 @@
   .col-10.offset-1.text-center
     =render 'story_types/main/additional_properties'
 
-.row.border-top.ml-0.mr-0.pt-3.text-center
+.row.border-top.ml-0.mr-0.mb-3.pt-3.text-center
   .col-3.offset-1
     story type's code
     #story_type_code
@@ -32,6 +32,7 @@
     cron tab
     #cron_tab_panel
       =render 'story_types/cron_tabs/cron_tab'
+#cron_tab_setup
 
 #storyTypePropertiesForm.modal.fade{ story_type_id: @story_type.id, "aria-hidden" => "true", "aria-labelledby" => "storyTypePropertiesForm", role: "dialog", :tabindex => "-1"}
   .modal-dialog.modal-dialog-scrollable.modal-xl

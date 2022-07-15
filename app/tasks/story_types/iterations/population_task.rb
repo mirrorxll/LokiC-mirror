@@ -5,7 +5,6 @@ module StoryTypes
   module Iterations
     class PopulationTask < StoryTypesTask
       def perform(iteration_id, account_id, options = {})
-        sleep 2
         options.deep_symbolize_keys!
 
         iteration = StoryTypeIteration.find(iteration_id)

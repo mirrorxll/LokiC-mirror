@@ -10,7 +10,7 @@
       %a.p-0.btn.btn-sm.btn-link{ href: "#", onclick: "return false;" } [ ...in progress... ]
     -else
       =link_to('[ create/update ]', story_type_export_configurations_path(@story_type),
-               class: 'p-0 btn btn-sm btn-link',method: :post, remote: true)
+               class: "p-0 btn btn-sm btn-link #{blocked_item? ? '' : 'disabled'}",method: :post, remote: true)
 
       #configs_no_tags.d-inline-block
         -if @story_type.configurations_no_tags.present?

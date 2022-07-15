@@ -8,6 +8,7 @@ $('#story_type_iterations').html('<%= j render partial: 'story_types/iterations/
 $('#new_story_type_iteration').empty();
 $('#properties_control').html('<%= j render 'story_types/properties/properties_control' %>');
 $('#story_type_code').html('<%= j render 'story_types/codes/section' %>');
+$('#export_configs').html('<%= j render 'story_types/export_configurations/export_configurations' %>');
 $('#staging_table_control').html('<%= j render 'story_types/staging_tables/staging_table_control' %>');
 $('#columns__index').html('<%= j render 'story_types/staging_tables/columns_and_index',
                                         staging_table: @story_type.staging_table,

@@ -11,7 +11,6 @@ require("trix");
 require("@rails/actiontext");
 require("datatables.net-bs4");
 require("./story_types/comment_editing");
-require("./story_types/prevent_changes");
 
 import 'bootstrap';
 import '../stylesheets/application';

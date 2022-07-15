@@ -35,19 +35,6 @@
   #columns__index.row.border-top.mt-3.ml-0.mr-0.pt-3
     =render 'story_types/staging_tables/columns_and_index', staging_table: staging_table, columns: columns
 
-    %br
-    .col-10.offset-1
-      .row.font-weight-bold
-        .col-6 name
-        .col-6 type
-      %hr.mb-1.mt-1/
-      -columns.each do |_id, col|
-        .row
-          .col-6
-            #{col[:name]}
-          .col-6
-            #{col[:type]} #{col[:options].values.all?(nil) ? '' : "(#{col[:options].values.compact.join(',')})"}
-
   .row.border-top.mt-3.ml-0.mr-0.pt-3.align-items-end
     .col-10.offset-1
       .row
