@@ -1,13 +1,13 @@
 -if @factoid_type.staging_table_attached.eql?(false)
-  =render 'article_types/spinner', description: 'staging table attaching in progress'
+  =render 'factoid_types/main/spinner', description: 'staging table attaching in progress'
 -elsif @factoid_type.staging_table_attached.nil?
-  =render 'article_types/staging_tables/form'
+  =render 'factoid_types/staging_tables/form'
 -elsif @factoid_type.staging_table.columns_modifying.eql?(true)
-  =render 'article_types/spinner', description: 'staging table modifying in progress'
+  =render 'factoid_types/main/spinner', description: 'staging table modifying in progress'
 -elsif @factoid_type.staging_table.indices_modifying.eql?(true)
-  =render 'article_types/spinner', description: 'staging table modifying in progress'
+  =render 'factoid_types/main/spinner', description: 'staging table modifying in progress'
 -elsif @iteration.population.eql?(false)
-  =render 'article_types/spinner', description: 'population in progress'
+  =render 'factoid_types/main/spinner', description: 'population in progress'
 -else
   -staging_table = @factoid_type.staging_table
   -columns = staging_table.columns.list
@@ -20,34 +20,34 @@
       .row#staging_table_control
         .col-1#sync
           .btn-group
-            =link_to('sync', sync_article_type_staging_table_path(@factoid_type, staging_table),
+            =link_to('sync', sync_factoid_type_staging_table_path(@factoid_type, staging_table),
                       class: 'btn btn-sm btn-outline-dark', method: :patch, remote: true)
         .col-6#manipulate
           .btn-group
             -if @iteration.population.eql?(true) && !@iteration.samples.eql?(true)
-              =link_to('purge staging table', purge_article_type_iteration_populations_path(@factoid_type, @iteration),
+              =link_to('purge staging table', purge_factoid_type_iteration_populations_path(@factoid_type, @iteration),
                         class: 'btn btn-sm btn-outline-danger', method: :delete,  remote: true,
                         data: { confirm: 'PURGE CURRENT ITERATION: You sure?' })
               .d-inline-flex.ml-3.align-items-end
                 ***will purge rows related to current iteration
         .col-5.text-right#exec_population
-          =render 'article_types/populations/form'
+          =render 'factoid_types/populations/form'
       %hr/
       .row#columns__index
         .col-12
           .btn-group.mb-2
             #edit_columns
               =link_to('edit column list',
-                       edit_article_type_staging_table_columns_path(@factoid_type, staging_table, staging_table.columns),
+                       edit_factoid_type_staging_table_columns_path(@factoid_type, staging_table, staging_table.columns),
                        class: 'btn btn-sm btn-outline-dark', remote: true)
             #edit_index.mb-2.ml-2
               -if staging_table.index.list.empty?
                 =link_to("add unique index",
-                         new_article_type_staging_table_index_path(@factoid_type, staging_table),
+                         new_factoid_type_staging_table_index_path(@factoid_type, staging_table),
                          class: "btn btn-sm btn-outline-dark #{columns.empty? ? 'disabled': ''}", remote: true)
               -elsif !@iteration.population
                 =link_to("drop unique index",
-                         article_type_staging_table_index_path(@factoid_type, staging_table, staging_table.index),
+                         factoid_type_staging_table_index_path(@factoid_type, staging_table, staging_table.index),
                          class: 'btn btn-sm btn-outline-dark', method: :delete, remote: true)
           %br
           .row.font-weight-bold
@@ -64,7 +64,7 @@
           %hr.mt-0/
           .row
             .col-6
-              %p article uniq index: #{'index is empty or not set' unless uniq_index.present?}
+              %p factoid uniq index: #{'index is empty or not set' unless uniq_index.present?}
             .col-6
               -uniq_index.each do |index|
                 =index

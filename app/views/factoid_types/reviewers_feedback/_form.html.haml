@@ -1,5 +1,5 @@
 #reviewers_feedback_editor_modal.ml-3
-  =form_with(url: article_type_fact_checking_doc_reviewers_feedback_index_path(@factoid_type, @factoid_type.fact_checking_doc),
+  =form_with(url: factoid_type_fact_checking_doc_reviewers_feedback_index_path(@factoid_type, @factoid_type.fact_checking_doc),
              local: true) do |form|
     .field
       =form.rich_text_area 'reviewers_feedback[body]'

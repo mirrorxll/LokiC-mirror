@@ -1,10 +1,10 @@
 %div{ id: "data_set", data_set_id: @factoid_type.data_set.id }
-%div{ id: "article_type", article_type_id: @factoid_type.id }
+%div{ id: "factoid_type", factoid_type_id: @factoid_type.id }
 -@title = "#{@factoid_type.id} #{@factoid_type.name}"
 %hr
 .row
   .col-12.text-center
-    #article_type_name
+    #factoid_type_name
       %b ##{@factoid_type.id} #{@factoid_type.name}
 %hr/
 
@@ -18,8 +18,8 @@
 
 .row
   .col-10
-    #article_type_iterations
-      =render partial: 'article_types/iterations/iteration',
+    #factoid_type_iterations
+      =render partial: 'factoid_types/iterations/iteration',
               collection: @factoid_type.iterations,
               current_iteration: @factoid_type.iteration
 
@@ -27,62 +27,62 @@
                                     'data-toggle' => 'popover',
                                     'data-placement' => 'top',
                                     'data-html' => 'true',
-                                    'data-content' => "#{ render 'article_types/iterations/new_form' }" }
+                                    'data-content' => "#{ render 'factoid_types/iterations/new_form' }" }
         new iteration
   .col-2.text-right
-    #article_type_status
-      =render 'article_types/progress_statuses/status'
+    #factoid_type_status
+      =render 'factoid_types/progress_statuses/status'
 %hr/
 
-#article_type_template.accordion
+#factoid_type_template.accordion
   .card.small
     .card-header
       %div.text-center{ "aria-controls" => "#template_preview", "aria-expanded" => "true",
                         "data-target" => "#template_preview", "data-toggle" => "collapse", type: "button" }
         template
-    #template_preview.collapse.show{"data-parent" => "#article_type_template"}
+    #template_preview.collapse.show{"data-parent" => "#factoid_type_template"}
       .card-body.small
-        =render 'article_types/template'
+        =render 'factoid_types/main/template'
 
-#article_type_properties.accordion
+#factoid_type_properties.accordion
   .card
     .card-header
       %div.text-center{"aria-controls" => "#properties", "aria-expanded" => "false", "data-target" => "#properties", "data-toggle" => "collapse", type: "button"}
         properties
-    #properties.collapse.show{"data-parent" => "#article_type_properties"}
+    #properties.collapse.show{"data-parent" => "#factoid_type_properties"}
       .flash
       .card-body
-        =render 'article_types/properties'
+        =render 'factoid_types/main/properties'
 
 -if @iteration.eql?(@factoid_type.iteration)
-  #article_type_staging_table.accordion
+  #factoid_type_staging_table.accordion
     .card
       .card-header
         %div.text-center{"aria-controls" => "#staging_table", "aria-expanded" => "false", "data-target" => "#staging_table", "data-toggle" => "collapse", type: "button"}
           staging table
-      #staging_table.collapse.show{"data-parent" => "#article_type_staging_table"}
+      #staging_table.collapse.show{"data-parent" => "#factoid_type_staging_table"}
         .flash
         .card-body
-          =render 'article_types/staging_tables/staging_table'
+          =render 'factoid_types/staging_tables/staging_table'
 
-%div.accordion{id: "article_type_samples_#{@iteration.id}"}
+%div.accordion{id: "factoid_type_samples_#{@iteration.id}"}
   .card
     .card-header
       %div.text-center{"aria-controls" => "#samles", "aria-expanded" => "false", "data-target" => "#samples", "data-toggle" => "collapse", type: "button"}
         samples (iteration: #{@iteration.name})
-    #samples.collapse.show{"data-parent" => "#article_type_samples_#{@iteration.id}"}
+    #samples.collapse.show{"data-parent" => "#factoid_type_samples_#{@iteration.id}"}
       .flash
       .card-body
-        =render 'article_types/samples/samples'
+        =render 'factoid_types/samples/samples'
 
-%div.accordion{id: "article_type_export_#{@iteration.id}"}
+%div.accordion{id: "factoid_type_export_#{@iteration.id}"}
   .card
     .card-header
       %div.text-center{"aria-controls" => "#export", "aria-expanded" => "false", "data-target" => "#export", "data-toggle" => "collapse", type: "button"}
         export (iteration: #{@iteration.name})
-    #export.collapse.show{"data-parent" => "#article_type_export_#{@iteration.id}"}
+    #export.collapse.show{"data-parent" => "#factoid_type_export_#{@iteration.id}"}
       .flash
       .card-body.small
-        =render 'article_types/publishes/publish'
+        =render 'factoid_types/publishes/publish'
 %hr.mb-5/
-=render 'story_types/main/template_modal'
+-# =render 'story_types/main/template_modal'

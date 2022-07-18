@@ -13,11 +13,11 @@
         .col-4.change-ds-form.pl-0
           =render 'change_data_set'
         .col-4.pl-0
-          =form_with(url: article_type_path(@factoid_type), scope: :article_type, method: :put, html: { onchange: "loadDescriptions(this);" }) do |form|
+          =form_with(url: factoid_type_path(@factoid_type), scope: :factoid_type, method: :put, html: { onchange: "loadDescriptions(this);" }) do |form|
             =form.select :kind_id, Kind.sub_kinds.pluck(:name, :id), prompt: 'Select Kind'
             =form.hidden_field :topic_id, value: nil
         .col-4.pl-0
-          =form_with(url: article_type_path(@factoid_type), scope: :article_type, method: :put, html: { onchange: "Rails.fire(this, 'submit')" }) do |form|
+          =form_with(url: factoid_type_path(@factoid_type), scope: :factoid_type, method: :put, html: { onchange: "Rails.fire(this, 'submit')" }) do |form|
             =form.select :topic_id, @factoid_type.kind.nil? ? [] : @factoid_type.kind.parent_kind.topics.actual.order(:description).pluck(:description, :id), prompt: 'Select Description'
   %hr.mt-2/
 
@@ -54,7 +54,7 @@
     Rails.ajax({
       type: 'GET',
       dataType: 'script',
-      url: `#{get_descriptions_article_type_topics_path(@factoid_type.id)}`,
+      url: `#{get_descriptions_factoid_type_topics_path(@factoid_type.id)}`,
       data: `kind=${selected_kind}`
     });
   }
@@ -65,6 +65,6 @@
     Rails.ajax({
       type: 'PATCH',
       dataType: 'script',
-      url: `${window.location.origin}/article_types/#{@factoid_type.id}/topics/${selected_desc}/change`
+      url: `${window.location.origin}/factoid_types/#{@factoid_type.id}/topics/${selected_desc}/change`
     });
   }

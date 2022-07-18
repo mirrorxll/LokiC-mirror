@@ -15,9 +15,9 @@
 
     let samples =
         <% if Rails.env.production? %>
-          document.querySelectorAll('#manual_feedback_modal #fcd a[href^="https://lokic.locallabs.com/article_types/"][href*="/iterations/"][href*="/samples/"]')
+          document.querySelectorAll('#manual_feedback_modal #fcd a[href^="https://lokic.locallabs.com/factoid_types/"][href*="/iterations/"][href*="/samples/"]')
         <% else %>
-          document.querySelectorAll('#manual_feedback_modal #fcd a[href^="http://localhost:3000/article_types/"][href*="/iterations/"][href*="/samples/"]')
+          document.querySelectorAll('#manual_feedback_modal #fcd a[href^="http://localhost:3000/factoid_types/"][href*="/iterations/"][href*="/samples/"]')
         <% end %>
 
     samples.forEach(function(a) {
@@ -35,7 +35,7 @@
             Rails.ajax({
                 type: "PATCH",
                 dataType: 'script',
-                url: `#{article_type_reviewers_feedback_path(@factoid_type)}`,
+                url: `#{factoid_type_reviewers_feedback_path(@factoid_type)}`,
                 data: `reviewers_feedback[body]=${encodeURIComponent(this.html.get())}`
             })
         }
@@ -52,7 +52,7 @@
                 Rails.ajax({
                     type: "GET",
                     dataType: 'script',
-                    url: `#{cancel_edit_article_type_reviewers_feedback_path(@factoid_type)}`
+                    url: `#{cancel_edit_factoid_type_reviewers_feedback_path(@factoid_type)}`
                 })
             }
         }
@@ -68,7 +68,7 @@
         imageUploadMethod: 'POST',
         saveInterval: 1500,
         saveParam: 'reviewers_feedback[body]',
-        saveURL: `${window.location.origin}/article_types/#{@factoid_type.id}/reviewers_feedback/autosave`,
+        saveURL: `${window.location.origin}/factoid_types/#{@factoid_type.id}/reviewers_feedback/autosave`,
         saveMethod: 'PATCH',
         tabSpaces: true
     })

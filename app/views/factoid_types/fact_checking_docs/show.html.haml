@@ -13,7 +13,7 @@
         %li.breadcrumb-item
           =link_to('home', root_url)
         %li.breadcrumb-item
-          =link_to('factoid type', article_type_path(@factoid_type))
+          =link_to('factoid type', factoid_type_path(@factoid_type))
         %li.breadcrumb-item.active{ 'area-current' => 'page' }
           FCD
 %hr/
@@ -27,7 +27,7 @@
 .row
   .col-10.offset-1
     #templatePreviewCollapse.collapse.show
-      =render 'article_types/template_preview'
+      =render 'factoid_types/template_preview'
 
 %hr#reviewers_feedback/
 .row.small
@@ -37,7 +37,7 @@
         reviewers feedback
         .btn-group
           -if account_types.include?('manager')
-            =link_to("add feedback", new_article_type_fact_checking_doc_reviewers_feedback_path(@factoid_type, @fcd),
+            =link_to("add feedback", new_factoid_type_fact_checking_doc_reviewers_feedback_path(@factoid_type, @fcd),
                      'data-toggle'=>'modal', 'data-target'=>'#manual_feedback_modal',
                      class: "btn btn-sm btn-light text-dark", onclick: 'hideAllPopovers();', remote: true)
 
@@ -77,7 +77,7 @@
 
         .btn-group
           -if !account_types.include?('developer')
-            =link_to("add feedback", new_article_type_fact_checking_doc_editors_feedback_path(@factoid_type, @fcd),
+            =link_to("add feedback", new_factoid_type_fact_checking_doc_editors_feedback_path(@factoid_type, @fcd),
                      'data-toggle'=>'modal', 'data-target'=>'#manual_feedback_modal',
                      class: "btn btn-sm btn-light text-dark", onclick: 'hideAllPopovers();', remote: true)
 
@@ -108,7 +108,7 @@
               %hr.mt-4.mb-4/
 
 
-=render 'article_types/fact_checking_docs/confirm_feedback'
+=render 'factoid_types/fact_checking_docs/confirm_feedback'
 %hr/
 .row.small
   .col-10.offset-1

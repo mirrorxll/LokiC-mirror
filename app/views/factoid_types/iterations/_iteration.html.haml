@@ -7,8 +7,8 @@
                                                         'data-toggle' => 'popover',
                                                         'data-placement' => 'top',
                                                         'data-html' => 'true',
-                                                        'data-content' => "#{render 'article_types/iterations/edit_form', iteration: iteration}" }
+                                                        'data-content' => "#{render 'factoid_types/iterations/edit_form', iteration: iteration}" }
       =iter_name
 -else
-   =link_to(iter_name, article_type_path(@factoid_type, iteration_id: iteration),
+   =link_to(iter_name, factoid_type_path(@factoid_type, iteration_id: iteration),
             class: "badge badge-pill badge-dark")

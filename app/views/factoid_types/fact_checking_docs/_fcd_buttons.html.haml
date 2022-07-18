@@ -1,9 +1,9 @@
 -disabled = false
 
 .btn-group.w-100
-  =link_to('edit FCD', edit_article_type_fact_checking_doc_path(@factoid_type, @fcd),
+  =link_to('edit FCD', edit_factoid_type_fact_checking_doc_path(@factoid_type, @fcd),
            class: "btn btn-sm btn-light text-dark #{disabled ? 'disabled' : ''}", remote: true)
-  =link_to('template', article_type_template_path(@factoid_type, @factoid_type.template),
+  =link_to('template', factoid_type_template_path(@factoid_type, @factoid_type.template),
            'data-target' => '#templatePreviewCollapse', 'data-toggle' => 'collapse',
            class: 'btn btn-sm btn-light text-dark')
   =button_tag('send FCD to reviewers', 'data-toggle'=>'modal', 'data-target'=>'#sendFCD',
@@ -17,7 +17,7 @@
           %b send FCD to hle_reviews_queue channel
         %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
           %span{"aria-hidden" => "true"} ×
-      =form_with(url: article_type_fact_checking_doc_send_to_reviewers_channel_path(@factoid_type, @fcd)) do |f|
+      =form_with(url: factoid_type_fact_checking_doc_send_to_reviewers_channel_path(@factoid_type, @fcd)) do |f|
         .modal-body
           .channel
           =f.hidden_field 'slack_message[channel]'

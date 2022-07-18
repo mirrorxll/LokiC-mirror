@@ -1,6 +1,6 @@
 -if @factoid_type.code.attached? && @factoid_type.staging_table.index.list.present?
   -if @iteration.population.nil?
-    =form_with(url: execute_article_type_iteration_populations_path(@factoid_type, @iteration)) do |form|
+    =form_with(url: execute_factoid_type_iteration_populations_path(@factoid_type, @iteration)) do |form|
       .row
         .col-sm-8.col-lg-9.pr-1
           =form.text_field 'population[args]', class: 'form-control w-100 h-100', value: @iteration.population_args

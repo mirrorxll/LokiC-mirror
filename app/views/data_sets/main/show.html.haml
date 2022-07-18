@@ -17,7 +17,7 @@
     %a#storyTypesTab.nav-link{ onclick: 'saveActiveTab(this);', "aria-controls" => "storyTypes", "aria-selected" => "true", "data-toggle" => "tab", :href => "#storyTypes" }
       story types (#{@story_types.count})
   %li.nav-item.text-center{ style: 'width: 50%' }
-    %a#articleTypesTab.nav-link{onclick: 'saveActiveTab(this);', "aria-controls" => "articleTypes", "aria-selected" => "false", "data-toggle" => "tab", :href => "#articleTypes" }
+    %a#factoidTypesTab.nav-link{onclick: 'saveActiveTab(this);', "aria-controls" => "factoidTypes", "aria-selected" => "false", "data-toggle" => "tab", :href => "#factoidTypes" }
       factoid types (#{@factoid_types.count})
 #dataSetTabsContent.tab-content
   #storyTypes.tab-pane.fade{ "aria-labelledby" => "storyTypesTab" }
@@ -36,12 +36,12 @@
       .story-types-list.mt-4
         =render partial: 'story_types/main/story_type', collection: @story_types
       .mt-4
-  #articleTypes.tab-pane.fade{ "aria-labelledby" => "articleTypesTab" }
+  #factoidTypes.tab-pane.fade{ "aria-labelledby" => "factoidTypesTab" }
     .card.border-top-0.rounded-top-0.mb-5
       .row
         .col-10.offset-1
           %hr.mb-1/
-          #newArticleType
+          #newFactoidType
             .row
               .col-1
               .col-5.pl-0

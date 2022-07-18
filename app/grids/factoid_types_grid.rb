@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-class ArticleTypesGrid
+class FactoidTypesGrid
   include Datagrid
 
-  attr_accessor :current_account
+  attr_accessor :current_account, :env
 
   # Scope
   scope do
