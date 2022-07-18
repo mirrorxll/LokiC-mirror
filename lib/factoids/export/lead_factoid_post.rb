@@ -39,7 +39,7 @@ module Factoids
         article_type                 = sample.article_type
         st_limpar_id                 = limpar_columns['limpar_id']
         st_limpar_year               = limpar_columns['limpar_year']
-        factoid_kind                 = "#{article_type.kind.name.downcase}_id"
+        factoid_kind                 = "#{article_type.kind.parent_kind.name.downcase}_id"
 
         raise ArgumentError, 'LimparId must be provided!' unless st_limpar_id
 

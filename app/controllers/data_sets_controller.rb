@@ -56,7 +56,10 @@ class DataSetsController < ApplicationController # :nodoc:
   def edit; end
 
   def update
-    redirect_to @data_set if @data_set.update!(data_set_params)
+    respond_to do |f|
+      f.html { redirect_to @data_set }
+      f.js   { render 'update' }
+    end if @data_set.update(data_set_params)
   end
 
   def destroy
@@ -75,7 +78,8 @@ class DataSetsController < ApplicationController # :nodoc:
     params.require(:data_set).permit(
       :name, :location, :preparation_doc,
       :slack_channel, :sheriff_id, :comment,
-      :state_id, :category_id, :scrape_task_id
+      :state_id, :category_id, :scrape_task_id,
+      :responsible_editor_id
     )
   end
 
@@ -86,10 +90,12 @@ class DataSetsController < ApplicationController # :nodoc:
   end
 
   def set_default_props
-    @data_set.data_set_photo_bucket&.delete
-    @data_set.client_publication_tags.destroy_all
+    if params.key?(:default_props)
+      @data_set.data_set_photo_bucket&.delete
+      @data_set.client_publication_tags.destroy_all
 
-    DataSetDefaultProps.setup!(@data_set, default_props_params)
+      DataSetDefaultProps.setup!(@data_set, default_props_params)
+    end
   end
 
   def create_hidden_scrape_task

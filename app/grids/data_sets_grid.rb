@@ -14,6 +14,10 @@ class DataSetsGrid
   filter(:state, :enum, multiple: true, select: State.all.pluck(:short_name, :full_name, :id).map { |r| [r[0] + ' - ' + r[1], r[2]] })
   filter(:category, :enum, multiple: true, select: DataSetCategory.all.order(:name).pluck(:name, :id))
   filter(:sheriff, :enum, multiple: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
+  filter(:responsible_editor, :enum, multiple: true,
+         select: Account.get_accounts(:editor)
+                        .pluck(:first_name, :last_name, :id)
+                        .map { |r| [r[0] + ' ' + r[1], r[2]] })
   filter(:condition1, :dynamic, header: 'Dynamic condition 1')
   column_names_filter(header: 'Extra Columns', checkboxes: true)
 
@@ -40,6 +44,9 @@ class DataSetsGrid
   column(:location, mandatory: true)
   column(:sheriff, mandatory: true, order: 'accounts.first_name, accounts.last_name') do |record|
     record.sheriff&.name
+  end
+  column(:responsible_editor, order: 'accounts.first_name, accounts.last_name') do |record|
+    record.responsible_editor&.name
   end
   column(:preparation_doc, mandatory: true) do |record|
     format(record.preparation_doc) do |value|
