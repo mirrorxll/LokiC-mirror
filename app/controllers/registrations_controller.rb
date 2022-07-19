@@ -12,11 +12,12 @@ class RegistrationsController < Devise::RegistrationsController # :nodoc:
   end
 
   def edit
+    flash_adaptation
     @tab_title = "LokiC :: Profile"
   end
 
   def update
-    super
+    super { error_messages_adaptation(resource) if resource.errors }
     slack_account = SlackAccount.find_by(slack_account_params)
     if slack_account
       current_account.slack&.update!(account: nil)
@@ -42,5 +43,21 @@ class RegistrationsController < Devise::RegistrationsController # :nodoc:
 
   def after_update_path_for(resource)
     edit_account_registration_path(resource)
+  end
+
+  def error_messages_adaptation(resource)
+    resource.errors.full_messages.each do |msg|
+      flash[:error] = { registration: msg }
+    end
+  end
+
+  def flash_adaptation
+    %i[notice alert].each do |key|
+      next unless flash[key].present?
+
+      message = flash[key]
+      flash.delete(key)
+      flash[key.eql?(:notice) ? :success : :error] = { registration: message }
+    end
   end
 end

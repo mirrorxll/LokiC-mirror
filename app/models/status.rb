@@ -52,8 +52,9 @@ class Status < ApplicationRecord
   def self.scrape_task_statuses_for_grid
     ordered_statuses(
       [
-        'in progress', 'on checking',
-        'done', 'blocked', 'canceled'
+        'not started', 'in progress',
+        'on checking', 'done', 'blocked',
+        'canceled'
       ]
     )
   end
@@ -64,8 +65,20 @@ class Status < ApplicationRecord
         'in progress', 'exported',
         'on cron', 'blocked',
         'canceled', 'done',
-        'archived', 'not_started',
+        'archived', 'not started',
         'migrated'
+      ]
+    )
+  end
+
+  def self.all_story_type_statuses
+    ordered_statuses(
+      [
+        'not started', 'in progress',
+        'exported', 'on cron',
+        'blocked', 'canceled',
+        'migrated', 'inactive',
+        'done', 'archived'
       ]
     )
   end

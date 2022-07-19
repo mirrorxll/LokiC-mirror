@@ -12,6 +12,8 @@ require("@rails/actiontext");
 require("datatables.net-bs4");
 require('./story_type/properties_form');
 require('./factoids/purge');
+require('./data_sets/dom_manipulation');
+require('./common');
 
 import 'bootstrap';
 import '../stylesheets/application';
