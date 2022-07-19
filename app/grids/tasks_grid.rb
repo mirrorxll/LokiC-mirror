@@ -22,7 +22,23 @@ class TasksGrid
   end
 
   filter(:creator, :enum, multiple: true, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
-  filter(:status, :enum, multiple: true, select: Status.where(name: ['not started', 'in progress', 'blocked', 'canceled', 'done']).pluck(:name, :id))
+
+  status_done_id = Status.find_by(name: 'done').id.to_s
+  # tasks_done_by_account = TaskAssignment.where(account: self.current_account, done: true)
+
+  # if value.include?(status_done_id)
+  #   scope.where('task_assignments.account_id': grid.current_account.id, 'task_assignments.done': true )
+  # else
+  #   scope
+  # end
+  filter(:status, :enum, multiple: true, select: Status.where(name: ['not started', 'in progress', 'blocked', 'canceled', 'done']).pluck(:name, :id)) do |value, scope, grid|
+    if value.include?(status_done_id)
+      scope.joins(:assignments).where(status: value).or(scope.joins(:assignments).where('task_assignments.account_id': grid.current_account.id, 'task_assignments.done': true))
+    else
+      scope.where(status: value)
+    end
+  end
+
   filter(:deadline, :datetime, header: 'Deadline >= ?', multiple: ',')
 
   status_deleted = Status.find_by(name: 'deleted')
@@ -39,9 +55,16 @@ class TasksGrid
   column(:id, mandatory: true, header: 'ID')
 
   column(:status, mandatory: true, order: 'status_id', html: true) do |task|
-    attributes = { class: "bg-#{status_color(task.status.name)}" }
+    assignment = task.assignments.find_by(account: current_account)
+    status_name = if assignment.nil? || !assignment.done
+                    task.status.name
+                  else
+                    'done'
+                  end
 
-    if task.status.name.in?(%w[blocked canceled])
+    attributes = { class: "bg-#{status_color(status_name)}" }
+
+    if status_name.in?(%w[blocked canceled])
       attributes.merge!(
         {
           'data-toggle' => 'tooltip',
@@ -50,7 +73,7 @@ class TasksGrid
         }
       )
     end
-    content_tag(:div, task.status.name, attributes)
+    content_tag(:div, status_name, attributes)
   end
 
   column(:creator, order: 'accounts.first_name, accounts.last_name', mandatory: true) do |task|
