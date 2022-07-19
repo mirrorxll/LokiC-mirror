@@ -28,7 +28,8 @@ class TasksGrid
     if value.include?(status_done_id)
       scope.joins(:assignments).where(status: value).or(scope.joins(:assignments).where('task_assignments.account_id': grid.current_account.id, 'task_assignments.done': true))
     else
-      scope.where(status: value)
+      ids_done = Task.joins(:assignments).where('task_assignments.account_id': grid.current_account.id, 'task_assignments.done': true).map { |task| task.id  }
+      scope.where(status: value).where.not(id: ids_done)
     end
   end
 
