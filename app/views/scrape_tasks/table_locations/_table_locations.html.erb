@@ -54,10 +54,11 @@
 
   </div>
 
-  <div class="col d-flex align-items-center">
+  <div class="col">
     <% @scrape_task.table_locations.each do |tl| %>
-      <%= tl.full_name %>
-      <br/>
+      <div class="text-truncate">
+        <%= tl.full_name %>
+      </div>
     <% end %>
   </div>
 </div>

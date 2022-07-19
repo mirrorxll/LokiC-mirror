@@ -6,7 +6,7 @@
 
   <div class="col">
     <% @scrape_task.data_sets.each do |ds| %>
-      <%= link_to("##{ds.id} #{ds.title}", data_set_path(ds), target: '_blank') %>
+      <%= link_to("##{ds.id} #{ds.name}", data_set_path(ds), target: '_blank') %>
       <br/>
     <% end %>
   </div>

@@ -11,45 +11,76 @@
   .text-secondary
     created at: #{@scrape_task.created_at}#{@scrape_task.updated_early? ? " | updated at: #{@scrape_task.updated_at}" : ""}
 
-#scrappingInfo.mt-4.mb-4
-  .card
-    .card-header.p-1.small
-      .d-flex.justify-content-between.align-items-center
-        MAIN INFO
-        #scrapeTaskStatusComment
-          =render 'status_comment'
-        .d-flex.align-items-center
-          -if @permissions['progress_status'].values.any?
-            #scrapeTaskStatus.d-inline-block
-              -if @permissions['progress_status']['edit_form']
-                =render 'statuses'
-              -elsif @permissions['progress_status']['show']
-                =@scrape_task.status.name
-          -if @permissions['edit_form']
-            #editScrapeTask
-              %button{ onclick: 'loadEditForm();', type: 'button', class: 'p-0 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#scrapeTaskEdit" }
-                [ edit ]
-              :javascript
-                function loadEditForm() {
-                  Rails.ajax({
-                    type: "GET",
-                    dataType: 'script',
-                    url: `#{edit_scrape_task_path(@scrape_task)}`
-                  })
-                }
-    .card-body
-      =render 'scrape_task_info'
+.row.align-items-stretch.mt-4.mb-4
+  .col-xl-8.col-sm-12
+    #scrappingInfo
+      .card
+        .card-header.p-1.small
+          .d-flex.justify-content-between.align-items-center
+            MAIN INFO
+            #scrapeTaskStatusComment
+              =render 'status_comment'
+            .d-flex.align-items-center
+              -if @permissions['progress_status'].values.any?
+                #scrapeTaskStatus.d-inline-block
+                  -if @permissions['progress_status']['edit_form']
+                    =render 'statuses'
+                  -elsif @permissions['progress_status']['show']
+                    =@scrape_task.status.name
+              -if @permissions['edit_form']
+                #editScrapeTask
+                  %button{ onclick: 'loadEditForm();', type: 'button', class: 'p-0 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#scrapeTaskEdit" }
+                    [ edit ]
+                  :javascript
+                    function loadEditForm() {
+                      Rails.ajax({
+                        type: "GET",
+                        dataType: 'script',
+                        url: `#{edit_scrape_task_path(@scrape_task)}`
+                      })
+                    }
 
-#scrapeTaskEdit.modal.fade{ 'data-keyboard' => "false", "aria-hidden" => "true",
-                            "aria-labelledby" => "scrapeTaskEdit", tabindex: "-1" }
-  .modal-dialog.modal-dialog-centered.modal-xl
-    .modal-content
-      .modal-header
-      .modal-body.small
-        .text-center
-          .spinner-border.small{ style: "width: 3rem; height: 3rem;" }
-            %span.sr-only
-      .modal-footer
+        .card-body
+          =render 'scrape_task_info'
+  .col-xl-4.col-sm-12.pl-xl-0
+    .card.h-100
+      .card-header.p-1.small
+        CONVERSATION
+      .card-body
+
+-if @permissions['edit_form']
+  #scrapeTaskEdit.modal.fade{ 'data-keyboard' => "false", "aria-hidden" => "true",
+                      "aria-labelledby" => "scrapeTaskEdit", tabindex: "-1" }
+    .modal-dialog.modal-dialog-centered.modal-xl
+      .modal-content
+        .modal-header
+        .modal-body.small
+          .text-center
+            .spinner-border.small{ style: "width: 3rem; height: 3rem;" }
+              %span.sr-only
+        .modal-footer
+
+-if @permissions['edit_form']
+  #updateScrapeTaskModal.modal.fade.pr-0{ "aria-hidden" => "true", "aria-labelledby" => "updateScrapeTaskModal",
+                                           'data-backdrop' => 'static', "data-keyboard" => "false" }
+    .modal-dialog.modal-dialog-scrollable.modal-lg
+      .modal-content
+        .modal-header
+          UPDATE SCRAPE TASK
+          %button.close{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+            %span{ "aria-hidden" => "true" } ×
+        .modal-body.small
+          =render 'edit'
+        .modal-footer.justify-content-center
+          =link_to('UPDATE', '#', id: 'updateScrapeTaskButton', class: 'btn btn-sm btn-dark')
+          .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+            CANCEL
+
+  :javascript
+    document.querySelector('#updateScrapeTaskButton').addEventListener('click', (event) => {
+      event.preventDefault();
+      document.querySelector('#hiddenUpdateScrapeTaskButton').click();
+    }, false);
 
 #scrapeInstructionAnchor
 #scrapeEvaluationDocAnchor

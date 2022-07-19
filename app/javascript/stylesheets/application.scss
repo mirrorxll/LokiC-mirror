@@ -30,6 +30,10 @@ body {
   font-family: 'Ubuntu', sans-serif;
 }
 
+.font-size-default {
+  font-size: revert;
+}
+
 @media (min-width: 100px) {
   .modal-fullscreen {
     max-width: 97%;

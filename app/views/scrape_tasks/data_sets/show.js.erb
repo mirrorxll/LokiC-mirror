@@ -1,4 +1,4 @@
 $('#dataSets>.col').html(
-    '<%= @scrape_task.data_sets.map { |ds| link_to("##{ds.id} #{ds.title}", data_set_path(ds), target: '_blank') }.join('<br>').html_safe %>'
+    '<%= @scrape_task.data_sets.map { |ds| link_to("##{ds.id} #{ds.name}", data_set_path(ds), target: '_blank') }.join('<br>').html_safe %>'
 );
 $('#dataSets>:first-child>a').removeClass('disabled-link');
