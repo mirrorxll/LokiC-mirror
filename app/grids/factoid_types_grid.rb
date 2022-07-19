@@ -71,7 +71,7 @@ class FactoidTypesGrid
   end
   column(:name, mandatory: true) do |record|
     format(record.name) do |value|
-      link_to value, record
+      link_to value, factoid_type_path(record)
     end
   end
   column(:status, mandatory: true, order: 'status.name') do |record|

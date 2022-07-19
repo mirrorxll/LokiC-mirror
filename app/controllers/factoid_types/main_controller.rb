@@ -2,7 +2,7 @@
 
 module FactoidTypes
   class MainController < FactoidTypesController
-    before_action :find_data_set,            only: %i[new create]
+    before_action :find_data_set,              only: %i[new create]
     before_action :find_factoid_type,          except: %i[index new create]
     before_action :set_factoid_type_iteration, except: %i[index new create]
 
@@ -85,13 +85,11 @@ module FactoidTypes
 
       @lists['all'] = {}     if @permissions['grid']['all']
       @lists['archived'] = { archived: true } if @permissions['grid']['archived']
-      pp '>>>>>>>>>>>>>>>>>>>>>.'*50, @lists, @permissions
     end
 
     def current_list
       keys = @lists.keys
       @current_list = keys.include?(params[:list]) ? params[:list] : keys.first
-      pp '<<<<<<<<<<<<<<<<<<<<<<<'*50, @current_list
     end
 
     def generate_grid
@@ -101,7 +99,6 @@ module FactoidTypes
       grid_params.merge!({ current_account: current_account, env: env })
 
       @grid = FactoidTypesGrid.new(grid_params) { |scope| scope.where(@lists[@current_list]) }
-      pp '********************'*50, @grid
       @grid.scope { |sc| sc.page(params[:page]).per(30) }
     end
 

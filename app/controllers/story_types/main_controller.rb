@@ -59,7 +59,6 @@ module StoryTypes
       grid_params.merge!({ current_account: current_account, env: env })
 
       @grid = StoryTypesGrid.new(grid_params) { |scope| scope.where(@lists[@current_list]) }
-      pp '********************'*50, @grid
       @grid.scope { |sc| sc.page(params[:page]).per(30) }
     end
 

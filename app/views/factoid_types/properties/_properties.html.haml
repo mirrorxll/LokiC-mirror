@@ -1,0 +1,27 @@
+.row.border-top.my-3.mx-0.pt-3
+  .col-10.offset-1
+    #currentDataSet
+      =render 'factoid_types/properties/current_data_set'
+  .col-10.offset-1
+    #editorDeveloper
+      =render 'factoid_types/properties/editor_developer'
+  .col-10.offset-1.text-center.d-none
+    =render 'factoid_types/main/additional_properties'
+.row.border-top.mx-0.mb-3.pt-3.text-center
+  .col-10.offset-1
+    factoid type's code
+    #factoid_type_code
+      =render 'factoid_types/codes/section'
+
+#factoidTypePropertiesForm.modal.fade{ factoid_type_id: @factoid_type.id, "aria-hidden" => "true", "aria-labelledby" => "factoidTypePropertiesForm", role: "dialog", :tabindex => "-1"}
+  .modal-dialog.modal-dialog-scrollable.modal-xl
+    .modal-content
+      .modal-header
+        %h5.modal-title
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", type: "button"}
+          %span{"aria-hidden" => "true"} ×
+      .modal-body
+        .loadingSpinner
+          .spinner-border.spinner-border-sm.text-secondary
+            %span.sr-only
+      .modal-footer

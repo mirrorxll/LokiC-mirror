@@ -1,0 +1,16 @@
+.row.mb-1.font-weight-bold
+  .col-6
+    data set
+  .col-5
+    current iteration
+.row
+  .col-6
+    -#TODO: if this is correct implementation of user permissions?
+    -if current_account_permissions('data_sets')['grid']['all']
+      =link_to @factoid_type.data_set.name, data_set_path(@factoid_type.data_set), class: 'no-link'
+      =link_to icon('fa', 'info-circle'), properties_data_set_path(@factoid_type.data_set), remote: true
+    -else
+      =@factoid_type.data_set.name
+  .col-5
+    =@iteration.id
+%hr/

@@ -20,7 +20,7 @@ module FactoidTypes
       if @fcd.errors.any?
         render :edit
       else
-        redirect_to article_type_fact_checking_doc_path(@factoid_type, @fcd)
+        redirect_to factoid_type_fact_checking_doc_path(@factoid_type, @fcd)
       end
     end
 
@@ -29,7 +29,7 @@ module FactoidTypes
 
       respond_to do |format|
         format.js { render 'template' }
-        format.html { redirect_to article_type_template_path(@factoid_type, @template) }
+        format.html { redirect_to factoid_type_template_path(@factoid_type, @template) }
       end
     end
 
@@ -55,7 +55,7 @@ module FactoidTypes
     def message_to_slack
       info = send_to_reviewers_params
 
-      "*Factoid Type FCD* ##{@factoid_type.id} <#{article_type_fact_checking_doc_url(@factoid_type, @fcd)}|#{@factoid_type.name}>.\n"\
+      "*Factoid Type FCD* ##{@factoid_type.id} <#{factoid_type_fact_checking_doc_url(@factoid_type, @fcd)}|#{@factoid_type.name}>.\n"\
       "*Developer:* #{@factoid_type.developer.name}.\n"\
       "#{info[:note].present? ? "*Note*: #{info[:note]}" : ''}"
     end

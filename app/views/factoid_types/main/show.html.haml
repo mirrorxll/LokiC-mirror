@@ -5,54 +5,34 @@
 .row
   .col-12.text-center
     #factoid_type_name
-      %b ##{@factoid_type.id} #{@factoid_type.name}
-%hr/
-
-%nav{ 'area-label' => 'breadcrumb' }
-  %ov.breadcrumb
-    %li.breadcrumb-item
-      =link_to('home', root_url)
-    %li.breadcrumb-item.active{ 'area-current' => 'page' }
-      factoid type
+      =link_to(factoid_type_path(@factoid_type)) do
+        %b ##{@factoid_type.id} #{@factoid_type.name}
 %hr/
 
 .row
   .col-10
-    #factoid_type_iterations
+    #factoid_type_iterations.d-inline
       =render partial: 'factoid_types/iterations/iteration',
               collection: @factoid_type.iterations,
               current_iteration: @factoid_type.iteration
-
-      .badge.badge-pill.badge-light{'data-container' => 'body',
-                                    'data-toggle' => 'popover',
-                                    'data-placement' => 'top',
-                                    'data-html' => 'true',
-                                    'data-content' => "#{ render 'factoid_types/iterations/new_form' }" }
-        new iteration
+    #new_factoid_type_iteration.d-inline
+      =render 'factoid_types/iterations/new_iteration'
   .col-2.text-right
     #factoid_type_status
       =render 'factoid_types/progress_statuses/status'
 %hr/
 
-#factoid_type_template.accordion
-  .card.small
-    .card-header
-      %div.text-center{ "aria-controls" => "#template_preview", "aria-expanded" => "true",
-                        "data-target" => "#template_preview", "data-toggle" => "collapse", type: "button" }
-        template
-    #template_preview.collapse.show{"data-parent" => "#factoid_type_template"}
-      .card-body.small
-        =render 'factoid_types/main/template'
+.d-flex.justify-content-between.align-items-center.mb-3.small.mt-n3
+  .text-secondary
+    created by #{@factoid_type.editor&.name}
+  .text-secondary
+    created at: #{@factoid_type.created_at}
 
-#factoid_type_properties.accordion
-  .card
-    .card-header
-      %div.text-center{"aria-controls" => "#properties", "aria-expanded" => "false", "data-target" => "#properties", "data-toggle" => "collapse", type: "button"}
-        properties
-    #properties.collapse.show{"data-parent" => "#factoid_type_properties"}
-      .flash
-      .card-body
-        =render 'factoid_types/main/properties'
+.row.small.justify-content-md-center.justify-content-lg-start.mx-0
+  #template_section.col-lg-6.col-md-12.my-2
+    =render 'factoid_types/main/template_section'
+  #properties_section.col-lg-6.col-md-12.my-2
+    =render 'factoid_types/main/properties_section'
 
 -if @iteration.eql?(@factoid_type.iteration)
   #factoid_type_staging_table.accordion
@@ -85,4 +65,7 @@
       .card-body.small
         =render 'factoid_types/publishes/publish'
 %hr.mb-5/
--# =render 'story_types/main/template_modal'
+
+=render 'factoid_types/main/template_modal'
+=render 'factoid_types/codes/modal_ruby_code'
+=render 'data_sets/main/modal_data_set'

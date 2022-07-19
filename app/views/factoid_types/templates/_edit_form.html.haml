@@ -1,6 +1,6 @@
-=form_with(model: [@factoid_type, @factoid_type.template]) do |form|
+=form_with(url: factoid_type_template_path(@factoid_type), method: :patch) do |form|
   .field.small
-    =form.text_area :body, id: 'factoidtype-template-body', value: @factoid_type.template.body
+    =form.text_area 'template[body]', id: 'factoidtype-template-body', value: @factoid_type.template.body
   .modal-footer
     =link_to( 'close', '#', class: 'ml-auto btn btn-sm btn-outline-secondary',
               'data-dismiss' => 'modal', data: { confirm: 'All changes shall be lost. Close?'})

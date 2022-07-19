@@ -1,0 +1,10 @@
+.row.mb-1.font-weight-bold
+  .col-6
+    editor
+  .col-6
+    developer
+.row
+  .col-6
+    =@factoid_type.editor.name
+  .col-6
+    =@factoid_type.developer ? @factoid_type.developer.name: '---'
