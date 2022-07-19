@@ -119,7 +119,7 @@ class TasksGrid
     task.created_at.strftime('%F')
   end
 
-  column(:note, header: 'Your note', mandatory: true) do |task, scope|
+  column(:note, header: 'Your note', mandatory: true, html: true) do |task, scope|
     note = task.note(scope.current_account)
 
     if !note.nil? && !note.body.nil?
