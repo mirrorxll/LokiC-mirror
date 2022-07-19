@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module FactoidTypes
-  class PurgeCreationJob < ArticleTypesJob
+  class PurgeCreationJob < FactoidTypesJob
     def perform(iteration_id, account_id)
-      iteration = ArticleTypeIteration.find(iteration_id)
+      iteration = FactoidTypeIteration.find(iteration_id)
       account = Account.find(account_id)
       message = 'Success. All articles have been removed'
 

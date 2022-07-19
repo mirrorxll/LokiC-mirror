@@ -1,16 +1,16 @@
 import consumer from "./consumer";
 
 $(document).on("turbolinks:load", function() {
-    let articleType = $('#article_type');
+    let factoidType = $('#factoid_type');
 
-    if(!articleType.length) return false
+    if(!factoidType.length) return false
 
-    let articleTypeId = articleType.attr('article_type_id');
+    let factoidTypeId = factoidType.attr('factoid_type_id');
 
     consumer.subscriptions.create(
         {
-            channel: "ArticleTypeChannel",
-            article_type_id: articleTypeId
+            channel: "FactoidTypeChannel",
+            factoid_type_id: factoidTypeId
         },
         {
             connected()    { console.log('connected'); },
@@ -36,7 +36,7 @@ $(document).on("turbolinks:load", function() {
 
     function update_sections(data) {
         $.ajax({
-            url: `${window.location.origin}/article_types/${articleTypeId}/update_sections`,
+            url: `${window.location.origin}/factoid_types/${factoidTypeId}/update_sections`,
             method: 'patch',
             dataType: 'script',
             data: data

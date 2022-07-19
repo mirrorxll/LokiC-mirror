@@ -11,8 +11,8 @@ class StagingTable < ApplicationRecord # :nodoc:
       default_story_type_columns
       delete_useless_columns
       add_story_created
-    elsif article_type?
-      default_article_type_columns
+    elsif factoid_type?
+      default_factoid_type_columns
       add_article_created
     end
 
@@ -69,8 +69,8 @@ class StagingTable < ApplicationRecord # :nodoc:
     staging_tableable.class.to_s.eql?('StoryType')
   end
 
-  def article_type?
-    staging_tableable.class.to_s.eql?('ArticleType')
+  def factoid_type?
+    staging_tableable.class.to_s.eql?('FactoidType')
   end
 
   def noname?
@@ -101,8 +101,8 @@ class StagingTable < ApplicationRecord # :nodoc:
     Table.add_default_story_type_columns(name)
   end
 
-  def default_article_type_columns
-    Table.add_default_article_type_columns(name)
+  def default_factoid_type_columns
+    Table.add_default_factoid_type_columns(name)
   end
 
   def delete_useless_columns

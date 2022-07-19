@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ArticleType < ApplicationRecord
+class FactoidType < ApplicationRecord
   after_create do
     create_template
     create_fact_checking_doc
@@ -9,7 +9,7 @@ class ArticleType < ApplicationRecord
     update(current_iteration: iter)
   end
 
-  before_update -> { tracking_changes(ArticleType) }
+  before_update -> { tracking_changes(FactoidType) }
 
   validates_uniqueness_of :name, case_sensitive: true
 
@@ -17,7 +17,7 @@ class ArticleType < ApplicationRecord
   belongs_to :editor,            class_name: 'Account'
   belongs_to :developer,         optional: true, class_name: 'Account'
   belongs_to :status,            optional: true
-  belongs_to :current_iteration, optional: true, class_name: 'ArticleTypeIteration'
+  belongs_to :current_iteration, optional: true, class_name: 'FactoidTypeIteration'
   belongs_to :kind,              optional: true
   belongs_to :topic,             optional: true
 
@@ -27,7 +27,7 @@ class ArticleType < ApplicationRecord
 
   has_one_attached :code
 
-  has_many :iterations, class_name: 'ArticleTypeIteration'
+  has_many :iterations, class_name: 'FactoidTypeIteration'
   has_many :change_history, as: :history
   has_many :articles
   has_many :change_history, as: :history

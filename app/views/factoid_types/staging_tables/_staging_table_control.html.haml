@@ -1,0 +1,4 @@
+-if @iteration.population.eql?(true) && !@iteration.samples.eql?(true)
+  =link_to('purge staging table', purge_factoid_type_iteration_populations_path(@factoid_type, @iteration),
+                      class: 'btn btn-sm btn-outline-danger', method: :delete,  remote: true,
+                      data: { confirm: 'PURGE CURRENT ITERATION: You sure?' })

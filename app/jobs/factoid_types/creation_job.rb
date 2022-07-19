@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module FactoidTypes
-  class CreationJob < ArticleTypesJob
+  class CreationJob < FactoidTypesJob
     def perform(iteration_id, account_id)
-      iteration = ArticleTypeIteration.find(iteration_id)
+      iteration = FactoidTypeIteration.find(iteration_id)
       account = Account.find(account_id)
 
       options = {
@@ -15,9 +15,9 @@ module FactoidTypes
       message = 'Success. All factoids have been created'
 
       loop do
-        MiniLokiC::ArticleTypeCode[iteration.article_type].execute(:creation, options)
+        MiniLokiC::ArticleTypeCode[iteration.factoid_type].execute(:creation, options)
 
-        staging_table = iteration.article_type.staging_table.name
+        staging_table = iteration.factoid_type.staging_table.name
         break if Table.all_articles_created_by_iteration?(staging_table)
       end
 
@@ -27,7 +27,7 @@ module FactoidTypes
       message = e.message
     ensure
       iteration.update!(creation: status, current_account: account)
-      send_to_action_cable(iteration.article_type, :stories, message)
+      send_to_action_cable(iteration.factoid_type, :stories, message)
       SlackIterationNotificationJob.new.perform(iteration.id, 'creation', message)
     end
   end

@@ -1,4 +1,4 @@
-=form_with(model: [@data_set, @data_set.article_types.build], local: true) do |form|
+=form_with(model: [@data_set, @data_set.factoid_types.build], local: true) do |form|
   .row
     .col-6.pr-0.small
       =form.text_field :name, placeholder: 'new factoid type name', class: 'form-control form-control-sm', required: true

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module FactoidTypes
-  class ExportJob < ArticleTypesJob
+  class ExportJob < FactoidTypesJob
     def perform(iteration_id, account_id, chunk)
-      iteration     = ArticleTypeIteration.find(iteration_id)
+      iteration     = FactoidTypeIteration.find(iteration_id)
       account       = Account.find(account_id)
       status        = true
       message       = 'Success. Make sure that all factoids are published'
@@ -57,7 +57,7 @@ module FactoidTypes
     ensure
       iteration.reload.update!(export: status)
       send_to_action_cable(article_type, :export, message)
-      ArticleTypes::SlackIterationNotificationJob.new.perform(iteration.id, 'export', message)
+      FactoidTypes::SlackIterationNotificationJob.new.perform(iteration.id, 'export', message)
     end
   end
 end

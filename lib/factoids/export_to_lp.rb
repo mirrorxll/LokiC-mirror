@@ -14,8 +14,8 @@ module Factoids
                              factoids_to_export.limit(10_000).to_a
                            end
 
-      article_type       = iteration.article_type
-      staging_table_name = article_type.staging_table.name
+      factoid_type       = iteration.factoid_type
+      staging_table_name = factoid_type.staging_table.name
       st_limpar_columns  = Table.get_limpar_data(staging_table_name)
       main_semaphore     = Mutex.new
       exported           = 0

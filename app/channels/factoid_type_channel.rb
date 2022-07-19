@@ -2,8 +2,8 @@
 
 # sending notifications to a browser
 # when changed one of the story type statuses
-class ArticleTypeChannel < ApplicationCable::Channel
+class FactoidTypeChannel < ApplicationCable::Channel
   def subscribed
-    stream_for ArticleType.find(params[:article_type_id])
+    stream_for FactoidType.find(params[:factoid_type_id])
   end
 end

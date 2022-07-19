@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module FactoidTypes
-  class StagingTableIndexAddJob < ArticleTypesJob
+  class StagingTableIndexAddJob < FactoidTypesJob
     def perform(staging_table_id, column_ids)
       staging_table = StagingTable.find(staging_table_id)
       message = "Success. Staging table's uniq index added"

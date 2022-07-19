@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module FactoidTypes
-  class PurgeSamplesJob < ArticleTypesJob
+  class PurgeSamplesJob < FactoidTypesJob
     def perform(iteration_id, account_id)
-      iteration = ArticleTypeIteration.find(iteration_id)
+      iteration = FactoidTypeIteration.find(iteration_id)
       account = Account.find(account_id)
       message = 'Success. samples have been removed'
 
@@ -12,7 +12,7 @@ module FactoidTypes
       message = e.message
     ensure
       iteration.update!(samples: nil, current_account: account)
-      send_to_action_cable(iteration.article_type, :samples, message)
+      send_to_action_cable(iteration.factoid_type, :samples, message)
     end
   end
 end

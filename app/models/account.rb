@@ -32,9 +32,9 @@ class Account < ApplicationRecord # :nodoc:
   has_many :data_sets
   has_many :sheriffs,              foreign_key: :sheriff_id,   class_name: 'DataSet'
   has_many :edit_story_types,      foreign_key: :editor_id,    class_name: 'StoryType'
-  has_many :edit_article_types,    foreign_key: :editor_id,    class_name: 'ArticleType'
+  has_many :edit_factoid_types,    foreign_key: :editor_id,    class_name: 'FactoidType'
   has_many :dev_story_types,       foreign_key: :developer_id, class_name: 'StoryType'
-  has_many :dev_article_types,     foreign_key: :developer_id, class_name: 'ArticleType'
+  has_many :dev_factoid_types,     foreign_key: :developer_id, class_name: 'FactoidType'
   has_many :submitters,            foreign_key: :submitter_id, class_name: 'PostExportReport'
   has_many :created_scrape_tasks,  foreign_key: :creator_id,   class_name: 'ScrapeTask'
   has_many :assigned_scrape_tasks, foreign_key: :scraper_id,   class_name: 'ScrapeTask'

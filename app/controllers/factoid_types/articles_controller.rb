@@ -5,8 +5,8 @@ module FactoidTypes
     def index
       @grid = request.parameters[:article_type_iteration_articles_grid] || {}
 
-      @iteration_articles_grid = ArticleTypeIterationArticlesGrid.new(@grid) do |scope|
-        scope.where(article_type_id: params[:article_type_id], article_type_iteration_id: params[:iteration_id])
+      @iteration_articles_grid = FactoidTypeIterationArticlesGrid.new(@grid) do |scope|
+        scope.where(factoid_type_id: params[:factoid_type_id], factoid_type_iteration_id: params[:iteration_id])
       end
 
       @tab_title = "LokiC :: Factoids ##{@factoid_type.id} <#{@factoid_type.name}>"

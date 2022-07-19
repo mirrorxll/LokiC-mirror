@@ -14,26 +14,26 @@
   -uniq_index = staging_table.index.list
   .row.small
     .col-10.offset-1
-      .row#staging_table_name
+      #staging_table_name.row
         .col-12
           %p #{staging_table.name}
-      .row#staging_table_control
-        .col-1#sync
+      #staging_table_control.row
+        #sync.col-1
           .btn-group
             =link_to('sync', sync_factoid_type_staging_table_path(@factoid_type, staging_table),
                       class: 'btn btn-sm btn-outline-dark', method: :patch, remote: true)
-        .col-6#manipulate
-          .btn-group
-            -if @iteration.population.eql?(true) && !@iteration.samples.eql?(true)
-              =link_to('purge staging table', purge_factoid_type_iteration_populations_path(@factoid_type, @iteration),
-                        class: 'btn btn-sm btn-outline-danger', method: :delete,  remote: true,
-                        data: { confirm: 'PURGE CURRENT ITERATION: You sure?' })
-              .d-inline-flex.ml-3.align-items-end
-                ***will purge rows related to current iteration
-        .col-5.text-right#exec_population
+        -##manipulate.col-6
+        -#  .btn-group
+        -#    -if @iteration.population.eql?(true) && !@iteration.samples.eql?(true)
+        -#      =link_to('purge staging table', purge_factoid_type_iteration_populations_path(@factoid_type, @iteration),
+        -#                class: 'btn btn-sm btn-outline-danger', method: :delete,  remote: true,
+        -#                data: { confirm: 'PURGE CURRENT ITERATION: You sure?' })
+        -#      .d-inline-flex.ml-3.align-items-end
+        -#        ***will purge rows related to current iteration
+        #exec_population.col-5.text-right
           =render 'factoid_types/populations/form'
       %hr/
-      .row#columns__index
+      #columns__index.row
         .col-12
           .btn-group.mb-2
             #edit_columns

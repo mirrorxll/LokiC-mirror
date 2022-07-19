@@ -16,7 +16,7 @@ RailsAdmin.config do |config|
 
   config.included_models =
     %w[
-      ArticleType ArticleTypeIteration Assembled
+      FactoidType FactoidTypeIteration Assembled
       Client ClientsReport Comment CronTab DataSet DataSetCategory
       Frequency Level PhotoBucket Publication Reminder ScrapeTask SlackAccount StagingTable
       State Status StoryType StoryTypeIteration Tag Task TimeFrame

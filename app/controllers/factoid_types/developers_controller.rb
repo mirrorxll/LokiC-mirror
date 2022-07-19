@@ -2,7 +2,7 @@
 
 module FactoidTypes
   class DevelopersController < FactoidTypesController
-    skip_before_action :set_article_type_iteration
+    skip_before_action :set_factoid_type_iteration
 
     before_action :find_developer, only: :include
 

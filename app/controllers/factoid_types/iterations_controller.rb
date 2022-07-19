@@ -2,15 +2,15 @@
 
 module FactoidTypes
   class IterationsController < FactoidTypesController
-    skip_before_action :set_article_type_iteration
+    skip_before_action :set_factoid_type_iteration
 
     before_action :find_iteration, only: %i[show update apply purge]
     before_action :find_staging_table, only: :purge
 
     def show
-      @factoid_type = @iteration.article_type
+      @factoid_type = @iteration.factoid_type
 
-      render 'article_types/show'
+      render 'factoid_types/main/show'
     end
 
     def create
@@ -48,13 +48,13 @@ module FactoidTypes
         )
       end
 
-      render 'article_types/show'
+      render 'factoid_types/main/show'
     end
 
     private
 
     def find_iteration
-      @iteration = ArticleTypeIteration.find(params[:id])
+      @iteration = FactoidTypeIteration.find(params[:id])
     end
 
     def find_staging_table

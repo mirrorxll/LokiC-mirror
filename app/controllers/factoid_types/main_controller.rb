@@ -117,7 +117,7 @@ module FactoidTypes
 
     #
     # def find_article_type
-    #   @factoid_type = ArticleType.find(params[:id])
+    #   @factoid_type = FactoidType.find(params[:id])
     # end
     #
     # def new_article_type_params
