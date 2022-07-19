@@ -24,13 +24,6 @@ class TasksGrid
   filter(:creator, :enum, multiple: true, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
 
   status_done_id = Status.find_by(name: 'done').id.to_s
-  # tasks_done_by_account = TaskAssignment.where(account: self.current_account, done: true)
-
-  # if value.include?(status_done_id)
-  #   scope.where('task_assignments.account_id': grid.current_account.id, 'task_assignments.done': true )
-  # else
-  #   scope
-  # end
   filter(:status, :enum, multiple: true, select: Status.where(name: ['not started', 'in progress', 'blocked', 'canceled', 'done']).pluck(:name, :id)) do |value, scope, grid|
     if value.include?(status_done_id)
       scope.joins(:assignments).where(status: value).or(scope.joins(:assignments).where('task_assignments.account_id': grid.current_account.id, 'task_assignments.done': true))
