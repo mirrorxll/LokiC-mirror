@@ -20,6 +20,12 @@ Rails.application.routes.draw do
   end
 
   namespace :api, constraints: { format: :json } do
+    namespace :v1 do
+      scope module: :scrape_tasks do
+        resources :scrape_tasks, controller: :main, only: :show
+      end
+    end
+
     resources :work_requests, only: :update
 
     scope module: :story_types, path: 'story_types/:story_type_id' do
