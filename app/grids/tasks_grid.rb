@@ -122,6 +122,12 @@ class TasksGrid
   column(:note, header: 'Your note', mandatory: true) do |task, scope|
     note = task.note(scope.current_account)
 
-    ActionView::Base.full_sanitizer.sanitize(note.body).first(10) if !note.nil? && !note.body.nil?
+    if !note.nil? && !note.body.nil?
+      body = ActionView::Base.full_sanitizer.sanitize(note.body)
+      attr = { 'data-toggle' => 'tooltip',
+               'data-placement' => 'right',
+               title: truncate(body, length: 150) }
+      content_tag(:div, body.first(10) , attr)
+    end
   end
 end
