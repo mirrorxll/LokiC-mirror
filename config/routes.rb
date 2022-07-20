@@ -22,7 +22,11 @@ Rails.application.routes.draw do
   namespace :api, constraints: { format: :json } do
     namespace :v1 do
       scope module: :scrape_tasks do
-        resources :scrape_tasks, controller: :main, only: :show
+        resources :scrape_tasks, controller: :main, only: %i[index show]
+      end
+
+      scope module: :multi_tasks do
+        resources :multi_tasks, controller: :main, only: %i[index]
       end
     end
 
