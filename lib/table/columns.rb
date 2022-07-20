@@ -127,8 +127,6 @@ module Table
     def frontend_transform(columns)
       return {} if columns.empty?
 
-      puts 111111111111111111111111
-
       params_to_hash = {}
       columns.each do |id, column|
         id_sym = id.to_sym
