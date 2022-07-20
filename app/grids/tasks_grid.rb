@@ -22,7 +22,17 @@ class TasksGrid
   end
 
   filter(:creator, :enum, multiple: true, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
-  filter(:status, :enum, multiple: true, select: Status.where(name: ['not started', 'in progress', 'blocked', 'canceled', 'done']).pluck(:name, :id))
+
+  status_done_id = Status.find_by(name: 'done').id.to_s
+  filter(:status, :enum, multiple: true, select: Status.where(name: ['not started', 'in progress', 'blocked', 'canceled', 'done']).pluck(:name, :id)) do |value, scope, grid|
+    if value.include?(status_done_id)
+      scope.joins(:assignments).where(status: value).or(scope.joins(:assignments).where('task_assignments.account_id': grid.current_account.id, 'task_assignments.done': true))
+    else
+      ids_done = Task.joins(:assignments).where('task_assignments.account_id': grid.current_account.id, 'task_assignments.done': true).map { |task| task.id  }
+      scope.where(status: value).where.not(id: ids_done)
+    end
+  end
+
   filter(:deadline, :datetime, header: 'Deadline >= ?', multiple: ',')
 
   status_deleted = Status.find_by(name: 'deleted')
@@ -39,9 +49,16 @@ class TasksGrid
   column(:id, mandatory: true, header: 'ID')
 
   column(:status, mandatory: true, order: 'status_id', html: true) do |task|
-    attributes = { class: "bg-#{status_color(task.status.name)}" }
+    assignment = task.assignments.find_by(account: current_account)
+    status_name = if assignment.nil? || !assignment.done
+                    task.status.name
+                  else
+                    'done'
+                  end
 
-    if task.status.name.in?(%w[blocked canceled])
+    attributes = { class: "bg-#{status_color(status_name)}" }
+
+    if status_name.in?(%w[blocked canceled])
       attributes.merge!(
         {
           'data-toggle' => 'tooltip',
@@ -50,7 +67,7 @@ class TasksGrid
         }
       )
     end
-    content_tag(:div, task.status.name, attributes)
+    content_tag(:div, status_name, attributes)
   end
 
   column(:creator, order: 'accounts.first_name, accounts.last_name', mandatory: true) do |task|
@@ -96,9 +113,15 @@ class TasksGrid
     task.created_at.strftime('%F')
   end
 
-  column(:note, header: 'Your note', mandatory: true) do |task, scope|
+  column(:note, header: 'Your note', mandatory: true, html: true) do |task, scope|
     note = task.note(scope.current_account)
 
-    ActionView::Base.full_sanitizer.sanitize(note.body).first(10) if !note.nil? && !note.body.nil?
+    if !note.nil? && !note.body.nil?
+      body = ActionView::Base.full_sanitizer.sanitize(note.body)
+      attr = { 'data-toggle' => 'tooltip',
+               'data-placement' => 'right',
+               title: truncate(body, length: 150) }
+      content_tag(:div, body.first(10) , attr)
+    end
   end
 end
