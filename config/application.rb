@@ -41,5 +41,7 @@ module LokiC
     config.generators.system_tests = nil
     config.enable_dependency_loading = true
     config.autoload_paths += %W[#{config.root}/lib/]
+
+    config.active_record.yaml_column_permitted_classes = [Array, Hash, HashWithIndifferentAccess]
   end
 end

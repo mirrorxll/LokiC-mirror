@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class CronTab < ApplicationRecord
-  serialize :setup, Hash
+  serialize :setup, HashWithIndifferentAccess
 
   before_update do
     if enabled_changed?
