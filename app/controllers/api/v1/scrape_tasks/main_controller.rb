@@ -17,7 +17,7 @@ module Api
               tags: scrape_task.tags.map(&:name),
               has_data_location: scrape_task.table_locations.present?,
               name: scrape_task.name,
-              frequency: scrape_task.frequency.name,
+              frequency: scrape_task.frequency&.name,
               deadline: scrape_task.deadline,
               general_comment: html_sanitizer.sanitize(scrape_task.general_comment&.body),
               created_at: scrape_task.created_at.utc
