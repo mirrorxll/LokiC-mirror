@@ -12,6 +12,10 @@ class TaskAssignment < ApplicationRecord # :nodoc:
     confirmed_at - created_at - time_off
   end
 
+  def done?
+    done
+  end
+
   private
 
   def time_off
