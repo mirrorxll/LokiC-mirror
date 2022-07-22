@@ -2,8 +2,8 @@
 
 module ScrapeTasks
   class MainController < ScrapeTasksController
-    before_action :find_scrape_task, only: %i[show edit cancel_edit update evaluate]
-    before_action :find_data_set,    only: %i[show edit cancel_edit evaluate]
+    before_action :find_scrape_task, only: %i[show edit cancel_edit update]
+    before_action :find_data_set,    only: %i[show edit cancel_edit]
 
     before_action :grid_lists, only: %i[index show]
     before_action :current_list, only: :index
@@ -34,11 +34,7 @@ module ScrapeTasks
       @scrape_task.general_comment.update!(general_comment_param)
       @scrape_task.update!(update_scrape_task_params)
 
-      @scrape_task.data_set&.update!(scrape_task: nil)
-    end
-
-    def evaluate
-      @scrape_task.update!(current_account: current_account, evaluation: true)
+      redirect_to @scrape_task
     end
 
     private

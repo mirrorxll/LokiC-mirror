@@ -38,13 +38,16 @@
         SCRAPABLE?:
       .col-9
         -if @scrape_task.scrapable.eql?(1)
-          .font-weight-bold
-            YES
+          Yes
         -elsif @scrape_task.scrapable.eql?(0)
-          .font-weight-bold
-            NO
+          No
         -else
-          \---
+          Unknown
+    .row
+      .col-3.pr-0.text-right.font-weight-bold
+        FREQUENCY:
+      .col-9
+        =@scrape_task.frequency&.name
 
     .row.mt-4
       .col-3.pr-0.text-right.font-weight-bold

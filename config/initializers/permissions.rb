@@ -22,9 +22,9 @@ module AccessLevels
         grid: { assigned: true, created: true, all: true, archived: true },
         new_form: true,
         edit_form: true,
-        assignment_to_form: true,
-        assistants_form: true,
-        notification_to_form: true,
+        assignment_to: { show: true, edit_form: true },
+        assistants: { show: true, edit_form: true },
+        notification_to: { show: true, edit_form: true },
         progress_status: { show: true, edit_form: true },
         comments: { show: true, new_form: true, edit_form: true, delete: true },
         notes: { show: true, new_form: true, edit_form: true },
@@ -35,8 +35,9 @@ module AccessLevels
         new_form: true,
         edit_form: true,
         progress_status: { show: true, edit_form: true },
+        scraper: { show: true, edit_form: true },
         tags: { show: true, edit_form: true },
-        assignment_to_form: true,
+        table_locations: { show: true, edit_form: true },
         instructions: { show: true, edit_form: true },
         evaluation_document: { show: true, edit_form: true }
       },
@@ -44,15 +45,15 @@ module AccessLevels
         grid: { assigned: true, created: true, all: true, archived: true },
         new_form: true,
         edit_form: true,
-        assignment_to_sheriff_form: true,
-        assignment_to_responsible_form: true,
+        sheriff: { show: true, edit_form: true },
+        responsible_editor: { show: true, edit_form: true },
         table_locations: { show: true, edit_form: true }
       },
       story_types: {
         grid: { assigned: true, created: true, all: true, archived: true },
         new_form: true,
         edit_form: true,
-        assignment_to_form: true,
+        developer: { show: true, edit_form: true },
         iterations: { show: true, new_form: true, edit_form: true },
         progress_status: { show: true, edit_form: true }
       },
@@ -60,7 +61,7 @@ module AccessLevels
         grid: { assigned: true, created: true, all: true, archived: true },
         new_form: true,
         edit_form: true,
-        assignment_to_form: true,
+        developer: { show: true, edit_form: true },
         iterations: { show: true, new_form: true, edit_form: true },
         progress_status: { show: true, edit_form: true }
       }
@@ -86,9 +87,9 @@ module AccessLevels
         grid: { assigned: true, created: true, all: false, archived: false },
         new_form: true,
         edit_form: true,
-        assignment_to_form: true,
-        assistants_form: true,
-        notification_to_form: true,
+        assignment_to: { show: true, edit_form: true },
+        assistants: { show: true, edit_form: true },
+        notification_to: { show: true, edit_form: true },
         progress_status: { show: true, edit_form: true },
         comments: { show: true, new_form: true, edit_form: true, delete: true },
         notes: { show: true, new_form: true, edit_form: true },
@@ -99,8 +100,9 @@ module AccessLevels
         new_form: false,
         edit_form: false,
         progress_status: { show: true, edit_form: true },
+        scraper: { show: true, edit_form: false },
         tags: { show: false, edit_form: false },
-        assignment_to_form: false,
+        table_locations: { show: true, edit_form: true },
         instructions: { show: true, edit_form: false },
         evaluation_document: { show: true, edit_form: false }
       },
@@ -108,15 +110,15 @@ module AccessLevels
         grid: { assigned: true, created: false, all: true, archived: false },
         new_form: false,
         edit_form: false,
-        assignment_to_sheriff_form: false,
-        assignment_to_responsible_form: false,
-        table_locations: { show: true, edit_form: true }
+        sheriff: { show: false, edit_form: false },
+        responsible_editor: { show: false, edit_form: false },
+        table_locations: { show: true, edit_form: false }
       },
       story_types: {
         grid: { assigned: true, created: false, all: true, archived: false },
         new_form: false,
         edit_form: false,
-        assignment_to_form: false,
+        developer: { show: true, edit_form: false },
         iterations: { show: true, new_form: true, edit_form: true },
         progress_status: { show: true, edit_form: true }
       },
@@ -124,7 +126,7 @@ module AccessLevels
         grid: { assigned: true, created: false, all: true, archived: false },
         new_form: false,
         edit_form: false,
-        assignment_to_form: false,
+        developer: { show: true, edit_form: false },
         iterations: { show: true, new_form: true, edit_form: true },
         progress_status: { show: true, edit_form: true }
       }
@@ -150,9 +152,9 @@ module AccessLevels
         grid: { assigned: false, created: false, all: true, archived: false },
         new_form: false,
         edit_form: false,
-        assignment_to_form: false,
-        assistants_form: false,
-        notification_to_form: false,
+        assignment_to: { show: true, edit_form: false },
+        assistants: { show: true, edit_form: false },
+        notification_to: { show: true, edit_form: false },
         progress_status: { show: true, edit_form: false },
         comments: { show: true, new_form: false, edit_form: false, delete: false },
         notes: { show: true, new_form: true, edit_form: true },
@@ -163,8 +165,9 @@ module AccessLevels
         new_form: false,
         edit_form: false,
         progress_status: { show: true, edit_form: false },
+        scraper: { show: true, edit_form: false },
         tags: { show: false, edit_form: false },
-        assignment_to_form: false,
+        table_locations: { show: true, edit_form: false },
         instructions: { show: true, edit_form: false },
         evaluation_document: { show: true, edit_form: false }
       },
@@ -172,15 +175,15 @@ module AccessLevels
         grid: { assigned: false, created: false, all: true, archived: false },
         new_form: false,
         edit_form: false,
-        assignment_to_sheriff_form: false,
-        assignment_to_responsible_form: false,
+        sheriff: { show: false, edit_form: false },
+        responsible_editor: { show: false, edit_form: false },
         table_locations: { show: true, edit_form: false }
       },
       story_types: {
         grid: { assigned: false, created: false, all: true, archived: false },
         new_form: false,
         edit_form: false,
-        assignment_to_form: false,
+        developer: { show: true, edit_form: false },
         iterations: { show: true, new_form: false, edit_form: false },
         progress_status: { show: true, edit_form: false }
       },
@@ -188,7 +191,7 @@ module AccessLevels
         grid: { assigned: false, created: false, all: true, archived: false },
         new_form: false,
         edit_form: false,
-        assignment_to_form: false,
+        developer: { show: true, edit_form: false },
         iterations: { show: true, new_form: false, edit_form: false },
         progress_status: { show: true, edit_form: false }
       }

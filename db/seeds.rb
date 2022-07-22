@@ -178,18 +178,6 @@ end
 db02.close
 db02_sec.close
 
-puts 'Hosts/Schemas/Tables'
-%w[DB01 DB02 DB04 DB06 DB07 DB08 DB10 DB13 DB14 DB15].each { |h| Host.find_or_create_by(name: h) }
-SchemasTablesTask.new.perform
-
-# StoryTypes::ClientsPubsTagsSectionsJob.new.perform
-# StoryTypes::PhotoBucketsJob.new.perform
-# SlackAccountsJob.new.perform
-#
-# hidden = Client.where('name LIKE :like OR name IN (:mm, :mb)',
-#                       like: 'MM -%', mm: 'Metric Media', mb: 'Metro Business Network')
-# hidden.update_all(hidden_for_story_type: false)
-
 # ============ FeedBack rules for stories ============
 rules = {
   'capital_letters' => {
@@ -286,3 +274,24 @@ rules = {
 
 puts 'Auto-feedback'
 rules.each { |rule, output| AutoFeedback.find_or_create_by!(rule: rule, output: output) }
+
+puts 'Hosts/Schemas/Tables'
+%w[DB01 DB02 DB04 DB06 DB07 DB08 DB10 DB13 DB14 DB15].each { |h| Host.find_or_create_by(name: h) }
+SchemasTablesTask.new.perform
+
+puts 'Clients/Publications/Tags/Sections'
+ClientsPubsTagsSectionsTask.new.perform
+Client.where(
+  'name LIKE :like OR name IN (:mm, :mb)',
+  like: 'MM -%', mm: 'Metric Media',
+  mb: 'Metro Business Network'
+).update_all(hidden_for_story_type: false, hidden_for_work_request: false)
+
+puts 'PhotoBuckets'
+PhotoBucketsTask.new.perform
+
+puts 'Opportunities'
+OpportunitiesTask.new.perform
+
+puts 'SlackAccounts'
+SlackAccountsJob.new.perform

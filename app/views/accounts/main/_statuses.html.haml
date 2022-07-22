@@ -10,7 +10,7 @@
     function changeAccountStatus(status) {
       let reasons = null;
 
-      if(status.textContent === 'deactivated') {
+      if(status.textContent.trim() === 'deactivated') {
         reasons = prompt(`Deactivated:(\nWhy?`);
 
         if(!reasons) return false;

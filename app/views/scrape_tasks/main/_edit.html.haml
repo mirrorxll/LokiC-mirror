@@ -1,143 +1,3 @@
--# =form_with(url: scrape_task_path(@scrape_task), html: { onkeypress: "return event.keyCode !== 13;" }, method: :patch) do |f|
-  .row.mb-4.align-items-center
-    .col-2.pr-0.text-right.font-weight-bold
-      NAME:
-    .col-5
-      =f.text_field 'scrape_task[name]', class: 'form-control form-control-sm', value: @scrape_task.name,
-                                         required: true, disabled: false, readonly: false
-  %hr/
-  .row.mt-4
-    .col-6.border-right
-
-      .row.mb-4.align-items-center
-        .col-4.pr-0.text-right.font-weight-bold
-          DEADLINE:
-        .col-8
-          =f.date_field 'scrape_task[deadline]', type: :datetime, value: @scrape_task.deadline,
-                                                 disabled: false, readonly: false
-      :javascript
-        $('input[id="scrape_task[deadline]"]').datepicker({
-          format: 'yyyy-mm-dd'
-        });
-
-      .row.mb-4.align-items-center
-        .col-4.pr-0.text-right.font-weight-bold
-          STATE:
-        .col-8
-          =f.collection_select 'scrape_task[state_id]', State.all, :id, :name,
-                               { include_blank: '-- not set --', selected: @scrape_task.state&.id },
-                               { class: 'form-control form-control-sm w-50', disabled: false, readonly: false }
-      :javascript
-        $('select[id="scrape_task[state_id]"]').multipleSelect({
-          filter: true
-        });
-
-      .row.mb-4.align-items-center
-        .col-4.pr-0.text-right.font-weight-bold
-          SCRAPABLE?:
-        .col-8
-          =f.radio_button "scrape_task[scrapable]", 1, checked: @scrape_task.scrapable.eql?(1), disabled: false, readonly: false
-          =f.label 'yes', class: 'mr-2'
-          =f.radio_button "scrape_task[scrapable]", 0, checked: @scrape_task.scrapable.eql?(0), disabled: false, readonly: false
-          =f.label 'no'
-          =f.radio_button "scrape_task[scrapable]", nil, checked: @scrape_task.scrapable.nil?, disabled: false, readonly: false
-          =f.label 'unknown'
-
-      .row.mb-4.align-items-center
-        .col-4.pr-0.text-right.font-weight-bold
-          SCRAPE FREQUENCY:
-        .col-8
-          =f.collection_select 'scrape_task[frequency_id]',  Frequency.all, :id, :name,
-                               { include_blank: '-- not set --', selected: @scrape_task.frequency&.id },
-                               { class: 'form-control form-control-sm w-50', disabled: false, readonly: false }
-      :javascript
-        $('select[id="scrape_task[frequency_id]"]').multipleSelect({
-          filter: true
-        });
-
-      .row.mb-4.align-items-center
-        .col-4.pr-0.text-right.font-weight-bold
-          URL:
-        .col-8
-          =f.text_field 'scrape_task[datasource_url]', class: 'form-control form-control-sm w-100', value: @scrape_task.datasource_url
-
-    .col-6
-      .font-weight-bold
-        COMMENT DATASOURCE:
-      =f.text_area 'datasource_comment[body]', class: 'form-control form-control-sm',
-                   value: @scrape_task.datasource_comment&.body
-      :javascript
-        $('textarea[id="datasource_comment[body]"]').froalaEditor({
-          key: 'KfdolbcqsaA2wzA-13==',
-          editorClass: 'border rounded p-2 w-100 mt-1 mb-3',
-          toolbarInline: true,
-          toolbarButtons: ['undo', 'redo', '|', 'bold', 'italic', 'underline', 'strikeThrough', '|', 'color', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'insertLink', 'insertImage'],
-          imageUploadURL: '/images/upload',
-          imageUploadMethod: 'POST',
-          toolbarVisibleWithoutSelection: false,
-          zIndex: 3333,
-          height: 91
-        })
-
-      .font-weight-bold
-        COMMENT ON SCRAPE ABILITY:
-      =f.text_area 'scrape_ability_comment[body]', class: 'form-control form-control-sm',
-                   value: @scrape_task.scrape_ability_comment&.body
-      :javascript
-        $('textarea[id="scrape_ability_comment[body]"]').froalaEditor({
-          key: 'KfdolbcqsaA2wzA-13==',
-          editorClass: 'border rounded p-2 w-100 mt-1 mb-3',
-          toolbarInline: true,
-          toolbarButtons: ['undo', 'redo', '|', 'bold', 'italic', 'underline', 'strikeThrough', '|', 'color', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'insertLink', 'insertImage'],
-          imageUploadURL: '/images/upload',
-          imageUploadMethod: 'POST',
-          toolbarVisibleWithoutSelection: false,
-          zIndex: 3333,
-          height: 91
-        })
-
-      .font-weight-bold
-        GENERAL COMMENT:
-      =f.text_area 'general_comment[body]', class: 'form-control form-control-sm',
-                   rows: 5, value: @scrape_task.general_comment&.body
-      :javascript
-        $('textarea[id="general_comment[body]"]').froalaEditor({
-          key: 'KfdolbcqsaA2wzA-13==',
-          editorClass: 'border rounded p-2 w-100 mt-1',
-          toolbarInline: true,
-          toolbarButtons: ['undo', 'redo', '|', 'bold', 'italic', 'underline', 'strikeThrough', '|', 'color', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'insertLink', 'insertImage'],
-          imageUploadURL: '/images/upload',
-          imageUploadMethod: 'POST',
-          toolbarVisibleWithoutSelection: false,
-          zIndex: 3333,
-          height: 91
-        })
-
-  %hr/
-
-  -if !false
-    .row.align-items-center
-      .col-4.offset-2.mb-3
-        .btn.btn-sm.btn-link.p-0{ 'data-toggle' => "collapse", 'data-target' => "#otherFields",
-                                     'aria-expanded' => "false", 'aria-controls' => "otherFields" }
-          [ show/hide other fields ]
-
-    #otherFields.collapse
-      .row.align-items-center
-        .col-2.pr-0.text-right.font-weight-bold
-          GATHER TASK ID:
-        .col-4
-          =f.number_field 'scrape_task[gather_task]', class: 'form-control form-control-sm', value: @scrape_task.gather_task,
-                                                      disabled: false, readonly: false
-  %hr/
-
-  .row.align-items-center
-    .col-12.text-center
-      =f.submit 'update', class: 'btn btn-sm btn-dark'
-      %button{ type: "button", class: "btn btn-sm btn-outline-dark", 'data-dismiss' => "modal" }
-        Close
-
-
 =form_with(url: scrape_task_path(@scrape_task), method: :patch, local: true, html: { onkeypress: "return event.keyCode !== 13;" } ) do |f|
   #nameAnchor.mb-1
   #name.card
@@ -162,36 +22,47 @@
     .card-body
       .font-weight-bold.mb-1
         STATE:
-      .frequency
-        =f.collection_select 'scrape_task[state_id]', State.all, :id, :name,
-                             { include_blank: '', selected: @scrape_task.state&.id },
-                             { class: 'w-50 form-control form-control-sm' }
+      =f.collection_select 'scrape_task[state_id]', State.all, :id, :name,
+                           { include_blank: '', selected: @scrape_task.state&.id },
+                           { class: 'w-50 form-control form-control-sm' }
 
   #urlAnchor.mb-3
   #url.card
     .card-body
       .font-weight-bold.mb-1
         URL:
-      .frequency
-        =f.text_field 'scrape_task[url]', class: 'w-50 form-control form-control-sm', value: @scrape_task.state&.id
+      =f.text_field 'scrape_task[datasource_url]', class: 'w-50 form-control form-control-sm', value: @scrape_task.datasource_url
 
-  #scrapeFrequencyAnchor.mb-3
-  #scrapeFrequency.card
+  #scrapableAnchor.mb-3
+  #scrapable.card
+    .card-body
+      .font-weight-bold.mb-1
+        SCRAPABLE?:
+      =f.radio_button "scrape_task[scrapable]", 1, checked: @scrape_task.scrapable.eql?(1), disabled: false, readonly: false
+      =f.label 'Yes', class: 'mr-2'
+      =f.radio_button "scrape_task[scrapable]", 0, checked: @scrape_task.scrapable.eql?(0), disabled: false, readonly: false
+      =f.label 'No'
+      =f.radio_button "scrape_task[scrapable]", -1, checked: @scrape_task.scrapable.nil?, disabled: false, readonly: false
+      =f.label 'Unknown'
+
+  #frequencyAnchor.mb-3
+  #frequency.card
     .card-body
       .font-weight-bold.mb-1
         FREQUENCY:
-      .frequency
-        =f.collection_select 'scrape_task[frequency_id]', Frequency.all, :id, :name,
-                             { include_blank: '', selected: @scrape_task.frequency&.id },
-                             { class: 'w-50 form-control form-control-sm' }
+      =f.collection_select 'scrape_task[frequency_id]', Frequency.all, :id, :name,
+                           { include_blank: '', selected: @scrape_task.frequency&.id },
+                           { class: 'w-50 form-control form-control-sm' }
 
-  #comments
-    -{ 'COMMENT ON DATASOURCE' => 'datasource_comment', 'COMMENT ON SCRAPE ABILITY' => 'scrape_ability_comment', 'GENERAL COMMENT' => 'general_comment' }.each do |label, key|
+  #comments.mt-3.mb-3
+    -{ 'COMMENT ON DATASOURCE' => 'datasource_comment',
+       'COMMENT ON SCRAPE ABILITY' => 'scrape_ability_comment',
+       'GENERAL COMMENT' => 'general_comment' }.each do |label, key|
       .card.mb-3
         .card-body
           .font-weight-bold.mb-2
             ="#{label}:"
-          =f.text_area "scrape_task[#{key}]", class: 'form-control form-control-sm w-75',
+          =f.text_area "#{key}[body]", class: 'form-control form-control-sm w-75',
                        value: @scrape_task.public_send(key).body&.gsub(/\\n/, '\n'), maxlength: 2000,
                        rows: @scrape_task.public_send(key).body&.count("\n") + 1
 
@@ -209,7 +80,12 @@
           placeholderText: 'Type here....'
         })
 
-
+  #urlAnchor.mb-3
+  #url.card
+    .card-body
+      .font-weight-bold.mb-1
+        GATHER TASK ID:
+      =f.number_field 'scrape_task[gather_task]', class: 'w-50 form-control form-control-sm', value: @scrape_task.gather_task
 
   =f.submit id: 'hiddenUpdateScrapeTaskButton', class: 'd-none'
 
