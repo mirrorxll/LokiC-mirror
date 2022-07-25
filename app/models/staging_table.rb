@@ -82,7 +82,7 @@ class StagingTable < ApplicationRecord # :nodoc:
   end
 
   def not_lokic_name?
-    !name.match?(/^[as]\d{4,5}$/)
+    !name.match?(/^[afs]\d{4,5}$/)
   end
 
   def generate_table_name

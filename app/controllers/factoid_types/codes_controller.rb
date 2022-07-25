@@ -29,11 +29,11 @@ module FactoidTypes
     def download_code
       # @code = @factoid_type.download_code_from_db
       @code = <<~CODE
-        class A1
-          STAGING_TABLE = 'a0001'
+        class F2
+          STAGING_TABLE = 'f0002'
   
           def population(options)
-            host = Mysql2::Client.new(host: '127.0.0.1', username: 'sergeydev', password: 'ni260584mss', database: 'loki_story_creator_dev')
+            host = Mysql2::Client.new(host: '127.0.0.1', username: 'sergeydev', password: 'ni260584mss', database: 'loki_story_creator_dev_up')
             arry = (1..5).to_a
             # copy objectable ids from Limpar DB
             limpar_ids = ['678cc815-74f2-4f42-a761-e58fd11f6dfa',

@@ -10,8 +10,3 @@
           =link_to('create samples from the last iteration',
                     execute_factoid_type_iteration_creations_path(@factoid_type, @iteration),
                     class: 'btn btn-sm btn-outline-dark', method: :post, remote: true)
-        -elsif @iteration.creation && @iteration.articles.published.count.zero?
-          =link_to('purge samples from the last iteration',
-                    purge_factoid_type_iteration_creations_path(@factoid_type, @iteration),
-                    id: 'purge_stories', class: 'btn btn-sm btn-outline-danger',
-                    method: :delete, remote: true)

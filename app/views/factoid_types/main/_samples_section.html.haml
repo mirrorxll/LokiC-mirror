@@ -1,0 +1,12 @@
+-if @iteration.population
+  %div{id: "factoid_type_samples_#{@iteration.id}", class: 'h-100'}
+    #factoid_type_samples.card.h-100
+      .card-header.d-flex.justify-content-between.align-items-center
+        SAMPLES (iteration: #{@iteration.name})
+        #samples_control
+          = render 'factoid_types/samples/samples_control'
+
+      #samples
+        .flash
+        .card-body.d-flex.flex-column
+          =render 'factoid_types/samples/samples'

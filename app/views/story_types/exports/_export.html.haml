@@ -1,4 +1,3 @@
-#cover-spin
 -if @iteration.schedule
   -stories = @iteration.stories.where(backdated: false)
   -exported = stories.where.not("pl_#{PL_TARGET}_story_id".to_sym => nil).count

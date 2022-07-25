@@ -26,7 +26,7 @@ module FactoidTypes
       message = "The template for <#{url}|Factoid Type ##{@factoid_type.id}> has been updated by #{current_account.name}." \
                 ' Pay attention and make needed changes in the creation method.'
 
-      ::SlackNotificationJob.perform_now(channel, message)
+      ::SlackNotificationJob.new.perform(channel, message)
     end
 
     def template_params

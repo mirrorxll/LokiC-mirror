@@ -37,30 +37,12 @@
 .row.small.justify-content-md-center.justify-content-lg-start.mx-0
   #staging_table_section.col-lg-6.col-md-12.my-2
     =render 'factoid_types/main/staging_table_section'
+  #samples_section.col-lg-6.col-md-12.my-2
+    =render 'factoid_types/main/samples_section'
 
-
-
-
-%div.accordion{id: "factoid_type_samples_#{@iteration.id}"}
-  .card
-    .card-header
-      %div.text-center{"aria-controls" => "#samles", "aria-expanded" => "false", "data-target" => "#samples", "data-toggle" => "collapse", type: "button"}
-        samples (iteration: #{@iteration.name})
-    #samples.collapse.show{"data-parent" => "#factoid_type_samples_#{@iteration.id}"}
-      .flash
-      .card-body
-        =render 'factoid_types/samples/samples'
-
-%div.accordion{id: "factoid_type_export_#{@iteration.id}"}
-  .card
-    .card-header
-      %div.text-center{"aria-controls" => "#export", "aria-expanded" => "false", "data-target" => "#export", "data-toggle" => "collapse", type: "button"}
-        export (iteration: #{@iteration.name})
-    #export.collapse.show{"data-parent" => "#factoid_type_export_#{@iteration.id}"}
-      .flash
-      .card-body.small
-        =render 'factoid_types/publishes/publish'
-%hr.mb-5/
+.row.small.justify-content-md-center.justify-content-lg-start.mx-0
+  #export_section.col-lg-6.col-md-12.my-2
+    =render 'factoid_types/main/export_section'
 
 =render 'factoid_types/main/template_modal'
 =render 'factoid_types/codes/modal_ruby_code'

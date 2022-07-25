@@ -36,7 +36,7 @@ $(document).on("turbolinks:load", function() {
 
     function update_sections(data) {
         $.ajax({
-            url: `${window.location.origin}/factoid_types/${factoidTypeId}/update_sections`,
+            url: `${window.location.origin}/factoid_types/${factoidTypeId}/update_section`,
             method: 'patch',
             dataType: 'script',
             data: data

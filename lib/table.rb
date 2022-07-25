@@ -125,4 +125,10 @@ module Table # :nodoc:
     select_query = limpar_year(t_name, curr_iter)
     loki_story_creator { |conn| conn.exec_query(select_query).to_a }
   end
+
+  def delete_rows_from_st_table(t_name, rows)
+    curr_iter    = curr_iter_id(t_name)
+    delete_query = delete_st_table_rows(t_name, curr_iter, rows)
+    loki_story_creator { |conn| conn.exec_query(delete_query) }
+  end
 end

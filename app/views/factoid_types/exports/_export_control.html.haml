@@ -1,0 +1,5 @@
+-if published.positive?
+  =link_to('remove factoids from limpar',
+                    remove_exported_articles_factoid_type_iteration_exports_path(@factoid_type, @iteration),
+                    method: :delete, remote: true, data: { confirm: 'Are you sure?' },
+                    class: 'mt-3 btn btn-sm btn-outline-danger')

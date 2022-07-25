@@ -1,4 +1,5 @@
 (function () {
+    // updating iteration and status //
     $('#story_type_iterations').html('<%= j render partial: 'story_types/iterations/iteration',
                                                    collection: @story_type.iterations.where(cron_tab: [nil, false]),
                                                    current_iteration: @story_type.iteration %>');
@@ -6,6 +7,7 @@
     $('#new_story_type_iteration').html('<%= j render 'story_types/iterations/new_iteration' %>');
     $('#story_type_status').html(`<%= j render 'story_types/progress_statuses/status' %>`);
 
+    // updating template section //
     let templateBody = $('#story_type_template .card-body');
     templateBody.html('<%= j render 'story_types/main/template' %>');
 

@@ -358,8 +358,9 @@ Rails.application.routes.draw do
     resources :factoid_types, controller: :main do
       get   :properties_form
       get   :canceling_rename,  on: :member
-      patch :update_sections,   on: :member
       patch :change_data_set,   on: :member
+
+      resource :update_section, only: :update
 
       resources :templates, path: :template, only: %i[show edit update] do
         patch :save, on: :member

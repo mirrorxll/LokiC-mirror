@@ -13,7 +13,7 @@ module FactoidTypes
       message = e.message
     ensure
       iteration.update!(population: nil, purge_population: nil, current_account: account)
-      send_to_action_cable(iteration.article_type, :staging_table, message)
+      send_to_action_cable(iteration.factoid_type, :staging_table, message)
       SlackIterationNotificationJob.new.perform(iteration.id, 'population', message)
     end
   end

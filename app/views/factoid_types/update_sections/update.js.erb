@@ -1,0 +1,60 @@
+// updating iteration and status //
+$('#factoid_type_iterations').html('<%= j render partial: 'factoid_types/iterations/iteration',
+                                               collection: @factoid_type.iterations,
+                                               current_iteration: @factoid_type.iteration %>');
+
+$('#new_factoid_type_iteration').html('<%= j render 'factoid_types/iterations/new_iteration' %>');
+$('#factoid_type_status').html(`<%= j render 'factoid_types/progress_statuses/status' %>`);
+
+// updating template section //
+let templateBody = $('#factoid_type_template .card-body');
+templateBody.html('<%= j render 'factoid_types/main/template' %>');
+
+// updating properties section //
+let propSection = $('#properties_section');
+propSection.html('<%= j render 'factoid_types/main/properties_section' %>')
+
+let expConfFlash = $('#factoid_type_properties .flash');
+<% if flash.now[:properties] %>
+expConfFlash.html(
+    `<div class="alert alert-<%= flash_color(flash.now[:properties]) %> text-center">
+            <%= flash.now[:properties].gsub('`', "'") %>
+          </div>`
+)
+<% else %>
+expConfFlash.empty();
+<% end %>
+
+// updating staging_table section //
+let stSection = $('#staging_table_section');
+stSection.html('<%= j render 'factoid_types/main/staging_table_section' %>');
+
+let stFlash = $('#staging_table .flash');
+<% if flash.now[:staging_table] %>
+stFlash.html(
+    `<div class="alert alert-<%= flash_color(flash.now[:staging_table]) %> text-center">
+            <%= flash.now[:staging_table].gsub('`', "'") %>
+          </div>`
+)
+<% else %>
+stFlash.empty();
+<% end %>
+
+// updating samples section //
+let samplesSection = $('#samples_section');
+samplesSection.html('<%= j render 'factoid_types/main/samples_section' %>')
+
+let samplesFlash = $('#samples .flash');
+<% stories = flash.now[:samples] || flash.now[:stories] %>
+<% if stories %>
+samplesFlash.html(
+    `<div class="alert alert-<%= flash_color(stories) %> text-center">
+            <%= stories.gsub('`', "'") %>
+          </div>`
+)
+<% else %>
+samplesFlash.empty();
+<% end %>
+
+// updating export section //
+

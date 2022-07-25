@@ -15,20 +15,11 @@ module FactoidTypes
         elsif @staging_table_name.present? && StagingTable.not_exists?(@staging_table_name)
           "Table with name '#{@staging_table_name}' not exists."
         else
-          pp '>>>>>>>>>>>>>>>>>>'*100, @factoid_type, params, current_account
-
-          if @factoid_type.update(staging_table_attached: false, current_account: current_account)
-            pp ' ++++++++++++++++ '*100
-          else
-            pp ' ------------------ '*100
-          end
-          pp '<<<<<<<<<<<<<<<<<<<<<<<<<<<'*100, @factoid_type, params
-
+          @factoid_type.update!(staging_table_attached: false, current_account: current_account)
           StagingTableAttachingJob.perform_async(@factoid_type.id, current_account.id, @staging_table_name)
           nil
         end
 
-      pp ' 66666666666666666666 '*100
       render 'show'
     end
 
@@ -45,9 +36,7 @@ module FactoidTypes
     private
 
     def staging_table_name_from_params
-      pp ' **** '*100, params
       @staging_table_name = params.require(:staging_table).permit(:name)[:name]
-      pp ' ---- '*100, @staging_table_name
     end
 
     def staging_table

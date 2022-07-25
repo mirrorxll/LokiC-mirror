@@ -12,60 +12,32 @@
   -staging_table = @factoid_type.staging_table
   -columns = staging_table.columns.list
   -uniq_index = staging_table.index.list
-  .row.small
+  .row.border-top.mt-3.ml-0.mr-0.pt-3
     .col-10.offset-1
-      #staging_table_name.row
-        .col-12
-          %p #{staging_table.name}
-      #staging_table_control.row
-        #sync.col-1
-          .btn-group
-            =link_to('sync', sync_factoid_type_staging_table_path(@factoid_type, staging_table),
-                      class: 'btn btn-sm btn-outline-dark', method: :patch, remote: true)
-        -##manipulate.col-6
-        -#  .btn-group
-        -#    -if @iteration.population.eql?(true) && !@iteration.samples.eql?(true)
-        -#      =link_to('purge staging table', purge_factoid_type_iteration_populations_path(@factoid_type, @iteration),
-        -#                class: 'btn btn-sm btn-outline-danger', method: :delete,  remote: true,
-        -#                data: { confirm: 'PURGE CURRENT ITERATION: You sure?' })
-        -#      .d-inline-flex.ml-3.align-items-end
-        -#        ***will purge rows related to current iteration
-        #exec_population.col-5.text-right
-          =render 'factoid_types/populations/form'
-      %hr/
-      #columns__index.row
-        .col-12
-          .btn-group.mb-2
-            #edit_columns
-              =link_to('edit column list',
-                       edit_factoid_type_staging_table_columns_path(@factoid_type, staging_table, staging_table.columns),
-                       class: 'btn btn-sm btn-outline-dark', remote: true)
-            #edit_index.mb-2.ml-2
-              -if staging_table.index.list.empty?
-                =link_to("add unique index",
-                         new_factoid_type_staging_table_index_path(@factoid_type, staging_table),
-                         class: "btn btn-sm btn-outline-dark #{columns.empty? ? 'disabled': ''}", remote: true)
-              -elsif !@iteration.population
-                =link_to("drop unique index",
-                         factoid_type_staging_table_index_path(@factoid_type, staging_table, staging_table.index),
-                         class: 'btn btn-sm btn-outline-dark', method: :delete, remote: true)
-          %br
-          .row.font-weight-bold
-            .col-6 name
-            .col-6 type
-          %hr.mb-1.mt-1/
-          -columns.each do |_id, col|
-            .row
-              .col-6
-                #{col[:name]}
-              .col-6
-                #{col[:type]} #{col[:options].values.all?(nil) ? '' : "(#{col[:options].values.compact.join(',')})"}
+      #staging_table_name
+        .row.mb-1.font-weight-bold
+          .col-12
+            %p #{staging_table.name}
 
-          %hr.mt-0/
-          .row
-            .col-6
-              %p factoid uniq index: #{'index is empty or not set' unless uniq_index.present?}
-            .col-6
-              -uniq_index.each do |index|
-                =index
-                %br/
+    -if @iteration.eql?(@factoid_type.iteration)
+      .col-10.offset-1.align-items-center
+        .row
+          #sync.col-3
+            .btn-group
+              =link_to('sync', sync_factoid_type_staging_table_path(@factoid_type, staging_table),
+                        class: 'btn btn-sm btn-outline-dark', method: :patch, remote: true)
+          #exec_population.col-9.text-right
+            =render 'factoid_types/populations/form'
+  #columns__index.row.border-top.mt-3.ml-0.mr-0.pt-3
+    =render 'factoid_types/staging_tables/columns_and_index', staging_table: staging_table,
+                                                              columns: columns
+
+  .row.border-top.ml-0.mr-0.pt-3.align-items-end
+    .col-10.offset-1
+      .row
+        .col-6
+          %p factoid uniq index: #{'index is empty or not set' unless uniq_index.present?}
+        .col-6
+          -uniq_index.each do |index|
+            =index
+            %br/

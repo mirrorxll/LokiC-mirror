@@ -1,4 +1,4 @@
--if @story_type.code.attached?
+-if @story_type.code.attached? && @story_type.staging_table.index.list.present?
   -if @iteration.population.nil?
     =form_with(url: execute_story_type_iteration_populations_path(@story_type, @iteration)) do |form|
       .row.align-items-center

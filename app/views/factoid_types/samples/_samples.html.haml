@@ -22,12 +22,11 @@
     =render 'factoid_types/main/spinner', description: 'purging in progress'
   -else
     - samples = @iteration.articles.where(sampled: true)
-    .row
+    .row.border-top.mt-3.mx-0.pt-3
       .col-10.offset-1
         #stories_form
           =render 'factoid_types/samples/form', samples: samples
-        %hr/
-    .row
+    .row.border-top.mt-3.mx-0.pt-3
       .col-10.offset-1
         #created_stories
           -if samples.count.positive?
