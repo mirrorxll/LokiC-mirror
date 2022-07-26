@@ -17,12 +17,17 @@
                            { class: 'h_25px mx-1', id: "columns_#{hex}_type" }
               .d-inline-block
                 -if %i[string text integer float].include?(column[:type])
-                  =form.text_field "#{hex}[options[limit]]", { class: 'w_80px', value: column[:options][:limit], placeholder: 'limit', id: "columns_#{hex}_params_limit" }
+                  =form.text_field "#{hex}[options[limit]]", { class: 'w_80px', value: column[:options][:limit],
+                                                               placeholder: 'limit', id: "columns_#{hex}_params_limit" }
                 -elsif %i[decimal datetime time].include?(column[:type])
-                  =form.text_field "#{hex}[options[precision]]", { class: 'w_80px', value: column[:options][:precision], placeholder: 'precision', id: "columns_#{hex}_params_precision" }
+                  =form.text_field "#{hex}[options[precision]]", { class: 'w_80px', value: column[:options][:precision],
+                                                                   placeholder: 'precision',
+                                                                   id: "columns_#{hex}_params_precision" }
                 -if column[:type].eql?(:decimal)
-                  =form.text_field "#{hex}[options[scale]]", { class: 'w_80px', value: column[:options][:scale], placeholder: 'scale', id: "columns_#{hex}_params_scale" }
+                  =form.text_field "#{hex}[options[scale]]", { class: 'w_80px', value: column[:options][:scale],
+                                                               placeholder: 'scale', id: "columns_#{hex}_params_scale" }
           =form.submit :update, class: 'btn btn-sm btn-outline-success m-3'
-          =link_to('cancel', canceling_edit_factoid_type_staging_tables_path(@factoid_type), class: 'btn btn-sm btn-outline-danger m-3', remote: true)
+          =link_to('cancel', canceling_edit_factoid_type_staging_tables_path(@factoid_type),
+                   class: 'btn btn-sm btn-outline-danger m-3', remote: true)
 
 =javascript_pack_tag 'columns/edit_form'

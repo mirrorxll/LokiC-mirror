@@ -35,18 +35,15 @@ module FactoidTypes
       pub_f.developer      = factoid_type.developer
       pub_f.date_export    = Date.today
       pub_f.count_factoids = iteration.articles.count
-
       pub_f.save!
-
-      pp '22222222222222222222'*100, pub_f
 
       note = MiniLokiC::Formatize::Numbers.to_text(pub_f.count_factoids).capitalize
       record_to_change_history(factoid_type, 'published on limpar', note, account)
 
       if factoid_type.iterations.last.eql?(iteration) && !factoid_type.reload.status.name.in?(['canceled',
-                                                                                              'blocked',
-                                                                                              'on cron',
-                                                                                              'exported'])
+                                                                                               'blocked',
+                                                                                               'on cron',
+                                                                                               'exported'])
         factoid_type.update!(
           status: Status.find_by(name: 'exported'),
           current_account: account
@@ -56,9 +53,7 @@ module FactoidTypes
     rescue StandardError, ScriptError, ArgumentError => e
       status  = nil
       message = e.message
-      pp '////////////////////'*100, message
     ensure
-      pp '333333333333333333333333'*100, status, iteration
       iteration.reload.update!(export: status)
       send_to_action_cable(factoid_type, :export, message)
       FactoidTypes::SlackIterationNotificationJob.new.perform(iteration.id, 'export', message)

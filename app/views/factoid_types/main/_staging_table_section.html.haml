@@ -7,14 +7,3 @@
     .flash
     .card-body.d-flex.flex-column
       =render 'factoid_types/staging_tables/staging_table'
-
--# -if @iteration.eql?(@factoid_type.iteration)
--#   #factoid_type_staging_table.accordion
--#     .card
--#       .card-header
--#         %div.text-center{"aria-controls" => "#staging_table", "aria-expanded" => "false", "data-target" => "#staging_table", "data-toggle" => "collapse", type: "button"}
--#           staging table
--#       #staging_table.collapse.show{"data-parent" => "#factoid_type_staging_table"}
--#         .flash
--#         .card-body
--#           =render 'factoid_types/staging_tables/staging_table'

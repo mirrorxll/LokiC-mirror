@@ -9,9 +9,9 @@
       .row
         .col-10.offset-1
           total published: #{published} / #{articles.count}
-      .row
-        .col-10.offset-1
-          -if published < articles.count
+      -if published < articles.count
+        .row
+          .col-10.offset-1
             =link_to('extra publish!', execute_factoid_type_iteration_exports_path(@factoid_type, @iteration),
                      id: 'publish', class: 'mt-3 btn btn-sm btn-outline-dark', method: :post, remote: true)
             .ml-3.d-inline-block
@@ -20,9 +20,9 @@
                        type: "button", class: 'mt-3 btn btn-sm btn-outline-danger', onclick: 'disablePublishBtn();')
       =render 'factoid_types/publishes/limited_export_section'
       .row
-        .col-5.offset-1.mt-3
+        .col-10.offset-1.mt-3
           =link_to('published factoids', articles_factoid_type_iteration_exports_url(@factoid_type, @iteration),
-                 class: 'd-inline-block mr-3 mt-3 btn btn-sm btn-outline-dark', target: '_blank')
+                 class: 'd-inline-block btn btn-sm btn-outline-dark', target: '_blank')
       -# when the export is running
     -elsif @iteration.export.eql?(false)
       =render 'factoid_types/main/spinner', description: 'publish in progress'

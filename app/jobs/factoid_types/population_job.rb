@@ -6,7 +6,6 @@ module FactoidTypes
     def perform(iteration_id, account_id, options)
       options.deep_symbolize_keys!
 
-      pp ' *************** '*100
       iteration = FactoidTypeIteration.find(iteration_id)
       account = Account.find(account_id)
       status = true
@@ -23,7 +22,6 @@ module FactoidTypes
     rescue StandardError, ScriptError => e
       status = nil
       message = e.message
-      pp ' 777777777777777 '*100, message
     ensure
       iteration.update!(population: status, current_account: account)
       send_to_action_cable(factoid_type, :staging_table, message)

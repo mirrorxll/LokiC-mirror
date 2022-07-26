@@ -3,7 +3,6 @@
 module FactoidTypes
   class StagingTableColumnsJob < FactoidTypesJob
     def perform(staging_table_id, columns)
-      pp ' >>>>>>>>>>>>>>>>>>>>> '*100
       staging_table = StagingTable.find(staging_table_id)
       message = "Success. Staging table's columns modified"
 

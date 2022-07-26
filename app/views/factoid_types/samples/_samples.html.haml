@@ -16,9 +16,9 @@
         %hr/
         =render 'factoid_types/samples/stories_link'
 
-  -elsif @iteration.articles.eql?(false) || @iteration.creation.eql?(false)
-    =render 'factoid_types/main/spinner', description: 'creation in the process'
-  -elsif @iteration.purge_samples.eql?(true) || @iteration.purge_creation.eql?(true)
+  -elsif @iteration.samples.eql?(false) || @iteration.creation.eql?(false)
+    =render 'factoid_types/main/spinner', description: 'creation in progress'
+  -elsif @iteration.purge_samples.eql?(false) || @iteration.purge_creation.eql?(true)
     =render 'factoid_types/main/spinner', description: 'purging in progress'
   -else
     - samples = @iteration.articles.where(sampled: true)

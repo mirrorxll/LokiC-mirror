@@ -12,7 +12,6 @@
       $('#staging_table .card-body').html('<%= j render 'story_types/staging_tables/staging_table'%>')
     <% end %>
 }())
-console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!');
 $('#story_type_iterations').html('<%= j render partial: 'story_types/iterations/iteration',
                                                collection: @story_type.iterations.where(cron_tab: [nil, false]),
                                                current_iteration: @story_type.iteration %>');

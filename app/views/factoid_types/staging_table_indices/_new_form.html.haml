@@ -6,7 +6,8 @@
       #index_editable
 
       =form.submit :create, class: 'btn btn-sm btn-outline-success m-3'
-      =link_to('cancel', canceling_edit_factoid_type_staging_tables_path(@factoid_type), class: 'btn btn-sm btn-outline-danger m-3', remote: true)
+      =link_to('cancel', canceling_edit_factoid_type_staging_tables_path(@factoid_type),
+               class: 'btn btn-sm btn-outline-danger m-3', remote: true)
 
 :javascript
   var columns = #{raw @columns};

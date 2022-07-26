@@ -1,4 +1,4 @@
--if @iteration.population
+-if @iteration.population && !@iteration.purge_population.eql?(false)
   %div{id: "factoid_type_samples_#{@iteration.id}", class: 'h-100'}
     #factoid_type_samples.card.h-100
       .card-header.d-flex.justify-content-between.align-items-center

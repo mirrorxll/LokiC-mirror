@@ -27,7 +27,7 @@
 .row
   .col-10.offset-1
     #templatePreviewCollapse.collapse.show
-      =render 'factoid_types/template_preview'
+      =render 'factoid_types/main/template_preview'
 
 %hr#reviewers_feedback/
 .row.small
@@ -36,7 +36,7 @@
       .card-header.d-flex.justify-content-between.align-items-center
         reviewers feedback
         .btn-group
-          -if account_types.include?('manager')
+          -if current_account_permissions('factoid_types')['fcd_review']
             =link_to("add feedback", new_factoid_type_fact_checking_doc_reviewers_feedback_path(@factoid_type, @fcd),
                      'data-toggle'=>'modal', 'data-target'=>'#manual_feedback_modal',
                      class: "btn btn-sm btn-light text-dark", onclick: 'hideAllPopovers();', remote: true)
@@ -76,7 +76,7 @@
         editors feedback
 
         .btn-group
-          -if !account_types.include?('developer')
+          -if current_account_permissions('factoid_types')['fcd_review']
             =link_to("add feedback", new_factoid_type_fact_checking_doc_editors_feedback_path(@factoid_type, @fcd),
                      'data-toggle'=>'modal', 'data-target'=>'#manual_feedback_modal',
                      class: "btn btn-sm btn-light text-dark", onclick: 'hideAllPopovers();', remote: true)
@@ -145,4 +145,4 @@
             #fcd.tab-pane.fade.show.active{"aria-labelledby" => "fcd-tab", role: "tabpanel"}
 
         .d-inline-flex.flex-column.align-top.w-39.h-90
-=render 'story_types/main/template_modal'
+=render 'factoid_types/main/template_modal'

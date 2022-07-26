@@ -25,7 +25,7 @@
         =render 'story_types/samples/stories_link'
 
   -elsif @iteration.samples.eql?(false) || @iteration.creation.eql?(false)
-    =render 'story_types/main/spinner', description: 'creation in the process'
+    =render 'story_types/main/spinner', description: 'creation in progress'
   -elsif @iteration.purge_creation.eql?(true)
     =render 'story_types/main/spinner', description: 'purging in progress'
   -else

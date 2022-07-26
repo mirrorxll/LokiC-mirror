@@ -1,5 +1,5 @@
 module StoryTypes::ShowHelper
-  def blocked_item?
+  def story_types_blocked_item?
     true unless [@story_type.staging_table_attached.eql?(false), @story_type.staging_table&.indices_modifying.eql?(true),
                  @story_type.staging_table&.columns_modifying.eql?(true), @iteration.population.eql?(false),
                  @iteration.samples.eql?(false), @iteration.purge_samples.eql?(false),
