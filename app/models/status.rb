@@ -46,6 +46,13 @@ class Status < ApplicationRecord
     ordered_statuses(statuses)
   end
 
+  def self.data_set_statuses(archived: false)
+    statuses = ['active']
+    statuses.push('archived') if archived
+
+    ordered_statuses(statuses)
+  end
+
   def self.hle_statuses(created: false, archived: false)
     statuses = created ? ['created and in queue'] : []
 

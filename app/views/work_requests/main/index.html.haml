@@ -13,15 +13,15 @@
           =link_to(list, url_for(list: list), class: "btn btn-sm btn#{filled}-dark")
     .btn-group
       -if @current_list
-        =link_to('filter', '#', class: 'disabled btn btn-sm btn-outline-dark',
-                 "data-target" => "#filter", "data-toggle" => "modal")
+        =link_to('filter', '#', class: 'btn btn-sm btn-outline-dark',
+                 "data-target" => "#filterWReq", "data-toggle" => "collapse")
       -if @permissions['new_form']
         =link_to('create', '#', class: 'btn btn-sm btn-outline-dark',
                  "data-target" => "#createWorkRequestModal", "data-toggle" => "modal")
-%hr/
+%hr.mb-1/
 
 -if @current_list
-  #filter.mt-3.mb-3.collapse{ class: (params[:work_requests_grid] ? 'show' : '') }
+  #filterWReq.mt-3.mb-3.collapse
     =datagrid_form_for @grid, url: work_requests_path(list: @current_list)
 
   .row.small.mb-5
@@ -32,6 +32,24 @@
     .row
       .col-12.p-2
         =paginate @grid.assets
+
+  :javascript
+    (() => {
+      let filter = $('#filterWReq');
+      filter.on('show.bs.collapse', () => {
+        sessionStorage['w_req_filter_show'] = true;
+      });
+
+      filter.on('hide.bs.collapse', () => {
+        sessionStorage['w_req_filter_show'] = false;
+      });
+
+      if(JSON.parse(sessionStorage['w_req_filter_show'])) {
+        filter.addClass('show');
+      } else {
+        filter.removeClass('show');
+      }
+    })();
 
 -if @permissions['new_form']
   #createWorkRequestModal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "createWorkRequestModal",

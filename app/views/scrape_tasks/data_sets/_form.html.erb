@@ -20,7 +20,7 @@
       </datalist>
 
       <span class="mr-2 ml-2">OR</span>
-      <%= link_to('[ create ]', '#', "data-toggle" => "modal", "data-target" => "#dataSetForm") %>
+      <%= link_to('[ create ]', '#', "data-toggle" => "modal", "data-target" => "#createDataSetModal") %>
 
       <div class="small"> *** press enter </div>
     </div>
@@ -32,15 +32,34 @@
 
 <hr class="mb-0">
 
-<div id="dataSetForm" class="modal fade" aria-hidden="true" aria-labelledby="data_set_form"
+<div id="createDataSetModal" class="modal fade" aria-hidden="true" aria-labelledby="createDataSetModal"
      role="dialog" tabindex="-1" data-backdrop="static" data-keyboard='false'>
-  <div class="modal-dialog modal-dialog-centered modal-xl">
+  <div class="modal-dialog">
     <div class="modal-content">
+      <div class="modal-header">
+        NEW DATA SET
+        <button class="close" aria-label="Close" data-dismiss="modal" type="button">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
       <div class="modal-body">
-        <%#=render 'data_sets/main/form' %>
+        <%=render 'scrape_tasks/data_sets/new' %>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <%= link_to('CREATE', '#', id: 'createDataSetButton', class: 'btn btn-sm btn-dark') %>
+        <div class="btn btn-sm btn-outline-secondary" aria-label="Close" data-dismiss="modal" type=button">CANCEL</div>
       </div>
     </div>
   </div>
 </div>
 
+<script type="text/javascript" charset="utf-8">
+    document.querySelector('#createDataSetButton').addEventListener('click', (event) => {
+        event.preventDefault();
+        document.querySelector('#hiddenCreateDataSetButton').click();
+    }, false);
+</script>
+
 <%= javascript_pack_tag 'scrape_tasks/data_sets/form' %>
+
+

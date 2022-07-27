@@ -11,7 +11,7 @@
   .text-secondary
     created at: #{@scrape_task.created_at}#{@scrape_task.updated_early? ? " | updated at: #{@scrape_task.updated_at}" : ""}
 
-.row.align-items-stretch.mt-4.mb-4
+.row.align-items-stretch.mt-4
   .col-xl-8.col-sm-12
     #scrappingInfo
       .card
@@ -25,14 +25,6 @@
                 #editScrapeTask
                   %button{ type: 'button', class: 'p-0 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#updateScrapeTaskModal" }
                     [ edit ]
-                  :javascript
-                    function loadEditForm() {
-                      Rails.ajax({
-                        type: "GET",
-                        dataType: 'script',
-                        url: `#{edit_scrape_task_path(@scrape_task)}`
-                      })
-                    }
               -if @permissions['progress_status'].values.any?
                 #scrapeTaskStatus.d-inline-block
                   -if @permissions['progress_status']['edit_form']
@@ -70,24 +62,73 @@
       document.querySelector('#hiddenUpdateScrapeTaskButton').click();
     }, false);
 
-#scrapeInstructionAnchor
-#scrapeEvaluationDocAnchor
+-if @permissions['instructions']['edit_form']
+  #scrapeInstructionAnchor.mb-4
+-if @permissions['evaluation_document']['edit_form']
+  #scrapeEvaluationDocAnchor.mb-4
 
-%ul#scrapeTaskTabs.nav.nav-tabs.small
-  %li.nav-item.text-center{ style: 'width: 50%' }
-    %a#scrapeInstructionTab.nav-link.active{"aria-selected" => "true", "data-toggle" => "tab", :href => "#scrapeInstruction", :role => "tab"} Instruction
-  %li.nav-item.text-center{ style: 'width: 50%' }
-    %a#scrapeEvaluationDocTab.nav-link{"aria-selected" => "false", "data-toggle" => "tab", :href => "#scrapeEvaluationDoc", :role => "tab"} Evaluation Document
+-if @permissions['instructions']['show'] && @permissions['evaluation_document']['show']
+  #scrapeInstructionAnchor
+  #scrapeEvaluationDocAnchor
 
-#scrapeTaskTabsContent.tab-content
-  #scrapeInstruction.tab-pane.fade.show.active
-    .card.border-top-0.rounded-top-0.mb-5
-      #scrapeInstructionEdit.small
-        .row
-          .col-8.offset-2.p-0
-            %hr.mb-0.mt-3/
-            =button_to('[ edit ]', edit_scrape_task_instruction_path(@scrape_task), class: 'btn btn-sm btn-link', method: :get, remote: true, data: { disable_with: '...'})
-            %hr.mt-0/
+  %ul#scrapeTaskTabs.nav.nav-tabs.small
+    %li.nav-item.text-center{ style: 'width: 50%' }
+      %a#scrapeInstructionTab.nav-link.active{ "aria-selected" => "true", "data-toggle" => "tab", href: "#scrapeInstruction", role: "tab" }
+        Instruction
+
+    %li.nav-item.text-center{ style: 'width: 50%' }
+      %a#scrapeEvaluationDocTab.nav-link{ "aria-selected" => "false", "data-toggle" => "tab",
+                                          href: "#scrapeEvaluationDoc", role: "tab" }
+        Evaluation Document
+
+  #scrapeTaskTabsContent.tab-content
+    #scrapeInstruction.tab-pane.fade.show.active
+      .card.border-top-0.rounded-top-0.mb-5
+        -if @permissions['instructions']['edit_form']
+          #scrapeInstructionEdit.small
+            .row
+              .col-8.offset-2.p-0
+                %hr.mb-0.mt-3/
+                =button_to('[ edit ]', edit_scrape_task_instruction_path(@scrape_task), class: 'btn btn-sm btn-link', method: :get, remote: true, data: { disable_with: '...'})
+                %hr.mt-0/
+        #instruction.show{"data-parent" => "#scrapeInstruction"}
+          =render 'scrape_tasks/instructions/instruction'
+        :javascript
+          [...document.querySelectorAll('#instruction .fr-view a')].forEach((el) => {
+            el.setAttribute('target', '_black');
+            el.setAttribute('rel', 'noopener noreferrer');
+          })
+
+    #scrapeEvaluationDoc.tab-pane.fade.show
+      .card.border-top-0.rounded-top-0.mb-5
+        #evaluationDocEdit.small
+          -if @permissions['evaluation_document']['edit_form']
+            .row
+              .col-8.offset-2.p-0
+                %hr.mb-0.mt-3/
+                .d-inline-block
+                  =button_to('[ edit ]', edit_scrape_task_evaluation_doc_path(@scrape_task), class: 'btn btn-sm btn-link', method: :get, remote: true, data: { disable_with: '...'})
+                %hr.mt-0/
+        #evaluationDoc.show{ "data-parent" => "#scrapeEvaluationDoc" }
+          =render 'scrape_tasks/evaluation_docs/evaluation_doc'
+        :javascript
+          [...document.querySelectorAll('#evaluationDoc .fr-view a')].forEach((el) => {
+            el.setAttribute('target', '_black');
+            el.setAttribute('rel', 'noopener noreferrer');
+          })
+
+-elsif @permissions['instructions']['show']
+  .card.w-100.mb-5
+    .card-header.p-1.small
+      INSTRUCTIONS
+    .card-body.p-0
+      -if @permissions['instructions']['edit_form']
+        #scrapeInstructionEdit.small
+          .row
+            .col-8.offset-2.p-0
+              %hr.mb-0.mt-3/
+              =button_to('[ edit ]', edit_scrape_task_instruction_path(@scrape_task), class: 'btn btn-sm btn-link', method: :get, remote: true, data: { disable_with: '...'})
+              %hr.mt-0/
       #instruction.show{"data-parent" => "#scrapeInstruction"}
         =render 'scrape_tasks/instructions/instruction'
       :javascript
@@ -96,19 +137,24 @@
           el.setAttribute('rel', 'noopener noreferrer');
         })
 
-  #scrapeEvaluationDoc.tab-pane.fade.show
-    .card.border-top-0.rounded-top-0.mb-5
-      #evaluationDocEdit.small
-        .row
-          .col-8.offset-2.p-0
-            %hr.mb-0.mt-3/
-            .d-inline-block
-              =button_to('[ edit ]', edit_scrape_task_evaluation_doc_path(@scrape_task), class: 'btn btn-sm btn-link', method: :get, remote: true, data: { disable_with: '...'})
-            %hr.mt-0/
-      #evaluationDoc.show{ "data-parent" => "#scrapeEvaluationDoc" }
-        =render 'scrape_tasks/evaluation_docs/evaluation_doc'
-      :javascript
-        [...document.querySelectorAll('#evaluationDoc .fr-view a')].forEach((el) => {
-          el.setAttribute('target', '_black');
-          el.setAttribute('rel', 'noopener noreferrer');
-        })
+
+-elsif @permissions['evaluation_document']['show']
+  .card.w-100.mb-5
+    .card-header.p-1.small
+      EVALUATION DOCUMENT
+    .card-body.p-0
+      -if @permissions['evaluation_document']['edit_form']
+        #evaluationDocEdit.small
+          .row
+            .col-8.offset-2.p-0
+              %hr.mb-0.mt-3/
+              .d-inline-block
+                =button_to('[ edit ]', edit_scrape_task_evaluation_doc_path(@scrape_task), class: 'btn btn-sm btn-link', method: :get, remote: true, data: { disable_with: '...'})
+              %hr.mt-0/
+    #evaluationDoc
+      =render 'scrape_tasks/evaluation_docs/evaluation_doc'
+    :javascript
+          [...document.querySelectorAll('#evaluationDoc .fr-view a')].forEach((el) => {
+            el.setAttribute('target', '_black');
+            el.setAttribute('rel', 'noopener noreferrer');
+          })

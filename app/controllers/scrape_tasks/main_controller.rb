@@ -23,10 +23,13 @@ module ScrapeTasks
     def create
       @scrape_task = ScrapeTask.new(create_scrape_task_params)
       @scrape_task.creator = current_account
-      @scrape_task.save!
-    end
 
-    def edit; end
+      if @scrape_task.save
+        redirect_to @scrape_task
+      else
+        flash[:error] = @scrape_task.errors
+      end
+    end
 
     def update
       @scrape_task.datasource_comment.update!(datasource_comment_param)

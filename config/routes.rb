@@ -40,6 +40,20 @@ Rails.application.routes.draw do
   delete 'accounts/stop_impersonating',      to: 'accounts/impersonates#destroy', as: 'account_stop_impersonating'
 
   namespace :api, constraints: { format: :json } do
+    namespace :v1 do
+      scope module: :multi_tasks do
+        resources :multi_tasks, controller: :main, only: %i[index]
+      end
+
+      scope module: :scrape_tasks do
+        resources :scrape_tasks, controller: :main, only: %i[index show]
+      end
+
+      scope module: :data_sets do
+        resources :data_sets, controller: :main, only: :index
+      end
+    end
+
     resources :work_requests, only: :update
 
     scope module: :story_types, path: 'story_types/:story_type_id' do
@@ -158,8 +172,7 @@ Rails.application.routes.draw do
   resources :task_tracking_hours, controller: 'multi_tasks/tracking_hours', only: :index
 
   scope module: :scrape_tasks do
-    resources :scrape_tasks, controller: 'main', except: :destroy do
-      patch :evaluate
+    resources :scrape_tasks, controller: 'main', except: %i[edit destroy] do
 
       resources :progress_statuses, only: [] do
         patch :change, on: :collection

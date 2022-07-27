@@ -63,8 +63,7 @@
           .font-weight-bold.mb-2
             ="#{label}:"
           =f.text_area "#{key}[body]", class: 'form-control form-control-sm w-75',
-                       value: @scrape_task.public_send(key).body&.gsub(/\\n/, '\n'), maxlength: 2000,
-                       rows: @scrape_task.public_send(key).body&.count("\n") + 1
+                       value: @scrape_task.public_send(key).body&.gsub(/\\n/, '\n'), maxlength: 2000
 
       :javascript
         $('#comments textarea').froalaEditor({
@@ -120,3 +119,4 @@
     document.querySelector(id).classList.add('border-danger', 'touch-required-field')
     document.querySelector(`${id}Anchor`).scrollIntoView();
   }
+

@@ -16,14 +16,14 @@
         %button.disabled.btn.btn-sm.btn-outline-dark
           FILTER
           -# =link_to('filter', '#', class: 'disabled btn btn-sm btn-outline-dark',
-          -#      "data-target" => "#filter", "data-toggle" => "modal")
+          -#      "data-target" => "#filterFReq", "data-toggle" => "modal")
       -if @permissions['new_form']
         =link_to('create', '#', class: 'btn btn-sm btn-outline-dark',
                  "data-target" => "#createFactoidRequestModal", "data-toggle" => "modal")
-%hr/
+%hr.mb-1/
 
 -if @current_list
-  -##filter.mt-3.mb-3.collapse{ class: (params[:work_requests_grid] ? 'show' : '') }
+  -##filterFReq.mt-3.mb-3.collapse{ class: (params[:work_requests_grid] ? 'show' : '') }
   -#  =datagrid_form_for @grid, url: work_requests_path(list: @current_list)
 
   .row.small.mb-5

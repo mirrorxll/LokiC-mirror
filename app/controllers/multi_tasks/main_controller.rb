@@ -83,6 +83,8 @@ module MultiTasks
       @lists = HashWithIndifferentAccess.new
 
       @lists['assigned'] = { assignment_to: current_account.id, status: statuses }  if @permissions['grid']['assigned']
+      @lists['assistant'] = { assigment: current_account.id, status: statuses }  if @permissions['grid']['assigned']
+      @lists['notify_me'] = { notification_to: current_account.id, status: statuses }  if @permissions['grid']['assigned']
       @lists['created'] = { creator_id: current_account.id, status: statuses }      if @permissions['grid']['created']
       @lists['all'] = { status: statuses }                                          if @permissions['grid']['all']
       @lists['archived'] = { status: Status.find_by(name: 'deleted') }              if @permissions['grid']['archived']

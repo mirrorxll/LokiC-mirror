@@ -3,7 +3,7 @@
     .row
       .col-6
         =f.text_field :name, placeholder: 'name', class: 'mb-1 form-control form-control-sm',
-                             required: true, value: (controller_name.eql?('scrape_tasks') ? @scrape_task.name : @data_set.name  )
+                             required: true, value: (controller.is_a?(DataSetsController) ? @scrape_task.name : @data_set.name  )
         -if @data_set.new_record? && !controller_name.eql?('scrape_tasks')
           .small
             =f.check_box "create_hidden_scrape_task", { id: "create_hidden_scrape_task", name: "scrape_task[create_hidden]" }

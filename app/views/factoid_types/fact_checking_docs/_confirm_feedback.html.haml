@@ -11,7 +11,7 @@
     }
 
     $.ajax({
-      url: `#{root_url}article_types/#{@factoid_type.id}/fact_checking_docs/#{@fcd.id}/${fb_type}_feedback/${fb_id}/confirm`,
+      url: `/article_types/#{@factoid_type.id}/fact_checking_docs/#{@fcd.id}/${fb_type}_feedback/${fb_id}/confirm`,
       success: changeFeedbackStatus(elem),
       method: 'patch',
       dataType: 'script'

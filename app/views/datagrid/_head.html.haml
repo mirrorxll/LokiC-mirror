@@ -1,16 +1,3 @@
--# -if controller_name.in?(%w[scrape_tasks tasks shown_samples exported_story_types production_removals])
--#   %tr
--#     -grid.html_columns(*options[:columns]).each do |column|
--#       %th{:scope => "col"}
--#         =column.header
--#         =datagrid_order_for(grid, column, options) if column.supports_order? && options[:order]
--# -elsif grid.is_a?()
--# -else
--#   %tr
--#     -grid.html_columns(*options[:columns]).each do |column|
--#       %th{:class => datagrid_column_classes(grid, column)}
--#         =column.header
--#         =datagrid_order_for(grid, column, options) if column.supports_order? && options[:order]
 -case grid
 -when AccountsGrid
   =render 'datagrid/accounts/head', grid: grid, options: options
@@ -22,3 +9,5 @@
   =render 'datagrid/multi_tasks/head', grid: grid, options: options
 -when ScrapeTasksGrid
   =render 'datagrid/scrape_tasks/head', grid: grid, options: options
+-when DataSetsGrid
+  =render 'datagrid/data_sets/head', grid: grid, options: options

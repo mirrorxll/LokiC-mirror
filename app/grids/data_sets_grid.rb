@@ -2,20 +2,34 @@ class DataSetsGrid
   include Datagrid
 
   # Scope
-  scope { DataSet.includes(:state, :sheriff, :category, :scrape_task) }
+  scope { DataSet.includes(:status, :state, :sheriff, :responsible_editor, :account, :category, :scrape_task) }
 
   # Filters
+  filter(:status) { |value, scope| scope.where(status: value)  }
+
   filter(:scrape_task, :xboolean, left: true) do |value, scope|
     value ? scope.where.not(scrape_task: nil) : scope.where(scrape_task: nil)
   end
+
+  created = DataSet.where(Arel.sql('account_id IS NOT NULL')).map { |a| [a.name, a.id] }
+  filter(:creator, :enum, multiple: true, select: created) do |value, scope|
+    scope.where(account: value)
+  end
+
+  sheriffs = DataSet.where(Arel.sql('sheriff_id IS NOT NULL')).map { |s| [s.name, s.id] }
+  filter(:sheriff, :enum, multiple: true, select: sheriffs)
+
+  responsible_editors = DataSet.where(Arel.sql('responsible_editor_id IS NOT NULL')).map { |re| [re.name, re.id] }
+  filter(:responsible_editor, :enum, multiple: true, select: responsible_editors)
+
   filter(:name, :string, header: 'Name(RLIKE)') { |value, scope| scope.where('name RLIKE ?', value) }
   filter(:location, :string, header: 'Location(RLIKE)') { |value, scope| scope.where('location RLIKE ?', value) }
   filter(:comment, :string, header: 'Comment(RLIKE)') { |value, scope| scope.where('comment RLIKE ?', value) }
   filter(:state, :enum, multiple: true, select: State.all.pluck(:short_name, :full_name, :id).map { |r| [r[0] + ' - ' + r[1], r[2]] })
   filter(:category, :enum, multiple: true, select: DataSetCategory.all.order(:name).pluck(:name, :id))
-  filter(:sheriff, :enum, multiple: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
-  filter(:condition1, :dynamic, header: 'Dynamic condition 1')
-  column_names_filter(header: 'Extra Columns', checkboxes: true)
+
+  # filter(:condition1, :dynamic, header: 'Dynamic condition 1')
+  # column_names_filter(header: 'Extra Columns', checkboxes: true)
 
   # Columns
   column(:id, mandatory: true, header: 'ID')
@@ -47,8 +61,8 @@ class DataSetsGrid
     end
   end
   column(:slack_channel, mandatory: true)
-  column(:story_types_count, mandatory: true) do |record|
-    record.story_types.size
+  column(:content_counts, mandatory: true) do |record|
+    "story types: #{record.story_types.count} | factoid types: #{record.article_types.count}".html_safe
   end
   column(:comment, mandatory: true) do |record|
     record.comment ? record.comment.gsub("\n", '<br>').html_safe : ''

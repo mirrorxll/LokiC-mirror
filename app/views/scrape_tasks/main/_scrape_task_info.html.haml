@@ -60,24 +60,17 @@
           \---
 
   .col-4.border-left
-    -datasource = @scrape_task.datasource_comment.body&.html_safe
-    -scrape_ability = @scrape_task.scrape_ability_comment.body&.html_safe
-    -general = @scrape_task.general_comment.body&.html_safe
+    .font-weight-bold
+      COMMENT ON DATASOURCE:
+    .mb-2
+      =@scrape_task.datasource_comment.body&.html_safe || '<br>'.html_safe
 
-    -if datasource
-      .font-weight-bold
-        COMMENT ON DATASOURCE:
-      .mb-2
-        =datasource
+    .font-weight-bold
+      COMMENT ON SCRAPE ABILITY:
+    .mb-2
+      =@scrape_task.scrape_ability_comment.body&.html_safe || '<br>'.html_safe
 
-    -if scrape_ability
-      .font-weight-bold
-        COMMENT ON SCRAPE ABILITY:
-      .mb-2
-        =scrape_ability
-
-    -if general
-      .font-weight-bold
-        GENERAL COMMENT:
-      .mb-2
-        =general
+    .font-weight-bold
+      GENERAL COMMENT:
+    .mb-2
+      =@scrape_task.general_comment.body&.html_safe || '<br>'.html_safe

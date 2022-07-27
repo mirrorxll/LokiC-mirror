@@ -1,5 +1,20 @@
-$('#dataSetForm').on('hidden.bs.modal', (_e) => {
-    $('#scrapeTaskDataSetForm').html('<%= j render 'scrape_tasks/data_set'   %>')
-    window.open('<%= data_set_path(@data_set) %>', '_blank').focus();
-});
-$('#dataSetForm').modal('hide');
+<% if @data_set.errors.any? %>
+  <%= toastr_js_flash(error: @data_set.errors) %>
+<% else %>
+  (() => {
+      let dataList = document.querySelector('#dataSetsDataList');
+      let input = document.querySelector('input[list="dataSetsDataList"]')
+      let option = document.createElement('option');
+      let value = `<%= "##{@data_set.id} #{@data_set.name}" %>`;
+      let enter = new KeyboardEvent('keypress', { keyCode: 13})
+
+      option.value = value;
+      dataList.appendChild(option)
+      input.value = value;
+
+      input.click();
+      input.dispatchEvent(enter);
+
+      $('#createDataSetModal').modal('hide');
+  })();
+<% end %>

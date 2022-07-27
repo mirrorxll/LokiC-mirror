@@ -216,7 +216,7 @@
     Rails.ajax({
       type: 'GET',
       dataType: 'json',
-      url: `#{root_url}api/tasks/titles`,
+      url: `/api/tasks/titles`,
       data: `creator_id=${current_account_id}`,
       success: (names) => {
         let nameInput = document.querySelector('#newTaskNameParent');
@@ -268,7 +268,7 @@
     Rails.ajax({
       type: 'GET',
       dataType: 'json',
-      url: `#{root_url}api/tasks/titles`,
+      url: `/api/tasks/titles`,
       data: `creator_id=${current_account_id}`,
       success: (names) => {
         let nameIsUniq = isUniq(nameInput.value, names);

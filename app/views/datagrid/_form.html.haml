@@ -9,6 +9,8 @@
   =render 'datagrid/multi_tasks/form', grid: grid, options: options
 -when ScrapeTasksGrid
   =render 'datagrid/scrape_tasks/form', grid: grid, options: options
+-when DataSetsGrid
+  =render 'datagrid/data_sets/form', grid: grid, options: options
 
 :javascript
   $(function() {
