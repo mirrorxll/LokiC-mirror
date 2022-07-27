@@ -13,7 +13,7 @@ class FactoidType < ApplicationRecord
 
   validates_uniqueness_of :name, case_sensitive: true
 
-  belongs_to :data_set,          counter_cache: true
+  belongs_to :data_set,          optional: true, counter_cache: true
   belongs_to :editor,            class_name: 'Account'
   belongs_to :developer,         optional: true, class_name: 'Account'
   belongs_to :status,            optional: true

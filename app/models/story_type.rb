@@ -14,7 +14,7 @@ class StoryType < ApplicationRecord
         publication: client_publication_tag.publication,
         tag: client_publication_tag.tag
       )
-    end
+    end if data_set
 
     record_to_change_history(self, 'created', name, editor)
 
@@ -26,7 +26,7 @@ class StoryType < ApplicationRecord
 
   validates_uniqueness_of :name, case_sensitive: true
 
-  belongs_to :data_set,          counter_cache: true
+  belongs_to :data_set,          optional: true, counter_cache: true
   belongs_to :editor,            class_name: 'Account'
   belongs_to :developer,         optional: true, class_name: 'Account'
   belongs_to :level,             optional: true

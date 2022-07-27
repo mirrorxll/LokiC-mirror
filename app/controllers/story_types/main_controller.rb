@@ -2,9 +2,8 @@
 
 module StoryTypes
   class MainController < StoryTypesController # :nodoc:
-    before_action :find_data_set,            only: %i[new create]
-    before_action :find_story_type,          except: %i[index new create]
-    before_action :set_story_type_iteration, except: %i[index new create]
+    before_action :find_story_type,          except: %i[index create]
+    before_action :set_story_type_iteration, except: %i[index create]
 
     before_action :grid_lists, only: %i[index show]
     before_action :current_list, only: :index
@@ -18,15 +17,11 @@ module StoryTypes
       @tab_title = "LokiC :: StoryType ##{@story_type.id} <#{@story_type.name}>"
     end
 
-    def new
-      @story_type = @data_set.story_types.build
-    end
-
     def create
-      @story_type = @data_set.story_types.build(new_story_type_params)
+      @story_type = StoryType.new(new_story_type_params)
 
       if @story_type.save!
-        redirect_to data_set_path(@data_set)
+        redirect_to story_types_path
       else
         render :new
       end
@@ -75,17 +70,16 @@ module StoryTypes
       migrated = permitted[:migrated].eql?('1')
       status_name = migrated ? 'migrated' : 'not started'
 
-      {
-        editor: current_account,
-        name: permitted[:name],
-        comment: permitted[:comment],
-        gather_task: permitted[:gather_task],
-        migrated: migrated,
-        status: Status.find_by(name: status_name),
-        photo_bucket: @data_set.photo_bucket,
-        last_status_changed_at: Time.now.getlocal('-05:00'),
-        current_account: current_account
-      }
+      story_type_params = { editor: current_account,
+                            name: permitted[:name],
+                            comment: permitted[:comment],
+                            gather_task: permitted[:gather_task],
+                            migrated: migrated,
+                            status: Status.find_by(name: status_name),
+                            last_status_changed_at: Time.now.getlocal('-05:00'),
+                            current_account: current_account }
+      story_type_params.merge!(photo_bucket: @data_set.photo_bucket) if @data_set
+      story_type_params
     end
 
     def exist_story_type_params

@@ -40,6 +40,14 @@ Rails.application.routes.draw do
   delete 'accounts/stop_impersonating',      to: 'accounts/impersonates#destroy', as: 'account_stop_impersonating'
 
   namespace :api, constraints: { format: :json } do
+    namespace :v1 do
+      scope module: :factoid_types do
+        resources :factoid_types, controller: :main, only: :index
+      end
+      scope module: :story_types do
+        resources :story_types, controller: :main, only: :index
+      end
+    end
     resources :work_requests, only: :update
 
     scope module: :story_types, path: 'story_types/:story_type_id' do

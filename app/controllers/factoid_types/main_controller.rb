@@ -2,9 +2,8 @@
 
 module FactoidTypes
   class MainController < FactoidTypesController
-    before_action :find_data_set,              only: %i[new create]
-    before_action :find_factoid_type,          except: %i[index new create]
-    before_action :set_factoid_type_iteration, except: %i[index new create]
+    before_action :find_factoid_type,          except: %i[index create]
+    before_action :set_factoid_type_iteration, except: %i[index create]
 
     before_action :grid_lists, only: %i[index show]
     before_action :current_list, only: :index
@@ -16,6 +15,16 @@ module FactoidTypes
 
     def show
       @tab_title = "LokiC :: FactoidTypes ##{@factoid_type.id} <#{@factoid_type.name}>"
+    end
+
+    def create
+      @factoid_type = FactoidType.new(new_factoid_type_params)
+
+      if @factoid_type.save!
+        redirect_to factoid_types_path
+      else
+        render :new
+      end
     end
 
     def update
@@ -52,6 +61,17 @@ module FactoidTypes
 
     def env
       %w[development test].include?(Rails.env) ? 'staging' : Rails.env
+    end
+
+    def new_factoid_type_params
+      permitted = params.require(:factoid_type).permit(:name)
+
+      {
+        name: permitted[:name],
+        status: Status.find_by(name: 'not started'),
+        editor: current_account,
+        current_account: current_account
+      }
     end
 
     def exist_factoid_type_params
