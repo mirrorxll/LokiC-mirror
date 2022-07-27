@@ -143,17 +143,17 @@ Rails.application.routes.draw do
       post :create_subtask, on: :collection
 
       resources :progress_statuses, only: [] do
-        patch :change, on: :collection
-        post  :comment, on: :collection
-        patch :subtasks,      on: :collection
+        patch :change,   on: :collection
+        post  :comment,  on: :collection
+        patch :subtasks, on: :collection
       end
 
       resources :checklists, only: %i[new create edit update] do
-        patch :confirm,   on: :member
+        patch :confirm, on: :member
       end
 
       resources :receipts, only: :index do
-        patch :confirm,   on: :collection
+        patch :confirm, on: :collection
       end
 
       resources :comments, only: %i[new create edit update destroy]
@@ -174,9 +174,7 @@ Rails.application.routes.draw do
   scope module: :scrape_tasks do
     resources :scrape_tasks, controller: 'main', except: %i[edit destroy] do
 
-      resources :progress_statuses, only: [] do
-        patch :change, on: :collection
-      end
+      resource :progress_statuses, only: :update
 
       resource :instruction, only: %i[edit update] do
         get   :cancel_edit
@@ -200,6 +198,10 @@ Rails.application.routes.draw do
   scope module: :data_sets do
     resources :data_sets, controller: 'main', except: %i[new] do
       get :properties, on: :member
+    end
+
+    resources :statuses, only: [] do
+      patch :change, on: :collection
     end
   end
 

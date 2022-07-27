@@ -31,7 +31,7 @@
       Rails.ajax({
         type: "PATCH",
         dataType: 'script',
-        url: `#{change_scrape_task_progress_statuses_path(@scrape_task)}`,
+        url: `#{scrape_task_progress_statuses_path(@scrape_task)}`,
         data: `status_id=${statusId}` + (reasons ? `&reasons=${reasons}` : '')
       });
     }

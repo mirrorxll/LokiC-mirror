@@ -7,7 +7,7 @@ module DataSets
     before_action :find_status_comment
 
     def update
-      @account.update(status: @status)
+      @data_set.update(status: @status)
       return unless params[:reasons]
 
       @status_comment.update(body: params[:reasons])

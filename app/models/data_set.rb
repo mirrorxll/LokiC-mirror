@@ -3,6 +3,9 @@
 class DataSet < ApplicationRecord # :nodoc:
   before_create do
     self.status = Status.find_by(name: 'active')
+
+    build_status_comment(subtype: 'status comment')
+    build_general_comment(subtype: 'general comment')
   end
 
   belongs_to :account
@@ -15,7 +18,8 @@ class DataSet < ApplicationRecord # :nodoc:
 
   has_one :data_set_photo_bucket
   has_one :photo_bucket, through: :data_set_photo_bucket
-  has_one :status_comment, -> { where(subtype: 'status comment') }, as: :commentable, class_name: 'Comment'
+  has_one :status_comment,  -> { where(subtype: 'status comment') }, as: :commentable, class_name: 'Comment'
+  has_one :general_comment, -> { where(subtype: 'general comment') }, as: :commentable, class_name: 'Comment'
 
   has_many :story_types
   has_many :client_publication_tags, class_name: 'DataSetClientPublicationTag'
