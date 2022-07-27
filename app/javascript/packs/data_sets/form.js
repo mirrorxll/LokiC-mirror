@@ -56,24 +56,24 @@ window.$('#add_client').on('click', (e)=> {
     publicationsSelect.addEventListener('change', tagsByPublication)
 
     let clientsCol = document.createElement('div')
-    clientsCol.className = 'col-4 pr-1'
+    clientsCol.className = 'col-3 pr-0'
     clientsCol.appendChild(clientsSelect)
 
     let publicationsCol = document.createElement('div')
-    publicationsCol.className = 'col-4 pr-1'
+    publicationsCol.className = 'col-4 pr-0'
     publicationsCol.appendChild((publicationsSelect))
 
     let tagsCol = document.createElement('div')
-    tagsCol.className = 'col-3 pl-1 pr-1'
+    tagsCol.className = 'col-3 pr-1'
     tagsCol.appendChild(tagsSelect)
 
     let x = document.createElement('strong')
-    x.className = 'remove_x'
-    x.textContent = 'x'
+    x.className = 'remove_x mouse-hover'
+    x.textContent = '[ X ]'
     x.addEventListener('click', removeClientTag )
 
     let removeCol = document.createElement('div')
-    removeCol.className = 'col-1 pl-1 my-auto remove_x'
+    removeCol.className = 'col-2 d-flex align-items-center'
     removeCol.appendChild(x)
 
     let row = document.createElement('div')
@@ -84,7 +84,7 @@ window.$('#add_client').on('click', (e)=> {
     row.appendChild(tagsCol)
     row.appendChild(removeCol)
 
-    document.getElementById('clientsPublicationsTags').appendChild(row)
+    document.querySelector('#clientsPublicationsTags .card-body').appendChild(row)
 
     if(clients.length === 0) {
         window.$.ajax({

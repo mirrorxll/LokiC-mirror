@@ -50,27 +50,27 @@
   #clientsPublicationsTags.card
     .card-body
       .font-weight-bold.mb-1
-        CLIENT/PUBLICATION/TAGS:
-      =link_to('[add client/tag]', '#', id: 'add_client', class: 'badge badge-pill badge-light text-secondary')
+        CLIENTS/PUBLICATIONS/TAGS:
+      =link_to('[add client/tag]', '#', id: 'add_client', class: 'badge badge-pill badge-light text-secondary mb-2')
       -@data_set.client_publication_tags.each do |row|
         -u_id = SecureRandom.hex(3)
-        .row{ id: u_id }
-          .col-4
+        .row.mb-1{ id: u_id }
+          .col-3.pr-0
             =f.collection_select :client_id, Client.where(hidden_for_story_type: false).sort_by(&:name), :id, :name,
                                  { include_blank: true, selected: row.client.id },
                                  { id: "data_set_default_#{u_id}_client_id", name: "default_props[client_tag_ids[#{u_id}[client_id]]]", class: 'form-control form-control-sm clients_select', required: true }
-          .col-4
+          .col-4.pr-0
             =f.collection_select :publication_id, Publication.where(name: ['all local publications', 'all statewide publications', 'all publications']) + row.client.publications.sort_by(&:name), :id, :name,
                                  { include_blank: true, selected: row.publication ? row.publication.id : Publication.where(name: 'all publications').first.id },
                                  { id: "data_set_default_#{u_id}_publication_id", name: "default_props[client_tag_ids[#{u_id}[publication_id]]]", class: 'form-control form-control-sm publications_select' }
 
-          .col-3
+          .col-3.pr-1
             =f.select :tag_id, grouped_options_for_select(tags_for_publication(row.publication, row.client), row.tag.id), {}, { include_blank: true, id: "data_set_default_#{u_id}_tag_id", name: "default_props[client_tag_ids[#{u_id}[tag_id]]]",
                                                            class: 'form-control form-control-sm tags_select', required: true }
 
-          .col-1
-            %strong.remove_x
-              x
+          .col-2.d-flex.align-items-center
+            %strong.remove_x.mouse-hover
+              [ X ]
     =javascript_pack_tag 'data_sets/form'
 
   #photoBucketAnchor.mb-3
