@@ -27,6 +27,8 @@ module Samples
           iteration.stories.ready_to_export.limit(10_000).to_a
         end
 
+      @staging_table_name = story_type.staging_table.name
+
       threads = Array.new(options[:threads_count]) do
         Thread.new do
           loop do
