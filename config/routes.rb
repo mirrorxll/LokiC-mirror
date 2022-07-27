@@ -198,11 +198,14 @@ Rails.application.routes.draw do
   scope module: :data_sets do
     resources :data_sets, controller: 'main', except: %i[new] do
       get :properties, on: :member
+
+      resource :status, only: :update
+      resource :sheriff, only: %i[show edit update]
+      resource :responsible_editor, only: %i[show edit update]
+      resource :scrape_tasks, only: %i[show edit update]
+      resource :table_locations, only: %i[show edit update]
     end
 
-    resources :statuses, only: [] do
-      patch :change, on: :collection
-    end
   end
 
   resources :table_locations, only: :new

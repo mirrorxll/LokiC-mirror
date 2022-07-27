@@ -40,7 +40,7 @@ module DataSets
     def create
       @data_set = current_account.data_sets.create(data_set_params)
 
-      @data_set.scrape_task.table_locations.each do |table_loc|
+      @data_set.scrape_task&.table_locations&.each do |table_loc|
         @data_set.table_locations.create(
           host: table_loc.host,
           schema: table_loc.schema,
@@ -73,7 +73,9 @@ module DataSets
       @lists = HashWithIndifferentAccess.new
 
       @lists['assigned'] = { sheriff: current_account, status: statuses } if @permissions['grid']['assigned']
-      @lists['responsible'] = { responsible_editor: current_account, status: statuses } if @permissions['grid']['responsible']
+      if @permissions['grid']['responsible']
+        @lists['responsible'] = { responsible_editor: current_account, status: statuses }
+      end
       @lists['created'] = { creator: current_account, status: statuses } if @permissions['grid']['created']
       @lists['all'] = { status: statuses } if @permissions['grid']['all']
       @lists['archived'] = { status: Status.find_by(name: 'archived') } if @permissions['grid']['archived']
@@ -112,8 +114,7 @@ module DataSets
 
     def data_set_params
       params.require(:data_set).permit(
-        :name, :location, :preparation_doc,
-        :slack_channel, :sheriff_id, :comment,
+        :name, :slack_channel, :sheriff_id,
         :state_id, :category_id, :scrape_task_id
       )
     end

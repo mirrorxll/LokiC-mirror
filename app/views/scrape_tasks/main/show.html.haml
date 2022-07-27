@@ -11,29 +11,28 @@
   .text-secondary
     created at: #{@scrape_task.created_at}#{@scrape_task.updated_early? ? " | updated at: #{@scrape_task.updated_at}" : ""}
 
-.row.align-items-stretch.mt-4
+#scrapingInfo.row.align-items-stretch.mt-4
   .col-xl-8.col-sm-12
-    #scrappingInfo
-      .card
-        .card-header.p-1.small
-          .d-flex.justify-content-between.align-items-center
-            MAIN INFO
-            #scrapeTaskStatusComment
-              =render 'status_comment'
-            .d-flex.align-items-center
-              -if @permissions['edit_form']
-                #editScrapeTask
-                  %button{ type: 'button', class: 'p-0 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#updateScrapeTaskModal" }
-                    [ edit ]
-              -if @permissions['progress_status'].values.any?
-                #scrapeTaskStatus.d-inline-block
-                  -if @permissions['progress_status']['edit_form']
-                    =render 'statuses'
-                  -elsif @permissions['progress_status']['show']
-                    =@scrape_task.status.name
+    .card.h-100
+      .card-header.p-1.small
+        .d-flex.justify-content-between.align-items-center
+          MAIN INFO
+          #scrapeTaskStatusComment
+            =render 'status_comment'
+          .d-flex.align-items-center
+            -if @permissions['edit_form']
+              #editScrapeTask
+                %button{ type: 'button', class: 'p-0 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#updateScrapeTaskModal" }
+                  [ edit ]
+            -if @permissions['progress_status'].values.any?
+              #scrapeTaskStatus.d-inline-block
+                -if @permissions['progress_status']['edit_form']
+                  =render 'statuses'
+                -elsif @permissions['progress_status']['show']
+                  =@scrape_task.status.name
 
-        .card-body
-          =render 'scrape_task_info'
+      .card-body
+        =render 'scrape_task_info'
   .col-xl-4.col-sm-12.pl-xl-0
     .card.h-100
       .card-header.p-1.small

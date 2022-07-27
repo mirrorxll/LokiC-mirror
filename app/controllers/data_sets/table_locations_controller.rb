@@ -1,28 +1,28 @@
 # frozen_string_literal: true
 
-module ScrapeTasks
-  class TableLocationsController < ScrapeTasksController
-    before_action :find_scrape_task
+module DataSets
+  class TableLocationsController < DataSetsController
+    before_action :find_data_set
 
     def show; end
 
     def edit; end
 
     def update
-      @scrape_task.table_locations.clear
+      @data_set.table_locations.clear
 
       table_locations_params.each do |key, value|
         next if value.eql?('0')
 
         host_id, schema_id, sql_table_id = key.split('_')
-        @scrape_task.table_locations.create(
+        @data_set.table_locations.create(
           host: Host.find(host_id),
           schema: Schema.find(schema_id),
           sql_table: SqlTable.find(sql_table_id)
         )
       end
 
-      render 'scrape_tasks/table_locations/show'
+      render 'data_sets/table_locations/show'
     end
 
     private

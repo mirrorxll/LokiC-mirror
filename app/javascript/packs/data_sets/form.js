@@ -84,7 +84,7 @@ window.$('#add_client').on('click', (e)=> {
     row.appendChild(tagsCol)
     row.appendChild(removeCol)
 
-    document.getElementById('clients_publications_tags').appendChild(row)
+    document.getElementById('clientsPublicationsTags').appendChild(row)
 
     if(clients.length === 0) {
         window.$.ajax({

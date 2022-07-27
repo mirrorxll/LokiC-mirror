@@ -3,12 +3,12 @@
 def roles
   [
     'Manager',
-    'HLE Content Manager',
-    'HLE FCD Checker',
-    'HLE Content Developer',
+    'Content Manager',
+    'Content FCD Checker',
+    'Content Data Cleaner',
+    'Content Developer',
     'Scrape Manager',
-    'Data Reviewer',
-    'Data Cleaner',
+    'Scrape Data Reviewer',
     'Scrape Developer',
     'Client',
     'Guest'

@@ -15,7 +15,7 @@
       <input class="underline-input pt-0" list='dataSetsDataList'>
       <datalist id="dataSetsDataList">
         <% DataSet.all.each do |ds| %>
-          <option value="<%= "##{ds.id} #{ds.name}" %>"%></option>
+          <option value="<%= "##{ds.id} #{ds.name}" %>"></option>
         <% end %>
       </datalist>
 

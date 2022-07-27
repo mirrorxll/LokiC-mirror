@@ -10,6 +10,9 @@
         =f.text_field "data_set[name]", class: 'form-control form-control-sm', value: @scrape_task&.name
         #newDataSetNameExist.text-danger.d-none
           Data Set with this name already exists. Let's use something else
+        .form-group.form-check
+          =f.check_box "create_hidden_scrape_task", { class: 'form-check-input', id: "create_hidden_scrape_task", name: "scrape_task[create_hidden]" }
+          =f.label "create_hidden_scrape_task", 'create hidden scrape task', { class: 'form-check-label' }
   =f.submit 'Submit', id: 'hiddenCreateDataSetButton', class: 'd-none'
 
 :javascript

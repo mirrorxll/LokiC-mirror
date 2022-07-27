@@ -1,10 +1,10 @@
 <div id="tableLocations" class="row mb-3">
-  <div class="col-3 text-right">
+  <div class="col-3 text-right pr-0">
     <b>TABLE LOCATIONS:</b>
     <%= link_to(icon('fa', 'pencil-square'), edit_scrape_task_table_locations_path(@scrape_task), class: 'p-0 ml-2', remote: true) %>
     <% if @scrape_task.table_locations.present? %>
       <br>
-      <%= link_to('show data view(s)', '#', "data-target" => "#dataSamplesModal", "data-toggle" => "modal") %>
+      <%= link_to('[ show ]', '#', "data-target" => "#dataSamplesModal", "data-toggle" => "modal") %>
 
       <div id="dataSamplesModal" class="p-0 modal fade" data-backdrop="static" aria-hidden="true" aria-labelledby="scrapeTaskDataSamplesLabel">
         <div class="modal-dialog modal-dialog-scrollable modal-fullscreen">

@@ -65,7 +65,7 @@ module AccessLevels
         edit_form: true,
         progress_status: { show: true, edit_form: true },
         developer: { show: true, edit_form: true },
-        iterations: { show: true, new_form: true, edit_form: true },
+        iterations: { show: true, new_form: true, edit_form: true }
       }
     },
 
@@ -199,7 +199,7 @@ module AccessLevels
         edit_form: false,
         progress_status: { show: true, edit_form: false },
         developer: { show: true, edit_form: false },
-        iterations: { show: true, new_form: false, edit_form: false },
+        iterations: { show: true, new_form: false, edit_form: false }
       }
     }
   }.deep_stringify_keys.freeze

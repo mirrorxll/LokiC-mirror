@@ -1,4 +1,4 @@
-.row.small
+.row.small.h-100
   .col-8
     =render 'scrape_tasks/scrapers/scraper'
     =render 'scrape_tasks/tags/tags'
@@ -8,11 +8,6 @@
 
     %hr/
 
-    .row
-      .col-3.pr-0.text-right.font-weight-bold
-        SCRAPER:
-      .col-9
-        =@scrape_task.scraper&.name
     .row
       .col-3.pr-0.text-right.font-weight-bold
         DEADLINE:

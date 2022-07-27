@@ -1,0 +1,4 @@
+$('#scrapeTasks>.col').html(
+    '<%= @data_set.scrape_tasks.map { |st| link_to("##{st.id} #{st.name}", scrape_task_path(st), target: '_blank') }.join('<br>').html_safe %>'
+);
+$('#scrapeTasks>:first-child>a').removeClass('disabled-link');
