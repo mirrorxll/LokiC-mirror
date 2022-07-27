@@ -364,10 +364,10 @@ Rails.application.routes.draw do
 
   scope module: :factoid_types do
     resources :factoid_types, controller: :main do
-      get   :properties_form
       get   :canceling_rename,  on: :member
-      patch :change_data_set,   on: :member
 
+      resource :data_set,       only: :update
+      resource :property_form, only: :show
       resource :update_section, only: :update
 
       resources :templates, path: :template, only: %i[show edit update] do

@@ -50,8 +50,8 @@
                            data: { disable_with: '...'})
           %hr.mt-1/
 
-      .mt-4
-      =render partial: 'factoid_types/main/factoid_type', collection: @factoid_types
+      .factoid-types-list.mt-4
+        =render partial: 'factoid_types/main/factoid_type', collection: @factoid_types
       .mt-4
 =render 'story_types/main/template_modal'
 

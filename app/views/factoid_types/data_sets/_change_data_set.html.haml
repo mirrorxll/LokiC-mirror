@@ -1,15 +1,15 @@
 .current_data_set
   -if current_account_permissions('data_sets')['edit']
-    -if @story_type.data_set.present?
-      =link_to(@story_type.data_set.name, @story_type.data_set)
+    -if @factoid_type.data_set.present?
+      =link_to(@factoid_type.data_set.name, @factoid_type.data_set)
       =link_to('x', '#')
     -else
       =link_to('add data_set', '#')
   -else
-    =@story_type.data_set ? @story_type.data_set.name : '---'
+    =@factoid_type.data_set ? @factoid_type.data_set.name : '---'
 .change_data_set_form.d-none
-  =form_with(url: story_type_data_set_path(@story_type), method: :patch, html: { onchange: "Rails.fire(this, 'submit')"}) do |f|
-    =f.collection_select 'story_type[data_set_id]', DataSet.order(name: :asc), :id, :name, selected: @story_type.data_set&.id
+  =form_with(url: factoid_type_data_set_path(@factoid_type), method: :patch, html: { onchange: "Rails.fire(this, 'submit')"}) do |f|
+    =f.collection_select 'factoid_type[data_set_id]', DataSet.order(name: :asc), :id, :name, selected: @factoid_type.data_set&.id
     =f.hidden_field 'current_data_set_page_id'
 
 :javascript

@@ -15,7 +15,7 @@
               Rails.ajax({
                 type: "GET",
                 dataType: 'script',
-                url: `#{factoid_type_properties_form_path(@factoid_type)}`
+                url: `#{factoid_type_property_form_path(@factoid_type)}`
               })
             }
         =link_to icon('fa', 'info-circle'), properties_data_set_path(@factoid_type.data_set), remote: true

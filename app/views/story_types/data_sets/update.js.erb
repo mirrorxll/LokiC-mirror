@@ -1,4 +1,5 @@
 $('#changeDataSet_template .change-ds-form').html(`<%= j render 'change_data_set' %>`);
-$('#storyTypes .story-types-list').html(`<%= j render @current_data_set.story_types.order(id: :desc) %>`)
+$('#storyTypes .story-types-list').html(`<%= j render partial: 'story_types/main/story_type',
+                                                      collection:@current_data_set.story_types.order(id: :desc) %>`)
 
 $('#currentDataSet').html('<%= j render 'story_types/properties/current_data_set' %>')

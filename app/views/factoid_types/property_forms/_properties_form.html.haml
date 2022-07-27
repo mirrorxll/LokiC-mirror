@@ -10,7 +10,7 @@
           topic
       .row.text-center
         .col-4.change-ds-form.pl-0
-          =render 'change_data_set'
+          =render 'factoid_types/data_sets/change_data_set'
         .col-4.pl-0
           =form_with(url: factoid_type_path(@factoid_type), scope: :factoid_type, method: :put, html: { onchange: "loadDescriptions(this);" }) do |form|
             =form.select :kind_id, Kind.sub_kinds.pluck(:name, :id), prompt: 'Select Kind'

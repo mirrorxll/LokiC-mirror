@@ -1,4 +1,4 @@
-%div{ id: "data_set", data_set_id: @factoid_type.data_set.id }
+%div{ id: "data_set", data_set_id: @factoid_type.data_set&.id }
 %div{ id: "factoid_type", factoid_type_id: @factoid_type.id }
 -@title = "#{@factoid_type.id} #{@factoid_type.name}"
 %hr

@@ -6,10 +6,10 @@
 .row
   .col-6
     -#TODO: if this is correct implementation of user permissions?
-    -if current_account_permissions('data_sets')['grid']['all']
+    -if current_account_permissions('data_sets')['grid']['all'] && @story_type.data_set.present?
       =link_to @story_type.data_set.name, data_set_path(@story_type.data_set), class: 'no-link'
       =link_to icon('fa', 'info-circle'), properties_data_set_path(@story_type.data_set), remote: true
     -else
-      =@story_type.data_set.name
+      =@story_type.data_set.present? ? @story_type.data_set.name : '---'
   .col-5
     =@iteration.id

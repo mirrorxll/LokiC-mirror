@@ -17,7 +17,8 @@ module StoryTypes
     end
 
     def find_current_data_set
-      @current_data_set = DataSet.find(params[:current_data_set_page_id])
+      data_set_id = params[:current_data_set_page_id].present? ? params[:current_data_set_page_id] : params[:story_type][:data_set_id]
+      @current_data_set = DataSet.find(data_set_id)
     end
   end
 end
