@@ -101,12 +101,8 @@ module Samples
           bucket_id: photo_bucket_id
         }
 
-        Table.loki_story_creator do |conn|
-          column = conn.exec_query(
-            "SHOW COLUMNS FROM #{Table.schema_table(@staging_table_name)} LIKE 'limpar_associated_ids';"
-          ).first
-
-          if column
+        if @column
+          Table.loki_story_creator do |conn|
             json = conn.exec_query(
               'SELECT limpar_associated_ids '\
               "FROM #{Table.schema_table(@staging_table_name)} "\

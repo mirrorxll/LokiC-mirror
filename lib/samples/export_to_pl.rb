@@ -28,6 +28,11 @@ module Samples
         end
 
       @staging_table_name = story_type.staging_table.name
+      @column = Table.loki_story_creator do |conn|
+        conn.exec_query(
+          "SHOW COLUMNS FROM #{Table.schema_table(@staging_table_name)} LIKE 'limpar_associated_ids';"
+        ).first
+      end
 
       threads = Array.new(options[:threads_count]) do
         Thread.new do
