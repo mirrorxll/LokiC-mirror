@@ -67,18 +67,15 @@
   #scrapeEvaluationDocAnchor.mb-4
 
 -if @permissions['instructions']['show'] && @permissions['evaluation_document']['show']
-  #scrapeInstructionAnchor
-  #scrapeEvaluationDocAnchor
-
   %ul#scrapeTaskTabs.nav.nav-tabs.small
     %li.nav-item.text-center{ style: 'width: 50%' }
       %a#scrapeInstructionTab.nav-link.active{ "aria-selected" => "true", "data-toggle" => "tab", href: "#scrapeInstruction", role: "tab" }
-        Instruction
+        INSTRUCTION
 
     %li.nav-item.text-center{ style: 'width: 50%' }
       %a#scrapeEvaluationDocTab.nav-link{ "aria-selected" => "false", "data-toggle" => "tab",
                                           href: "#scrapeEvaluationDoc", role: "tab" }
-        Evaluation Document
+        EVALUATION DOCUMENT
 
   #scrapeTaskTabsContent.tab-content
     #scrapeInstruction.tab-pane.fade.show.active

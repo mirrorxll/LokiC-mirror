@@ -1,5 +1,5 @@
 =form_with(url: data_set_path(@data_set), method: :patch, local: true, html: { onkeypress: "return event.keyCode !== 13;" } ) do |f|
-  #nameAnchor.mb-1
+  #nameAnchor.mb-3
   #name.card
     .card-body
       .font-weight-bold.mb-2
@@ -7,6 +7,13 @@
         %span.small.text-danger
           *required
       =f.text_field "data_set[name]", class: 'form-control form-control-sm w-75', value: @data_set.name
+
+  #slackChannelAnchor.mb-3
+  #slackChannel.card
+    .card-body
+      .font-weight-bold.mb-2
+        SLACK CHANNEL:
+      =f.text_field "data_set[slack_channel]", class: 'form-control form-control-sm w-50', value: @data_set.slack_channel
 
   #stateAnchor.mb-3
   #state.card
@@ -46,6 +53,25 @@
           });
         })();
 
+  #photoBucketAnchor.mb-3
+  #photoBucket.card
+    .card-body
+      .font-weight-bold.mb-1
+        PHOTO BUCKET:
+      =f.collection_select 'default_props[photo_bucket_id]', PhotoBucket.all, :id, :name,
+                           { include_blank: '-- not set --', selected: @data_set.photo_bucket&.id },
+                           { class: 'w-50 form-control form-control-sm' }
+      :javascript
+        (() => {
+          let select = $('select[name="data_set[photo_bucket_id]"]').select2({});
+          select.data('select2').$container.addClass('w-50');
+          select.data('select2').$dropdown.addClass('small');
+          $('.select2-selection.select2-selection--single').css('border', '1px solid #ced4da');
+          select.on('select2:open', () => {
+            $('.select2-dropdown').css('border', '1px solid #ced4da');
+          });
+        })();
+
   #clientsPublicationsTagsAnchor.mb-3
   #clientsPublicationsTags.card
     .card-body
@@ -73,24 +99,6 @@
               [ X ]
     =javascript_pack_tag 'data_sets/form'
 
-  #photoBucketAnchor.mb-3
-  #photoBucket.card
-    .card-body
-      .font-weight-bold.mb-1
-        PHOTO BUCKET:
-      =f.collection_select 'data_set[photo_bucket_id]', PhotoBucket.all, :id, :name,
-                           { include_blank: '-- not set --', selected: @data_set.photo_bucket&.id },
-                           { class: 'w-50 form-control form-control-sm' }
-      :javascript
-        (() => {
-          let select = $('select[name="data_set[photo_bucket_id]"]').select2({});
-          select.data('select2').$container.addClass('w-50');
-          select.data('select2').$dropdown.addClass('small');
-          $('.select2-selection.select2-selection--single').css('border', '1px solid #ced4da');
-          select.on('select2:open', () => {
-            $('.select2-dropdown').css('border', '1px solid #ced4da');
-          });
-        })();
   #generalCommentAnchor.mb-3
   #generalComment.card
     .card-body

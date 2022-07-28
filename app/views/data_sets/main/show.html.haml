@@ -65,3 +65,21 @@
       event.preventDefault();
       document.querySelector('#hiddenUpdateDataSetButton').click();
     }, false);
+
+
+%ul#dataSetTabs.nav.nav-tabs.small.mt-4
+  %li.nav-item.text-center{ style: 'width: 50%' }
+    %a#storyTypesTab.nav-link.active{ "aria-selected" => "true", "data-toggle" => "tab", href: "#storyTypes", role: "tab" }
+      STORY TYPES (#{@data_set.story_types.count})
+
+  %li.nav-item.text-center{ style: 'width: 50%' }
+    %a#factoidTypesTab.nav-link{ "aria-selected" => "false", "data-toggle" => "tab", href: "#factoidTypes", role: "tab" }
+      FACTOID TYPES (#{@data_set.factoid_types.count})
+
+#dataSetsTabsContent.tab-content
+  #storyTypes.tab-pane.fade.show.active
+    .card
+
+
+  #factoidTypes.tab-pane.fade.show
+    .card
