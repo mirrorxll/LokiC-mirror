@@ -9,7 +9,7 @@
     =@factoid_type.data_set ? @factoid_type.data_set.name : '---'
 .change_data_set_form.d-none
   =form_with(url: factoid_type_data_set_path(@factoid_type), method: :patch, html: { onchange: "Rails.fire(this, 'submit')"}) do |f|
-    =f.collection_select 'factoid_type[data_set_id]', DataSet.order(name: :asc), :id, :name, selected: @factoid_type.data_set&.id
+    =f.collection_select 'factoid_type[data_set_id]', DataSet.order(name: :asc), :id, :name, { include_blank: '-- not set --', selected: @factoid_type.data_set&.id }
     =f.hidden_field 'current_data_set_page_id'
 
 :javascript

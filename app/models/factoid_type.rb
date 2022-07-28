@@ -30,7 +30,6 @@ class FactoidType < ApplicationRecord
   has_many :iterations, class_name: 'FactoidTypeIteration'
   has_many :change_history, as: :history
   has_many :articles
-  has_many :change_history, as: :history
 
   def id_name
     "##{id} #{name}"
