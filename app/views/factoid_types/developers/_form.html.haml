@@ -1,5 +1,5 @@
-%div{id: "article_type_#{article_type.id}_developer"}
-  =form_with(url: include_article_type_developers_path(article_type), method: :patch,
+%div{id: "factoid_type_#{factoid_type.id}_developer"}
+  =form_with(url: include_factoid_type_developers_path(factoid_type), method: :patch,
              html: { onchange: "Rails.fire(this, 'submit')" }) do |form|
     =form.collection_select :developer_id, Account.all.order(:first_name, :last_name),
                             :id, :name, { prompt: '' }, { name: :id }

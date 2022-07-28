@@ -3,10 +3,10 @@ $('#add_column').click(function () {
     let hex = secureRandom(6);
 
     $('#columns_editable input[type="submit"]').before(
-        `<div id="col_${hex}" class="mb-1">
-            <div class=" remove_column d-inline-block mr-1" id="rm_col_${hex}""><i class="fas fa-minus"></i></div>
-            <input placeholder="name" id="columns_${hex}_name" required="required" type="text" name="columns[${hex}[name]]">
-            <select class="h_25px" id="columns_${hex}_type" name="columns[${hex}[type]]">
+        `<div id="col_${hex}" class="row no-gutters mb-1">
+            <div class=" remove_column d-inline-block mr-1" id="rm_col_${hex}""><i class="fa fa-minus"></i></div>
+            <input placeholder="name" id="columns_${hex}_name" required="required" type="text" name="columns[${hex}[name]]" class="mx-1">
+            <select class="h_25px mx-1" id="columns_${hex}_type" name="columns[${hex}[type]]">
                 <option selected="selected" value="string">string</option>
                 <option value="text">text</option>
                 <option value="integer">integer</option>

@@ -5,11 +5,13 @@ module Table
   # from staging tables
   module Query
     def schema
+      # TODO: try this way
+      # Rails.configuration.database_configuration[Rails.env]['secondary']['database']
       case Rails.env
       when 'production'
         'loki_storycreator'
       when 'development'
-        'loki_story_creator_dev'
+        'loki_story_creator_dev_up'
       when 'test'
         'loki_story_creator_test'
       end
@@ -132,6 +134,13 @@ module Table
       'SELECT id, limpar_year, limpar_id ' \
       "FROM #{schema_table(t_name)} " \
       "WHERE iter_id = #{iter_id};"
+    end
+
+    # delete rows in staging table
+    def delete_st_table_rows(t_name, iter_id, row_ids)
+      rows = row_ids.join(', ')
+
+      "DELETE FROM #{schema_table(t_name)} WHERE iter_id = #{iter_id} AND id IN (#{rows});"
     end
   end
 end

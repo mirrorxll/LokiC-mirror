@@ -9,3 +9,12 @@
 label.only_exported {
   width: auto;
 }
+
+#story_type_template > .card-header,
+#story_type_properties > .card-header,
+#story_type_staging_table > .card-header,
+#story_type_samples > .card-header,
+#story_type_scheduler > .card-header,
+#story_type_export > .card-header {
+  min-height: 56px;
+}

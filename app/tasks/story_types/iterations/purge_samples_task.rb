@@ -13,7 +13,7 @@ module StoryTypes
       rescue StandardError, ScriptError => e
         message = e.message
       ensure
-        iteration.update!(samples: nil, current_account: account)
+        iteration.update!(purge_samples: nil, samples: nil, current_account: account)
         send_to_action_cable(iteration.story_type, :samples, message)
       end
     end

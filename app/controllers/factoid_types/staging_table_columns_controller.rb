@@ -15,7 +15,7 @@ module FactoidTypes
         nil
       end
 
-      render 'article_types/staging_tables/show'
+      render 'factoid_types/staging_tables/show'
     end
 
     private

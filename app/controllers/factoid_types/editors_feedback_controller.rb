@@ -15,7 +15,7 @@ module FactoidTypes
       @feedback.approvable = params[:commit].eql?('approve!')
 
       if @feedback.save
-        redirect_to "#{article_type_fact_checking_doc_path(@factoid_type, @fcd)}#editors_feedback"
+        redirect_to "#{factoid_type_fact_checking_doc_path(@factoid_type, @fcd)}#editors_feedback"
       else
         flash.now[:message] = ''
       end
@@ -46,7 +46,7 @@ module FactoidTypes
       developer_pm = @factoid_type.developer&.slack&.identifier
       return if developer_pm.nil?
 
-      message = "*[ LokiC ] <#{article_type_url(@factoid_type)}|Factoid Type ##{@factoid_type.id}> (#{@factoid_type.iteration.name}) | FCD*\n>"
+      message = "*[ LokiC ] <#{factoid_type_url(@factoid_type)}|Factoid Type ##{@factoid_type.id}> (#{@factoid_type.iteration.name}) | FCD*\n>"
 
       if params[:commit].eql?('approve!')
         approvable = @fcd.approval_editors
@@ -60,7 +60,7 @@ module FactoidTypes
         message += "Approved by *#{editors}*. #{scheduling}."
       else
         message += "You received the *editors' feedback* by *#{current_account.name}*. "\
-                   "<#{article_type_fact_checking_doc_url(@factoid_type, @factoid_type.fact_checking_doc)}"\
+                   "<#{factoid_type_fact_checking_doc_url(@factoid_type, @factoid_type.fact_checking_doc)}"\
                    '#editors_feedback|Check it>.'
       end
 
@@ -72,7 +72,7 @@ module FactoidTypes
       return unless fact_checking_channel || @feedback_collection.where(approvable: false).all?(&:confirmed)
 
       message = "*Updated Factoid Type FCD* ##{@factoid_type.id} "\
-                "<#{article_type_fact_checking_doc_url(@factoid_type, @fcd)}|#{@factoid_type.name}>."
+                "<#{factoid_type_fact_checking_doc_url(@factoid_type, @fcd)}|#{@factoid_type.name}>."
 
       ::SlackNotificationJob.perform_async(fact_checking_channel, message)
     end

@@ -22,7 +22,7 @@ module FactoidTypes
         PopulationJob.perform_async(@iteration.id, current_account.id, population_args)
       end
 
-      render 'article_types/staging_tables/show'
+      render 'factoid_types/staging_tables/show'
     end
 
     def purge

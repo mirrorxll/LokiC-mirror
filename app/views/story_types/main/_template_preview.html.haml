@@ -1,8 +1,11 @@
 .small
   .accordion
     .card
-      .card-header{}
+      .card-header.d-flex.justify-content-between.align-items-center
         template
+        -#TODO: about roles
+        -if current_account_permissions('story_types')['edit']
+          =button_to('Edit', edit_story_type_template_path(@story_type, @story_type.template), method: :get, remote: true)
       #template_preview
         .card-body
           =render 'story_types/main/template'

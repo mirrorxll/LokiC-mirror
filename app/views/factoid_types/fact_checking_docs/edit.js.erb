@@ -15,7 +15,7 @@
         imageUploadMethod: 'POST',
         saveInterval: 1500,
         saveParam: 'fact_checking_doc[body]',
-        saveURL: `${window.location.origin}/article_types/#{@factoid_type.id}/fact_checking_doc`,
+        saveURL: `${window.location.origin}/factoid_types/#{@factoid_type.id}/fact_checking_doc`,
         saveMethod: 'PATCH',
         tabSpaces: true
     });
@@ -29,7 +29,7 @@ function fcdSaver() {
     let fcdStr = Array.from(fcdHTML).reduce(reducer, '');
 
     $.ajax({
-        url: '<%= save_article_type_fact_checking_doc_url(@factoid_type, @fcd) %>',
+        url: '<%= save_factoid_type_fact_checking_doc_url(@factoid_type, @fcd) %>',
         data: { fact_checking_doc: { body: fcdStr } },
         method: 'patch',
         dataType: 'script'

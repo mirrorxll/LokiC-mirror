@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ArticleTypeIterationArticlesGrid
+class FactoidTypeIterationArticlesGrid
   include Datagrid
   attr_accessor :client_ids
 
@@ -24,9 +24,9 @@ class ArticleTypeIterationArticlesGrid
     end
   end
   column(:lokic_link, header: "LokiC", mandatory: true) do |model|
-    link = "https://lokic.locallabs.com/article_types/#{model.article_type.id}/iterations/#{model.iteration.id}/articles/#{model.id}"
+    link = "https://lokic.locallabs.com/factoid_types/#{model.factoid_type.id}/iterations/#{model.iteration.id}/articles/#{model.id}"
     format(link) do
-      link_to('lokic', article_type_iteration_sample_path(@factoid_type, @iteration, model), target:'_blank')
+      link_to('lokic', factoid_type_iteration_sample_path(@factoid_type, @iteration, model), target:'_blank')
     end
   end
   column(:exported_at, mandatory: true)

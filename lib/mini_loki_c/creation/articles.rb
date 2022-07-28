@@ -15,7 +15,7 @@ module MiniLokiC
 
         Article.create!(
           {
-            article_type: @iteration.article_type,
+            factoid_type: @iteration.factoid_type,
             iteration: @iteration,
             staging_row_id: article[:staging_row_id],
             sampled: @sampled,

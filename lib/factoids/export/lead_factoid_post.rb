@@ -25,32 +25,34 @@ module Factoids
       def factoid_post(sample, limpar_columns, lp_client)
         exported_date = DateTime.now
         params        = prepare_params(sample, limpar_columns)
-      begin
-        response      = lp_client.create_editorial(params)
-      rescue Faraday::UnauthorizedError
-        return
-      end
-        factoid_id    = JSON.parse(response.body)['data']['id']
+      # begin
+      #   response      = lp_client.create_editorial(params)
+      # rescue Faraday::UnauthorizedError
+      #   return
+      # end
+      #   factoid_id    = JSON.parse(response.body)['data']['id']
+
+        factoid_id = SecureRandom.uuid
 
         sample.update!(limpar_factoid_id: factoid_id, exported_at: exported_date)
       end
 
       def prepare_params(sample, limpar_columns)
-        article_type                 = sample.article_type
+        factoid_type                 = sample.factoid_type
         st_limpar_id                 = limpar_columns['limpar_id']
         st_limpar_year               = limpar_columns['limpar_year']
-        factoid_kind                 = "#{article_type.kind.name.downcase}_id"
+        factoid_kind                 = "#{factoid_type.kind.parent_kind.name.downcase}_id"
 
         raise ArgumentError, 'LimparId must be provided!' unless st_limpar_id
 
         params = {
-          kind: article_type.kind.name,
+          kind: factoid_type.kind.name,
           "#{factoid_kind}".to_sym => st_limpar_id,
-          topic_id: article_type.topic.external_lp_id,
+          topic_id: factoid_type.topic.external_lp_id,
           description: sample.body
         }
         %w[source_type source_name source_link original_publish_date].each do |field|
-          params.merge!("#{field}".to_sym => article_type[field.to_sym]) if article_type[field.to_sym]
+          params.merge!("#{field}".to_sym => factoid_type[field.to_sym]) if factoid_type[field.to_sym]
         end
         params.merge!(year: st_limpar_year) if st_limpar_year
         params

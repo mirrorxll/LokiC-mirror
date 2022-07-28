@@ -1,1 +1,11 @@
-$('#article_type_staging_table .card-body').html('<%= render 'article_types/spinner', description: 'staging table purging in progress' %>')
+$('#factoid_type_iterations').html('<%= j render partial: 'factoid_types/iterations/iteration',
+                                                 collection: @factoid_type.iterations,
+                                                 current_iteration: @factoid_type.iteration %>');
+$('#new_factoid_type_iteration').empty();
+$('#properties_control').html('<%= j render 'factoid_types/properties/properties_control' %>');
+$('#factoid_type_code').html('<%= j render 'factoid_types/codes/section' %>');
+$('#staging_table_control').html('<%= j render 'factoid_types/staging_tables/staging_table_control' %>');
+$('#staging_table .flash').empty();
+$('#factoid_type_staging_table .card-body').html('<%= j render 'factoid_types/main/spinner',
+                                                        description: 'staging table purging in progress' %>');
+$('#samples_section').html('<%= j render 'factoid_types/main/samples_section' %>');

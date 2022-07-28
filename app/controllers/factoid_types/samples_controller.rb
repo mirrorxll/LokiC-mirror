@@ -16,14 +16,14 @@ module FactoidTypes
       @iteration.update!(samples: false, current_account: current_account)
       SamplesJob.perform_async(@iteration.id, current_account.id, stories_params)
 
-      render 'article_types/creations/execute'
+      render 'factoid_types/creations/execute'
     end
 
     def purge
       @iteration.update!(purge_samples: false, current_account: current_account)
       PurgeSamplesJob.perform_async(@iteration.id, current_account.id)
 
-      render 'article_types/creations/purge'
+      render 'factoid_types/creations/purge'
     end
 
     private

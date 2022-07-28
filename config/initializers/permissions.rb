@@ -52,12 +52,17 @@ module AccessLevels
         table_locations: { show: true, edit_form: true }
       },
       story_types: {
-        grid: { assigned: true, created: true, all: true, archived: true },
+        grid: { assigned: true, your: true, all: true, archived: true },
         new_form: true,
         edit_form: true,
+        iterations: { show: true, new_form: true, edit_form: true },
         progress_status: { show: true, edit_form: true },
+        comment: true,
+        gather_task_id: true,
+        template: true,
+        change_data_set: true,
+        fcd_review: true,
         developer: { show: true, edit_form: true },
-        iterations: { show: true, new_form: true, edit_form: true }
       },
       factoid_types: {
         grid: { assigned: true, created: true, all: true, archived: true },
@@ -119,12 +124,17 @@ module AccessLevels
         table_locations: { show: true, edit_form: false }
       },
       story_types: {
-        grid: { assigned: true, created: false, all: true, archived: false },
+        grid: { assigned: true, your: false, all: true, archived: false },
         new_form: false,
         edit_form: false,
+        assignment_to: false,
+        iterations: { show: true, new_form: true, edit_form: true },
         progress_status: { show: true, edit_form: true },
+        comment: false,
+        gather_task_id: false,
+        template: false,
+        change_data_set: true,
         developer: { show: true, edit_form: false },
-        iterations: { show: true, new_form: true, edit_form: true }
       },
       factoid_types: {
         grid: { assigned: true, created: false, all: true, archived: false },
@@ -186,12 +196,16 @@ module AccessLevels
         table_locations: { show: true, edit_form: false }
       },
       story_types: {
-        grid: { assigned: false, created: false, all: true, archived: false },
+        grid: { assigned: false, your: false, all: true, archived: false },
         new_form: false,
         edit_form: false,
+        iterations: { show: true, new_form: false, edit_form: false },
         progress_status: { show: true, edit_form: false },
+        comment: false,
+        gather_task_id: false,
+        template: false,
+        change_data_set: true,
         developer: { show: true, edit_form: false },
-        iterations: { show: true, new_form: false, edit_form: false }
       },
       factoid_types: {
         grid: { assigned: false, created: false, all: true, archived: false },

@@ -43,7 +43,7 @@ module Table
       end
     end
 
-    def add_default_article_type_columns(t_name)
+    def add_default_factoid_type_columns(t_name)
       t_name = schema_table(t_name)
 
       loki_story_creator do |conn|

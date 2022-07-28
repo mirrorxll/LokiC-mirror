@@ -29,11 +29,11 @@ module MiniLokiC
     end
 
     def load_article_type_class
-      file = "#{Rails.root}/public/ruby_code/a#{@factoid_type.id}.rb"
+      file = "#{Rails.root}/public/ruby_code/f#{@factoid_type.id}.rb"
       File.open(file, 'wb') { |f| f.write(@factoid_type.code.download) }
 
       load file
-      article_type_class = Object.const_get("A#{@factoid_type.id}")
+      article_type_class = Object.const_get("F#{@factoid_type.id}")
 
       article_type_class.include(
         MiniLokiC::Connect,

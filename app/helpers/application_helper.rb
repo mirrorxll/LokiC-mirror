@@ -44,4 +44,10 @@ module ApplicationHelper
 
     toasts.join("\n").html_safe
   end
+
+  def current_account_permissions(branch_name)
+    branch = Branch.find_by(name: branch_name)
+    card   = current_account.cards.find_by(branch: branch)
+    card.access_level.permissions if card.enabled
+  end
 end

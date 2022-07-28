@@ -10,6 +10,7 @@ require("channels");
 require("trix");
 require("@rails/actiontext");
 require("datatables.net-bs4");
+require("./story_types/comment_editing");
 require('froala-editor/js/froala_editor.min')
 require("froala-editor/js/plugins/align.min.js")
 require("froala-editor/js/plugins/char_counter.min.js")

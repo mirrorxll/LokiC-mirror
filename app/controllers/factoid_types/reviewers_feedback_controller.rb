@@ -15,7 +15,7 @@ module FactoidTypes
       @feedback.approvable = params[:commit].eql?('approve!')
 
       if @feedback.save
-        redirect_to "#{article_type_fact_checking_doc_path(@factoid_type, @fcd)}#reviewers_feedback"
+        redirect_to "#{factoid_type_fact_checking_doc_path(@factoid_type, @fcd)}#reviewers_feedback"
       else
         flash.now[:message] = ''
       end
@@ -47,19 +47,19 @@ module FactoidTypes
       developer_pm = @factoid_type.developer&.slack&.identifier
       return if developer_pm.nil? || fcd_channel.nil?
 
-      message_to_dev = "*[ LokiC ] <#{article_type_url(@factoid_type)}|Factoid Type ##{@factoid_type.id}> (#{@factoid_type.iteration.name}) | FCD*\n>"
+      message_to_dev = "*[ LokiC ] <#{factoid_type_url(@factoid_type)}|Factoid Type ##{@factoid_type.id}> (#{@factoid_type.iteration.name}) | FCD*\n>"
 
       if params[:commit].eql?('approve!')
         note = ActionView::Base.full_sanitizer.sanitize(@feedback.body)
         message_to_fc_channel = "*FCD ##{@factoid_type.id}* "\
-                                "<#{article_type_fact_checking_doc_url(@factoid_type, @fcd)}|#{@factoid_type.name}>.\n"\
+                                "<#{factoid_type_fact_checking_doc_url(@factoid_type, @fcd)}|#{@factoid_type.name}>.\n"\
                                 "#{@feedback.body.present? ? "*Reviewer's Note*: #{note}" : ''}"
         ::SlackNotificationJob.perform_async(fcd_channel, message_to_fc_channel)
 
         message_to_dev += "Approved by *#{current_account.name}* and sent to *#{fcd_channel}* channel"
       else
         message_to_dev += "You received the *reviewers' feedback* by *#{current_account.name}*. "\
-                         "<#{article_type_fact_checking_doc_url(@factoid_type, @factoid_type.fact_checking_doc)}"\
+                         "<#{factoid_type_fact_checking_doc_url(@factoid_type, @factoid_type.fact_checking_doc)}"\
                          '#reviewers_feedback|Check it>.'
       end
 
@@ -75,7 +75,7 @@ module FactoidTypes
         end
 
       message = "#{reviewer} the developer confirms your feedback. "\
-                "<#{article_type_fact_checking_doc_url(@factoid_type, @factoid_type.fact_checking_doc)}"\
+                "<#{factoid_type_fact_checking_doc_url(@factoid_type, @factoid_type.fact_checking_doc)}"\
                 '#reviewers_feedback|Check it>.'
 
       ::SlackNotificationJob.perform_async('hle_reviews_queue', message, @fcd.slack_message_ts)

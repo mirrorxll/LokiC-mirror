@@ -9,6 +9,12 @@
       )
     <% else %>
       flash.empty();
-      $('#staging_table .card-body').html('<%= j render 'article_types/staging_tables/staging_table'%>')
+      $('#staging_table .card-body').html('<%= j render 'factoid_types/staging_tables/staging_table'%>')
     <% end %>
-}())
+}());
+$('#factoid_type_iterations').html('<%= j render partial: 'factoid_types/iterations/iteration',
+                                               collection: @factoid_type.iterations,
+                                               current_iteration: @factoid_type.iteration %>');
+$('#new_factoid_type_iteration').empty();
+$('#properties_control').html('<%= j render 'factoid_types/properties/properties_control' %>');
+$('#factoid_type_code').html('<%= j render 'factoid_types/codes/section' %>');

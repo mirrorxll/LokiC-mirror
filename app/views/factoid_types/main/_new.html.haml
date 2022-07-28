@@ -1,0 +1,63 @@
+=form_with(url: factoid_types_path, local: true, html: { onkeypress: "return event.keyCode !== 13;" } ) do |f|
+  #nameAnchor.mb-1
+  #name
+    .row
+      .col-10.offset-1
+        .font-weight-bold.mb-2
+          NAME:
+          %span.small.text-danger
+            *required
+        =f.text_field "factoid_type[name]", class: 'form-control form-control-sm '
+        #newFactoidTypeNameExist.text-danger.d-none
+          Factoid Type with this name already exists. Let's use something else
+  =f.submit 'Submit', id: 'hiddenCreateButton', class: 'd-none'
+
+:javascript
+  document.querySelector('#name input').addEventListener('input', () => {
+    document.querySelector('#newFactoidTypeNameExist').classList.add('d-none');
+  })
+
+  function isUniq(name, names) {
+    let lowName = name.toLowerCase();
+    return !names.find(el => lowName === el.toLowerCase());
+  }
+
+  document.querySelector('#createFactoidTypeModal form').addEventListener('submit', onSubmit)
+
+  function onSubmit(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    let sections = `#name`
+    let cards = document.querySelectorAll(sections);
+    [...cards].forEach((el) => { el.classList.remove('border-danger') })
+
+    let name = document.querySelector('#name input').value
+    if(name.length === 0) {
+      scrollToCard('#createFactoidTypeModal .modal-body')
+      return false;
+    } else {
+      Rails.ajax({
+        type: 'GET',
+        dataType: 'json',
+        url: `/api/v1/factoid_types?names=true`,
+        success: (names) => {
+          let nameIsUniq = isUniq(name, names)
+
+          if(nameIsUniq === true) {
+            event.target.submit();
+          } else {
+            document.querySelector('#newFactoidTypeNameExist').classList.remove('d-none');
+          }
+        }
+      });
+    }
+  }
+
+  function scrollToCard(id) {
+    let required = document.querySelector(id);
+
+    required.addEventListener('animationend', (ev) => { ev.target.classList.remove('touch-required-field') });
+    document.querySelector(id).classList.add('border-danger', 'touch-required-field');
+    document.querySelector(`${id}Anchor`).scrollIntoView();
+  }

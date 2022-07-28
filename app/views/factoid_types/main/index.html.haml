@@ -12,7 +12,7 @@
     .btn-group
       =link_to('filter', '#', class: 'btn btn-sm btn-outline-dark',
                "data-target" => "#filterFactoidTypes", "data-toggle" => "collapse")
-      =link_to('create', '#', class: 'disabled btn btn-sm btn-outline-dark',
+      =link_to('create', '#', class: 'btn btn-sm btn-outline-dark',
                "data-target" => "#createFactoidTypeModal", "data-toggle" => "modal")
 %hr/
 
@@ -37,7 +37,7 @@
         %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
           %span{"aria-hidden" => "true"} ×
       .modal-body.small
-        -# =render 'new'
+        =render 'new'
       .modal-footer.justify-content-center
         =link_to('CREATE', '#', id: 'createFactoidTypeButton', class: 'btn btn-sm btn-dark')
         .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }

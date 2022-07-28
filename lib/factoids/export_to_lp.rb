@@ -14,9 +14,12 @@ module Factoids
                              factoids_to_export.limit(10_000).to_a
                            end
 
-      article_type       = iteration.article_type
-      staging_table_name = article_type.staging_table.name
+      factoid_type       = iteration.factoid_type
+      staging_table_name = factoid_type.staging_table.name
       st_limpar_columns  = Table.get_limpar_data(staging_table_name)
+
+      raise StandardError, 'Check correctness of data in the staging table!' unless st_data_validation(st_limpar_columns)
+
       main_semaphore     = Mutex.new
       exported           = 0
       has_error          = false
@@ -48,9 +51,13 @@ module Factoids
       iteration.update!(last_export_batch_size: exported)
     end
 
-    def unpublish!(iteration)
+    def unpublish!(iteration, factoid_ids = nil)
       semaphore = Mutex.new
-      factoids  = iteration.articles.published.limit(10_000).to_a
+      factoids  = if factoid_ids
+                    iteration.articles.published.where(limpar_factoid_id: factoid_ids).limit(10_000).to_a
+                  else
+                    iteration.articles.published.limit(10_000).to_a
+                  end
 
       threads = Array.new(5) do
         Thread.new do
@@ -58,12 +65,16 @@ module Factoids
           loop do
             factoid = semaphore.synchronize { factoids.shift }
             break if factoid.nil?
-          begin
-            lp_client.delete_editorial(factoid.limpar_factoid_id)
-          rescue Faraday::ResourceNotFound
-            true
-          end
-            factoid.update!(limpar_factoid_id: nil, exported_at: nil)
+          # begin
+          #   lp_client.delete_editorial(factoid.limpar_factoid_id)
+          # rescue Faraday::ResourceNotFound
+          #   true
+          # end
+            if factoid_ids
+              factoid.destroy
+            else
+              factoid.update!(limpar_factoid_id: nil, exported_at: nil)
+            end
           end
         end
       end
@@ -71,6 +82,10 @@ module Factoids
     end
 
     private
+
+    def st_data_validation(st_data)
+      st_data.map { |row| row['limpar_id'].present? }.all?
+    end
 
     def prepare_error_message(factoid, e)
       responce = JSON.parse(e.response[:body])['errors']

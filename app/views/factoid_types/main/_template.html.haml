@@ -1,8 +1,3 @@
-.row
+.row.border-top.mt-3.mx-0.pt-3
   .col-10.offset-1
     =@factoid_type.template.body.html_safe
-%hr.mb-2/
-
-.row
-  .col-1.offset-11.p-0{id: "article_type_#{@factoid_type.id}_template"}
-    =button_to('Edit', edit_article_type_template_path(@factoid_type, @factoid_type.template), method: :get, remote: true)

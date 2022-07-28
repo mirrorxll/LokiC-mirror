@@ -52,6 +52,14 @@ Rails.application.routes.draw do
       scope module: :data_sets do
         resources :data_sets, controller: :main, only: :index
       end
+
+      scope module: :factoid_types do
+        resources :factoid_types, controller: :main, only: :index
+      end
+
+      scope module: :story_types do
+        resources :story_types, controller: :main, only: :index
+      end
     end
 
     resources :work_requests, only: :update
@@ -213,10 +221,12 @@ Rails.application.routes.draw do
 
   scope module: :story_types do
     resources :story_types, controller: :main do
-      get   :properties_form
       get   :canceling_edit,  on: :member
-      patch :update_sections, on: :member
-      patch :change_data_set, on: :member
+
+      resource :data_set, only: :update
+      resource :property_form, only: :show
+      resource :update_section, only: :update
+
 
       resources :templates, path: :template, only: %i[show edit update] do
         patch :save, on: :member
@@ -371,10 +381,11 @@ Rails.application.routes.draw do
 
   scope module: :factoid_types do
     resources :factoid_types, controller: :main do
-      get   :properties_form
       get   :canceling_rename,  on: :member
-      patch :update_sections,   on: :member
-      patch :change_data_set,   on: :member
+
+      resource :data_set,       only: :update
+      resource :property_form, only: :show
+      resource :update_section, only: :update
 
       resources :templates, path: :template, only: %i[show edit update] do
         patch :save, on: :member

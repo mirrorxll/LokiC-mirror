@@ -1,0 +1,8 @@
+#factoid_type_template.card.h-100
+  .card-header.d-flex.justify-content-between.align-items-center
+    TEMPLATE
+    -if current_account_permissions('factoid_types')['edit']
+      =button_to('Edit', edit_factoid_type_template_path(@factoid_type, @factoid_type.template), method: :get, remote: true)
+  #template_preview.h-100
+    .card-body.h-100.d-flex.flex-column.justify-content-between
+      =render 'factoid_types/main/template'

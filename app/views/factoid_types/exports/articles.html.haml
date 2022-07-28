@@ -45,7 +45,7 @@
             %td
               =factoid.link? ? link_to('limpar', factoid.lp_link, target:'_blank') : '---'
             %td
-              =link_to('lokic', article_type_iteration_sample_url(@factoid_type, @iteration, factoid), target:'_blank')
+              =link_to('lokic', factoid_type_iteration_sample_url(@factoid_type, @iteration, factoid), target:'_blank')
             %td
               =factoid.exported_at ? factoid.exported_at.strftime('%F') : '---'
 

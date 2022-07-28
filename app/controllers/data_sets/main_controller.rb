@@ -34,7 +34,7 @@ module DataSets
     def show
       @tab_title = "LokiC :: DataSet ##{@data_set.id} <#{@data_set.name}>"
       @story_types = @data_set.story_types.order(id: :desc)
-      @factoid_types = @data_set.article_types.order(id: :desc)
+      @factoid_types = @data_set.factoid_types.order(id: :desc)
     end
 
     def create

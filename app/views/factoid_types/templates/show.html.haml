@@ -1,9 +1,9 @@
 %hr/
 .row
   .col-12.text-center
-    %b #{@story_type.id_name}
+    %b #{@factoid_type.id_name}
 %hr/
 
 .row.small
   .col-10.offset-1
-    =@story_type.template&.body&.html_safe
+    =@factoid_type.template&.body&.html_safe

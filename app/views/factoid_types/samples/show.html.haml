@@ -6,18 +6,18 @@
 -if @factoid_type.code.attached?
   .row
     .col-10.offset-1
-      =link_to("factoid type's code", article_type_codes_path(@factoid_type),
+      =link_to("factoid type's code", factoid_type_codes_path(@factoid_type),
                class: 'btn btn-sm btn-outline-dark', remote: true)
 %hr/
 %hr/
-#article_sample
+#factoid_sample
   .row.small
     .col-1.p-0.text-right.font-weight-bold
       body:
     .col-10
       =@sample.output.body.html_safe
 
-=render 'article_types/codes/modal_ruby_code'
+=render 'factoid_types/codes/modal_ruby_code'
 
 :javascript
   (()=> {

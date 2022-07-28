@@ -28,13 +28,12 @@
               .form-group
                 =f.label 'reminder[turn_off_until]', 'turn off until'
                 =f.date_field 'reminder[turn_off_until]', class: 'form-control', min: Date.tomorrow, required: true
-          .row
             .col-6
               .form-group
                 =f.label 'reminder[reasons]', 'reasons (for John)'
                 =f.text_area 'reminder[reasons]', class: 'form-control', required: true
           .row
-            .col-3
+            .col
               =f.submit '[ TURN REMINDERS OFF ]', class: 'p-0 mt-2 mb-2 btn btn-sm btn-link text-dark'
     -else
       .row

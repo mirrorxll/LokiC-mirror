@@ -1,0 +1,42 @@
+#factoid_type_source_properties
+  .row.mb-2.font-weight-bold
+    .col-6
+      kind
+    .col-6
+      topic
+  .row
+    -[@factoid_type.kind&.name, @factoid_type.topic&.description].each do |prop|
+      .col-6
+        -if prop
+          =prop
+        -else
+          .text-danger.font-italic
+            not set
+  %hr/
+  .row.mb-2.font-weight-bold
+    .col-6
+      source type
+    .col-6
+      source name
+  .row
+    -[@factoid_type&.source_type, @factoid_type&.source_name].each do |prop|
+      .col-6.pb-3
+        -if prop
+          =prop
+        -else
+          .text-danger.font-italic
+            not set
+  .row.mb-2.font-weight-bold
+    .col-6
+      source link
+    .col-6
+      original publish date
+  .row
+    -[@factoid_type&.source_link, @factoid_type&.original_publish_date].each do |prop|
+      .col-6
+        -if prop
+          =prop
+        -else
+          .text-danger.font-italic
+            not set
+  %hr/
