@@ -83,6 +83,7 @@ module FactoidTypes
                                                    :source_link,
                                                    :original_publish_date).reject { |_, v| v.blank? }
       attrs[:current_account] = current_account
+      attrs[:topic_id] = nil if attrs[:kind_id].present? && attrs[:topic_id].blank?
       attrs
     end
   end

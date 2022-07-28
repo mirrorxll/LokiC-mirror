@@ -142,7 +142,7 @@ class Task < ApplicationRecord # :nodoc:
 end
 old_status = Status.find_by(name: 'created and in queue')
 new_status = Status.find_by(name: 'created and in queue')
-[WorkRequest, FactoidRequest, Task, ScrapeTask, StoryType, ArticleType].each do |branch|
+[WorkRequest, FactoidRequest, Task, ScrapeTask, StoryType, FactoidType].each do |branch|
   branch.where(status: old_status).each do |i|
     i.update(status: new_status)
   end

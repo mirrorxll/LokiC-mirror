@@ -3,7 +3,7 @@
 module FactoidTypes
   class ArticlesController < FactoidTypesController # :nodoc:
     def index
-      @grid = request.parameters[:article_type_iteration_articles_grid] || {}
+      @grid = request.parameters[:factoid_type_iteration_articles_grid] || {}
 
       @iteration_articles_grid = FactoidTypeIterationArticlesGrid.new(@grid) do |scope|
         scope.where(factoid_type_id: params[:factoid_type_id], factoid_type_iteration_id: params[:iteration_id])

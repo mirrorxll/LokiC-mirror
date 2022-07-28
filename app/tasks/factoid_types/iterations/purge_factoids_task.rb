@@ -4,7 +4,7 @@ module FactoidTypes
   module Iterations
     class PurgeFactoidsTask < FactoidTypesTask
       def perform(iteration_id, account_id, factoid_ids)
-        iteration          = ArticleTypeIteration.find(iteration_id)
+        iteration          = FactoidTypeIteration.find(iteration_id)
         account            = Account.find(account_id)
         array_of_dis       = factoid_ids.split(',')
         message            = 'Success'
