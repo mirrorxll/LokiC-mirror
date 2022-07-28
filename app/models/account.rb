@@ -46,6 +46,8 @@ class Account < ApplicationRecord # :nodoc:
 
   has_and_belongs_to_many :roles, class_name: 'AccountRole'
 
+  scope :get_accounts, ->(account_type) { joins(:roles).where('account_roles.name': account_type) }
+
   validates :email, presence: true, format: { with: /\A[^@\s]+@[^@\s]+\z/, message: 'Invalid' }
   validates_uniqueness_of :email, case_sensitive: true
   validates :password, length: { minimum: 6, maximum: 20 }, if: -> { password.present? }

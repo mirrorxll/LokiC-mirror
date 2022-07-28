@@ -1,0 +1,13 @@
+<div id="multiTasks" class="row mb-3">
+  <div class="col-3 text-right pr-0">
+    <b>MULTI TASKS:</b>
+    <%= link_to(icon('fa', 'pencil-square'), edit_scrape_task_multi_tasks_path(@scrape_task), class: 'p-0 ml-2', remote: true) %>
+  </div>
+
+  <div class="col">
+    <% @scrape_task.multi_tasks.each do |task| %>
+      <%= link_to("##{task.id} #{task.title}", multi_task_path(task), target: '_blank') %>
+      <br/>
+    <% end %>
+  </div>
+</div>

@@ -1,0 +1,40 @@
+.row.small.h-100
+  .col-8
+    =render 'data_sets/sheriffs/sheriff'
+    =render 'data_sets/responsible_editors/responsible_editor'
+    =render 'data_sets/scrape_tasks/scrape_tasks'
+
+    %hr/
+
+    .row
+      .col-3.pr-0.text-right.font-weight-bold
+        STATE:
+      .col-9
+        =@data_set.state&.name
+    .row
+      .col-3.pr-0.text-right.font-weight-bold
+        CATEGORY:
+      .col-9
+        =@data_set.category&.name
+
+    .row.mt-4
+      .col-3.pr-0.text-right.font-weight-bold
+        CLIENT/PUBLICATION/TAGS:
+      .col-9
+        -@data_set.client_publication_tags.each do |row|
+          -if row.publication.nil?
+            ="#{row.client.name}(all publications) - #{row.tag.name}"
+          -else
+            ="#{row.client.name}(#{row.publication.name}) - #{row.tag.name}"
+          %br/
+    .row
+      .col-3.pr-0.text-right.font-weight-bold
+        PHOTO BUCKET:
+      .col-9
+        =@data_set.photo_bucket&.name
+
+  .col-4.border-left
+    .font-weight-bold
+      GENERAL COMMENT:
+    .mb-2
+      =@data_set.general_comment.body&.html_safe || '<br>'.html_safe

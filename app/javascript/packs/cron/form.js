@@ -12,11 +12,11 @@ function checkCronPattern() {
     formSubmitButton.disabled = !isCorrectPattern;
 
     if([minute, hour, month_day, month, weekDay].every((el) => el.trim().length === 0)) {
-        description.innerText = "";
+        description.textContent = "";
     } else if(isCorrectPattern) {
-        description.innerText = cronstrue.toString(pattern);
+        description.textContent = cronstrue.toString(pattern);
     } else {
-        description.innerText = "Cron pattern isn't valid";
+        description.textContent = "Cron pattern isn't valid";
     }
 
     return isCorrectPattern;

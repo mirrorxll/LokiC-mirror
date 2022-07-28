@@ -38,7 +38,7 @@ class ScrapeTasksGrid
   accounts = Account.joins(:created_scrape_tasks).distinct
   filter(:creator, :enum, multiple: true, select: accounts.map { |r| [r.name, r.id] }.sort)
 
-  statuses = Status.scrape_task_statuses_for_grid.pluck(:name, :id)
+  statuses = Status.scrape_task_statuses(done: true, archived: true).pluck(:name, :id)
   filter(:status, :enum, multiple: true, select: statuses)
 
   frequency = Frequency.pluck(:name, :id)

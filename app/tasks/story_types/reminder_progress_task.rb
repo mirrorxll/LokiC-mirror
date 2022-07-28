@@ -17,7 +17,7 @@ module StoryTypes
         created_at_gap = (Date.today - st_type.created_at.to_date).to_i
 
         # not migrated story type not started more than seven days
-        if st_type.status.name.in?(['not started']) && distributed_gap > 7 && !st_type.migrated
+        if st_type.status.name.in?(['created and in queue']) && distributed_gap > 7 && !st_type.migrated
           message(st_type, :story_type_not_started)
           active = false
         end

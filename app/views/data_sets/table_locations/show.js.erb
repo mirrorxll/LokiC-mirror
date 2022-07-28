@@ -1,0 +1,4 @@
+$('#tableLocations>:last-child').html(
+    '<%= @data_set.table_locations.map { |tl| tl.full_name  }.join('<br>').html_safe %>'
+);
+$('#dataSetInfo .edit-table-locations-button').removeClass('disabled-link');

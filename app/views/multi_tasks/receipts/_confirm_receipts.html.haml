@@ -7,7 +7,6 @@
     .small.overflow-auto
       -if (current_task_assignment.nil? || current_task_assignment.confirmed) || task.creator?(current_account)
         =render 'multi_tasks/receipts/confirms', task_assignments: task.assignments.order(confirmed_at: :desc)
-      -elsif current_task_assignment.nil?
       -elsif current_task_assignment.confirmed.eql?(false)
         =render 'multi_tasks/receipts/form'
       -elsif current_task_assignment.confirmed

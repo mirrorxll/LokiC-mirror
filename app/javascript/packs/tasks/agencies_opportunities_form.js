@@ -120,7 +120,7 @@ function addAgenciesToSelectGroup(uId, agenciesFromApi = null) {
         for (let i = 0; i < agencies.length; i++) {
             option = document.createElement("option");
             option.setAttribute("value", agencies[i].id);
-            option.text = agencies[i].name;
+            option.textContent = agencies[i].name;
             select.appendChild(option);
         }
     } else {
@@ -154,7 +154,7 @@ function addOpportunitiesToSelectGroup(opportunitiesSelect, opportunities) {
     for (let i = 0; i < opportunities.length; i++) {
         option = document.createElement("option");
         option.setAttribute("value", opportunities[i].id);
-        option.text = opportunities[i].name;
+        option.textContent = opportunities[i].name;
         opportunitiesSelect.appendChild(option);
     }
 }
@@ -185,7 +185,7 @@ function addRevenueTypesToSelectGroup(revenueTypesSelect, revenueTypes) {
     for (let i = 0; i < revenueTypes.length; i++) {
         option = document.createElement("option");
         option.setAttribute("value", revenueTypes[i].id);
-        option.text = revenueTypes[i].name;
+        option.textContent = revenueTypes[i].name;
         revenueTypesSelect.appendChild(option);
     }
 }

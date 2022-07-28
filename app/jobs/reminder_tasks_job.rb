@@ -90,6 +90,6 @@ class ReminderTasksJob < ApplicationJob
 
   def generate_task_url(task)
     host = Rails.env.production? ? 'https://lokic.locallabs.com' : 'http://localhost:3000'
-    "#{host}#{Rails.application.routes.url_helpers.task_path(task)}"
+    "#{host}#{Rails.application.routes.url_helpers.multi_task_path(task)}"
   end
 end

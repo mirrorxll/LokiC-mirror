@@ -78,7 +78,7 @@
                 for (let i = 0; i < publications.length; i++) {
                   option = document.createElement("option");
                   option.setAttribute("value", publications[i].id);
-                  option.text = publications[i].name;
+                  option.textContent = publications[i].name;
                   pubsSelect.appendChild(option);
                 }
               }

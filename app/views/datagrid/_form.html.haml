@@ -5,10 +5,14 @@
   =render 'datagrid/work_requests/form', grid: grid, options: options
 -when FactoidRequestsGrid
   =render 'datagrid/factoid_requests/form', grid: grid, options: options
--when StoryTypesGrid
-  =render 'datagrid/story_types/form', grid: grid, options: options
+-when MultiTasksGrid
+  =render 'datagrid/multi_tasks/form', grid: grid, options: options
+-when ScrapeTasksGrid
+  =render 'datagrid/scrape_tasks/form', grid: grid, options: options
 -when DataSetsGrid
   =render 'datagrid/data_sets/form', grid: grid, options: options
+-when StoryTypesGrid
+  =render 'datagrid/story_types/form', grid: grid, options: options
 -when FactoidTypesGrid
   =render 'datagrid/factoid_types/form', grid: grid, options: options
 

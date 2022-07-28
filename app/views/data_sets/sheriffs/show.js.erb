@@ -1,0 +1,6 @@
+<% if flash.now[:error] %>
+  <%= toastr_js_flash %>
+<% else %>
+  $('#sheriff>.col').html('<%= @data_set.sheriff&.name %>');
+  $('#sheriff>:first-child>a').removeClass('disabled-link');
+<% end %>

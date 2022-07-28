@@ -7,7 +7,10 @@
   .col#assignments
     =render 'multi_tasks/assignments/assignments', task: @multi_task
   .col#task_status.text-right
-    =render 'multi_tasks/progress_statuses/status', task: @multi_task
+    -if @permissions['progress_status']['edit_form']
+      =render 'multi_tasks/progress_statuses/status', task: @multi_task
+    -elsif @permissions['progress_status']['show']
+      =@multi_task.status.name
 
 .row.mt-3
   .col-5
@@ -20,15 +23,16 @@
       .card-header.p-1
         .d-flex.justify-content-between.small
           comments
-          -if current_account.eql?(@multi_task.creator) || current_account.in?(@multi_task.assignment_to)
+          -if @permissions['comments']['new_form'] && (current_account.manager? || current_account.eql?(@multi_task.creator) || current_account.in?(@multi_task.assignment_to))
             #comment_form
               =link_to('[ add comment ]',
                        new_multi_task_comment_path(@multi_task, subtype: 'user comment'),
                        remote: true)
       .card-body
-        =render 'comments', comments: @comments
+        -if @permissions['comments']['show']
+          =render 'comments', comments: @comments
 
--if current_account.eql?(@multi_task.creator) || current_account.in?(@multi_task.assignment_to)
+-if @permissions['notes']['show'] && (current_account.eql?(@multi_task.creator) || current_account.in?(@multi_task.assignment_to))
   #notes.accordion.mt-2
     .card.small
       .card-header.p-1
@@ -37,29 +41,30 @@
             %div{"aria-controls" => "#notesCollapse", "aria-expanded" => "true", "data-target" => "#notesCollapse", "data-toggle" => "collapse", type: "button"}
               notes
           .col-1.text-right#linkEditNote
-            -unless @note.nil?
+            -if @permissions['notes']['edit_form'] && @note
               =render 'multi_tasks/notes/link_edit', note: @note
       #notesCollapse.collapse{"data-parent" => "#notes"}
         =render 'multi_tasks/notes/note', note: @note
 
-#subtasks.accordion.mt-2
-  .card.small
-    .card-header.p-1
-      %div.row
-        .col-11
-          %div{"aria-controls" => "#subtasksCollapse", "aria-expanded" => "true", "data-target" => "#subtasksCollapse", "data-toggle" => "collapse", type: "button"}
-            subtasks
-        .col-1.text-right
-          -if @multi_task.creator?(current_account)
-            =link_to '[ create ]', new_subtask_multi_tasks_path(parent_task: @multi_task), remote: true
-    #subtasksCollapse.collapse{"data-parent" => "#subtasks", class: @multi_task.subtasks.count > 0 ? 'show' : '' }
-      =render 'subtasks'
+-if @permissions['sub_tasks']['show']
+  #subtasks.accordion.mt-2
+    .card.small
+      .card-header.p-1
+        %div.row
+          .col-11
+            %div{"aria-controls" => "#subtasksCollapse", "aria-expanded" => "true", "data-target" => "#subtasksCollapse", "data-toggle" => "collapse", type: "button"}
+              subtasks
+          .col-1.text-right
+            -if @permissions['sub_tasks']['new_form'] && @multi_task.creator?(current_account)
+              =link_to '[ create ]', new_subtask_multi_tasks_path(parent_task: @multi_task), remote: true
+      #subtasksCollapse.collapse{"data-parent" => "#subtasks", class: @multi_task.subtasks.count > 0 ? 'show' : '' }
+        =render 'subtasks'
 
 .card.mt-2
   .card-header.p-1
     .d-flex.justify-content-between.small
       info
-      -if @multi_task.creator?(current_account)
+      -if @permissions['edit_form'] && @multi_task.creator?(current_account)
         =link_to '[ edit task ]', edit_multi_task_path(@multi_task), remote: true
   .card-body
     #body
@@ -77,5 +82,15 @@
 =render 'multi_tasks/checklists/confirms'
 =render 'multi_tasks/tracking_hours/hours_form'
 
-=render 'multi_tasks/main/task_modal'
-=render 'multi_tasks/comments/comment_modal'
+-if @permissions['edit_form']
+  #task.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "properties", role: "dialog", "data-backdrop" => "static", "data-keyboard" => "false" }
+    .modal-dialog.modal-dialog-centered.modal-dialog-scrollable{ style: "max-width: 80%;" }
+      .modal-content
+        .modal-header
+        .modal-body
+
+- if @permissions['comments']['new_form'] || @permissions['comments']['edit_form']
+  #comment.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "properties", role: "dialog", :tabindex => "-1"}
+    .modal-dialog.modal-dialog-centered.modal-xl
+      .modal-content
+        .modal-body

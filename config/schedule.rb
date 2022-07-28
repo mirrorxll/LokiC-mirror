@@ -27,8 +27,8 @@ every '0 * * * *' do
   rake 'check_has_updates_revise'
 end
 
-every '0 5,10,15,20 * * *' do
-  rake 'scrape_task:schemes_tables'
+every '0 0-22 * * *' do
+  rake 'scrape_task:schemas_tables'
 end
 
 CronTab.all.each do |tab|

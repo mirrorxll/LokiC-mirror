@@ -1,52 +1,79 @@
 %hr/
-#header.row.justify-content-between.align-items-center.mt-3
-  .col-6
-    Total:
-    =@grid.assets.total_count
-  .col-6.text-right.text-uppercase
-    .btn-group.mr-3
-      -lists = %w[all archived]
-      -lists.each do |list|
-        -filled = (!params[:list].in?(lists) && list.eql?('all')) || params[:list].eql?(list) ? '' : '-outline'
-        =link_to(list, url_for(list: list), class: "btn btn-sm btn#{filled}-dark")
+#header.d-flex.justify-content-between.align-items-center.mt-3
+  %span
+    -if @current_list
+      Total: #{@grid.assets.total_count}
+  %span.font-weight-bold
+    DATA SETS
+  .d-inline-block.text-right.text-uppercase
+    -if @current_list && @lists.length > 1
+      .btn-group.mr-3
+        -@lists.each_key do |list|
+          -filled = @current_list.eql?(list) ? '' : '-outline'
+          =link_to(list, url_for(list: list), class: "btn btn-sm btn#{filled}-dark")
     .btn-group
-      =link_to('filter', '#', class: 'disabled btn btn-sm btn-outline-dark',
-               "data-target" => "#createDataSetModal", "data-toggle" => "modal")
-      =link_to('create', '#', class: 'btn btn-sm btn-outline-dark',
-               "data-target" => "#createDataSetModal", "data-toggle" => "modal")
-      =link_to('download CSV', url_for(format: 'csv', data_sets_grid: params[:data_sets_grid]),
-               id: '#save_as_csv_btn', class: 'btn btn-sm btn-outline-dark')
-%hr/
+      -if @current_list
+        =link_to('filter', '#', class: 'btn btn-sm btn-outline-dark',
+                 "data-target" => "#filterDSets", "data-toggle" => "collapse")
+      -if @permissions['new_form']
+        =link_to('create', '#', class: 'btn btn-sm btn-outline-dark',
+                 "data-target" => "#createDataSetModal", "data-toggle" => "modal")
 
-#filter.mt-3.mb-3.collapse{ class: (params[:data_sets_grid] ? 'show' : '') }
-  =datagrid_form_for @grid, url: data_sets_path
+%hr.mb-1/
 
-.row.small.mb-5
-  .col-12
-    =datagrid_table(@grid)
+-if @current_list && @grid.assets.total_count > 0
+  .text-right.mb-2
+    =link_to('[ download CSV ]', url_for(format: 'csv', data_sets_grid: params[:data_sets_grid]),
+                 id: '#save_as_csv_btn', class: 'small')
 
-.fixed-bottom.bg-light
-  .row
-    .col-12.p-2
-      =paginate @grid.assets
+-if @current_list
+  #filterDSets.mt-3.mb-3.collapse{ class: (params[:data_sets_grid] ? 'show' : '') }
+    =datagrid_form_for @grid, url: data_sets_path
 
-#createDataSetModal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "createDataSetModal",
+  .row.small.mb-5
+    .col-12
+      =datagrid_table(@grid)
+
+  .fixed-bottom.bg-light
+    .row
+      .col-12.p-2
+        =paginate @grid.assets
+
+  :javascript
+    (() => {
+      let filter = $('#filterDSets');
+      filter.on('show.bs.collapse', () => {
+        sessionStorage['d_sets_filter_show'] = true;
+      });
+
+      filter.on('hide.bs.collapse', () => {
+        sessionStorage['d_sets_filter_show'] = false;
+      });
+
+      if(JSON.parse(sessionStorage['d_sets_filter_show'])) {
+        filter.addClass('show');
+      } else {
+        filter.removeClass('show');
+      }
+    })();
+
+-if @permissions['new_form']
+  #createDataSetModal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "createDataSetModal",
                                     'data-backdrop' => 'static', "data-keyboard" => "false" }
-  .modal-dialog.modal-dialog-scrollable.modal-lg
-    .modal-content
-      .modal-header
-        NEW DATA SET
-        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
-          %span{"aria-hidden" => "true"} ×
-      .modal-body.small
-        =render 'form'
-      .modal-footer.justify-content-center
-        =link_to('CREATE', '#', id: 'createDataSetButton', class: 'btn btn-sm btn-dark')
-        .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
-          CANCEL
-
-:javascript
-  document.querySelector('#createDataSetButton').addEventListener('click', (event) => {
-    event.preventDefault();
-    document.querySelector('#hiddenCreateButton').click();
-  }, false);
+    .modal-dialog
+      .modal-content
+        .modal-header
+          NEW DATA SET
+          %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+            %span{"aria-hidden" => "true"} ×
+        .modal-body.small
+          =render 'new'
+        .modal-footer.justify-content-center
+          =link_to('CREATE', '#', id: 'createDataSetButton', class: 'btn btn-sm btn-dark')
+          .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+            CANCEL
+  :javascript
+    document.querySelector('#createDataSetButton').addEventListener('click', (event) => {
+      event.preventDefault();
+      document.querySelector('#hiddenCreateDataSetButton').click();
+    }, false);

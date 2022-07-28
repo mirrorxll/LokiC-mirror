@@ -10,9 +10,13 @@
   =render 'datagrid/work_requests/table', grid: grid, assets: assets, options: options
 -when FactoidRequestsGrid
   =render 'datagrid/factoid_requests/table', grid: grid, assets: assets, options: options
--when StoryTypesGrid
-  =render 'datagrid/story_types/table', grid: grid, assets: assets, options: options
+-when MultiTasksGrid
+  =render 'datagrid/multi_tasks/table', grid: grid, assets: assets, options: options
+-when ScrapeTasksGrid
+  =render 'datagrid/scrape_tasks/table', grid: grid, assets: assets, options: options
 -when DataSetsGrid
   =render 'datagrid/data_sets/table', grid: grid, assets: assets, options: options
+-when StoryTypesGrid
+  =render 'datagrid/story_types/table', grid: grid, assets: assets, options: options
 -when FactoidTypesGrid
   =render 'datagrid/factoid_types/table', grid: grid, assets: assets, options: options

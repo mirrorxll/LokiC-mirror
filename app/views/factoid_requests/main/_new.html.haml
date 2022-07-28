@@ -40,13 +40,13 @@
 
                   let option = document.createElement('option');
                   option.value = '';
-                  option.innerText = '';
+                  option.textContent = '';
                   select.appendChild(option);
 
                   data.forEach(el => {
                     option = document.createElement('option');
                     option.value = el['id'];
-                    option.innerText = el['name'];
+                    option.textContent = el['name'];
                     select.appendChild(option);
                   })
                 }

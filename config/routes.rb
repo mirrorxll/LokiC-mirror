@@ -41,13 +41,27 @@ Rails.application.routes.draw do
 
   namespace :api, constraints: { format: :json } do
     namespace :v1 do
+      scope module: :multi_tasks do
+        resources :multi_tasks, controller: :main, only: %i[index]
+      end
+
+      scope module: :scrape_tasks do
+        resources :scrape_tasks, controller: :main, only: %i[index show]
+      end
+
+      scope module: :data_sets do
+        resources :data_sets, controller: :main, only: :index
+      end
+
       scope module: :factoid_types do
         resources :factoid_types, controller: :main, only: :index
       end
+
       scope module: :story_types do
         resources :story_types, controller: :main, only: :index
       end
     end
+
     resources :work_requests, only: :update
 
     scope module: :story_types, path: 'story_types/:story_type_id' do
@@ -86,13 +100,6 @@ Rails.application.routes.draw do
       resources :main_agency_opportunities, path: :opportunities, as: :opportunities, only: :index
     end
 
-    resources :scrape_tasks, only: [] do
-      get :names, on: :collection
-      get :data_set_locations, on: :collection
-    end
-
-    resources :schemas, only: :index
-    resources :table_locations, only: %i[index create destroy]
     resources :data_samples, only: :show
 
     scope module: :scrape_tasks, path: 'scrape_tasks/:scrape_task_id', as: 'scrape_tasks' do
@@ -114,6 +121,12 @@ Rails.application.routes.draw do
     get 'all_publications_scope_id', to: 'publications#all_pubs_scope_id'
     get 'all_local_publications_scope_id', to: 'publications#all_local_pubs_scope_id'
     get 'all_statewide_publications_scope_id', to: 'publications#all_statewide_pubs_scope_id'
+  end
+
+  resources :schemas, only: :index do
+    scope module: :schemas do
+      resources :sql_tables, only: %i[index create destroy]
+    end
   end
 
   scope module: :work_requests do
@@ -138,17 +151,17 @@ Rails.application.routes.draw do
       post :create_subtask, on: :collection
 
       resources :progress_statuses, only: [] do
-        patch :change, on: :collection
-        post  :comment, on: :collection
-        patch :subtasks,      on: :collection
+        patch :change,   on: :collection
+        post  :comment,  on: :collection
+        patch :subtasks, on: :collection
       end
 
       resources :checklists, only: %i[new create edit update] do
-        patch :confirm,   on: :member
+        patch :confirm, on: :member
       end
 
       resources :receipts, only: :index do
-        patch :confirm,   on: :collection
+        patch :confirm, on: :collection
       end
 
       resources :comments, only: %i[new create edit update destroy]
@@ -167,12 +180,9 @@ Rails.application.routes.draw do
   resources :task_tracking_hours, controller: 'multi_tasks/tracking_hours', only: :index
 
   scope module: :scrape_tasks do
-    resources :scrape_tasks, controller: 'main', except: :destroy do
-      patch :evaluate
+    resources :scrape_tasks, controller: 'main', except: %i[edit destroy] do
 
-      resources :progress_statuses, only: [] do
-        patch :change, on: :collection
-      end
+      resource :progress_statuses, only: :update
 
       resource :instruction, only: %i[edit update] do
         get   :cancel_edit
@@ -184,19 +194,26 @@ Rails.application.routes.draw do
         patch :autosave
       end
 
-      resources :tags, only: [] do
-        post :include, on: :collection
-        delete :exclude
-      end
-
-      resources :multi_tasks, only: :new
+      resource :scraper, only: %i[show edit update]
+      resource :tags, only: %i[show edit update]
+      resource :multi_tasks, only: %i[show edit update]
+      resource :data_sets, only: %i[show edit update]
+      resource :table_locations, only: %i[show edit update]
+      resource :data_samples, only: :show
     end
   end
 
   scope module: :data_sets do
     resources :data_sets, controller: 'main', except: %i[new] do
       get :properties, on: :member
+
+      resource :status, only: :update
+      resource :sheriff, only: %i[show edit update]
+      resource :responsible_editor, only: %i[show edit update]
+      resource :scrape_tasks, only: %i[show edit update]
+      resource :table_locations, only: %i[show edit update]
     end
+
   end
 
   resources :table_locations, only: :new

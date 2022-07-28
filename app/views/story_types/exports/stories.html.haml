@@ -138,7 +138,7 @@
         span.className = "badge badge-light";
 
         link = document.createElement('a');
-        link.innerText = key;
+        link.textContent = key;
         link.href = `#{pl_endpoint}${key}`;
         link.target = '_blank';
 
@@ -148,7 +148,7 @@
         span = document.createElement('span');
         span.className = 'd-inline-block ml-1 mb-1 mouse-hover';
         span.onclick = removeShowSample;
-        span.innerText = 'x';
+        span.textContent = 'x';
         showSampleBlock.appendChild(span);
 
         showSamples.appendChild(showSampleBlock);
@@ -174,7 +174,7 @@
       Rails.ajax({
         type: "PUT",
         dataType: 'json',
-        url: `#{root_url}api/shown_samples/${lokicId}`,
+        url: `/api/shown_samples/${lokicId}`,
         data: `commit=${commit}&entity=story`,
         success: function (_data) {
           if (isCheckBox) {

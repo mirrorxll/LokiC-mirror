@@ -1,0 +1,3 @@
+-if @data_set.status.name.eql?('deactivated')
+  .text-danger.font-weight-bold
+    #{@data_set.status.name} - #{@data_set.status_comment.body}

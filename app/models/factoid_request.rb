@@ -2,7 +2,7 @@
 
 class FactoidRequest < ApplicationRecord
   before_create do
-    self.status = Status.find_by(name: 'not started')
+    self.status = Status.find_by(name: 'created and in queue')
 
     build_status_comment(subtype: 'status comment')
     build_description(subtype: 'description')

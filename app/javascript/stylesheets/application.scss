@@ -31,6 +31,10 @@ body {
   font-family: 'Ubuntu', sans-serif;
 }
 
+.font-size-default {
+  font-size: revert;
+}
+
 @media (min-width: 100px) {
   .modal-fullscreen {
     max-width: 97%;
@@ -198,4 +202,11 @@ div.enum_filter > div.ms-drop li {
 
 .w-250px {
   width: 250px;
+}
+
+.disabled-link{
+  cursor: default;
+  pointer-events: none;
+  text-decoration: none;
+  color: grey;
 }

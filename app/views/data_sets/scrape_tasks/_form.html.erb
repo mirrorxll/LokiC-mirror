@@ -1,0 +1,32 @@
+<hr class="mt-0">
+
+<%= form_with(url: data_set_scrape_tasks_path(@data_set), method: :patch, html: { class: 'ml-3',  onkeypress: "return event.keyCode !== 13;" } ) do |f| %>
+  <div class="form-group form-check mb-0">
+    <% @data_set.scrape_tasks.each do |st| %>
+      <%= f.check_box "scrape_tasks[#{st.id}]", class: 'form-check-input', checked: true  %>
+      <%= f.label "scrape_tasks[#{st.id}]", "##{st.id} #{st.name}", class: 'form-check-label' %>
+      <br/>
+    <% end %>
+  </div>
+
+  <div id="scrapeTasksInputBlock" class="d-flex mb-2">
+    <span>ADD: </span>
+    <div class="form-group mb-0">
+      <input class="underline-input pt-0" list='scrapeTasksDataList'>
+      <datalist id="scrapeTasksDataList">
+        <% ScrapeTask.all.each do |st| %>
+          <option value="<%= "##{st.id} #{st.name}" %>"></option>
+        <% end %>
+      </datalist>
+
+      <div class="small"> *** press enter </div>
+    </div>
+  </div>
+
+  <%= f.submit '[ save ]', class: 'btn btn-sm btn-link p-0' %>
+  <%= link_to('[ cancel ]', data_set_scrape_tasks_path, class: 'btn btn-sm btn-link text-secondary p-0', remote: true) %>
+<% end %>
+
+<hr class="mb-0">
+
+<%= javascript_pack_tag 'data_sets/scrape_tasks/form' %>

@@ -11,21 +11,55 @@ require("trix");
 require("@rails/actiontext");
 require("datatables.net-bs4");
 require("./story_types/comment_editing");
+require('froala-editor/js/froala_editor.min')
+require("froala-editor/js/plugins/align.min.js")
+require("froala-editor/js/plugins/char_counter.min.js")
+require("froala-editor/js/plugins/code_beautifier.min.js")
+require("froala-editor/js/plugins/code_view.min.js")
+require("froala-editor/js/plugins/colors.min.js")
+require("froala-editor/js/plugins/emoticons.min.js")
+require("froala-editor/js/plugins/entities.min.js")
+require("froala-editor/js/plugins/file.min.js")
+require("froala-editor/js/plugins/font_family.min.js")
+require("froala-editor/js/plugins/font_size.min.js")
+require("froala-editor/js/plugins/fullscreen.min.js")
+require("froala-editor/js/plugins/help.min.js")
+require("froala-editor/js/plugins/image.min.js")
+require("froala-editor/js/plugins/image_manager.min.js")
+require("froala-editor/js/plugins/inline_class.min.js")
+require("froala-editor/js/plugins/inline_style.min.js")
+require("froala-editor/js/plugins/line_breaker.min.js")
+require("froala-editor/js/plugins/line_height.min.js")
+require("froala-editor/js/plugins/link.min.js")
+require("froala-editor/js/plugins/lists.min.js")
+require("froala-editor/js/plugins/paragraph_format.min.js")
+require("froala-editor/js/plugins/paragraph_style.min.js")
+require("froala-editor/js/plugins/print.min.js")
+require("froala-editor/js/plugins/quick_insert.min.js")
+require("froala-editor/js/plugins/quote.min.js")
+require("froala-editor/js/plugins/save.min.js")
+require("froala-editor/js/plugins/table.min.js")
+require("froala-editor/js/plugins/special_characters.min.js")
+require("froala-editor/js/plugins/url.min.js")
+require("froala-editor/js/plugins/video.min.js")
+require("froala-editor/js/third_party/embedly.min.js")
+require("froala-editor/js/third_party/font_awesome.min.js")
+require("froala-editor/js/third_party/image_tui.min.js")
+require("froala-editor/js/third_party/spell_checker.min.js")
 
 import 'bootstrap';
-import '../stylesheets/application';
-import './froala';
 import Rails from "@rails/ujs";
 import cronstrue from 'cronstrue';
 import datepicker from 'bootstrap-datepicker';
 import multipleSelect from 'multiple-select';
 import Chart from 'chart.js/auto';
-
 import 'select2'
+
+import '../stylesheets/application';
 
 global.Chart = Chart;
 global.toastr = require("toastr")
-
+window.FroalaEditor = require('froala-editor');
 window.Rails = Rails;
 window.jQuery = $;
 window.$ = $;
@@ -52,9 +86,3 @@ document.addEventListener('turbolinks:load', () => {
     });
   }, 15000);
 });
-
-// Uncomment to copy all static images under ../images to the output folder and reference
-// them with the image_pack_tag helper in views (e.g <%= image_pack_tag 'rails.png' %>)
-// or the `imagePath` JavaScript helper below.
-// const images = require.context('../images', true)
-// const imagePath = (name) => images(name, true)

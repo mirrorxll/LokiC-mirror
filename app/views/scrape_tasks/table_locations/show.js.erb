@@ -1,0 +1,4 @@
+$('#tableLocations>.col').html(
+    '<%= @scrape_task.table_locations.map { |tl| tl.full_name  }.join('<br>').html_safe %>'
+);
+$('#tableLocations>:first-child>a').removeClass('disabled-link');

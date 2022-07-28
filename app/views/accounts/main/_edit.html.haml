@@ -1,32 +1,31 @@
 =form_with(url: account_path, method: :patch, html: { class: 'small', onkeypress: "return event.keyCode !== 13;" } ) do |f|
-  #emailSlackAnchor.mb-1
-  #emailSlack.card
+  #emailAnchor.mb-3
+  #email.card
     .card-body
       .font-weight-bold.mb-2
-        .row
-          .col-6
-            EMAIL:
-            %span.small.text-danger
-              *required
-          .col-6
-            SLACK:
-      .row.align-items-center
-        .col-6
-          =f.email_field 'account[email]', class: 'form-control form-control-sm', value: @account.email
-        .col-6
-          -slack_accounts = SlackAccount.order(:user_name).where(account_id: nil, deleted: 0)
-          =f.collection_select 'slack[identifier]', slack_accounts, :identifier, :user_name,
-                               { include_blank: '-- not set --', selected: @account.slack&.identifier }
-          :javascript
-            (() => {
-              let select = $('select[name="slack[identifier]"]').select2({});
-              select.data('select2').$container.addClass('w-100');
-              select.data('select2').$dropdown.addClass('small');
-              $('.select2-selection.select2-selection--single').css('border', '1px solid #ced4da');
-              select.on('select2:open', () => {
-                $('.select2-dropdown').css('border', '1px solid #ced4da');
-              });
-            })();
+        EMAIL:
+        %span.small.text-danger
+          *required
+      =f.email_field 'account[email]', class: 'form-control form-control-sm w-50', value: @account.email
+
+  #slackAnchor.mb-3
+  #slack.card
+    .card-body
+      .font-weight-bold.mb-2
+        SLACK ACCOUNT:
+      -slack_accounts = SlackAccount.order(:user_name).where(account_id: nil, deleted: 0)
+      =f.collection_select 'slack[identifier]', slack_accounts, :identifier, :user_name,
+                           { include_blank: '-- not set --', selected: @account.slack&.identifier }
+      :javascript
+        (() => {
+          let select = $('select[name="slack[identifier]"]').select2({});
+          select.data('select2').$container.addClass('w-50');
+          select.data('select2').$dropdown.addClass('small');
+          $('.select2-selection.select2-selection--single').css('border', '1px solid #ced4da');
+          select.on('select2:open', () => {
+            $('.select2-dropdown').css('border', '1px solid #ced4da');
+          });
+        })();
 
   #nameAnchor.mb-3
   #name.card
@@ -129,13 +128,13 @@
       event.preventDefault();
       event.stopPropagation();
 
-      let sections = `#emailSlack, #name, #password`
+      let sections = `#email, #name, #password`
       let cards = document.querySelectorAll(sections);
       [...cards].forEach((el) => { el.classList.replace('border-danger', 'border-0') })
 
-      let emailIsEmpty = document.querySelector('#emailSlack input').value.length === 0
+      let emailIsEmpty = document.querySelector('#email input').value.length === 0
       if(emailIsEmpty) {
-        scrollToCard('#emailSlack')
+        scrollToCard('#email')
         return false;
       }
 

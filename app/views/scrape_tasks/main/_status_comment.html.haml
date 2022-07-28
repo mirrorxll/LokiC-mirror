@@ -1,6 +1,3 @@
--if @scrape_task.status.name.in?(%w[blocked canceled])
-  .row.mb-4
-    .col-2.pr-0.text-right.text-danger.font-weight-bold
-      #{@scrape_task.status.name.capitalize}. Why?
-    .col-10
-      =@scrape_task.status_comment&.body
+-if @scrape_task.status.name.in?(%w[blocked canceled archived])
+  .text-danger.font-weight-bold
+    #{@scrape_task.status.name} - #{@scrape_task.status_comment&.body}

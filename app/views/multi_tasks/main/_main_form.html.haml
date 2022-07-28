@@ -6,24 +6,28 @@
         Task with this title already created by you. Let's use something else
   .row.small.font-weight-bold
     .col-3.border-right
-      .row.justify-content-between
-        .col
-          assignment to:
-        .col
-          .row.small
-            =form.collection_select 'task_parent[assignment_to]', Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }, style: "width:130px"
-      %hr
-      .row.justify-content-between
-        .col
-          assistants:
-          =icon('fa', 'plus', class: 'ml-2', id: 'addAssistantParent')
-        .col#assistantsParentForm
-      %hr
-      .row.justify-content-between
-        .col
-          notifications to:
-          =icon('fa', 'plus', class: 'ml-2', id: 'addNotificationsToParent')
-        .col#notificationsToParentForm
+      -if @permissions['assignment_to_form']
+        .row.justify-content-between
+          .col
+            assignment to:
+          .col
+            .row.small
+              =form.collection_select 'task_parent[assignment_to]', Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }, style: "width:130px"
+        %hr
+      -if @permissions['assistants_form']
+        .row.justify-content-between
+          .col
+            assistants:
+            =icon('fa', 'plus', class: 'ml-2', id: 'addAssistantParent')
+          .col#assistantsParentForm
+        %hr
+      -if @permissions['notification_to_form']
+        .row.justify-content-between
+          .col
+            notifications to:
+            =icon('fa', 'plus', class: 'ml-2', id: 'addNotificationsToParent')
+          .col#notificationsToParentForm
+        %hr
     .col-9
       .row
         .col-6
@@ -240,7 +244,7 @@
     Rails.ajax({
       type: 'GET',
       dataType: 'json',
-      url: `#{root_url}api/tasks/titles`,
+      url: `/api/tasks/titles`,
       data: `creator_id=${current_account_id}`,
       success: (names) => {
         let nameInput = document.querySelector('#newTaskNameParent');
@@ -292,7 +296,7 @@
     Rails.ajax({
       type: 'GET',
       dataType: 'json',
-      url: `#{root_url}api/tasks/titles`,
+      url: `/api/tasks/titles`,
       data: `creator_id=${current_account_id}`,
       success: (names) => {
         let nameIsUniq = isUniq(nameInput.value, names);

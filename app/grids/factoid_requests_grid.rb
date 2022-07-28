@@ -8,6 +8,7 @@ class FactoidRequestsGrid
 
   # Filter
   filter(:requester_id)
+  filter(:status)
 
   # Columns
   column(:id, order: false)

@@ -1,0 +1,6 @@
+<% if flash.now[:error] %>
+  <%= toastr_js_flash %>
+<% else %>
+  $('#responsibleEditor>.col').html('<%= @data_set.responsible_editor&.name %>');
+  $('#responsibleEditor>:first-child>a').removeClass('disabled-link');
+<% end %>

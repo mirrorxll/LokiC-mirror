@@ -1,0 +1,14 @@
+<hr class="mt-0">
+
+<%= form_with(url: data_set_responsible_editor_path(@data_set), method: :patch, html: { class: 'ml-3' } ) do |f| %>
+  <div class="form-group mb-2">
+    <%= f.collection_select 'responsible_editor[id]', @responsible_editors, :id, :name,
+                            { include_blank: true, selected: @data_set.responsible_editor&.id},
+                            { class: 'underline-input pt-0'} %>
+  </div>
+
+  <%= f.submit '[ save ]', class: 'btn btn-sm btn-link p-0' %>
+  <%= link_to('[ cancel ]', data_set_responsible_editor_path, class: 'btn btn-sm btn-link text-secondary p-0', remote: true) %>
+<% end %>
+
+<hr class="mb-0">

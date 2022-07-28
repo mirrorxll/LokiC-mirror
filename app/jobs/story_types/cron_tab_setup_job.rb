@@ -6,7 +6,7 @@ module StoryTypes
 
     def perform(story_type_id)
       story_type = StoryType.find(story_type_id)
-      crontab_setup = `bundle exec whenever --write-crontab --set environment=#{Rails.env}`
+      crontab_setup = `RAILS_ENV=#{Rails.env} bundle exec whenever --write-crontab`
 
       message =
         case crontab_setup
