@@ -181,7 +181,6 @@ Rails.application.routes.draw do
 
   scope module: :scrape_tasks do
     resources :scrape_tasks, controller: 'main', except: %i[edit destroy] do
-
       resource :progress_statuses, only: :update
 
       resource :instruction, only: %i[edit update] do
@@ -213,7 +212,6 @@ Rails.application.routes.draw do
       resource :scrape_tasks, only: %i[show edit update]
       resource :table_locations, only: %i[show edit update]
     end
-
   end
 
   resources :table_locations, only: :new
@@ -221,12 +219,11 @@ Rails.application.routes.draw do
 
   scope module: :story_types do
     resources :story_types, controller: :main do
-      get   :canceling_edit,  on: :member
+      get :canceling_edit, on: :member
 
       resource :data_set, only: :update
       resource :property_form, only: :show
       resource :update_section, only: :update
-
 
       resources :templates, path: :template, only: %i[show edit update] do
         patch :save, on: :member
@@ -381,9 +378,9 @@ Rails.application.routes.draw do
 
   scope module: :factoid_types do
     resources :factoid_types, controller: :main do
-      get   :canceling_rename,  on: :member
+      get :canceling_rename,  on: :member
 
-      resource :data_set,       only: :update
+      resource :data_set, only: :update
       resource :property_form, only: :show
       resource :update_section, only: :update
 

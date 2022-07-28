@@ -63,7 +63,7 @@
                            { class: 'w-50 form-control form-control-sm' }
       :javascript
         (() => {
-          let select = $('select[name="data_set[photo_bucket_id]"]').select2({});
+          let select = $('select[name="default_props[photo_bucket_id]"]').select2({});
           select.data('select2').$container.addClass('w-50');
           select.data('select2').$dropdown.addClass('small');
           $('.select2-selection.select2-selection--single').css('border', '1px solid #ced4da');

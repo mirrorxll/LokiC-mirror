@@ -2,22 +2,17 @@
 
 module StoryTypes
   class TemplatesController < StoryTypesController
-    before_action :update_template, only: %i[update save]
     after_action :send_notification, only: :update, if: -> { @story_type.developer.present? }
 
     def show; end
 
     def edit; end
 
-    def update; end
-
-    def save; end
-
-    private
-
-    def update_template
+    def update
       Template.find(params[:id]).update!(template_params)
     end
+
+    private
 
     def send_notification
       url = generate_url(@story_type)
@@ -33,3 +28,4 @@ module StoryTypes
     end
   end
 end
+

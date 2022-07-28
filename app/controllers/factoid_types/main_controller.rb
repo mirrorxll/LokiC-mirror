@@ -20,16 +20,14 @@ module FactoidTypes
     def create
       @factoid_type = FactoidType.new(new_factoid_type_params)
 
-      if @factoid_type.save!
-        redirect_to factoid_types_path
-      else
-        render :new
-      end
+      redirect_to @factoid_type.data_set || @factoid_type if @factoid_type.save!
     end
 
     def update
       @factoid_type.update!(exist_factoid_type_params)
     end
+
+    def canceling_rename; end
 
     private
 
@@ -64,10 +62,11 @@ module FactoidTypes
     end
 
     def new_factoid_type_params
-      permitted = params.require(:factoid_type).permit(:name)
+      permitted = params.require(:factoid_type).permit(:name, :data_set_id)
 
       {
         name: permitted[:name],
+        data_set_id: permitted[:data_set_id],
         status: Status.find_by(name: 'created and in queue'),
         editor: current_account,
         current_account: current_account
@@ -75,13 +74,16 @@ module FactoidTypes
     end
 
     def exist_factoid_type_params
-      attrs = params.require(:factoid_type).permit(:name,
-                                                   :kind_id,
-                                                   :topic_id,
-                                                   :source_type,
-                                                   :source_name,
-                                                   :source_link,
-                                                   :original_publish_date).reject { |_, v| v.blank? }
+      attrs = params.require(:factoid_type).permit(
+        :name,
+        :kind_id,
+        :topic_id,
+        :source_type,
+        :source_name,
+        :source_link,
+        :original_publish_date
+      ).reject { |_, v| v.blank? }
+
       attrs[:current_account] = current_account
       attrs[:topic_id] = nil if attrs[:kind_id].present? && attrs[:topic_id].blank?
       attrs

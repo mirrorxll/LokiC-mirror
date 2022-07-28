@@ -1,71 +1,72 @@
-.row.small.h-100
-  .col-8
-    =render 'scrape_tasks/scrapers/scraper'
-    =render 'scrape_tasks/tags/tags'
-    =render 'scrape_tasks/multi_tasks/multi_tasks'
-    =render 'scrape_tasks/data_sets/data_sets'
-    =render 'scrape_tasks/table_locations/table_locations'
+.small.h-100
+  =render 'scrape_tasks/scrapers/scraper'
+  =render 'scrape_tasks/tags/tags'
+  =render 'scrape_tasks/multi_tasks/multi_tasks'
+  =render 'scrape_tasks/data_sets/data_sets'
+  =render 'scrape_tasks/table_locations/table_locations'
 
-    %hr/
+  %hr/
 
-    .row
-      .col-3.pr-0.text-right.font-weight-bold
-        DEADLINE:
-      .col-9
-        =@scrape_task.deadline.to_s
+  .row
+    .col-3.pr-0.text-right.font-weight-bold
+      DEADLINE:
+    .col-9
+      =@scrape_task.deadline.to_s
 
-    .row.mt-4
-      .col-3.pr-0.text-right.font-weight-bold
-        STATE:
-      .col-9
-        =@scrape_task.state&.name
-    .row
-      .col-3.pr-0.text-right.font-weight-bold
-        URL:
-      .col-9
-        -link = @scrape_task.datasource_url
-        -if link.present?
-          =link_to(nil, link, target: '_blank')
-        -else
-          \---
-    .row
-      .col-3.pr-0.text-right.font-weight-bold
-        SCRAPABLE?:
-      .col-9
-        -if @scrape_task.scrapable.eql?(1)
-          Yes
-        -elsif @scrape_task.scrapable.eql?(0)
-          No
-        -else
-          Unknown
-    .row
-      .col-3.pr-0.text-right.font-weight-bold
-        FREQUENCY:
-      .col-9
-        =@scrape_task.frequency&.name
+  .row.mt-4
+    .col-3.pr-0.text-right.font-weight-bold
+      STATE:
+    .col-9
+      =@scrape_task.state&.name
+  .row
+    .col-3.pr-0.text-right.font-weight-bold
+      URL:
+    .col-9
+      -link = @scrape_task.datasource_url
+      -if link.present?
+        =link_to(nil, link, target: '_blank')
+      -else
+        \---
+  .row
+    .col-3.pr-0.text-right.font-weight-bold
+      SCRAPABLE?:
+    .col-9
+      -if @scrape_task.scrapable.eql?(1)
+        Yes
+      -elsif @scrape_task.scrapable.eql?(0)
+        No
+      -else
+        Unknown
+  .row
+    .col-3.pr-0.text-right.font-weight-bold
+      FREQUENCY:
+    .col-9
+      =@scrape_task.frequency&.name
 
-    .row.mt-4
-      .col-3.pr-0.text-right.font-weight-bold
-        GATHER TASK:
-      .col-9
-        -link = @scrape_task.gather_task_link
-        -if link
-          =link_to(nil, link, target: '_blank')
-        -else
-          \---
-
-  .col-4.border-left
-    .font-weight-bold
+  .row.mt-4
+    .col-3.pr-0.text-right.font-weight-bold
       COMMENT ON DATASOURCE:
-    .mb-2
+    .col-9
       =@scrape_task.datasource_comment.body&.html_safe || '<br>'.html_safe
 
-    .font-weight-bold
+  .row
+    .col-3.pr-0.text-right.font-weight-bold
       COMMENT ON SCRAPE ABILITY:
-    .mb-2
+    .col-9
       =@scrape_task.scrape_ability_comment.body&.html_safe || '<br>'.html_safe
 
-    .font-weight-bold
+  .row
+    .col-3.pr-0.text-right.font-weight-bold
       GENERAL COMMENT:
-    .mb-2
+    .col-9
       =@scrape_task.general_comment.body&.html_safe || '<br>'.html_safe
+
+  .row.mt-4
+    .col-3.pr-0.text-right.font-weight-bold
+      GATHER TASK:
+    .col-9
+      -link = @scrape_task.gather_task_link
+      -if link
+        =link_to(nil, link, target: '_blank')
+      -else
+        \---

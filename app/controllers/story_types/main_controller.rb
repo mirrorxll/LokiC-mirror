@@ -20,11 +20,7 @@ module StoryTypes
     def create
       @story_type = StoryType.new(new_story_type_params)
 
-      if @story_type.save!
-        redirect_to story_types_path
-      else
-        render :new
-      end
+      redirect_to @story_type.data_set || @story_type if @story_type.save!
     end
 
     def edit; end
@@ -32,6 +28,8 @@ module StoryTypes
     def update
       @story_type.update!(exist_story_type_params)
     end
+
+    def canceling_edit; end
 
     private
 
@@ -66,18 +64,17 @@ module StoryTypes
     end
 
     def new_story_type_params
-      permitted = params.require(:story_type).permit(:name, :comment, :gather_task, :migrated)
-      migrated = permitted[:migrated].eql?('1')
-      status_name = migrated ? 'migrated' : 'created and in queue'
+      permitted = params.require(:story_type).permit(:name, :data_set_id)
 
-      story_type_params = { editor: current_account,
-                            name: permitted[:name],
-                            comment: permitted[:comment],
-                            gather_task: permitted[:gather_task],
-                            migrated: migrated,
-                            status: Status.find_by(name: status_name),
-                            last_status_changed_at: Time.now.getlocal('-05:00'),
-                            current_account: current_account }
+      story_type_params = {
+        editor: current_account,
+        name: permitted[:name],
+        data_set_id: permitted[:data_set_id],
+        status: Status.find_by(name: 'created and in queue'),
+        last_status_changed_at: Time.now.getlocal('-05:00'),
+        current_account: current_account
+      }
+
       story_type_params.merge!(photo_bucket: @data_set.photo_bucket) if @data_set
       story_type_params
     end
@@ -86,12 +83,6 @@ module StoryTypes
       attrs = params.require(:story_type).permit(:name, :comment, :gather_task)
       attrs[:current_account] = current_account
       attrs
-    end
-
-    def filter_params
-      return {} unless params[:filter]
-
-      params.require(:filter).slice(:data_set, :developer, :frequency, :status)
     end
 
     def env

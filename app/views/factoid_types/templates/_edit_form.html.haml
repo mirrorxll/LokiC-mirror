@@ -1,12 +1,8 @@
-=form_with(url: factoid_type_template_path(@factoid_type), method: :patch) do |form|
-  .field.small
-    =form.text_area 'template[body]', id: 'factoidtype-template-body', value: @factoid_type.template.body
-  .modal-footer
-    =link_to( 'close', '#', class: 'ml-auto btn btn-sm btn-outline-secondary',
-              'data-dismiss' => 'modal', data: { confirm: 'All changes shall be lost. Close?'})
-    =form.submit 'save changes', class: 'mr-auto btn btn-sm btn-outline-success'
+=form_with(url: factoid_type_template_path, method: :patch) do |form|
+  =form.text_area 'template[body]', id: 'factoidTypeTemplateBody', value: @factoid_type.template.body
+  =form.submit id: 'hiddenUpdateTemplateButton', class: 'd-none'
 
 :javascript
   $('#template').on('hidden.bs.modal', function () {
     $('#template .modal-body').empty();
-  });
+  }).modal('show');
