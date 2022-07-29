@@ -17,7 +17,7 @@ module MultiTasks
     end
 
     def show
-      render_401 unless @multi_task.access_for?(current_account)
+      render_401 unless current_account.manager? || @multi_task.access_for?(current_account)
 
       @comments = @multi_task.comments.order(created_at: :desc)
       @tab_title = "LokiC :: MultiTask ##{@multi_task.id} <#{@multi_task.title}>"
