@@ -26,6 +26,7 @@ set :puma_error_log,          "#{release_path}/log/puma.access.log"
 set :puma_preload_app,        true
 set :puma_worker_timeout,     nil
 set :puma_init_active_record, true
+set :puma_service_unit_env_vars, ["RAILS_ENV=#{fetch(:stage)}"]
 
 append :linked_dirs, 'storage', 'public/ruby_code', 'public/uploads/images', 'log'
 append :linked_files, 'config/master.key', 'config/google_drive.json'
