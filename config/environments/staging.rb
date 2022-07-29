@@ -62,12 +62,12 @@ Rails.application.configure do
   # config.active_job.queue_adapter     = :resque
   # config.active_job.queue_name_prefix = "lokic_production"
 
-  config.action_mailer.default_url_options = { host: 'https://lokic.locallabs.com' }
+  config.action_mailer.default_url_options = { host: 'https://lokic-staging.locallabs.com' }
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     address: 'smtp.gmail.com',
     port: 587,
-    domain: 'lokic.locallabs.com',
+    domain: 'lokic-staging.locallabs.com',
     user_name: Rails.application.credentials[:action_mailer][:gmail][:login],
     password: Rails.application.credentials[:action_mailer][:gmail][:password],
     authentication: 'plain',
