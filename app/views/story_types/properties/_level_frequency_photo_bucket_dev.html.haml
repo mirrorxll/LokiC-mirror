@@ -16,6 +16,5 @@
 .row.mb-1.font-weight-bold.mt-3
   .col
     developer
-.row
-  .col-12
-    =@story_type.developer ? @story_type.developer.name: '---'
+#developer_section
+  =render 'story_types/properties/developer'

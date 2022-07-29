@@ -62,7 +62,7 @@ class DataSetsGrid
   end
   column(:slack_channel, mandatory: true)
   column(:content_counts, mandatory: true) do |record|
-    "story types: #{record.story_types.count} | factoid types: #{record.article_types.count}".html_safe
+    "story types: #{record.story_types.count} | factoid types: #{record.factoid_types.count}".html_safe
   end
   column(:comment, mandatory: true) do |record|
     record.comment ? record.comment.gsub("\n", '<br>').html_safe : ''
