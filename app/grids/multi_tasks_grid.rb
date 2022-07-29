@@ -64,11 +64,15 @@ class MultiTasksGrid
   column(:deadline, order: 'deadline', mandatory: true, &:deadline)
 
   column(:parent_task_id, header: 'Main task', order: 'parent_task_id', mandatory: true) do |task|
-    format("##{task.parent.id}") { |parent_id| link_to parent_id, task.parent } unless task.parent.nil?
+    if task.parent
+      format("##{task.parent.id}") do |parent_id|
+        link_to(parent_id, multi_task_path(task.parent))
+      end
+    end
   end
 
   column(:sow, header: 'SOW', mandatory: true, order: 'sow') do |task|
-    format("Google doc") { |sow| link_to sow, task.sow } unless task.sow.blank?
+    format('Google doc') { |sow| link_to sow, task.sow } unless task.sow.blank?
   end
 
   column(:last_comment, header: 'Last comment', order: lambda { |scope|
