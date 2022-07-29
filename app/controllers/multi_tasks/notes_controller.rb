@@ -8,7 +8,7 @@ module MultiTasks
     def new; end
 
     def create
-      @note = TaskNote.new(task: @multi_task, creator: current_account, body: note_params[:body])
+      @note = TaskNote.new(multi_task: @multi_task, creator: current_account, body: note_params[:body])
       @note.save!
     end
 
