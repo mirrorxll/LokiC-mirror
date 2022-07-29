@@ -107,7 +107,7 @@ namespace :deploy do
   task :update_crontab do
     on roles(:app) do
       within current_path do
-        execute "cd #{release_path} && RAILS_ENV=production bundle exec whenever --write-crontab"
+        execute "cd #{release_path} && RAILS_ENV=#{fetch(:stage)} bundle exec whenever --write-crontab"
       end
     end
   end

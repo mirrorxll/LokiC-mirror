@@ -6,7 +6,7 @@ class MultiTasksGrid
   attr_accessor(:current_account)
 
   # Scope
-  scope { Task.includes(:assignments, :creator, :assignment_to, :status, :last_comment).order(id: :desc) }
+  scope { MultiTask.includes(:assignments, :creator, :assignment_to, :status, :last_comment).order(id: :desc) }
 
   # Filters
   filter(:creator_id)

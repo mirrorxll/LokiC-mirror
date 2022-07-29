@@ -33,7 +33,7 @@ module TasksHelper
 
 
   def status_for_user(task)
-    assignment = TaskAssignment.find_by(task: task, account: current_account)
+    assignment = TaskAssignment.find_by(multi_task: task, account: current_account)
     if !assignment.nil? && assignment.done
       Status.find_by(name: 'done')
     else

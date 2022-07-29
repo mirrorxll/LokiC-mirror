@@ -3,7 +3,7 @@
     .form-group
       =form.text_field 'task_parent[title]', placeholder: 'main task title', id: 'newTaskNameParent', class: 'form-control form-control-sm', required: true, maxlength: 500
       #newTaskNameParentFeedback.text-danger.text-center.d-none
-        Task with this title already created by you. Let's use something else
+        MultiTask with this title already created by you. Let's use something else
   .row.small.font-weight-bold
     .col-3.border-right
       -if @permissions['assignment_to']
@@ -64,7 +64,7 @@
             .col-7.text-right
               main task:
             .col.text-left.small
-              =form.collection_select 'task_parent[parent]', Task.where(parent: nil).where.not(status: Status.find_by(name: 'deleted')).order(:id), :id, :title_with_id, { prompt: '' }, style: "width:150px", onchange: "hideSubtasks(this);"
+              =form.collection_select 'task_parent[parent]', MultiTask.where(parent: nil).where.not(status: Status.find_by(name: 'deleted')).order(:id), :id, :title_with_id, { prompt: '' }, style: "width:150px", onchange: "hideSubtasks(this);"
           .row.small.justify-content-center
             (If you select a main task, you won't be able to add subtasks)
       %hr

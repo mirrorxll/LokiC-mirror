@@ -17,7 +17,7 @@ module Api
       private
 
       def find_task
-        @multi_task = Task.find(params[:task_id])
+        @multi_task = MultiTask.find(params[:task_id])
       end
 
       def find_status

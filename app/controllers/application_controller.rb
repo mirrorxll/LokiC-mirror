@@ -73,12 +73,21 @@ class ApplicationController < ActionController::Base
   end
 
   def generate_url(model)
-    host = Rails.env.production? ? 'https://lokic.locallabs.com' : 'http://localhost:3000'
+    host =
+      case Rails.env
+      when 'production'
+        'https://lokic.locallabs.com'
+      when 'staging'
+        'https://lokic-staging.locallabs.com'
+      else
+        'http://localhost:3000'
+      end
+
     "#{host}#{Rails.application.routes.url_helpers.send("#{model.class.to_s.underscore}_path", model)}"
   end
 
   def unconfirmed_multi_tasks
-    tasks = Task.ongoing.joins(:assignment_to).where.not(creator: current_account).where(
+    tasks = MultiTask.ongoing.joins(:assignment_to).where.not(creator: current_account).where(
       'task_assignments.confirmed': false,
       'task_assignments.account_id': current_account
     )

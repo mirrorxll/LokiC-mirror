@@ -19,6 +19,6 @@ RailsAdmin.config do |config|
       FactoidType FactoidTypeIteration Assembled
       Client ClientsReport Comment CronTab DataSet DataSetCategory
       Frequency Level PhotoBucket Publication Reminder ScrapeTask SlackAccount StagingTable
-      State Status StoryType StoryTypeIteration Tag Task TimeFrame
+      State Status StoryType StoryTypeIteration Tag MultiTask TimeFrame
     ]
 end

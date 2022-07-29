@@ -25,7 +25,7 @@ module MultiTasks
       private
 
     def find_task
-      @multi_task = Task.find(params[:task_id])
+      @multi_task = MultiTask.find(params[:task_id])
     end
 
     def find_status
@@ -63,10 +63,10 @@ module MultiTasks
         next if account.slack.nil? || account.slack.deleted
 
         if @status.name.eql?('done') && !@multi_task.done_by_all_assignments?
-          message = "*<#{task_url(@multi_task)}| TASK ##{@multi_task.id}> | "\
+          message = "*<#{multi_task_url(@multi_task)}| TASK ##{@multi_task.id}> | "\
                     "#{current_account.name} set status #{@status.name}*. To change the status of task to done all executors must change the status.\n>#{@multi_task.title}"
         else
-          message = "*<#{task_url(@multi_task)}| TASK ##{@multi_task.id}> | "\
+          message = "*<#{multi_task_url(@multi_task)}| TASK ##{@multi_task.id}> | "\
                     "Status changed to #{@status.name}.*\n>#{@multi_task.title}"
         end
 

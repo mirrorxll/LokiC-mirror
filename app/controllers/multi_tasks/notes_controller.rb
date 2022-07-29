@@ -23,11 +23,11 @@ module MultiTasks
     private
 
     def find_note
-      @note = TaskNote.find_by(task: @multi_task, creator: current_account)
+      @note = TaskNote.find_by(multi_task: @multi_task, creator: current_account)
     end
 
     def find_task
-      @multi_task = Task.find(params[:task_id])
+      @multi_task = MultiTask.find(params[:task_id])
     end
 
     def note_params
