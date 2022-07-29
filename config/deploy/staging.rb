@@ -60,7 +60,7 @@
 #     # password: "please use keys"
 #   }
 
-server 'app@vm63.blockshopper.com', port: 22, roles: %i[web app]
+server 'app@vm63.blockshopper.com', port: 22, roles: %i[web app db]
 
 set :deploy_to,               '/home/app/LokiC'
 set :puma_workers,            2
