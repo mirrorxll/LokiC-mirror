@@ -45,13 +45,14 @@ class MultiTask < ApplicationRecord # :nodoc:
   has_many :comments, -> { where(commentable_type: 'MultiTask') }, as: :commentable, class_name: 'Comment'
   has_many :subtasks, -> { where.not(status: Status.find_by(name: 'deleted')) }, foreign_key: :parent_task_id, class_name: 'MultiTask'
 
-  has_many :notes, class_name: 'TaskNote'
+  has_many :notes, class_name: 'TaskNote', foreign_key: :task_id
 
   has_many :agency_opportunity_revenue_types, class_name: 'TaskAgencyOpportunityRevenueType', foreign_key: :task_id
 
   scope :ongoing, -> { where(status: Status.multi_task_statuses) }
 
-  has_and_belongs_to_many :scrape_tasks
+  has_and_belongs_to_many :scrape_tasks, join_table: 'scrape_tasks_tasks',
+                                         foreign_key: :task_id
 
   def agency_opportunity_hours
     tasks = subtasks_full_depth << self

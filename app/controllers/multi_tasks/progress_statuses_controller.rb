@@ -33,7 +33,7 @@ module MultiTasks
     end
 
     def find_assignment
-      @assignment = TaskAssignment.find_by(task: @multi_task, account: current_account)
+      @assignment = TaskAssignment.find_by(multi_task: @multi_task, account: current_account)
     end
 
     def team_work_params
