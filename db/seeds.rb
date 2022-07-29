@@ -158,7 +158,7 @@ invoice_type(db02).each { |obj| InvoiceType.find_or_create_by!(obj) }
 puts 'Invoice Frequencies'
 invoice_frequency(db02).each { |obj| InvoiceFrequency.find_or_create_by!(obj) }
 
-puts 'Task Reminder Frequencies'
+puts 'MultiTask Reminder Frequencies'
 task_reminder_frequency(db02).each { |obj| TaskReminderFrequency.find_or_create_by!(obj) }
 
 puts 'Weeks'
