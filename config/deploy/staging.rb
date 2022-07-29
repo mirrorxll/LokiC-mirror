@@ -63,5 +63,5 @@
 server 'app@vm63.blockshopper.com', port: 22, roles: %i[web app]
 
 set :deploy_to,               '/home/app/LokiC'
-set :puma_workers,            8
-set :puma_threads,            [8, 16]
+set :puma_workers,            2
+set :puma_threads,            [4]
