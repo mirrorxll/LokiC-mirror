@@ -75,28 +75,28 @@ class Account < ApplicationRecord # :nodoc:
     role_names.include?('Manager')
   end
 
-  def hle_content_manager?
-    role_names.include?('HLE Content Manager')
+  def content_manager?
+    role_names.include?('Content Manager')
   end
 
-  def hle_fcd_checker?
-    role_names.include?('HLE FCD Checker')
+  def content_fcd_checker?
+    role_names.include?('Content FCD Checker')
   end
 
-  def hle_content_developer?
-    role_names.include?('HLE Content Developer')
+  def content_data_cleaner?
+    role_names.include?('Content Data Cleaner')
+  end
+
+  def content_developer?
+    role_names.include?('Content Developer')
   end
 
   def scrape_manager?
     role_names.include?('Scrape Manager')
   end
 
-  def data_reviewer?
-    role_names.include?('Data Reviewer')
-  end
-
-  def data_cleaner?
-    role_names.include?('Data Cleaner')
+  def scrape_data_reviewer?
+    role_names.include?('Scrape Data Reviewer')
   end
 
   def scrape_developer?

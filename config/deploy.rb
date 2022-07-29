@@ -4,6 +4,7 @@
 lock '~> 3.14.1'
 
 set :stages, %i[production staging]
+set :default_stage, :staging
 
 set :user, 'app'
 set :use_sudo, false
@@ -18,6 +19,9 @@ set :repo_url,    'git@github.com:localitylabs/LokiC.git'
 set :branch,      'deploy'
 
 set :deploy_via,              :remote_cache
+set :deploy_to,               '/home/app/LokiC'
+set :puma_workers,            8
+set :puma_threads,            [8, 16]
 set :puma_bind,               "unix://#{shared_path}/tmp/sockets/puma.sock"
 set :puma_state,              "#{shared_path}/tmp/pids/puma.state"
 set :puma_pid,                "#{shared_path}/tmp/pids/puma.pid"
@@ -34,6 +38,32 @@ set :yarn_env_variables, { RAILS_ENV: fetch(:stage) }
 
 append :linked_dirs, 'storage', 'public/ruby_code', 'public/uploads/images', 'log'
 append :linked_files, 'config/master.key', 'config/google_drive.json'
+
+namespace :tmux do
+  task :create do
+    on roles(:app) do
+      within current_path do
+        execute 'tmux new-session -d -s sidekiq-main'
+        execute 'tmux new-session -d -s sidekiq-cron-tab'
+        execute 'tmux new-session -d -s sidekiq-story-type-factoid'
+        execute 'tmux new-session -d -s sidekiq-scrape-task'
+        execute 'tmux new-session -d -s sidekiq-work-request'
+      end
+    end
+  end
+
+  task :kill do
+    on roles(:app) do
+      within current_path do
+        execute 'tmux kill-session -t sidekiq-main'
+        execute 'tmux kill-session -t sidekiq-cron-tab'
+        execute 'tmux kill-session -t sidekiq-story-type-factoid'
+        execute 'tmux kill-session -t sidekiq-scrape-task'
+        execute 'tmux kill-session -t sidekiq-work-request'
+      end
+    end
+  end
+end
 
 namespace :puma do
   desc 'Create Directories for Puma Pids and Socket'
@@ -62,7 +92,7 @@ namespace :deploy do
   desc 'Initial Deploy'
   task :initial do
     on roles(:app) do
-      before 'deploy:restart', 'puma:restart'
+      before 'deploy:restart', 'puma:start'
       invoke 'deploy'
     end
   end
@@ -77,7 +107,7 @@ namespace :deploy do
   task :update_crontab do
     on roles(:app) do
       within current_path do
-        execute "cd #{release_path} && RAILS_ENV=#{fetch(:stage)} bundle exec whenever --write-crontab"
+        execute "cd #{release_path} && RAILS_ENV=production bundle exec whenever --write-crontab"
       end
     end
   end

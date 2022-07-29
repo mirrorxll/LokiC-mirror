@@ -60,6 +60,8 @@
 #     # password: "please use keys"
 #   }
 
+set :rails_env, :staging
+
 server 'app@vm63.blockshopper.com', port: 22, roles: %i[web app db]
 
 set :deploy_to,               '/home/app/LokiC'
