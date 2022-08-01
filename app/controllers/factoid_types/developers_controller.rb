@@ -2,26 +2,24 @@
 
 module FactoidTypes
   class DevelopersController < FactoidTypesController
-    skip_before_action :set_factoid_type_iteration
+    before_action :find_developer, only: :update
 
-    before_action :find_developer, only: :include
+    def show; end
 
-    def include
-      render_403 && return if @factoid_type.developer
-
-      @factoid_type.update!(developer: @developer, current_account: current_account)
+    def edit
+      @developers = AccountRole.find_by(name: 'HLE Content Developer').accounts
     end
 
-    def exclude
-      render_403 && return unless @factoid_type.developer
+    def update
+      @factoid_type.update!(developer: @developer)
 
-      @factoid_type.update!(developer: nil, current_account: current_account)
+      render 'factoid_types/developers/show'
     end
 
     private
 
     def find_developer
-      @developer = Account.find(params[:id])
+      @developer = Account.find_by(id: params[:developer][:id])
     end
   end
 end

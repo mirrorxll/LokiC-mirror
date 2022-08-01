@@ -29,8 +29,8 @@ module StoryTypes
     def download_code
       # @code = @story_type.download_code_from_db
       @code = <<~CODE
-        class S1
-          STAGING_TABLE = 's0001'
+        class S9
+          STAGING_TABLE = 's0009'
           def check_updates; end
           def population(options)
             host = Mysql2::Client.new(host: '127.0.0.1', username: 'sergeydev', password: 'ni260584mss', database: 'loki_story_creator_dev_up')

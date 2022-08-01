@@ -2,24 +2,24 @@
 
 module StoryTypes
   class DevelopersController < StoryTypesController
-    before_action :find_developer
+    before_action :find_developer, only: :update
 
-    def include
-      render_403 && return unless @developer
+    def show; end
 
-      @story_type.update!(developer: @developer, distributed_at: Time.now, current_account: current_account)
+    def edit
+      @developers = AccountRole.find_by(name: 'HLE Content Developer').accounts
     end
 
-    def exclude
-      render_403 && return unless @developer
+    def update
+      @story_type.update!(developer: @developer)
 
-      @story_type.update!(developer: nil, distributed_at: nil, current_account: current_account)
+      render 'story_types/developers/show'
     end
 
     private
 
     def find_developer
-      @developer = @story_type.developer || Account.find(params[:id])
+      @developer = Account.find_by(id: params[:developer][:id])
     end
   end
 end
