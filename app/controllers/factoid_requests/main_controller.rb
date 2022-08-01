@@ -62,7 +62,7 @@ module FactoidRequests
     def access_to_show
       archived = Status.find_by(name: 'archived')
 
-      return if @lists['created'] && @factoid_request.requester.eql?(current_account)
+      return if @lists['created'] && @factoid_request.requester.eql?(current_account) && @factoid_request.status != archived
       return if @lists['all'] && @factoid_request.status != archived
       return if @lists['archived'] && @work_request.status.eql?(archived)
 

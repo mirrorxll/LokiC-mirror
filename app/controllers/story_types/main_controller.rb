@@ -36,8 +36,9 @@ module StoryTypes
     def grid_lists
       @lists = HashWithIndifferentAccess.new
 
-      @lists['all'] = {}     if @permissions['grid']['all']
-      @lists['archived'] = { archived: true } if @permissions['grid']['archived']
+      @lists['assigned'] = {}     if @story_types_permissions['grid']['assigned']
+      @lists['all'] =      {}     if @story_types_permissions['grid']['all']
+      @lists['archived'] = { archived: true } if @story_types_permissions['grid']['archived']
     end
 
     def current_list
@@ -53,10 +54,6 @@ module StoryTypes
 
       @grid = StoryTypesGrid.new(grid_params) { |scope| scope.where(@lists[@current_list]) }
       @grid.scope { |sc| sc.page(params[:page]).per(30) }
-    end
-
-    def check_access
-      redirect_to root_path
     end
 
     def find_data_set

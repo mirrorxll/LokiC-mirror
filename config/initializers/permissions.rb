@@ -192,7 +192,7 @@ module AccessLevels
         grid: { assigned: false, responsible: false, created: false, all: true, archived: false },
         new_form: false,
         edit_form: false,
-        status: { show: true, edit_form: true},
+        status: { show: true, edit_form: true },
         sheriff: { show: false, edit_form: false },
         responsible_editor: { show: false, edit_form: false },
         table_locations: { show: true, edit_form: false }

@@ -27,13 +27,15 @@ class ApplicationController < ActionController::Base
 
   # callback authorize! called for 'work_requests', 'factoid_requests',
   # 'multi_tasks', 'scrape_tasks', 'data_sets', 'story_types', 'factoid_types'
-  def authorize!(branch_name)
-    @card = current_account.cards.find_by(branch: Branch.find_by(name: branch_name))
-    @permissions = @card.access_level.permissions
-    return if @card.enabled
+  def authorize!(branch_name, redirect: true)
+    account_card = current_account.cards.find_by(branch: Branch.find_by(name: branch_name))
 
-    flash[:error] = { "#{branch_name}": :unauthorized }
-    redirect_to root_path
+    if account_card.enabled
+      instance_variable_set("@#{branch_name}_permissions", account_card.access_level.permissions)
+    elsif redirect
+      flash[:error] = { "#{branch_name}": :unauthorized }
+      redirect_to root_path
+    end
   end
 
   def staging_table_action(&block)

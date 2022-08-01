@@ -9,6 +9,13 @@ class MultiTasksGrid
   scope { MultiTask.includes(:assignments, :creator, :assignment_to, :status, :last_comment).order(id: :desc) }
 
   # Filters
+
+  filter(:assignment_to)
+  filter(:assigment)
+  filter(:notification_to)
+  filter(:creator_id)
+  filter(:status)
+
   filter(:creator_id)
   filter(:title, :string, left: true, header: 'Title(RLIKE)') do |value, scope|
     scope.where('title RLIKE ?', value)

@@ -2,6 +2,7 @@
 
 class StoryTypesController < ApplicationController # :nodoc:
   before_action -> { authorize!('story_types') }
+  before_action -> { authorize!('data_sets', redirect: false) }
 
   before_action :find_story_type
   before_action :set_story_type_iteration

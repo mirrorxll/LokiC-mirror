@@ -7,8 +7,10 @@ class WorkRequestsGrid
   scope { WorkRequest.order(id: :desc) }
 
   # Filter
-  filter(:requester_id)
-  filter(:status)
+  accounts = WorkRequest.where.not(requester: nil).map { |wr| [wr.requester.name, wr.requester.id] }
+  filter(:requester, :enum, select: accounts)
+  statuses = Status.work_request_statuses(created: true).map { |s| [s.name, s.id] }
+  filter(:status, :enum, select: statuses)
 
   # Columns
   column(:id, header: 'id')

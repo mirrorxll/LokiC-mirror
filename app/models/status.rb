@@ -11,7 +11,7 @@ class Status < ApplicationRecord
   def self.work_request_statuses(created: false, archived: false)
     statuses = created ? ['created and in queue'] : []
 
-    statuses.push('awaiting tasks creation', 'in progress', 'done', 'blocked', 'canceled')
+    statuses.push('awaiting tasks creation', 'in progress', 'done', 'blocked')
     statuses.push('archived') if archived
 
     ordered_statuses(statuses)
@@ -20,7 +20,7 @@ class Status < ApplicationRecord
   def self.factoid_request_statuses(created: false, archived: false)
     statuses = created ? ['created and in queue'] : []
 
-    statuses.push('awaiting templates creation', 'in progress', 'done', 'blocked', 'canceled')
+    statuses.push('awaiting templates creation', 'in progress', 'done', 'blocked')
     statuses.push('archived') if archived
 
     ordered_statuses(statuses)
@@ -40,7 +40,7 @@ class Status < ApplicationRecord
 
     statuses.push('in progress', 'on checking')
     statuses.push('done') if done
-    statuses.push('blocked', 'canceled')
+    statuses.push('blocked')
     statuses.push('archived') if archived
 
     ordered_statuses(statuses)
@@ -56,8 +56,7 @@ class Status < ApplicationRecord
   def self.hle_statuses(created: false, archived: false)
     statuses = created ? ['created and in queue'] : []
 
-    statuses.push('in progress', 'exported', 'done')
-    statuses.push('blocked', 'canceled')
+    statuses.push('in progress', 'exported', 'done', 'blocked')
     statuses.push('archived') if archived
 
     ordered_statuses(statuses)

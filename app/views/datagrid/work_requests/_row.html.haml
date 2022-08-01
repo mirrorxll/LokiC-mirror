@@ -3,7 +3,6 @@
     -next if column.header.in?(['sow', 'eta', 'last invoice']) && !current_account.manager?
     -klass = datagrid_column_classes(grid, column)
     -value = datagrid_value(grid, column, asset)
-    -background_color = column.header.eql?('Status') ? "bg-#{status_color(ActionView::Base.full_sanitizer.sanitize(value))}" : ''
-
+    -background_color = column.header.eql?('status') ? "bg-#{status_color(ActionView::Base.full_sanitizer.sanitize(value))}" : ''
     %td{ class: "#{klass} #{background_color}" }
       =value
