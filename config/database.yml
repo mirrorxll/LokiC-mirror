@@ -34,20 +34,17 @@ development:
   primary:
     <<: *default
     <<: *dev_default
-    # TODO: remove _up
-    database: lokic_dev_up
+    database: lokic_dev
     migrations_paths: db/primary_migrate
   secondary:
     <<: *default
     <<: *dev_default
-    # TODO: remove _up
-    database: lokic_secondary_dev_up
+    database: lokic_secondary_dev
     migrations_paths: db/secondary_migrate
   loki_story_creator:
     <<: *default
     <<: *dev_default
-    # TODO: remove _up
-    database: loki_story_creator_dev_up
+    database: loki_story_creator_dev
     migrations_paths: db/loki_story_creator_migrate
 
 # Warning: The database defined as "test" will be erased and
@@ -104,4 +101,21 @@ production:
     <<: *default
     <<: *prod_default
     database: loki_storycreator
+    migrations_paths: db/loki_story_creator_migrate
+
+staging:
+  primary:
+    <<: *default
+    <<: *prod_default
+    database: lokic_staging
+    migrations_paths: db/primary_migrate
+  secondary:
+    <<: *default
+    <<: *prod_default
+    database: lokic_secondary_staging
+    migrations_paths: db/secondary_migrate
+  loki_story_creator:
+    <<: *default
+    <<: *prod_default
+    database: loki_storycreator_staging
     migrations_paths: db/loki_story_creator_migrate

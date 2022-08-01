@@ -8,13 +8,13 @@ class StoryType < ApplicationRecord
     create_reminder
     create_sidekiq_break
 
-    data_set.client_publication_tags.each do |client_publication_tag|
+    data_set&.client_publication_tags&.each do |client_publication_tag|
       clients_publications_tags.create!(
         client: client_publication_tag.client,
         publication: client_publication_tag.publication,
         tag: client_publication_tag.tag
       )
-    end if data_set
+    end
 
     record_to_change_history(self, 'created', name, editor)
 

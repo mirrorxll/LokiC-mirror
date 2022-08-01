@@ -1,11 +1,6 @@
 class ImagesController < ApplicationController
   skip_before_action :verify_authenticity_token
 
-  skip_before_action :find_parent_story_type
-  skip_before_action :find_parent_factoid_type
-  skip_before_action :set_story_type_iteration
-  skip_before_action :set_factoid_type_iteration
-
   before_action :file_name, only: :download
 
   def upload

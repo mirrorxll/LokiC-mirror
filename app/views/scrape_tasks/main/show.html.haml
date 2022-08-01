@@ -12,10 +12,10 @@
     created at: #{@scrape_task.created_at}#{@scrape_task.updated_early? ? " | updated at: #{@scrape_task.updated_at}" : ""}
 
 #scrapingInfo.row.align-items-stretch.mt-4
-  .col-xl-8.col-sm-12
+  .col-xl-6.col-sm-12.pr-xl-1
     .card.h-100
-      .card-header.p-1.small
-        .d-flex.justify-content-between.align-items-center
+      .card-header.pt-2.pr-1.pb-2.pl-1.small{ style: 'height: 37px;'}
+        .d-flex.justify-content-between.align-items-center.h-100
           MAIN INFO
           #scrapeTaskStatusComment
             =render 'status_comment'
@@ -33,9 +33,9 @@
 
       .card-body
         =render 'scrape_task_info'
-  .col-xl-4.col-sm-12.pl-xl-0
+  .col-xl-6.col-sm-12.pl-xl-1
     .card.h-100
-      .card-header.p-1.small
+      .card-header.pt-2.pr-1.pb-2.pl-1.small{ style: 'height: 37px;'}
         CONVERSATION
       .card-body
 
@@ -67,18 +67,15 @@
   #scrapeEvaluationDocAnchor.mb-4
 
 -if @permissions['instructions']['show'] && @permissions['evaluation_document']['show']
-  #scrapeInstructionAnchor
-  #scrapeEvaluationDocAnchor
-
-  %ul#scrapeTaskTabs.nav.nav-tabs.small
+  %ul#scrapeTaskTabs.nav.nav-tabs.small.mt-4
     %li.nav-item.text-center{ style: 'width: 50%' }
       %a#scrapeInstructionTab.nav-link.active{ "aria-selected" => "true", "data-toggle" => "tab", href: "#scrapeInstruction", role: "tab" }
-        Instruction
+        INSTRUCTION
 
     %li.nav-item.text-center{ style: 'width: 50%' }
       %a#scrapeEvaluationDocTab.nav-link{ "aria-selected" => "false", "data-toggle" => "tab",
                                           href: "#scrapeEvaluationDoc", role: "tab" }
-        Evaluation Document
+        EVALUATION DOCUMENT
 
   #scrapeTaskTabsContent.tab-content
     #scrapeInstruction.tab-pane.fade.show.active
@@ -117,7 +114,7 @@
           })
 
 -elsif @permissions['instructions']['show']
-  .card.w-100.mb-5
+  .card.w-100.mb-5.mt-4
     .card-header.p-1.small
       INSTRUCTIONS
     .card-body.p-0
@@ -138,7 +135,7 @@
 
 
 -elsif @permissions['evaluation_document']['show']
-  .card.w-100.mb-5
+  .card.w-100.mb-5.mt-4
     .card-header.p-1.small
       EVALUATION DOCUMENT
     .card-body.p-0

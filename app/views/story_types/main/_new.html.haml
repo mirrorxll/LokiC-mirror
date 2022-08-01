@@ -1,4 +1,7 @@
 =form_with(url: story_types_path, local: true, html: { onkeypress: "return event.keyCode !== 13;" } ) do |f|
+  -if @data_set
+    =f.hidden_field 'story_type[data_set_id]', value: @data_set.id
+
   #nameAnchor.mb-1
   #name
     .row
@@ -10,7 +13,7 @@
         =f.text_field "story_type[name]", class: 'form-control form-control-sm '
         #newStoryTypeNameExist.text-danger.d-none
           Story Type with this name already exists. Let's use something else
-  =f.submit 'Submit', id: 'hiddenCreateButton', class: 'd-none'
+  =f.submit 'Submit', id: 'hiddenStoryTypeCreateButton', class: 'd-none'
 
 :javascript
   document.querySelector('#name input').addEventListener('input', () => {

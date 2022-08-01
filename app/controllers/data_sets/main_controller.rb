@@ -54,10 +54,11 @@ module DataSets
       end
     end
 
-    def edit; end
-
     def update
-      redirect_to @data_set if @data_set.update!(data_set_params)
+      @data_set.update(data_set_params)
+      @data_set.general_comment.update(general_comment_params)
+
+      redirect_to @data_set
     end
 
     def destroy
@@ -114,9 +115,12 @@ module DataSets
 
     def data_set_params
       params.require(:data_set).permit(
-        :name, :slack_channel, :sheriff_id,
-        :state_id, :category_id, :scrape_task_id
+        :name, :slack_channel, :state_id, :category_id
       )
+    end
+
+    def general_comment_params
+      params.require(:general_comment).permit(:body)
     end
 
     def default_props_params

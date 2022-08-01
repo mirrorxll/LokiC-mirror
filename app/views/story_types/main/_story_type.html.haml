@@ -1,45 +1,16 @@
--if %w[show update canceling_edit change_data_set].include?(action_name)
-  .text-center.small{ id: "story_type_#{story_type.id}" }
-    .row.on-hover-bg.pt-2.pb-2
-      .col-1
-        =story_type.id
-      .col-5.pl-0.text-left{id: "story_type_#{story_type.id}_name"}
-        .row
-          .col-11.pr-0
-            =link_to(story_type.name, story_type_path(story_type), class: (story_type.status.name.eql?('archived') ? 'text-secondary' : ''))
-          .col-1.p-0.text-center
-            =link_to(icon('fa', 'pencil', class: ' fa-xs text-dark'), edit_story_type_path(story_type), remote: true)
-      .col-1.p-0{id: "story_type_#{story_type.id}_template"}
-        =link_to(icon('fa', 'file-o', class: 'fa-lg text-dark'), edit_story_type_template_path(story_type, story_type.template), remote: true)
-      .col-3.p-0
+.text-center.small{ id: "story_type_#{story_type.id}" }
+  .row.on-hover-bg.pt-2.pb-2
+    .col-1.d-flex.align-items-center
+      =story_type.id
+    .col-6.d-flex.align-items-center.pl-0.text-left{id: "story_type_#{story_type.id}_name"}
+      =link_to(story_type.name, story_type_path(story_type), class: (story_type.status.name.eql?('archived') ? 'text-secondary' : ''))
+    .col-3.d-flex.align-items-center.p-0{id: "story_type_#{story_type.id}_template"}
+      =link_to(icon('fa', 'pencil', class: 'text-dark mr-3'), edit_story_type_path(story_type), remote: true)
+      =link_to(icon('fa', 'file-o', class: 'text-dark mr-3'), edit_story_type_template_path(story_type, story_type.template), remote: true)
+      %div{id: "story_type_#{story_type.id}_developer"}
         -if story_type.developer
           =render 'story_types/developers/developer', story_type: story_type
         -else
           =render 'story_types/developers/form', story_type: story_type
-      .col-1.p-0
-        =story_type.status.name
-      .col-1{id: "story_type_#{story_type.id}_last_export"}
-        -if story_type.last_export
-          =story_type.last_export.strftime('%D')
-        -else
-          \---
--else
-  .text-center{id: "story_type_#{story_type.id}"}
-    .row
-      .col-1
-        =story_type.id
-      .col-6.pl-0.text-left{id: "story_type_#{story_type.id}_name"}
-        .row
-          .col-12.pr-0
-            =link_to(story_type.name, story_type_path(story_type))
-      .col-3.p-0
-        =story_type.developer ? story_type.developer.name : '---'
-      .col-1.p-0
-        =story_type.status.name
-      .col-1.p-0{id: "story_type_#{story_type.id}_last_export"}
-        -if story_type.last_export
-          =story_type.last_export.strftime('%D')
-        -else
-          :escaped
-              ---
-    %hr/
+    .col-2.d-flex.align-items-center.p-0
+      =story_type.status.name
