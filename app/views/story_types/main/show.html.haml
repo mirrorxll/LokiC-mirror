@@ -9,6 +9,12 @@
         %b ##{@story_type.id} #{@story_type.name}
 %hr/
 
+.d-flex.justify-content-between.align-items-center.mb-3.small.mt-n3
+  .text-secondary
+    created by #{@story_type.editor&.name}
+  .text-secondary
+    created at: #{@story_type.created_at}
+
 .row
   .col-10
     -if @story_types_permissions['iterations']['show']
@@ -16,19 +22,18 @@
         =render partial: 'story_types/iterations/iteration',
                 collection: @story_type.iterations.where(cron_tab: [nil, false]),
                 current_iteration: @story_type.iteration
-      #new_story_type_iteration.d-inline
-        =render 'story_types/iterations/new_iteration'
+      -if @story_types_permissions['iterations']['new_form']
+        #new_story_type_iteration.d-inline
+          =render 'story_types/iterations/new_iteration'
   .col-2.text-right
-    -if @story_types_permissions['progress_status']['show']
-      #story_type_status
+    #story_type_status
+      -if @story_types_permissions['progress_status']['edit_form']
         =render 'story_types/progress_statuses/status'
+      -elsif @story_types_permissions['progress_status']['show']
+        =@story_type.status.name
+
 %hr/
 
-.d-flex.justify-content-between.align-items-center.mb-3.small.mt-n3
-  .text-secondary
-    created by #{@story_type.editor&.name}
-  .text-secondary
-    created at: #{@story_type.created_at}
 
 .row.small.justify-content-md-center.justify-content-lg-start.mx-0
   #template_section.col-lg-6.col-md-12.my-2
