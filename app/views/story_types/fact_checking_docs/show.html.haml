@@ -43,7 +43,6 @@
         .card-header.d-flex.justify-content-between.align-items-center
           reviewers feedback
           .btn-group
-            -# TODO: find out the right role
             -if current_account_permissions('story_types')['iterations']['fcd_review']
               =link_to("add feedback", new_story_type_fact_checking_doc_reviewers_feedback_path(@story_type, @fcd),
                        'data-toggle'=>'modal', 'data-target'=>'#manual_feedback_modal',
@@ -84,7 +83,6 @@
           editors feedback
 
           .btn-group
-            -# TODO: find out the right role
             -if current_account_permissions('story_types')['iterations']['fcd_review']
               =link_to("add feedback", new_story_type_fact_checking_doc_editors_feedback_path(@story_type, @fcd),
                        'data-toggle'=>'modal', 'data-target'=>'#manual_feedback_modal',

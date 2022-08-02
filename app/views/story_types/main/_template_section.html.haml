@@ -1,7 +1,6 @@
 #story_type_template.card.h-100
   .card-header.d-flex.justify-content-between.align-items-center
     TEMPLATE
-    -#TODO: if this is correct implementation of user permissions?
     -if current_account_permissions('story_types')['template']['edit_form']
       =button_to('Edit', edit_story_type_template_path(@story_type, @story_type.template), method: :get, remote: true)
   #template_preview.h-100
