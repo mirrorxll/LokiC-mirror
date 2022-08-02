@@ -40,7 +40,7 @@ module MultiTasks
     end
 
     def find_task
-      @multi_task = Task.find(params[:multi_task_task_id])
+      @multi_task = MultiTask.find(params[:multi_task_task_id])
     end
 
     def comment_params
@@ -58,7 +58,7 @@ module MultiTasks
       accounts.each do |account|
         next if account.slack.nil? || account.slack.deleted
 
-        message = "*<#{task_url(@multi_task)}| TASK ##{@multi_task.id}> | "\
+        message = "*<#{multi_task_url(@multi_task)}| TASK ##{@multi_task.id}> | "\
                 "#{@comment.commentator.name} add comment | Check please*\n>#{@multi_task.title}"
 
         ::SlackNotificationJob.perform_async(account.slack.identifier, message)

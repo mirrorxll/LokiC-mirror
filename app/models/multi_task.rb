@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Task < ApplicationRecord # :nodoc:
+class MultiTask < ApplicationRecord # :nodoc:
   self.table_name = 'tasks'
 
   before_create do
@@ -21,37 +21,38 @@ class Task < ApplicationRecord # :nodoc:
   belongs_to :creator, class_name: 'Account'
   belongs_to :status, optional: true
   belongs_to :reminder_frequency, class_name: 'TaskReminderFrequency', optional: true
-  belongs_to :parent, class_name: 'Task', foreign_key: :parent_task_id, optional: true
+  belongs_to :parent, class_name: 'MultiTask', foreign_key: :parent_task_id, optional: true
   belongs_to :client, class_name: 'ClientsReport', foreign_key: :client_id, optional: true
   belongs_to :work_request, optional: true
 
-  has_one :team_work, class_name: 'TaskTeamWork'
+  has_one :team_work, class_name: 'TaskTeamWork', foreign_key: :task_id
   has_one :last_comment, -> { order created_at: :desc }, as: :commentable, class_name: 'Comment'
 
-  has_one :main_task_assignment, -> { where(main: true) }, class_name: 'TaskAssignment'
+  has_one :main_task_assignment, -> { where(main: true) }, class_name: 'TaskAssignment', foreign_key: :task_id
   has_one :main_assignee, through: :main_task_assignment, source: :account
 
-  has_many :task_assistants, -> { where(main: false, notification_to: false) }, class_name: 'TaskAssignment'
+  has_many :task_assistants, -> { where(main: false, notification_to: false) }, class_name: 'TaskAssignment', foreign_key: :task_id
   has_many :assistants, through: :task_assistants, source: :account
 
-  has_many :assignments_notifications, -> { where(notification_to: true) }, class_name: 'TaskAssignment'
+  has_many :assignments_notifications, -> { where(notification_to: true) }, class_name: 'TaskAssignment', foreign_key: :task_id
   has_many :notification_to, through: :assignments_notifications, source: :account
 
-  has_many :checklists, class_name: 'TaskChecklist'
+  has_many :checklists, class_name: 'TaskChecklist', foreign_key: :task_id
 
-  has_many :assignments, -> { where(notification_to: false) }, class_name: 'TaskAssignment'
+  has_many :assignments, -> { where(notification_to: false) }, class_name: 'TaskAssignment', foreign_key: :task_id
   has_many :assignment_to, through: :assignments, source: :account
 
-  has_many :comments, -> { where(commentable_type: 'Task') }, as: :commentable, class_name: 'Comment'
-  has_many :subtasks, -> { where.not(status: Status.find_by(name: 'deleted')) }, foreign_key: :parent_task_id, class_name: 'Task'
+  has_many :comments, -> { where(commentable_type: 'MultiTask') }, as: :commentable, class_name: 'Comment'
+  has_many :subtasks, -> { where.not(status: Status.find_by(name: 'deleted')) }, foreign_key: :parent_task_id, class_name: 'MultiTask'
 
-  has_many :notes, class_name: 'TaskNote'
+  has_many :notes, class_name: 'TaskNote', foreign_key: :task_id
 
-  has_many :agency_opportunity_revenue_types, class_name: 'TaskAgencyOpportunityRevenueType'
+  has_many :agency_opportunity_revenue_types, class_name: 'TaskAgencyOpportunityRevenueType', foreign_key: :task_id
 
   scope :ongoing, -> { where(status: Status.multi_task_statuses) }
 
-  has_and_belongs_to_many :scrape_tasks
+  has_and_belongs_to_many :scrape_tasks, join_table: 'scrape_tasks_tasks',
+                                         foreign_key: :task_id
 
   def agency_opportunity_hours
     tasks = subtasks_full_depth << self
@@ -138,12 +139,5 @@ class Task < ApplicationRecord # :nodoc:
 
   def note(account)
     notes.find_by(creator: account)
-  end
-end
-old_status = Status.find_by(name: 'created and in queue')
-new_status = Status.find_by(name: 'created and in queue')
-[WorkRequest, FactoidRequest, Task, ScrapeTask, StoryType, FactoidType].each do |branch|
-  branch.where(status: old_status).each do |i|
-    i.update(status: new_status)
   end
 end

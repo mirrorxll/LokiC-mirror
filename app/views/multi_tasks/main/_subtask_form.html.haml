@@ -4,7 +4,7 @@
       .form-group
         =form.text_field 'task[title]', placeholder: 'title', id: 'newTaskName', class: 'form-control form-control-sm', required: true, maxlength: 500
         #newTaskNameFeedback.text-danger.text-center.d-none
-          Task with this title already created by you. Let's use something else
+          MultiTask with this title already created by you. Let's use something else
       .form-group
         =form.text_area 'task[description]', class: 'form-control', id: 'task_description'
       .form-group
@@ -84,7 +84,7 @@
               .col.text-right
                 main_task:
               .col.text-left.small
-                =form.collection_select 'task[parent]', Task.where(parent: nil).where.not(status: Status.find_by(name: 'deleted')).order(:id), :id, :title_with_id, { prompt: '' }, style: "width:150px"
+                =form.collection_select 'task[parent]', MultiTask.where(parent: nil).where.not(status: Status.find_by(name: 'deleted')).order(:id), :id, :title_with_id, { prompt: '' }, style: "width:150px"
       %hr
       .d-flex
         .col-12
@@ -111,7 +111,7 @@
       .row
         .col
           #agency_opportunity_revenue_types_task.col.mb-2
-            =render 'task_agencies_opportunities/edit_form', agency_opportunity_revenue_types:  @multi_task_parent.agency_opportunity_revenue_types, form: form
+            =render 'multi_tasks/agencies_opportunities/edit_form', agency_opportunity_revenue_types:  @multi_task_parent.agency_opportunity_revenue_types, form: form
           #agenciesPercentsFeedback.text-danger.text-center.font-weight-normal.d-none
             Total of percents must be 100
   .modal-footer.justify-content-center

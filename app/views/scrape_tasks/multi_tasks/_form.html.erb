@@ -14,7 +14,7 @@
     <div class="form-group mb-0">
       <input class="underline-input pt-0" list='multiTasksDataList'>
       <datalist id="multiTasksDataList">
-        <% Task.all.each do |t| %>
+        <% MultiTask.all.each do |t| %>
           <option value="<%= "##{t.id} #{t.title}" %>"></option>
         <% end %>
       </datalist>

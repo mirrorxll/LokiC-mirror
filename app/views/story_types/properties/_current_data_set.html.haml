@@ -5,7 +5,7 @@
     current iteration
 .row
   .col-6
-    -if current_account_permissions('data_sets')['grid']['all'] && @story_type.data_set.present?
+    -if @data_sets_permissions && @data_sets_permissions['grid'].values.any? && @story_type.data_set.present?
       =link_to @story_type.data_set.name, data_set_path(@story_type.data_set), class: 'no-link'
       =link_to icon('fa', 'info-circle'), properties_data_set_path(@story_type.data_set), remote: true
     -else

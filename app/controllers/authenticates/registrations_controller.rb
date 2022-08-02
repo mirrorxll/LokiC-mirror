@@ -44,7 +44,7 @@ module Authenticates
     end
 
     def slack_account_params
-      params.require(:slack_account).permit(:identifier)
+      params.require(:slack_account).permit(:id)
     end
 
     def fcd_slack_channel_params

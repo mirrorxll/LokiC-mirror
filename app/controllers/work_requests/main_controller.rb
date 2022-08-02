@@ -40,9 +40,9 @@ module WorkRequests
       statuses = Status.work_request_statuses(created: true)
       @lists = HashWithIndifferentAccess.new
 
-      @lists['created'] = { requester_id: current_account.id, status: statuses }  if @permissions['grid']['created']
-      @lists['all'] = { status: statuses }                                        if @permissions['grid']['all']
-      @lists['archived'] = { status: Status.find_by(name: 'archived') }           if @permissions['grid']['archived']
+      @lists['created'] = { requester: current_account.id, status: statuses }  if @permissions['grid']['created']
+      @lists['all'] = { status: statuses }                                     if @permissions['grid']['all']
+      @lists['archived'] = { status: Status.find_by(name: 'archived') }        if @permissions['grid']['archived']
     end
 
     def current_list
@@ -61,7 +61,7 @@ module WorkRequests
     def access_to_show
       archived = Status.find_by(name: 'archived')
 
-      return if @lists['created'] && @work_request.requester.eql?(current_account)
+      return if @lists['created'] && @work_request.requester.eql?(current_account) && @work_request.status != archived
       return if @lists['all'] && @work_request.status != archived
       return if @lists['archived'] && @work_request.status.eql?(archived)
 

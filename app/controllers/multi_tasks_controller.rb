@@ -6,6 +6,6 @@ class MultiTasksController < ApplicationController
   private
 
   def find_multi_task
-    @multi_task = Task.find(params[:multi_task_id] || params[:id])
+    @multi_task = MultiTask.find(params[:multi_task_id] || params[:id])
   end
 end

@@ -62,7 +62,7 @@ module MultiTasks
 
       @comment = @multi_task.comments.build(
         subtype: 'task comment',
-        body: "Task assignment to #{new_assignments.map(&:name).to_sentence}.",
+        body: "MultiTask assignment to #{new_assignments.map(&:name).to_sentence}.",
         commentator: current_account
       )
       @comment.save!
@@ -72,7 +72,7 @@ module MultiTasks
       assignments.each do |assignment|
         next if assignment.slack.nil? || assignment.slack.deleted
 
-        message = "*<#{task_url(@multi_task)}| TASK ##{@multi_task.id}> | "\
+        message = "*<#{multi_task_url(@multi_task)}| TASK ##{@multi_task.id}> | "\
                   "Assignment to you*\n>#{@multi_task.title}"
         ::SlackNotificationJob.perform_async(assignment.slack.identifier, message)
         ::SlackNotificationJob.perform_async('hle_lokic_task_reminders', message)

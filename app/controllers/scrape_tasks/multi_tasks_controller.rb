@@ -12,7 +12,7 @@ module ScrapeTasks
       @scrape_task.multi_tasks.clear
 
       multi_tasks_params.keep_if { |_k, v| v.eql?('1') }.keys.each do |t|
-        @scrape_task.multi_tasks << Task.find(t)
+        @scrape_task.multi_tasks << MultiTask.find(t)
       end
 
       render 'scrape_tasks/multi_tasks/show'

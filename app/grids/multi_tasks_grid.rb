@@ -6,9 +6,16 @@ class MultiTasksGrid
   attr_accessor(:current_account)
 
   # Scope
-  scope { Task.includes(:assignments, :creator, :assignment_to, :status, :last_comment).order(id: :desc) }
+  scope { MultiTask.includes(:assignments, :creator, :assignment_to, :status, :last_comment).order(id: :desc) }
 
   # Filters
+
+  filter(:assignment_to)
+  filter(:assigment)
+  filter(:notification_to)
+  filter(:creator_id)
+  filter(:status)
+
   filter(:creator_id)
   filter(:title, :string, left: true, header: 'Title(RLIKE)') do |value, scope|
     scope.where('title RLIKE ?', value)
@@ -64,11 +71,15 @@ class MultiTasksGrid
   column(:deadline, order: 'deadline', mandatory: true, &:deadline)
 
   column(:parent_task_id, header: 'Main task', order: 'parent_task_id', mandatory: true) do |task|
-    format("##{task.parent.id}") { |parent_id| link_to parent_id, task.parent } unless task.parent.nil?
+    if task.parent
+      format("##{task.parent.id}") do |parent_id|
+        link_to(parent_id, multi_task_path(task.parent))
+      end
+    end
   end
 
   column(:sow, header: 'SOW', mandatory: true, order: 'sow') do |task|
-    format("Google doc") { |sow| link_to sow, task.sow } unless task.sow.blank?
+    format('Google doc') { |sow| link_to sow, task.sow } unless task.sow.blank?
   end
 
   column(:last_comment, header: 'Last comment', order: lambda { |scope|

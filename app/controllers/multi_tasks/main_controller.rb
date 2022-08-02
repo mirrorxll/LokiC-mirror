@@ -17,28 +17,28 @@ module MultiTasks
     end
 
     def show
-      render_401 unless @multi_task.access_for?(current_account)
+      render_401 unless current_account.manager? || @multi_task.access_for?(current_account)
 
       @comments = @multi_task.comments.order(created_at: :desc)
       @tab_title = "LokiC :: MultiTask ##{@multi_task.id} <#{@multi_task.title}>"
     end
 
     def new
-      @multi_task = Task.new
+      @multi_task = MultiTask.new
     end
 
     def create
       parent_params = task_params[:parent]
       subtasks_params = task_params[:subtasks]
 
-      @multi_task_parent = Task.new(parent_params.except(:assignment_to, :assistants, :notification_to, :checklists, :agencies_opportunities))
+      @multi_task_parent = MultiTask.new(parent_params.except(:assignment_to, :assistants, :notification_to, :checklists, :agencies_opportunities))
       if @multi_task_parent.save!
         after_task_create(@multi_task_parent, parent_params)
 
         unless subtasks_params.blank?
           subtasks_params.each do |subtask_params|
             subtask_params[:parent] = @multi_task_parent
-            subtask = Task.new(subtask_params.except(:assignment_to, :assistants, :checklists, :agencies_opportunities))
+            subtask = MultiTask.new(subtask_params.except(:assignment_to, :assistants, :checklists, :agencies_opportunities))
             after_task_create(subtask, subtask_params) if subtask.save!
           end
         end
@@ -67,11 +67,11 @@ module MultiTasks
     end
 
     def new_subtask
-      @multi_task_parent = Task.find(params[:parent_task])
+      @multi_task_parent = MultiTask.find(params[:parent_task])
     end
 
     def create_subtask
-      @subtask = Task.new(subtask_params.except(:assignment_to, :notification_to, :assistants, :checklists, :agencies_opportunities))
+      @subtask = MultiTask.new(subtask_params.except(:assignment_to, :notification_to, :assistants, :checklists, :agencies_opportunities))
 
       after_task_create(@subtask, subtask_params) if @subtask.save!
     end
@@ -82,12 +82,12 @@ module MultiTasks
       statuses = Status.multi_task_statuses(created: true)
       @lists = HashWithIndifferentAccess.new
 
-      @lists['assigned'] = { assignment_to: current_account.id, status: statuses }  if @permissions['grid']['assigned']
-      @lists['assistant'] = { assigment: current_account.id, status: statuses }  if @permissions['grid']['assigned']
-      @lists['notify_me'] = { notification_to: current_account.id, status: statuses }  if @permissions['grid']['assigned']
-      @lists['created'] = { creator_id: current_account.id, status: statuses }      if @permissions['grid']['created']
-      @lists['all'] = { status: statuses }                                          if @permissions['grid']['all']
-      @lists['archived'] = { status: Status.find_by(name: 'deleted') }              if @permissions['grid']['archived']
+      @lists['assigned'] = { assignment_to: current_account.id, status: statuses }    if @permissions['grid']['assigned']
+      @lists['assistant'] = { assigment: current_account.id, status: statuses }       if @permissions['grid']['assistant']
+      @lists['notify me'] = { notification_to: current_account.id, status: statuses } if @permissions['grid']['notify_me']
+      @lists['created'] = { creator: current_account.id, status: statuses }           if @permissions['grid']['created']
+      @lists['all'] = { status: statuses }                                            if @permissions['grid']['all']
+      @lists['archived'] = { status: Status.find_by(name: 'deleted') }                if @permissions['grid']['archived']
     end
 
     def current_list
@@ -123,8 +123,10 @@ module MultiTasks
     def access_to_show
       status_deleted = Status.find_by(name: 'deleted')
 
-      return if @lists['assigned'] && @multi_task.assignment_to.include?(current_account)
-      return if @lists['created'] && @multi_task.creator.eql?(current_account)
+      return if @lists['assigned'] && @multi_task.assignment_to.include?(current_account) && @multi_task.status != status_deleted
+      return if @lists['assistant'] && @multi_task.assistants.include?(current_account) && @multi_task.status != status_deleted
+      return if @lists['notify me'] && @multi_task.notification_to.include?(current_account) && @multi_task.status != status_deleted
+      return if @lists['created'] && @multi_task.creator.eql?(current_account) && @multi_task.status != status_deleted
       return if @lists['all'] && @multi_task.status != status_deleted
       return if @lists['archived'] && @multi_task.status.eql?(status_deleted)
 
@@ -189,7 +191,7 @@ module MultiTasks
     end
 
     def comment(task)
-      body = "##{task.id} Task created. "
+      body = "##{task.id} MultiTask created. "
       body += if task.assignment_to.empty?
                 'Not assigned.'
               else
@@ -204,7 +206,7 @@ module MultiTasks
     end
 
     def find_note
-      @note = TaskNote.find_by(task: @multi_task, creator: current_account)
+      @note = TaskNote.find_by(multi_task: @multi_task, creator: current_account)
     end
 
     def send_notification(task)
@@ -213,7 +215,7 @@ module MultiTasks
       task.assignment_to.each do |assignment|
         next if assignment.slack.nil? || assignment.slack.deleted
 
-        message = "*<#{task_url(task)}| TASK ##{task.id}> | "\
+        message = "*<#{multi_task_url(task)}| TASK ##{task.id}> | "\
               "Assignment to you*\n>#{task.title}"
 
         ::SlackNotificationJob.perform_async(assignment.slack.identifier, message)
@@ -229,7 +231,7 @@ module MultiTasks
       parent_params[:work_request] = parent_params[:work_request] ? WorkRequest.find(parent_params[:work_request]) : nil
       parent_params[:assistants] = parent_params[:assistants].blank? ? nil : parent_params[:assistants].uniq.reject(&:blank?).delete_if { |assignee| assignee == parent_params[:assignment_to] }
       parent_params[:notification_to] = parent_params[:notification_to].blank? ? nil : parent_params[:notification_to].uniq.reject(&:blank?).delete_if { |assignee| assignee == parent_params[:assignment_to] || (!parent_params[:assistants].blank? && parent_params[:assistants].include?(assignee)) }
-      parent_params[:parent] = parent_params[:parent].blank? ? nil : Task.find(parent_params[:parent])
+      parent_params[:parent] = parent_params[:parent].blank? ? nil : MultiTask.find(parent_params[:parent])
       parent_params[:creator] = current_account
       result_params[:parent] = parent_params
 
@@ -257,7 +259,7 @@ module MultiTasks
     def subtask_params
       task_params = params.require(:task).permit(:title, :description, :parent, :deadline, :client_id, :reminder_frequency, :access, :gather_task, :sow, :pivotal_tracker_name, :pivotal_tracker_url, :assignment_to, assistants: [], notification_to: [], checklists: [], agencies_opportunities: {})
       task_params[:reminder_frequency] = task_params[:reminder_frequency].blank? ? nil : TaskReminderFrequency.find(task_params[:reminder_frequency])
-      task_params[:parent] = task_params[:parent].blank? ? nil : Task.find(task_params[:parent])
+      task_params[:parent] = task_params[:parent].blank? ? nil : MultiTask.find(task_params[:parent])
       task_params[:client] = task_params[:client_id].blank? ? nil : ClientsReport.find(task_params[:client_id])
       task_params[:creator] = current_account
       task_params[:assistants] = task_params[:assistants].blank? ? nil : task_params[:assistants].uniq.reject(&:blank?).delete_if { |assignee| assignee == task_params[:assignment_to] }
@@ -277,7 +279,7 @@ module MultiTasks
       up_task_params = params.require(:task).permit(:title, :description, :deadline, :parent, :access, :client_id, :reminder_frequency, :gather_task, :sow, :pivotal_tracker_name, :pivotal_tracker_url, agencies_opportunities: {})
       up_task_params[:reminder_frequency] = up_task_params[:reminder_frequency].blank? ? nil : TaskReminderFrequency.find(up_task_params[:reminder_frequency])
       up_task_params[:client] = up_task_params[:client_id].blank? ? nil : ClientsReport.find(up_task_params[:client_id])
-      up_task_params[:parent] = up_task_params[:parent].blank? ? nil : Task.find(up_task_params[:parent])
+      up_task_params[:parent] = up_task_params[:parent].blank? ? nil : MultiTask.find(up_task_params[:parent])
       up_task_params
     end
 

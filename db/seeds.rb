@@ -158,7 +158,7 @@ invoice_type(db02).each { |obj| InvoiceType.find_or_create_by!(obj) }
 puts 'Invoice Frequencies'
 invoice_frequency(db02).each { |obj| InvoiceFrequency.find_or_create_by!(obj) }
 
-puts 'Task Reminder Frequencies'
+puts 'MultiTask Reminder Frequencies'
 task_reminder_frequency(db02).each { |obj| TaskReminderFrequency.find_or_create_by!(obj) }
 
 puts 'Weeks'
@@ -275,6 +275,9 @@ rules = {
 puts 'Auto-feedback'
 rules.each { |rule, output| AutoFeedback.find_or_create_by!(rule: rule, output: output) }
 
+puts 'SlackAccounts'
+SlackAccountsJob.new.perform
+
 puts 'Hosts/Schemas/Tables'
 %w[DB01 DB02 DB04 DB06 DB07 DB08 DB10 DB13 DB14 DB15].each { |h| Host.find_or_create_by(name: h) }
 SchemasTablesTask.new.perform
@@ -292,6 +295,3 @@ PhotoBucketsTask.new.perform
 
 puts 'Opportunities'
 OpportunitiesTask.new.perform
-
-puts 'SlackAccounts'
-SlackAccountsJob.new.perform

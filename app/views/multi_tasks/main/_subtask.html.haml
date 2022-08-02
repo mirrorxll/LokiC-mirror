@@ -4,7 +4,7 @@
       .col-9
         =text_field_tag "subtasks[#{number_subtask}][title]", "", id: "newSubtaskName#{number_subtask}", placeholder: "subtask title", class: 'subtaskTitle form-control form-control-sm', required: true, maxlength: 500
         %div.text-danger.text-center.d-none{ id: "newTaskNameFeedback#{number_subtask}" }
-          Task with this title already created by you. Let's use something else
+          MultiTask with this title already created by you. Let's use something else
       .col
         .btn.btn-link.btn-block.btn-sm{"aria-controls" => "collapse#{number_subtask}", "aria-expanded" => "true", "data-target" => "#collapse#{number_subtask}", "data-toggle" => "collapse", :type => "button"}
           [ collapse ]

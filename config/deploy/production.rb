@@ -60,6 +60,8 @@
 #     # password: "please use keys"
 #   }
 
+set :rails_env, :production
+
 server 'app@loki01.locallabs.com', port: 22, roles: %i[web app db]
 
 set :deploy_to,               '/home/app/LokiC'

@@ -54,7 +54,7 @@ module Accounts
     end
 
     def find_slack_account
-      slack_params = params.require(:slack).permit(:identifier)
+      slack_params = params.require(:slack).permit(:id)
       @slack_account = SlackAccount.find_by(slack_params)
     end
   end
