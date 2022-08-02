@@ -16,7 +16,7 @@ set :rvm_custom_path, '/usr/local/rvm/'
 set :pty, true
 set :application, 'LokiC'
 set :repo_url,    'git@github.com:localitylabs/LokiC.git'
-set :branch,      'deploy'
+set :branch,      'deploy_prod'
 
 set :deploy_via,              :remote_cache
 set :deploy_to,               '/home/app/LokiC'
