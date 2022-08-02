@@ -11,6 +11,9 @@
         -if factoid_type.developer
           =render 'factoid_types/developers/developer', factoid_type: factoid_type
         -else
-          =render 'factoid_types/developers/form', factoid_type: factoid_type
+          -if current_account_permissions('factoid_types')['developer']['edit_form']
+            =render 'factoid_types/developers/form', factoid_type: factoid_type
+          -else
+            ='---'
     .col-2.d-flex.align-items-center.p-0
       =factoid_type.status.name

@@ -57,20 +57,21 @@ module AccessLevels
         edit_form: true,
         iterations: { show: true, new_form: true, edit_form: true },
         progress_status: { show: true, edit_form: true },
-        comment: true,
-        gather_task_id: true,
-        template: true,
-        change_data_set: true,
-        fcd_review: true,
+        template: { show: true, edit_form: true },
+        editor: { show: true, edit_form: true },
         developer: { show: true, edit_form: true },
+        comment: { show: true, edit_form: true }
       },
       factoid_types: {
-        grid: { assigned: true, created: true, all: true, archived: true },
+        grid: { assigned: true, your: true, all: true, archived: true },
         new_form: true,
         edit_form: true,
+        iterations: { show: true, new_form: true, edit_form: true },
         progress_status: { show: true, edit_form: true },
+        template: { show: true, edit_form: true },
+        editor: { show: true, edit_form: true },
         developer: { show: true, edit_form: true },
-        iterations: { show: true, new_form: true, edit_form: true }
+        comment: { show: true, edit_form: true }
       }
     },
 

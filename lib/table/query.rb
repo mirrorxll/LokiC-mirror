@@ -5,16 +5,8 @@ module Table
   # from staging tables
   module Query
     def schema
-      # TODO: try this way
-      # Rails.configuration.database_configuration[Rails.env]['secondary']['database']
-      case Rails.env
-      when 'production'
-        'loki_storycreator'
-      when 'development'
-        'loki_story_creator_dev_up'
-      when 'test'
-        'loki_story_creator_test'
-      end
+      # TODO: if this will be correct?
+      Rails.configuration.database_configuration[Rails.env]['loki_story_creator']['database']
     end
 
     def schema_table(t_name)

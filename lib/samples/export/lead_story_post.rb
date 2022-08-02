@@ -16,12 +16,10 @@ module Samples
       ].freeze
 
       def lead_story_post(sample, cl_p_tgs, st_opportunities)
-        # exp_config = sample.export_configuration
-        #
-        # lead_id = lead_post(sample, exp_config, st_opportunities)
-        # story_id = story_post(lead_id, sample, exp_config, cl_p_tgs)
-        lead_id = rand(1..1_000_000)
-        story_id = rand(1..1_000_000)
+        exp_config = sample.export_configuration
+
+        lead_id = lead_post(sample, exp_config, st_opportunities)
+        story_id = story_post(lead_id, sample, exp_config, cl_p_tgs)
 
 
         sample.update!(

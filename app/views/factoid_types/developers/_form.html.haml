@@ -1,4 +1,2 @@
-.d-flex
-  =form_with(url: factoid_type_developer_path(@factoid_type), method: :patch, html: { class: 'pr-3', onchange: "Rails.fire(this, 'submit')" }) do |form|
-    =form.collection_select 'developer[id]', @developers, :id, :name, { include_blank: true, selected: @factoid_type.developer&.id }
-  =link_to(icon('fa', 'times'), factoid_type_developer_path(@factoid_type), method: :get, remote: true)
+=form_with(url: include_factoid_type_developers_path(factoid_type), method: :patch, html: { onchange: "Rails.fire(this, 'submit')" }) do |form|
+  =form.collection_select :developer_id, Account.all.order(:first_name, :last_name), :id, :name, { prompt: '' }, { name: :id }

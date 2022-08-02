@@ -1,0 +1,3 @@
+=story_type.developer.name
+-if current_account_permissions('story_types')['developer']['edit_form']
+  =link_to('x', exclude_story_type_developer_path(story_type, story_type.developer), method: :delete, remote: true)

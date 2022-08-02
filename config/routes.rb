@@ -224,7 +224,6 @@ Rails.application.routes.draw do
       get   :canceling_edit,  on: :member
 
       resource :data_set,       only: :update
-      resource :developer,      only: %i[show edit update]
       resource :property_form,  only: :show
       resource :update_section, only: :update
 
@@ -277,6 +276,11 @@ Rails.application.routes.draw do
       resources :photo_buckets, path: :photo_bucket, only: [] do
         post   :include, on: :collection
         delete :exclude, on: :member
+      end
+
+      resources :developers, only: [] do
+        patch   :include, on: :collection
+        delete  :exclude, on: :member
       end
 
       resources :staging_tables, only: %i[show create destroy] do
@@ -379,7 +383,6 @@ Rails.application.routes.draw do
       get   :canceling_rename,  on: :member
 
       resource :data_set,       only: :update
-      resource :developer,      only: %i[show edit update]
       resource :property_form,  only: :show
       resource :update_section, only: :update
 
@@ -394,6 +397,11 @@ Rails.application.routes.draw do
       resources :frequencies, path: :frequency, only: [] do
         post   :include, on: :collection
         delete :exclude, on: :member
+      end
+
+      resources :developers, only: [] do
+        patch   :include, on: :collection
+        delete  :exclude, on: :member
       end
 
       resources :staging_tables, only: %i[show create destroy] do

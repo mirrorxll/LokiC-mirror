@@ -61,11 +61,11 @@ module Samples
             sample = semaphore.synchronize { stories.shift }
             break if sample.nil?
 
-            # begin
-            #   @pl_client.delete_lead(sample[@pl_lead_id_key])
-            # rescue Faraday::ResourceNotFound
-            #   true
-            # end
+            begin
+              @pl_client.delete_lead(sample[@pl_lead_id_key])
+            rescue Faraday::ResourceNotFound
+              true
+            end
 
             sample.update!(@pl_lead_id_key => nil, @pl_story_id_key => nil, exported_at: nil)
             break if story_type.reload.sidekiq_break.cancel

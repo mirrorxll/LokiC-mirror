@@ -1,6 +1,0 @@
-.row
-  .col-12
-    %div{id: "story_type_#{@story_type.id}_developer"}
-      =@story_type.developer ? @story_type.developer.name : '---'
-      -if current_account_permissions('story_types')['developer']['edit_form']
-        =link_to(icon('fa', 'pencil-square'), edit_story_type_developer_path(@story_type), class: 'p-0 ml-2', remote: true)

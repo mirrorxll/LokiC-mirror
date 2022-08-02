@@ -96,6 +96,11 @@
           frequency
         .col-3
           photo bucket
+        .col-3
+          gather task id
+          =link_to icon('fa', 'pencil', class: ' fa-xs text-dark'), edit_story_type_path(@story_type), remote: true,
+                   class: 'ml-1','data-toggle': 'collapse', role: 'button', href: '#gatherTaskForm',
+                   'aria-expanded': 'false', 'aria-controls': 'gatherTaskForm'
       .row
         .col-3.pl-0.level
           -if @story_type.level
@@ -112,6 +117,22 @@
             =render 'story_types/photo_buckets/photo_bucket', photo_bucket: @story_type.photo_bucket
           -else
             =render 'story_types/photo_buckets/form'
+        .col-3.gather_task_id
+          .row.col-12
+            -if @story_type.gather_task
+              =link_to "https://pipeline.locallabs.com/gather_tasks/#{@story_type.gather_task}",
+                       "https://pipeline.locallabs.com/gather_tasks/#{@story_type.gather_task}",
+                       target: '_blank', id: 'gather_task_link'
+            -else
+              %a#gather_task_link.small{ href: 'https://pipeline.locallabs.com/gather_tasks/new', target: '_blank'}
+                https://pipeline.locallabs.com/gather_tasks/new
+
+            #gatherTaskForm.text-left.collapse
+              =form_with(model: @story_type, class: 'form-inline') do |form|
+                .form-group.mb-2.mr-sm-2
+                  =form.text_field :gather_task, value: @story_type.gather_task
+                .form-group.mb-2.mr-sm-2
+                  =form.submit :edit
 %hr/
 
 .update-opportunities-list-button
