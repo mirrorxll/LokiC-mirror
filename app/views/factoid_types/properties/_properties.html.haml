@@ -12,10 +12,10 @@
     .row
       .col-12
         %div{id: "factoid_type_#{@factoid_type.id}_developer"}
-          -if @factoid_type.developer.present?
+          -if @factoid_type.developer
             =render 'factoid_types/developers/developer', factoid_type: @factoid_type
           -else
-            -if current_account_permissions('story_types')['developer']['edit_form']
+            -if current_account_permissions('factoid_types')['developer']['edit_form']
               =render 'factoid_types/developers/form', factoid_type: @factoid_type
             -else
               ='---'
