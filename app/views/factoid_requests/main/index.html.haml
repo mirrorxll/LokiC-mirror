@@ -17,7 +17,7 @@
           FILTER
           -# =link_to('filter', '#', class: 'disabled btn btn-sm btn-outline-dark',
           -#      "data-target" => "#filterFReq", "data-toggle" => "modal")
-      -if @permissions['new_form']
+      -if @factoid_requests_permissions['new_form']
         =link_to('create', '#', class: 'btn btn-sm btn-outline-dark',
                  "data-target" => "#createFactoidRequestModal", "data-toggle" => "modal")
 %hr.mb-1/
@@ -35,7 +35,7 @@
       .col-12.p-2
         =paginate @grid.assets
 
--if @permissions['new_form']
+-if @factoid_requests_permissions['new_form']
   #createFactoidRequestModal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "createWorkRequestModal",
                                          'data-backdrop' => 'static', "data-keyboard" => "false" }
     .modal-dialog.modal-dialog-scrollable.modal-lg

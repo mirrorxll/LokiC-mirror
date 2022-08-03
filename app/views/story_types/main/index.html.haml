@@ -1,9 +1,11 @@
 %hr/
-#header.row.justify-content-between.align-items-center.mt-3
-  .col-6
+#header.d-flex.justify-content-between.align-items-center.mt-3
+  %span
     -if @current_list
       Total: #{@grid.assets.total_count}
-  .col-6.text-right.text-uppercase
+  %span.font-weight-bold
+    STORY TYPES
+  .d-inline-block.text-right.text-uppercase
     .btn-group.mr-3
       -if @current_list && @lists.length > 1
         -lists = %w[yours all archived]

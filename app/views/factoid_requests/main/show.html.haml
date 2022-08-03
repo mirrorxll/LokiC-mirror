@@ -17,25 +17,25 @@
       .d-flex.justify-content-between.align-items-center
         MAIN INFO
         .d-flex.align-items-center
-          -if @permissions['edit_form']
+          -if @factoid_requests_permissions['edit_form']
             #editFactoidRequest
               .d-inline-block.mr-2.small
                 %button{ type: 'button', class: 'p-0 ml-1 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#updateFactoidRequestModal" }
                   [ edit ]
-          -if @permissions['progress_status'].values.any?
+          -if @factoid_requests_permissions['progress_status'].values.any?
             #factoidRequestStatus.d-inline-block
-              -if @permissions['progress_status']['edit_form']
+              -if @factoid_requests_permissions['progress_status']['edit_form']
                 =render 'statuses'
-              -elsif @permissions['progress_status']['show']
+              -elsif @factoid_requests_permissions['progress_status']['show']
                 =@factoid_request.status.name
     .card-body
       =render 'factoid_request_info'
 
--if @permissions['templates']['show']
+-if @factoid_requests_permissions['templates']['show']
   #factoidRequestTemplates.small
     =render partial: 'factoid_requests/templates/template', collection: (1..5)
 
--if @permissions['edit_form']
+-if @factoid_requests_permissions['edit_form']
   #updateFactoidRequestModal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "createWorkRequestModal",
                                                  'data-backdrop' => 'static', "data-keyboard" => "false" }
     .modal-dialog.modal-dialog-scrollable.modal-lg

@@ -1,5 +1,5 @@
 .row.col.d-block.m-2
-  -if @permissions['notes']['new_form'] && note.nil?
+  -if @multi_tasks_permissions['notes']['new_form'] && note.nil?
     =render 'multi_tasks/notes/form'
   -else
     =note.body.html_safe

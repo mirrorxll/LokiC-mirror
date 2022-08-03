@@ -82,12 +82,12 @@ module MultiTasks
       statuses = Status.multi_task_statuses(created: true)
       @lists = HashWithIndifferentAccess.new
 
-      @lists['assigned'] = { assignment_to: current_account.id, status: statuses }    if @permissions['grid']['assigned']
-      @lists['assistant'] = { assigment: current_account.id, status: statuses }       if @permissions['grid']['assistant']
-      @lists['notify me'] = { notification_to: current_account.id, status: statuses } if @permissions['grid']['notify_me']
-      @lists['created'] = { creator: current_account.id, status: statuses }           if @permissions['grid']['created']
-      @lists['all'] = { status: statuses }                                            if @permissions['grid']['all']
-      @lists['archived'] = { status: Status.find_by(name: 'deleted') }                if @permissions['grid']['archived']
+      @lists['assigned'] = { assignment_to: current_account.id, status: statuses }    if @multi_tasks_permissions['grid']['assigned']
+      @lists['assistant'] = { assigment: current_account.id, status: statuses }       if @multi_tasks_permissions['grid']['assistant']
+      @lists['notify me'] = { notification_to: current_account.id, status: statuses } if @multi_tasks_permissions['grid']['notify_me']
+      @lists['created'] = { creator: current_account.id, status: statuses }           if @multi_tasks_permissions['grid']['created']
+      @lists['all'] = { status: statuses }                                            if @multi_tasks_permissions['grid']['all']
+      @lists['archived'] = { status: Status.find_by(name: 'deleted') }                if @multi_tasks_permissions['grid']['archived']
     end
 
     def current_list

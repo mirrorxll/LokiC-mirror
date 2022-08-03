@@ -13,8 +13,9 @@
       -else
         .text-danger.font-italic
           not set
-.row.mb-1.font-weight-bold.mt-3
-  .col
-    developer
-#developer_section
-  =render 'story_types/properties/developer'
+-if @story_types_permissions['developer']['show']
+  .row.mb-1.font-weight-bold.mt-3
+    .col
+      developer
+  #developer_section
+    =render 'story_types/properties/developer'

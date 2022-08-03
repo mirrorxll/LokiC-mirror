@@ -1,10 +1,12 @@
-.row.border-top.mt-3.mx-0.pt-3
-  .col-10.offset-1
-    =@story_type.template.body.html_safe
-.row.border-top.ml-0.mr-0.pt-3
-  .col-10.offset-1
-    .d-inline-block.font-weight-bold
-      static year in template / next revision date:
-    .d-inline-block#templateStaticYearRevision
-      =render 'story_types/property_forms/static_year__revision', show_edit_form: false
-  .col-1.p-0{id: "story_type_#{@story_type.id}_template"}
+-if @story_types_permissions['template']['show']
+  .row.border-top.mt-3.mx-0.pt-3
+    .col-10.offset-1
+      =@story_type.template.body.html_safe
+-if @story_types_permissions['template']['show']
+  .row.border-top.ml-0.mr-0.pt-3
+    .col-10.offset-1
+      .d-inline-block.font-weight-bold
+        static year in template / next revision date:
+      .d-inline-block#templateStaticYearRevision
+        =render 'story_types/property_forms/static_year__revision', show_edit_form: false
+    .col-1.p-0{id: "story_type_#{@story_type.id}_template"}

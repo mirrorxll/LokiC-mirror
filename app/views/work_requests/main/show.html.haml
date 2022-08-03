@@ -18,16 +18,16 @@
         .d-flex.justify-content-between.align-items-center
           MAIN INFO
           .d-flex.align-items-center
-            -if @permissions['edit_form']
+            -if @work_requests_permissions['edit_form']
               #editWorkRequest
                 .d-inline-block.mr-2.small
                   %button{ type: 'button', class: 'p-0 ml-1 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#updateWorkRequestModal", disabled: @work_request.archived}
                     [ edit ]
-            -if @permissions['progress_status'].values.any?
+            -if @work_requests_permissions['progress_status'].values.any?
               #workRequestStatus.d-inline-block
-                -if @permissions['progress_status']['edit_form']
+                -if @work_requests_permissions['progress_status']['edit_form']
                   =render 'statuses'
-                -elsif @permissions['progress_status']['show']
+                -elsif @work_requests_permissions['progress_status']['show']
                   =@work_request.status.name
       .card-body
         =render 'work_request_info', static: true
@@ -100,7 +100,7 @@
               .col-8.p-0
                 =link_to(p.title, multi_task_path(p), target: '_blank', rel: 'noopener noreferrer')
 
--if @permissions['edit_form']
+-if @work_requests_permissions['edit_form']
   #updateWorkRequestModal.modal.fade.pr-0{ "aria-hidden" => "true", "aria-labelledby" => "updateWorkRequestModalLabel",
                                            'data-backdrop' => 'static', "data-keyboard" => "false" }
     .modal-dialog.modal-dialog-scrollable.modal-lg

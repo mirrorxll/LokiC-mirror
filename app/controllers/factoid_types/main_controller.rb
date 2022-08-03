@@ -34,8 +34,8 @@ module FactoidTypes
     def grid_lists
       @lists = HashWithIndifferentAccess.new
 
-      @lists['all'] = {}     if @permissions['grid']['all']
-      @lists['archived'] = { archived: true } if @permissions['grid']['archived']
+      @lists['all'] = {}     if @factoid_types_permissions['grid']['all']
+      @lists['archived'] = { archived: true } if @factoid_types_permissions['grid']['archived']
     end
 
     def current_list

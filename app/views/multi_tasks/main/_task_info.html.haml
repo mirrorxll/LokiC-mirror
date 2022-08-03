@@ -4,7 +4,7 @@
       .d-flex.justify-content-between.small
         main info
     .card-body.small
-      -if @multi_task.parent && @permissions['sub_tasks']['show']
+      -if @multi_task.parent && @multi_tasks_permissions['sub_tasks']['show']
         .row.mb-2
           .col-3.font-weight-bold
             main task:

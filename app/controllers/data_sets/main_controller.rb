@@ -73,13 +73,13 @@ module DataSets
       statuses = Status.data_set_statuses
       @lists = HashWithIndifferentAccess.new
 
-      @lists['assigned'] = { sheriff: current_account, status: statuses } if @permissions['grid']['assigned']
-      if @permissions['grid']['responsible']
+      @lists['assigned'] = { sheriff: current_account, status: statuses } if @data_sets_permissions['grid']['assigned']
+      if @data_sets_permissions['grid']['responsible']
         @lists['responsible'] = { responsible_editor: current_account, status: statuses }
       end
-      @lists['created'] = { creator: current_account, status: statuses } if @permissions['grid']['created']
-      @lists['all'] = { status: statuses } if @permissions['grid']['all']
-      @lists['archived'] = { status: Status.find_by(name: 'archived') } if @permissions['grid']['archived']
+      @lists['created'] = { creator: current_account, status: statuses } if @data_sets_permissions['grid']['created']
+      @lists['all'] = { status: statuses } if @data_sets_permissions['grid']['all']
+      @lists['archived'] = { status: Status.find_by(name: 'archived') } if @data_sets_permissions['grid']['archived']
     end
 
     def current_list
