@@ -16,6 +16,8 @@
     let samples =
         <% if Rails.env.production? %>
           document.querySelectorAll('#manual_feedback_modal #fcd a[href^="https://lokic.locallabs.com/factoid_types/"][href*="/iterations/"][href*="/samples/"]')
+        <% elsif Rails.env.staging? %>
+          document.querySelectorAll('#manual_feedback_modal #fcd a[href^="https://lokic-staging.locallabs.com/factoid_types/"][href*="/iterations/"][href*="/samples/"]')
         <% else %>
           document.querySelectorAll('#manual_feedback_modal #fcd a[href^="http://localhost:3000/factoid_types/"][href*="/iterations/"][href*="/samples/"]')
         <% end %>

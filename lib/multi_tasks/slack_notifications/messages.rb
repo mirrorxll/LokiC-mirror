@@ -44,7 +44,16 @@ module MultiTasks
       end
 
       def generate_task_url(task)
-        host = Rails.env.production? ? 'https://lokic.locallabs.com' : 'http://localhost:3000'
+        host =
+          case Rails.env
+          when 'production'
+            'https://lokic.locallabs.com'
+          when 'staging'
+            'https://lokic-staging.locallabs.com'
+          else
+            'http://localhost:3000'
+          end
+
         "#{host}#{Rails.application.routes.url_helpers.multi_task_path(task)}"
       end
 

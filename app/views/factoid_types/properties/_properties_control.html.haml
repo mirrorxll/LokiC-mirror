@@ -1,3 +1,16 @@
 -if current_account_permissions('factoid_types', %w(edit_form))
   =button_to('Edit', factoid_type_property_form_path(@factoid_type), method: :get, remote: true, disabled: !factoid_types_blocked_item?,
                data: { toggle: 'modal', target: '#factoidTypePropertiesForm' })
+
+  #factoidTypePropertiesForm.modal.fade{ factoid_type_id: @factoid_type.id, "aria-hidden" => "true", "aria-labelledby" => "factoidTypePropertiesForm", role: "dialog", :tabindex => "-1"}
+    .modal-dialog.modal-dialog-scrollable.modal-xl
+      .modal-content
+        .modal-header
+          %h5.modal-title
+          %button.close{"aria-label" => "Close", "data-dismiss" => "modal", type: "button"}
+            %span{"aria-hidden" => "true"} ×
+        .modal-body
+          .loadingSpinner
+            .spinner-border.spinner-border-sm.text-secondary
+              %span.sr-only
+        .modal-footer

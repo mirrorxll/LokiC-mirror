@@ -2,8 +2,6 @@
 
 module FactoidTypes
   class CodesController < FactoidTypesController # :nodoc:
-    skip_before_action :set_factoid_type_iteration
-
     before_action :download_code, only: %i[attach reload]
 
     def show

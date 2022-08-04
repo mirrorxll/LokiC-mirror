@@ -46,10 +46,10 @@ module ScrapeTasks
       statuses = Status.scrape_task_statuses(created: true, done: true)
       @lists = HashWithIndifferentAccess.new
 
-      @lists['assigned'] = { scraper: current_account, status: statuses } if @permissions['grid']['assigned']
-      @lists['created'] = { creator: current_account, status: statuses }  if @permissions['grid']['created']
-      @lists['all'] = { status: statuses }                                if @permissions['grid']['all']
-      @lists['archived'] = { status: Status.find_by(name: 'archived') }   if @permissions['grid']['archived']
+      @lists['assigned'] = { scraper: current_account, status: statuses } if @scrape_tasks_permissions['grid']['assigned']
+      @lists['created'] = { creator: current_account, status: statuses }  if @scrape_tasks_permissions['grid']['created']
+      @lists['all'] = { status: statuses }                                if @scrape_tasks_permissions['grid']['all']
+      @lists['archived'] = { status: Status.find_by(name: 'archived') }   if @scrape_tasks_permissions['grid']['archived']
     end
 
     def current_list

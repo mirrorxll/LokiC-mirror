@@ -9,7 +9,6 @@ module ApplicationCable
     private
 
     def find_verified_account
-      # TODO: return to session, if needed
       if cookies.encrypted[:remember_me] || cookies.encrypted[:_loki_c_session]['auth_token']
         Account.find_by(auth_token: cookies.encrypted[:remember_me] || cookies.encrypted[:_loki_c_session]['auth_token'])
       else

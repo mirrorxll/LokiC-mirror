@@ -19,15 +19,14 @@
           #dataSetStatusComment
             =render 'status_comment'
           .d-flex.align-items-center
-            -if @permissions['edit_form']
+            -if current_account_permissions('data_sets', ['edit_form'])
               #editDataSet
                 %button{ type: 'button', class: 'p-0 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#updateDataSetModal" }
                   [ edit ]
-            -if @permissions['status'].values.any?
               #dataSetStatus.d-inline-block
-                -if @permissions['status']['edit_form']
+                -if current_account_permissions('data_sets', %w[status edit_form])
                   =render 'statuses'
-                -elsif @permissions['status']['show']
+                -elsif current_account_permissions('data_sets', %w[status show])
                   =@data_set.status.name
       .card-body
         =render 'data_set_info'
@@ -38,12 +37,13 @@
           .label
             TABLE LOCATIONS
           .control
-            =link_to('[ edit ]', edit_data_set_table_locations_path(@data_set),
-                     class: 'p-0 btn btn-sm btn-link table-locations-control', remote: true)
+            -if current_account_permissions('data_sets', %w[table_locations edit_form])
+              =link_to('[ edit ]', edit_data_set_table_locations_path(@data_set),
+                       class: 'p-0 btn btn-sm btn-link table-locations-control', remote: true)
       .card-body
         =render 'data_sets/table_locations/table_locations'
 
--if @permissions['edit_form']
+-if current_account_permissions('data_sets', ['edit_form'])
   #updateDataSetModal.modal.fade.pr-0{ "aria-hidden" => "true", "aria-labelledby" => "updateDataSetModal",
                                            'data-backdrop' => 'static', "data-keyboard" => "false" }
     .modal-dialog.modal-dialog-scrollable.modal-lg
@@ -67,76 +67,83 @@
 
 
 #content.row.align-items-stretch.mt-4
-  .col-xl-6.col-sm-12.pr-xl-1
-    .card.h-100
-      .card-header.pt-2.pr-1.pb-2.pl-1.small{ style: 'height: 37px;'}
-        .d-flex.justify-content-between.align-items-center.h-100
-          STORY TYPES
-          .create-story-type
-            =link_to('[ create ]', '#', class: 'btn btn-sm btn-link',
-                     "data-target" => "#createStoryTypeModal", "data-toggle" => "modal")
-      .card-body.story-types-list
-        =render partial: 'story_types/main/story_type', collection: @data_set.story_types.order(id: :desc)
-        #createStoryTypeModal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "createStoryTypeModal",
-                                            'data-backdrop' => 'static', "data-keyboard" => "false" }
-          .modal-dialog.modal-dialog-scrollable
-            .modal-content
-              .modal-header
-                NEW STORY TYPE
-                %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
-                  %span{"aria-hidden" => "true"} ×
-              .modal-body.small
-                =render 'story_types/main/new'
-              .modal-footer.justify-content-center
-                =link_to('CREATE', '#', id: 'createStoryTypeButton', class: 'btn btn-sm btn-dark')
-                .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
-                  CANCEL
-          :javascript
-            document.querySelector('#createStoryTypeButton').addEventListener('click', (event) => {
-              event.preventDefault();
-              document.querySelector('#hiddenStoryTypeCreateButton').click();
-            }, false);
-  .col-xl-6.col-sm-12.pl-xl-1
-    .card.h-100
-      .card-header.pt-2.pr-1.pb-2.pl-1.small{ style: 'height: 37px;'}
-        .d-flex.justify-content-between.align-items-center.h-100
-          FACTOID TYPES
-          .create-factoid-type
-            =link_to('[ create ]', '#', class: 'btn btn-sm btn-link',
-                     "data-target" => "#createFactoidTypeModal", "data-toggle" => "modal")
-      .card-body.factoid-types-list
-        =render partial: 'factoid_types/main/factoid_type', collection: @data_set.factoid_types.order(id: :desc)
-        #createFactoidTypeModal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "createFactoidTypeModal",
-                                            'data-backdrop' => 'static', "data-keyboard" => "false" }
-          .modal-dialog.modal-dialog-scrollable
-            .modal-content
-              .modal-header
-                NEW FACTOID TYPE
-                %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
-                  %span{"aria-hidden" => "true"} ×
-              .modal-body.small
-                =render 'factoid_types/main/new'
-              .modal-footer.justify-content-center
-                =link_to('CREATE', '#', id: 'createFactoidTypeButton', class: 'btn btn-sm btn-dark')
-                .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
-                  CANCEL
-          :javascript
-            document.querySelector('#createFactoidTypeButton').addEventListener('click', (event) => {
-              event.preventDefault();
-              document.querySelector('#hiddenFactoidTypeCreateButton').click();
-            }, false);
-  #template.modal.fade.pr-0{ "aria-hidden" => "true", "aria-labelledby" => "template",
-                             'data-backdrop' => 'static', "data-keyboard" => "false" }
-    .modal-dialog.modal-dialog-scrollable.modal-xl
-      .modal-content
-        .modal-header.font-weight-bold
-        .modal-body.small
-        .modal-footer.justify-content-center
-          =link_to('UPDATE', '#', id: 'updateTemplateButton', class: 'btn btn-sm btn-dark')
-          .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
-            CANCEL
-  :javascript
-    document.querySelector('#updateTemplateButton').addEventListener('click', (event) => {
-      event.preventDefault();
-      document.querySelector('#hiddenUpdateTemplateButton').click();
-    }, false);
+  -if current_account_permissions('data_sets', ['story_types'])
+    .col-xl-6.col-sm-12.pr-xl-1
+      .card.h-100
+        .card-header.pt-2.pr-1.pb-2.pl-1.small{ style: 'height: 37px;'}
+          .d-flex.justify-content-between.align-items-center.h-100
+            STORY TYPES
+            .create-story-type
+              -if current_account_permissions('story_types', ['new_form'])
+                =link_to('[ create ]', '#', class: 'btn btn-sm btn-link',
+                         "data-target" => "#createStoryTypeModal", "data-toggle" => "modal")
+        .card-body.story-types-list
+          =render partial: 'story_types/main/story_type', collection: @data_set.story_types.order(id: :desc)
+          -if current_account_permissions('factoid_types', ['new_form'])
+            #createStoryTypeModal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "createStoryTypeModal",
+                                                'data-backdrop' => 'static', "data-keyboard" => "false" }
+              .modal-dialog.modal-dialog-scrollable
+                .modal-content
+                  .modal-header
+                    NEW STORY TYPE
+                    %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+                      %span{"aria-hidden" => "true"} ×
+                  .modal-body.small
+                    =render 'story_types/main/new'
+                  .modal-footer.justify-content-center
+                    =link_to('CREATE', '#', id: 'createStoryTypeButton', class: 'btn btn-sm btn-dark')
+                    .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+                      CANCEL
+              :javascript
+                document.querySelector('#createStoryTypeButton').addEventListener('click', (event) => {
+                  event.preventDefault();
+                  document.querySelector('#hiddenStoryTypeCreateButton').click();
+                }, false);
+  -if current_account_permissions('data_sets', ['factoid_types'])
+    .col-xl-6.col-sm-12.pl-xl-1
+      .card.h-100
+        .card-header.pt-2.pr-1.pb-2.pl-1.small{ style: 'height: 37px;'}
+          .d-flex.justify-content-between.align-items-center.h-100
+            FACTOID TYPES
+            .create-factoid-type
+              -if current_account_permissions('factoid_types', ['new_form'])
+                =link_to('[ create ]', '#', class: 'btn btn-sm btn-link',
+                         "data-target" => "#createFactoidTypeModal", "data-toggle" => "modal")
+        .card-body.factoid-types-list
+          =render partial: 'factoid_types/main/factoid_type', collection: @data_set.factoid_types.order(id: :desc)
+          -if current_account_permissions('factoid_types', ['new_form'])
+            #createFactoidTypeModal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "createFactoidTypeModal",
+                                                'data-backdrop' => 'static', "data-keyboard" => "false" }
+              .modal-dialog.modal-dialog-scrollable
+                .modal-content
+                  .modal-header
+                    NEW FACTOID TYPE
+                    %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+                      %span{"aria-hidden" => "true"} ×
+                  .modal-body.small
+                    =render 'factoid_types/main/new'
+                  .modal-footer.justify-content-center
+                    =link_to('CREATE', '#', id: 'createFactoidTypeButton', class: 'btn btn-sm btn-dark')
+                    .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+                      CANCEL
+              :javascript
+                document.querySelector('#createFactoidTypeButton').addEventListener('click', (event) => {
+                  event.preventDefault();
+                  document.querySelector('#hiddenFactoidTypeCreateButton').click();
+                }, false);
+    -if current_account_permissions('story_types', %w[template edit_form]) || current_account_permissions('factoid_types', %w[template edit_form])
+      #template.modal.fade.pr-0{ "aria-hidden" => "true", "aria-labelledby" => "template",
+                                 'data-backdrop' => 'static', "data-keyboard" => "false" }
+        .modal-dialog.modal-dialog-scrollable.modal-xl
+          .modal-content
+            .modal-header.font-weight-bold
+            .modal-body.small
+            .modal-footer.justify-content-center
+              =link_to('UPDATE', '#', id: 'updateTemplateButton', class: 'btn btn-sm btn-dark')
+              .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+                CANCEL
+      :javascript
+        document.querySelector('#updateTemplateButton').addEventListener('click', (event) => {
+          event.preventDefault();
+          document.querySelector('#hiddenUpdateTemplateButton').click();
+        }, false);

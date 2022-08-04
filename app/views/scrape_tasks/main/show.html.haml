@@ -20,16 +20,15 @@
           #scrapeTaskStatusComment
             =render 'status_comment'
           .d-flex.align-items-center
-            -if @permissions['edit_form']
+            -if current_account_permissions('scrape_tasks', ['edit_form'])
               #editScrapeTask
                 %button{ type: 'button', class: 'p-0 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#updateScrapeTaskModal" }
                   [ edit ]
-            -if @permissions['progress_status'].values.any?
-              #scrapeTaskStatus.d-inline-block
-                -if @permissions['progress_status']['edit_form']
-                  =render 'statuses'
-                -elsif @permissions['progress_status']['show']
-                  =@scrape_task.status.name
+            #scrapeTaskStatus.d-inline-block
+              -if current_account_permissions('scrape_tasks', %w[progress_status edit_form])
+                =render 'statuses'
+              -elsif current_account_permissions('scrape_tasks', ['progress_status']['show'])
+                =@scrape_task.status.name
 
       .card-body
         =render 'scrape_task_info'
@@ -39,7 +38,7 @@
         CONVERSATION
       .card-body
 
--if @permissions['edit_form']
+-if current_account_permissions('scrape_tasks', ['edit_form'])
   #updateScrapeTaskModal.modal.fade.pr-0{ "aria-hidden" => "true", "aria-labelledby" => "updateScrapeTaskModal",
                                            'data-backdrop' => 'static', "data-keyboard" => "false" }
     .modal-dialog.modal-dialog-scrollable.modal-lg
@@ -61,12 +60,12 @@
       document.querySelector('#hiddenUpdateScrapeTaskButton').click();
     }, false);
 
--if @permissions['instructions']['edit_form']
+-if current_account_permissions('scrape_tasks', %w[instructions edit_form])
   #scrapeInstructionAnchor.mb-4
--if @permissions['evaluation_document']['edit_form']
+-if current_account_permissions('scrape_tasks', %w[evaluation_document edit_form])
   #scrapeEvaluationDocAnchor.mb-4
 
--if @permissions['instructions']['show'] && @permissions['evaluation_document']['show']
+-if current_account_permissions('scrape_tasks', %w[instructions show]) && current_account_permissions('scrape_tasks', %w[evaluation_document show])
   %ul#scrapeTaskTabs.nav.nav-tabs.small.mt-4
     %li.nav-item.text-center{ style: 'width: 50%' }
       %a#scrapeInstructionTab.nav-link.active{ "aria-selected" => "true", "data-toggle" => "tab", href: "#scrapeInstruction", role: "tab" }
@@ -80,7 +79,7 @@
   #scrapeTaskTabsContent.tab-content
     #scrapeInstruction.tab-pane.fade.show.active
       .card.border-top-0.rounded-top-0.mb-5
-        -if @permissions['instructions']['edit_form']
+        -if current_account_permissions('scrape_tasks', %w[instructions edit_form])
           #scrapeInstructionEdit.small
             .row
               .col-8.offset-2.p-0
@@ -98,7 +97,7 @@
     #scrapeEvaluationDoc.tab-pane.fade.show
       .card.border-top-0.rounded-top-0.mb-5
         #evaluationDocEdit.small
-          -if @permissions['evaluation_document']['edit_form']
+          -if current_account_permissions('scrape_tasks', %w[evaluation_document edit_form])
             .row
               .col-8.offset-2.p-0
                 %hr.mb-0.mt-3/
@@ -113,12 +112,12 @@
             el.setAttribute('rel', 'noopener noreferrer');
           })
 
--elsif @permissions['instructions']['show']
+-elsif current_account_permissions('scrape_tasks', ['instructions', 'show'])
   .card.w-100.mb-5.mt-4
     .card-header.p-1.small
       INSTRUCTIONS
     .card-body.p-0
-      -if @permissions['instructions']['edit_form']
+      -if current_account_permissions('scrape_tasks', ['instructions', 'edit_form'])
         #scrapeInstructionEdit.small
           .row
             .col-8.offset-2.p-0
@@ -134,12 +133,12 @@
         })
 
 
--elsif @permissions['evaluation_document']['show']
+-elsif current_account_permissions('scrape_tasks', %w[evaluation_document show])
   .card.w-100.mb-5.mt-4
     .card-header.p-1.small
       EVALUATION DOCUMENT
     .card-body.p-0
-      -if @permissions['evaluation_document']['edit_form']
+      -if current_account_permissions('scrape_tasks', %w[evaluation_document edit_form])
         #evaluationDocEdit.small
           .row
             .col-8.offset-2.p-0

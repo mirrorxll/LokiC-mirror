@@ -10,7 +10,7 @@
     function changeRequestStatus(status) {
       let reasons = null;
 
-      if(['blocked', 'canceled', 'archived'].find((el) => { return el === status.textContent })) {
+      if(['blocked', 'canceled', 'archived'].find((el) => { return el === status.textContent.trim() })) {
         reasons = prompt(`Status '${status.textContent}' :(\nWhy?`);
 
         if(!reasons) return false;

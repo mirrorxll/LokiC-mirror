@@ -1,7 +1,9 @@
 <div id="sheriff" class="row mb-3">
   <div class="col-3 text-right pr-0">
     <b>SHERIFF:</b>
-    <%= link_to(icon('fa', 'pencil-square'), edit_data_set_sheriff_path(@data_set), class: 'p-0 ml-2', remote: true) %>
+    <% if current_account_permissions('data_sets', %w[sheriff edit_form]) %>
+      <%= link_to(icon('fa', 'pencil-square'), edit_data_set_sheriff_path(@data_set), class: 'p-0 ml-2', remote: true) %>
+    <% end %>
   </div>
 
   <div class="col d-flex align-items-center">

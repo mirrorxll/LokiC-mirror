@@ -83,7 +83,7 @@ module StoryTypes
     end
 
     def env
-      %w[development test].include?(Rails.env) ? 'staging' : Rails.env
+      %w[staging development test].include?(Rails.env) ? 'staging' : Rails.env
     end
   end
 end

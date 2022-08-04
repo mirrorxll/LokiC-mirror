@@ -82,12 +82,12 @@ module MultiTasks
       statuses = Status.multi_task_statuses(created: true)
       @lists = HashWithIndifferentAccess.new
 
-      @lists['assigned'] = { assignment_to: current_account.id, status: statuses }    if @permissions['grid']['assigned']
-      @lists['assistant'] = { assigment: current_account.id, status: statuses }       if @permissions['grid']['assistant']
-      @lists['notify me'] = { notification_to: current_account.id, status: statuses } if @permissions['grid']['notify_me']
-      @lists['created'] = { creator: current_account.id, status: statuses }           if @permissions['grid']['created']
-      @lists['all'] = { status: statuses }                                            if @permissions['grid']['all']
-      @lists['archived'] = { status: Status.find_by(name: 'deleted') }                if @permissions['grid']['archived']
+      @lists['assigned'] = { assignment_to: current_account.id, status: statuses }    if @multi_tasks_permissions['grid']['assigned']
+      @lists['assistant'] = { assigment: current_account.id, status: statuses }       if @multi_tasks_permissions['grid']['assistant']
+      @lists['notify me'] = { notification_to: current_account.id, status: statuses } if @multi_tasks_permissions['grid']['notify_me']
+      @lists['created'] = { creator: current_account.id, status: statuses }           if @multi_tasks_permissions['grid']['created']
+      @lists['all'] = { status: statuses }                                            if @multi_tasks_permissions['grid']['all']
+      @lists['archived'] = { status: Status.find_by(name: 'deleted') }                if @multi_tasks_permissions['grid']['archived']
     end
 
     def current_list
@@ -136,7 +136,7 @@ module MultiTasks
 
     def work_requests_access
       card = current_account.cards.find_by(branch: Branch.find_by(name: 'work_requests'))
-      @work_requests_permissions = card.access_level.permissions if card.enabled
+      current_account_permissions = card.access_level.permissions if card.enabled
     end
 
     def update_agencies_opportunities(agencies_opportunities)

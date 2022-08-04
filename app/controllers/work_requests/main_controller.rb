@@ -40,9 +40,9 @@ module WorkRequests
       statuses = Status.work_request_statuses(created: true)
       @lists = HashWithIndifferentAccess.new
 
-      @lists['created'] = { requester: current_account.id, status: statuses }  if @permissions['grid']['created']
-      @lists['all'] = { status: statuses }                                     if @permissions['grid']['all']
-      @lists['archived'] = { status: Status.find_by(name: 'archived') }        if @permissions['grid']['archived']
+      @lists['created'] = { requester: current_account.id, status: statuses }  if @work_requests_permissions['grid']['created']
+      @lists['all'] = { status: statuses }                                     if @work_requests_permissions['grid']['all']
+      @lists['archived'] = { status: Status.find_by(name: 'archived') }        if @work_requests_permissions['grid']['archived']
     end
 
     def current_list

@@ -42,9 +42,9 @@ module FactoidRequests
       statuses = Status.factoid_request_statuses(created: true)
       @lists = HashWithIndifferentAccess.new
 
-      @lists['created'] = { requester_id: current_account.id, status: statuses }  if @permissions['grid']['created']
-      @lists['all'] = { status: statuses }                                        if @permissions['grid']['all']
-      @lists['archived'] = { status: Status.find_by(name: 'archived') }           if @permissions['grid']['archived']
+      @lists['created'] = { requester_id: current_account.id, status: statuses }  if @factoid_requests_permissions['grid']['created']
+      @lists['all'] = { status: statuses }                                        if @factoid_requests_permissions['grid']['all']
+      @lists['archived'] = { status: Status.find_by(name: 'archived') }           if @factoid_requests_permissions['grid']['archived']
     end
 
     def current_list

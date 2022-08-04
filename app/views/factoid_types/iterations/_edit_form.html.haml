@@ -1,7 +1,8 @@
 .small
   .d-flex.flex-row
-    =form_with(url: factoid_type_iteration_path(@factoid_type, iteration), method: :patch) do |form|
-      =form.text_field 'iteration[name]', placeholder: 'new name', required: true
-      =form.submit :rename
+    -if current_account_permissions('factoid_types',%w[iterations edit_form])
+      =form_with(url: factoid_type_iteration_path(@factoid_type, iteration), method: :patch) do |form|
+        =form.text_field 'iteration[name]', placeholder: 'new name', required: true
+        =form.submit :rename
     -if @factoid_type.iteration != iteration
       =button_to('apply', apply_factoid_type_iteration_path(@factoid_type, iteration), method: :patch)

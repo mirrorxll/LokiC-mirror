@@ -1,7 +1,9 @@
 <div id="scraper" class="row mb-3">
   <div class="col-3 text-right pr-0">
     <b>SCRAPER:</b>
-    <%= link_to(icon('fa', 'pencil-square'), edit_scrape_task_scraper_path(@scrape_task), class: 'p-0 ml-2', remote: true) %>
+    <% if current_account_permissions('scrape_tasks', %w[scraper edit_form]) %>
+      <%= link_to(icon('fa', 'pencil-square'), edit_scrape_task_scraper_path(@scrape_task), class: 'p-0 ml-2', remote: true) %>
+    <% end %>
   </div>
 
   <div class="col d-flex align-items-center">

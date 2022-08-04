@@ -6,7 +6,7 @@
         MultiTask with this title already created by you. Let's use something else
   .row.small.font-weight-bold
     .col-3.border-right
-      -if @permissions['assignment_to']
+      -if current_account_permissions('multi_tasks', ['assignment_to'])
         .row.justify-content-between
           .col
             assignment to:
@@ -14,14 +14,14 @@
             .row.small
               =form.collection_select 'task_parent[assignment_to]', Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }, style: "width:130px"
         %hr
-      -if @permissions['assistants']
+      -if current_account_permissions('multi_tasks', ['assistants'])
         .row.justify-content-between
           .col
             assistants:
             =icon('fa', 'plus', class: 'ml-2', id: 'addAssistantParent')
           .col#assistantsParentForm
         %hr
-      -if @permissions['notification_to']
+      -if current_account_permissions('multi_tasks',['notification_to'])
         .row.justify-content-between
           .col
             notifications to:

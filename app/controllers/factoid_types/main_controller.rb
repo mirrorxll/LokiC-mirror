@@ -59,7 +59,7 @@ module FactoidTypes
     end
 
     def env
-      %w[development test].include?(Rails.env) ? 'staging' : Rails.env
+      %w[staging development test].include?(Rails.env) ? 'staging' : Rails.env
     end
 
     def new_factoid_type_params

@@ -4,13 +4,13 @@
       .d-flex.justify-content-between.small
         main info
     .card-body.small
-      -if @multi_task.parent && @permissions['sub_tasks']['show']
+      -if @multi_task.parent && current_account_permissions('multi_tasks', ['sub_tasks', 'show'])
         .row.mb-2
           .col-3.font-weight-bold
             main task:
           .col-9
             =link_to title(@multi_task.parent.title), multi_task_path(@multi_task.parent), title: @multi_task.parent.title
-      -if @work_requests_permissions
+      -if current_account_permissions('work_requests')
         -if @multi_task.work_request
           -work_request = @multi_task.work_request
           .row.mb-2

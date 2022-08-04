@@ -15,7 +15,7 @@
       -if @current_list
         =link_to('filter', '#', class: 'btn btn-sm btn-outline-dark',
                  "data-target" => "#filterWReq", "data-toggle" => "collapse")
-      -if @permissions['new_form']
+      -if current_account_permissions('work_requests', ['new_form'])
         =link_to('create', '#', class: 'btn btn-sm btn-outline-dark',
                  "data-target" => "#createWorkRequestModal", "data-toggle" => "modal")
 %hr.mb-1/
@@ -51,7 +51,7 @@
       }
     })();
 
--if @permissions['new_form']
+-if current_account_permissions('work_requests', ['new_form'])
   #createWorkRequestModal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "createWorkRequestModal",
                                       'data-backdrop' => 'static', "data-keyboard" => "false" }
     .modal-dialog.modal-dialog-scrollable.modal-lg

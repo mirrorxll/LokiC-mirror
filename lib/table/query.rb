@@ -5,7 +5,6 @@ module Table
   # from staging tables
   module Query
     def schema
-      # TODO: if this will be correct?
       Rails.configuration.database_configuration[Rails.env]['loki_story_creator']['database']
     end
 
