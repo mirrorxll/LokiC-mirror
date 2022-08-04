@@ -1,3 +1,3 @@
--if current_account_permissions('story_types')['edit_form']
+-if current_account_permissions('story_types', %w(edit_form))
   =button_to('Edit', story_type_property_form_path(@story_type), method: :get, remote: true, disabled: !story_types_blocked_item?,
                data: { toggle: 'modal', target: '#storyTypePropertiesForm' })

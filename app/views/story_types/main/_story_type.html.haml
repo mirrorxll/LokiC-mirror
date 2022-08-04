@@ -11,7 +11,7 @@
         -if story_type.developer
           =render 'story_types/developers/developer', story_type: story_type
         -else
-          -if current_account_permissions('story_types')['developer']['edit_form']
+          -if current_account_permissions('story_types', %w(developer edit_form))
             =render 'story_types/developers/form', story_type: story_type
           -else
             ='---'

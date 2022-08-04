@@ -8,7 +8,7 @@ class FactoidTypesGrid
   # Scope
   scope do
     # ArticleType.includes(:status, :frequency, :photo_bucket, :developer, :clients_publications_tags, :clients, :tags, data_set: %i[state category])
-    FactoidType.all
+    FactoidType.includes(:status)
   end
 
   # Filters

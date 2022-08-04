@@ -15,8 +15,9 @@
   .col-10.offset-1
     #levelFrequencyPBucket
       =render 'story_types/properties/level_frequency_photo_bucket_dev'
-  .col-10.offset-1.text-center
-    =render 'story_types/main/additional_properties'
+  .col-10.offset-1.text-center.mb-2
+    -if current_account_permissions('story_types', %w(comment show))
+      =render 'story_types/main/additional_properties'
 
 .row.border-top.mx-0.mb-3.pt-3.text-center
   .col-3.offset-1
