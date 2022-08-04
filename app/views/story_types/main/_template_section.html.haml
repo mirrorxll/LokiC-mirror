@@ -1,8 +1,9 @@
 #story_type_template.card.h-100
   .card-header.d-flex.justify-content-between.align-items-center
     TEMPLATE
-    -if @story_types_permissions['template']['show'] && @story_types_permissions['template']['edit_form']
+    -if current_account_permissions('story_types', ['template', 'edit_form'])
       =button_to('Edit', edit_story_type_template_path(@story_type, @story_type.template), method: :get, remote: true)
   #template_preview.h-100
     .card-body.h-100.d-flex.flex-column.justify-content-between
       =render 'story_types/main/template'
+

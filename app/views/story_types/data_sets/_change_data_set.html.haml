@@ -1,5 +1,5 @@
 .current_data_set
-  -if current_account_permissions('data_sets')['edit_form']
+  -if current_account_permissions('data_sets', ['edit_form'])
     -if @story_type.data_set.present?
       =link_to(@story_type.data_set.name, @story_type.data_set)
       =link_to('x', '#')

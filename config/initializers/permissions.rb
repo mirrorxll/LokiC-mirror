@@ -37,6 +37,8 @@ module AccessLevels
         progress_status: { show: true, edit_form: true },
         scraper: { show: true, edit_form: true },
         tags: { show: true, edit_form: true },
+        multi_tasks: { show: true, edit_form: true },
+        data_sets: { show: true, edit_form: true },
         table_locations: { show: true, edit_form: true },
         conversation: { show: true, post_messages: true, edit_messages: true },
         instructions: { show: true, edit_form: true },
@@ -49,7 +51,10 @@ module AccessLevels
         status: { show: true, edit_form: true},
         sheriff: { show: true, edit_form: true },
         responsible_editor: { show: true, edit_form: true },
-        table_locations: { show: true, edit_form: true }
+        scrape_tasks: { show: true, edit_form: true},
+        table_locations: { show: true, edit_form: true },
+        story_types: true,
+        factoid_types: true
       },
       story_types: {
         grid: { assigned: true, your: true, all: true, archived: true },
@@ -109,7 +114,9 @@ module AccessLevels
         edit_form: false,
         progress_status: { show: true, edit_form: true },
         scraper: { show: true, edit_form: false },
-        tags: { show: false, edit_form: false },
+        tags: { show: true, edit_form: false },
+        multi_tasks: { show: true, edit_form: false },
+        data_sets: { show: true, edit_form: false },
         table_locations: { show: true, edit_form: true },
         conversation: { show: true, post_messages: true, edit_messages: true },
         instructions: { show: true, edit_form: false },
@@ -120,9 +127,12 @@ module AccessLevels
         new_form: false,
         edit_form: false,
         status: { show: true, edit_form: true},
-        sheriff: { show: false, edit_form: false },
-        responsible_editor: { show: false, edit_form: false },
-        table_locations: { show: true, edit_form: false }
+        sheriff: { show: true, edit_form: false },
+        responsible_editor: { show: true, edit_form: false },
+        scrape_tasks: { show: true, edit_form: false },
+        table_locations: { show: true, edit_form: false },
+        story_types: true,
+        factoid_types: true
       },
       story_types: {
         grid: { assigned: true, your: false, all: true, archived: false },
@@ -182,7 +192,9 @@ module AccessLevels
         edit_form: false,
         progress_status: { show: true, edit_form: false },
         scraper: { show: true, edit_form: false },
-        tags: { show: false, edit_form: false },
+        tags: { show: true, edit_form: false },
+        multi_tasks: { show: true, edit_form: false },
+        data_sets: { show: true, edit_form: false },
         table_locations: { show: true, edit_form: false },
         conversation: { show: true, post_messages: false, edit_messages: false },
         instructions: { show: true, edit_form: false },
@@ -193,9 +205,12 @@ module AccessLevels
         new_form: false,
         edit_form: false,
         status: { show: true, edit_form: true },
-        sheriff: { show: false, edit_form: false },
-        responsible_editor: { show: false, edit_form: false },
-        table_locations: { show: true, edit_form: false }
+        sheriff: { show: true, edit_form: false },
+        responsible_editor: { show: true, edit_form: false },
+        scrape_tasks: { show: true, edit_form: false },
+        table_locations: { show: true, edit_form: false },
+        story_types: true,
+        factoid_types: true
       },
       story_types: {
         grid: { assigned: false, your: false, all: true, archived: false },

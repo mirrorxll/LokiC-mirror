@@ -2,24 +2,24 @@
 
 module FactoidTypes
   class DevelopersController < FactoidTypesController
-    before_action :find_developer, only: :update
+    before_action :find_developer, only: :include
 
-    def show; end
+    def include
+      render_403 && return if @factoid_type.developer
 
-    def edit
-      @developers = AccountRole.find_by(name: 'HLE Content Developer').accounts
+      @factoid_type.update!(developer: @developer, current_account: current_account)
     end
 
-    def update
-      @factoid_type.update!(developer: @developer)
+    def exclude
+      render_403 && return unless @factoid_type.developer
 
-      render 'factoid_types/developers/show'
+      @factoid_type.update!(developer: nil, current_account: current_account)
     end
 
     private
 
     def find_developer
-      @developer = Account.find_by(id: params[:developer][:id])
+      @developer = @factoid_type.developer || Account.find(params[:id])
     end
   end
 end

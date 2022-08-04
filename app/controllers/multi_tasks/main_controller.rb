@@ -136,7 +136,7 @@ module MultiTasks
 
     def work_requests_access
       card = current_account.cards.find_by(branch: Branch.find_by(name: 'work_requests'))
-      @work_requests_permissions = card.access_level.permissions if card.enabled
+      current_account_permissions = card.access_level.permissions if card.enabled
     end
 
     def update_agencies_opportunities(agencies_opportunities)

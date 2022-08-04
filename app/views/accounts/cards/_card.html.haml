@@ -49,10 +49,11 @@
               :javascript
                 (() => {
                   let button = document.querySelector('\##{"editAccessLevel#{card.id}"} .modal-footer>a');
-                  let select = document.querySelector('\##{"editAccessLevel#{card.id}"} .access-selector');
 
                   button.addEventListener('click', (e) => {
                     e.preventDefault();
+
+                    let select = document.querySelector('\##{"editAccessLevel#{card.id}"} .access-selector');
 
                     Rails.ajax({
                       type: "PATCH",

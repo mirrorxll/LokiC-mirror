@@ -1,7 +1,10 @@
 .small.h-100
-  =render 'data_sets/sheriffs/sheriff'
-  =render 'data_sets/responsible_editors/responsible_editor'
-  =render 'data_sets/scrape_tasks/scrape_tasks'
+  -if current_account_permissions('data_sets', %w[sheriff show])
+    =render 'data_sets/sheriffs/sheriff'
+  -if current_account_permissions('data_sets', %w[responsible_editor show])
+    =render 'data_sets/responsible_editors/responsible_editor'
+  -if current_account_permissions('data_sets', %w[scrape_tasks show])
+    =render 'data_sets/scrape_tasks/scrape_tasks'
 
   %hr/
 

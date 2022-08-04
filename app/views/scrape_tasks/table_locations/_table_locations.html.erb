@@ -1,7 +1,9 @@
 <div id="tableLocations" class="row mb-3">
   <div class="col-3 text-right pr-0">
     <b>TABLE LOCATIONS:</b>
-    <%= link_to(icon('fa', 'pencil-square'), edit_scrape_task_table_locations_path(@scrape_task), class: 'p-0 ml-2', remote: true) %>
+    <%if current_account_permissions('scrape_tasks', %w[table_locations edit_form]) %>
+      <%= link_to(icon('fa', 'pencil-square'), edit_scrape_task_table_locations_path(@scrape_task), class: 'p-0 ml-2', remote: true) %>
+    <% end %>
     <% if @scrape_task.table_locations.present? %>
       <br>
       <%= link_to('[ show ]', '#', "data-target" => "#dataSamplesModal", "data-toggle" => "modal") %>

@@ -19,15 +19,14 @@
           #dataSetStatusComment
             =render 'status_comment'
           .d-flex.align-items-center
-            -if @data_sets_permissions['edit_form']
+            -if current_account_permissions('data_sets', ['edit_form'])
               #editDataSet
                 %button{ type: 'button', class: 'p-0 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#updateDataSetModal" }
                   [ edit ]
-            -if @data_sets_permissions['status'].values.any?
               #dataSetStatus.d-inline-block
-                -if @data_sets_permissions['status']['edit_form']
+                -if current_account_permissions('data_sets', %w[status edit_form])
                   =render 'statuses'
-                -elsif @data_sets_permissions['status']['show']
+                -elsif current_account_permissions('data_sets', ['status', 'show'])
                   =@data_set.status.name
       .card-body
         =render 'data_set_info'
@@ -43,7 +42,7 @@
       .card-body
         =render 'data_sets/table_locations/table_locations'
 
--if @data_sets_permissions['edit_form']
+-if current_account_permissions('data_sets', ['edit_form'])
   #updateDataSetModal.modal.fade.pr-0{ "aria-hidden" => "true", "aria-labelledby" => "updateDataSetModal",
                                            'data-backdrop' => 'static', "data-keyboard" => "false" }
     .modal-dialog.modal-dialog-scrollable.modal-lg

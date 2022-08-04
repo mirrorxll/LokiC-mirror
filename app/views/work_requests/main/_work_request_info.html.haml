@@ -1,26 +1,26 @@
 #workRequestStatusComment
   =render 'status_comment'
 
--if static && (@work_requests_permissions['billed_for_entire_project']['show'] || @work_requests_permissions['eta']['show'])
+-if static && (current_account_permissions('work_requests', %w[billed_for_entire_project show]) || current_account_permissions('work_requests', %w[eta show]))
   =form_with(url: api_work_request_path(@work_request), method: :patch, html: { id: 'managerForm'}) do |f|
-    -if @work_requests_permissions['billed_for_entire_project']['show']
+    -if current_account_permissions('work_requests', %w[billed_for_entire_project show])
       .row.mb-4.align-items-center.text
         .col-3.pr-0.text-right.font-weight-bold
           BILLED FOR ENTIRE PROJECT?
         .col-9
-          -if @work_requests_permissions['billed_for_entire_project']['edit_form']
+          -if current_account_permissions('work_requests', %w[billed_for_entire_project edit_form])
             =f.radio_button "work_request[billed_for_entire_project?]", true, checked: @work_request.billed_for_entire_project?
             =f.label "work_request[billed_for_entire_project]", 'yes', value: true, class: 'mr-3 mb-0'
             =f.radio_button "work_request[billed_for_entire_project?]", false, checked: @work_request.billed_for_entire_project?.eql?(false)
             =f.label "work_request[billed_for_entire_project]", 'no', value: false, class: 'mb-0'
           -else
             =@work_request.billed_for_entire_project? ? 'yes' : 'no'
-    -if @work_requests_permissions['eta']['show']
+    -if current_account_permissions('work_requests', %w[eta show])
       .row.mb-1.align-items-center
         .col-3.pr-0.text-right.font-weight-bold
           ETA:
         .col-9
-          -if @work_requests_permissions['eta']['edit_form']
+          -if current_account_permissions('work_requests', %w[eta edit_form])
             =f.date_field "work_request[eta]", class: 'form-control form-control-sm w-150px', value: @work_request.eta
           -else
             =@work_request.eta

@@ -12,28 +12,28 @@ module StoryTypes
       iteration = story_type.iteration
       blank_tag = Tag.find_by(name: '_Blank')
 
-    #   st_cl_pub_tgs = story_type.clients_publications_tags.sort_by { |st_cl_pub_tg| sort_weight(st_cl_pub_tg) }
-    #
-    #   story_type.staging_table.publication_ids.each do |pub_id|
-    #     publication = Publication.find_by(pl_identifier: pub_id)
-    #     cl_pub_tg = st_client_publication_tag(st_cl_pub_tgs, publication)
-    #     next if publication.nil? || cl_pub_tg.nil?
-    #
-    #     exp_c = ExportConfiguration.find_or_initialize_by(
-    #       story_type: story_type,
-    #       publication: publication
-    #     )
-    #
-    #     exp_c.photo_bucket = story_type.photo_bucket
-    #     exp_c.tag = (cl_pub_tg.tag && publication.tag?(cl_pub_tg.tag) ? cl_pub_tg.tag : blank_tag)
-    #     exp_c.save!
-    #   end
-    # rescue StandardError, ScriptError => e
-    #   status = nil
-    #   message = e.message
-    #
-    #   raise e unless manual
-    # ensure
+      st_cl_pub_tgs = story_type.clients_publications_tags.sort_by { |st_cl_pub_tg| sort_weight(st_cl_pub_tg) }
+
+      story_type.staging_table.publication_ids.each do |pub_id|
+        publication = Publication.find_by(pl_identifier: pub_id)
+        cl_pub_tg = st_client_publication_tag(st_cl_pub_tgs, publication)
+        next if publication.nil? || cl_pub_tg.nil?
+
+        exp_c = ExportConfiguration.find_or_initialize_by(
+          story_type: story_type,
+          publication: publication
+        )
+
+        exp_c.photo_bucket = story_type.photo_bucket
+        exp_c.tag = (cl_pub_tg.tag && publication.tag?(cl_pub_tg.tag) ? cl_pub_tg.tag : blank_tag)
+        exp_c.save!
+      end
+    rescue StandardError, ScriptError => e
+      status = nil
+      message = e.message
+
+      raise e unless manual
+    ensure
       story_type.update!(export_configurations_created: status, current_account: account)
 
       if manual

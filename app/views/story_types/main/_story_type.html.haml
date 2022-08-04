@@ -11,6 +11,9 @@
         -if story_type.developer
           =render 'story_types/developers/developer', story_type: story_type
         -else
-          =render 'story_types/developers/form', story_type: story_type
+          -if current_account_permissions('story_types', ['developer', 'edit_form'])
+            =render 'story_types/developers/form', story_type: story_type
+          -else
+            ='---'
     .col-2.d-flex.align-items-center.p-0
       =story_type.status.name

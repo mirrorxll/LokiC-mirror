@@ -7,7 +7,7 @@
     =link_to(icon('fa', 'pencil-square'), edit_account_card_access_level_path(account, card, access_level),
              class: "p-0 ml-2#{access_level.lock ? ' disabled-link' : '' }", remote: true)
     =collection_select(:access_level, :id, card.branch.access_levels, :id, :name, { selected: access_level.id },
-                       { class: 'form-control form-control-sm access-selector' })
+                       { class: 'form-control form-control-sm access-selector', selected: access_level.id })
     :javascript
         (() => {
           let select = document.querySelector('\##{"editAccessLevel#{card.id}"} .access-selector');

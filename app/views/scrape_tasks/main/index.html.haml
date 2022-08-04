@@ -15,7 +15,7 @@
       -if @current_list
         =link_to('filter', '#', class: 'btn btn-sm btn-outline-dark',
                  "data-target" => "#filterSTasks", "data-toggle" => "collapse")
-      -if @scrape_tasks_permissions['new_form']
+      -if current_account_permissions('scrape_tasks', ['new_form'])
         =link_to('create', '#', class: 'btn btn-sm btn-outline-dark',
                  "data-target" => "#createScrapeTaskModal", "data-toggle" => "modal")
 %hr.mb-1/
@@ -51,7 +51,7 @@
       }
     })();
 
--if @scrape_tasks_permissions['new_form']
+-if current_account_permissions('scrape_tasks', ['new_form'])
   #createScrapeTaskModal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "createScrapeTaskModal",
                                     'data-backdrop' => 'static', "data-keyboard" => "false" }
     .modal-dialog.modal-dialog-scrollable

@@ -15,7 +15,7 @@
       -if @current_list
         =link_to('filter', '#', class: 'btn btn-sm btn-outline-dark',
                  "data-target" => "#filterMTasts", "data-toggle" => "collapse")
-      -if @multi_tasks_permissions['new_form']
+      -if current_account_permissions('multi_tasks', ['new_form'])
         =link_to('create', '#', class: 'btn btn-sm btn-outline-dark',
                  "data-target" => "#createMultiTaskModal", "data-toggle" => "modal")
 %hr.mb-1/
@@ -50,7 +50,7 @@
       }
     })();
 
--if @multi_tasks_permissions['new_form']
+-if current_account_permissions('multi_tasks', ['new_form'])
   #createMultiTaskModal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "createMultiTaskModal",
                                       'data-backdrop' => 'static', "data-keyboard" => "false" }
     .modal-dialog.modal-dialog-scrollable.modal-fullscreen.modal-lg{ style: 'width: 80%'}

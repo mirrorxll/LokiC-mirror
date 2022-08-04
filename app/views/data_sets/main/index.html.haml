@@ -15,7 +15,7 @@
       -if @current_list
         =link_to('filter', '#', class: 'btn btn-sm btn-outline-dark',
                  "data-target" => "#filterDSets", "data-toggle" => "collapse")
-      -if @data_sets_permissions['new_form']
+      -if current_account_permissions('data_sets', ['new_form'])
         =link_to('create', '#', class: 'btn btn-sm btn-outline-dark',
                  "data-target" => "#createDataSetModal", "data-toggle" => "modal")
 
@@ -57,7 +57,7 @@
       }
     })();
 
--if @data_sets_permissions['new_form']
+-if current_account_permissions('data_sets', ['new_form'])
   #createDataSetModal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "createDataSetModal",
                                     'data-backdrop' => 'static', "data-keyboard" => "false" }
     .modal-dialog
