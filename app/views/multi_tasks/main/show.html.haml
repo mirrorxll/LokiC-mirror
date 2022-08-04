@@ -29,7 +29,7 @@
                        new_multi_task_comment_path(@multi_task, subtype: 'user comment'),
                        remote: true)
       .card-body
-        -if current_account_permissions('multi_tasks', ['comments']['show'])
+        -if current_account_permissions('multi_tasks', %w[comments show])
           =render 'comments', comments: @comments
 
 -if current_account_permissions('multi_tasks', %w[notes show]) && (current_account.eql?(@multi_task.creator) || current_account.in?(@multi_task.assignment_to))

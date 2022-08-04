@@ -2,7 +2,7 @@
 
 class CreateSamples < ActiveRecord::Migration[6.0]
   def change
-    env = %w[development test].include?(Rails.env) ? 'staging' : Rails.env
+    env = %w[staging development test].include?(Rails.env) ? 'staging' : Rails.env
 
     create_table :samples do |t|
       t.belongs_to :iteration

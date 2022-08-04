@@ -19,12 +19,13 @@
         #accountStatusComment
           =render 'accounts/main/status_comment'
         .d-flex.align-items-center
-          #accountStatus.d-inline-block
-            =render 'accounts/main/statuses'
           #editAccount
             .d-inline-block.mr-2
               %button{ type: 'button', class: 'p-0 ml-1 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#editAccountModal" }
                 [ edit ]
+          #accountStatus.d-inline-block
+            =render 'accounts/main/statuses'
+
     .card-body.pb-0
       -unless @account.status.name.eql?('deactivated')
         =render 'accounts/roles/roles'

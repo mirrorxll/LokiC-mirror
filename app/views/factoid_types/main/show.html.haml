@@ -17,19 +17,19 @@
 
 .row
   .col-10
-    -if @factoid_types_permissions['iterations']['show']
+    -if current_account_permissions('factoid_types', %w[iterations show])
       #factoid_type_iterations.d-inline
         =render partial: 'factoid_types/iterations/iteration',
                 collection: @factoid_type.iterations,
                 current_iteration: @factoid_type.iteration
-    -if @factoid_types_permissions['iterations']['new_form']
+    -if current_account_permissions('factoid_types', %w[iterations new_form])
       #new_factoid_type_iteration.d-inline
         =render 'factoid_types/iterations/new_iteration'
   .col-2.text-right
     #factoid_type_status
-      -if @factoid_types_permissions['progress_status']['edit_form']
+      -if current_account_permissions('factoid_types', %w[progress_status edit_form])
         =render 'factoid_types/progress_statuses/status'
-      -elsif @factoid_types_permissions['progress_status']['show']
+      -elsif current_account_permissions('factoid_types', %w[progress_status show])
         =@factoid_type.status.name
 %hr/
 

@@ -1,5 +1,5 @@
 .row.col.d-block.m-2
-  -if current_account_puermissions('multi_tasks', %w[notes new_form]) && note.nil?
+  -if current_account_permissions('multi_tasks', %w[notes new_form]) && note.nil?
     =render 'multi_tasks/notes/form'
   -else
     =note.body.html_safe
