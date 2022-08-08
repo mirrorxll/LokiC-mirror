@@ -2,6 +2,7 @@
 
 class FactoidTypesController < ApplicationController
   before_action -> { authorize!('factoid_types') }
+  before_action -> { authorize!('data_sets', redirect: false) }
 
   before_action :find_factoid_type
   before_action :set_factoid_type_iteration

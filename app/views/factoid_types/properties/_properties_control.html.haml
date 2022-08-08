@@ -1,4 +1,4 @@
--if current_account_permissions('factoid_types', ['edit_form'])
+-if current_account_permissions('factoid_types', %w(edit_form))
   =button_to('Edit', factoid_type_property_form_path(@factoid_type), method: :get, remote: true, disabled: !factoid_types_blocked_item?,
                data: { toggle: 'modal', target: '#factoidTypePropertiesForm' })
 

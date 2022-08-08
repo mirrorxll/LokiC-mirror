@@ -16,7 +16,7 @@
       -if @current_list
         =link_to('filter', '#', class: 'btn btn-sm btn-outline-dark',
                  "data-target" => "#filterFactoidTypes", "data-toggle" => "collapse")
-      -if current_account_permissions('factoid_types',['new_form'])
+      -if current_account_permissions('factoid_types', ['new_form'])
         =link_to('create', '#', class: 'btn btn-sm btn-outline-dark',
                  "data-target" => "#createFactoidTypeModal", "data-toggle" => "modal")
 %hr/

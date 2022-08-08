@@ -34,7 +34,7 @@
       .col-12.p-2
         =paginate @grid.assets
 
--if @story_types_permissions['new_form']
+-if current_account_permissions('story_types', %w(new_form))
   #createStoryTypeModal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "createStoryTypeModal",
                                       'data-backdrop' => 'static', "data-keyboard" => "false" }
     .modal-dialog.modal-dialog-scrollable
