@@ -14,8 +14,11 @@ every '0 0 * * *' do
 end
 
 every '0 9 * * *' do
-  rake 'story_type:reminder'
-  rake 'task:reminder'
+  if Rails.env.production?
+    rake 'story_type:reminder'
+    rake 'task:reminder'
+  end
+
   rake 'topics:update_topics'
 end
 
