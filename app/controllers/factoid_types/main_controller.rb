@@ -11,6 +11,16 @@ module FactoidTypes
 
     def index
       @tab_title = 'LokiC :: FactoidTypes'
+
+      respond_to do |f|
+        f.html do
+          @grid.scope { |scope| scope.page(params[:page]) }
+        end
+        f.csv do
+          send_data @grid.to_csv, type: 'text/csv', disposition: 'inline',
+                    filename: "lokiC_factoid_types_#{Time.now}.csv"
+        end
+      end
     end
 
     def show
@@ -51,7 +61,6 @@ module FactoidTypes
       grid_params.merge!({ current_account: current_account, env: env })
 
       @grid = FactoidTypesGrid.new(grid_params) { |scope| scope.where(@lists[@current_list]) }
-      @grid.scope { |sc| sc.page(params[:page]).per(30) }
     end
 
     def find_data_set

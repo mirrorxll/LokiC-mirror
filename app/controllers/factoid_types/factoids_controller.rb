@@ -6,6 +6,16 @@ module FactoidTypes
 
     def index
       @tab_title = "LokiC :: Factoids ##{@factoid_type.id} <#{@factoid_type.name}>"
+
+      respond_to do |f|
+        f.html do
+          @grid.scope { |scope| scope.page(params[:page]) }
+        end
+        f.csv do
+          send_data @grid.to_csv, type: 'text/csv', disposition: 'inline',
+                    filename: "LokiC_##{@factoid_type.id}_#{@factoid_type.name}_#{@iteration.name}_factoids_#{Time.now}.csv"
+        end
+      end
     end
 
     private
@@ -16,7 +26,6 @@ module FactoidTypes
       @grid = FactoidTypeIterationFactoidsGrid.new(grid_params) do |scope|
         scope.where(factoid_type_id: params[:factoid_type_id], factoid_type_iteration_id: params[:iteration_id])
       end
-      @grid.scope { |scope| scope.page(params[:page]).per(30) }
     end
   end
 end

@@ -2,7 +2,6 @@
 
 class FactoidTypeIterationFactoidsGrid
   include Datagrid
-  # attr_accessor :client_ids
 
   scope do
     Factoid.includes(:output)

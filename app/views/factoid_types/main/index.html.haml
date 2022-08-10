@@ -21,6 +21,11 @@
                  "data-target" => "#createFactoidTypeModal", "data-toggle" => "modal")
 %hr/
 
+-if @current_list && @grid.assets.total_count > 0
+  .text-right.mb-2
+    =link_to('[ download CSV ]', url_for(format: 'csv', factoid_types_grid: params[:factoid_types_grid]),
+                 id: '#save_as_csv_btn', class: 'small')
+
 -if @current_list
   #filterFactoidTypes.mt-3.mb-3.collapse{ class: (params[:factoid_types_grid] ? 'show' : '') }
     =datagrid_form_for @grid, url: factoid_types_path
