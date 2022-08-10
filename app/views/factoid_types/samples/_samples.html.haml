@@ -3,7 +3,7 @@
     .row
       .col-10.offset-1
         #created_stories
-          -stories = @iteration.articles.where(sampled: true)
+          -stories = @iteration.factoids.where(sampled: true)
           -if stories.count.positive?
             =render partial: 'factoid_types/samples/sample', collection: stories
           -else
@@ -21,7 +21,7 @@
   -elsif @iteration.purge_samples.eql?(false) || @iteration.purge_creation.eql?(true)
     =render 'factoid_types/main/spinner', description: 'purging in progress'
   -else
-    - samples = @iteration.articles.where(sampled: true)
+    - samples = @iteration.factoids.where(sampled: true)
     .row.border-top.mt-3.mx-0.pt-3
       .col-10.offset-1
         #stories_form

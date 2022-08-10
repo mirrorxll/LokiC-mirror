@@ -14,8 +14,7 @@
 #   required(:kind).filled(KindsEnum)
 #   optional(:person_id).filled(:uuid)
 #   optional(:organization_id).filled(:uuid)
-#   optional(:state_id).filled(:uuid)
-#   optional(:county_id).filled(:uuid)
+#   optional(:geo_id).filled(:uuid)
 
 module Factoids
   module Export

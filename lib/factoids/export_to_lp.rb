@@ -7,7 +7,7 @@ module Factoids
     include Export::LeadFactoidPost
 
     def publish!(iteration, threads_count, chunk)
-      factoids_to_export = iteration.articles.not_published
+      factoids_to_export = iteration.factoids.not_published
       factoids_to_export = if chunk
                              factoids_to_export.limit(chunk).to_a
                            else
@@ -54,9 +54,9 @@ module Factoids
     def unpublish!(iteration, factoid_ids = nil)
       semaphore = Mutex.new
       factoids  = if factoid_ids
-                    iteration.articles.published.where(limpar_factoid_id: factoid_ids).limit(10_000).to_a
+                    iteration.factoids.published.where(limpar_factoid_id: factoid_ids).limit(10_000).to_a
                   else
-                    iteration.articles.published.limit(10_000).to_a
+                    iteration.factoids.published.limit(10_000).to_a
                   end
 
       threads = Array.new(5) do

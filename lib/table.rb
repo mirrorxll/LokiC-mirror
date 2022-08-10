@@ -79,9 +79,9 @@ module Table # :nodoc:
     loki_story_creator { |conn| conn.exec_query(rows_query).first.nil? }
   end
 
-  def all_articles_created_by_iteration?(t_name)
+  def all_factoids_created_by_iteration?(t_name)
     curr_iter = curr_iter_id(t_name)
-    rows_query = all_articles_created_by_iteration_query(t_name, curr_iter)
+    rows_query = all_factoids_created_by_iteration_query(t_name, curr_iter)
     loki_story_creator { |conn| conn.exec_query(rows_query).first.nil? }
   end
 
@@ -99,15 +99,15 @@ module Table # :nodoc:
     nil
   end
 
-  def article_set_as_created(t_name, id)
-    upd_query = article_created_update_query(t_name, id)
+  def factoid_set_as_created(t_name, id)
+    upd_query = factoid_created_update_query(t_name, id)
     loki_story_creator { |conn| conn.exec_query(upd_query) }
 
     nil
   end
 
-  def article_set_as_not_created(t_name, id)
-    upd_query = article_not_created_update_query(t_name, id)
+  def factoid_set_as_not_created(t_name, id)
+    upd_query = factoid_not_created_update_query(t_name, id)
     loki_story_creator { |conn| conn.exec_query(upd_query) }
 
     nil

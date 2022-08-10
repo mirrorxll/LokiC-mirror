@@ -7,7 +7,7 @@ module FactoidTypes
       account = Account.find(account_id)
       message = 'Success. samples have been removed'
 
-      iteration.articles.where(sampled: true).destroy_all
+      iteration.factoids.where(sampled: true).destroy_all
     rescue StandardError, ScriptError => e
       message = e.message
     ensure

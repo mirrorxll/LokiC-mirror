@@ -18,7 +18,7 @@ module FactoidTypes
         MiniLokiC::ArticleTypeCode[iteration.factoid_type].execute(:creation, options)
 
         staging_table = iteration.factoid_type.staging_table.name
-        break if Table.all_articles_created_by_iteration?(staging_table)
+        break if Table.all_factoids_created_by_iteration?(staging_table)
       end
 
       true
