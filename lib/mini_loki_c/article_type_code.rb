@@ -16,7 +16,6 @@ module MiniLokiC
     end
 
     def execute(method, options = {})
-      pp '11111111111111'*100, method, options
       METHODS_TRACER.enable { load_factoid_type_class.new.public_send(method, options) }
     rescue StandardError, ScriptError => e
       raise "#{method.capitalize}ExecutionError".constantize,
