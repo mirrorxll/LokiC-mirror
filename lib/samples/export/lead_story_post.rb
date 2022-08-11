@@ -29,6 +29,16 @@ module Samples
         )
       end
 
+      TIMES_BY_WEEKDAY = [
+        %w[7:00 19:30], # "Sunday"
+        %w[7:00 19:30], # "Monday"
+        %w[7:00 19:30], # "Tuesday"
+        %w[7:00 19:30], # "Wednesday"
+        %w[7:00 19:30], # "Thursday"
+        %w[7:00 13:00], # "Friday"
+        %w[7:00 13:00]  # "Saturday"
+      ].freeze
+
       def published_at(date)
         datetime_to_f = lambda do |dt, pos|
           Time.parse("#{dt} #{TIMES_BY_WEEKDAY[dt.wday][pos]} EST").to_f

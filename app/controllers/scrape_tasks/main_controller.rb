@@ -61,6 +61,8 @@ module ScrapeTasks
       return unless @current_list
 
       @grid = ScrapeTasksGrid.new(params[:scrape_tasks_grid] || @lists[@current_list])
+      @grid.current_account = current_account
+      @grid.current_list = @current_list
 
       @grid.scope { |sc| sc.page(params[:page]).per(30) }
     end

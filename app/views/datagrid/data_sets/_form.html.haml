@@ -1,14 +1,17 @@
-.card.card-body
-  = form_for grid, options do |f|
-    .row
-      -grid.filters.each do |filter|
-        -next if filter.name.in?([:status])
-        -next if filter.name.in?([:creator, :sheriff, :responsible_editor]) && params[:list].in?([nil, 'assigned', 'responsible', 'created'])
-        .col-sm-3.col-lg-2
-          .form-group
-            =f.datagrid_label filter
-            =f.datagrid_filter filter, type: filter.options[:type], class: 'form-control form-control-sm'
-    %hr.mb-2/
-    .text-center
-      =f.submit 'apply', class: "btn btn-sm btn-outline-dark mt-2"
-      =link_to 'reset', url_for({ list: params[:list] }), class: "btn btn-sm btn-outline-dark mt-2"
+.card
+  .card-body.small
+    =form_for grid, options do |f|
+      .row
+        -grid.filters.each do |filter|
+          -next if filter.name.eql?(:status)
+          -next if @current_list.eql?('assigned') && filter.name.eql?(:sheriff)
+          -next if @current_list.eql?('responsible') && filter.name.eql?(:responsible_editor)
+          -next if @current_list.eql?('created') && filter.name.eql?(:creator)
+          .col-sm-3.col-lg-2
+            .form-group
+              =f.datagrid_label filter
+              =f.datagrid_filter filter, type: filter.options[:type], class: 'form-control form-control-sm'
+      %hr.mb-2/
+      .text-center
+        =f.submit 'apply', class: "btn btn-sm btn-outline-dark mt-2"
+        =link_to 'reset', url_for({ list: params[:list] }), class: "btn btn-sm btn-outline-dark mt-2"
