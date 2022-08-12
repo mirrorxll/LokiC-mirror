@@ -5,9 +5,10 @@ module StoryTypes
     before_action :find_story_type,          except: %i[index create]
     before_action :set_story_type_iteration, except: %i[index create]
 
-    before_action :grid_lists, only: %i[index show]
-    before_action :current_list, only: :index
-    before_action :generate_grid, only: :index
+    before_action :grid_lists,     only: %i[index show]
+    before_action :current_list,   only: :index
+    before_action :generate_grid,  only: :index
+    before_action :access_to_show, only: :show
 
     def index
       @tab_title = 'LokiC :: StoryTypes'
@@ -46,8 +47,8 @@ module StoryTypes
     def grid_lists
       @lists = HashWithIndifferentAccess.new
 
-      @lists['assigned'] = {}     if @story_types_permissions['grid']['assigned']
-      @lists['all'] =      {}     if @story_types_permissions['grid']['all']
+      @lists['assigned'] = {} if @story_types_permissions['grid']['assigned']
+      @lists['all']      = {} if @story_types_permissions['grid']['all']
       @lists['archived'] = { archived: true } if @story_types_permissions['grid']['archived']
     end
 
@@ -59,7 +60,7 @@ module StoryTypes
     def generate_grid
       return unless @current_list
 
-      grid_params = request.parameters[:story_types_grid] || {}
+      grid_params = params[:story_types_grid] || {}
       grid_params.merge!({ current_account: current_account, env: env })
 
       @grid = StoryTypesGrid.new(grid_params) { |scope| scope.where(@lists[@current_list]) }
@@ -67,6 +68,17 @@ module StoryTypes
 
     def find_data_set
       @data_set = DataSet.find(params[:data_set_id])
+    end
+
+    def access_to_show
+      archived = Status.find_by(name: 'archived')
+
+      return if @lists['yours'] && @story_type.account.eql?(current_account)
+      return if @lists['all'] && @story_type.status != archived
+      return if @lists['archived'] && @story_type.status.eql?(archived)
+
+      flash[:error] = { story_type: :unauthorized }
+      redirect_back fallback_location: root_path
     end
 
     def new_story_type_params
