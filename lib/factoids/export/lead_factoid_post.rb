@@ -24,14 +24,12 @@ module Factoids
       def factoid_post(sample, limpar_columns, lp_client)
         exported_date = DateTime.now
         params        = prepare_params(sample, limpar_columns)
-      # begin
-      #   response      = lp_client.create_editorial(params)
-      # rescue Faraday::UnauthorizedError
-      #   return
-      # end
-      #   factoid_id    = JSON.parse(response.body)['data']['id']
-
-        factoid_id = SecureRandom.uuid
+      begin
+        response      = lp_client.create_editorial(params)
+      rescue Faraday::UnauthorizedError
+        return
+      end
+        factoid_id    = JSON.parse(response.body)['data']['id']
 
         sample.update!(limpar_factoid_id: factoid_id, exported_at: exported_date)
       end
