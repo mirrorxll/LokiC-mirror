@@ -60,7 +60,7 @@ module StoryTypes
     def generate_grid
       return unless @current_list
 
-      grid_params = params[:story_types_grid] || {}
+      grid_params = request.parameters[:story_types_grid] || {}
       grid_params.merge!({ current_account: current_account, env: env })
 
       @grid = StoryTypesGrid.new(grid_params) { |scope| scope.where(@lists[@current_list]) }

@@ -58,7 +58,7 @@ module FactoidTypes
     def generate_grid
       return unless @current_list
 
-      grid_params = params[:factoid_types_grid] || {}
+      grid_params = request.parameters[:factoid_types_grid] || {}
       grid_params.merge!({ current_account: current_account, env: env })
 
       @grid = FactoidTypesGrid.new(grid_params) { |scope| scope.where(@lists[@current_list]) }

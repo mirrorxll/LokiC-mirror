@@ -14,7 +14,6 @@ class StoryTypesGrid
       :clients, :tags, :reminder,
       :cron_tab, :template,
       :exported_story_types,
-      # opportunities: [opportunity: :agency],
       data_set: %i[state category]
     ).order(
       Arel.sql("CASE WHEN reminders.check_updates = false AND cron_tabs.enabled = false THEN '1' END DESC,
@@ -114,16 +113,16 @@ class StoryTypesGrid
   end
 
   column(:state, order: 'states.short_name') do |record|
-    record.data_set.state&.short_name
+    record.data_set&.state&.short_name
   end
   column(:category, order: 'data_set_categories.name') do |record|
-    record.data_set.category&.name
+    record.data_set&.category&.name
   end
   column(:data_set, mandatory: true, order: 'data_sets.name') do |record, scope|
     format(record.data_set) { |value| link_to value&.name, value } if record.data_set
   end
   column(:location, order: 'data_sets.location') do |record|
-    record.data_set.location
+    record.data_set&.location
   end
   column(:developer, mandatory: true, order: 'accounts.first_name, accounts.last_name') do |record|
     record.developer&.name
