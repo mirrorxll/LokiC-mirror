@@ -37,7 +37,7 @@ module FactoidTypes
     private
 
     def get_factoids
-      @articles  = @iteration.factoids.published.order(exported_at: :asc, id: :asc).page(params[:page]).per(25)
+      @factoids  = @iteration.factoids.published.order(exported_at: :asc, id: :asc).page(params[:page]).per(25)
     end
 
     def get_factoid_ids

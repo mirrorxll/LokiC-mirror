@@ -10,3 +10,4 @@ $('#columns__index').html('<%= j render 'factoid_types/staging_tables/columns_an
                                          staging_table: @factoid_type.staging_table,
                                          columns: @factoid_type.staging_table.columns.list %>');
 $('#samples_control').html('<%= j render 'factoid_types/samples/samples_control' %>');
+$('#export_control').html('<%= j render 'factoid_types/exports/export_control' %>');

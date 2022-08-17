@@ -21,4 +21,9 @@ class FactoidTypesController < ApplicationController
         @factoid_type.iteration
       end
   end
+
+  def send_to_action_cable(factoid_type, iteration, ft_section, it_section, message)
+    FactoidTypeChannel.broadcast_to(factoid_type, { spinner: true, section: ft_section, message: message })
+    ExportedFactoidsChannel.broadcast_to(iteration, { spinner: true, section: it_section, message: message })
+  end
 end

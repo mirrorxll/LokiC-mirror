@@ -5,13 +5,13 @@ $(document).on("turbolinks:load", function() {
 
     if(!exportedFactoids.length) return false
 
-    let articleTypeId = exportedFactoids.attr('article_type_id');
-    let articleTypeIterationId = exportedFactoids.attr('iteration_exported_factoids_id');
+    let factoidTypeId = exportedFactoids.attr('factoid_type_id');
+    let factoidTypeIterationId = exportedFactoids.attr('iteration_exported_factoids_id');
 
     consumer.subscriptions.create(
         {
             channel: "ExportedFactoidsChannel",
-            article_type_iteration_id: articleTypeIterationId
+            factoid_type_iteration_id: factoidTypeIterationId
         },
         {
             connected()    { console.log('connected'); },
@@ -32,7 +32,7 @@ $(document).on("turbolinks:load", function() {
 
     function update_section(data) {
         $.ajax({
-            url: `${window.location.origin}/article_types/${articleTypeId}/iterations/${articleTypeIterationId}/export/update_section`,
+            url: `${window.location.origin}/factoid_types/${factoidTypeId}/iterations/${factoidTypeIterationId}/export/update_section`,
             method: 'patch',
             dataType: 'script',
             data: data
