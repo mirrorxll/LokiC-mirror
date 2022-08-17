@@ -11,14 +11,14 @@ module FactoidTypes
       factoid_type  = iteration.factoid_type
 
       loop do
-        break if iteration.articles.reload.published.count.zero?
+        break if iteration.factoids.reload.published.count.zero?
 
         Factoids::ExportToLp.new.unpublish!(iteration)
       end
 
       iteration.published&.destroy
 
-      note = MiniLokiC::Formatize::Numbers.to_text(iteration.articles.published.count)
+      note = MiniLokiC::Formatize::Numbers.to_text(iteration.factoids.published.count)
       record_to_change_history(factoid_type, 'removed from limpar', note, account)
 
       old_status        = factoid_type.status.name

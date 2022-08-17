@@ -11,9 +11,9 @@
   =render 'datagrid/scrape_tasks/form', grid: grid, options: options
 -when DataSetsGrid
   =render 'datagrid/data_sets/form', grid: grid, options: options
--when StoryTypesGrid
+-when StoryTypesGrid, StoryTypeIterationStoriesGrid
   =render 'datagrid/story_types/form', grid: grid, options: options
--when FactoidTypesGrid
+-when FactoidTypesGrid, FactoidTypeIterationFactoidsGrid
   =render 'datagrid/factoid_types/form', grid: grid, options: options
 
 :javascript

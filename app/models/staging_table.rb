@@ -13,7 +13,7 @@ class StagingTable < ApplicationRecord # :nodoc:
       add_story_created
     elsif factoid_type?
       default_factoid_type_columns
-      add_article_created
+      add_factoid_created
     end
 
     rename_table if not_lokic_name?
@@ -113,8 +113,8 @@ class StagingTable < ApplicationRecord # :nodoc:
     Table.add_story_created(name)
   end
 
-  def add_article_created
-    Table.add_article_created(name)
+  def add_factoid_created
+    Table.add_factoid_created(name)
   end
 
   def timestamps

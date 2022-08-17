@@ -29,7 +29,7 @@ module FactoidTypes
     private
 
     def find_sample
-      @sample = Article.find(params[:id])
+      @sample = Factoid.find(params[:id])
     end
 
     def stories_params

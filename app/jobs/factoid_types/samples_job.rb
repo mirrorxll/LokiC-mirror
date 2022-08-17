@@ -12,7 +12,7 @@ module FactoidTypes
 
       status = true
       staging_table = iteration.factoid_type.staging_table
-      sampled_before = iteration.articles.where(sampled: true).count
+      sampled_before = iteration.factoids.where(sampled: true).count
       column_names = staging_table.columns.ids_to_names(options[:columns])
       sample_args = { columns: column_names, ids: options[:row_ids] }
       edge_ids = Table.select_edge_ids(staging_table.name, column_names)
@@ -24,9 +24,9 @@ module FactoidTypes
 
       MiniLokiC::ArticleTypeCode[iteration.factoid_type].execute(:creation, options)
 
-      iteration.articles.where(staging_row_id: ids).update_all(sampled: true)
+      iteration.factoids.where(staging_row_id: ids).update_all(sampled: true)
 
-      sampled_after = iteration.articles.where(sampled: true).count
+      sampled_after = iteration.factoids.where(sampled: true).count
       message =
         if sampled_before.eql?(sampled_after)
           "New samples haven't been created by passed params. Check it!"

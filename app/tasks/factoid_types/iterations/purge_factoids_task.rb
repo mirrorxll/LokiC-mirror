@@ -9,20 +9,20 @@ module FactoidTypes
         array_of_dis       = factoid_ids.split(',')
         message            = 'Success'
         factoid_type       = iteration.factoid_type
-        factoids           = iteration.articles.where(limpar_factoid_id: array_of_dis)
+        factoids           = iteration.factoids.where(limpar_factoid_id: array_of_dis)
         staging_table_name = factoid_type.staging_table.name
         st_table_rows      = factoids.pluck(:staging_row_id)
 
         Table.delete_rows_from_st_table(staging_table_name, st_table_rows)
         Factoids::ExportToLp.new.unpublish!(iteration, array_of_dis)
 
-        note = MiniLokiC::Formatize::Numbers.to_text(iteration.articles.published.count)
+        note = MiniLokiC::Formatize::Numbers.to_text(iteration.factoids.published.count)
         record_to_change_history(factoid_type, 'removed factoids from everywhere', note, account)
 
       rescue StandardError, ScriptError => e
         message = e.message
       ensure
-        if iteration.articles.count.zero?
+        if iteration.factoids.count.zero?
           %w[population population_args purge_population samples sample_args purge_samples creation
              purge_creation export purge_export last_export_batch_size].each do |prop|
             iteration.update!(prop.to_sym => nil)

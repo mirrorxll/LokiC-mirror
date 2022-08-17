@@ -46,13 +46,13 @@ module Table
       "UPDATE #{schema_table(t_name)} SET story_created = FALSE WHERE id = #{row_id};"
     end
 
-    # mark staging table's row as sample/article as created
-    def article_created_update_query(t_name, row_id)
+    # mark staging table's row as sample/factoid as created
+    def factoid_created_update_query(t_name, row_id)
       "UPDATE #{schema_table(t_name)} SET article_created = TRUE WHERE id = #{row_id};"
     end
 
-    # mark staging table's row as sample/article as not created
-    def article_not_created_update_query(t_name, row_id)
+    # mark staging table's row as sample/factoid as not created
+    def factoid_not_created_update_query(t_name, row_id)
       "UPDATE #{schema_table(t_name)} SET article_created = FALSE WHERE id = #{row_id};"
     end
 
@@ -98,7 +98,7 @@ module Table
       'LIMIT 1;'
     end
 
-    def all_articles_created_by_iteration_query(t_name, iter_id)
+    def all_factoids_created_by_iteration_query(t_name, iter_id)
       "SELECT id FROM #{schema_table(t_name)} "\
       'WHERE (article_created = 0 OR article_created IS NULL) AND '\
       "iter_id = (#{iter_id}) "\

@@ -8,7 +8,7 @@ module FactoidTypes
       status        = true
       message       = 'Success. Make sure that all factoids are published'
       factoid_type  = iteration.factoid_type
-      threads_count = (iteration.articles.count / 75_000.0).ceil + 1
+      threads_count = (iteration.factoids.count / 75_000.0).ceil + 1
       threads_count = threads_count > 20 ? 20 : threads_count
 
       iteration.update!(last_export_batch_size: nil)
@@ -23,7 +23,7 @@ module FactoidTypes
         last_export_batch = iteration.reload.last_export_batch_size.zero?
 
         # TODO: uncomment to retry in case of 401
-        # if last_export_batch && chunk.nil? && iteration.articles.reload.not_published.count > 0
+        # if last_export_batch && chunk.nil? && iteration.factoids.reload.not_published.count > 0
         #   Factoids::ExportToLp.new.publish!(iteration, threads_count, nil)
         # end
 
@@ -34,7 +34,7 @@ module FactoidTypes
       pub_f.factoid_type   = factoid_type
       pub_f.developer      = factoid_type.developer
       pub_f.date_export    = Date.today
-      pub_f.count_factoids = iteration.articles.count
+      pub_f.count_factoids = iteration.factoids.count
       pub_f.save!
 
       note = MiniLokiC::Formatize::Numbers.to_text(pub_f.count_factoids).capitalize

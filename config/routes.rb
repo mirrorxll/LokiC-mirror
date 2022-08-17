@@ -446,7 +446,7 @@ Rails.application.routes.draw do
           delete :purge,    on: :collection
         end
 
-        resources :articles, only: :index
+        resources :factoids, only: :index
 
         resources :creations, only: [] do
           post   :execute, on: :collection
@@ -455,8 +455,8 @@ Rails.application.routes.draw do
 
         resources :exports, path: :export, only: [] do
           post   :execute,                  on: :collection
-          delete :remove_exported_articles, on: :collection
-          get    :articles,                 on: :collection
+          delete :remove_exported_factoids, on: :collection
+          get    :factoids,                 on: :collection
         end
       end
 

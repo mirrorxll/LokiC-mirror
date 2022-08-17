@@ -33,7 +33,7 @@
         %th#exported_at{ :scope => "col" }
           exported_at
       %tbody
-        -@articles.each do |factoid|
+        -@factoids.each do |factoid|
           %tr.hovered_item
             %td.pl-3
               %label
@@ -51,7 +51,7 @@
 
   %hr.mb-3/
   .small
-    =paginate @articles, window: 3
+    =paginate @factoids, window: 3
   %hr/
 
   -lp_endpoint = 'http://limpar.locallabs.com/editorial_factoids/'
@@ -136,7 +136,7 @@
         type: "PUT",
         dataType: 'json',
         url: `/api/shown_samples/${lokicId}`,
-        data: `commit=${commit}&entity=article`,
+        data: `commit=${commit}&entity=factoid`,
         success: function (_data) {
           if (isCheckBox) {
             fillShowSamplesList();

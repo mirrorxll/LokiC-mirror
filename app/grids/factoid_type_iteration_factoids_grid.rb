@@ -1,20 +1,19 @@
 # frozen_string_literal: true
 
-class FactoidTypeIterationArticlesGrid
+class FactoidTypeIterationFactoidsGrid
   include Datagrid
-  attr_accessor :client_ids
 
   scope do
-    Article.includes(:output)
+    Factoid.includes(:output)
   end
 
   filter(:output, :string, header: 'Body', left: true) do |value, scope|
-    outputs = ArticleOutput.where('body LIKE ?', '%' + value + '%')
+    outputs = FactoidOutput.where('body LIKE ?', '%' + value + '%')
     scope.where(id: outputs.ids)
   end
-  filter(:exported_at, :datetime, range: true)
+  filter(:exported_at, :datetime, range: true, type: 'date')
 
-  column(:article, header: 'Factoid', mandatory: true) do |rec|
+  column(:factoid, header: 'Factoid', mandatory: true) do |rec|
     rec.output.body
   end
   column(:lp_link, header: "Limpar", mandatory: true) do |model|
@@ -24,7 +23,7 @@ class FactoidTypeIterationArticlesGrid
     end
   end
   column(:lokic_link, header: "LokiC", mandatory: true) do |model|
-    link = "https://lokic.locallabs.com/factoid_types/#{model.factoid_type.id}/iterations/#{model.iteration.id}/articles/#{model.id}"
+    link = "https://lokic.locallabs.com/factoid_types/#{model.factoid_type.id}/iterations/#{model.iteration.id}/factoids/#{model.id}"
     format(link) do
       link_to('lokic', factoid_type_iteration_sample_path(@factoid_type, @iteration, model), target:'_blank')
     end

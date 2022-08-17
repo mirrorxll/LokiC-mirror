@@ -20,8 +20,8 @@ module Api
     def find_sample
       @sample = if params[:entity].eql?('story')
                   Story.find(params[:id])
-                elsif params[:entity].eql?('article')
-                  Article.find(params[:id])
+                elsif params[:entity].eql?('factoid')
+                  Factoid.find(params[:id])
                 end
     end
 

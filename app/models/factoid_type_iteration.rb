@@ -13,9 +13,9 @@ class FactoidTypeIteration < ApplicationRecord
 
   has_one :published, dependent: :destroy, class_name: 'PublishedFactoid', foreign_key: :iteration_id
 
-  has_many :articles
+  has_many :factoids
 
   def show_samples
-    articles.where(show: true)
+    factoids.where(show: true)
   end
 end
