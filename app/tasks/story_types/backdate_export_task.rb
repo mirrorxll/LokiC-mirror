@@ -3,7 +3,7 @@
 module StoryTypes
   class BackdateExportTask < StoryTypesTask
     def perform
-      Slack::Web::Client.new.chat_postMessage(channel: 'U024ZKRR8AE', text: 'Backdate export has been started')
+      Slack::Web::Client.new.chat_postMessage(channel: 'U024ZKRR8AE', text: "Backdate export has been started #{PL_TARGET}")
 
       stop_at = (Time.now + 82_800)
       iteration_ids = Story.select(:story_type_iteration_id).distinct.where(
@@ -22,7 +22,7 @@ module StoryTypes
         Samples[PL_TARGET].export!(iteration, options)
       end
 
-      Slack::Web::Client.new.chat_postMessage(channel: 'U024ZKRR8AE', text: 'Backdate export has been finished')
+      Slack::Web::Client.new.chat_postMessage(channel: 'U024ZKRR8AE', text: "Backdate export has been finished  #{PL_TARGET}")
     end
   end
 end
