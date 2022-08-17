@@ -24,6 +24,9 @@
 
   :javascript
     function defaultOpportunity#{st_def_opportunity.id}(value) {
+      $('#default_opportunity_opportunity_type_id').val('');
+      $('#default_opportunity_content_type_id').val('');
+
       let params = `st_default_opportunity[action]=${encodeURIComponent('opportunity')}&` +
                    `st_default_opportunity[opportunity_id]=${encodeURIComponent(value)}`;
 

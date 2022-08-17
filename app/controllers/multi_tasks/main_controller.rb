@@ -83,7 +83,7 @@ module MultiTasks
       @lists = HashWithIndifferentAccess.new
 
       @lists['assigned'] = { assignment_to: current_account.id, status: statuses }    if @multi_tasks_permissions['grid']['assigned']
-      @lists['assistant'] = { assigment: current_account.id, status: statuses }       if @multi_tasks_permissions['grid']['assistant']
+      @lists['assistant'] = { assistants: current_account.id, status: statuses }       if @multi_tasks_permissions['grid']['assistant']
       @lists['notify me'] = { notification_to: current_account.id, status: statuses } if @multi_tasks_permissions['grid']['notify_me']
       @lists['created'] = { creator: current_account.id, status: statuses }           if @multi_tasks_permissions['grid']['created']
       @lists['all'] = { status: statuses }                                            if @multi_tasks_permissions['grid']['all']

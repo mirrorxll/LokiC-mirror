@@ -27,13 +27,13 @@
         =f.label :slack_channel, 'slack channel', class: 'small mb-0 mb-0 mt-2'
         =f.text_field :slack_channel, class: 'mb-1 form-control form-control-sm'
 
-        =f.label :sheriff_id, 'sheriff', class: 'small mb-0 mb-0 mt-2'
-        =f.collection_select :sheriff_id, Account.all.sort_by(&:name), :id, :name,
-                             { include_blank: '-- not set --' }, { class: 'mb-1 form-control form-control-sm' }
-        :javascript
-          $('#data_set_sheriff_id').multipleSelect({
-            filter: true
-          });
+        -# =f.label :sheriff_id, 'sheriff', class: 'small mb-0 mb-0 mt-2'
+        -# =f.collection_select :sheriff_id, Account.all.sort_by(&:name), :id, :name,
+        -#                      { include_blank: '-- not set --' }, { class: 'mb-1 form-control form-control-sm' }
+        -# :javascript
+        -#   $('#data_set_sheriff_id').multipleSelect({
+        -#     filter: true
+        -#   });
 
         =f.label :state_id, 'state', class: 'small mb-0 mb-0 mt-2'
         =f.collection_select :state_id, State.all, :id, :name,

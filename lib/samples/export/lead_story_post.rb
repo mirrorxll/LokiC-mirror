@@ -112,6 +112,19 @@ module Samples
           bucket_id: photo_bucket_id
         }
 
+        if @column
+          Table.loki_story_creator do |conn|
+            json = conn.exec_query(
+              'SELECT limpar_associated_ids '\
+              "FROM #{Table.schema_table(@staging_table_name)} "\
+              "WHERE id = #{sample.staging_row_id};"
+            ).first
+            break if json.nil? || json['limpar_associated_ids'].nil?
+
+            params.merge!(limpar: JSON.parse(json['limpar_associated_ids']))
+          end
+        end
+
         response = @pl_client.post_story(params)
         story = JSON.parse(response.body)
         (raise StandardError, story.to_s) unless story['id']

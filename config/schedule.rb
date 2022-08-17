@@ -27,7 +27,11 @@ every '0 9,12 * * *' do
 end
 
 every '0 * * * *' do
-  rake 'check_has_updates_revise'
+  rake 'story_type:check_has_updates_revise'
+end
+
+every '10 * * * *' do
+  rake 'story_type:setup:time_frames_and_next_export'
 end
 
 every '0 0-22 * * *' do

@@ -50,7 +50,7 @@ module StoryTypes
       message_to_dev = "*[ LokiC ] <#{story_type_url(@story_type)}|Story Type ##{@story_type.id}> (#{@story_type.iteration.name}) | FCD*\n>"
 
       if params[:commit].eql?('approve!')
-        note = ActionView::Base.full_sanitizer.sanitize(@feedback.body)
+        note = @feedback.body.to_plain_text
         message_to_fc_channel = "*FCD ##{@story_type.id}* "\
                                 "<#{story_type_fact_checking_doc_url(@story_type, @fcd)}|#{@story_type.name}>.\n"\
                                 "#{@feedback.body.present? ? "*Reviewer's Note*: #{note}" : ''}"
