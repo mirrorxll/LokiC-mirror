@@ -1,7 +1,7 @@
 -factoids = @iteration.factoids
 -published = factoids.published.count
 
--if published.positive? && !@iteration.purge_export.eql?(true)
+-if published.positive? && !@iteration.purge_export.eql?(true) && @iteration.export.eql?(true)
   =link_to('remove factoids from limpar',
            remove_exported_factoids_factoid_type_iteration_exports_path(@factoid_type, @iteration),
            method: :delete, remote: true, data: { confirm: 'Are you sure?' }, class: 'btn btn-sm btn-outline-danger')

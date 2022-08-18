@@ -27,6 +27,7 @@ module FactoidTypes
              purge_creation export purge_export last_export_batch_size].each do |prop|
             iteration.update!(prop.to_sym => nil)
           end
+          factoid_type.update!(status: Status.find_by(name: 'in progress'), current_account: account)
           send_to_action_cable(iteration.factoid_type, :staging_table, message)
         else
           iteration.update!(purge_export: false)

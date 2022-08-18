@@ -19,7 +19,7 @@
 
 #filter_form.collapse
   .row.my-3.col-12
-    =datagrid_form_for @grid, url: factoid_type_iteration_factoids_path(@factoid_type, @iteration)
+    =datagrid_form_for @grid, url: factoid_type_iteration_samples_path(@factoid_type, @iteration)
 
 =link_to('download as CSV', url_for(format: 'csv', iteration_stories_grid: @grid),
          type: 'button', id: '#save_as_csv_btn', class: 'btn btn-sm btn-outline-dark')

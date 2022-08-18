@@ -1,0 +1,5 @@
+$('#cover-spin').hide();
+$('button#delete_selected').attr('disabled', true);
+var factoidsBody = $('#exported_factoids');
+factoidsBody.html('<%= j render 'factoid_types/exports/factoids_table' %>');
+$('button#select_all_button')[0].textContent = 'Select all';

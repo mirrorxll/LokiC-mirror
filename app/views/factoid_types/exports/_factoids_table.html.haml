@@ -1,0 +1,28 @@
+%table.table.table-striped.table-sm.small
+  %thead
+    %tr
+      %th#headline.text-center{ :scope => "col" }
+        limpar factoid ID
+      %th#headline{ :scope => "col" }
+        headline
+      %th#limpar{ :scope => "col" }
+        limpar
+      %th#lokic{ :scope => "col" }
+        lokic
+      %th#exported_at{ :scope => "col" }
+        exported_at
+    %tbody
+      -@factoids.each do |factoid|
+        %tr.hovered_item
+          %td.pl-3
+            %label
+              =check_box_tag factoid.limpar_factoid_id
+              =factoid.limpar_factoid_id
+          %td
+            =factoid.body
+          %td
+            =factoid.link? ? link_to('limpar', factoid.lp_link, target:'_blank') : '---'
+          %td
+            =link_to('lokic', factoid_type_iteration_sample_url(@factoid_type, @iteration, factoid), target:'_blank')
+          %td
+            =factoid.exported_at ? factoid.exported_at.strftime('%F') : '---'
