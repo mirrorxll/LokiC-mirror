@@ -14,6 +14,7 @@ module DataSets
     before_action :data_sets_access, only: :show
 
     def index
+      p params
       @tab_title = 'LokiC :: DataSets'
 
       respond_to do |f|
@@ -91,8 +92,6 @@ module DataSets
       return unless @current_list
 
       @grid = DataSetsGrid.new(params[:data_sets_grid] || @lists[@current_list])
-
-      @grid.scope { |sc| sc.page(params[:page]).per(30) }
     end
 
     def access_to_show

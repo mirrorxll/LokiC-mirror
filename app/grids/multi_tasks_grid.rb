@@ -11,9 +11,9 @@ class MultiTasksGrid
   # Filters
 
   filter(:assignment_to)
-  filter(:assigment)
+  filter(:assistants)
   filter(:notification_to)
-  filter(:creator_id)
+  filter(:assistants)
   filter(:status)
 
   filter(:creator_id)

@@ -29,6 +29,16 @@ module Samples
         )
       end
 
+      TIMES_BY_WEEKDAY = [
+        %w[7:00 19:30], # "Sunday"
+        %w[7:00 19:30], # "Monday"
+        %w[7:00 19:30], # "Tuesday"
+        %w[7:00 19:30], # "Wednesday"
+        %w[7:00 19:30], # "Thursday"
+        %w[7:00 13:00], # "Friday"
+        %w[7:00 13:00]  # "Saturday"
+      ].freeze
+
       def published_at(date)
         datetime_to_f = lambda do |dt, pos|
           Time.parse("#{dt} #{TIMES_BY_WEEKDAY[dt.wday][pos]} EST").to_f
@@ -101,6 +111,19 @@ module Samples
           published: true,
           bucket_id: photo_bucket_id
         }
+
+        if @column
+          Table.loki_story_creator do |conn|
+            json = conn.exec_query(
+              'SELECT limpar_associated_ids '\
+              "FROM #{Table.schema_table(@staging_table_name)} "\
+              "WHERE id = #{sample.staging_row_id};"
+            ).first
+            break if json.nil? || json['limpar_associated_ids'].nil?
+
+            params.merge!(limpar: JSON.parse(json['limpar_associated_ids']))
+          end
+        end
 
         response = @pl_client.post_story(params)
         story = JSON.parse(response.body)

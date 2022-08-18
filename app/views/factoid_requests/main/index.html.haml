@@ -12,7 +12,7 @@
           -filled = @current_list.eql?(list) ? '' : '-outline'
           =link_to(list, url_for(list: list), class: "btn btn-sm btn#{filled}-dark")
     .btn-group
-      -if @current_list
+      -# -if @current_list
         %button.disabled.btn.btn-sm.btn-outline-dark
           FILTER
           -# =link_to('filter', '#', class: 'disabled btn btn-sm btn-outline-dark',

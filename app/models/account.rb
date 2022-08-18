@@ -36,7 +36,6 @@ class Account < ApplicationRecord # :nodoc:
   has_many :dev_story_types,       foreign_key: :developer_id, class_name: 'StoryType'
   has_many :dev_factoid_types,     foreign_key: :developer_id, class_name: 'FactoidType'
   has_many :submitters,            foreign_key: :submitter_id, class_name: 'PostExportReport'
-  has_many :created_scrape_tasks,  foreign_key: :creator_id,   class_name: 'ScrapeTask'
   has_many :assigned_scrape_tasks, foreign_key: :scraper_id,   class_name: 'ScrapeTask'
   has_many :production_removals
   has_many :comments, foreign_key: :commentator_id

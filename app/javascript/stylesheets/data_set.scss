@@ -18,3 +18,7 @@
   text-decoration: none;
   color: #000000;
 }
+
+#data_set_info .card-body.overflow-auto {
+  max-height: 500px;
+}

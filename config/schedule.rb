@@ -10,7 +10,9 @@ every '0 0 * * *' do
   rake 'clients_pubs_tags_sections'
   rake 'photo_buckets'
   rake 'opportunities'
-  rake 'story_type:backdate:export'
+  if Rails.env.production?
+    rake 'story_type:backdate:export'
+  end
 end
 
 every '0 9 * * *' do
@@ -27,7 +29,11 @@ every '0 9,12 * * *' do
 end
 
 every '0 * * * *' do
-  rake 'check_has_updates_revise'
+  rake 'story_type:check_has_updates_revise'
+end
+
+every '10 * * * *' do
+  rake 'story_type:setup:time_frames_and_next_export'
 end
 
 every '0 0-22 * * *' do
