@@ -8,9 +8,11 @@ class SchemasTablesTask
   private
 
   def update(host)
-    conn = MiniLokiC::Connect::Mysql.on(
-      Object.const_get(host.name)
-    )
+    begin
+      conn = MiniLokiC::Connect::Mysql.on(Object.const_get(host.name))
+    rescue Mysql2::Error
+      return
+    end
 
     conn.query('SHOW SCHEMAS;').to_a.each do |schema_row|
       schema = Schema.find_or_create_by!(host: host, name: schema_row.values.first)
