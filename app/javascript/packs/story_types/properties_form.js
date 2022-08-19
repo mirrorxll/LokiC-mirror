@@ -1,4 +1,5 @@
-$(document).on('click', 'input#update_opportunities', function() {
+$(document).on('click', 'input#update_opportunities', function(event) {
+    event.preventDefault();
     let story_type_id = $('#story_type').attr('story_type_id');
     let oppo_id = $('#default_opportunity_opportunity_id').val();
     let oppo_type_id = $('#default_opportunity_opportunity_type_id').val();
