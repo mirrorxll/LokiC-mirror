@@ -16,17 +16,18 @@ module ApplicationHelper
   def toastr_js_flash(to_flash = {})
     toast_code = lambda do |type, title, message|
       <<~SCRIPT
-        ;
-        toastr.#{type}(`#{message}`, `#{title}`, {
-          showMethod: 'slideDown',
-          hideMethod: 'slideUp',
-          closeMethod: 'slideUp',
-          closeDuration: 300,
-          timeOut: #{type.eql?('success') ? 5000 : 0},
-          extendedTimeOut: #{type.eql?('success') ? 5000 : 0},
-          closeButton: true,
-          tapToDismiss: false
-        });
+        <script>
+          toastr.#{type}(`#{message}`, `#{title}`, {
+            showMethod: 'slideDown',
+            hideMethod: 'slideUp',
+            closeMethod: 'slideUp',
+            closeDuration: 300,
+            timeOut: #{type.eql?('success') ? 5000 : 0},
+            extendedTimeOut: #{type.eql?('success') ? 5000 : 0},
+            closeButton: true,
+            tapToDismiss: false
+          });
+        </script>
       SCRIPT
     end
 
