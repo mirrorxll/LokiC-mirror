@@ -10,7 +10,7 @@ class SchemasTablesTask
   def update(host)
     begin
       conn = MiniLokiC::Connect::Mysql.on(Object.const_get(host.name))
-    rescue Mysql2::Error
+    rescue StandardError
       return
     end
 
