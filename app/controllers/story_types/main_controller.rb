@@ -48,6 +48,7 @@ module StoryTypes
       @lists = HashWithIndifferentAccess.new
 
       @lists['assigned'] = {} if @story_types_permissions['grid']['assigned']
+      @lists['created'] = {} if @story_types_permissions['grid']['created']
       @lists['all']      = {} if @story_types_permissions['grid']['all']
       @lists['archived'] = { archived: true } if @story_types_permissions['grid']['archived']
     end
