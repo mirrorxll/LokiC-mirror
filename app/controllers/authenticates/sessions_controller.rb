@@ -21,6 +21,7 @@ module Authenticates
         end
         session[:auth_token] = @account.auth_token
 
+        flash[:success] = { sign_in: 'success' }
         redirect_to session[:return_to] || root_path
         session[:return_to] = nil
       else

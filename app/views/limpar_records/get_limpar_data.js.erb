@@ -1,5 +1,0 @@
-$('#limpar').empty();
-$('#limpar').append( $('<option>Select Kind</option>'));
-<% @records.each do |record| %>
-  $('#limpar').append($('<option value="<%= record.id %>"><%= record.name.truncate(20) %></option>'));
-<% end %>
