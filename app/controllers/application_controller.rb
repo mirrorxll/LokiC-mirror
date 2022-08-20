@@ -89,6 +89,13 @@ class ApplicationController < ActionController::Base
   end
 
   def unconfirmed_multi_tasks
+    return if cookies[:unconfirmed_multitask_toasts_lock]
+
+    cookies.encrypted[:unconfirmed_multitask_toasts_lock] = {
+      value: true,
+      expires: DateTime.now + 15.minute
+    }
+
     tasks = MultiTask.ongoing.joins(:assignment_to).where.not(creator: current_account).where(
       'task_assignments.confirmed': false,
       'task_assignments.account_id': current_account
