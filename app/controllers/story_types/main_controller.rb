@@ -26,6 +26,7 @@ module StoryTypes
 
     def show
       @tab_title = "LokiC :: StoryType ##{@story_type.id} <#{@story_type.name}>"
+      @content_developers = AccountRole.find_by(name: 'Content Developer').accounts
     end
 
     def create
@@ -45,7 +46,7 @@ module StoryTypes
     private
 
     def grid_lists
-      statuses = Status.hle_statuses(created: true)
+      statuses = Status.hle_statuses(created: true, migrated: true, inactive: true)
       @lists = HashWithIndifferentAccess.new
 
       @lists['assigned'] = { developer: current_account, status: statuses } if @story_types_permissions['grid']['assigned']

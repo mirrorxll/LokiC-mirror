@@ -26,6 +26,7 @@ module FactoidTypes
 
     def show
       @tab_title = "LokiC :: FactoidTypes ##{@factoid_type.id} <#{@factoid_type.name}>"
+      @content_developers = AccountRole.find_by(name: 'Content Developer').accounts
     end
 
     def create
@@ -43,7 +44,7 @@ module FactoidTypes
     private
 
     def grid_lists
-      statuses = Status.hle_statuses(created: true)
+      statuses = Status.hle_statuses(created: true, migrated: true, inactive: true)
       @lists = HashWithIndifferentAccess.new
 
       @lists['assigned'] = { developer: current_account, status: statuses } if @factoid_types_permissions['grid']['assigned']

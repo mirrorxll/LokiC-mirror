@@ -169,8 +169,8 @@ unless Account.first
   Account.reset_column_information
   Account.create(
     email: 'lokic@locallabs.com',
-    first_name: 'Loki',
-    last_name: 'C',
+    first_name: 'LokiC',
+    last_name: 'Main',
     password: SecureRandom.hex(3)
   )
 end
