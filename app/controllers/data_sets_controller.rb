@@ -2,6 +2,8 @@
 
 class DataSetsController < ApplicationController # :nodoc:
   before_action -> { authorize!('data_sets') }
+  before_action -> { authorize!('story_types', redirect: false) }
+  before_action -> { authorize!('factoid_types', redirect: false) }
 
   private
 

@@ -1,2 +1,2 @@
 =form_with(url: include_factoid_type_developers_path(factoid_type), method: :patch, html: { onchange: "Rails.fire(this, 'submit')" }) do |form|
-  =form.collection_select :developer_id, Account.all.order(:first_name, :last_name), :id, :name, { prompt: '' }, { name: :id }
+  =form.collection_select :developer_id, @factoid_type_developers, :id, :name, { prompt: '' }, { name: :id }

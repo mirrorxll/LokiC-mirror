@@ -81,7 +81,7 @@
           =render partial: 'story_types/main/story_type', collection: @data_set.story_types.order(id: :desc)
           -if current_account_permissions('factoid_types', ['new_form'])
             #createStoryTypeModal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "createStoryTypeModal",
-                                                'data-backdrop' => 'static', "data-keyboard" => "false" }
+                                              'data-backdrop' => 'static', "data-keyboard" => "false" }
               .modal-dialog.modal-dialog-scrollable
                 .modal-content
                   .modal-header
