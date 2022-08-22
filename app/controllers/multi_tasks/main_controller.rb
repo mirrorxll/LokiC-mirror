@@ -83,8 +83,6 @@ module MultiTasks
       @lists = HashWithIndifferentAccess.new
 
       @lists['assigned'] = { assignment_to: current_account.id, status: statuses }    if @multi_tasks_permissions['grid']['assigned']
-      @lists['assistant'] = { assistants: current_account.id, status: statuses }       if @multi_tasks_permissions['grid']['assistant']
-      @lists['notify me'] = { notification_to: current_account.id, status: statuses } if @multi_tasks_permissions['grid']['notify_me']
       @lists['created'] = { creator: current_account.id, status: statuses }           if @multi_tasks_permissions['grid']['created']
       @lists['all'] = { status: statuses }                                            if @multi_tasks_permissions['grid']['all']
       @lists['archived'] = { status: Status.find_by(name: 'deleted') }                if @multi_tasks_permissions['grid']['archived']
@@ -124,8 +122,6 @@ module MultiTasks
       status_deleted = Status.find_by(name: 'deleted')
 
       return if @lists['assigned'] && @multi_task.assignment_to.include?(current_account) && @multi_task.status != status_deleted
-      return if @lists['assistant'] && @multi_task.assistants.include?(current_account) && @multi_task.status != status_deleted
-      return if @lists['notify me'] && @multi_task.notification_to.include?(current_account) && @multi_task.status != status_deleted
       return if @lists['created'] && @multi_task.creator.eql?(current_account) && @multi_task.status != status_deleted
       return if @lists['all'] && @multi_task.status != status_deleted
       return if @lists['archived'] && @multi_task.status.eql?(status_deleted)

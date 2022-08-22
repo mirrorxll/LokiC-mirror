@@ -19,7 +19,7 @@ module AccessLevels
         templates: { show: true, edit_form: true }
       },
       multi_tasks: {
-        grid: { assigned: true, assistant: true, notify_me: true, created: true, all: true, archived: true },
+        grid: { assigned: true, created: true, all: true, archived: true },
         new_form: true,
         edit_form: true,
         progress_status: { show: true, edit_form: true },
@@ -97,7 +97,7 @@ module AccessLevels
         templates: { show: true, edit_form: true }
       },
       multi_tasks: {
-        grid: { assigned: true, assistant: true, notify_me: true, created: true, all: false, archived: false },
+        grid: { assigned: true, created: true, all: false, archived: false },
         new_form: true,
         edit_form: true,
         progress_status: { show: true, edit_form: true },
@@ -175,7 +175,7 @@ module AccessLevels
         templates: { show: true, edit_form: false }
       },
       multi_tasks: {
-        grid: { assigned: false, assistant: false, notify_me: false, created: false, all: true, archived: false },
+        grid: { assigned: false, created: false, all: true, archived: false },
         new_form: false,
         edit_form: false,
         progress_status: { show: true, edit_form: false },

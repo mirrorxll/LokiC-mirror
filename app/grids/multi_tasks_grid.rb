@@ -9,14 +9,6 @@ class MultiTasksGrid
   scope { MultiTask.includes(:assignments, :creator, :assignment_to, :status, :last_comment).order(id: :desc) }
 
   # Filters
-
-  filter(:assignment_to)
-  filter(:assistants)
-  filter(:notification_to)
-  filter(:assistants)
-  filter(:status)
-
-  filter(:creator_id)
   filter(:title, :string, left: true, header: 'Title(RLIKE)') do |value, scope|
     scope.where('title RLIKE ?', value)
   end
@@ -30,9 +22,24 @@ class MultiTasksGrid
   end
 
   filter(:creator, :enum, multiple: true, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
-  filter(:status, :enum, multiple: true, select: Status.where(name: ['created and in queue', 'in progress', 'blocked', 'canceled', 'done']).pluck(:name, :id))
+
+  status_done_id = Status.find_by(name: 'done').id.to_s
+  filter(:status, :enum, multiple: true, select: Status.where(name: ['not started', 'in progress', 'blocked', 'canceled', 'done']).pluck(:name, :id)) do |value, scope, grid|
+    if value.include?(status_done_id)
+      scope.joins(:assignments).where(status: value).or(scope.joins(:assignments).where('task_assignments.account_id': grid.current_account.id, 'task_assignments.done': true))
+    else
+      ids_done = MultiTask.joins(:assignments).where('task_assignments.account_id': grid.current_account.id, 'task_assignments.done': true).map { |task| task.id  }
+      scope.where(status: value).where.not(id: ids_done)
+    end
+  end
+
   filter(:deadline, :datetime, header: 'Deadline >= ?', multiple: ',')
 
+  status_deleted = Status.find_by(name: 'deleted')
+
+  filter(:deleted_tasks, :xboolean, left: true) do |value, scope|
+    value ? scope.where(status: status_deleted) : scope.where.not(status: status_deleted)
+  end
   filter(:confirmed, :xboolean, left: true) do |value, scope, grid|
     scope = scope.where('task_assignments.account_id': grid.current_account.id)
     value ? scope.where('task_assignments.confirmed': true) : scope.where.not('task_assignments.confirmed': true)
@@ -42,9 +49,16 @@ class MultiTasksGrid
   column(:id, mandatory: true, header: 'ID')
 
   column(:status, mandatory: true, order: 'status_id', html: true) do |task|
-    attributes = { class: "bg-#{status_color(task.status.name)}" }
+    assignment = task.assignments.find_by(account: current_account)
+    status_name = if assignment.nil? || !assignment.done
+                    task.status.name
+                  else
+                    'done'
+                  end
 
-    if task.status.name.in?(%w[blocked canceled])
+    attributes = { class: "bg-#{status_color(status_name)}" }
+
+    if status_name.in?(%w[blocked canceled])
       attributes.merge!(
         {
           'data-toggle' => 'tooltip',
@@ -53,7 +67,7 @@ class MultiTasksGrid
         }
       )
     end
-    content_tag(:div, task.status.name, attributes)
+    content_tag(:div, status_name, attributes)
   end
 
   column(:creator, order: 'accounts.first_name, accounts.last_name', mandatory: true) do |task|
@@ -61,7 +75,7 @@ class MultiTasksGrid
   end
 
   column(:title, mandatory: true) do |task|
-    format(task.title) { |title| link_to(title, multi_task_path(task)) }
+    format(task.title) { |title| link_to(title, task) }
   end
 
   column(:assignment_to, header: 'Assigned to', order: 'accounts.first_name, accounts.last_name', mandatory: true) do |task|
@@ -71,22 +85,18 @@ class MultiTasksGrid
   column(:deadline, order: 'deadline', mandatory: true, &:deadline)
 
   column(:parent_task_id, header: 'Main task', order: 'parent_task_id', mandatory: true) do |task|
-    if task.parent
-      format("##{task.parent.id}") do |parent_id|
-        link_to(parent_id, multi_task_path(task.parent))
-      end
-    end
+    format("##{task.parent.id}") { |parent_id| link_to parent_id, task.parent } unless task.parent.nil?
   end
 
   column(:sow, header: 'SOW', mandatory: true, order: 'sow') do |task|
-    format('Google doc') { |sow| link_to sow, task.sow } unless task.sow.blank?
+    format("Google doc") { |sow| link_to sow, task.sow } unless task.sow.blank?
   end
 
   column(:last_comment, header: 'Last comment', order: lambda { |scope|
-                                                         scope.joins(:comments).group('tasks.id')
-                                                                                   .select('tasks.*, MAX(comments.created_at) as max_created_at')
-                                                                                   .order('max_created_at')
-                                                       }, mandatory: true, html: true) do |task|
+    scope.joins(:comments).group('tasks.id')
+         .select('tasks.*, MAX(comments.created_at) as max_created_at')
+         .order('max_created_at')
+  }, mandatory: true, html: true) do |task|
     last_comment = task.last_comment
     if last_comment.nil?
       last_comment
@@ -103,9 +113,15 @@ class MultiTasksGrid
     task.created_at.strftime('%F')
   end
 
-  column(:note, header: 'Your note', mandatory: true) do |task, scope|
+  column(:note, header: 'Your note', mandatory: true, html: true) do |task, scope|
     note = task.note(scope.current_account)
 
-    ActionView::Base.full_sanitizer.sanitize(note.body).first(10) if !note.nil? && !note.body.nil?
+    if !note.nil? && !note.body.nil?
+      body = ActionView::Base.full_sanitizer.sanitize(note.body)
+      attr = { 'data-toggle' => 'tooltip',
+               'data-placement' => 'right',
+               title: truncate(body, length: 150) }
+      content_tag(:div, body.first(10) , attr)
+    end
   end
 end
