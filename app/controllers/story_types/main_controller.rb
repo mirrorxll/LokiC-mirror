@@ -45,12 +45,13 @@ module StoryTypes
     private
 
     def grid_lists
+      statuses = Status.hle_statuses(created: true)
       @lists = HashWithIndifferentAccess.new
 
-      @lists['assigned'] = {} if @story_types_permissions['grid']['assigned']
-      @lists['created'] = {} if @story_types_permissions['grid']['created']
-      @lists['all']      = {} if @story_types_permissions['grid']['all']
-      @lists['archived'] = { archived: true } if @story_types_permissions['grid']['archived']
+      @lists['assigned'] = { developer: current_account, status: statuses } if @story_types_permissions['grid']['assigned']
+      @lists['created'] = { editor: current_account, status: statuses }     if @story_types_permissions['grid']['created']
+      @lists['all'] = { status: statuses }                                  if @story_types_permissions['grid']['all']
+      @lists['archived'] = { status: Status.find_by(name: 'archived') }     if @story_types_permissions['grid']['archived']
     end
 
     def current_list

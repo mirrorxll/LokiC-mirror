@@ -43,11 +43,13 @@ module FactoidTypes
     private
 
     def grid_lists
+      statuses = Status.hle_statuses(created: true)
       @lists = HashWithIndifferentAccess.new
 
-      @lists['assigned'] = {} if @factoid_types_permissions['grid']['assigned']
-      @lists['all']      = {} if @factoid_types_permissions['grid']['all']
-      @lists['archived'] = { 'statuses.name': 'archived' } if @factoid_types_permissions['grid']['archived']
+      @lists['assigned'] = { developer: current_account, status: statuses } if @factoid_types_permissions['grid']['assigned']
+      @lists['created'] = { editor: current_account, status: statuses }     if @factoid_types_permissions['grid']['created']
+      @lists['all'] = { status: statuses }                                  if @factoid_types_permissions['grid']['all']
+      @lists['archived'] = { status: Status.find_by(name: 'archived') }     if @factoid_types_permissions['grid']['archived']
     end
 
     def current_list
