@@ -35,17 +35,17 @@ class ScrapeTasksGrid
   states = State.all.map { |r| [r.name, r.id] }
   filter(:state, :enum, multiple: true, select: states)
 
-  filter(:creator, :enum, select: :creator, multiple: true)
-  def creator
+  filter(:creator, :enum, select: :creators, multiple: true)
+  def creators
     account_list =
       case current_list
       when 'assigned', 'all', 'archived'
-        Account.joins(:created_scrape_tasks).distinct
+        Account.joins(:created_scrape_tasks).distinct.to_a
       when 'created'
         [current_account]
       end
 
-    account_list.map { |s| [s.name, s.id] }
+    account_list.map { |a| [a.name, a.id] }
   end
 
   accounts = Account.joins(:assigned_scrape_tasks).distinct

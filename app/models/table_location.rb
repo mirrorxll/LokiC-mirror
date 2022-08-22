@@ -1,5 +1,11 @@
 # frozen_string_literal: true
 
+# TableLocation.all.each do |tl|
+#   p tl[:table_name]
+#   p tl.schema.sql_tables.find_by(name: tl[:table_name])
+#   tl.update!(sql_table: tl.schema.sql_tables.find_by(name: tl[:table_name]))
+# end
+
 class TableLocation < ApplicationRecord
   serialize :table_columns, Array
 
