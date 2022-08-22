@@ -1,0 +1,149 @@
+%div{ id: "workRequest", work_request_id: @work_request.id }
+
+%hr/
+#workRequestName.text-center
+  =link_to("##{@work_request.id} #{@work_request.project_order_name.body}", @work_request)
+%hr.mb-0/
+
+.d-flex.justify-content-between.align-items-center.mb-3.small
+  .text-secondary
+    created by #{@work_request.requester.name}
+  .text-secondary
+    created at: #{@work_request.created_at}
+
+.row.mb-5.align-items-stretch
+  #workRequestInfo.col-lg-8.small
+    .card
+      .card-header.p-1
+        .d-flex.justify-content-between.align-items-center
+          MAIN INFO
+          .d-flex.align-items-center
+            -if current_account_permissions('work_requests', ['edit_form'])
+              #editWorkRequest
+                .d-inline-block.mr-2.small
+                  %button{ type: 'button', class: 'p-0 ml-1 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#updateWorkRequestModal", disabled: @work_request.archived}
+                    [ edit ]
+            #workRequestStatus.d-inline-block
+              -if current_account_permissions('work_requests', %w[progress_status edit_form])
+                =render 'statuses'
+              -elsif current_account_permissions('work_requests', %w[progress_status show])
+                =@work_request.status.name
+      .card-body
+        =render 'work_request_info', static: true
+  -if current_account_permissions('multi_tasks')
+    #workRequestMultiTasks.col-lg-4.pl-lg-0.mt-sm-3.mt-lg-0
+      .card.h-100
+        .card-header.p-1.small
+          .d-flex.justify-content-between.align-items-center
+            MULTI TASKS
+            #createMultiTask.small
+              -if current_account_permissions('multi_tasks', ['new_form'])
+                %button{ type: 'button', class: 'p-0 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#createMultiTaskModal", disabled: @work_request.archived }
+                  [ create ]
+        .card-body.small
+          -@work_request.multi_tasks.order(created_at: :desc).each do |p|
+            .row.align-items-center{ class: "multi-task-#{p.id}"}
+              .col-2.text-right.pr-0
+                .text-danger{ class: "multi-task-delete" }
+                  -if p.status.name.eql?('deleted')
+                    deleted
+                  -else
+                    =link_to('[ delete ]', '#', onclick: "markMultiTaskAsDeleted(event, this, #{@work_request.id}, #{p.id}, #{@delete_status.id});")
+                    .d-none{ class: "processing" }
+                      .loadingSpinner.spinner-border.spinner-border-sm.text-secondary
+                        %span.sr-only
+              :javascript
+                function markMultiTaskAsDeleted(event, link, work_request_id, task_id, status_id) {
+                  event.preventDefault();
+                  let spinner = document.querySelector(`.multi-task-${task_id} .processing`);
+                  let status = document.querySelector(`.multi-task-${task_id} .status`);
+                  link.classList.add('d-none');
+                  spinner.classList.remove('d-none');
+                  Rails.ajax({
+                    type: "PATCH",
+                    dataType: 'json',
+                    url: `/api/tasks/${task_id}/statuses/${status_id}`,
+                    success: function (data) {
+                      spinner.classList.add('d-none');
+                      if(data['success']) {
+                        status.innerHTML = 'deleted'
+                        status.classList.add('badge-dark');
+                        document.querySelector(`.multi-task-${task_id} .multi-task-delete`).innerHTML = 'deleted';
+                        showArchiveIfAllTasksDeleted(work_request_id);
+                      } else {
+                        link.classList.remove('d-none');
+                      }
+                    }
+                  })
+                }
+                function showArchiveIfAllTasksDeleted(work_request_id) {
+                  Rails.ajax({
+                    type: "GET",
+                    dataType: 'json',
+                    url: `/api/work_requests/${work_request_id}/multi_task_statuses/all_deleted`,
+                    success: function (data) {
+                      if(data['all_deleted']) {
+                        document.querySelector('#archiveWorkRequest').innerHTML =
+                          `
+                            <a data-confirm="Work Request will be hidden from Work Requests' queue. Continue?" class="p-0 btn btn-sm text-danger small" onclick="archiveSpinnerAnimation()" data-remote="true" rel="nofollow" data-method="patch" href="/work_requests/${work_request_id}/archive">
+                              [ archive ]
+                            </a>
+                          `
+                      }
+                    }
+                  });
+                }
+              .col-3.text-center
+                .badge.badge-pill{ class: "status badge-#{status_color(p.status.name)}" }
+                  =p.status.name
+              .col-7.p-0
+                =link_to(p.title, multi_task_path(p), target: '_blank', rel: 'noopener noreferrer')
+
+-if current_account_permissions('work_requests', ['edit_form'])
+  #updateWorkRequestModal.modal.fade.pr-0{ "aria-hidden" => "true", "aria-labelledby" => "updateWorkRequestModalLabel",
+                                           'data-backdrop' => 'static', "data-keyboard" => "false" }
+    .modal-dialog.modal-dialog-scrollable.modal-lg
+      .modal-content
+        .modal-header
+          UPDATE WORK REQUEST
+          %button.close{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+            %span{ "aria-hidden" => "true" } ×
+        .modal-body.small
+          =render 'edit'
+        .modal-footer.justify-content-center
+          =link_to('UPDATE', '#', id: 'updateWorkRequestButton', class: 'btn btn-sm btn-dark')
+          .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+            CANCEL
+
+  :javascript
+    document.querySelector('#updateWorkRequestButton').addEventListener('click', (event) => {
+      event.preventDefault();
+      document.querySelector('#hiddenUpdateWorkRequestButton').click();
+    }, false);
+
+
+-if current_account_permissions('multi_tasks', ['new_form'])
+  #createMultiTaskModal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "createMultiTaskModal",
+                                    'data-backdrop' => 'static', "data-keyboard" => "false" }
+    .modal-dialog.modal-dialog-scrollable.modal-fullscreen
+      .modal-content
+        .modal-header
+          NEW MULTI TASK
+          %button.close{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+            %span{ "aria-hidden" => "true" } ×
+        .modal-body.d-flex
+          .preview.overflow-scroll.small.w-40.pt-3.pr-3.pb-3
+            =render 'work_request_info', static: false
+          .w-60
+            .editable.overflow-scroll.h-94.pr-2.pb-3.pl-2
+              =render 'multi_tasks/main/form_for_work_request', work_request: @work_request
+        .modal-footer.justify-content-center
+          =link_to('CREATE', '#', id: 'createMultiTaskButton', class: 'btn btn-sm btn-dark')
+          .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+            CANCEL
+
+  :javascript
+    document.querySelector('#createMultiTaskButton').addEventListener('click', (event) => {
+      event.preventDefault();
+      document.querySelector('#hiddenCreateMultiTaskButton').click();
+    }, false);

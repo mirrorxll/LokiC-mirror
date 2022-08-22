@@ -1,0 +1,9 @@
+%hr/
+.row
+  .col-12.text-center
+    %b #{@factoid_type.id_name}
+%hr/
+
+.row.small
+  .col-10.offset-1
+    =@factoid_type.template&.body&.html_safe

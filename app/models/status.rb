@@ -2,85 +2,64 @@
 
 class Status < ApplicationRecord
   has_many :story_types
+  has_many :accounts
 
-  def self.work_request_statuses
-    ordered_statuses(
-      [
-        'awaiting task creation',
-        'in progress', 'done',
-        'blocked', 'canceled'
-      ]
-    )
+  def self.account_statuses
+    ordered_statuses(%w[active deactivated])
   end
 
-  def self.factoid_request_statuses
-    ordered_statuses(
-      [
-        'in progress', 'done',
-        'blocked', 'canceled'
-      ]
-    )
+  def self.work_request_statuses(created: false, archived: false)
+    statuses = created ? ['created and in queue'] : []
+
+    statuses.push('awaiting tasks creation', 'in progress', 'done', 'blocked')
+    statuses.push('archived') if archived
+
+    ordered_statuses(statuses)
   end
 
-  def self.multi_task_statuses
-    ordered_statuses(
-      [
-        'not started', 'in progress',
-        'blocked', 'canceled', 'done',
-        'deleted', 'setup done/ongoing recurrent'
-      ]
-    )
+  def self.factoid_request_statuses(created: false, archived: false)
+    statuses = created ? ['created and in queue'] : []
+
+    statuses.push('awaiting templates creation', 'in progress', 'done', 'blocked')
+    statuses.push('archived') if archived
+
+    ordered_statuses(statuses)
   end
 
-  def self.multi_task_statuses_for_grid
-    ordered_statuses(
-      [
-        'not started', 'in progress',
-        'blocked', 'canceled', 'done',
-        'setup done/ongoing recurrent'
-      ]
-    )
+  def self.multi_task_statuses(created: false, archived: false)
+    statuses = created ? ['created and in queue'] : []
+
+    statuses.push('in progress', 'done', 'setup done/ongoing recurrent', 'blocked', 'canceled')
+    statuses.push('archived') if archived
+
+    ordered_statuses(statuses)
   end
 
-  def self.scrape_task_statuses(manager = false)
-    list = ['in progress', 'on checking', 'done', 'blocked', 'canceled']
-    list.delete('done') unless manager
+  def self.scrape_task_statuses(created: false, done: false, archived: false)
+    statuses = created ? ['created and in queue'] : []
 
-    ordered_statuses(list)
+    statuses.push('in progress', 'on checking')
+    statuses.push('done') if done
+    statuses.push('blocked')
+    statuses.push('archived') if archived
+
+    ordered_statuses(statuses)
   end
 
-  def self.scrape_task_statuses_for_grid
-    ordered_statuses(
-      [
-        'not started', 'in progress',
-        'on checking', 'done', 'blocked',
-        'canceled'
-      ]
-    )
+  def self.data_set_statuses(archived: false)
+    statuses = ['active']
+    statuses.push('archived') if archived
+
+    ordered_statuses(statuses)
   end
 
-  def self.hle_statuses
-    ordered_statuses(
-      [
-        'in progress', 'exported',
-        'on cron', 'blocked',
-        'canceled', 'done',
-        'archived', 'not started',
-        'migrated'
-      ]
-    )
-  end
+  def self.hle_statuses(created: false, archived: false)
+    statuses = created ? ['created and in queue'] : []
 
-  def self.all_story_type_statuses
-    ordered_statuses(
-      [
-        'not started', 'in progress',
-        'exported', 'on cron',
-        'blocked', 'canceled',
-        'migrated', 'inactive',
-        'done', 'archived'
-      ]
-    )
+    statuses.push('in progress', 'exported', 'done', 'blocked')
+    statuses.push('archived') if archived
+
+    ordered_statuses(statuses)
   end
 
   def self.ordered_statuses(list)

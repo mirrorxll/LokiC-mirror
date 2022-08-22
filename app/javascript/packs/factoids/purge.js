@@ -39,7 +39,7 @@ $(document).on('click', ('button#delete_selected'), function() {
     var factoids = [];
     var exported_factoids = $('#iteration_exported_factoids');
     var iteration_id = exported_factoids.attr('iteration_exported_factoids_id');
-    var article_types_id = exported_factoids.attr('article_type_id');
+    var factoid_types_id = exported_factoids.attr('factoid_type_id');
 
     document.querySelectorAll("input[type='checkbox']").forEach(elem => {
         if (elem.checked) {
@@ -50,7 +50,7 @@ $(document).on('click', ('button#delete_selected'), function() {
     Rails.ajax({
         type: 'DELETE',
         dataType: 'script',
-        url: `${window.location.origin}/article_types/${article_types_id}/iterations/${iteration_id}/export/remove_selected_factoids`,
+        url: `${window.location.origin}/factoid_types/${factoid_types_id}/iterations/${iteration_id}/export/remove_selected_factoids`,
         data: `factoids_ids=${factoids}`
     });
 });

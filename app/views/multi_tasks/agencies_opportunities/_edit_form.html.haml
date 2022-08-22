@@ -1,0 +1,142 @@
+-agency_opportunity_revenue_types.each do |row|
+  -u_id = "id_#{row.id}"
+  .row.mb-1{ id: u_id }
+    .col-3
+      =form.collection_select :agency_id, MainAgency.all.sort_by(&:name), :id, :name,
+                                     { selected: row.agency.id },
+                                     { id: "task[agencies_opportunities[#{u_id}[agency_id]]]", name: "task[agencies_opportunities[#{u_id}[agency_id]]]", class: 'w-100 task_agencies_select', required: true }
+    .col-3
+      =form.collection_select :opportunity_id, row.agency.opportunities.sort_by(&:name), :id, :name,
+                                     { selected: row.opportunity.id },
+                                     { id: "task[agencies_opportunities[#{u_id}[opportunity_id]]]", name: "task[agencies_opportunities[#{u_id}[opportunity_id]]]", class: 'w-100 task_opportunities_select', required: true }
+
+    .col-3
+      =form.collection_select :revenue_type_id, row.opportunity.revenue_types.sort_by(&:name), :id, :name,
+                                     { selected: row.revenue_type.id },
+                                     { id: "task[agencies_opportunities[#{u_id}[revenue_type_id]]]", name: "task[agencies_opportunities[#{u_id}[revenue_type_id]]]", class: 'w-100 task_revenue_type_select', required: true }
+
+    =form.number_field :percents, value: MiniLokiC::Formatize::Percents.format_percentage(row.percents), min: 1, max: 100, id: "task[agencies_opportunities[#{u_id}[percents]]]",
+                                       name: "task[agencies_opportunities[#{u_id}[percents]]]", class: 'small task_percent_select agencies_percents', required: true, placeholder: 'percents'
+    .col-1.my-auto.remove_x
+      %strong.fa.fa-minus.remove_x
+
+:javascript
+  let agenciesSelect = document.getElementsByClassName(`task_agencies_select`)
+
+  for(let i = 0; i < agenciesSelect.length; i++) {
+    agenciesSelect[i].addEventListener('change', opportunitiesByAgency)
+    agenciesSelect[i].addEventListener('change', revenueTypesByOpportunity)
+  }
+
+  let opportunitiesSelect = document.getElementsByClassName(`task_opportunities_select`)
+  for(let i = 0; i < agenciesSelect.length; i++) {
+    opportunitiesSelect[i].addEventListener('change', revenueTypesByOpportunity)
+  }
+
+  let removeX = document.getElementsByClassName('remove_x')
+  for(let i = 0; i < removeX.length; i++) {
+    removeX[i].addEventListener('click', removeAgencyOpportunity )
+  }
+
+  let agencies = []
+
+  function secureRandom(n){
+    let result = '';
+    while (n--){
+      result += Math.floor(Math.random() * 16).toString(16);
+    }
+    return result;
+  }
+
+  function addAgenciesToSelectGroup(task, uId, agenciesFromApi = null) {
+    if(agenciesFromApi != null) agencies = agenciesFromApi
+
+    if(agencies.length > 0) {
+      let select = document.getElementById(uId).getElementsByClassName(`task_agencies_select`)[0]
+      let option = null;
+
+      for (let i = 0; i < agencies.length; i++) {
+        option = document.createElement("option");
+        option.setAttribute("value", agencies[i].id);
+        option.textContent = agencies[i].name;
+        select.appendChild(option);
+      }
+    } else {
+      setTimeout(addAgenciesToSelectGroup, 1000)
+    }
+  }
+
+  function opportunitiesByAgency(event) {
+    let task = event.target.task
+    let agencyId = event.target.value;
+    if(agencyId === '') return false;
+
+    let opportunitiesSelect = event.target.parentNode.parentNode.getElementsByClassName(`task_opportunities_select`)[0]
+
+    while (opportunitiesSelect.firstChild) {
+      opportunitiesSelect.removeChild(opportunitiesSelect.firstChild);
+    }
+
+    window.$.ajax({
+      url: `${window.location.origin}/api/main_agencies/${agencyId}/opportunities`,
+      dataType: 'json',
+      async: false,
+      success: (opportunities) => {
+        addOpportunitiesToSelectGroup(opportunitiesSelect, opportunities)
+      }
+    });
+  }
+
+  function addOpportunitiesToSelectGroup(opportunitiesSelect, opportunities) {
+    let option = null;
+
+    for (let i = 0; i < opportunities.length; i++) {
+      option = document.createElement("option");
+      option.setAttribute("value", opportunities[i].id);
+      option.textContent = opportunities[i].name;
+      opportunitiesSelect.appendChild(option);
+    }
+  }
+
+  function revenueTypesByOpportunity(event) {
+    let task = event.target.task
+    let opportunityId = event.target.parentNode.parentNode.getElementsByClassName(`task_opportunities_select`)[0].value;
+    let agencyId = event.target.parentNode.parentNode.getElementsByClassName(`task_agencies_select`)[0].value;
+
+    if(agencyId === '') return false;
+    if(opportunityId === '') return false;
+
+    let revenueTypesSelect = event.target.parentNode.parentNode.getElementsByClassName(`task_revenue_type_select`)[0]
+
+    while (revenueTypesSelect.firstChild) {
+      revenueTypesSelect.removeChild(revenueTypesSelect.firstChild);
+    }
+
+    window.$.ajax({
+      url: `${window.location.origin}/api/main_opportunities/${opportunityId}/revenue_types`,
+      dataType: 'json',
+      success: (revenueTypes)=> { addRevenueTypesToSelectGroup(revenueTypesSelect, revenueTypes) }
+    });
+  }
+
+  function addRevenueTypesToSelectGroup(revenueTypesSelect, revenueTypes) {
+    let option = null;
+
+    for (let i = 0; i < revenueTypes.length; i++) {
+      option = document.createElement("option");
+      option.setAttribute("value", revenueTypes[i].id);
+      option.textContent = revenueTypes[i].name;
+      revenueTypesSelect.appendChild(option);
+    }
+  }
+
+  function removeAgencyOpportunity(e) {
+    e.target.parentNode.parentNode.remove();
+    let percentInputs = document.getElementsByClassName('agencies_percents');
+    let percentFeedback = document.querySelector('#agenciesPercentsFeedback');
+
+    for (let i = 0; i < percentInputs.length; i++) {
+      percentInputs[i].classList.remove('border', 'border-danger');
+    }
+    percentFeedback.classList.add('d-none');
+  }

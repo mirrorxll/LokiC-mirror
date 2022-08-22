@@ -1,0 +1,15 @@
+<div id="dataSets" class="row mb-3">
+  <div class="col-3 text-right pr-0">
+    <b>DATA SETS:</b>
+    <% if current_account_permissions('scrape_tasks', %w[data_sets edit_form]) %>
+      <%= link_to(icon('fa', 'pencil-square'), edit_scrape_task_data_sets_path(@scrape_task), class: 'p-0 ml-2', remote: true) %>
+    <% end %>
+  </div>
+
+  <div class="col">
+    <% @scrape_task.data_sets.each do |ds| %>
+      <%= link_to("##{ds.id} #{ds.name}", data_set_path(ds), target: '_blank') %>
+      <br/>
+    <% end %>
+  </div>
+</div>

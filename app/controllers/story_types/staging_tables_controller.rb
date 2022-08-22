@@ -1,11 +1,7 @@
 # frozen_string_literal: true
 
 module StoryTypes
-  class StagingTablesController < ApplicationController # :nodoc:
-    skip_before_action :find_parent_article_type
-    skip_before_action :set_article_type_iteration
-
-    before_action :render_403, if: :editor?
+  class StagingTablesController < StoryTypesController # :nodoc:
     before_action :staging_table_name_from_params, only: :create
     before_action :staging_table
 

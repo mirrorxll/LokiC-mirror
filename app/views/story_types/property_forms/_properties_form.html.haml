@@ -1,0 +1,193 @@
+.properties-form
+  #changeDataSet_template.row.small
+    .col-1
+    .col-11
+      .row.font-weight-bold
+        .col-6.pl-0
+          data set
+        .col-6
+          static year in template / next revision date
+      .row
+        .col-6.change-ds-form.pl-0
+          =render 'story_types/data_sets/change_data_set'
+        .col-6.set-static-year-revision-date
+          -if @story_type.template.static_year.present?
+            .current-static-year-revision-date
+              =render 'static_year__revision', show_edit_form: true
+            .change-static-year-revision-date-form.d-none
+              =render 'static_year__revision_form'
+          -else
+            .current-static-year-revision-date.d-none
+            .change-static-year-revision-date-form
+              =render 'static_year__revision_form'
+
+  %hr.mt-2/
+
+  #clientsPublicationsTagsModal.row.small
+    .col-1.d-flex.align-items-end.justify-content-end.font-weight-bold
+      add:
+    .col-11
+      .row.font-weight-bold
+        .col-3.pl-0
+          client
+        .col-3.pl-0
+          publication
+        .col-2
+          tag
+        .col-4
+          sections
+      .table_body
+        =render partial: 'story_types/clients/client_publication_tag_sections', collection: @story_type.clients_publications_tags
+      .row
+        .col-12.pl-0
+          =render 'story_types/clients/form'
+
+  .row
+    .col-11.offset-1.pl-0
+      %hr/
+
+  #excludedClientsPublicationsModal.row.small
+    .col-1.text-right.font-weight-bold
+      excepted:
+    .col-11.pl-0
+      .table_body
+        =render partial: 'story_types/clients/excepted_publication', collection: @story_type.excepted_publications
+      .p-0
+        =form_with(url: include_story_type_excepted_publications_path(@story_type),) do |f|
+          =f.collection_select :client_id, Client.where(hidden_for_story_type: false).order(name: :asc), :id, :name,
+                               { prompt: '' }, { class: 'mr-2', onchange: 'updatePublicationsByClient(event, this)' }
+          =f.collection_select :publication_id, [], :id, :name, {},
+                               { onchange: "Rails.fire(this.form, 'submit');" }
+
+        :javascript
+          function updatePublicationsByClient(event, select) {
+            let clientId = select.value;
+            let pubsSelect = select.form.querySelector('select[name="publication_id"]');
+
+            if(clientId === '') { return false; }
+
+            window.$.ajax({
+              url: `${window.location.origin}/api/clients/${clientId}/publications`,
+              dataType: 'json',
+              success: (publications) => {
+                let option = document.createElement("option");
+
+                pubsSelect.innerHTML = '';
+                pubsSelect.appendChild(option);
+
+                for (let i = 0; i < publications.length; i++) {
+                  option = document.createElement("option");
+                  option.setAttribute("value", publications[i].id);
+                  option.textContent = publications[i].name;
+                  pubsSelect.appendChild(option);
+                }
+              }
+            });
+          }
+  %hr/
+
+  #level__frequency__photo_bucket.row.mb-3.small
+    .col-1
+    .col-11
+      .row.font-weight-bold
+        .col-3.pl-0
+          level
+        .col-3.pl-0
+          frequency
+        .col-3
+          photo bucket
+        .col-3
+          gather task id
+          =link_to icon('fa', 'pencil', class: ' fa-xs text-dark'), edit_story_type_path(@story_type), remote: true,
+                   class: 'ml-1','data-toggle': 'collapse', role: 'button', href: '#gatherTaskForm',
+                   'aria-expanded': 'false', 'aria-controls': 'gatherTaskForm'
+      .row
+        .col-3.pl-0.level
+          -if @story_type.level
+            =render 'story_types/levels/level', level: @story_type.level
+          -else
+            =render 'story_types/levels/form'
+        .col-3.pl-0.frequency
+          -if @story_type.frequency
+            =render 'story_types/frequencies/frequency', frequency: @story_type.frequency
+          -else
+            =render 'story_types/frequencies/form'
+        .col-3.photo_bucket
+          -if @story_type.photo_bucket
+            =render 'story_types/photo_buckets/photo_bucket', photo_bucket: @story_type.photo_bucket
+          -else
+            =render 'story_types/photo_buckets/form'
+        .col-3.gather_task_id
+          .row.col-12
+            -if @story_type.gather_task
+              =link_to "https://pipeline.locallabs.com/gather_tasks/#{@story_type.gather_task}",
+                       "https://pipeline.locallabs.com/gather_tasks/#{@story_type.gather_task}",
+                       target: '_blank', id: 'gather_task_link'
+            -else
+              %a#gather_task_link.small{ href: 'https://pipeline.locallabs.com/gather_tasks/new', target: '_blank'}
+                https://pipeline.locallabs.com/gather_tasks/new
+
+            #gatherTaskForm.text-left.collapse
+              =form_with(model: @story_type, class: 'form-inline') do |form|
+                .form-group.mb-2.mr-sm-2
+                  =form.text_field :gather_task, value: @story_type.gather_task
+                .form-group.mb-2.mr-sm-2
+                  =form.submit :edit
+%hr/
+
+.update-opportunities-list-button
+  .row
+    .col-1
+    .col-2.pl-0.small
+      .header
+        .row.font-weight-bold
+          .col
+            control
+      .list
+        %hr.m-1/
+        .row.small
+          .col-12.mb-1
+            =button_to('update opportunity list', story_type_opportunities_path(@story_type), remote: true,
+                        class: 'w-100')
+          .col-12.mb-1
+            =button_to('update all list as first row', {}, id: 'update_opportunities', remote: true,
+                        class: 'w-100 mt-1', disabled: true)
+          .col-12.mb-1
+            =button_to('set default values', set_story_type_default_opportunities_path(@story_type),
+                       method: :patch, remote: true, class: 'w-100 mt-1')
+    .col-8.default-opportunities
+      .header.small
+        .row.font-weight-bold
+          .col-3
+            client
+          .col-3
+            opportunity
+          .col-3
+            opportunity type
+          .col-3
+            content type
+      .list
+        =render partial: 'story_types/default_opportunities/story_type_default_opportunity', collection:  @story_type.default_opportunities
+
+.opportunities
+  %hr/
+  .header
+    .row.font-weight-bold.small
+      .col-1
+      .col-2.pl-0
+        publication
+      .col-2
+        agency
+      .col-2
+        opportunity
+      .col-2
+        opportunity type
+      .col-2
+        content type
+  .list
+    =render partial: 'story_types/opportunities/story_type_opportunity', collection: @story_type.opportunities
+.loadingSpinner.d-none
+  .row
+    .col-10.offset-1
+      .spinner-border.spinner-border-sm.text-secondary
+        %span.sr-only

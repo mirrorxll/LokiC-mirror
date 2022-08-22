@@ -1,0 +1,4 @@
+$('#multiTasks>.col').html(
+    '<%= @scrape_task.multi_tasks.map { |t| link_to("##{t.id} #{t.title}", multi_task_path(t), target: '_blank') }.join('<br>').html_safe %>'
+);
+$('#multiTasks>:first-child>a').removeClass('disabled-link');

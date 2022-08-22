@@ -1,0 +1,122 @@
+=form_with(url: scrape_task_path(@scrape_task), method: :patch, local: true, html: { onkeypress: "return event.keyCode !== 13;" } ) do |f|
+  #nameAnchor.mb-1
+  #name.card
+    .card-body
+      .font-weight-bold.mb-2
+        NAME:
+        %span.small.text-danger
+          *required
+      =f.text_field "scrape_task[name]", class: 'form-control form-control-sm w-75',
+                    value: @scrape_task.name
+
+  #deadlineAnchor.mb-3
+  #deadline.card
+    .card-body
+      .font-weight-bold.mb-2
+        DEADLINE:
+      =f.date_field "scrape_task[deadline]", class: 'form-control form-control-sm w-50',
+                    value: @scrape_task.deadline
+
+  #stateAnchor.mb-3
+  #state.card
+    .card-body
+      .font-weight-bold.mb-1
+        STATE:
+      =f.collection_select 'scrape_task[state_id]', State.all, :id, :name,
+                           { include_blank: '', selected: @scrape_task.state&.id },
+                           { class: 'w-50 form-control form-control-sm' }
+
+  #urlAnchor.mb-3
+  #url.card
+    .card-body
+      .font-weight-bold.mb-1
+        URL:
+      =f.text_field 'scrape_task[datasource_url]', class: 'w-50 form-control form-control-sm', value: @scrape_task.datasource_url
+
+  #scrapableAnchor.mb-3
+  #scrapable.card
+    .card-body
+      .font-weight-bold.mb-1
+        SCRAPABLE?:
+      =f.radio_button "scrape_task[scrapable]", 1, checked: @scrape_task.scrapable.eql?(1), disabled: false, readonly: false
+      =f.label 'Yes', class: 'mr-2'
+      =f.radio_button "scrape_task[scrapable]", 0, checked: @scrape_task.scrapable.eql?(0), disabled: false, readonly: false
+      =f.label 'No'
+      =f.radio_button "scrape_task[scrapable]", -1, checked: @scrape_task.scrapable.nil?, disabled: false, readonly: false
+      =f.label 'Unknown'
+
+  #frequencyAnchor.mb-3
+  #frequency.card
+    .card-body
+      .font-weight-bold.mb-1
+        FREQUENCY:
+      =f.collection_select 'scrape_task[frequency_id]', Frequency.all, :id, :name,
+                           { include_blank: '', selected: @scrape_task.frequency&.id },
+                           { class: 'w-50 form-control form-control-sm' }
+
+  #comments.mt-3.mb-3
+    -{ 'COMMENT ON DATASOURCE' => 'datasource_comment',
+       'COMMENT ON SCRAPE ABILITY' => 'scrape_ability_comment',
+       'GENERAL COMMENT' => 'general_comment' }.each do |label, key|
+      .card.mb-3
+        .card-body
+          .font-weight-bold.mb-2
+            ="#{label}:"
+          =f.text_area "#{key}[body]", class: 'form-control form-control-sm w-75',
+                       value: @scrape_task.public_send(key).body&.gsub(/\\n/, '\n'), maxlength: 2000
+
+      :javascript
+        $('#comments textarea').froalaEditor({
+          key: 'KfdolbcqsaA2wzA-13==',
+          editorClass: 'border rounded p-2',
+          toolbarInline: true,
+          toolbarButtons: ['undo', 'redo', '|', 'bold', 'italic', 'underline', 'strikeThrough', '|', 'color', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'insertLink', 'insertImage'],
+          imageUploadURL: '/images/upload',
+          imageUploadMethod: 'POST',
+          toolbarVisibleWithoutSelection: false,
+          heightMin: 100,
+          zIndex: 3333,
+          placeholderText: 'Type here....'
+        })
+
+  #urlAnchor.mb-3
+  #url.card
+    .card-body
+      .font-weight-bold.mb-1
+        GATHER TASK ID:
+      =f.number_field 'scrape_task[gather_task]', class: 'w-50 form-control form-control-sm', value: @scrape_task.gather_task
+
+  =f.submit id: 'hiddenUpdateScrapeTaskButton', class: 'd-none'
+
+:javascript
+  document.querySelector('#updateScrapeTaskModal form').addEventListener('submit', onSubmit)
+
+  function onSubmit(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    let sections = `#name`
+    let cards = document.querySelectorAll(sections);
+    [...cards].forEach((el) => { el.classList.remove('border-danger') })
+
+    let orderName = document.querySelector('#name input').value.length > 0
+    if(!orderName) {
+      scrollToCard('#name')
+      return false;
+    }
+
+    event.target.submit();
+  }
+
+  document.querySelector('#updateScrapeTaskModal .modal-body').addEventListener('scroll', () => {
+    document.querySelectorAll('input[list]').forEach(el => { el.blur();  })
+  }, false)
+
+  function scrollToCard(id) {
+    let required = document.querySelector(id);
+
+    required.addEventListener('animationend', (ev) => { ev.target.classList.remove('touch-required-field') })
+    document.querySelector(id).classList.add('border-danger', 'touch-required-field')
+    document.querySelector(`${id}Anchor`).scrollIntoView();
+  }
+

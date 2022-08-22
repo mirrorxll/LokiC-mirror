@@ -10,9 +10,7 @@ class StoryTypeProductionRemovalsGrid
   accounts = Account.all.map { |r| [r.name, r.id] }.sort
   filter(:developer, :enum, select: accounts)
 
-  accounts = Account.joins(:account_types)
-                    .where(account_types: { name: %i[manager editor] })
-                    .map { |r| [r.name, r.id] }.sort
+  accounts = Account.all.map { |r| [r.name, r.id] }.sort
   filter(:editor, :enum, select: accounts) do |value, scope|
     scope.where(iterations: { story_types: { editors: { id: value } } })
   end

@@ -1,0 +1,15 @@
+#template.modal.fade.pr-0{ "aria-hidden" => "true", "aria-labelledby" => "template",
+                           'data-backdrop' => 'static', "data-keyboard" => "false" }
+  .modal-dialog.modal-dialog-scrollable.modal-xl
+    .modal-content
+      .modal-header.font-weight-bold
+      .modal-body.small
+      .modal-footer.justify-content-center
+        =link_to('UPDATE', '#', id: 'updateTemplateButton', class: 'btn btn-sm btn-dark')
+        .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+          CANCEL
+:javascript
+  document.querySelector('#updateTemplateButton').addEventListener('click', (event) => {
+    event.preventDefault();
+    document.querySelector('#hiddenUpdateTemplateButton').click();
+  }, false);

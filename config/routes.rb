@@ -3,30 +3,62 @@
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
-  root 'root#index'
-
-  devise_for :accounts, controllers: { registrations: 'registrations', sessions: 'sessions' }
+  root 'home#index'
 
   mount ActionCable.server, at: '/cable'
+  mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
+  mount Sidekiq::Web => '/sidekiq'
 
-  authenticate :account, ->(u) { u.types.include?('manager') } do
-    mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
-    mount Sidekiq::Web => '/sidekiq'
+  # create/destroy user session
+  get    'sign_in',  to: 'authenticates/sessions#new'
+  post   'sign_in',  to: 'authenticates/sessions#create'
+  delete 'sign_out', to: 'authenticates/sessions#destroy'
+
+  # reset user password
+  get   'send_password_reset_email', to: 'authenticates/passwords#new'
+  post  'send_password_reset_email', to: 'authenticates/passwords#create'
+  get   'password_reset',            to: 'authenticates/passwords#edit'
+  patch 'password_reset',            to: 'authenticates/passwords#update'
+
+  # edit user profile
+  get   'profile', to: 'authenticates/registrations#edit'
+  patch 'profile', to: 'authenticates/registrations#update'
+
+  scope module: :accounts do
+    resources :accounts, controller: :main, except: :destroy do
+      resource  :status, only: :update
+      resource  :roles, only: %i[show edit update]
+      resources :cards, only: %i[create update destroy] do
+        scope module: :cards do
+          resources :access_levels, only: %i[show new create edit update]
+        end
+      end
+    end
   end
 
-  resources :accounts, only: [:index] do
-    post :impersonate,        on: :member
-    post :stop_impersonating, on: :collection
-  end
+  post   'accounts/:account_id/impersonate', to: 'accounts/impersonates#create', as: 'account_impersonate'
+  delete 'accounts/stop_impersonating',      to: 'accounts/impersonates#destroy', as: 'account_stop_impersonating'
 
   namespace :api, constraints: { format: :json } do
     namespace :v1 do
+      scope module: :multi_tasks do
+        resources :multi_tasks, controller: :main, only: %i[index]
+      end
+
       scope module: :scrape_tasks do
         resources :scrape_tasks, controller: :main, only: %i[index show]
       end
 
-      scope module: :multi_tasks do
-        resources :multi_tasks, controller: :main, only: %i[index]
+      scope module: :data_sets do
+        resources :data_sets, controller: :main, only: :index
+      end
+
+      scope module: :factoid_types do
+        resources :factoid_types, controller: :main, only: :index
+      end
+
+      scope module: :story_types do
+        resources :story_types, controller: :main, only: :index
       end
     end
 
@@ -38,7 +70,7 @@ Rails.application.routes.draw do
 
     scope module: :work_requests, path: 'work_requests', as: 'work_request_collections' do
       resources :clients, only: [] do
-        get :find_by_name, on: :collection
+        get :find_by_name, on: :collection, path: 'bla_bla_bla'
       end
     end
 
@@ -47,7 +79,7 @@ Rails.application.routes.draw do
     end
 
     scope module: :work_requests, path: 'work_requests/:id', as: 'work_request_members' do
-      resources :project_statuses, only: [] do
+      resources :multi_task_statuses, only: [] do
         get :all_deleted, on: :collection
       end
     end
@@ -68,13 +100,6 @@ Rails.application.routes.draw do
       resources :main_agency_opportunities, path: :opportunities, as: :opportunities, only: :index
     end
 
-    resources :scrape_tasks, only: [] do
-      get :names, on: :collection
-      get :data_set_locations, on: :collection
-    end
-
-    resources :schemas, only: :index
-    resources :table_locations, only: %i[index create destroy]
     resources :data_samples, only: :show
 
     scope module: :scrape_tasks, path: 'scrape_tasks/:scrape_task_id', as: 'scrape_tasks' do
@@ -84,7 +109,6 @@ Rails.application.routes.draw do
     resources :tasks, only: [] do
       get :titles, on: :collection
       get :subtasks, on: :member
-
     end
 
     scope module: :tasks, path: 'tasks/:task_id', as: 'tasks' do
@@ -99,70 +123,66 @@ Rails.application.routes.draw do
     get 'all_statewide_publications_scope_id', to: 'publications#all_statewide_pubs_scope_id'
   end
 
-  resources :work_requests, except: :destroy do
-    authenticate :account, ->(u) { u.types.include?('manager') } do
-      patch :archive,   on: :member
-      patch :unarchive, on: :member
-    end
-
-    scope module: :work_requests do
-      resources :progress_statuses, only: [] do
-        patch :change, on: :collection
-      end
-
-      resources :sow_cells, only: [] do
-        patch :change, on: :collection
-      end
-    end
-  end
-  resources :factoid_requests, except: :destroy do
-    scope module: :factoid_requests do
-      resources :progress_statuses, only: [] do
-        patch :change, on: :collection
-      end
+  resources :schemas, only: :index do
+    scope module: :schemas do
+      resources :sql_tables, only: %i[index create destroy]
     end
   end
 
-  resources :tasks do
-    get  :add_subtask,    on: :collection
-    get  :new_subtask,    on: :collection
-    post :create_subtask, on: :collection
-
-    resources :progress_statuses, controller: 'task_statuses', only: [] do
-      patch :change, on: :collection
-      post  :comment, on: :collection
-      patch :subtasks,      on: :collection
-    end
-
-    resources :checklists, controller: 'task_checklists', only: %i[new create edit update] do
-      patch :confirm,   on: :member
-    end
-
-    resources :receipts, controller: 'task_receipts', only: :index do
-      patch :confirm,   on: :collection
-    end
-
-    resources :comments, controller: 'task_comments', only: %i[new create edit update destroy]
-
-    resources :assignments, controller: 'task_assignments', only: [] do
-      get   :edit,   on: :collection
-      patch :update, on: :collection
-      get   :cancel, on: :collection
-    end
-
-    resources :notes, controller: 'task_notes', only: %i[new create edit update] do
-      get :cancel_edit, on: :member
+  scope module: :work_requests do
+    resources :work_requests, controller: :main, except: :destroy do
+      resource :archive, only: :update
+      resource :progress_status, only: :update
+      resource :sow_cell, only: :update
     end
   end
-  resources :task_tracking_hours, controller: 'task_tracking_hours', only: :index
 
-  resources :scrape_tasks, except: :destroy do
-    patch :evaluate
+  scope module: :factoid_requests do
+    resources :factoid_requests, controller: :main, except: :destroy do
+      resource :progress_status, only: :update
+      resources :templates, only: :update
+    end
+  end
 
-    scope module: 'scrape_tasks' do
+  scope module: :multi_tasks do
+    resources :multi_tasks, controller: :main, except: :destroy do
+      get  :add_subtask,    on: :collection
+      get  :new_subtask,    on: :collection
+      post :create_subtask, on: :collection
+
       resources :progress_statuses, only: [] do
-        patch :change, on: :collection
+        patch :change,   on: :collection
+        post  :comment,  on: :collection
+        patch :subtasks, on: :collection
       end
+
+      resources :checklists, only: %i[new create edit update] do
+        patch :confirm, on: :member
+      end
+
+      resources :receipts, only: :index do
+        patch :confirm, on: :collection
+      end
+
+      resources :comments, only: %i[new create edit update destroy]
+
+      resources :assignments, only: [] do
+        get   :edit,   on: :collection
+        patch :update, on: :collection
+        get   :cancel, on: :collection
+      end
+
+      resources :notes, only: %i[new create edit update] do
+        get :cancel_edit, on: :member
+      end
+    end
+  end
+  resources :task_tracking_hours, controller: 'multi_tasks/tracking_hours', only: :index
+
+  scope module: :scrape_tasks do
+    resources :scrape_tasks, controller: 'main', except: %i[edit destroy] do
+
+      resource :progress_statuses, only: :update
 
       resource :instruction, only: %i[edit update] do
         get   :cancel_edit
@@ -174,120 +194,39 @@ Rails.application.routes.draw do
         patch :autosave
       end
 
-      resources :tags, only: [] do
-        post :include, on: :collection
-        delete :exclude
-      end
-
-      resources :tasks, only: :new
+      resource :scraper, only: %i[show edit update]
+      resource :tags, only: %i[show edit update]
+      resource :multi_tasks, only: %i[show edit update]
+      resource :data_sets, only: %i[show edit update]
+      resource :table_locations, only: %i[show edit update]
+      resource :data_samples, only: :show
     end
   end
-  resources :data_sets, except: %i[new] do
-    get :properties, on: :member
 
-    resources :story_types, only: %i[new create]
-    resources :article_types, only: %i[new create]
+  scope module: :data_sets do
+    resources :data_sets, controller: 'main', except: %i[new] do
+      get :properties, on: :member
+
+      resource :status, only: :update
+      resource :sheriff, only: %i[show edit update]
+      resource :responsible_editor, only: %i[show edit update]
+      resource :scrape_tasks, only: %i[show edit update]
+      resource :table_locations, only: %i[show edit update]
+    end
+
   end
 
   resources :table_locations, only: :new
   resources :data_samples, only: %i[index]
 
-  resources :article_types, except: %i[new create] do
-    get   :properties_form
-    get   :canceling_rename,  on: :member
-    patch :update_sections,   on: :member
-    patch :change_data_set,   on: :member
+  scope module: :story_types do
+    resources :story_types, controller: :main do
+      get   :canceling_edit,  on: :member
 
-    scope module: :article_types do
-      resources :templates, path: :template, only: %i[show edit update] do
-        patch :save, on: :member
-      end
+      resource :data_set,       only: :update
+      resource :property_form,  only: :show
+      resource :update_section, only: :update
 
-      resources :progress_statuses, only: [] do
-        patch :change, on: :collection
-      end
-
-      resources :frequencies, path: :frequency, only: [] do
-        post   :include, on: :collection
-        delete :exclude, on: :member
-      end
-
-      resources :developers, only: [] do
-        patch   :include, on: :collection
-        delete  :exclude, on: :member
-      end
-
-      resources :staging_tables, only: %i[show create destroy] do
-        post    :attach,         on: :collection
-        patch   :sync,           on: :member
-        get     :canceling_edit, on: :collection
-
-        resources :columns, controller: :staging_table_columns, only: %i[edit update]
-        resources :indices, controller: :staging_table_indices, only: %i[new create destroy]
-      end
-
-      resources :codes, only: [] do
-        get    :show,   on: :collection
-        post   :attach, on: :collection
-        put    :reload, on: :collection
-      end
-
-      resources :fact_checking_docs do
-        get   :template
-        post  :send_to_reviewers_channel
-        patch :save, on: :member
-
-        resources :reviewers_feedback, only: %i[new create] do
-          patch :confirm, on: :member
-        end
-
-        resources :editors_feedback, only: %i[new create] do
-          patch :confirm, on: :member
-        end
-      end
-
-      resources :iterations, only: %i[create update] do
-        patch :apply, on: :member
-
-        resources :populations, path: :populate, only: [] do
-          post   :execute, on: :collection
-          delete :purge,   on: :collection
-        end
-
-        resources :samples, only: %i[index show] do
-          post   :generate, on: :collection
-          delete :purge,    on: :collection
-        end
-
-        resources :articles, only: :index
-
-        resources :creations, only: [] do
-          post   :execute, on: :collection
-          delete :purge,   on: :collection
-        end
-
-        resources :exports, path: :export, only: [] do
-          post   :execute,                  on: :collection
-          delete :remove_exported_articles, on: :collection
-          delete :remove_selected_factoids, on: :collection
-          patch  :update_section,           on: :collection
-          get    :articles,                 on: :collection
-        end
-      end
-
-      resources :topics, only: [] do
-        patch :change,           on: :member
-        get   :get_descriptions, on: :collection
-      end
-    end
-  end
-  resources :story_types, except: %i[new create] do
-    get   :properties_form
-    get   :canceling_edit,  on: :member
-    patch :update_sections, on: :member
-    patch :change_data_set, on: :member
-
-    scope module: :story_types do
       resources :templates, path: :template, only: %i[show edit update] do
         patch :save, on: :member
       end
@@ -434,10 +373,100 @@ Rails.application.routes.draw do
       post '/sidekiq_breaks', to: 'sidekiq_breaks#cancel'
     end
   end
+
   resources :shown_samples,        controller: 'story_types/shown_samples',        only: :index
   resources :exported_story_types, controller: 'story_types/exported_story_types', only: :index
   resources :archived_story_types, controller: 'story_types/archived_story_types', only: :index
   resources :production_removals,  only: :index
+
+  scope module: :factoid_types do
+    resources :factoid_types, controller: :main do
+      get   :canceling_rename,  on: :member
+
+      resource :data_set,       only: :update
+      resource :property_form,  only: :show
+      resource :update_section, only: :update
+
+      resources :templates, path: :template, only: %i[show edit update] do
+        patch :save, on: :member
+      end
+
+      resources :progress_statuses, only: [] do
+        patch :change, on: :collection
+      end
+
+      resources :frequencies, path: :frequency, only: [] do
+        post   :include, on: :collection
+        delete :exclude, on: :member
+      end
+
+      resources :developers, only: [] do
+        patch   :include, on: :collection
+        delete  :exclude, on: :member
+      end
+
+      resources :staging_tables, only: %i[show create destroy] do
+        post    :attach,         on: :collection
+        patch   :sync,           on: :member
+        get     :canceling_edit, on: :collection
+
+        resources :columns, controller: :staging_table_columns, only: %i[edit update]
+        resources :indices, controller: :staging_table_indices, only: %i[new create destroy]
+      end
+
+      resources :codes, only: [] do
+        get    :show,   on: :collection
+        post   :attach, on: :collection
+        put    :reload, on: :collection
+      end
+
+      resources :fact_checking_docs do
+        get   :template
+        post  :send_to_reviewers_channel
+        patch :save, on: :member
+
+        resources :reviewers_feedback, only: %i[new create] do
+          patch :confirm, on: :member
+        end
+
+        resources :editors_feedback, only: %i[new create] do
+          patch :confirm, on: :member
+        end
+      end
+
+      resources :iterations, only: %i[create update] do
+        patch :apply, on: :member
+
+        resources :populations, path: :populate, only: [] do
+          post   :execute, on: :collection
+          delete :purge,   on: :collection
+        end
+
+        resources :samples, only: %i[index show] do
+          post   :generate, on: :collection
+          delete :purge,    on: :collection
+        end
+
+        resources :creations, only: [] do
+          post   :execute, on: :collection
+          delete :purge,   on: :collection
+        end
+
+        resources :exports, path: :export, only: [] do
+          post   :execute,                  on: :collection
+          delete :remove_exported_factoids, on: :collection
+          delete :remove_selected_factoids, on: :collection
+          patch  :update_section,           on: :collection
+          get    :factoids,                 on: :collection
+        end
+      end
+
+      resources :topics, only: [] do
+        patch :change,           on: :member
+        get   :get_descriptions, on: :collection
+      end
+    end
+  end
 
   resources :developers_productions, only: [] do
     get :scores,          on: :collection
@@ -446,7 +475,7 @@ Rails.application.routes.draw do
   end
 
   resources :press_release_reports, path: '/press_release_report', only: %i[index] do
-    get :get_report,  on: :collection
+    get :get_report, on: :collection
     post :show_report, on: :collection
   end
 

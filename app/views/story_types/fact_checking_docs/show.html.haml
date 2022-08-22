@@ -1,5 +1,4 @@
 -if @iteration.auto_feedback_confirmations.all?(&:confirmed)
-  -account_types = current_account.types
   -reviewers_feedback = @fcd.reviewers_feedback
   -editors_feedback = @fcd.editors_feedback
   %hr/
@@ -14,9 +13,8 @@
         %ov.breadcrumb.mb-0
           %li.breadcrumb-item
             =link_to('home', root_url)
-          -if current_account.types.include?('editor')
-            %li.breadcrumb-item
-              =link_to('data set', data_set_path(@story_type.data_set))
+          %li.breadcrumb-item
+            =link_to('data set', data_set_path(@story_type.data_set))
           %li.breadcrumb-item
             =link_to('story type', story_type_path(@story_type))
           %li.breadcrumb-item.active{ 'area-current' => 'page' }
@@ -26,12 +24,12 @@
   .row
     .col-10.offset-1
       #fcd_control.small
-        =render 'fcd_buttons', account_types: account_types
+        =render 'fcd_buttons'
   %hr/
   .row
     .col-10.offset-1
       #templatePreviewCollapse.collapse.show
-        =render 'story_types/template_preview'
+        =render 'story_types/main/template_preview'
   %hr/
   .row
     .col-10.offset-1
@@ -45,7 +43,7 @@
         .card-header.d-flex.justify-content-between.align-items-center
           reviewers feedback
           .btn-group
-            -if account_types.include?('manager')
+            -if current_account.manager? || current_account.content_manager?
               =link_to("add feedback", new_story_type_fact_checking_doc_reviewers_feedback_path(@story_type, @fcd),
                        'data-toggle'=>'modal', 'data-target'=>'#manual_feedback_modal',
                        class: "btn btn-sm btn-light text-dark", onclick: 'hideAllPopovers();', remote: true)
@@ -85,7 +83,7 @@
           editors feedback
 
           .btn-group
-            -if !account_types.include?('developer')
+            -if current_account.manager? || current_account.content_fcd_checker?
               =link_to("add feedback", new_story_type_fact_checking_doc_editors_feedback_path(@story_type, @fcd),
                        'data-toggle'=>'modal', 'data-target'=>'#manual_feedback_modal',
                        class: "btn btn-sm btn-light text-dark", onclick: 'hideAllPopovers();', remote: true)
@@ -159,4 +157,4 @@
   .row
     .col-12.text-center.alert.alert-danger
       First...confirm all auto-feedback.
-=render 'story_types/template_modal'
+=render 'story_types/main/template_modal'

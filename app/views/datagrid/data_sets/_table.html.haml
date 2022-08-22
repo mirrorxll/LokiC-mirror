@@ -1,0 +1,10 @@
+-if grid.html_columns(*options[:columns]).any?
+  =content_tag :table, class: %w(table table-sm table-bordered table-striped table-hover) do
+    %thead.thead-dark
+      =datagrid_header(grid, options)
+    %tbody
+      -if assets.any?
+        =datagrid_rows(grid, assets, **options)
+      -else
+        %tr.text-center
+          %td.noresults{:colspan => "100%"}= I18n.t('datagrid.no_results').html_safe

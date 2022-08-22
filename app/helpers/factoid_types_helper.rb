@@ -1,0 +1,2 @@
+module FactoidTypesHelper
+end

@@ -8,116 +8,66 @@
     =csp_meta_tag
     =stylesheet_pack_tag  'application', media: 'all', 'data-turbolinks-track': 'reload'
     =javascript_pack_tag  'application', 'data-turbolinks-track': 'reload'
+    %link{ rel: "preconnect", href:"https://fonts.googleapis.com" }
+    %link{ rel: "preconnect", href: "https://fonts.gstatic.com", crossorigin: true }
+    %link{ href: "https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap", rel: "stylesheet" }
   %body
-    %nav.navbar.navbar-expand-lg.navbar-light.bg-light.small
-      .small
-        =link_to('LokiC', root_path, class: 'navbar-brand')
-      %button.navbar-toggler{"aria-controls" => "navbarNavDropdown", "aria-expanded" => "false",
-                             "aria-label" => "Toggle navigation", "data-target" => "#navbarNavDropdown",
-                             "data-toggle" => "collapse", type: "button"}
-        %span.navbar-toggler-icon
-      #navbarNavDropdown.collapse.navbar-collapse
-        %ul.navbar-nav.w-100
-          -acc_types = current_account&.types
+    %div.container-fluid{ class: current_account ? 'mt-5 pt-2' : ''}
+      -if current_account
+        %header
+          %nav.navbar.fixed-top.navbar-expand-lg.navbar-dark.bg-dark.small.justify-content-center.text-uppercase
+            .small
+              =link_to('lokic', root_path, class: 'navbar-brand')
+            %button.navbar-toggler{"aria-controls" => "navbarNavDropdown", "aria-expanded" => "false",
+                                   "aria-label" => "Toggle navigation", "data-target" => "#navbarNavDropdown",
+                                   "data-toggle" => "collapse", type: "button"}
+              %span.navbar-toggler-icon
+            #navbarNavDropdown.collapse.navbar-collapse
+              %ul.navbar-nav.w-100.align-items-center
+                -current_account.branch_names.each do |branch|
+                  %li.nav-item{ class: controller.is_a?(Object.const_get("#{branch.camelize}Controller")) ? 'active' : '' }
+                    =link_to(branch.humanize, public_send("#{branch}_path"), class: 'nav-link')
 
-          -if acc_types
-            -if acc_types.include?('outside manager')
-              %li.nav-item.active
-                =link_to('work requesting', work_requests_path(archived: false), class: 'nav-link')
-              %li.nav-item.active
-                =link_to('requested factoids', factoid_requests_path, class: 'nav-link')
-              %li.nav-item.active
-                =link_to('multi tasks', tasks_path, class: 'nav-link')
-              %li.nav-item.active.dropdown
-                #navbarDropdown.nav-link.dropdown-toggle{ "aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button" }
-                  reports
-                .dropdown-menu{"aria-labelledby" => "navbarDropdown"}
-                  .dropdown-item
-                    =link_to('developers production', exported_counts_developers_productions_path, class: 'nav-link small')
-                  .dropdown-item
-                    =link_to('assembled 2020', assembleds_tracking_hours_path(week: current_week), class: 'nav-link small')
+                %li.nav-item.active.ml-lg-auto
+                  .nav-link{ style: 'text-transform: none;'}
+                    =current_account.name
 
-            -elsif acc_types.include?('client')
-              %li.nav-item.active
-                =link_to('work requesting', work_requests_path(archived: false), class: 'nav-link')
-              %li.nav-item.active
-                =link_to('requested factoids', factoid_requests_path, class: 'nav-link')
+                %li.nav-item.active.dropdown{ class: "#{true_account.manager? ? " border-lg-right pr-lg-2 mr-lg-2" : ''}" }
+                  #navbarDropdown3.nav-link.text-center{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
+                    =icon('fa', 'user-circle', class: 'fa-2x')
+                  .dropdown-menu.dropdown-menu-right.text-sm-center.text-lg-right{"aria-labelledby" => "navbarDropdown"}
+                    .dropdown-item
+                      =link_to('tracking hours', tracking_hours_path(week: current_week, developer: current_account), class: 'nav-link small text-dark')
+                    .dropdown-item
+                      =link_to('edit profile', profile_path, class: 'nav-link small text-dark')
+                    .dropdown-item
+                      =link_to('sign out', sign_out_path, class: 'nav-link small text-dark', method: :delete)
 
-            -else
-              -if acc_types.include?('manager')
-                %li.nav-item.active.dropdown
-                  #navbarDropdown1.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
-                    management
-                  .dropdown-menu{"aria-labelledby" => "navbarDropdown1"}
-                    .dropdown-item
-                      =link_to('requested work', work_requests_path(archived: false), class: 'nav-link small')
-                    .dropdown-item
-                      =link_to('requested factoids', factoid_requests_path, class: 'nav-link small')
-                    .dropdown-item
-                      =link_to('admin panel', rails_admin_path, class: 'nav-link small', target: '_blank')
-                    .dropdown-item
-                      =link_to('sidekiq panel', sidekiq_web_path, class: 'nav-link small', target: '_blank')
-                    .dropdown-item
-                      =link_to('developers production', exported_counts_developers_productions_path, class: 'nav-link small')
-                    .dropdown-item
-                      =link_to('assembled 2020', assembleds_tracking_hours_path(week: current_week), class: 'nav-link small')
-                    .dropdown-item
-                      =link_to('tracking hours tasks', task_tracking_hours_path, class: 'nav-link small')
-                    .dropdown-item
-                      =link_to('press release report', press_release_reports_path, class: 'nav-link small')
+                -if true_account.manager?
+                  %li.nav-item.active
+                    -if current_account.eql?(true_account)
+                      =link_to(icon('fa', 'address-book-o', class: 'fa-2x'), accounts_path, class: 'nav-link small')
+                    -else
+                      =link_to(icon('fa', 'share', class: 'fa-2x text-light'), account_stop_impersonating_path, method: :delete, class: 'nav-link small text-dark text-dark')
 
-              -if (acc_types & %w[manager editor developer]).any?
-                %li.nav-item.active.dropdown
-                  #navbarDropdown2.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
-                    HLE
-                  .small.dropdown-menu{"aria-labelledby" => "navbarDropdown2  "}
-                    -if (acc_types & %w[manager editor]).any?
+                  %li.nav-item.active.dropdown
+                    #navbarDropdown1.nav-link.text-center{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
+                      =icon('fa', 'bars', class: 'fa-2x')
+                    .dropdown-menu.dropdown-menu-right.text-sm-center.text-lg-right{"aria-labelledby" => "navbarDropdown1"}
                       .dropdown-item
-                        =link_to('data sets', data_sets_path, class: 'nav-link small')
-                    .dropdown-item
-                      =link_to('story types', story_types_path, class: 'nav-link small')
-                    .dropdown-item
-                      =link_to('factoid types', article_types_path, class: 'nav-link small')
-                    -if (acc_types & %w[manager editor]).any?
+                        =link_to('admin panel', rails_admin_path, class: 'nav-link small text-dark', target: '_blank')
                       .dropdown-item
-                        =link_to('removals from PL', production_removals_path, class: 'nav-link small')
+                        =link_to('sidekiq panel', sidekiq_web_path, class: 'nav-link small text-dark', target: '_blank')
+                      .dropdown-item
+                        =link_to('developers production', exported_counts_developers_productions_path, class: 'nav-link small text-dark')
+                      .dropdown-item
+                        =link_to('assembled 2020', assembleds_tracking_hours_path(week: current_week), class: 'nav-link small text-dark')
+                      .dropdown-item
+                        =link_to('tracking hours tasks', task_tracking_hours_path, class: 'nav-link small text-dark')
+                      .dropdown-item
+                        =link_to('press release report', press_release_reports_path, class: 'nav-link small text-dark')
 
-              -if (acc_types & %w[manager editor scraper]).any?
-                %li.nav-item.active
-                  =link_to('scrape tasks', scrape_tasks_path, class: 'nav-link')
-
-              %li.nav-item.active
-                =link_to('multi tasks', tasks_path, class: 'nav-link')
-
-              %li.nav-item.active
-                =link_to('tracking hours', tracking_hours_path(week: current_week, developer: current_account), class: 'nav-link')
-
-            %li.nav-item.dropdown.ml-auto
-              #navbarDropdown3.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
-                =current_account.name
-              .dropdown-menu.dropdown-menu-right{"aria-labelledby" => "navbarDropdown"}
-                -if acc_types.include?('manager')
-                  .dropdown-item
-                    =link_to('login as', accounts_path, class: 'nav-link small')
-                -if current_account != true_account
-                  =link_to("back to #{true_account.name}", stop_impersonating_accounts_path, method: :post, class: 'nav-link small')
-                .dropdown-item
-                  =link_to('edit profile', edit_account_registration_path, class: 'nav-link small')
-                .dropdown-item
-                  =link_to('log out', destroy_account_session_path, class: 'nav-link small', method: :delete)
-
-    -if notice
-      %p.alert.alert-success.text-center
-        =notice
-    -if alert
-      %p.alert.alert-danger.text-center
-        =alert
-    -if controller_name.in?(%w(data_sets story_types samples exports exported_story_types work_requests tasks archived_story_types articles)) && action_name.in?(%w(index stories articles))
-      %div{ class: "container-fluid" }
+      %main
         =yield
-    -elsif controller_name.eql?('scrape_tasks')
-      =yield
-    -else
-      %div{ class: "container" }
-        =yield
-    =toastr_flash
+        =toastr_js_flash
+      %footer

@@ -2,22 +2,23 @@
 
 RailsAdmin.config do |config|
   config.asset_source = :webpacker
-  config.main_app_name = proc { |c| ['LokiC', c.params[:action].try(:titleize)] }
+  config.main_app_name = proc { |c| ['LOKIC', c.params[:action].try(:titleize)] }
   ### Popular gems integration
 
-  ## == Devise ==
-  config.authenticate_with do
-    warden.authenticate! scope: :account
+  config.authorize_with do
+    account = Account.find_by(auth_token: cookies.encrypted[:remember_me] || session[:auth_token])
+    redirect_to main_app.sign_in_path, flash: { error: { rails_admin: 'please sign in to continue..' } } if account.nil?
   end
-  config.current_user_method(&:current_account)
 
-  # this is the way to whitelist the models
+  config.current_user_method do
+    Account.find_by(auth_token: cookies.encrypted[:remember_me] || session[:auth_token])
+  end
+
   config.included_models =
     %w[
-      Account AccountType ArticleType ArticleTypeIteration Assembled
+      FactoidType FactoidTypeIteration Assembled
       Client ClientsReport Comment CronTab DataSet DataSetCategory
       Frequency Level PhotoBucket Publication Reminder ScrapeTask SlackAccount StagingTable
-      State Status StoryType StoryTypeIteration Tag Task TimeFrame
+      State Status StoryType StoryTypeIteration Tag MultiTask TimeFrame
     ]
 end
-

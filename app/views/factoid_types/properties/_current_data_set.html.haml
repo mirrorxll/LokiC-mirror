@@ -1,0 +1,15 @@
+.row.mb-1.font-weight-bold
+  .col-6
+    data set
+  .col-5
+    current iteration
+.row
+  .col-6
+    -if @data_sets_permissions && @data_sets_permissions['grid'].values.any? && @factoid_type.data_set.present?
+      =link_to @factoid_type.data_set.name, data_set_path(@factoid_type.data_set), class: 'no-link'
+      =link_to icon('fa', 'info-circle'), properties_data_set_path(@factoid_type.data_set), remote: true
+    -else
+      =@factoid_type.data_set.present? ? @factoid_type.data_set.name : '---'
+  .col-5
+    =@iteration.id
+%hr/

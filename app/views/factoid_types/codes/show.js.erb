@@ -1,0 +1,3 @@
+$('#ruby_code .modal-title').html('<%= @factoid_type.name %>')
+$('#ruby_code .modal-body').html('<%= j @ruby_code.html_safe %>')
+$('#ruby_code').modal('show');

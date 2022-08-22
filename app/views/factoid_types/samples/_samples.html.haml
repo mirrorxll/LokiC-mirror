@@ -1,0 +1,40 @@
+-if @factoid_type.iteration.population
+  -if !@factoid_type.iteration.eql?(@iteration)
+    .row
+      .col-10.offset-1
+        #created_stories
+          -stories = @iteration.factoids.where(sampled: true)
+          -if stories.count.positive?
+            =render partial: 'factoid_types/samples/sample', collection: stories
+          -else
+            .small
+              Samples were not created.
+          %hr/
+
+    .row
+      .col-10.offset-1
+        %hr/
+        =render 'factoid_types/samples/stories_link'
+
+  -elsif @iteration.samples.eql?(false) || @iteration.creation.eql?(false)
+    =render 'factoid_types/main/spinner', description: 'creation in progress'
+  -elsif @iteration.purge_samples.eql?(false) || @iteration.purge_creation.eql?(true)
+    =render 'factoid_types/main/spinner', description: 'purging in progress'
+  -else
+    - samples = @iteration.factoids.where(sampled: true)
+    .row.border-top.mt-3.mx-0.pt-3
+      .col-10.offset-1
+        #stories_form
+          =render 'factoid_types/samples/form', samples: samples
+    .row.border-top.mt-3.mx-0.pt-3
+      .col-10.offset-1
+        #created_stories
+          -if samples.count.positive?
+            =render partial: 'factoid_types/samples/sample', collection: samples
+          -else
+            .small
+              Samples were not created.
+        %hr/
+
+    #fcd__create_destroy_all_stories
+      =render 'factoid_types/samples/fcd_create_stories_buttons', samples: samples

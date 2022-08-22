@@ -1,0 +1,157 @@
+=form_with(url: data_set_path(@data_set), method: :patch, local: true, html: { onkeypress: "return event.keyCode !== 13;" } ) do |f|
+  #nameAnchor.mb-3
+  #name.card
+    .card-body
+      .font-weight-bold.mb-2
+        NAME:
+        %span.small.text-danger
+          *required
+      =f.text_field "data_set[name]", class: 'form-control form-control-sm w-75', value: @data_set.name
+
+  #slackChannelAnchor.mb-3
+  #slackChannel.card
+    .card-body
+      .font-weight-bold.mb-2
+        SLACK CHANNEL:
+      =f.text_field "data_set[slack_channel]", class: 'form-control form-control-sm w-50', value: @data_set.slack_channel
+
+  #stateAnchor.mb-3
+  #state.card
+    .card-body
+      .font-weight-bold.mb-1
+        STATE:
+      =f.collection_select 'data_set[state_id]', State.all, :id, :name,
+                           { include_blank: '-- not set --', selected: @data_set.state&.id },
+                           { class: 'w-50 form-control form-control-sm' }
+      :javascript
+        (() => {
+          let select = $('select[name="data_set[state_id]"]').select2({});
+          select.data('select2').$container.addClass('w-50');
+          select.data('select2').$dropdown.addClass('small');
+          $('.select2-selection.select2-selection--single').css('border', '1px solid #ced4da');
+          select.on('select2:open', () => {
+            $('.select2-dropdown').css('border', '1px solid #ced4da');
+          });
+        })();
+
+  #categoryAnchor.mb-3
+  #category.card
+    .card-body
+      .font-weight-bold.mb-1
+        CATEGORY:
+      =f.collection_select 'data_set[category_id]', DataSetCategory.all, :id, :name,
+                           { include_blank: '-- not set --', selected: @data_set.category&.id },
+                           { class: 'w-50 form-control form-control-sm' }
+      :javascript
+        (() => {
+          let select = $('select[name="data_set[category_id]"]').select2({});
+          select.data('select2').$container.addClass('w-50');
+          select.data('select2').$dropdown.addClass('small');
+          $('.select2-selection.select2-selection--single').css('border', '1px solid #ced4da');
+          select.on('select2:open', () => {
+            $('.select2-dropdown').css('border', '1px solid #ced4da');
+          });
+        })();
+
+  #photoBucketAnchor.mb-3
+  #photoBucket.card
+    .card-body
+      .font-weight-bold.mb-1
+        PHOTO BUCKET:
+      =f.collection_select 'default_props[photo_bucket_id]', PhotoBucket.all, :id, :name,
+                           { include_blank: '-- not set --', selected: @data_set.photo_bucket&.id },
+                           { class: 'w-50 form-control form-control-sm' }
+      :javascript
+        (() => {
+          let select = $('select[name="default_props[photo_bucket_id]"]').select2({});
+          select.data('select2').$container.addClass('w-50');
+          select.data('select2').$dropdown.addClass('small');
+          $('.select2-selection.select2-selection--single').css('border', '1px solid #ced4da');
+          select.on('select2:open', () => {
+            $('.select2-dropdown').css('border', '1px solid #ced4da');
+          });
+        })();
+
+  #clientsPublicationsTagsAnchor.mb-3
+  #clientsPublicationsTags.card
+    .card-body
+      .font-weight-bold.mb-1
+        CLIENTS/PUBLICATIONS/TAGS:
+      =link_to('[add client/tag]', '#', id: 'add_client', class: 'badge badge-pill badge-light text-secondary mb-2')
+      -@data_set.client_publication_tags.each do |row|
+        -u_id = SecureRandom.hex(3)
+        .row.mb-1{ id: u_id }
+          .col-3.pr-0
+            =f.collection_select :client_id, Client.where(hidden_for_story_type: false).sort_by(&:name), :id, :name,
+                                 { include_blank: true, selected: row.client.id },
+                                 { id: "data_set_default_#{u_id}_client_id", name: "default_props[client_tag_ids[#{u_id}[client_id]]]", class: 'form-control form-control-sm clients_select', required: true }
+          .col-4.pr-0
+            =f.collection_select :publication_id, Publication.where(name: ['all local publications', 'all statewide publications', 'all publications']) + row.client.publications.sort_by(&:name), :id, :name,
+                                 { include_blank: true, selected: row.publication ? row.publication.id : Publication.where(name: 'all publications').first.id },
+                                 { id: "data_set_default_#{u_id}_publication_id", name: "default_props[client_tag_ids[#{u_id}[publication_id]]]", class: 'form-control form-control-sm publications_select' }
+
+          .col-3.pr-1
+            =f.select :tag_id, grouped_options_for_select(tags_for_publication(row.publication, row.client), row.tag.id), {}, { include_blank: true, id: "data_set_default_#{u_id}_tag_id", name: "default_props[client_tag_ids[#{u_id}[tag_id]]]",
+                                                           class: 'form-control form-control-sm tags_select', required: true }
+
+          .col-2.d-flex.align-items-center
+            %strong.remove_x.mouse-hover
+              [ X ]
+    =javascript_pack_tag 'data_sets/form'
+
+  #generalCommentAnchor.mb-3
+  #generalComment.card
+    .card-body
+      .font-weight-bold.mb-2
+        GENERAL COMMENT:
+      =f.text_area "general_comment[body]", class: 'form-control form-control-sm w-75',
+                   value: @data_set.general_comment.body&.gsub(/\\n/, '\n'), maxlength: 2000
+
+  :javascript
+    $('#generalComment textarea').froalaEditor({
+      key: 'KfdolbcqsaA2wzA-13==',
+      editorClass: 'border rounded p-2',
+      toolbarInline: true,
+      toolbarButtons: ['undo', 'redo', '|', 'bold', 'italic', 'underline', 'strikeThrough', '|', 'color', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'insertLink', 'insertImage'],
+      imageUploadURL: '/images/upload',
+      imageUploadMethod: 'POST',
+      toolbarVisibleWithoutSelection: false,
+      heightMin: 100,
+      zIndex: 3333,
+      placeholderText: 'Type here....'
+    })
+
+  =f.submit id: 'hiddenUpdateDataSetButton', class: 'd-none'
+
+:javascript
+  document.querySelector('#updateDataSetModal form').addEventListener('submit', onSubmit)
+
+  function onSubmit(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    let sections = `#name`
+    let cards = document.querySelectorAll(sections);
+    [...cards].forEach((el) => { el.classList.remove('border-danger') })
+
+    let name = document.querySelector('#name input').value.length > 0
+    if(!name) {
+      scrollToCard('#name')
+      return false;
+    }
+
+    event.target.submit();
+  }
+
+  document.querySelector('#updateDataSetModal .modal-body').addEventListener('scroll', () => {
+    document.querySelectorAll('input[list]').forEach(el => { el.blur();  })
+  }, false)
+
+  function scrollToCard(id) {
+    let required = document.querySelector(id);
+
+    required.addEventListener('animationend', (ev) => { ev.target.classList.remove('touch-required-field') })
+    document.querySelector(id).classList.add('border-danger', 'touch-required-field')
+    document.querySelector(`${id}Anchor`).scrollIntoView();
+  }
+

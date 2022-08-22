@@ -1,0 +1,32 @@
+=form_with(url: change_multi_task_progress_statuses_path(@multi_task), method: :patch, id: 'status_comment_form') do |form|
+  .row
+    .col.small
+      =hidden_field_tag :status, nil, { id: 'status_comment' }
+      =form.rich_text_area :body, id: 'commentArea', class: 'form-control overflow-auto', required: true, style: 'min-height: 150px;'
+      #commentFeedback.text-danger.text-center.d-none
+        The comment must be at least five characters
+  .modal-footer.justify-content-center
+    =form.submit :send, class: 'btn btn-sm btn-outline-success'
+
+:javascript
+  function onSubmit(ev) {
+    let select = document.getElementById('status_id');
+    let status = select.options[select.selectedIndex].text;
+    document.getElementById('status_comment').value = status;
+
+    ev.preventDefault();
+
+    let form = ev.target;
+    let nameInput = form.querySelector('#commentArea');
+    let nameFeedback = form.querySelector('#commentFeedback');
+    let submitButton = form.querySelector('input[type="submit"]');
+
+    if(nameInput.textContent.length >= 5) {
+      form.removeEventListener('submit', onSubmit);
+      Rails.fire(form[0], 'submit');
+    } else {
+      nameFeedback.classList.remove('d-none');
+      ev.stopPropagation();
+    }
+  }
+  document.querySelector('#status_comment_form').addEventListener('submit', onSubmit);

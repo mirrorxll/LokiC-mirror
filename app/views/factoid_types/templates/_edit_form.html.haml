@@ -1,0 +1,8 @@
+=form_with(url: factoid_type_template_path, method: :patch) do |form|
+  =form.text_area 'template[body]', id: 'factoidTypeTemplateBody', value: @factoid_type.template.body
+  =form.submit id: 'hiddenUpdateTemplateButton', class: 'd-none'
+
+:javascript
+  $('#template').on('hidden.bs.modal', function () {
+    $('#template .modal-body').empty();
+  }).modal('show');

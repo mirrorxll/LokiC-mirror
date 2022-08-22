@@ -1,11 +1,15 @@
-.container-fluid
-  .card.card-body
+.card
+  .card-body.small
     =form_for grid, options do |f|
-      .row.small
+      .row
         -grid.filters.each do |filter|
-          .col-2.mb-3
-            =f.datagrid_label filter
-            =f.datagrid_filter filter, class: 'form-control form-control-sm', type: filter.options[:type]
+          -next if @current_list.eql?('assigned') && filter.name.eql?(:scraper)
+          -next if @current_list.eql?('created') && filter.name.eql?(:creator)
+          .col-sm-3.col-lg-2
+            .form-group
+              =f.datagrid_label filter
+              =f.datagrid_filter filter, type: filter.options[:type], class: 'form-control form-control-sm'
+      %hr.mb-2/
       .text-center
-        =f.submit 'apply', class: "btn btn-sm btn-outline-dark"
-        =link_to 'reset', url_for(grid.to_param => {}), class: "btn btn-sm btn-outline-dark"
+        =f.submit 'apply', class: "btn btn-sm btn-outline-dark mt-2"
+        =link_to 'reset', url_for({ list: params[:list] }), class: "btn btn-sm btn-outline-dark mt-2"

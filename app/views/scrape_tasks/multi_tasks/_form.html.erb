@@ -1,0 +1,32 @@
+<hr class="mt-0">
+
+<%= form_with(url: scrape_task_multi_tasks_path(@scrape_task), method: :patch, html: { class: 'ml-3', onkeypress: "return event.keyCode !== 13;" } ) do |f| %>
+  <div class="form-group form-check mb-2">
+    <% @scrape_task.multi_tasks.each do |t| %>
+      <%= f.check_box "multi_tasks[#{t.id}]", class: 'form-check-input', checked: true  %>
+      <%= f.label "multi_tasks[#{t.id}]", "##{t.id} #{t.title}", class: 'form-check-label' %>
+      <br/>
+    <% end %>
+  </div>
+
+  <div id="multiTasksInputBlock" class="d-flex mb-2">
+    <span>ADD: </span>
+    <div class="form-group mb-0">
+      <input class="underline-input pt-0" list='multiTasksDataList'>
+      <datalist id="multiTasksDataList">
+        <% MultiTask.all.each do |t| %>
+          <option value="<%= "##{t.id} #{t.title}" %>"></option>
+        <% end %>
+      </datalist>
+
+      <div class="small"> *** press enter </div>
+    </div>
+  </div>
+
+  <%= f.submit '[ save ]', class: 'btn btn-sm btn-link p-0' %>
+  <%= link_to('[ cancel ]', scrape_task_multi_tasks_path, class: 'btn btn-sm btn-link text-secondary p-0', remote: true) %>
+<% end %>
+
+<hr class="mb-0">
+
+<%= javascript_pack_tag 'scrape_tasks/multi_tasks/form' %>

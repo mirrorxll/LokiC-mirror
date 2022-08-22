@@ -1,0 +1,4 @@
+-if @iteration.creation && @iteration.factoids.published.count.zero? && !@iteration.purge_creation.eql?(true) && !@iteration.export.eql?(false)
+  =link_to('purge samples from the last iteration',
+           purge_factoid_type_iteration_creations_path(@factoid_type, @iteration),
+           id: 'purge_stories', class: 'btn btn-sm btn-outline-danger', method: :delete, remote: true)

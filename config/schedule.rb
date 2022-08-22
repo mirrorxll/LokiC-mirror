@@ -10,12 +10,17 @@ every '0 0 * * *' do
   rake 'clients_pubs_tags_sections'
   rake 'photo_buckets'
   rake 'opportunities'
-  rake 'story_type:backdate:export'
+  if Rails.env.production?
+    rake 'story_type:backdate:export'
+  end
 end
 
 every '0 9 * * *' do
-  rake 'story_type:reminder'
-  rake 'task:reminder'
+  if Rails.env.production?
+    rake 'story_type:reminder'
+    rake 'task:reminder'
+  end
+
   rake 'topics:update_topics'
 end
 
@@ -31,8 +36,8 @@ every '10 * * * *' do
   rake 'story_type:setup:time_frames_and_next_export'
 end
 
-every '0 5,10,15,20 * * *' do
-  rake 'scrape_task:schemes_tables'
+every '0 0-22 * * *' do
+  rake 'scrape_task:schemas_tables'
 end
 
 CronTab.all.each do |tab|

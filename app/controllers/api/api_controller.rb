@@ -2,7 +2,6 @@
 
 module Api
   class ApiController < ActionController::API
-    before_action :authenticate_account!
     before_action :set_default_format
 
     private

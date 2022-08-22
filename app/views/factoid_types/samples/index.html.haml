@@ -1,0 +1,37 @@
+#info.small.pt-3.pb-3
+  .row
+    .col-1.text-right
+      developer:
+    .col-11
+      #{@factoid_type.developer.name}
+
+  .row
+    .col-1.text-right
+      iteration:
+    .col-11
+      #{@iteration.name}
+
+  .row
+    .col-1.text-right
+      total factoids:
+    .col-11
+      =@iteration.factoids.count
+
+#filter_form.collapse
+  .row.my-3.col-12
+    =datagrid_form_for @grid, url: factoid_type_iteration_samples_path(@factoid_type, @iteration)
+
+=link_to('download as CSV', url_for(format: 'csv', iteration_stories_grid: @grid),
+         type: 'button', id: '#save_as_csv_btn', class: 'btn btn-sm btn-outline-dark')
+=link_to('filter factoids', '#filter_form', 'aria-controls' => 'filter_form',
+         'aria-expanded' => false, data: { toggle: 'collapse', target: '#filter_form' },
+         type: 'button', id: '#crt_upd_filter_btn', class: 'btn btn-sm btn-outline-dark')
+
+%hr.mt-1.mb-3/
+=paginate @grid.assets
+factoids
+#factoids_datagrid.small
+  =datagrid_table(@grid)
+
+%hr.mb-3/
+=paginate @grid.assets

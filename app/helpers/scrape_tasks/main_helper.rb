@@ -1,0 +1,2 @@
+module ScrapeTasks::MainHelper
+end

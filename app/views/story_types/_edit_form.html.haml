@@ -1,7 +1,0 @@
-=form_with(model: @story_type) do |form|
-  .row
-    .col-11.d-flex.p-0
-      =form.text_field :name, placeholder: 'new name', required: true, class: 'w-100'
-      =form.submit :rename
-    .col-1.p-1
-      =link_to icon('fa', 'fa fa-times text-dark'), canceling_edit_story_type_path(@story_type), remote: true

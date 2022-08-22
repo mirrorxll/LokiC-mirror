@@ -1,0 +1,7 @@
+<% if @access_level.errors.any? %>
+  <%= toastr_js_flash(error: @access_level.errors) %>
+<% else %>
+  $("#editAccessLevel<%= @card.id %> .modal-body")
+      .html('<%= j render partial: 'accounts/cards/access_levels/access_levels', locals: { account: @account, card: @card, access_level: @access_level } %>');
+  $($("#editAccessLevel<%= @card.id %> .modal-footer")).removeClass('d-none');
+<% end %>

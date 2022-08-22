@@ -1,14 +1,14 @@
 .row.mb-1.font-weight-bold
-  .col-7
+  .col-6
     client
   .col-3
     tag
-  .col-2
+  .col-3
     sections
 
 -@story_type.clients_publications_tags.each do |cl_t|
   .row
-    .col-7
+    .col-6
       =cl_t.client.name + "(#{cl_t.publication ? cl_t.publication.name : 'all publications'})"
     .col-3
       -if cl_t.tag
@@ -16,7 +16,7 @@
       -else
         .text-danger.font-italic
           not set
-    .col-2
+    .col-3
       -if cl_t.sections.present?
         -cl_t.sections.each do |section|
           .badge.badge-pill.badge-info{ style: 'cursor: pointer', 'data-toggle' => 'tooltip',

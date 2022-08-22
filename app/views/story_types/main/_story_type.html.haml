@@ -1,0 +1,21 @@
+.text-center.small{ id: "story_type_#{story_type.id}" }
+  .row.on-hover-bg.pt-2.pb-2
+    .col-1.d-flex.align-items-center
+      =story_type.id
+    .col-6.d-flex.align-items-center.pl-0.text-left{id: "story_type_#{story_type.id}_name"}
+      =link_to(story_type.name, story_type_path(story_type), class: (story_type.status.name.eql?('archived') ? 'text-secondary' : ''))
+    .col-3.d-flex.align-items-center.p-0{id: "story_type_#{story_type.id}_template"}
+      -if current_account_permissions('story_types', %w[edit_form])
+        =link_to(icon('fa', 'pencil', class: 'text-dark mr-3'), edit_story_type_path(story_type), remote: true)
+      -if current_account_permissions('story_types', %w[template edit_form])
+        =link_to(icon('fa', 'file-o', class: 'text-dark mr-3'), edit_story_type_template_path(story_type, story_type.template), remote: true)
+      %div{id: "story_type_#{story_type.id}_developer"}
+        -if story_type.developer
+          =render 'story_types/developers/developer', story_type: story_type
+        -else
+          -if current_account_permissions('story_types', %w[developer edit_form])
+            =render 'story_types/developers/form', story_type: story_type
+          -else
+            ='---'
+    .col-2.d-flex.align-items-center.p-0
+      =story_type.status.name

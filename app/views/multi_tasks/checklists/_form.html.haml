@@ -1,0 +1,8 @@
+=form_with(url: confirm_task_checklist_path(task_id: @multi_task, id: checklist.id), html: { onchange: "Rails.fire(this, 'submit'); removeDangerText();" }, method: :patch) do |form|
+  =form.check_box :confirm, checked: checklist.confirmed
+
+:javascript
+  function removeDangerText() {
+    let confirmsFeedback = document.querySelector('#confirmsFeedback');
+    confirmsFeedback.classList.add('d-none');
+  }

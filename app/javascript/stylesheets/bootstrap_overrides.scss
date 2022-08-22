@@ -3,6 +3,14 @@
   min-width: 0;
 }
 
-#dataSampleTabs .active {
+#dataSampleTabs .active, #dataSetTabs .active {
   background-color: #f3f3f3;
+}
+
+.dropdown-menu-center {
+  right: auto;
+  left: 50%;
+  -webkit-transform: translate(-50%, 0);
+  -o-transform: translate(-50%, 0);
+  transform: translate(-50%, 0);
 }

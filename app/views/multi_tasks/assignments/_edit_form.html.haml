@@ -1,0 +1,79 @@
+=form_with(url: multi_task_assignments_path(task), html: { class: 'd-inline' }, method: :patch) do |form|
+  -if current_account_permissions('multi_tasks', ['assignment_to'])
+    .row.small.font-weight-bold
+      .col-3
+        assignment to:
+      .col-9
+        .row.small
+          =form.collection_select 'assignment_to', Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' , selected: task.main_assignee.nil? ? '' : task.main_assignee.id, class: 'small'}
+  -if current_account_permissions('multi_tasks', ['assistants'])
+    .row.small.font-weight-bold.mt-3
+      .col-3
+        assistants:
+        =icon('fa', 'plus', class: 'ml-2', id: 'addAssistantTask')
+      .col-9#assistantsTaskForm.small
+        -task.assistants.each  do |assistant|
+          .row.mt-1
+            =form.collection_select 'assistants[]', Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' , selected: assistant.id, class: 'small'}
+            .ml-1{ onclick: "removeDate(this)" }
+              =icon('fa', 'minus')
+  -if current_account_permissions('multi_tasks', ['notification_to'])
+    .row.small.font-weight-bold.mt-3.mb-1
+      .col-3
+        notification to:
+        =icon('fa', 'plus', class: 'ml-2', id: 'addNotificationToTask')
+      .col-9#notificationToTaskForm.small
+        -task.notification_to.each  do |assistant|
+          .row.mt-1
+            =form.collection_select 'notification_to[]', Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' , selected: assistant.id, class: 'small'}
+            .ml-1{ onclick: "removeDate(this)" }
+              =icon('fa', 'minus')
+
+  =form.submit 'update', class: 'small mt-1 btn btn-sm btn-outline-dark'
+  =link_to('cancel', cancel_multi_task_assignments_path(task), method: :get, remote: true, class: 'small mt-1 btn btn-sm btn-outline-dark')
+
+:javascript
+  var accounts = #{raw Account.all.order([:first_name, :last_name]).map{ |account| [account.first_name.to_s + ' ' + account.last_name.to_s, account.id]} };
+
+  $('#addAssistantTask').click(function () {
+    let hex = secureRandom(6);
+
+    $('#assistantsTaskForm').append(
+        `<div id="assistant_${hex}" class="row mt-1" >
+           <select id="assistants[]" name="assistants[]">${buildSelect(accounts)}</select>
+           <div class="ml-1" id="rm_assistant_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
+         </div>`
+    );
+  });
+
+  $('#addNotificationToTask').click(function () {
+    let hex = secureRandom(6);
+
+    $('#notificationToTaskForm').append(
+        `<div id="notification_to_${hex}" class="row mt-1" >
+           <select id="notification_to[]" name="notification_to[]">${buildSelect(accounts)}</select>
+           <div class="ml-1" id="rm_notification_to_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
+         </div>`
+    );
+  });
+
+  function buildSelect(options) {
+    var $select = $('');
+    $select += ('<option value="' + '' + '">' + '' + '</option>');
+    for (var i = 0; i < options.length; i++) {
+      $select += ('<option value="' + options[i][1] + '">' + options[i][0] + '</option>');
+    }
+    return $select;
+  }
+
+  function removeDate(elem) {
+    $(elem.parentNode).remove();
+  }
+
+  function secureRandom(n){
+    let result = '';
+    while (n--){
+      result += Math.floor(Math.random() * 16).toString(16);
+    }
+    return result;
+  }

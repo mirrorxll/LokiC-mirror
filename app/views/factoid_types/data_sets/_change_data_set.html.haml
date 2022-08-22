@@ -1,0 +1,26 @@
+.current_data_set
+  -if current_account_permissions('data_sets', ['edit_form'])
+    -if @factoid_type.data_set.present?
+      =link_to(@factoid_type.data_set.name, @factoid_type.data_set)
+      =link_to('x', '#')
+    -else
+      =link_to('add data_set', '#')
+  -else
+    =@factoid_type.data_set ? @factoid_type.data_set.name : '---'
+.change_data_set_form.d-none
+  =form_with(url: factoid_type_data_set_path(@factoid_type), method: :patch, html: { onchange: "Rails.fire(this, 'submit')"}) do |f|
+    =f.collection_select 'factoid_type[data_set_id]', DataSet.order(name: :asc), :id, :name, { include_blank: '-- not set --', selected: @factoid_type.data_set&.id }
+    =f.hidden_field 'current_data_set_page_id'
+
+:javascript
+  (() => {
+    let dataSetPageId = $('#data_set').attr('data_set_id')
+    document.querySelector('#current_data_set_page_id').value = (dataSetPageId !== undefined) ? dataSetPageId : null;
+  })();
+
+  document.querySelector('.current_data_set a[href="#"]').addEventListener('click', function (evt) {
+    evt.preventDefault();
+    evt.target.parentNode.classList.add('d-none');
+    document.getElementsByClassName('change_data_set_form')[0].classList.remove('d-none');
+    return false;
+  })

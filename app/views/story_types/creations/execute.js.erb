@@ -1,3 +1,15 @@
 $('#story_type_samples_<%= @iteration.id %> .flash').empty();
 $('#story_type_samples_<%= @iteration.id %> .card-body')
-    .html('<%= j render 'story_types/spinner', description: 'creation in the process' %>');
+    .html('<%= j render 'story_types/main/spinner', description: 'creation in the process' %>');
+
+$('#story_type_iterations').html('<%= j render partial: 'story_types/iterations/iteration',
+                                               collection: @story_type.iterations.where(cron_tab: [nil, false]),
+                                               current_iteration: @story_type.iteration %>')
+$('#new_story_type_iteration').empty();
+$('#properties_control').html('<%= j render 'story_types/properties/properties_control' %>');
+$('#story_type_code').html('<%= j render 'story_types/codes/section' %>');
+$('#export_configs').html('<%= j render 'story_types/export_configurations/export_configurations' %>');
+$('#staging_table_control').html('<%= j render 'story_types/staging_tables/staging_table_control' %>');
+$('#columns__index').html('<%= j render 'story_types/staging_tables/columns_and_index',
+                                        staging_table: @story_type.staging_table,
+                                        columns: @story_type.staging_table.columns.list%>')

@@ -59,3 +59,11 @@
 #     auth_methods: %w(publickey password)
 #     # password: "please use keys"
 #   }
+
+set :rails_env, :production
+
+server 'app@loki01.locallabs.com', port: 22, roles: %i[web app db]
+
+set :deploy_to,               '/home/app/LokiC'
+set :puma_workers,            8
+set :puma_threads,            [8, 16]

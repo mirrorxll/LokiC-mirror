@@ -1,0 +1,26 @@
+.row
+  .col-6.border-right
+    -task.assignments.each do |assignment|
+      .row.mt-2.small.col-10
+        .col-6.font-weight-bold
+          =assignment.name
+        .col-6
+          =assignment.hours.nil? ? '---' : sprintf('%g', assignment.hours.to_s) + ' hours'
+    %hr
+    -task.subtasks.each do |subtask|
+      .row.small.col
+        =link_to title(subtask.title), multi_task_path(subtask)
+      .row.small.col-10
+        -subtask.assignments.each do |assignment|
+          .col-6.font-weight-bold
+            =assignment.name
+          .col-6
+            =assignment.hours.nil? ? '---' : sprintf('%g', assignment.hours.to_s) + ' hours'
+      %hr
+  .col-6
+    -task.agency_opportunity_hours.each do |row|
+      .row.small.font-weight-bold.mb-2
+        .col-6
+          =row[:agency].name + ' / ' + row[:opportunity].name
+        .col
+          =sprintf('%g', row[:hours].to_s) + ' hours'

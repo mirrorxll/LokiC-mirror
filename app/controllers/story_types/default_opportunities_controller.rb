@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 module StoryTypes
-  class DefaultOpportunitiesController < ApplicationController
-    skip_before_action :find_parent_article_type
-    skip_before_action :set_article_type_iteration
+  class DefaultOpportunitiesController < StoryTypesController
     skip_before_action :set_story_type_iteration
 
     def update

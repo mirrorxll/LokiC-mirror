@@ -1,0 +1,8 @@
+$('#formsSubtasks').append("<%= j render 'multi_tasks/main/subtask', number_subtask: @number_subtask %>");
+$(`#descriptionSubtask<%= @number_subtask %>`).froalaEditor({
+    key: 'KfdolbcqsaA2wzA-13==',
+    toolbarButtons: ['fullscreen', 'undo', 'redo', '|', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineClass', 'inlineStyle', 'paragraphStyle', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', 'insertLink', 'insertImage', 'insertTable', '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'getPDF', 'help', 'html'],
+    imageUploadURL: '/images/upload',
+    imageUploadMethod: 'POST',
+    height: 200
+})

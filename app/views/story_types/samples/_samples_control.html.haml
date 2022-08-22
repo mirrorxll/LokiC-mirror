@@ -1,0 +1,5 @@
+-if @iteration.creation && !@iteration.schedule.eql?(true) && has_created_stories?(@iteration) && !@iteration.stories.where.not(published_at: nil).count.positive? && !@iteration.purge_creation.eql?(true) && !@iteration.schedule.eql?(false)
+  =link_to('purge samples from the last iteration',
+                    purge_story_type_iteration_creations_path(@story_type, @iteration),
+                    id: 'purge_stories', class: 'btn btn-sm btn-outline-danger',
+                    method: :delete, remote: true)

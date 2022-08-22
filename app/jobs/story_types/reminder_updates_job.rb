@@ -9,7 +9,7 @@ module StoryTypes
         sleep(rand)
 
         next if st_type.developer.nil?
-        next if st_type.status.name.in?(['canceled', 'migrated', 'not started', 'blocked', 'done', 'archived'])
+        next if st_type.status.name.in?(['canceled', 'migrated', 'created and in queue', 'blocked', 'done', 'archived'])
         next if st_type.cron_tab&.enabled || !st_type.code.attached? || st_type.reminder_off?
 
         type =

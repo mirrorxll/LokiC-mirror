@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
 module StoryTypes
-  class SidekiqBreaksController < ApplicationController
-    skip_before_action :find_parent_article_type
-    skip_before_action :set_article_type_iteration
-
+  class SidekiqBreaksController < StoryTypesController
     def cancel
       @story_type.sidekiq_break.update(cancel: true)
     end

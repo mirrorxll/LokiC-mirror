@@ -1,27 +1,18 @@
 # frozen_string_literal: true
 
 module StoryTypes
-  class TemplatesController < ApplicationController
-    skip_before_action :find_parent_article_type
-    skip_before_action :set_article_type_iteration
-
-    before_action :render_403, except: :show, if: :developer?
-    before_action :update_template, only: %i[update save]
+  class TemplatesController < StoryTypesController
     after_action :send_notification, only: :update, if: -> { @story_type.developer.present? }
 
     def show; end
 
     def edit; end
 
-    def update; end
-
-    def save; end
-
-    private
-
-    def update_template
+    def update
       Template.find(params[:id]).update!(template_params)
     end
+
+    private
 
     def send_notification
       url = generate_url(@story_type)
@@ -37,3 +28,4 @@ module StoryTypes
     end
   end
 end
+

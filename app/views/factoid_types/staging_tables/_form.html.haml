@@ -1,0 +1,5 @@
+.row
+  .col-10.offset-1.text-center
+    =form_with(url: factoid_type_staging_tables_path(@factoid_type)) do |form|
+      =form.text_field 'staging_table[name]', placeholder: 'existing staging table name'
+      =form.submit 'create or attach table'

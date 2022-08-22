@@ -1,0 +1,54 @@
+%div{ id: "data_set", data_set_id: @factoid_type.data_set&.id }
+%div{ id: "factoid_type", factoid_type_id: @factoid_type.id }
+
+%hr
+.row
+  .col-12.text-center
+    #factoid_type_name
+      =link_to(factoid_type_path(@factoid_type)) do
+        %b ##{@factoid_type.id} #{@factoid_type.name}
+%hr
+
+.d-flex.justify-content-between.align-items-center.mb-3.small.mt-n3
+  .text-secondary
+    created by #{@factoid_type.editor&.name}
+  .text-secondary
+    created at: #{@factoid_type.created_at}
+
+.row
+  .col-10
+    -if current_account_permissions('factoid_types', %w[iterations show])
+      #factoid_type_iterations.d-inline
+        =render partial: 'factoid_types/iterations/iteration',
+                collection: @factoid_type.iterations,
+                current_iteration: @factoid_type.iteration
+    -if current_account_permissions('factoid_types', %w[iterations new_form])
+      #new_factoid_type_iteration.d-inline
+        =render 'factoid_types/iterations/new_iteration'
+  .col-2.text-right
+    #factoid_type_status
+      -if current_account_permissions('factoid_types', %w[progress_status edit_form])
+        =render 'factoid_types/progress_statuses/status'
+      -elsif current_account_permissions('factoid_types', %w[progress_status show])
+        =@factoid_type.status.name
+%hr/
+
+.row.small.justify-content-md-center.justify-content-lg-start.mx-0
+  #template_section.col-lg-6.col-md-12.my-2
+    =render 'factoid_types/main/template_section'
+  #properties_section.col-lg-6.col-md-12.my-2
+    =render 'factoid_types/main/properties_section'
+
+.row.small.justify-content-md-center.justify-content-lg-start.mx-0
+  #staging_table_section.col-lg-6.col-md-12.my-2
+    =render 'factoid_types/main/staging_table_section'
+  #samples_section.col-lg-6.col-md-12.my-2
+    =render 'factoid_types/main/samples_section'
+
+.row.small.justify-content-md-center.justify-content-lg-start.mx-0
+  #export_section.col-lg-6.col-md-12.my-2
+    =render 'factoid_types/main/export_section'
+
+=render 'factoid_types/main/template_modal'
+=render 'factoid_types/codes/modal_ruby_code'
+=render 'data_sets/main/modal_data_set'

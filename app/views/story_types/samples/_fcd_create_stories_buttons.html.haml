@@ -1,19 +1,14 @@
 -confirms = @iteration.auto_feedback_confirmations
 
 -if (confirms.count.positive? && confirms.all?(&:confirmed)) || (samples.count.positive? && confirms.count.zero?) || @iteration.creation
-  .row
+  .row.border-top.mt-3.ml-0.mr-0.pt-3
     .col-11.offset-1
       =link_to('fact checking', story_type_fact_checking_doc_path(@story_type, @story_type.fact_checking_doc),
                class: 'btn btn-sm btn-outline-dark', target: '_blank')
       -if @iteration.creation || has_created_stories?(@iteration)
         =render 'story_types/samples/stories_link'
       -if @iteration.export.nil?
-        -if correct_account?(@story_type)
-          -if @iteration.creation.eql?(nil) && @story_type.fact_checking_doc.approval_editors.count > 1
-            =link_to('create samples from the last iteration',
-                      execute_story_type_iteration_creations_path(@story_type, @iteration),
-                      class: 'btn btn-sm btn-outline-dark', method: :post, remote: true)
-            -if has_created_stories?(@iteration)
-              =render 'story_types/samples/purge_stories'
-          -elsif @iteration.creation
-            =render 'story_types/samples/purge_stories'
+        -if @iteration.creation.eql?(nil) && @story_type.fact_checking_doc.approval_editors.count > 1
+          =link_to('create samples from the last iteration',
+                    execute_story_type_iteration_creations_path(@story_type, @iteration),
+                    class: 'btn btn-sm btn-outline-dark', method: :post, remote: true)

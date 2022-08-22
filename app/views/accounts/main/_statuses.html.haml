@@ -1,0 +1,37 @@
+.dropdown.p-1
+  %button#accountStatusButton.dropdown-toggle.border.rounded{ class: "bg-#{status_color(@account.status.name)}", "aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :type => "button"}
+    =@account.status.name
+  .small.dropdown-menu.manual-dropdown-menu.dropdown-menu-right{ "aria-labelledby" => "AccountStatusButton" }
+    -Status.account_statuses.each do |s|
+      .dropdown-item.small{status_id: s.id, onclick: 'changeAccountStatus(this);'}
+        =s.name
+
+  :javascript
+    function changeAccountStatus(status) {
+      let reasons = null;
+
+      if(status.textContent.trim() === 'deactivated') {
+        reasons = prompt(`Deactivated:(\nWhy?`);
+
+        if(!reasons) return false;
+      }
+
+      let statusId = status.getAttribute('status_id');
+      let statusDiv = document.querySelector('#accountStatus')
+      let onLoading = document.createElement('div');
+      let onLoadingSnap = document.createElement('span');
+
+      onLoadingSnap.classList.add('sr-only');
+      onLoading.classList.add('spinner-border', 'spinner-border-sm');
+      onLoading.appendChild(onLoadingSnap);
+
+      statusDiv.innerHTML = ''
+      statusDiv.appendChild(onLoading)
+
+      Rails.ajax({
+        type: "PATCH",
+        dataType: 'script',
+        url: `#{account_status_path(@account)}`,
+        data: `status_id=${statusId}` + (reasons ? `&reasons=${reasons}` : '')
+      })
+    }

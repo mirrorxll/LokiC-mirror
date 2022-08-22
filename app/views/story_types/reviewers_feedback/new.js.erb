@@ -3,7 +3,7 @@
     let fcd_body = document.getElementById('fcd_body').innerHTML;
     let reviewersFeedback = document.getElementById('reviewers_feedback_body').innerHTML
 
-    document.getElementById('manual_feedback_modal_label').innerText = `<%= "FCD ##{@story_type.id} #{@story_type.name} -- #{@story_type.developer.name} -- reviewers feedback".html_safe %>`
+    document.getElementById('manual_feedback_modal_label').textContent = `<%= "FCD ##{@story_type.id} #{@story_type.name} -- #{@story_type.developer.name} -- reviewers feedback".html_safe %>`
     document.querySelector('#manual_feedback_modal #fcd').innerHTML = fcd_body;
     document.querySelector('#manual_feedback_modal .w-39').innerHTML = `<%= j render 'form' %>`;
     document.querySelector('#reviewers_feedback_body_modal').innerHTML = reviewersFeedback;
@@ -16,6 +16,8 @@
     let samples =
         <% if Rails.env.production? %>
           document.querySelectorAll('#manual_feedback_modal #fcd a[href^="https://lokic.locallabs.com/story_types/"][href*="/iterations/"][href*="/samples/"]')
+        <% elsif Rails.env.staging? %>
+          document.querySelectorAll('#manual_feedback_modal #fcd a[href^="https://lokic-staging.locallabs.com/story_types/"][href*="/iterations/"][href*="/samples/"]')
         <% else %>
           document.querySelectorAll('#manual_feedback_modal #fcd a[href^="http://localhost:3000/story_types/"][href*="/iterations/"][href*="/samples/"]')
         <% end %>

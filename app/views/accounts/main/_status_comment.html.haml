@@ -1,0 +1,3 @@
+-if @account.status.name.eql?('deactivated')
+  .text-danger.font-weight-bold
+    #{@account.status.name} - #{@status_comment.body}

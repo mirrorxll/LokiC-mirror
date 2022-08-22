@@ -1,0 +1,17 @@
+<hr class="mt-0">
+
+<%= form_with(url: account_roles_path(@account), method: :patch, html: { class: 'ml-3' }) do |f| %>
+  <div class="form-group form-check mb-2">
+    <% AccountRole.all.each do |r| %>
+      <%= f.check_box "roles[#{r.id}]", class: 'form-check-input', checked: @account.roles.exists?(r.id)  %>
+      <%= f.label "roles[#{r.id}]", r.name, class: 'form-check-label' %>
+      <br>
+    <% end %>
+  </div>
+
+  <%= f.submit '[ save ]', class: 'btn btn-sm btn-link p-0' %>
+  <%= link_to('[ cancel ]', account_roles_path, class: 'btn btn-sm btn-link text-secondary p-0', remote: true) %>
+<% end %>
+
+<hr class="mb-0">
+

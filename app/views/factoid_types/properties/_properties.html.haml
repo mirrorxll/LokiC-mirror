@@ -1,0 +1,29 @@
+.row.border-top.my-3.mx-0.pt-3
+  .col-10.offset-1
+    #currentDataSet
+      =render 'factoid_types/properties/current_data_set'
+  .col-10.offset-1
+    #sourceProperties
+      =render 'factoid_types/properties/factoid_type_source_properties'
+  -if current_account_permissions('factoid_types', %w(developer show))
+    .col-10.offset-1
+      .row.mb-1.font-weight-bold
+        .col
+          developer
+      .row
+        .col-12
+          %div{id: "factoid_type_#{@factoid_type.id}_developer"}
+            -if @factoid_type.developer
+              =render 'factoid_types/developers/developer', factoid_type: @factoid_type
+            -else
+              -if current_account_permissions('factoid_types', %w[developer edit_form])
+                =render 'factoid_types/developers/form', factoid_type: @factoid_type
+              -else
+                ='---'
+  .col-10.offset-1.text-center.d-none
+    =render 'factoid_types/main/additional_properties'
+.row.border-top.mx-0.mb-3.pt-3.text-center
+  .col-10.offset-1
+    factoid type's code
+    #factoid_type_code
+      =render 'factoid_types/codes/section'

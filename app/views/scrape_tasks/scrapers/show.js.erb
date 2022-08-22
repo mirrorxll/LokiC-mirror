@@ -1,0 +1,6 @@
+<% if flash.now[:error] %>
+  <%= toastr_js_flash %>
+<% else %>
+  $('#scraper>.col').html('<%= @scrape_task.scraper&.name %>');
+  $('#scraper>:first-child>a').removeClass('disabled-link');
+<% end %>

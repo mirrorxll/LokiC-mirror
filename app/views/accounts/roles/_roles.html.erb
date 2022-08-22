@@ -1,0 +1,15 @@
+<div id="roles" class="row small">
+  <div class="col-sm-2 col-lg-1 text-right pr-0">
+    <b>ROLES:</b>
+    <%= link_to(icon('fa', 'pencil-square'), edit_account_roles_path(@account),
+                class: 'p-0 ml-2', 'data-toggle' => "tooltip", 'data-placement' => "top",
+                'title' => "edit", 'data-trigger' => 'hover', remote: true) %>
+  </div>
+
+  <div class="col">
+    <% @account.roles.each do |r| %>
+        <%= r.name %>
+      <br/>
+    <% end %>
+  </div>
+</div>

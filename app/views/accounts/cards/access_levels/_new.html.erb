@@ -1,0 +1,17 @@
+<%= form_with(url: account_card_access_levels_path(account, card)) do |f| %>
+  <div class="access-levels card small">
+    <div class="card-body">
+      <b class="d-inline-block mb-2">NAME:</b>
+      <%= f.hidden_field "access_level[branch_id]", value: card.branch.id %>
+      <%= f.text_field "access_level[name]", class: 'form-control form-control-sm', required: true %>
+    </div>
+  </div>
+  <hr>
+  <div>
+    <%= permissions_form(f, template, "access_level[permissions]") %>
+    <div class="text-center">
+      <%= f.submit '[ create ]', class: 'btn btn-sm btn-link p-0' %>
+      <%= link_to('[ cancel ]', account_card_access_level_path(account, card, card.access_level), class: 'btn btn-sm btn-link text-secondary p-0', remote: true) %>
+    </div>
+  </div>
+<% end %>

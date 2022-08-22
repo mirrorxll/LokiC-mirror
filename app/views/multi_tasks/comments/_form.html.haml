@@ -1,0 +1,56 @@
+=form_with(model: @comment, url: multi_task_comments_path) do |form|
+  .row
+    .col.small
+      =hidden_field_tag 'comment[subtype]', params[:subtype]
+      =form.rich_text_area :body, class: 'form-control overflow-auto', required: true, style: 'min-height: 150px;'
+  .d-flex.small.font-weight-bold.mt-2.mb-2
+    .col-2
+      send to:
+      =icon('fa', 'plus', class: 'ml-2', id: 'add_assignment_comment')
+      .text-secondary.font-italic.small
+        (by default send to all)
+    .col-10.justify-content-start
+      #assignments_comment_form.row
+  .modal-footer.justify-content-center
+    .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+      cancel
+    =form.submit :send, class: 'btn btn-sm btn-outline-success'
+
+:javascript
+  var accounts = #{ raw accounts_for_assignment };
+
+  $('#add_assignment_comment').click(function () {
+    let hex = secureRandom(6);
+
+    $('#assignments_comment_form').append(
+        `<div id="assignment_${hex}" class="d-flex col-3 mt-2" >
+           <select id="comment[assignment_to][]" style = "width:130px" class="mr-1" name="comment[assignment_to][]">${buildSelect(accounts)}</select>
+           <div class="ml-1" id="rm_assignment_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
+         </div>`
+    );
+  });
+
+  $('#delete_assignment').click(function () {
+    let assignments = document.getElementById('assignments')
+    assignments.removeChild(assignments.lastChild)
+  });
+
+  function buildSelect(options) {
+    var $select = $('');
+    for (var i = 0; i < options.length; i++) {
+      $select += ('<option value="' + options[i][1] + '">' + options[i][0] + '</option>');
+    }
+    return $select;
+  }
+
+  function removeDate(elem) {
+    $(elem.parentNode).remove();
+  }
+
+  function secureRandom(n){
+    let result = '';
+    while (n--){
+      result += Math.floor(Math.random() * 16).toString(16);
+    }
+    return result;
+  }

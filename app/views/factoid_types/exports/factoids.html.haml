@@ -1,0 +1,39 @@
+%div{ id: "iteration_exported_factoids", iteration_exported_factoids_id: @iteration.id, factoid_type_id: @factoid_type.id }
+#cover-spin
+-if @iteration.export
+  #info.small.pt-3.pb-3
+    .row
+      .col-1.text-right
+        developer:
+      .col-11
+        #{@factoid_type.developer.name}
+
+    .row
+      .col-1.text-right
+        iteration:
+      .col-11
+        #{@iteration.name}
+
+    .row
+      .col
+        =button_tag 'Select all', id: 'select_all_button', class: 'mt-3 btn btn-sm btn-outline-dark w-150px'
+        =button_tag 'Delete', id: 'delete_selected', class: 'mt-3 btn btn-sm btn-outline-danger', disabled: true
+        =hidden_field_tag 'trigger', false
+
+    .row.mt-3
+      .col-1.mb-1.text-right
+        show factoids:
+      #show_samples.col-11
+
+  %hr.mt-1.mb-3/
+  #exported_factoids
+    =render 'factoid_types/exports/factoids_table'
+  %hr.mb-3/
+  .small
+    =paginate @factoids, window: 3
+  %hr/
+-else
+  %hr/
+  .row
+    .col-12.text-center.alert.alert-danger
+      Export process not ended or developer #{"#{@factoid_type.developer.name} "}is making some changes for this iteration

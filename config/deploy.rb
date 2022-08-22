@@ -3,10 +3,10 @@
 # config valid for current version and patch releases of Capistrano
 lock '~> 3.14.1'
 
-set :stage, :production
+set :stages, %i[production staging]
+set :default_stage, :staging
 
 set :user, 'app'
-server 'app@loki01.locallabs.com', port: 22, roles: %i[web app db], primary: true
 set :use_sudo, false
 
 set :rvm_type, :user
@@ -16,7 +16,7 @@ set :rvm_custom_path, '/usr/local/rvm/'
 set :pty, true
 set :application, 'LokiC'
 set :repo_url,    'git@github.com:localitylabs/LokiC.git'
-set :branch,      'deploy_prod'
+set :branch,      'deploy'
 
 set :deploy_via,              :remote_cache
 set :deploy_to,               '/home/app/LokiC'
@@ -30,6 +30,11 @@ set :puma_error_log,          "#{release_path}/log/puma.access.log"
 set :puma_preload_app,        true
 set :puma_worker_timeout,     nil
 set :puma_init_active_record, true
+set :puma_service_unit_env_vars, ["RAILS_ENV=#{fetch(:stage)}"]
+
+set :yarn_flags, "--#{fetch(:stage)} --silent --no-progress"
+set :yarn_roles, :all
+set :yarn_env_variables, { RAILS_ENV: fetch(:stage) }
 
 append :linked_dirs, 'storage', 'public/ruby_code', 'public/uploads/images', 'log'
 append :linked_files, 'config/master.key', 'config/google_drive.json'
@@ -76,7 +81,7 @@ namespace :deploy do
   desc 'Make sure local git is in sync with remote.'
   task :check_revision do
     on roles(:app) do
-      unless `git rev-parse HEAD` == `git rev-parse origin/deploy_prod`
+      unless `git rev-parse HEAD` == `git rev-parse origin/deploy`
         puts 'WARNING: HEAD is not the same as origin/deploy'
         puts 'Run `git push` to sync changes.'
         exit
@@ -102,7 +107,7 @@ namespace :deploy do
   task :update_crontab do
     on roles(:app) do
       within current_path do
-        execute "cd #{release_path} && RAILS_ENV=production bundle exec whenever --write-crontab"
+        execute "cd #{release_path} && RAILS_ENV=#{fetch(:stage)} bundle exec whenever --write-crontab --set 'environment=#{fetch(:stage)}'"
       end
     end
   end
@@ -113,4 +118,3 @@ namespace :deploy do
   after  :finishing, :restart
   after  :finishing, 'deploy:update_crontab'
 end
-

@@ -1,0 +1,13 @@
+$('#factoid_type_iterations').html('<%= j render partial: 'factoid_types/iterations/iteration',
+                                                 collection: @factoid_type.iterations,
+                                                 current_iteration: @factoid_type.iteration %>');
+$('#new_factoid_type_iteration').empty();
+$('#properties_control').html('<%= j render 'factoid_types/properties/properties_control' %>');
+$('#factoid_type_code').html('<%= j render 'factoid_types/codes/section' %>');
+$('#staging_table_control').html('<%= j render 'factoid_types/staging_tables/staging_table_control' %>');
+$('#columns__index').html('<%= j render 'factoid_types/staging_tables/columns_and_index',
+                                         staging_table: @factoid_type.staging_table,
+                                         columns: @factoid_type.staging_table.columns.list %>');
+$('#factoid_type_samples_<%= @iteration.id %> .flash').empty();
+$('#factoid_type_samples_<%= @iteration.id %> .card-body').html('<%= j render 'factoid_types/main/spinner',
+                                                                               description: 'creation in progress' %>');

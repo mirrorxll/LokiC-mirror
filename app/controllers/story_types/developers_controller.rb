@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
 module StoryTypes
-  class DevelopersController < ApplicationController
-    skip_before_action :find_parent_article_type
-    skip_before_action :set_article_type_iteration
-
+  class DevelopersController < StoryTypesController
     before_action :find_developer
 
     def include

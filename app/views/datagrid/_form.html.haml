@@ -1,41 +1,20 @@
--if controller_name.eql?('scrape_tasks')
+-case grid
+-when AccountsGrid
+  =render 'datagrid/accounts/form', grid: grid, options: options
+-when WorkRequestsGrid
+  =render 'datagrid/work_requests/form', grid: grid, options: options
+-when FactoidRequestsGrid
+  =render 'datagrid/factoid_requests/form', grid: grid, options: options
+-when MultiTasksGrid
+  =render 'datagrid/multi_tasks/form', grid: grid, options: options
+-when ScrapeTasksGrid
   =render 'datagrid/scrape_tasks/form', grid: grid, options: options
-- elsif controller_name.in?(%w[tasks shown_samples exported_story_types production_removals archived_story_types])
-  .container-xl
-    .card.card-body
-      =form_for grid, options do |f|
-        .row.small
-          -if controller_name == 'tasks' && !current_account.types.include?('manager')
-            -grid.filters.select{ |filter| !filter.name.to_s.in?(%w(assignment_to creator deleted_tasks)) }.each do |filter|
-              .col-4.mb-3
-                =f.datagrid_label filter
-                =f.datagrid_filter filter, class: 'form-control form-control-sm'
-          -else
-            -grid.filters.each do |filter|
-              %div{class: "#{controller_name.eql?('archived_story_types') ? 'col-6 mb-3' : 'col-3 mb-3'}"}
-                =f.datagrid_label filter
-                =f.datagrid_filter filter, class: 'form-control form-control-sm', type: filter.options[:type]
-        .text-center
-          =f.submit 'apply', class: "btn btn-sm btn-outline-dark"
-          =link_to 'reset', url_for(grid.to_param => {}), class: "btn btn-sm btn-outline-dark2"
-- else
-  .card.card-body
-    = form_for grid, options do |f|
-      .row
-        .col-6.border-right
-          -grid.filters.select { |filter| filter.options[:left] }.each do |filter|
-            .datagrid-filter.filter
-              =f.datagrid_label filter
-              =f.datagrid_filter filter, type: filter.options[:type]
-        .col-6
-          -grid.filters.select { |filter| !filter.options[:left] }.each do |filter|
-            .datagrid-filter.filter
-              =f.datagrid_label filter
-              =f.datagrid_filter filter, type: filter.options[:type]
-      %hr.mb-2/
-      .text-center
-        =f.submit 'apply', :class => "btn btn-sm btn-outline-dark mt-2"
-        =link_to 'reset', url_for(grid.to_param => {}), :class => "btn btn-sm btn-outline-dark mt-2"
+-when DataSetsGrid
+  =render 'datagrid/data_sets/form', grid: grid, options: options
+-when StoryTypesGrid, StoryTypeIterationStoriesGrid
+  =render 'datagrid/story_types/form', grid: grid, options: options
+-when FactoidTypesGrid, FactoidTypeIterationFactoidsGrid
+  =render 'datagrid/factoid_types/form', grid: grid, options: options
 
 :javascript
   $(function() {

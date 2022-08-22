@@ -1,0 +1,8 @@
+$('#task_status').html(`<%= j render 'multi_tasks/progress_statuses/status', task: @multi_task %>`);
+$('#done').html(`<%= j render 'multi_tasks/main/done', task: @multi_task %>`);
+<%-if @comment %>
+  $('#comments').prepend(`<%= j render 'multi_tasks/comments/comment', comment: @comment %>`);
+<%-end %>
+$('#comment').modal('hide');
+$('#task_done').modal('hide');
+$('#hours').modal('hide');

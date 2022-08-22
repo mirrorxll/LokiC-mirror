@@ -1,0 +1,59 @@
+.row.small
+  .col-5.offset-1.border-right.mr-1
+    .row.mb-2.font-weight-bold
+      .col-12
+        data set
+    .row
+      .col-12
+        =link_to @factoid_type.data_set.name, data_set_path(@factoid_type.data_set), class: 'no-link'
+        .d-inline-block.mr-2.ml-2{id: "factoid_type_#{@factoid_type.id}_properties"}
+          %button{ onclick: 'loadEditForm(this);', type: 'button', class: 'p-0 pb-1 btn btn-sm btn-link ml-2', 'data-toggle' => "modal", 'data-target' => "#factoidTypePropertiesForm" }
+            =icon('fa', 'sliders')
+          :javascript
+            function loadEditForm(button) {
+              button.onclick = null;
+              Rails.ajax({
+                type: "GET",
+                dataType: 'script',
+                url: `#{factoid_type_property_form_path(@factoid_type)}`
+              })
+            }
+        =link_to icon('fa', 'info-circle'), properties_data_set_path(@factoid_type.data_set), remote: true
+    %hr/
+
+    .row.mb-2.font-weight-bold
+      .col-6
+        editor
+      .col-6
+        developer
+    .row
+      .col-6
+        =@factoid_type.editor.name
+      .col-6
+        =@factoid_type.developer ? @factoid_type.developer.name: '---'
+
+    =render 'factoid_types/main/additional_properties'
+  .col-5.border-left.ml-1
+    .row.mb-2.font-weight-bold
+      .col-12
+        factoid type's code
+    #factoid_type_code
+      =render 'factoid_types/codes/section'
+    %hr/
+%hr/
+
+#factoidTypePropertiesForm.modal.fade{ factoid_type_id: @factoid_type.id, "aria-hidden" => "true", "aria-labelledby" => "factoidTypePropertiesForm", role: "dialog", :tabindex => "-1"}
+  .modal-dialog.modal-dialog-scrollable.modal-xl
+    .modal-content
+      .modal-header
+        %h5.modal-title
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", type: "button"}
+          %span{"aria-hidden" => "true"} ×
+      .modal-body
+        .loadingSpinner
+          .spinner-border.spinner-border-sm.text-secondary
+            %span.sr-only
+      .modal-footer
+
+=render 'data_sets/main/modal_data_set'
+=render 'factoid_types/codes/modal_ruby_code'

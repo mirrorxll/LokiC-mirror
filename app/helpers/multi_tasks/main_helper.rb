@@ -1,0 +1,2 @@
+module MultiTasks::MainHelper
+end

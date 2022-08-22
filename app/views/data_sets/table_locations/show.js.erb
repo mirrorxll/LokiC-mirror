@@ -1,0 +1,9 @@
+$('#tableLocations>:last-child').html(
+    `<% if @data_set.table_locations.present? %>
+      <%=link_to('[ show data views ]', '#', class: 'p-0 btn btn-sm btn-link table-locations-control', "data-target" => "#dataSamplesModal", "data-toggle" => "modal") %>
+    <% end %><br>`
+).append(
+    '<%= @data_set.table_locations.map { |tl| tl.full_name  }.join('<br>').html_safe %>'
+);
+
+$('#dataSetInfo .table-locations-control').removeClass('disabled-link');

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 module Api
   module V1
@@ -6,23 +7,27 @@ module Api
         before_action :find_scrape_task, only: :show
 
         def index
-          html_sanitizer = ActionView::Base.full_sanitizer
+          if params[:names]
+            render json: ScrapeTask.all.map(&:name)
+          else
+            html_sanitizer = ActionView::Base.full_sanitizer
 
-          render json: (ScrapeTask.all.map do |scrape_task|
-            {
-              number: scrape_task.id,
-              created_by: scrape_task.creator.name,
-              scraper: scrape_task.scraper&.name,
-              status: scrape_task.status.name,
-              tags: scrape_task.tags.map(&:name),
-              has_data_location: scrape_task.table_locations.present?,
-              name: scrape_task.name,
-              frequency: scrape_task.frequency&.name,
-              deadline: scrape_task.deadline,
-              general_comment: html_sanitizer.sanitize(scrape_task.general_comment&.body),
-              created_at: scrape_task.created_at.utc
-            }
-          end)
+            render json: (ScrapeTask.all.map do |scrape_task|
+              {
+                number: scrape_task.id,
+                created_by: scrape_task.creator.name,
+                scraper: scrape_task.scraper&.name,
+                status: scrape_task.status.name,
+                tags: scrape_task.tags.map(&:name),
+                has_data_location: scrape_task.table_locations.present?,
+                name: scrape_task.name,
+                frequency: scrape_task.frequency&.name,
+                deadline: scrape_task.deadline,
+                general_comment: html_sanitizer.sanitize(scrape_task.general_comment&.body),
+                created_at: scrape_task.created_at.utc
+              }
+            end)
+          end
         end
 
         def show

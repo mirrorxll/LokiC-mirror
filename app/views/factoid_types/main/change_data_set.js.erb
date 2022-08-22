@@ -1,0 +1,2 @@
+$('#changeDataSet_template .change-ds-form').html(`<%= j render 'change_data_set' %>`);
+$('#factoidTypes .factoid-types-list').html(`<%= j render @current_data_set.factoid_types.order(id: :desc) %>`)

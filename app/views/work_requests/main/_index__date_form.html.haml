@@ -1,0 +1,32 @@
+%div{id: "#{key}_form_#{work_request.id}" }
+  =date_field_tag :work_request, key, style: 'width: 130px;', class: 'underline-input rounded-0 p-0'
+  %button{ class: 'btn p-0' }
+    =icon('fa', 'pencil')
+
+  :javascript
+    (() => {
+      let parent = document.querySelector(`\##{key}_#{work_request.id}`);
+      let form = document.querySelector(`\##{key}_form_#{work_request.id}`);
+      let input = form.querySelector(`input`);
+      let button = form.querySelector(`button`);
+
+      input.value = parent.textContent;
+
+      button.addEventListener('click', () => {
+        Rails.ajax({
+          type: "PATCH",
+          dataType: 'json',
+          url: `#{api_work_request_path(work_request)}`,
+          data: `work_request[#{key}]=${input.value}`,
+          success: (data) => {
+            if(data['success'])
+              console.log(input.value);
+              if(input.value.length > 0) {
+                parent.textContent = input.value;
+              } else {
+                parent.textContent = '****-**-**'
+              }
+          }
+        })
+      });
+    })();

@@ -3,6 +3,9 @@
 class ScrapeTasksGrid
   include Datagrid
 
+  attr_accessor :current_account
+  attr_accessor :current_list
+
   # Scope
   scope do
     ScrapeTask.includes(
@@ -32,14 +35,34 @@ class ScrapeTasksGrid
   states = State.all.map { |r| [r.name, r.id] }
   filter(:state, :enum, multiple: true, select: states)
 
+  filter(:creator, :enum, select: :creators, multiple: true)
+  def creators
+    account_list =
+      case current_list
+      when 'assigned', 'all', 'archived'
+        Account.joins(:created_scrape_tasks).distinct.to_a
+      when 'created'
+        [current_account]
+      end
+
+    account_list.map { |a| [a.name, a.id] }
+  end
+
   accounts = Account.joins(:assigned_scrape_tasks).distinct
   filter(:scraper, :enum, multiple: true, select: accounts.map { |r| [r.name, r.id] }.sort)
 
-  accounts = Account.joins(:created_scrape_tasks).distinct
-  filter(:creator, :enum, multiple: true, select: accounts.map { |r| [r.name, r.id] }.sort)
+  filter(:status, :enum, select: :statuses, multiple: true)
+  def statuses
+    status_list =
+      case current_list
+      when 'assigned', 'created', 'all'
+        Status.scrape_task_statuses(created: true, done: true)
+      when 'archived'
+        [Status.find_by(name: 'archived')]
+      end
 
-  statuses = Status.scrape_task_statuses_for_grid.pluck(:name, :id)
-  filter(:status, :enum, multiple: true, select: statuses)
+    status_list.map { |s| [s.name, s.id] }
+  end
 
   frequency = Frequency.pluck(:name, :id)
   filter(:frequency, :enum, multiple: true, select: frequency) do |value, scope|

@@ -7,7 +7,16 @@ class ApplicationJob
   private
 
   def generate_url(model)
-    host = Rails.env.production? ? 'https://lokic.locallabs.com' : 'http://localhost:3000'
+    host =
+      case Rails.env
+      when 'production'
+        'https://lokic.locallabs.com'
+      when 'staging'
+        'https://lokic-staging.locallabs.com'
+      else
+        'http://localhost:3000'
+      end
+
     "#{host}#{Rails.application.routes.url_helpers.send("#{model.class.to_s.underscore}_path", model)}"
   end
 

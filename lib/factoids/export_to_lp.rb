@@ -7,15 +7,15 @@ module Factoids
     include Export::LeadFactoidPost
 
     def publish!(iteration, threads_count, chunk)
-      factoids_to_export = iteration.articles.not_published
+      factoids_to_export = iteration.factoids.not_published
       factoids_to_export = if chunk
                              factoids_to_export.limit(chunk).to_a
                            else
                              factoids_to_export.limit(10_000).to_a
                            end
 
-      article_type       = iteration.article_type
-      staging_table_name = article_type.staging_table.name
+      factoid_type       = iteration.factoid_type
+      staging_table_name = factoid_type.staging_table.name
       st_limpar_columns  = Table.get_limpar_data(staging_table_name)
 
       raise StandardError, 'Check correctness of data in the staging table!' unless st_data_validation(st_limpar_columns)
@@ -54,9 +54,9 @@ module Factoids
     def unpublish!(iteration, factoid_ids = nil)
       semaphore = Mutex.new
       factoids  = if factoid_ids
-                    iteration.articles.published.where(limpar_factoid_id: factoid_ids).limit(10_000).to_a
+                    iteration.factoids.published.where(limpar_factoid_id: factoid_ids).limit(10_000).to_a
                   else
-                    iteration.articles.published.limit(10_000).to_a
+                    iteration.factoids.published.limit(10_000).to_a
                   end
 
       threads = Array.new(5) do

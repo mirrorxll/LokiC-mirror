@@ -1,0 +1,37 @@
+.dropdown.p-1
+  %button#factoidRequestStatusButton.dropdown-toggle.border.rounded{ class: "bg-#{status_color(@factoid_request.status.name)}", "aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :type => "button"}
+    =@factoid_request.status.name
+  .small.dropdown-menu.manual-dropdown-menu.dropdown-menu-right{ "aria-labelledby" => "factoidRequestStatusButton" }
+    -Status.factoid_request_statuses(archived: current_account.manager?).each do |s|
+      .dropdown-item.small{status_id: s.id, onclick: 'changeRequestStatus(this);'}
+        =s.name
+
+:javascript
+  function changeRequestStatus(status) {
+    let reasons = null;
+
+    if(['blocked', 'canceled', 'archived'].find((el) => { return el === status.textContent.trim() })) {
+      reasons = prompt(`Status '${status.textContent.trim()}' :(\nWhy?`);
+
+      if(!reasons) return false;
+    }
+
+    let statusId = status.getAttribute('status_id');
+    let statusDiv = document.querySelector('#factoidRequestStatus')
+    let onLoading = document.createElement('div');
+    let onLoadingSnap = document.createElement('span');
+
+    onLoadingSnap.classList.add('sr-only');
+    onLoading.classList.add('spinner-border', 'spinner-border-sm');
+    onLoading.appendChild(onLoadingSnap);
+
+    statusDiv.innerHTML = ''
+    statusDiv.appendChild(onLoading)
+
+    Rails.ajax({
+      type: "PATCH",
+      dataType: 'script',
+      url: `#{factoid_request_progress_status_path(@factoid_request)}`,
+      data: `status_id=${statusId}` + (reasons ? `&reasons=${reasons}` : '')
+    })
+  }

@@ -11,9 +11,9 @@ class StagingTable < ApplicationRecord # :nodoc:
       default_story_type_columns
       delete_useless_columns
       add_story_created
-    elsif article_type?
-      default_article_type_columns
-      add_article_created
+    elsif factoid_type?
+      default_factoid_type_columns
+      add_factoid_created
     end
 
     rename_table if not_lokic_name?
@@ -69,8 +69,8 @@ class StagingTable < ApplicationRecord # :nodoc:
     staging_tableable.class.to_s.eql?('StoryType')
   end
 
-  def article_type?
-    staging_tableable.class.to_s.eql?('ArticleType')
+  def factoid_type?
+    staging_tableable.class.to_s.eql?('FactoidType')
   end
 
   def noname?
@@ -82,7 +82,7 @@ class StagingTable < ApplicationRecord # :nodoc:
   end
 
   def not_lokic_name?
-    !name.match?(/^[as]\d{4,5}$/)
+    !name.match?(/^[afs]\d{4,5}$/)
   end
 
   def generate_table_name
@@ -101,8 +101,8 @@ class StagingTable < ApplicationRecord # :nodoc:
     Table.add_default_story_type_columns(name)
   end
 
-  def default_article_type_columns
-    Table.add_default_article_type_columns(name)
+  def default_factoid_type_columns
+    Table.add_default_factoid_type_columns(name)
   end
 
   def delete_useless_columns
@@ -113,8 +113,8 @@ class StagingTable < ApplicationRecord # :nodoc:
     Table.add_story_created(name)
   end
 
-  def add_article_created
-    Table.add_article_created(name)
+  def add_factoid_created
+    Table.add_factoid_created(name)
   end
 
   def timestamps

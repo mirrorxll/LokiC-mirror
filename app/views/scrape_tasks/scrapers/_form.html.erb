@@ -1,0 +1,14 @@
+<hr class="mt-0">
+
+<%= form_with(url: scrape_task_scraper_path(@scrape_task), method: :patch, html: { class: 'ml-3' } ) do |f| %>
+  <div class="form-group mb-2">
+    <%= f.collection_select 'scraper[id]', @scrapers, :id, :name,
+                            { include_blank: true, selected: @scrape_task.scraper&.id},
+                            { class: 'underline-input pt-0'} %>
+  </div>
+
+  <%= f.submit '[ save ]', class: 'btn btn-sm btn-link p-0' %>
+  <%= link_to('[ cancel ]', scrape_task_scraper_path, class: 'btn btn-sm btn-link text-secondary p-0', remote: true) %>
+<% end %>
+
+<hr class="mb-0">

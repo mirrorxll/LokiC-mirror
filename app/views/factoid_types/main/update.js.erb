@@ -1,0 +1,2 @@
+$('#sourceProperties').html('<%= j render 'factoid_types/properties/factoid_type_source_properties' %>');
+$('#factoid_type_<%= @factoid_type.id %>').replaceWith('<%= j render 'factoid_types/main/factoid_type', factoid_type: @factoid_type %>')

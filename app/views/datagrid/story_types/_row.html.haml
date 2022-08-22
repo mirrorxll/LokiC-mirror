@@ -1,0 +1,22 @@
+%tr
+  -grid.html_columns.each do |column|
+    -klass = datagrid_column_classes(grid, column)
+    -value = datagrid_value(grid, column, asset)
+    -if column.header.eql?('Status')
+      -background_color = "bg-#{status_color(ActionView::Base.full_sanitizer.sanitize(value))}"
+    -elsif column.header.eql?('Has updates')
+      -background_color = 'text-center'
+      -if value == 'not_realized'
+        -background_color += ' bg-danger'
+        -value = 'Not realized'
+      -elsif value == 'on_cron'
+        -value = '---'
+      -else
+        -background_color += value ? ' bg-warning' : ''
+        -value = value ? 'Yes' : 'No'
+    -elsif column.name.eql?(:next_export)
+      -if value
+        -background_color = value[:color]
+        -value = value[:date]
+    %td{ class: "#{klass} #{background_color}" }
+      =value

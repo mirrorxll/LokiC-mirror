@@ -1,0 +1,62 @@
+%div{ class: "template-#{template}" }
+  .card.mb-3
+    .card-header
+      .d-flex.justify-content-between.align-items-center
+        %div
+          -assoc = @factoid_request.public_send("template_#{template}_assoc")&.body
+          -if assoc.present?
+            Template #{template} associated with
+            %span.font-weight-bold
+              #{assoc}
+          -else
+            Template #{template}
+        -if current_account_permissions('factoid_requests', %w[templates edit_form])
+          .btn-group
+            %button{ type: 'button', class: 'p-0 ml-1 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#editTemplate#{template}" }
+              [ edit ]
+    .card-body
+      .row
+        .col-10.offset-1
+          =@factoid_request.public_send("template_#{template}_body")&.body&.html_safe
+  -if current_account_permissions('factoid_requests', %w[templates edit_form])
+    .modal.fade{ id: "editTemplate#{template}", "aria-hidden" => "true", "aria-labelledby" => "createWorkRequestModal",
+                 'data-backdrop' => 'static', "data-keyboard" => "false" }
+      .modal-dialog.modal-dialog-scrollable.modal-xl
+        .modal-content
+          .modal-header
+            TEMPLATE #{template}
+            %button.close{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+              %span{ "aria-hidden" => "true" } ×
+          .modal-body.pl-5.pr-5
+            =form_with(url: factoid_request_template_path(@factoid_request, id: template), method: :patch) do |f|
+              =f.text_area "factoid_request[template_#{template}_body]", class: 'form-control form-control-sm w-75',
+                           value: @factoid_request.public_send("template_#{template}_body")&.body
+              =f.label "factoid_request[template_#{template}_assoc]", 'Associated with:'
+              =f.select "factoid_request[template_#{template}_assoc]",
+                        options_for_select(%w[Organization Person Geo], selected: @factoid_request.public_send("template_#{template}_assoc")&.body),
+                        { include_blank: '' }, { class: 'mt-2 form-control form-control-sm w-25 d-inline-block' }
+              =f.submit 'Submit', id: "hiddenUpdateTemplateButton#{template}", class: 'd-none'
+          .modal-footer.justify-content-center
+            =link_to('UPDATE', '#', id: "updateTemplateButton#{template}", class: 'btn btn-sm btn-dark')
+            .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+              CANCEL
+            :javascript
+              $('#editTemplate#{template}').on('show.bs.modal', () => {
+                $('#editTemplate#{template} textarea').froalaEditor({
+                  key: 'KfdolbcqsaA2wzA-13==',
+                  editorClass: 'border rounded p-2',
+                  toolbarInline: true,
+                  toolbarButtons: ['undo', 'redo', '|', 'bold', 'italic', 'underline', 'strikeThrough', '|', 'color', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'insertLink', 'insertImage'],
+                  imageUploadURL: '/images/upload',
+                  imageUploadMethod: 'POST',
+                  toolbarVisibleWithoutSelection: false,
+                  heightMin: 120,
+                  zIndex: 3333,
+                  placeholderText: 'Type here....'
+                });
+              });
+
+              document.querySelector('#updateTemplateButton#{template}').addEventListener('click', (event) => {
+                event.preventDefault();
+                document.querySelector('#hiddenUpdateTemplateButton#{template}').click();
+              }, false);

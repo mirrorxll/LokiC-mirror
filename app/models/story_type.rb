@@ -8,7 +8,7 @@ class StoryType < ApplicationRecord
     create_reminder
     create_sidekiq_break
 
-    data_set.client_publication_tags.each do |client_publication_tag|
+    data_set&.client_publication_tags&.each do |client_publication_tag|
       clients_publications_tags.create!(
         client: client_publication_tag.client,
         publication: client_publication_tag.publication,
@@ -26,7 +26,7 @@ class StoryType < ApplicationRecord
 
   validates_uniqueness_of :name, case_sensitive: true
 
-  belongs_to :data_set,          counter_cache: true
+  belongs_to :data_set,          optional: true, counter_cache: true
   belongs_to :editor,            class_name: 'Account'
   belongs_to :developer,         optional: true, class_name: 'Account'
   belongs_to :level,             optional: true
@@ -62,7 +62,7 @@ class StoryType < ApplicationRecord
   scope :with_developer, -> { where.not(developer: nil) }
   scope :with_code, -> { joins(:code_attachment) }
   scope :ongoing, lambda {
-    joins(:status).where.not('statuses.name': ['canceled', 'migrated', 'not started', 'blocked', 'done'])
+    joins(:status).where.not('statuses.name': ['canceled', 'migrated', 'created and in queue', 'blocked', 'done'])
   }
   scope :not_cron, -> { joins(:cron_tab).where.not('cron_tabs.enabled': true) }
   scope :archived, -> { where(archived: true) }

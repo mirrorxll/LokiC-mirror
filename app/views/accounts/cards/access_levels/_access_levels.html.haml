@@ -1,0 +1,26 @@
+.access-levels.card.small
+  .card-body
+    %b.d-inline-block.mb-2
+      ACCESS LEVEL:
+    =link_to(icon('fa', 'plus-square'), new_account_card_access_level_path(account, card),
+             class: 'p-0 ml-2', remote: true)
+    =link_to(icon('fa', 'pencil-square'), edit_account_card_access_level_path(account, card, access_level),
+             class: "p-0 ml-2#{access_level.lock ? ' disabled-link' : '' }", remote: true)
+    =collection_select(:access_level, :id, card.branch.access_levels, :id, :name, { selected: access_level.id },
+                       { class: 'form-control form-control-sm access-selector', selected: access_level.id })
+    :javascript
+        (() => {
+          let select = document.querySelector('\##{"editAccessLevel#{card.id}"} .access-selector');
+
+          select.addEventListener('change', () => {
+            Rails.ajax({
+              type: "GET",
+              dataType: 'script',
+              url: `/accounts/#{account.id}/cards/#{card.id}/access_levels/${select.value}/`
+            });
+          });
+        })();
+
+%hr/
+.table-form
+  =permissions_table(access_level.permissions)

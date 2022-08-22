@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
 module StoryTypes
-  class CronTabsController < ApplicationController
-    skip_before_action :find_parent_article_type
-    skip_before_action :set_article_type_iteration
-
+  class CronTabsController < StoryTypesController
     before_action :cron_tab
     after_action :setup_cron_tab, only: :update
 

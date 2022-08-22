@@ -1,0 +1,6 @@
+<% if flash.now[:error] %>
+  <%= toastr_js_flash %>
+<% else %>
+  $("#editAccessLevel<%= @card.id %>").modal('hide');
+  $('#card<%= @card.id %>').replaceWith('<%= j render partial: 'accounts/cards/card', locals: { card: @card } %>')
+<% end %>

@@ -1,0 +1,4 @@
+%li.nav-item
+  %a.nav-link.disabled{ class: (index.zero? ? ' active' : ''), tab_index: index, "aria-selected" => "true",
+               "data-toggle" => "tab", :href => "#dataSample#{index}", :role => "tab"}
+    =location

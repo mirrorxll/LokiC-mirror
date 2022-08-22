@@ -4,93 +4,44 @@ require 'action_text'
 
 class ApplicationController < ActionController::Base
   helper ActionText::Engine.helpers
+  helper_method :current_account
 
-  impersonates :account
-
-  before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :authenticate_account!
-
-  before_action :find_parent_story_type, unless: :devise_controller?
-  before_action :set_story_type_iteration, unless: :devise_controller?
-  before_action :find_parent_article_type, unless: :devise_controller?
-  before_action :set_article_type_iteration, unless: :devise_controller?
-
-  before_action :unconfirmed_multitasks
+  before_action :unconfirmed_multi_tasks
 
   private
 
-  def configure_permitted_parameters
-    devise_parameter_sanitizer.permit :sign_in, keys: %i[email password remember_me]
-    devise_parameter_sanitizer.permit :account_update, keys: %i[email first_name last_name password password_confirmation current_password]
+  def authenticate_account!
+    return unless ((cookies.encrypted[:remember_me] || session[:auth_token]) && current_account).nil?
+
+    cookies.delete(:remember_me)
+    session[:auth_token] = nil
+    session[:return_to] = request.fullpath
+    redirect_to sign_in_path
   end
 
-  def find_parent_story_type
-    @story_type = StoryType.find(params[:story_type_id])
+  def current_account
+    @current_account ||= Account.find_by(auth_token: cookies.encrypted[:remember_me] || session[:auth_token])
   end
+  impersonates :account
 
-  def find_parent_article_type
-    @article_type = ArticleType.find(params[:article_type_id])
-  end
+  # callback authorize! called for 'work_requests', 'factoid_requests',
+  # 'multi_tasks', 'scrape_tasks', 'data_sets', 'story_types', 'factoid_types'
+  def authorize!(branch_name, redirect: true)
+    account_card = current_account.cards.find_by(branch: Branch.find_by(name: branch_name))
 
-  def set_story_type_iteration
-    @iteration =
-      if params[:iteration_id]
-        StoryTypeIteration.find(params[:iteration_id])
-      else
-        @story_type.iteration
-      end
-  end
-
-  def set_article_type_iteration
-    @iteration =
-      if params[:iteration_id]
-        ArticleTypeIteration.find(params[:iteration_id])
-      else
-        @article_type.iteration
-      end
-  end
-
-  def manager?
-    current_account.types.include?('manager')
-  end
-
-  def editor?
-    current_account.types.include?('editor')
-  end
-
-  def developer?
-    current_account.types.include?('developer')
-  end
-
-  def scraper?
-    current_account.types.include?('scraper')
-  end
-
-  def only_scraper?
-    acc_types = current_account.types
-    acc_types.count.eql?(1) && acc_types.first.eql?('scraper')
-  end
-
-  def outside_manager?
-    current_account.types.include?('outside manager')
-  end
-
-  def client?
-    current_account.types.include?('client')
-  end
-
-  def guest_1?
-    current_account.types.include?('guest-1')
-  end
-
-  def guest_2?
-    current_account.types.include?('guest-2')
+    if account_card.enabled
+      instance_variable_set("@#{branch_name}_permissions", account_card.access_level.permissions)
+    elsif redirect
+      flash[:error] = { "#{branch_name}": :unauthorized }
+      redirect_to root_path
+    end
   end
 
   def staging_table_action(&block)
     flash.now[:staging_table] =
       if @staging_table.nil? || StagingTable.not_exists?(@staging_table.name)
-        @story_type.update!(staging_table_attached: nil, current_account: current_account)
+        @story_type.update!(staging_table_attached: nil, current_account: @current_account)
         @staging_table&.destroy
         staging_table_deleted
       else
@@ -102,14 +53,6 @@ class ApplicationController < ActionController::Base
 
   def staging_table_deleted
     'The Table for this story type has been dropped. Please update the page'
-  end
-
-  def record_to_change_history(model, event, note, account)
-    model.change_history.create!(event: event, note: note, account: account)
-  end
-
-  def record_to_alerts(model, subtype, message)
-    model.alerts.create!(subtype: subtype.downcase, message: message)
   end
 
   # this respond to methods like:
@@ -131,21 +74,21 @@ class ApplicationController < ActionController::Base
     StoryTypeChannel.broadcast_to(story_type, { spinner: true, section: section, message: message })
   end
 
-  def send_to_factoids_action_cable(article_type, iteration, at_section, it_section, message)
-    ArticleTypeChannel.broadcast_to(article_type, { spinner: true, section: at_section, message: message })
-    ExportedFactoidsChannel.broadcast_to(iteration, { spinner: true, section: it_section, message: message })
-  end
-
-  def template_with_expired_revision
-    @iteration.story_type.template.expired_revision?
-  end
-
   def generate_url(model)
-    host = Rails.env.production? ? 'https://lokic.locallabs.com' : 'http://localhost:3000'
+    host =
+      case Rails.env
+      when 'production'
+        'https://lokic.locallabs.com'
+      when 'staging'
+        'https://lokic-staging.locallabs.com'
+      else
+        'http://localhost:3000'
+      end
+
     "#{host}#{Rails.application.routes.url_helpers.send("#{model.class.to_s.underscore}_path", model)}"
   end
 
-  def unconfirmed_multitasks
+  def unconfirmed_multi_tasks
     return if cookies[:unconfirmed_multitask_toasts_lock]
 
     cookies.encrypted[:unconfirmed_multitask_toasts_lock] = {
@@ -153,15 +96,15 @@ class ApplicationController < ActionController::Base
       expires: DateTime.now + 15.minute
     }
 
-    tasks = Task.ongoing.joins(:assignment_to).where(
+    tasks = MultiTask.ongoing.joins(:assignment_to).where.not(creator: current_account).where(
       'task_assignments.confirmed': false,
       'task_assignments.account_id': current_account
     )
 
-    flash.now[:warning] = tasks.each_with_object({ unconfirmed_multitask: [] }) do |task, warnings|
-      warnings[:unconfirmed_multitask] << view_context.link_to(
+    flash.now[:warning] = tasks.each_with_object({ unconfirmed_multi_task: [] }) do |task, warnings|
+      warnings[:unconfirmed_multi_task] << view_context.link_to(
         "#{task.title} assigned to you by #{task.creator.name}",
-        task_path(task)
+        multi_task_path(task)
       ).html_safe
     end
   end

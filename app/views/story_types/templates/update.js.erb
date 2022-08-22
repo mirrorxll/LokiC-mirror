@@ -1,5 +1,2 @@
 $('#template').modal('hide');
-
-//reload template_preview section after update
-var section = $('#template_preview > .card-body');
-section.html('<%= j render 'story_types/template' %>');
+$('#template_preview>.card-body').html('<%= j render 'story_types/main/template' %>');

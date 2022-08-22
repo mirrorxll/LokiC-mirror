@@ -1,0 +1,7 @@
+-if @factoid_request.status.name.in?(%w[blocked canceled archived])
+  .row.mb-4
+    .col-3.pr-0.text-right.text-danger.font-weight-bold
+      #{@factoid_request.status.name.capitalize}. Why?
+    .col-9
+      =@factoid_request.status_comment&.body
+  %hr/

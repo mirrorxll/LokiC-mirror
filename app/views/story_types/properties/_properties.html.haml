@@ -1,0 +1,48 @@
+.row.border-top.mt-3.ml-0.mr-0.pt-3
+  .col-10.offset-1.text-center
+    #reminderPanel
+      -if @story_type.updates?
+        =render 'story_types/reminders/reminder'
+        %hr/
+  .col-10.offset-1
+    #currentDataSet
+      =render 'story_types/properties/current_data_set'
+    %hr/
+  .col-10.offset-1
+    #clientsPublicationsTags
+      =render 'story_types/properties/clients_publications_tags'
+    %hr/
+  .col-10.offset-1
+    #levelFrequencyPBucket
+      =render 'story_types/properties/level_frequency_photo_bucket_dev'
+  .col-10.offset-1.text-center.mb-2
+    -if current_account_permissions('story_types', %w(comment show))
+      =render 'story_types/main/additional_properties'
+
+.row.border-top.mx-0.mb-3.pt-3.text-center
+  .col-3.offset-1
+    story type's code
+    #story_type_code
+      =render 'story_types/codes/section'
+  .col-4
+    export configurations (manual execution)
+    #export_configs
+      =render 'story_types/export_configurations/export_configurations'
+  .col-3
+    cron tab
+    #cron_tab_panel
+      =render 'story_types/cron_tabs/cron_tab'
+#cron_tab_setup
+
+#storyTypePropertiesForm.modal.fade{ story_type_id: @story_type.id, "aria-hidden" => "true", "aria-labelledby" => "storyTypePropertiesForm", role: "dialog", :tabindex => "-1"}
+  .modal-dialog.modal-dialog-scrollable.modal-xl
+    .modal-content
+      .modal-header
+        %h5.modal-title
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", type: "button"}
+          %span{"aria-hidden" => "true"} ×
+      .modal-body
+        .loadingSpinner
+          .spinner-border.spinner-border-sm.text-secondary
+            %span.sr-only
+      .modal-footer

@@ -1,0 +1,18 @@
+.row.m-2.justify-content-end.mt-3
+  =link_to('filter tasks', '#filter_form', 'aria-controls' => 'filter_form',
+           'aria-expanded' => false, data: { toggle: "collapse", target: "#filter_form" },
+            type: "button", class: 'btn btn-sm btn-outline-dark')
+%hr/
+
+#filter_form{ class: collapse(params[:task_tracking_hours_grid])}
+  =datagrid_form_for @grid, url: task_tracking_hours_path
+
+.row.mt-4
+  .col-12
+    #data_sets
+      #grid_wrapper
+        =datagrid_table(@grid)
+
+.row.mt-3.col-12
+  #pagination
+    =paginate @grid.assets

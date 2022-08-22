@@ -1,0 +1,2 @@
+module MultiTasksHelper
+end

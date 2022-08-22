@@ -1,23 +1,14 @@
 .row.mb-1.font-weight-bold
-  .col-12
+  .col-6
     data set
+  .col-5
+    current iteration
 .row
-  .col-12
-    -if (current_account.types & %w[manager editor]).any?
+  .col-6
+    -if @data_sets_permissions && @data_sets_permissions['grid'].values.any? && @story_type.data_set.present?
       =link_to @story_type.data_set.name, data_set_path(@story_type.data_set), class: 'no-link'
-      .d-inline-block.mr-2.ml-2{id: "story_type_#{@story_type.id}_properties"}
-        -# =link_to(icon('fa', 'sliders'), story_type_properties_form_path(@story_type), remote: true)
-        %button{ onclick: 'loadEditForm(this);', type: 'button', class: 'p-0 pb-1 btn btn-sm btn-link ml-2', 'data-toggle' => "modal", 'data-target' => "#storyTypePropertiesForm" }
-          =icon('fa', 'sliders')
-        :javascript
-          function loadEditForm(button) {
-            button.onclick = null;
-            Rails.ajax({
-              type: "GET",
-              dataType: 'script',
-              url: `#{story_type_properties_form_path(@story_type)}`
-            })
-          }
+      =link_to icon('fa', 'info-circle'), properties_data_set_path(@story_type.data_set), remote: true
     -else
-      =@story_type.data_set.name
-    =link_to icon('fa', 'info-circle'), properties_data_set_path(@story_type.data_set), remote: true
+      =@story_type.data_set.present? ? @story_type.data_set.name : '---'
+  .col-5
+    =@iteration.id

@@ -10,16 +10,16 @@ module MiniLokiC
         @iteration = options[:iteration]
       end
 
-      def insert(article)
-        raise ArgumentError, "staging_row_id can't be blank!" if article[:staging_row_id].nil?
+      def insert(factoid)
+        raise ArgumentError, "staging_row_id can't be blank!" if factoid[:staging_row_id].nil?
 
-        Article.create!(
+        Factoid.create!(
           {
-            article_type: @iteration.article_type,
+            factoid_type: @iteration.factoid_type,
             iteration: @iteration,
-            staging_row_id: article[:staging_row_id],
+            staging_row_id: factoid[:staging_row_id],
             sampled: @sampled,
-            output: ArticleOutput.new(body: article[:body])
+            output: FactoidOutput.new(body: factoid[:body])
           }
         )
       end

@@ -1,0 +1,5 @@
+$('#assignments').html(`<%= j render 'multi_tasks/assignments/assignments', task: @multi_task %>`);
+$('#confirms').html('<%= j render 'multi_tasks/receipts/confirm_receipts', task: @multi_task %>')
+<%- if @comment %>
+  $('#comments').prepend(`<%= j render 'multi_tasks/comments/comment', comment: @comment %>`);
+<%- end %>

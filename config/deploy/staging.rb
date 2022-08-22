@@ -59,3 +59,11 @@
 #     auth_methods: %w(publickey password)
 #     # password: "please use keys"
 #   }
+
+set :rails_env, :staging
+
+server 'app@vm63.blockshopper.com', port: 22, roles: %i[web app db]
+
+set :deploy_to,               '/home/app/LokiC'
+set :puma_workers,            2
+set :puma_threads,            [2, 4]

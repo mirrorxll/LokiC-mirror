@@ -1,0 +1,7 @@
+$('#editTemplate<%= params[:id] %>').on('hidden.bs.modal', function () {
+    $("#factoidRequestTemplates .template-<%= params[:id] %>").replaceWith(
+        '<%= j render partial: 'factoid_requests/templates/template', locals: { template: params[:id] } %>'
+    );
+});
+
+$('#editTemplate<%= params[:id] %>').modal('hide');

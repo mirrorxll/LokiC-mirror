@@ -1,0 +1,155 @@
+%div{ id: "scrapeTask", scrape_task_id: @scrape_task.id }
+
+%hr/
+#scrapeTaskName.text-center
+  =link_to("##{@scrape_task.id} #{@scrape_task.name}", @scrape_task)
+%hr.mb-0/
+
+.d-flex.justify-content-between.align-items-center.small
+  .text-secondary
+    created by #{@scrape_task.creator.name}
+  .text-secondary
+    created at: #{@scrape_task.created_at}#{@scrape_task.updated_early? ? " | updated at: #{@scrape_task.updated_at}" : ""}
+
+#scrapingInfo.row.align-items-stretch.mt-4
+  .col-xl-6.col-sm-12.pr-xl-1
+    .card.h-100
+      .card-header.pt-2.pr-1.pb-2.pl-1.small{ style: 'height: 37px;'}
+        .d-flex.justify-content-between.align-items-center.h-100
+          MAIN INFO
+          #scrapeTaskStatusComment
+            =render 'status_comment'
+          .d-flex.align-items-center
+            -if current_account_permissions('scrape_tasks', ['edit_form'])
+              #editScrapeTask
+                %button{ type: 'button', class: 'p-0 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#updateScrapeTaskModal" }
+                  [ edit ]
+            #scrapeTaskStatus.d-inline-block
+              -if current_account_permissions('scrape_tasks', %w[progress_status edit_form])
+                =render 'statuses'
+              -elsif current_account_permissions('scrape_tasks', ['progress_status']['show'])
+                =@scrape_task.status.name
+
+      .card-body
+        =render 'scrape_task_info'
+  .col-xl-6.col-sm-12.pl-xl-1
+    .card.h-100
+      .card-header.pt-2.pr-1.pb-2.pl-1.small{ style: 'height: 37px;'}
+        CONVERSATION
+      .card-body
+
+-if current_account_permissions('scrape_tasks', ['edit_form'])
+  #updateScrapeTaskModal.modal.fade.pr-0{ "aria-hidden" => "true", "aria-labelledby" => "updateScrapeTaskModal",
+                                           'data-backdrop' => 'static', "data-keyboard" => "false" }
+    .modal-dialog.modal-dialog-scrollable.modal-lg
+      .modal-content
+        .modal-header
+          UPDATE SCRAPE TASK
+          %button.close{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+            %span{ "aria-hidden" => "true" } ×
+        .modal-body.small
+          =render 'edit'
+        .modal-footer.justify-content-center
+          =link_to('UPDATE', '#', id: 'updateScrapeTaskButton', class: 'btn btn-sm btn-dark')
+          .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+            CANCEL
+
+  :javascript
+    document.querySelector('#updateScrapeTaskButton').addEventListener('click', (event) => {
+      event.preventDefault();
+      document.querySelector('#hiddenUpdateScrapeTaskButton').click();
+    }, false);
+
+-if current_account_permissions('scrape_tasks', %w[instructions edit_form])
+  #scrapeInstructionAnchor.mb-4
+-if current_account_permissions('scrape_tasks', %w[evaluation_document edit_form])
+  #scrapeEvaluationDocAnchor.mb-4
+
+-if current_account_permissions('scrape_tasks', %w[instructions show]) && current_account_permissions('scrape_tasks', %w[evaluation_document show])
+  %ul#scrapeTaskTabs.nav.nav-tabs.small.mt-4
+    %li.nav-item.text-center{ style: 'width: 50%' }
+      %a#scrapeInstructionTab.nav-link.active{ "aria-selected" => "true", "data-toggle" => "tab", href: "#scrapeInstruction", role: "tab" }
+        INSTRUCTION
+
+    %li.nav-item.text-center{ style: 'width: 50%' }
+      %a#scrapeEvaluationDocTab.nav-link{ "aria-selected" => "false", "data-toggle" => "tab",
+                                          href: "#scrapeEvaluationDoc", role: "tab" }
+        EVALUATION DOCUMENT
+
+  #scrapeTaskTabsContent.tab-content
+    #scrapeInstruction.tab-pane.fade.show.active
+      .card.border-top-0.rounded-top-0.mb-5
+        -if current_account_permissions('scrape_tasks', %w[instructions edit_form])
+          #scrapeInstructionEdit.small
+            .row
+              .col-8.offset-2.p-0
+                %hr.mb-0.mt-3/
+                =button_to('[ edit ]', edit_scrape_task_instruction_path(@scrape_task), class: 'btn btn-sm btn-link', method: :get, remote: true, data: { disable_with: '...'})
+                %hr.mt-0/
+        #instruction.show{"data-parent" => "#scrapeInstruction"}
+          =render 'scrape_tasks/instructions/instruction'
+        :javascript
+          [...document.querySelectorAll('#instruction .fr-view a')].forEach((el) => {
+            el.setAttribute('target', '_black');
+            el.setAttribute('rel', 'noopener noreferrer');
+          })
+
+    #scrapeEvaluationDoc.tab-pane.fade.show
+      .card.border-top-0.rounded-top-0.mb-5
+        #evaluationDocEdit.small
+          -if current_account_permissions('scrape_tasks', %w[evaluation_document edit_form])
+            .row
+              .col-8.offset-2.p-0
+                %hr.mb-0.mt-3/
+                .d-inline-block
+                  =button_to('[ edit ]', edit_scrape_task_evaluation_doc_path(@scrape_task), class: 'btn btn-sm btn-link', method: :get, remote: true, data: { disable_with: '...'})
+                %hr.mt-0/
+        #evaluationDoc.show{ "data-parent" => "#scrapeEvaluationDoc" }
+          =render 'scrape_tasks/evaluation_docs/evaluation_doc'
+        :javascript
+          [...document.querySelectorAll('#evaluationDoc .fr-view a')].forEach((el) => {
+            el.setAttribute('target', '_black');
+            el.setAttribute('rel', 'noopener noreferrer');
+          })
+
+-elsif current_account_permissions('scrape_tasks', ['instructions', 'show'])
+  .card.w-100.mb-5.mt-4
+    .card-header.p-1.small
+      INSTRUCTIONS
+    .card-body.p-0
+      -if current_account_permissions('scrape_tasks', ['instructions', 'edit_form'])
+        #scrapeInstructionEdit.small
+          .row
+            .col-8.offset-2.p-0
+              %hr.mb-0.mt-3/
+              =button_to('[ edit ]', edit_scrape_task_instruction_path(@scrape_task), class: 'btn btn-sm btn-link', method: :get, remote: true, data: { disable_with: '...'})
+              %hr.mt-0/
+      #instruction.show{"data-parent" => "#scrapeInstruction"}
+        =render 'scrape_tasks/instructions/instruction'
+      :javascript
+        [...document.querySelectorAll('#instruction .fr-view a')].forEach((el) => {
+          el.setAttribute('target', '_black');
+          el.setAttribute('rel', 'noopener noreferrer');
+        })
+
+
+-elsif current_account_permissions('scrape_tasks', %w[evaluation_document show])
+  .card.w-100.mb-5.mt-4
+    .card-header.p-1.small
+      EVALUATION DOCUMENT
+    .card-body.p-0
+      -if current_account_permissions('scrape_tasks', %w[evaluation_document edit_form])
+        #evaluationDocEdit.small
+          .row
+            .col-8.offset-2.p-0
+              %hr.mb-0.mt-3/
+              .d-inline-block
+                =button_to('[ edit ]', edit_scrape_task_evaluation_doc_path(@scrape_task), class: 'btn btn-sm btn-link', method: :get, remote: true, data: { disable_with: '...'})
+              %hr.mt-0/
+    #evaluationDoc
+      =render 'scrape_tasks/evaluation_docs/evaluation_doc'
+    :javascript
+          [...document.querySelectorAll('#evaluationDoc .fr-view a')].forEach((el) => {
+            el.setAttribute('target', '_black');
+            el.setAttribute('rel', 'noopener noreferrer');
+          })

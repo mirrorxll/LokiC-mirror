@@ -1,0 +1,65 @@
+-card_name = card.branch.name.humanize.upcase
+
+.col-4.col-lg-3.mb-4{ id: "card#{card.id}" }
+  .card
+    .card-body{ class: "bg-#{card.enabled ? 'light' : 'white'}" }
+      %h5.card-title{ class: "text-#{card.enabled ? 'dark' : 'muted'}" }
+        =card_name
+      .card-subtitle.mb-2.text-muted.mb-2
+        =card.access_level.name.upcase
+      .d-flex.justify-content-between
+        .btn-group.btn-group-sm
+          -if card.enabled
+            .btn.btn-sm{ class: "btn-outline-dark", 'data-toggle' => "modal",
+                         'data-target' => "#editAccessLevel#{card.id}" }
+              EDIT
+          -else
+            .btn.btn-sm{ class: "btn-outline-secondary disabled" }
+              EDIT
+        .btn-group.btn-group-sm
+          -if card.enabled
+            .btn.btn-success.disabled ON
+            =link_to('OFF', account_card_path(@account, card), method: :delete,
+                       remote: true, data: { confirm: "#{@account.name} will lose access to #{card_name}. Are you sure?" },
+                       class: 'btn btn-outline-success')
+
+          -else
+            =form_with(url: account_cards_path(@account),
+                       data: { confirm: "#{@account.name} will have access to #{card_name}. Are you sure?" }) do |f|
+              =f.hidden_field :id, value: card.id
+              =f.submit 'ON', class: 'btn btn-sm btn-outline-secondary'
+            .btn.btn-sm.btn-secondary.disabled OFF
+    -if card.enabled
+      .modal.fade{ id: "editAccessLevel#{card.id}", "aria-hidden" => "true",
+                   "aria-labelledby" => "editAccessLevel#{card.id}",
+                   'data-backdrop' => 'static', "data-keyboard" => "false" }
+        .modal-dialog.modal-dialog-scrollable.modal-md
+          .modal-content
+            .modal-header.text-uppercase
+              ="#{card_name} -- EDIT PERMISSIONS"
+              %button.close{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+                %span{ "aria-hidden" => "true" } ×
+            .modal-body
+              =render partial: 'accounts/cards/access_levels/access_levels',
+                      locals: { account: @account, card: card, access_level: card.access_level }
+            .modal-footer.justify-content-center
+              =link_to('UPDATE', '#', class: 'btn btn-sm btn-dark')
+              .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+                CANCEL
+              :javascript
+                (() => {
+                  let button = document.querySelector('\##{"editAccessLevel#{card.id}"} .modal-footer>a');
+
+                  button.addEventListener('click', (e) => {
+                    e.preventDefault();
+
+                    let select = document.querySelector('\##{"editAccessLevel#{card.id}"} .access-selector');
+
+                    Rails.ajax({
+                      type: "PATCH",
+                      dataType: 'script',
+                      url: `/accounts/#{@account.id}/cards/#{card.id}`,
+                      data: `card[access_level_id]=${select.value}`
+                    });
+                  });
+                })();

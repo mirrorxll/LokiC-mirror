@@ -1,0 +1,79 @@
+%hr/
+#header.d-flex.justify-content-between.align-items-center.mt-3
+  %span
+    -if @current_list
+      Total: #{@grid.assets.total_count}
+  %span.font-weight-bold
+    DATA SETS
+  .d-inline-block.text-right.text-uppercase
+    -if @current_list && @lists.length > 1
+      .btn-group.mr-3
+        -@lists.each_key do |list|
+          -filled = @current_list.eql?(list) ? '' : '-outline'
+          =link_to(list, url_for(list: list), class: "btn btn-sm btn#{filled}-dark")
+    .btn-group
+      -if @current_list
+        =link_to('filter', '#', class: 'btn btn-sm btn-outline-dark',
+                 "data-target" => "#filterDSets", "data-toggle" => "collapse")
+      -if current_account_permissions('data_sets', ['new_form'])
+        =link_to('create', '#', class: 'btn btn-sm btn-outline-dark',
+                 "data-target" => "#createDataSetModal", "data-toggle" => "modal")
+
+%hr.mb-1/
+
+-if @current_list && @grid.assets.total_count > 0
+  .text-right.mb-2
+    =link_to('[ download CSV ]', url_for(format: 'csv', data_sets_grid: params[:data_sets_grid]),
+                 id: '#save_as_csv_btn', class: 'small')
+
+-if @current_list
+  #filterDSets.mt-3.mb-3.collapse{ class: (params[:data_sets_grid] ? 'show' : '') }
+    =datagrid_form_for @grid, url: data_sets_path
+
+  .row.small.mb-5
+    .col-12
+      =datagrid_table(@grid)
+
+  .fixed-bottom.bg-light
+    .row
+      .col-12.p-2
+        =paginate @grid.assets
+
+  :javascript
+    (() => {
+      let filter = $('#filterDSets');
+      filter.on('show.bs.collapse', () => {
+        sessionStorage['d_sets_filter_show'] = true;
+      });
+
+      filter.on('hide.bs.collapse', () => {
+        sessionStorage['d_sets_filter_show'] = false;
+      });
+
+      if(JSON.parse(sessionStorage['d_sets_filter_show'])) {
+        filter.addClass('show');
+      } else {
+        filter.removeClass('show');
+      }
+    })();
+
+-if current_account_permissions('data_sets', ['new_form'])
+  #createDataSetModal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "createDataSetModal",
+                                    'data-backdrop' => 'static', "data-keyboard" => "false" }
+    .modal-dialog
+      .modal-content
+        .modal-header
+          NEW DATA SET
+          %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+            %span{"aria-hidden" => "true"} ×
+        .modal-body.small
+          =render 'new'
+        .modal-footer.justify-content-center
+          =link_to('CREATE', '#', id: 'createDataSetButton', class: 'btn btn-sm btn-dark')
+          .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
+            CANCEL
+  :javascript
+    document.querySelector('#createDataSetButton').addEventListener('click', (event) => {
+      event.preventDefault();
+      document.querySelector('#hiddenCreateDataSetButton').click();
+    }, false);

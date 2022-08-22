@@ -1,46 +1,27 @@
 # frozen_string_literal: true
 
 module ScrapeTasks
-  class TagsController < ApplicationController
-    skip_before_action :find_parent_story_type
-    skip_before_action :find_parent_article_type
-    skip_before_action :set_story_type_iteration
-    skip_before_action :set_article_type_iteration
-
+  class TagsController < ScrapeTasksController
     before_action :find_scrape_task
-    before_action :find_or_create_tag_by_name, only: :include
-    before_action :find_tag, only: :exclude
 
-    def include
-      render_403 && return if @scrape_task.tags.exists?(@tag.id)
+    def show; end
 
-      @scrape_task.tags << @tag
-      render 'scrape_tasks/tags/refresh'
-    end
+    def edit; end
 
-    def exclude
-      render_403 && return unless @scrape_task.tags.exists?(@tag.id)
+    def update
+      @scrape_task.tags.clear
 
-      @scrape_task.tags.destroy(@tag)
-      render 'scrape_tasks/tags/refresh'
+      tags_params.keep_if { |_k, v| v.eql?('1') }.keys.each do |tag|
+        @scrape_task.tags << ScrapeTaskTag.find_or_create_by!(name: tag)
+      end
+
+      render 'scrape_tasks/tags/show'
     end
 
     private
 
-    def find_scrape_task
-      @scrape_task = ScrapeTask.find(params[:scrape_task_id])
-    end
-
-    def find_or_create_tag_by_name
-      @tag = ScrapeTaskTag.find_or_create_by!(name: tag_name_from_param)
-    end
-
-    def find_tag
-      @tag = ScrapeTaskTag.find(params[:tag_id])
-    end
-
-    def tag_name_from_param
-      params.require(:tag).permit(:name)[:name]
+    def tags_params
+      params[:tags] ? params.require(:tags).permit!.to_h : {}
     end
   end
 end

@@ -1,6 +1,8 @@
 $fa-font-path: "~font-awesome/fonts";
 
 @import "~bootstrap/scss/bootstrap";
+@import "accounts";
+@import "login";
 @import "datagrid";
 @import "data_set";
 @import "story_type";
@@ -14,8 +16,7 @@ $fa-font-path: "~font-awesome/fonts";
 @import "scrape_task";
 @import "work_requesting_form";
 @import "toastr/toastr";
-@import "factoids_purge";
-
+@import "media";
 @import '~font-awesome/scss/font-awesome';
 @import "actiontext";
 @import "~trix";
@@ -23,6 +24,16 @@ $fa-font-path: "~font-awesome/fonts";
 @import "~multiple-select/dist/themes/bootstrap";
 @import "node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.standalone";
 @import "~datatables.net-bs4/css/dataTables.bootstrap4.min";
+@import 'select2/dist/css/select2.css';
+@import 'factoid_types';
+
+body {
+  font-family: 'Ubuntu', sans-serif;
+}
+
+.font-size-default {
+  font-size: revert;
+}
 
 @media (min-width: 100px) {
   .modal-fullscreen {
@@ -99,6 +110,10 @@ div.enum_filter > div.ms-drop li {
 
 .w-10 {
   width: 10%;
+}
+
+.w-15 {
+  width: 15%;
 }
 
 .w-20 {
@@ -187,4 +202,11 @@ div.enum_filter > div.ms-drop li {
 
 .w-250px {
   width: 250px;
+}
+
+.disabled-link{
+  cursor: default;
+  pointer-events: none;
+  text-decoration: none;
+  color: grey;
 }

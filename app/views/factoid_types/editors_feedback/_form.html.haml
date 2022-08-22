@@ -1,0 +1,18 @@
+#editors_feedback_editor_modal.ml-3
+  =form_with(url: factoid_type_fact_checking_doc_editors_feedback_index_path(@factoid_type, @factoid_type.fact_checking_doc),
+             local: true) do |form|
+    .field
+      =form.rich_text_area 'editors_feedback[body]'
+    .mt-3.mb-4
+      =form.submit "create feedback", class: 'btn btn-sm btn-outline-dark',
+                   onclick: "sessionStorage.removeItem('editorsFeedback');"
+      =form.submit "approve!", class: 'btn btn-sm btn-outline-dark',
+                   onclick: "sessionStorage.removeItem('editorsFeedback');"
+
+  .position-relative
+    %hr/
+    .label_to_line_modal
+      recent feedback
+
+#editors_feedback_body_modal
+

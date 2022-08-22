@@ -14,7 +14,6 @@ class StoryTypesGrid
       :clients, :tags, :reminder,
       :cron_tab, :template,
       :exported_story_types,
-      # opportunities: [opportunity: :agency],
       data_set: %i[state category]
     ).order(
       Arel.sql("CASE WHEN reminders.check_updates = false AND cron_tabs.enabled = false THEN '1' END DESC,
@@ -47,7 +46,7 @@ class StoryTypesGrid
   filter(:developer, :enum, multiple: true, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
   filter(:frequency, :enum, multiple: true, left: true, select: Frequency.pluck(:name, :id))
   filter(:photo_bucket, :enum, multiple: true, left: true, select: PhotoBucket.all.order(:name).pluck(:name, :id))
-  filter(:status, :enum, multiple: true, left: true, select: Status.all_story_type_statuses.pluck(:name, :id)) do |value, scope|
+  filter(:status, :enum, multiple: true, left: true, select: Status.hle_statuses.where.not(name: 'archived').pluck(:name, :id)) do |value, scope|
     status = Status.find(value)
     scope.where(status: status)
   end
@@ -84,14 +83,12 @@ class StoryTypesGrid
 
     scope.where(id: stories_story_types_ids)
   end
-  filter(:agency, :enum, multiple: true, select: Agency.all.order(:name).pluck(:name, :id)) do |value, scope|
-    agencies = Agency.where(id: value)
-    scope.includes(opportunities: [opportunity: :agency]).where('agencies.id': agencies.ids)
-  end
-  filter(:opportunity, :enum, multiple: true, select: Opportunity.all.order(:name).pluck(:name, :id)) do |value, scope|
-    opportunities = Opportunity.where(id: value)
-    scope.includes(:opportunities).where('story_type_opportunities.opportunity_id': opportunities.ids)
-  end
+  # filter(:agency, :enum, multiple: true, select: Agency.all.order(:name).pluck(:name, :id)) do |value, scope|
+  #   scope.where('agencies.id': value)
+  # end
+  # filter(:opportunity, :enum, multiple: true, select: Opportunity.all.order(:name).pluck(:name, :id)) do |value, scope|
+  #   scope.where('story_type_opportunities.opportunity_id': value)
+  # end
   filter(:first_export, :datetime, range: true, type: 'date') do |value, scope|
     scope.where('exported_story_types.first_export': true)
          .where('exported_story_types.date_export': value.first..value.last)
@@ -116,20 +113,16 @@ class StoryTypesGrid
   end
 
   column(:state, order: 'states.short_name') do |record|
-    record.data_set.state&.short_name
+    record.data_set&.state&.short_name
   end
   column(:category, order: 'data_set_categories.name') do |record|
-    record.data_set.category&.name
+    record.data_set&.category&.name
   end
   column(:data_set, mandatory: true, order: 'data_sets.name') do |record, scope|
-    if (scope.current_account.types & %w[manager editor]).present?
-      format(record.data_set) { |value| link_to value&.name, data_set_path(value, :anchor => "storyTypes") }
-    else
-      record.data_set&.name
-    end
+    format(record.data_set) { |value| link_to value&.name, value } if record.data_set
   end
   column(:location, order: 'data_sets.location') do |record|
-    record.data_set.location
+    record.data_set&.location
   end
   column(:developer, mandatory: true, order: 'accounts.first_name, accounts.last_name') do |record|
     record.developer&.name

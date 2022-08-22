@@ -1,25 +1,17 @@
 -status = @story_type.status
 
 .current_progress_status
-  -if correct_account?(@story_type)
-    =link_to(status.name, '#', class: "badge badge-pill badge-#{status_color(status.name)}")
-    :javascript
-      document.querySelector('.current_progress_status a').addEventListener('click', function (evt) {
-        evt.preventDefault();
-        evt.target.parentNode.classList.add('d-none');
-        document.getElementsByClassName('change_progress_status_form')[0].classList.remove('d-none');
-        return false;
-      })
-  -else
-    .badge.badge-pill{ class: "badge-#{status_color(status.name)}" }
-      =status.name
+  =link_to(status.name, '#', class: "badge badge-pill badge-#{status_color(status.name)}")
+  :javascript
+    document.querySelector('.current_progress_status a').addEventListener('click', function (evt) {
+      evt.preventDefault();
+      evt.target.parentNode.classList.add('d-none');
+      document.getElementsByClassName('change_progress_status_form')[0].classList.remove('d-none');
+      return false;
+    })
 
 .change_progress_status_form.d-none
   =form_with(url: change_story_type_progress_statuses_path(@story_type, @iteration),
              html: { class: 'd-inline', onchange: "Rails.fire(this, 'submit')" }, method: :patch) do |form|
-    =form.collection_select(:status_id,
-                            manager_or_editor ? Status.hle_statuses : Status.hle_statuses.reject { |item| item.name == 'archived' },
-                            :id,
-                            :name,
-                            { prompt: '' },
-                            selected: status.id)
+    -statuses = Status.hle_statuses(archived: current_account.manager? || current_account.content_manager?)
+    =form.collection_select(:status_id, statuses, :id, :name, { prompt: '' }, selected: status.id)

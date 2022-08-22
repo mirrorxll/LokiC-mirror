@@ -1,10 +1,11 @@
+# frozen_string_literal: true
 
 module Api
   module V1
     module MultiTasks
       class MainController < MultiTasksController
         def index
-          render json: (Task.all.map do |multi_task|
+          render json: (MultiTask.all.map do |multi_task|
             assigned_to = []
             assigned = multi_task.main_assignee
             assistants = multi_task.assistants

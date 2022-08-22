@@ -1,0 +1,18 @@
+$('#accountStatus').html('<%= j render 'accounts/main/statuses' %>');
+$('#accountStatusComment').html('<%= j render 'accounts/main/status_comment' %>');
+
+(() => {
+    let body = $('#accountInfo .card-body');
+
+    <% if @status.name.eql?('deactivated') %>
+      body.empty();
+    <% else %>
+      body.html(
+          `<%= j render 'accounts/roles/roles' %>
+          <hr>
+          <div class='row'>
+            <%= j render partial: 'accounts/cards/card', collection: @account.cards.includes(:branch, :access_level)  %>
+          </div>`
+      )
+    <% end %>
+})();

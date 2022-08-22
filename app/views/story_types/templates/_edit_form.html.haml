@@ -1,14 +1,8 @@
-=form_with(model: [@story_type, @story_type.template]) do |form|
-  .field.small
-    =form.text_area :body, id: 'storytype-template-body', value: @story_type.template.body
-  .modal-footer
-    =link_to( 'close', '#', class: 'ml-auto btn btn-sm btn-outline-secondary',
-              'data-dismiss' => 'modal', data: { confirm: 'All changes shall be lost. Close?'})
-    =form.submit 'save changes', class: 'mr-auto btn btn-sm btn-outline-success'
+=form_with(url: story_type_template_path, method: :patch) do |form|
+  =form.text_area 'template[body]', id: 'storyTypeTemplateBody', value: @story_type.template.body
+  =form.submit id: 'hiddenUpdateTemplateButton', class: 'd-none'
 
 :javascript
   $('#template').on('hidden.bs.modal', function () {
     $('#template .modal-body').empty();
-  });
-
-  $('#template').modal('show');
+  }).modal('show');

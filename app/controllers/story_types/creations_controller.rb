@@ -1,12 +1,7 @@
 # frozen_string_literal: true
 
 module StoryTypes
-  class CreationsController < ApplicationController # :nodoc:
-    skip_before_action :find_parent_article_type
-    skip_before_action :set_article_type_iteration
-
-    before_action :render_403, if: :editor?
-
+  class CreationsController < StoryTypesController # :nodoc:
     def execute
       @iteration.update!(creation: false, current_account: current_account)
       send_to_action_cable(@story_type, 'samples', 'creation in the process')

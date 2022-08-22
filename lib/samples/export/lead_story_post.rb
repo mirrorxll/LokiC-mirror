@@ -21,12 +21,23 @@ module Samples
         lead_id = lead_post(sample, exp_config, st_opportunities)
         story_id = story_post(lead_id, sample, exp_config, cl_p_tgs)
 
+
         sample.update!(
           @pl_lead_id_key => lead_id,
           @pl_story_id_key => story_id,
           exported_at: DateTime.now
         )
       end
+
+      TIMES_BY_WEEKDAY = [
+        %w[7:00 19:30], # "Sunday"
+        %w[7:00 19:30], # "Monday"
+        %w[7:00 19:30], # "Tuesday"
+        %w[7:00 19:30], # "Wednesday"
+        %w[7:00 19:30], # "Thursday"
+        %w[7:00 13:00], # "Friday"
+        %w[7:00 13:00]  # "Saturday"
+      ].freeze
 
       def published_at(date)
         datetime_to_f = lambda do |dt, pos|

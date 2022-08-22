@@ -1,0 +1,3 @@
+-if @scrape_task.status.name.in?(%w[blocked canceled archived])
+  .text-danger.font-weight-bold
+    #{@scrape_task.status.name} - #{@scrape_task.status_comment&.body}

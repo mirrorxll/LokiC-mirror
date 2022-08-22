@@ -1,0 +1,11 @@
+-assignment_to = task.assignments.reload + task.assignments_notifications.reload
+-if assignment_to.empty?
+  .font-weight-bold.small
+    assignment to:
+-else
+  -assignment_to.each do |assignment|
+    .badge{ class: "#{assignment.notification_to ? 'badge-secondary' : 'badge-info' }" }
+      =assignment.account.name
+
+-if %w[assignment_to assistants notifications_to].map { |access| current_account_permissions('multi_tasks', [access]) }.any?
+  =link_to '[ edit ]', edit_multi_task_assignments_path(task), remote: true, class: 'small'

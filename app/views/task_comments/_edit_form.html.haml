@@ -1,8 +1,0 @@
-=form_with(url: task_comment_path(@task, @comment), method: :patch) do |form|
-  .row
-    .col.small
-      =form.rich_text_area :body, class: 'form-control overflow-auto', style: 'min-height: 150px;', id: "commentBody_#{@comment.id}"
-  .modal-footer.justify-content-center
-    .btn.btn-sm.btn-outline-secondary{ "aria-label" => "Close", "data-dismiss" => "modal", type: "button" }
-      cancel
-    =form.submit :update, class: 'btn btn-sm btn-outline-success'

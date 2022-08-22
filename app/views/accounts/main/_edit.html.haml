@@ -1,0 +1,171 @@
+=form_with(url: account_path, method: :patch, html: { class: 'small', onkeypress: "return event.keyCode !== 13;" } ) do |f|
+  #emailAnchor.mb-3
+  #email.card
+    .card-body
+      .font-weight-bold.mb-2
+        EMAIL:
+        %span.small.text-danger
+          *required
+      =f.email_field 'account[email]', class: 'form-control form-control-sm w-50', value: @account.email
+
+  #slackAnchor.mb-3
+  #slack.card
+    .card-body
+      .font-weight-bold.mb-2
+        SLACK ACCOUNT:
+      -slack_accounts = SlackAccount.order(:user_name)
+      =f.collection_select 'slack[id]', slack_accounts, :id, :user_name,
+                           { include_blank: '-- not set --', selected: @account.slack&.id }
+      :javascript
+        (() => {
+          let select = $('select[name="slack[id]"]').select2({});
+          select.data('select2').$container.addClass('w-50');
+          select.data('select2').$dropdown.addClass('small');
+          $('.select2-selection.select2-selection--single').css('border', '1px solid #ced4da');
+          select.on('select2:open', () => {
+            $('.select2-dropdown').css('border', '1px solid #ced4da');
+          });
+        })();
+
+  #nameAnchor.mb-3
+  #name.card
+    .card-body
+      .font-weight-bold.mb-2
+        .row
+          .col-6
+            FIRST NAME:
+            %span.small.text-danger
+              *required
+          .col-6
+            LAST NAME:
+            %span.small.text-danger
+              *required
+      .row
+        .col-6
+          =f.text_field 'account[first_name]', class: 'form-control form-control-sm', value: @account.first_name
+        .col-6
+          =f.text_field 'account[last_name]', class: 'form-control form-control-sm', value: @account.last_name
+
+  #passwordAnchor.mb-3
+  #password.card
+    .card-body
+      .row.font-weight-bold.mb-2
+        .col-6
+          PASSWORD:
+          %span.small.text-danger
+            *required
+        .col-6
+          PASSWORD CONFIRMATION:
+          %span.small.text-danger
+            *required
+      .d-flex.align-content-stretch.align-items-center
+        =f.text_field 'account[password]', class: 'form-control form-control-sm',
+                      minlength: 6, maxlength: 20, autocomplete: 'new-password',
+                      oninput: 'passwordsAreValid();'
+        .p-2
+          .empty
+            =icon('fa', 'stop-circle', class: 'text-white') # delimiter
+          .valid.text-success.d-none{ 'data-toggle' => 'tooltip', 'data-placement' => 'top',
+                                      'title' => 'OK!' }
+            =icon('fa', 'check-circle')
+          .invalid.text-danger.d-none{ 'data-toggle' => 'tooltip', 'data-placement' => 'top',
+                                       'title' => "Password isn't valid!" }
+            =icon('fa', 'exclamation-circle')
+        =f.text_field 'account[password_confirmation]', class: 'form-control form-control-sm',
+                      minlength: 6, maxlength: 20, autocomplete: 'new-password',
+                      oninput: 'passwordsAreValid();'
+      .row.m-0
+        .col-6.p-0
+          %small.text-secondary
+            *** leave blank if you don't want to change the password
+          %small.text-secondary
+            *** min 6 character - max 20 characters
+    =f.submit 'Submit', id: 'hiddenUpdateButton', class: 'd-none'
+
+  :javascript
+    function passwordsAreValid() {
+      let passwords = [
+        document.querySelector('input[name="account[password]"]').value,
+        document.querySelector('input[name="account[password_confirmation]"]').value
+      ]
+
+      if(passwords.every((i) => i.length === 0)) {
+        return true;
+      }
+
+      let empty = document.querySelector('#password .empty');
+      let valid = document.querySelector('#password .valid');
+      let invalid = document.querySelector('#password .invalid');
+
+      if(passwords.find((i) => (i.length > 0 && i.length < 6) || i.length > 20 )) {
+        empty.classList.add('d-none');
+        valid.classList.add('d-none');
+        invalid.classList.remove('d-none');
+        return false
+      }
+
+      if(passwords[0].length === 0 && passwords[1].length === 0) {
+        valid.classList.add('d-none');
+        invalid.classList.add('d-none');
+        empty.classList.remove('d-none');
+        return false;
+      } else if(passwords[0] !== passwords[1]) {
+        empty.classList.add('d-none');
+        valid.classList.add('d-none');
+        invalid.classList.remove('d-none');
+        return false;
+      } else {
+        empty.classList.add('d-none');
+        invalid.classList.add('d-none');
+        valid.classList.remove('d-none');
+        return true;
+      }
+    }
+
+    document.querySelector('#editAccountModal form').addEventListener('submit', onSubmit)
+
+    function onSubmit(event) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      let sections = `#email, #name, #password`
+      let cards = document.querySelectorAll(sections);
+      [...cards].forEach((el) => { el.classList.replace('border-danger', 'border-0') })
+
+      let emailIsEmpty = document.querySelector('#email input').value.length === 0
+      if(emailIsEmpty) {
+        scrollToCard('#email')
+        return false;
+      }
+
+      let firstNameIsEmpty = document.querySelector('#name input[name="account[first_name]"]').value.length === 0
+      let lastNameIsEmpty = document.querySelector('#name input[name="account[last_name]"]').value.length === 0
+      if(firstNameIsEmpty || lastNameIsEmpty) {
+        scrollToCard('#name')
+        return false;
+      }
+
+      if(!passwordsAreValid()) {
+        scrollToCard('#password')
+        return false;
+      }
+
+      // event.target.submit();
+      event.target.removeEventListener('submit', onSubmit);
+      Rails.fire(event.target, 'submit');
+      event.target.addEventListener('submit', onSubmit)
+    }
+
+
+    document.querySelector('#editAccountModal .modal-body').addEventListener('scroll', () => {
+      [...document.querySelectorAll('input[list]')].forEach(el => { el.blur();  })
+    }, false)
+
+    function scrollToCard(id) {
+      let required = document.querySelector(id);
+
+      required.addEventListener('animationend', (ev) => { ev.target.classList.remove('touch-required-field') })
+      document.querySelector(id).classList.replace('border-0', 'border-danger')
+      document.querySelector(id).classList.add('border-danger', 'touch-required-field')
+      document.querySelector(`${id}Anchor`).scrollIntoView();
+    }
