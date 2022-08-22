@@ -45,7 +45,7 @@
           .col
             main_task:
           .col.text-left.small
-            =form.collection_select 'task[parent]', MultiTask.where.not(status: Status.find_by(name: 'deleted')).order(:id) - [@multi_task], :id, :title_with_id, { selected: @multi_task.parent.nil? ? '' : @multi_task.parent.id, prompt: '' }, class: 'w-100'
+            =form.collection_select 'task[parent]', MultiTask.where.not(status: Status.find_by(name: 'archived')).order(:id) - [@multi_task], :id, :title_with_id, { selected: @multi_task.parent.nil? ? '' : @multi_task.parent.id, prompt: '' }, class: 'w-100'
       .row.mb-2
         .col
           gather_task:

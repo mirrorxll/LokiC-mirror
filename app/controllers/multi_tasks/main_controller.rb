@@ -82,10 +82,10 @@ module MultiTasks
       statuses = Status.multi_task_statuses(created: true)
       @lists = HashWithIndifferentAccess.new
 
-      @lists['assigned'] = { assignment_to: current_account.id, status: statuses }    if @multi_tasks_permissions['grid']['assigned']
-      @lists['created'] = { creator: current_account.id, status: statuses }           if @multi_tasks_permissions['grid']['created']
-      @lists['all'] = { status: statuses }                                            if @multi_tasks_permissions['grid']['all']
-      @lists['archived'] = { status: Status.find_by(name: 'deleted') }                if @multi_tasks_permissions['grid']['archived']
+      @lists['assigned'] = { assignment_to: current_account.id, status: statuses } if @multi_tasks_permissions['grid']['assigned']
+      @lists['created'] = { creator: current_account.id, status: statuses }        if @multi_tasks_permissions['grid']['created']
+      @lists['all'] = { status: statuses }                                         if @multi_tasks_permissions['grid']['all']
+      @lists['archived'] = { status: Status.find_by(name: 'archived') }            if @multi_tasks_permissions['grid']['archived']
     end
 
     def current_list
@@ -96,15 +96,14 @@ module MultiTasks
     def generate_grid
       return unless @current_list
 
-      filter_params = {}
+      filter_params = params[:multi_tasks_grid] || {}
 
-      if params[:multi_tasks_grid]
-        filter_params.merge!(params[:multi_tasks_grid])
+      if filter_params.present?
         filter_params[:status] =
           if filter_params[:status].blank? && filter_params[:deleted_tasks] != 'YES'
             Status.multi_task_statuses
           elsif filter_params[:deleted_tasks].eql?('YES')
-            Status.find_by(name: 'deleted')
+            Status.find_by(name: 'archived')
           elsif filter_params[:status].any?
             filter_params[:status]
           end
@@ -119,7 +118,7 @@ module MultiTasks
     end
 
     def access_to_show
-      status_deleted = Status.find_by(name: 'deleted')
+      status_deleted = Status.find_by(name: 'archived')
 
       return if @lists['assigned'] && @multi_task.assignment_to.include?(current_account) && @multi_task.status != status_deleted
       return if @lists['created'] && @multi_task.creator.eql?(current_account) && @multi_task.status != status_deleted
@@ -128,11 +127,6 @@ module MultiTasks
 
       flash[:error] = { multi_task: :unauthorized }
       redirect_back fallback_location: root_path
-    end
-
-    def work_requests_access
-      card = current_account.cards.find_by(branch: Branch.find_by(name: 'work_requests'))
-      current_account_permissions = card.access_level.permissions if card.enabled
     end
 
     def update_agencies_opportunities(agencies_opportunities)

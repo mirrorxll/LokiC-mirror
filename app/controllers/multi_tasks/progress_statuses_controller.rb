@@ -41,7 +41,7 @@ module MultiTasks
     end
 
     def comment
-      body, subtype = if %w[blocked canceled].include? @status.name
+      body, subtype = if %w[blocked archived].include? @status.name
                         ["<div><b>Status changed to #{@status.name}.</b><br>#{params[:body]}</div>", 'status comment']
                       elsif @status.name.eql?('done') && !@multi_task.done_by_all_assignments?
                         ["<b>Set status #{@status.name}.</b>", 'task comment']

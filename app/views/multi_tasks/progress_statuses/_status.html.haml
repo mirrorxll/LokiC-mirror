@@ -33,7 +33,7 @@
         submit(status_form);
       }
     }
-    else if (['blocked', 'canceled'].includes(status)) {
+    else if (['blocked', 'archived'].includes(status)) {
       $('#comment .modal-body').html("#{ j render 'multi_tasks/progress_statuses/comment_form' }");
       $('#comment').modal('show');
     }

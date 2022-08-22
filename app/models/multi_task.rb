@@ -43,7 +43,7 @@ class MultiTask < ApplicationRecord # :nodoc:
   has_many :assignment_to, through: :assignments, source: :account
 
   has_many :comments, -> { where(commentable_type: 'MultiTask') }, as: :commentable, class_name: 'Comment'
-  has_many :subtasks, -> { where.not(status: Status.find_by(name: 'deleted')) }, foreign_key: :parent_task_id, class_name: 'MultiTask'
+  has_many :subtasks, -> { where.not(status: Status.find_by(name: 'archived')) }, foreign_key: :parent_task_id, class_name: 'MultiTask'
 
   has_many :notes, class_name: 'TaskNote', foreign_key: :task_id
 

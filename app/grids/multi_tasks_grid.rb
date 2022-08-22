@@ -24,7 +24,7 @@ class MultiTasksGrid
   filter(:creator, :enum, multiple: true, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
 
   status_done_id = Status.find_by(name: 'done').id.to_s
-  filter(:status, :enum, multiple: true, select: Status.where(name: ['not started', 'in progress', 'blocked', 'canceled', 'done']).pluck(:name, :id)) do |value, scope, grid|
+  filter(:status, :enum, multiple: true, select: Status.multi_task_statuses(created: true).pluck(:name, :id)) do |value, scope, grid|
     if value.include?(status_done_id)
       scope.joins(:assignments).where(status: value).or(scope.joins(:assignments).where('task_assignments.account_id': grid.current_account.id, 'task_assignments.done': true))
     else
@@ -35,11 +35,6 @@ class MultiTasksGrid
 
   filter(:deadline, :datetime, header: 'Deadline >= ?', multiple: ',')
 
-  status_deleted = Status.find_by(name: 'deleted')
-
-  filter(:deleted_tasks, :xboolean, left: true) do |value, scope|
-    value ? scope.where(status: status_deleted) : scope.where.not(status: status_deleted)
-  end
   filter(:confirmed, :xboolean, left: true) do |value, scope, grid|
     scope = scope.where('task_assignments.account_id': grid.current_account.id)
     value ? scope.where('task_assignments.confirmed': true) : scope.where.not('task_assignments.confirmed': true)
@@ -58,7 +53,7 @@ class MultiTasksGrid
 
     attributes = { class: "bg-#{status_color(status_name)}" }
 
-    if status_name.in?(%w[blocked canceled])
+    if status_name.in?(%w[blocked a])
       attributes.merge!(
         {
           'data-toggle' => 'tooltip',
