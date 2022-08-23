@@ -48,7 +48,7 @@ class ScrapeTasksGrid
     account_list.map { |a| [a.name, a.id] }
   end
 
-  accounts = Account.joins(:assigned_scrape_tasks).distinct
+  accounts = AccountRole.find_by('Scrape Developer').accounts
   filter(:scraper, :enum, multiple: true, select: accounts.map { |r| [r.name, r.id] }.sort)
 
   filter(:status, :enum, select: :statuses, multiple: true)
