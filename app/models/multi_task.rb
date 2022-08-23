@@ -107,8 +107,9 @@ class MultiTask < ApplicationRecord # :nodoc:
   end
 
   def status_comment
-    ActionView::Base.full_sanitizer.sanitize(comments.where(subtype: 'status comment').last&.body)
-                    .gsub('Status changed to blocked.', '').gsub('Status changed to archived.', '')
+    ActionView::Base.full_sanitizer.sanitize(
+      comments.where(subtype: 'status comment').last&.body
+    )&.gsub(/Status changed to blocked\.|Status changed to archived\./, '')
   end
 
   def gather_task_link
