@@ -5,7 +5,7 @@
         assignment to:
       .col-9
         .row.small
-          =form.collection_select 'assignment_to', Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' , selected: task.main_assignee.nil? ? '' : task.main_assignee.id, class: 'small'}
+          =form.collection_select 'assignment_to', Account.all.order([:first_name, :last_name]), :id, :name, { include_blank: '' , selected: task.main_assignee.nil? ? '' : task.main_assignee.id, class: 'small'}
   -if current_account_permissions('multi_tasks', ['assistants'])
     .row.small.font-weight-bold.mt-3
       .col-3
