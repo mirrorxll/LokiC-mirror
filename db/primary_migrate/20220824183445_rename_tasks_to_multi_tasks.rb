@@ -15,7 +15,7 @@ class RenameTasksToMultiTasks < ActiveRecord::Migration[6.0]
     # remove_index :tasks_agencies_opportunities_rv_ts, :opportunity_id
     # remove_index :tasks_agencies_opportunities_rv_ts, :revenue_type_id
 
-    rename_table :tasks_agencies_opportunities_rv_ts, :multi_task_agency_opportunity_revenue_types
+    # rename_table :tasks_agencies_opportunities_rv_ts, :multi_task_agency_opportunity_revenue_types
 
     add_index :multi_task_agency_opportunity_revenue_types, :revenue_type_id, name: 'index_on_multi_task_id'
     add_index :multi_task_agency_opportunity_revenue_types, :revenue_type_id, name: 'index_on_agency_id'
