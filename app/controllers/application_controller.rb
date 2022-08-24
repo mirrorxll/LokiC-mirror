@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
   private
 
   def authenticate_account!
-    return unless ((cookies.encrypted[:remember_me] || session[:auth_token]) && current_account).nil?
+    return if (cookies.encrypted[:remember_me] || session[:auth_token]) && current_account
 
     cookies.delete(:remember_me)
     session[:auth_token] = nil
@@ -22,6 +22,8 @@ class ApplicationController < ActionController::Base
 
   def current_account
     @current_account ||= Account.find_by(auth_token: cookies.encrypted[:remember_me] || session[:auth_token])
+
+    @current_account&.status&.name.eql?('active') ? @current_account : nil
   end
   impersonates :account
 

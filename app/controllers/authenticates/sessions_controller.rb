@@ -12,7 +12,7 @@ module Authenticates
     end
 
     def create
-      if @account.present? && @account.authenticate(params[:password])
+      if @account&.authenticate(params[:password]) && @account.status.name.eql?('active')
         if params[:remember_me].eql?('1')
           cookies.encrypted[:remember_me] = {
             value: @account.auth_token,
