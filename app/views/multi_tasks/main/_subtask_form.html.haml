@@ -2,13 +2,13 @@
   .row.small
     .col
       .form-group
-        =form.text_field 'task[title]', placeholder: 'title', id: 'newTaskName', class: 'form-control form-control-sm', required: true, maxlength: 500
+        =form.text_field 'multi_task[title]', placeholder: 'title', id: 'newTaskName', class: 'form-control form-control-sm', required: true, maxlength: 500
         #newTaskNameFeedback.text-danger.text-center.d-none
           MultiTask with this title already created by you. Let's use something else
       .form-group
-        =form.text_area 'task[description]', class: 'form-control', id: 'task_description'
+        =form.text_area 'multi_task[description]', class: 'form-control', id: 'task_description'
       .form-group
-        =form.hidden_field 'task[parent]', value: params[:parent_task]
+        =form.hidden_field 'multi_task[parent]', value: params[:parent_task]
   %hr/
 
   #checklists.accordion.mt-2
@@ -32,7 +32,7 @@
           assignment to:
         .col
           .row.small
-            =form.collection_select 'task[assignment_to]', Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }, style: "width:130px"
+            =form.collection_select 'multi_task[assignment_to]', Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }, style: "width:130px"
       %hr
       .row.justify-content-between
         .col
@@ -52,31 +52,31 @@
             .col-4
               reminder frequency:
             .col.text-left.small
-              =form.collection_select 'task[reminder_frequency]', sorted_reminder_frequencies, :id, :name, { prompt: '' }
+              =form.collection_select 'multi_task[reminder_frequency]', sorted_reminder_frequencies, :id, :name, { prompt: '' }
           .row.mb-2
             .col-4
               client:
             .col.text-left.small
-              =form.collection_select 'task[client_id]', ClientsReport.all.order(:name), :id, :name, { prompt: '' }, style: "width:150px"
+              =form.collection_select 'multi_task[client_id]', ClientsReport.all.order(:name), :id, :name, { prompt: '' }, style: "width:150px"
           .row.mb-2
             .col-4
               gather_task:
             .col.text-left.small
-              =form.text_field 'task[gather_task]', class: 'w-70'
+              =form.text_field 'multi_task[gather_task]', class: 'w-70'
         .col-6
           .row.mb-2
             .col.text-right
               deadline:
             .col.text-left.small
-              =form.date_field 'task[deadline]', type: :datetime
+              =form.date_field 'multi_task[deadline]', type: :datetime
           .row.mb-2
             .col.text-right
               access to task and its subtasks:
             .col.text-left
-              =form.check_box 'task[access]', class: 'form-check-input ml-0 mt-1', checked: true
+              =form.check_box 'multi_task[access]', class: 'form-check-input ml-0 mt-1', checked: true
 
           :javascript
-            $('input[id="task[deadline]"]').datepicker({
+            $('input[id="multi_task[deadline]"]').datepicker({
               format: 'yyyy-mm-dd'
             });
           .row.mb-2
@@ -84,7 +84,7 @@
               .col.text-right
                 main_task:
               .col.text-left.small
-                =form.collection_select 'task[parent]', MultiTask.where(parent: nil).where.not(status: Status.find_by(name: 'archived')).order(:id), :id, :title_with_id, { prompt: '' }, style: "width:150px"
+                =form.collection_select 'multi_task[parent]', MultiTask.where(parent: nil).where.not(status: Status.find_by(name: 'archived')).order(:id), :id, :title_with_id, { prompt: '' }, style: "width:150px"
       %hr
       .d-flex
         .col-12
@@ -93,17 +93,17 @@
               .col-2
                 sow:
               .col.text-left.small
-                =form.text_field 'task[sow]', placeholder: 'link to google sheet', maxlength: 255, class: 'w-100', value: @multi_task_parent.sow
+                =form.text_field 'multi_task[sow]', placeholder: 'link to google sheet', maxlength: 255, class: 'w-100', value: @multi_task_parent.sow
             .row.mb-2
               .col-2
                 pivotal tracker:
               .col.text-left.small
-                =form.text_field 'task[pivotal_tracker_name]', placeholder: 'name', maxlength: 255, class: 'w-100'
+                =form.text_field 'multi_task[pivotal_tracker_name]', placeholder: 'name', maxlength: 255, class: 'w-100'
             .row.mb-2
               .col-2
                 pivotal tracker link:
               .col.text-left.small
-                =form.text_field 'task[pivotal_tracker_url]', placeholder: 'link', maxlength: 255, class: 'w-100'
+                =form.text_field 'multi_task[pivotal_tracker_url]', placeholder: 'link', maxlength: 255, class: 'w-100'
       %hr
       .row.col
         .col.font-weight-normal.mb-2
@@ -130,7 +130,7 @@
 
     $('#assistantsSubtaskForm').append(
         `<div id="assistant_${hex}" class="row small mt-1 mb-1" >
-           <select id="task[assistants][]" style = "width:130px" class="mr-1" name="task[assistants][]">${buildSelect(accounts)}</select>
+           <select id="multi_task[assistants][]" style = "width:130px" class="mr-1" name="multi_task[assistants][]">${buildSelect(accounts)}</select>
            <div class="ml-1" id="rm_assistant_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
          </div>`
     );
@@ -141,7 +141,7 @@
 
     $('#notificationsToSubtaskForm').append(
         `<div id="assistant_${hex}" class="row small mt-1 mb-1" >
-           <select id="task[notification_to][]" style = "width:130px" class="mr-1" name="task[notification_to][]">${buildSelect(accounts)}</select>
+           <select id="multi_task[notification_to][]" style = "width:130px" class="mr-1" name="multi_task[notification_to][]">${buildSelect(accounts)}</select>
            <div class="ml-1" id="rm_notification_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
          </div>`
     );
@@ -197,7 +197,7 @@
     Rails.ajax({
       type: 'GET',
       dataType: 'json',
-      url: `/api/tasks/titles`,
+      url: `/api/multi_tasks/titles`,
       data: `creator_id=${current_account_id}`,
       success: (names) => {
         let nameInput = document.querySelector('#newTaskName');
@@ -249,7 +249,7 @@
     Rails.ajax({
       type: 'GET',
       dataType: 'json',
-      url: `/api/tasks/titles`,
+      url: `/api/multi_tasks/titles`,
       data: `creator_id=${current_account_id}`,
       success: (names) => {
         let nameIsUniq = isUniq(nameInput.value, names);
@@ -272,7 +272,7 @@
     $('#forms_checklists').append(
         `<div id="assignment_${hex}" class="row small justify-content-center mt-2">
            <div class="small mt-1 mr-2"><i class="fa fa-circle"></i></div>
-           <input id="task[checklists][]" style='width: 90%' required=required maxlength="255" name="task[checklists][]"></input>
+           <input id="multi_task[checklists][]" style='width: 90%' required=required maxlength="255" name="multi_task[checklists][]"></input>
            <div class="ml-2" id="rm_checklist_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
          </div>`
     );

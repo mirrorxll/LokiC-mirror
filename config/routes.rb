@@ -103,15 +103,15 @@ Rails.application.routes.draw do
     resources :data_samples, only: :show
 
     scope module: :scrape_tasks, path: 'scrape_tasks/:scrape_task_id', as: 'scrape_tasks' do
-      resources :tasks, only: %i[create destroy]
+      resources :multi_tasks, only: %i[create destroy]
     end
 
-    resources :tasks, only: [] do
+    resources :multi_tasks, only: [] do
       get :titles, on: :collection
       get :subtasks, on: :member
     end
 
-    scope module: :tasks, path: 'tasks/:task_id', as: 'tasks' do
+    scope module: :multi_tasks, path: 'multi_tasks/:multi_task_id', as: 'tasks' do
       resources :statuses, only: :update
     end
 
@@ -177,7 +177,7 @@ Rails.application.routes.draw do
       end
     end
   end
-  resources :task_tracking_hours, controller: 'multi_tasks/tracking_hours', only: :index
+  resources :multi_task_tracking_hours, controller: 'multi_tasks/tracking_hours', only: :index
 
   scope module: :scrape_tasks do
     resources :scrape_tasks, controller: 'main', except: %i[edit destroy] do

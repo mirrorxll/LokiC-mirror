@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-class TaskAssignment < ApplicationRecord # :nodoc:
-  belongs_to :multi_task, foreign_key: :task_id
+class MultiTaskAssignment < ApplicationRecord # :nodoc:
+  belongs_to :multi_task
   belongs_to :account
 
   def name

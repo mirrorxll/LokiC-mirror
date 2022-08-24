@@ -11,7 +11,7 @@ module MultiTasks
         @assignment.update!(done: true, hours: params[:hours])
 
         unless params[:team_work].nil?
-          TaskTeamWork.find_or_create_by(task: @multi_task)
+          MultiTaskTeamWork.find_or_create_by(multi_task: @multi_task)
                       .update(creator: current_account, sum: team_work_params[:sum].to_f.round(2), hours: team_work_params[:type].eql?('hours') ? true : false)
         end
         @multi_task.update(done_at: Time.now, status: @status) if @multi_task.done_by_all_assignments?
@@ -25,7 +25,7 @@ module MultiTasks
       private
 
     def find_task
-      @multi_task = MultiTask.find(params[:task_id])
+      @multi_task = MultiTask.find(params[:multi_task_id])
     end
 
     def find_status
@@ -33,7 +33,7 @@ module MultiTasks
     end
 
     def find_assignment
-      @assignment = TaskAssignment.find_by(multi_task: @multi_task, account: current_account)
+      @assignment = MultiTaskAssignment.find_by(multi_task: @multi_task, account: current_account)
     end
 
     def team_work_params
@@ -79,9 +79,9 @@ module MultiTasks
     def create_team_work
       return if team_work_params[:confirm].eql?('0') || team_work_params[:sum].blank?
 
-      team_work = TaskTeamWork.find_by(task: @multi_task)
+      team_work = MultiTaskTeamWork.find_by(multi_task: @multi_task)
       if team_work.nil?
-        TaskTeamWork.create!(task: @multi_task, creator: current_account, sum: team_work_params[:sum].to_f.round(2), hours: team_work_params[:type].eql?('hours') ? true : false)
+        MultiTaskTeamWork.create!(multi_task: @multi_task, creator: current_account, sum: team_work_params[:sum].to_f.round(2), hours: team_work_params[:type].eql?('hours') ? true : false)
       else
         team_work.update!(creator: current_account, sum: team_work_params[:sum].to_f.round(2), hours: team_work_params[:type].eql?('hours') ? true : false)
       end
