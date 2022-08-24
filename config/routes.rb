@@ -144,6 +144,7 @@ Rails.application.routes.draw do
     end
   end
 
+  get 'tasks/:id', to: 'multi_tasks/main#show'
   scope module: :multi_tasks do
     resources :multi_tasks, controller: :main, except: :destroy do
       get  :add_subtask,    on: :collection
