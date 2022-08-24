@@ -49,7 +49,7 @@ class MultiTask < ApplicationRecord # :nodoc:
 
   has_many :agency_opportunity_revenue_types, class_name: 'TaskAgencyOpportunityRevenueType', foreign_key: :task_id
 
-  scope :ongoing, -> { where(status: Status.multi_task_statuses) }
+  scope :ongoing, -> { where(status: Status.multi_task_statuses(created: true)) }
 
   has_and_belongs_to_many :scrape_tasks, join_table: 'scrape_tasks_tasks',
                                          foreign_key: :task_id

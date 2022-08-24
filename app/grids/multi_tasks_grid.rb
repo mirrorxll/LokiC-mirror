@@ -53,7 +53,7 @@ class MultiTasksGrid
 
     attributes = { class: "bg-#{status_color(status_name)}" }
 
-    if status_name.in?(%w[blocked a])
+    if status_name.in?(%w[blocked archived])
       attributes.merge!(
         {
           'data-toggle' => 'tooltip',

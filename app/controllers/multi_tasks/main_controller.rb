@@ -96,20 +96,7 @@ module MultiTasks
     def generate_grid
       return unless @current_list
 
-      filter_params = params[:multi_tasks_grid] || {}
-
-      if filter_params.present?
-        filter_params[:status] =
-          if filter_params[:status].blank? && filter_params[:deleted_tasks] != 'YES'
-            Status.multi_task_statuses
-          elsif filter_params[:deleted_tasks].eql?('YES')
-            Status.find_by(name: 'archived')
-          elsif filter_params[:status].any?
-            filter_params[:status]
-          end
-      else
-        filter_params = @lists[@current_list]
-      end
+      filter_params = params[:multi_tasks_grid] || @lists[@current_list]
 
       filter_params[:current_account] = current_account
 
