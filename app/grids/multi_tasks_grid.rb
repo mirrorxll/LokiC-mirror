@@ -28,7 +28,7 @@ class MultiTasksGrid
     if value.include?(status_done_id)
       scope.joins(:assignments).where(status: value).or(scope.joins(:assignments).where('task_assignments.account_id': grid.current_account.id, 'task_assignments.done': true))
     else
-      ids_done = MultiTask.joins(:assignments).where('task_assignments.account_id': grid.current_account.id, 'task_assignments.done': true).map { |task| task.id  }
+      ids_done = MultiTask.joins(:assignments).where('task_assignments.account_id': grid.current_account.id, 'task_assignments.done': true).map(&:id)
       scope.where(status: value).where.not(id: ids_done)
     end
   end
@@ -84,7 +84,7 @@ class MultiTasksGrid
   end
 
   column(:sow, header: 'SOW', mandatory: true, order: 'sow') do |task|
-    format("Google doc") { |sow| link_to sow, task.sow } unless task.sow.blank?
+    format('Google doc') { |sow| link_to sow, task.sow } unless task.sow.blank?
   end
 
   column(:last_comment, header: 'Last comment', order: lambda { |scope|
@@ -116,7 +116,7 @@ class MultiTasksGrid
       attr = { 'data-toggle' => 'tooltip',
                'data-placement' => 'right',
                title: truncate(body, length: 150) }
-      content_tag(:div, body.first(10) , attr)
+      content_tag(:div, body.first(10), attr)
     end
   end
 end
