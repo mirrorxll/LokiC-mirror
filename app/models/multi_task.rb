@@ -49,7 +49,7 @@ class MultiTask < ApplicationRecord # :nodoc:
 
   scope :ongoing, -> { where(status: Status.multi_task_statuses(created: true)) }
 
-  has_and_belongs_to_many :scrape_tasks
+  has_and_belongs_to_many :scrape_tasks, join_table: 'scrape_tasks_multi_tasks'
 
   def agency_opportunity_hours
     tasks = subtasks_full_depth << self
