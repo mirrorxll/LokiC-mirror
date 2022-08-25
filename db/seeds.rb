@@ -159,7 +159,7 @@ puts 'Invoice Frequencies'
 invoice_frequency(db02).each { |obj| InvoiceFrequency.find_or_create_by!(obj) }
 
 puts 'MultiTask Reminder Frequencies'
-task_reminder_frequency(db02).each { |obj| TaskReminderFrequency.find_or_create_by!(obj) }
+task_reminder_frequency(db02).each { |obj| MultiTaskReminderFrequency.find_or_create_by!(obj) }
 
 puts 'Weeks'
 weeks(db02_sec).each { |obj| Week.find_or_create_by!(obj) }

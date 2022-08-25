@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
   private
 
   def authenticate_account!
-    return unless ((cookies.encrypted[:remember_me] || session[:auth_token]) && current_account).nil?
+    return if (cookies.encrypted[:remember_me] || session[:auth_token]) && current_account
 
     cookies.delete(:remember_me)
     session[:auth_token] = nil
@@ -22,6 +22,8 @@ class ApplicationController < ActionController::Base
 
   def current_account
     @current_account ||= Account.find_by(auth_token: cookies.encrypted[:remember_me] || session[:auth_token])
+
+    @current_account&.status&.name.eql?('active') ? @current_account : nil
   end
   impersonates :account
 
@@ -96,14 +98,14 @@ class ApplicationController < ActionController::Base
       expires: DateTime.now + 15.minute
     }
 
-    tasks = MultiTask.ongoing.joins(:assignment_to).where.not(creator: current_account).where(
-      'task_assignments.confirmed': false,
-      'task_assignments.account_id': current_account
+    multi_tasks = MultiTask.ongoing.joins(:assignment_to).where.not(creator: current_account).where(
+      'multi_task_assignments.confirmed': false,
+      'multi_task_assignments.account_id': current_account
     )
 
-    flash.now[:warning] = tasks.each_with_object({ unconfirmed_multi_task: [] }) do |task, warnings|
+    flash.now[:warning] = multi_tasks.each_with_object({ unconfirmed_multi_task: [] }) do |multi_tasks, warnings|
       warnings[:unconfirmed_multi_task] << view_context.link_to(
-        "#{task.title} assigned to you by #{task.creator.name}",
+        "#{multi_tasks.title} assigned to you by #{task.creator.name}",
         multi_task_path(task)
       ).html_safe
     end

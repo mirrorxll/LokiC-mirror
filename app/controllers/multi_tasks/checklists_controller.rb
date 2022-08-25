@@ -21,11 +21,11 @@ module MultiTasks
     private
 
     def find_task
-      @multi_task = MultiTask.find(params[:task_id])
+      @multi_task = MultiTask.find(params[:multi_task_id])
     end
 
     def find_task_checklist
-      @multi_task_checklist = TaskChecklist.find(params[:id])
+      @multi_task_checklist = MultiTaskChecklist.find(params[:id])
     end
 
     def checklists

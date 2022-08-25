@@ -17,7 +17,7 @@ module MultiTasks
     end
 
     def find_task
-      @multi_task = MultiTask.find(params[:task_id])
+      @multi_task = MultiTask.find(params[:multi_task_id])
     end
   end
 end

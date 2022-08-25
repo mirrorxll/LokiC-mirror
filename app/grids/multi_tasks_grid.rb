@@ -18,7 +18,7 @@ class MultiTasksGrid
   end
 
   filter(:assignment_to, :enum, multiple: true, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] }) do |value, scope|
-    scope.where('task_assignments.account_id': value)
+    scope.where('multi_task_assignments.account_id': value)
   end
 
   filter(:creator, :enum, multiple: true, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
@@ -26,9 +26,9 @@ class MultiTasksGrid
   status_done_id = Status.find_by(name: 'done').id.to_s
   filter(:status, :enum, multiple: true, select: Status.multi_task_statuses(created: true).pluck(:name, :id)) do |value, scope, grid|
     if value.include?(status_done_id)
-      scope.joins(:assignments).where(status: value).or(scope.joins(:assignments).where('task_assignments.account_id': grid.current_account.id, 'task_assignments.done': true))
+      scope.joins(:assignments).where(status: value).or(scope.joins(:assignments).where('multi_task_assignments.account_id': grid.current_account.id, 'multi_task_assignments.done': true))
     else
-      ids_done = MultiTask.joins(:assignments).where('task_assignments.account_id': grid.current_account.id, 'task_assignments.done': true).map { |task| task.id  }
+      ids_done = MultiTask.joins(:assignments).where('multi_task_assignments.account_id': grid.current_account.id, 'multi_task_assignments.done': true).map(&:id)
       scope.where(status: value).where.not(id: ids_done)
     end
   end
@@ -36,8 +36,8 @@ class MultiTasksGrid
   filter(:deadline, :datetime, header: 'Deadline >= ?', multiple: ',')
 
   filter(:confirmed, :xboolean, left: true) do |value, scope, grid|
-    scope = scope.where('task_assignments.account_id': grid.current_account.id)
-    value ? scope.where('task_assignments.confirmed': true) : scope.where.not('task_assignments.confirmed': true)
+    scope = scope.where('multi_task_assignments.account_id': grid.current_account.id)
+    value ? scope.where('multi_task_assignments.confirmed': true) : scope.where.not('multi_task_assignments.confirmed': true)
   end
 
   # Columns
@@ -53,7 +53,7 @@ class MultiTasksGrid
 
     attributes = { class: "bg-#{status_color(status_name)}" }
 
-    if status_name.in?(%w[blocked a])
+    if status_name.in?(%w[blocked archived])
       attributes.merge!(
         {
           'data-toggle' => 'tooltip',
@@ -84,7 +84,7 @@ class MultiTasksGrid
   end
 
   column(:sow, header: 'SOW', mandatory: true, order: 'sow') do |task|
-    format("Google doc") { |sow| link_to sow, task.sow } unless task.sow.blank?
+    format('Google doc') { |sow| link_to sow, task.sow } unless task.sow.blank?
   end
 
   column(:last_comment, header: 'Last comment', order: lambda { |scope|
@@ -116,7 +116,7 @@ class MultiTasksGrid
       attr = { 'data-toggle' => 'tooltip',
                'data-placement' => 'right',
                title: truncate(body, length: 150) }
-      content_tag(:div, body.first(10) , attr)
+      content_tag(:div, body.first(10), attr)
     end
   end
 end

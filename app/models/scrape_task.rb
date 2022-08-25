@@ -39,8 +39,7 @@ class ScrapeTask < ApplicationRecord
            as: :parent, dependent: :destroy
 
   has_and_belongs_to_many :tags, class_name: 'ScrapeTaskTag'
-  has_and_belongs_to_many :multi_tasks, join_table: 'scrape_tasks_tasks',
-                                        association_foreign_key: :task_id, class_name: 'MultiTask'
+  has_and_belongs_to_many :multi_tasks
   has_and_belongs_to_many :data_sets
 
   def updated_early?

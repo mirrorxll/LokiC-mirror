@@ -5,10 +5,11 @@ module StoryTypes
     before_action :find_story_type,          except: %i[index create]
     before_action :set_story_type_iteration, except: %i[index create]
 
-    before_action :grid_lists,     only: %i[index show]
-    before_action :current_list,   only: :index
-    before_action :generate_grid,  only: :index
-    before_action :access_to_show, only: :show
+    before_action :grid_lists,         only: %i[index show]
+    before_action :current_list,       only: :index
+    before_action :generate_grid,      only: :index
+    before_action :access_to_show,     only: :show
+    before_action :content_developers, only: %i[show update canceling_edit]
 
     def index
       @tab_title = 'LokiC :: StoryTypes'
@@ -26,7 +27,6 @@ module StoryTypes
 
     def show
       @tab_title = "LokiC :: StoryType ##{@story_type.id} <#{@story_type.name}>"
-      @content_developers = AccountRole.find_by(name: 'Content Developer').accounts
     end
 
     def create
@@ -76,12 +76,17 @@ module StoryTypes
     def access_to_show
       archived = Status.find_by(name: 'archived')
 
-      return if @lists['yours'] && @story_type.account.eql?(current_account)
+      return if @lists['assigned'] && @story_type.developer.eql?(current_account)
+      return if @lists['created'] && @story_type.editor.eql?(current_account)
       return if @lists['all'] && @story_type.status != archived
       return if @lists['archived'] && @story_type.status.eql?(archived)
 
       flash[:error] = { story_type: :unauthorized }
       redirect_back fallback_location: root_path
+    end
+
+    def content_developers
+      @content_developers = AccountRole.find_by(name: 'Content Developer').accounts
     end
 
     def new_story_type_params

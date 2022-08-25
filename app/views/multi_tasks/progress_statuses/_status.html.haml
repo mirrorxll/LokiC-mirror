@@ -6,7 +6,8 @@
 .change_progress_status_form.d-none
   =form_with(url: change_multi_task_progress_statuses_path(task), id: 'status_form',
              html: { class: 'd-inline', onchange: "statusSubmit();" }, method: :patch) do |form|
-    =form.collection_select :status_id, Status.multi_task_statuses(archived: true), :id, :name, { prompt: '' , selected: status.id }
+    =form.collection_select :status_id, Status.multi_task_statuses(created: true, archived: current_account.manager? ), :id, :name,
+                            { include_blank: true }
 
 :javascript
   document.querySelector('.current_progress_status a').addEventListener('click', function (evt) {

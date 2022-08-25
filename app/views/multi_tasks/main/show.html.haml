@@ -9,7 +9,7 @@
   .col#task_status.text-right
     -if current_account_permissions('multi_tasks', %w[progress_status edit_form])
       =render 'multi_tasks/progress_statuses/status', task: @multi_task
-    -elsif current_account_permissions('multi_tasks', ['progress_status', 'show'])
+    -elsif current_account_permissions('multi_tasks', %w[progress_status show])
       =@multi_task.status.name
 
 .row.mt-3

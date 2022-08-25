@@ -5,10 +5,11 @@ module FactoidTypes
     before_action :find_factoid_type,          except: %i[index create]
     before_action :set_factoid_type_iteration, except: %i[index create]
 
-    before_action :grid_lists,     only: %i[index show]
-    before_action :current_list,   only: :index
-    before_action :generate_grid,  only: :index
-    before_action :access_to_show, only: :show
+    before_action :grid_lists,         only: %i[index show]
+    before_action :current_list,       only: :index
+    before_action :generate_grid,      only: :index
+    before_action :access_to_show,     only: :show
+    before_action :content_developers, only: %i[show update canceling_edit]
 
     def index
       @tab_title = 'LokiC :: FactoidTypes'
@@ -26,7 +27,6 @@ module FactoidTypes
 
     def show
       @tab_title = "LokiC :: FactoidTypes ##{@factoid_type.id} <#{@factoid_type.name}>"
-      @content_developers = AccountRole.find_by(name: 'Content Developer').accounts
     end
 
     def create
@@ -74,12 +74,17 @@ module FactoidTypes
     def access_to_show
       archived = Status.find_by(name: 'archived')
 
-      return if @lists['yours'] && @factoid_type.account.eql?(current_account)
+      return if @lists['assigned'] && @factoid_type.developer.eql?(current_account)
+      return if @lists['created'] && @factoid_type.editor.eql?(current_account)
       return if @lists['all'] && @factoid_type.status != archived
       return if @lists['archived'] && @factoid_type.status.eql?(archived)
 
       flash[:error] = { factoid_type: :unauthorized }
       redirect_back fallback_location: root_path
+    end
+
+    def content_developers
+      @content_developers = AccountRole.find_by(name: 'Content Developer').accounts
     end
 
     def env

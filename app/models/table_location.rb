@@ -24,5 +24,3 @@ class TableLocation < ApplicationRecord
     sql_table.name
   end
 end
-
-DataSet.all.each { |ds| ds.general_comment.update(body: ds.comment) }

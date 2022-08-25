@@ -6,11 +6,10 @@
   %span.font-weight-bold
     FACTOID TYPES
   .d-inline-block.text-right.text-uppercase
-    -if @current_list && @lists.count > 1
+    -if @current_list && @lists.length > 1
       .btn-group.mr-3
-        -lists = %w[yours all archived]
-        -lists.each do |list|
-          -filled = (!params[:list].in?(lists) && list.eql?('yours')) || params[:list].eql?(list) ? '' : '-outline'
+        -@lists.each_key do |list|
+          -filled = @current_list.eql?(list) ? '' : '-outline'
           =link_to(list, url_for(list: list), class: "btn btn-sm btn#{filled}-dark")
     .btn-group
       -if @current_list

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Api
-  module Tasks
+  module MultiTasks
     class StatusesController < ApiController
       before_action :find_task
       before_action :find_status
@@ -17,7 +17,7 @@ module Api
       private
 
       def find_task
-        @multi_task = MultiTask.find(params[:task_id])
+        @multi_task = MultiTask.find(params[:multi_task_id])
       end
 
       def find_status
