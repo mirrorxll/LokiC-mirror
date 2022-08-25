@@ -56,10 +56,10 @@
         <div class="text-truncate <%= tl.presence ? '' : 'border border-2 border-danger px-1' %>">
           <%= tl.full_name %>
           <% unless tl.presence %>
-            <span class="text-danger font-weight-bold">The table does not exist!</span>
+            <span class="text-danger font-weight-bold">The table was renamed or deleted!</span>
           <% end %>
         </div>
-      <% end %>
+    <% end %>
     </div>
   </div>
 <% end %>
