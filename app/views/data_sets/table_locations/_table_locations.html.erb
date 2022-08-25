@@ -53,10 +53,13 @@
       <% end %>
 
       <% @data_set.table_locations.each do |tl| %>
-        <div class="text-truncate">
+        <div class="text-truncate <%= tl.presence ? '' : 'border border-2 border-danger px-1' %>">
           <%= tl.full_name %>
+          <% unless tl.presence %>
+            <span class="text-danger font-weight-bold">The table does not exist!</span>
+          <% end %>
         </div>
-      <% end %>
+    <% end %>
     </div>
   </div>
 <% end %>
