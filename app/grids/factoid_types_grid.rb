@@ -26,7 +26,7 @@ class FactoidTypesGrid
     scope.joins(:data_set).where('location like ?', "%#{value}%")
   end
   filter(:developer, :enum, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
-  filter(:status, :enum, left: true, select: Status.hle_statuses.pluck(:name, :id)) do |value, scope|
+  filter(:status, :enum, left: true, select: Status.hle_statuses(created: true, migrated: true, inactive: true).pluck(:name, :id)) do |value, scope|
     status = Status.find(value)
     scope.where(status: status)
   end

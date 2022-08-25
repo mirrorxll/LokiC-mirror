@@ -7,7 +7,7 @@
     let task = '#{raw task}'
     let uId = secureRandom(6)
 
-    let task_id = (task.match(/sub.*/)) ? `subtasks[${task.split('_')[1]}]` : task
+    let task_id = 'multi_task'
 
     let agenciesSelect = document.createElement('select')
     agenciesSelect.appendChild(document.createElement('option'))

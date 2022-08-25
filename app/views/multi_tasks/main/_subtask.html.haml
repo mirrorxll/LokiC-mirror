@@ -135,7 +135,7 @@
     Rails.ajax({
       type: 'GET',
       dataType: 'json',
-      url: `/api/tasks/titles`,
+      url: `/api/multi_tasks/titles`,
       data: `creator_id=${current_account_id}`,
       success: (names) => {
         let nameInput = document.querySelector(`#newSubtaskName${numberSubtask}`);

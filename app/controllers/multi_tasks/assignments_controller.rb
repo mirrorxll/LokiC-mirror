@@ -25,10 +25,10 @@ module MultiTasks
     end
 
     def new_assignments(task, assignments, notification_to)
-      old_assignments = TaskAssignment.where(multi_task: task, account: (task.assignment_to - assignments))
+      old_assignments = MultiTaskAssignment.where(multi_task: task, account: (task.assignment_to - assignments))
       old_assignments.destroy_all unless old_assignments.empty?
 
-      old_notification = TaskAssignment.where(multi_task: task, account: (task.notification_to - notification_to), notification_to: 1)
+      old_notification = MultiTaskAssignment.where(multi_task: task, account: (task.notification_to - notification_to), notification_to: 1)
       old_notification.destroy_all unless old_notification.empty?
 
       assignments - task.assignment_to
@@ -41,9 +41,9 @@ module MultiTasks
 
       new_main_assignee = Account.find(new_main_assignee_id)
       unless new_main_assignee == task.main_assignee
-        old_main_assignee = TaskAssignment.find_by(multi_task: task, main: true)
+        old_main_assignee = MultiTaskAssignment.find_by(multi_task: task, main: true)
         old_main_assignee.update(main: false) unless old_main_assignee.blank?
-        TaskAssignment.find_by(multi_task: task, account: new_main_assignee).update(main: true)
+        MultiTaskAssignment.find_by(multi_task: task, account: new_main_assignee).update(main: true)
       end
     end
 
@@ -51,9 +51,9 @@ module MultiTasks
       task.notification_to.destroy_all && return if notification_to.empty?
 
       Account.find(notification_to).each do |account|
-        next if TaskAssignment.find_by(multi_task: task, account: account)
+        next if MultiTaskAssignment.find_by(multi_task: task, account: account)
 
-        TaskAssignment.create(multi_task: task, account: account, notification_to: true)
+        MultiTaskAssignment.create(multi_task: task, account: account, notification_to: true)
       end
     end
 

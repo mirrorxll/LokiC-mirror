@@ -159,7 +159,7 @@ puts 'Invoice Frequencies'
 invoice_frequency(db02).each { |obj| InvoiceFrequency.find_or_create_by!(obj) }
 
 puts 'MultiTask Reminder Frequencies'
-task_reminder_frequency(db02).each { |obj| TaskReminderFrequency.find_or_create_by!(obj) }
+task_reminder_frequency(db02).each { |obj| MultiTaskReminderFrequency.find_or_create_by!(obj) }
 
 puts 'Weeks'
 weeks(db02_sec).each { |obj| Week.find_or_create_by!(obj) }
@@ -169,8 +169,8 @@ unless Account.first
   Account.reset_column_information
   Account.create(
     email: 'lokic@locallabs.com',
-    first_name: 'Loki',
-    last_name: 'C',
+    first_name: 'LokiC',
+    last_name: 'Main',
     password: SecureRandom.hex(3)
   )
 end

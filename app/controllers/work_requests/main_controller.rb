@@ -17,7 +17,7 @@ module WorkRequests
 
     def show
       @tab_title = "LokiC :: WorkRequest ##{@work_request.id} <#{@work_request.project_order_name.body}>"
-      @delete_status = Status.find_by(name: 'deleted')
+      @delete_status = Status.find_by(name: 'archived')
     end
 
     def create

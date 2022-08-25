@@ -57,7 +57,7 @@ module AccessLevels
         factoid_types: true
       },
       story_types: {
-        grid: { assigned: true, your: true, all: true, archived: true },
+        grid: { assigned: true, created: true, all: true, archived: true },
         new_form: true,
         edit_form: true,
         iterations: { show: true, new_form: true, edit_form: true },
@@ -68,7 +68,7 @@ module AccessLevels
         comment: { show: true, edit_form: true }
       },
       factoid_types: {
-        grid: { assigned: true, your: true, all: true, archived: true },
+        grid: { assigned: true, created: true, all: true, archived: true },
         new_form: true,
         edit_form: true,
         iterations: { show: true, new_form: true, edit_form: true },
@@ -135,7 +135,7 @@ module AccessLevels
         factoid_types: true
       },
       story_types: {
-        grid: { assigned: true, your: false, all: true, archived: false },
+        grid: { assigned: true, created: false, all: true, archived: false },
         new_form: false,
         edit_form: false,
         iterations: { show: true, new_form: true, edit_form: true },
@@ -146,7 +146,7 @@ module AccessLevels
         comment: { show: true, edit_form: false }
       },
       factoid_types: {
-        grid: { assigned: true, your: false, all: true, archived: false },
+        grid: { assigned: true, created: false, all: true, archived: false },
         new_form: false,
         edit_form: false,
         iterations: { show: true, new_form: true, edit_form: true },
@@ -213,7 +213,7 @@ module AccessLevels
         factoid_types: true
       },
       story_types: {
-        grid: { assigned: false, your: false, all: true, archived: false },
+        grid: { assigned: false, created: false, all: true, archived: false },
         new_form: false,
         edit_form: false,
         iterations: { show: true, new_form: false, edit_form: false },
@@ -224,7 +224,7 @@ module AccessLevels
         comment: { show: true, edit_form: false }
       },
       factoid_types: {
-        grid: { assigned: false, your: false, all: true, archived: false },
+        grid: { assigned: false, created: false, all: true, archived: false },
         new_form: false,
         edit_form: false,
         iterations: { show: true, new_form: false, edit_form: false },

@@ -4,7 +4,7 @@
       %tr
         %th{:scope => "row"}
           ="#" + subtask.id.to_s
-        -if subtask.status.name.in?(%w[blocked canceled])
+        -if subtask.status.name.in?(%w[blocked archived])
           %td{ class: "bg-#{status_color(subtask.status.name)}", 'data-toggle' => 'tooltip', 'data-placement' => 'left', title: truncate(subtask.status_comment, length: 150) }
             =subtask.status.name
         -else

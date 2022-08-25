@@ -1,5 +1,6 @@
 .card.card-body
   = form_for grid, options do |f|
+    =f.hidden_field :list, value: params[:list], name: :list
     .row
       .col-6.border-right
         -grid.filters.select { |filter| filter.options[:left] }.each do |filter|
@@ -14,4 +15,4 @@
     %hr.mb-2/
     .text-center
       =f.submit 'apply', :class => "btn btn-sm btn-outline-dark mt-2"
-      =link_to 'reset', url_for(grid.to_param => {}), :class => "btn btn-sm btn-outline-dark mt-2"
+      =link_to 'reset', url_for(list: params[:list]), :class => "btn btn-sm btn-outline-dark mt-2"
