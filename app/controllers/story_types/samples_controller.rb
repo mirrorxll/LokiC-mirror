@@ -51,8 +51,6 @@ module StoryTypes
         'rake story_type:iteration:purge_samples_and_auto_feedback '\
         "iteration_id=#{@iteration.id} account_id=#{current_account.id} &"
       )
-
-      render 'story_types/creations/purge'
     end
 
     private
