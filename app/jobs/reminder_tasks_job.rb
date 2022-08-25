@@ -6,17 +6,17 @@ class ReminderTasksJob < ApplicationJob
   def perform(*_args)
     day_of_week = Date.today.strftime('%A')
 
-    each_day = TaskReminderFrequency.find_by(name: 'each day')
-    once_a_week = TaskReminderFrequency.find_by(name: 'once a week')
-    two_times_a_week = TaskReminderFrequency.find_by(name: 'two times a week')
-    three_times_a_week = TaskReminderFrequency.find_by(name: 'three times a week')
-    monday = TaskReminderFrequency.find_by(name: 'each Monday')
-    tuesday = TaskReminderFrequency.find_by(name: 'each Tuesday')
-    wednesday = TaskReminderFrequency.find_by(name: 'each Wednesday')
-    thursday = TaskReminderFrequency.find_by(name: 'each Thursday')
-    friday = TaskReminderFrequency.find_by(name: 'each Friday')
-    saturday = TaskReminderFrequency.find_by(name: 'each Saturday')
-    sunday = TaskReminderFrequency.find_by(name: 'each Sunday')
+    each_day = MultiTaskReminderFrequency.find_by(name: 'each day')
+    once_a_week = MultiTaskReminderFrequency.find_by(name: 'once a week')
+    two_times_a_week = MultiTaskReminderFrequency.find_by(name: 'two times a week')
+    three_times_a_week = MultiTaskReminderFrequency.find_by(name: 'three times a week')
+    monday = MultiTaskReminderFrequency.find_by(name: 'each Monday')
+    tuesday = MultiTaskReminderFrequency.find_by(name: 'each Tuesday')
+    wednesday = MultiTaskReminderFrequency.find_by(name: 'each Wednesday')
+    thursday = MultiTaskReminderFrequency.find_by(name: 'each Thursday')
+    friday = MultiTaskReminderFrequency.find_by(name: 'each Friday')
+    saturday = MultiTaskReminderFrequency.find_by(name: 'each Saturday')
+    sunday = MultiTaskReminderFrequency.find_by(name: 'each Sunday')
 
     tasks = case day_of_week
             when 'Monday'

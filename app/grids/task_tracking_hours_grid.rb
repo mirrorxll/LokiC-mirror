@@ -4,20 +4,20 @@ class TaskTrackingHoursGrid
   include Datagrid
 
   # Scope
-  scope { TaskTeamWork.done.includes(:task).order(id: :desc) }
+  scope { MultiTaskTeamWork.done.includes(:multi_task).order(id: :desc) }
 
   # Filters
 
   filter(:title, :string, left: true, header: 'Title(RLIKE)') do |value, scope|
-    scope.joins(:task).where('title RLIKE ?', value)
+    scope.joins(:multi_task).where('title RLIKE ?', value)
   end
 
   filter(:creator, :enum, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] }) do |value, scope|
-    scope.joins(:task).where('tasks.creator_id= ?', value)
+    scope.joins(:multi_task).where('tasks.creator_id= ?', value)
   end
 
   filter(:client, :enum, left: true, select: ClientsReport.all.pluck(:name, :id).map { |r| [r[0], r[1]] }) do |value, scope|
-    scope.joins(:task).where('tasks.client_id= ?', value)
+    scope.joins(:multi_task).where('tasks.client_id= ?', value)
   end
 
   # Columns

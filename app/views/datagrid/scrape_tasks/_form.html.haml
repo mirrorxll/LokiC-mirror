@@ -1,6 +1,7 @@
 .card
   .card-body.small
     =form_for grid, options do |f|
+      =f.hidden_field :list, value: params[:list], name: :list
       .row
         -grid.filters.each do |filter|
           -next if @current_list.eql?('assigned') && filter.name.eql?(:scraper)

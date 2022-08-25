@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Api
-  class TasksController < Api::ApiController
+  class MultiTasksController < Api::ApiController
     def titles
       task_titles = MultiTask.where(creator: params[:creator_id]).map(&:title)
 

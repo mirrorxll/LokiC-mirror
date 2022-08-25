@@ -29,7 +29,7 @@ class Status < ApplicationRecord
   def self.multi_task_statuses(created: false, archived: false)
     statuses = created ? ['created and in queue'] : []
 
-    statuses.push('in progress', 'done', 'setup done/ongoing recurrent', 'blocked', 'canceled')
+    statuses.push('in progress', 'done', 'setup done/ongoing recurrent', 'blocked')
     statuses.push('archived') if archived
 
     ordered_statuses(statuses)
@@ -53,10 +53,12 @@ class Status < ApplicationRecord
     ordered_statuses(statuses)
   end
 
-  def self.hle_statuses(created: false, archived: false)
+  def self.hle_statuses(created: false, migrated: false, inactive: false, archived: false)
     statuses = created ? ['created and in queue'] : []
 
-    statuses.push('in progress', 'exported', 'done', 'blocked')
+    statuses.push('migrated') if migrated
+    statuses.push('in progress', 'exported', 'on cron', 'done', 'blocked')
+    statuses.push('inactive') if inactive
     statuses.push('archived') if archived
 
     ordered_statuses(statuses)

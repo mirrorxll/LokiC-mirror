@@ -11,7 +11,7 @@ module Authenticates
     def new; end
 
     def create
-      if @account
+      if @account && @account.status.name.eql?('active')
         @account.generate_token(:reset_password_token)
         @account.update(reset_password_sent_at: DateTime.now)
 

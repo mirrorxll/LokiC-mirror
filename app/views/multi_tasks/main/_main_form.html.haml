@@ -64,7 +64,7 @@
             .col-7.text-right
               main task:
             .col.text-left.small
-              =form.collection_select 'task_parent[parent]', MultiTask.where(parent: nil).where.not(status: Status.find_by(name: 'deleted')).order(:id), :id, :title_with_id, { prompt: '' }, style: "width:150px", onchange: "hideSubtasks(this);"
+              =form.collection_select 'task_parent[parent]', MultiTask.where(parent: nil).where.not(status: Status.find_by(name: 'archived')).order(:id), :id, :title_with_id, { prompt: '' }, style: "width:150px", onchange: "hideSubtasks(this);"
           .row.small.justify-content-center
             (If you select a main task, you won't be able to add subtasks)
       %hr
@@ -244,7 +244,7 @@
     Rails.ajax({
       type: 'GET',
       dataType: 'json',
-      url: `/api/tasks/titles`,
+      url: `/api/multi_tasks/titles`,
       data: `creator_id=${current_account_id}`,
       success: (names) => {
         let nameInput = document.querySelector('#newTaskNameParent');
@@ -296,7 +296,7 @@
     Rails.ajax({
       type: 'GET',
       dataType: 'json',
-      url: `/api/tasks/titles`,
+      url: `/api/multi_tasks/titles`,
       data: `creator_id=${current_account_id}`,
       success: (names) => {
         let nameIsUniq = isUniq(nameInput.value, names);
