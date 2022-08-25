@@ -18,7 +18,7 @@ RailsAdmin.config do |config|
     %w[
       FactoidType FactoidTypeIteration Assembled
       Client ClientsReport Comment CronTab DataSet DataSetCategory
-      Frequency Level PhotoBucket Publication Reminder ScrapeTask SlackAccount StagingTable
+      Frequency Level MainAgency MainOpportunity PhotoBucket Publication Reminder RevenueType ScrapeTask SlackAccount StagingTable
       State Status StoryType StoryTypeIteration Tag MultiTask TimeFrame
     ]
 end
