@@ -22,7 +22,7 @@
         =render partial: 'story_types/iterations/iteration',
                 collection: @story_type.iterations.where(cron_tab: [nil, false]),
                 current_iteration: @story_type.iteration
-      -if current_account_permissions('story_types', %w(iterations new_form))
+      -if current_account_permissions('story_types', %w[iterations new_form])
         #new_story_type_iteration.d-inline
           =render 'story_types/iterations/new_iteration'
   .col-2.text-right

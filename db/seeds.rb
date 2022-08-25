@@ -87,7 +87,7 @@ def invoice_frequency(db02)
 end
 
 def task_reminder_frequency(db02)
-  query = 'SELECT name FROM task_reminder_frequencies;'
+  query = 'SELECT name FROM multi_task_reminder_frequencies;'
   db02.query(query).to_a
 end
 
@@ -108,12 +108,12 @@ db02 = MiniLokiC::Connect::Mysql.on(DB02, 'lokic')
 db02_sec = MiniLokiC::Connect::Mysql.on(DB02, 'lokic_secondary')
 
 puts 'Account Roles/Branches'
-roles.each { |role| AccountRole.find_or_create_by!(name: role) }
+roles.each { |role| AccountRole.find_or_create_by(name: role) }
 branches.each do |branch_name|
-  branch = Branch.find_or_create_by!(name: branch_name)
+  branch = Branch.find_or_create_by(name: branch_name)
 
   access_levels.each do |lvl_name|
-    AccessLevel.find_or_create_by!(
+    AccessLevel.find_or_create_by(
       branch: branch,
       name: lvl_name,
       permissions: AccessLevels::PERMISSIONS[lvl_name][branch_name],
@@ -123,46 +123,46 @@ branches.each do |branch_name|
 end
 
 puts 'Frequencies'
-frequency(db02).each { |obj| Frequency.find_or_create_by!(obj) }
+frequency(db02).each { |obj| Frequency.find_or_create_by(obj) }
 
 puts 'States'
-state(db02).each { |obj| State.find_or_create_by!(obj) }
+state(db02).each { |obj| State.find_or_create_by(obj) }
 
 puts 'Data Set Categories'
-data_set_category(db02).each { |obj| DataSetCategory.find_or_create_by!(obj) }
+data_set_category(db02).each { |obj| DataSetCategory.find_or_create_by(obj) }
 
 puts 'Statuses'
-status(db02).each { |obj| Status.find_or_create_by!(obj) }
+status(db02).each { |obj| Status.find_or_create_by(obj) }
 
 puts 'Levels'
-level(db02).each { |obj| Level.find_or_create_by!(obj) }
+level(db02).each { |obj| Level.find_or_create_by(obj) }
 
 puts 'Fact Checking Channels'
 Account.all.each { |acc| acc.create_fact_checking_channel(name: "fcd_#{acc.first_name.downcase}_#{acc.last_name.downcase}") }
 
 puts 'Work Types'
-work_type(db02).each { |obj| WorkType.find_or_create_by!(obj) }
+work_type(db02).each { |obj| WorkType.find_or_create_by(obj) }
 
 puts 'Underwriting Projects'
-underwriting_project(db02).each { |obj| UnderwritingProject.find_or_create_by!(obj) }
+underwriting_project(db02).each { |obj| UnderwritingProject.find_or_create_by(obj) }
 
 puts 'Revenue Types'
-revenue_type(db02).each { |obj| RevenueType.find_or_create_by!(obj) }
+revenue_type(db02).each { |obj| RevenueType.find_or_create_by(obj) }
 
 puts 'Priorities'
-priority(db02).each { |obj| Priority.find_or_create_by!(obj) }
+priority(db02).each { |obj| Priority.find_or_create_by(obj) }
 
 puts 'Invoice Types'
-invoice_type(db02).each { |obj| InvoiceType.find_or_create_by!(obj) }
+invoice_type(db02).each { |obj| InvoiceType.find_or_create_by(obj) }
 
 puts 'Invoice Frequencies'
-invoice_frequency(db02).each { |obj| InvoiceFrequency.find_or_create_by!(obj) }
+invoice_frequency(db02).each { |obj| InvoiceFrequency.find_or_create_by(obj) }
 
 puts 'MultiTask Reminder Frequencies'
-task_reminder_frequency(db02).each { |obj| MultiTaskReminderFrequency.find_or_create_by!(obj) }
+task_reminder_frequency(db02).each { |obj| MultiTaskReminderFrequency.find_or_create_by(obj) }
 
 puts 'Weeks'
-weeks(db02_sec).each { |obj| Week.find_or_create_by!(obj) }
+weeks(db02_sec).each { |obj| Week.find_or_create_by(obj) }
 
 unless Account.first
   puts 'First Account'
@@ -273,7 +273,7 @@ rules = {
 }
 
 puts 'Auto-feedback'
-rules.each { |rule, output| AutoFeedback.find_or_create_by!(rule: rule, output: output) }
+rules.each { |rule, output| AutoFeedback.find_or_create_by(rule: rule, output: output) }
 
 puts 'SlackAccounts'
 SlackAccountsJob.new.perform

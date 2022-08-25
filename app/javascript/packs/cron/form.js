@@ -7,8 +7,8 @@ function checkCronPattern() {
     let description = document.getElementById('cron_description');
     let pattern = `${minute} ${hour} ${month_day} ${month} ${weekDay}`;
     let isCorrectPattern = cronValidator.isValidCron(pattern);
+    let formSubmitButton = document.querySelector('#cron_tab_setup form input[type="submit"]')
 
-    let formSubmitButton = document.querySelector('#cron_tab_panel form input[type="submit"]')
     formSubmitButton.disabled = !isCorrectPattern;
 
     if([minute, hour, month_day, month, weekDay].every((el) => el.trim().length === 0)) {

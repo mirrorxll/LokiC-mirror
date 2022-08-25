@@ -23,4 +23,3 @@ module StoryTypes::ShowHelper
     end
   end
 end
-
