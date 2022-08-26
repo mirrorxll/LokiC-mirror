@@ -103,10 +103,10 @@ class ApplicationController < ActionController::Base
       'multi_task_assignments.account_id': current_account
     )
 
-    flash.now[:warning] = multi_tasks.each_with_object({ unconfirmed_multi_task: [] }) do |multi_tasks, warnings|
+    flash.now[:warning] = multi_tasks.each_with_object({ unconfirmed_multi_task: [] }) do |multi_task, warnings|
       warnings[:unconfirmed_multi_task] << view_context.link_to(
-        "#{multi_tasks.title} assigned to you by #{task.creator.name}",
-        multi_task_path(task)
+        "#{multi_task.title} assigned to you by #{multi_task.creator.name}",
+        multi_task_path(multi_task)
       ).html_safe
     end
   end

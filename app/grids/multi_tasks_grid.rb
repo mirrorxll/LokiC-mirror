@@ -25,6 +25,7 @@ class MultiTasksGrid
 
   status_done_id = Status.find_by(name: 'done').id.to_s
   filter(:status, :enum, multiple: true, select: Status.multi_task_statuses(created: true).pluck(:name, :id)) do |value, scope, grid|
+    p '!!!!!!', value
     if value.include?(status_done_id)
       scope.joins(:assignments).where(status: value).or(scope.joins(:assignments).where('multi_task_assignments.account_id': grid.current_account.id, 'multi_task_assignments.done': true))
     else

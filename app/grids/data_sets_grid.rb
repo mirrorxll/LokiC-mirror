@@ -5,7 +5,7 @@ class DataSetsGrid
   scope { DataSet.includes(:status, :state, :sheriff, :responsible_editor, :account, :category, :scrape_task) }
 
   # Filters
-  filter(:status) { |value, scope| scope.where(status: value) }
+  filter(:status, multiple: true) { |value, scope| scope.where(status: value) }
 
   filter(:name, :string, header: 'Name(RLIKE)') { |value, scope| scope.where('name RLIKE ?', value) }
   filter(:location, :string, header: 'Location(RLIKE)') { |value, scope| scope.where('location RLIKE ?', value) }

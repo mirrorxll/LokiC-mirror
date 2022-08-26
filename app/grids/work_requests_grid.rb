@@ -10,7 +10,7 @@ class WorkRequestsGrid
   accounts = WorkRequest.where.not(requester: nil).map { |wr| [wr.requester.name, wr.requester.id] }
   filter(:requester, :enum, select: accounts)
   statuses = Status.work_request_statuses(created: true).map { |s| [s.name, s.id] }
-  filter(:status, :enum, select: statuses)
+  filter(:status, :enum, multiple: true, select: statuses)
 
   # Columns
   column(:id, header: 'id')
