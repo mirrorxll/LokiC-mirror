@@ -6,7 +6,7 @@ module StoryTypes
 
     def change
       prev_status = @story_type.status
-      @story_type.assign_attributes(status: @status, last_status_changed_at: Time.now, current_account:@current_account)
+      @story_type.assign_attributes(status: @status, last_status_changed_at: Time.now, current_account: @current_account)
       if @story_type.save
         change_archived if @status.name == 'archived' || prev_status.name == 'archived'
       end

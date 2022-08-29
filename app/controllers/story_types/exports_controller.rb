@@ -8,7 +8,7 @@ module StoryTypes
     before_action :opportunities_attached?, only: :execute
 
     def execute
-      @iteration.update!(export: false, current_account:@current_account)
+      @iteration.update!(export: false, current_account: @current_account)
       send_to_action_cable(@story_type, 'export', 'export in progress')
 
       url = stories_story_type_iteration_exports_url(params[:story_type_id], params[:iteration_id])
@@ -16,19 +16,19 @@ module StoryTypes
       Process.spawn(
         "cd #{Rails.root} && RAILS_ENV=#{Rails.env} "\
         'rake story_type:iteration:export '\
-        "iteration_id=#{@iteration.id} account_id=#@current_account.id} url='#{url}' &"
+        "iteration_id=#{@iteration.id} account_id=#{@current_account.id} url='#{url}' &"
       )
     end
 
     def remove_exported_stories
       @removal.update!(removal_params)
-      @iteration.update!(purge_export: true, current_account:@current_account)
+      @iteration.update!(purge_export: true, current_account: @current_account)
       send_to_action_cable(@story_type, 'export', 'removing from PL in progress')
 
       Process.spawn(
         "cd #{Rails.root} && RAILS_ENV=#{Rails.env} "\
         'rake story_type:iteration:purge_export '\
-        "iteration_id=#{@iteration.id} account_id=#@current_account.id} &"
+        "iteration_id=#{@iteration.id} account_id=#{@current_account.id} &"
       )
     end
 

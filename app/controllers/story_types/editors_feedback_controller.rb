@@ -59,7 +59,7 @@ module StoryTypes
           end
         message += "Approved by *#{editors}*. #{scheduling}."
       else
-        message += "You received the *editors' feedback* by *#@current_account.name}*. "\
+        message += "You received the *editors' feedback* by *#{@current_account.name}*. "\
                    "<#{story_type_fact_checking_doc_url(@story_type, @story_type.fact_checking_doc)}"\
                    '#editors_feedback|Check it>.'
       end

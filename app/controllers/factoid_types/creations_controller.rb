@@ -3,7 +3,7 @@
 module FactoidTypes
   class CreationsController < FactoidTypesController # :nodoc:
      def execute
-      @iteration.update!(creation: false, current_account:@current_account)
+      @iteration.update!(creation: false, current_account: @current_account)
       CreationJob.perform_async(@iteration.id,@current_account.id)
     end
 
