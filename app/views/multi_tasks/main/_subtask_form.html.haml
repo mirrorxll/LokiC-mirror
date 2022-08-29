@@ -11,7 +11,7 @@
         =form.hidden_field 'multi_task[parent]', value: params[:parent_task]
   %hr/
 
-  #checklists.accordion.mt-2
+  -##checklists.accordion.mt-2
     .card.small
       .card-header.p-1
         %div.row
@@ -267,14 +267,14 @@
   }
   document.querySelector('#form_new_task').addEventListener('submit', onSubmit)
 
-  $('#add_checklist').click(function () {
-    let hex = secureRandom(6);
-    $('#forms_checklists').append(
-        `<div id="assignment_${hex}" class="row small justify-content-center mt-2">
-           <div class="small mt-1 mr-2"><i class="fa fa-circle"></i></div>
-           <input id="multi_task[checklists][]" style='width: 90%' required=required maxlength="255" name="multi_task[checklists][]"></input>
-           <div class="ml-2" id="rm_checklist_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
-         </div>`
-    );
-  });
+  // $('#add_checklist').click(function () {
+  //   let hex = secureRandom(6);
+  //   $('#forms_checklists').append(
+  //       `<div id="assignment_${hex}" class="row small justify-content-center mt-2">
+  //          <div class="small mt-1 mr-2"><i class="fa fa-circle"></i></div>
+  //          <input id="multi_task[checklists][]" style='width: 90%' required=required maxlength="255" name="multi_task[checklists][]"></input>
+  //          <div class="ml-2" id="rm_checklist_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
+  //        </div>`
+  //   );
+  // });
 

@@ -7,7 +7,7 @@
         =form.text_area 'multi_task[description]', id: 'task_description', value: @multi_task.description
   %hr/
 
-  #checklists.accordion.mt-2
+  -##checklists.accordion.mt-2
     .card.small
       .card-header.p-1
         %div.row
@@ -104,26 +104,26 @@
     $('#task .modal-body').empty();
   });
 
-  $('#add_checklist').click(function () {
-    let hex = secureRandom(6);
+  // $('#add_checklist').click(function () {
+  //   let hex = secureRandom(6);
+  //
+  //   $('#forms_checklists').append(
+  //       `<div id="assignment_${hex}" class="row small justify-content-center mt-2">
+  //          <div class="small mt-1 mr-2"><i class="fa fa-circle"></i></div>
+  //          <input id="checklists[new_${hex}]" style='width: 90%' require=true maxlength="255" name="checklists[new_${hex}]"></input>
+  //          <div class="ml-2" id="rm_checklist_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
+  //        </div>`
+  //   );
+  // });
 
-    $('#forms_checklists').append(
-        `<div id="assignment_${hex}" class="row small justify-content-center mt-2">
-           <div class="small mt-1 mr-2"><i class="fa fa-circle"></i></div>
-           <input id="checklists[new_${hex}]" style='width: 90%' require=true maxlength="255" name="checklists[new_${hex}]"></input>
-           <div class="ml-2" id="rm_checklist_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
-         </div>`
-    );
-  });
+  // function secureRandom(n) {
+  //   let result = '';
+  //   while (n--){
+  //     result += Math.floor(Math.random() * 16).toString(16);
+  //   }
+  //   return result;
+  // }
 
-  function secureRandom(n) {
-    let result = '';
-    while (n--){
-      result += Math.floor(Math.random() * 16).toString(16);
-    }
-    return result;
-  }
-
-  function removeDate(elem) {
-    $(elem.parentNode).remove();
-  }
+  // function removeDate(elem) {
+  //   $(elem.parentNode).remove();
+  // }
