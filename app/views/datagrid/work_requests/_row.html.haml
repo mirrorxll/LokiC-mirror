@@ -1,6 +1,6 @@
 %tr
   -grid.html_columns.each do |column|
-    -next if column.header.in?(['sow', 'eta', 'last invoice']) && !current_account.manager?
+    -next if column.header.in?(['sow', 'eta', 'last invoice']) && !@current_account.manager?
     -klass = datagrid_column_classes(grid, column)
     -value = datagrid_value(grid, column, asset)
     -background_color = column.header.eql?('status') ? "bg-#{status_color(ActionView::Base.full_sanitizer.sanitize(value))}" : ''

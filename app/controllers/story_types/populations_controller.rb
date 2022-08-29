@@ -16,7 +16,7 @@ module StoryTypes
 
       if flash.now[:error].nil?
         population_args = population_params
-        iteration_args = population_args.merge(current_account: current_account)
+        iteration_args = population_args.merge(current_account: @current_account)
 
         @iteration.update!(iteration_args)
         send_to_action_cable(@story_type, 'staging_table', 'population in progress')
@@ -24,7 +24,7 @@ module StoryTypes
         Process.spawn(
           "cd #{Rails.root} && RAILS_ENV=#{Rails.env} "\
           "rake story_type:iteration:population iteration_id=#{@iteration.id} "\
-          "account_id=#{current_account.id} options='#{population_args.to_json}' &"
+          "account_id=#{@current_account.id} options='#{population_args.to_json}' &"
         )
       end
 

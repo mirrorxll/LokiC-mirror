@@ -8,20 +8,20 @@ module StoryTypes
     def create
       flash.now[:error] =
         if @staging_table.present?
-          @story_type.update!(staging_table_attached: true, current_account: current_account)
+          @story_type.update!(staging_table_attached: true, current_account: @current_account)
           'Table for this story type already exist. Please update the page.'
         elsif StagingTable.find_by(name: @staging_table_name)
           "Table with name '#{@staging_table_name}' already attached to another story type."
         elsif @staging_table_name.present? && StagingTable.not_exists?(@staging_table_name)
           "Table with name '#{@staging_table_name}' not exists."
         else
-          @story_type.update!(staging_table_attached: false, current_account: current_account)
+          @story_type.update!(staging_table_attached: false, current_account: @current_account)
           send_to_action_cable(@story_type, 'staging_table', 'staging table attaching in progress')
 
           Process.spawn(
             "cd #{Rails.root} && RAILS_ENV=#{Rails.env} "\
             "rake story_type:staging_table:attach story_type_id=#{@story_type.id} "\
-            "account_id=#{current_account.id} table_name='#{@staging_table_name}' &"
+            "account_id=#{@current_account.id} table_name='#{@staging_table_name}' &"
           )
 
           nil

@@ -3,3 +3,5 @@ $('#confirms').html('<%= j render 'multi_tasks/receipts/confirm_receipts', task:
 <%- if @comment %>
   $('#comments').prepend(`<%= j render 'multi_tasks/comments/comment', comment: @comment %>`);
 <%- end %>
+
+document.querySelector('#commentsCard').style.height = `${document.querySelector('#mainInfoConfirms').offsetHeight}px`;
