@@ -20,7 +20,7 @@ module StoryTypes
         end
         f.csv do
           send_data @grid.to_csv, type: 'text/csv', disposition: 'inline',
-                    filename: "lokiC_story_types_#{Time.now}.csv"
+                                  filename: "lokiC_story_types_#{Time.now}.csv"
         end
       end
     end
@@ -46,13 +46,22 @@ module StoryTypes
     private
 
     def grid_lists
-      statuses = Status.hle_statuses(created: true, migrated: true, inactive: true)
+      status_ids = Status.hle_statuses(created: true, migrated: true, inactive: true).ids.map(&:to_s)
       @lists = HashWithIndifferentAccess.new
 
-      @lists['assigned'] = { developer: current_account, status: statuses } if @story_types_permissions['grid']['assigned']
-      @lists['created'] = { editor: current_account, status: statuses }     if @story_types_permissions['grid']['created']
-      @lists['all'] = { status: statuses }                                  if @story_types_permissions['grid']['all']
-      @lists['archived'] = { status: Status.find_by(name: 'archived') }     if @story_types_permissions['grid']['archived']
+      if @story_types_permissions['grid']['assigned']
+        @lists['assigned'] = { developer: @current_account.id.to_s, status: status_ids }
+      end
+      if @story_types_permissions['grid']['created']
+        @lists['created'] = { editor: @current_account.id.to_s, status: status_ids }
+      end
+      if @story_types_permissions['grid']['all']
+        @lists['all'] = { status: status_ids }
+      end
+      if @story_types_permissions['grid']['archived']
+        @lists['archived'] =
+          { status: Status.find_by(name: 'archived').id.to_s }
+      end
     end
 
     def current_list
@@ -64,7 +73,7 @@ module StoryTypes
       return unless @current_list
 
       grid_params = request.parameters[:story_types_grid] || {}
-      grid_params.merge!({ current_account: current_account, env: env })
+      grid_params.merge!({ current_account: @current_account, env: env })
 
       @grid = StoryTypesGrid.new(grid_params) { |scope| scope.where(@lists[@current_list]) }
     end
@@ -76,8 +85,8 @@ module StoryTypes
     def access_to_show
       archived = Status.find_by(name: 'archived')
 
-      return if @lists['assigned'] && @story_type.developer.eql?(current_account)
-      return if @lists['created'] && @story_type.editor.eql?(current_account)
+      return if @lists['assigned'] && @story_type.developer.eql?(@current_account)
+      return if @lists['created'] && @story_type.editor.eql?(@current_account)
       return if @lists['all'] && @story_type.status != archived
       return if @lists['archived'] && @story_type.status.eql?(archived)
 
@@ -93,12 +102,12 @@ module StoryTypes
       permitted = params.require(:story_type).permit(:name, :data_set_id)
 
       story_type_params = {
-        editor: current_account,
+        editor: @current_account,
         name: permitted[:name],
         data_set_id: permitted[:data_set_id],
         status: Status.find_by(name: 'created and in queue'),
         last_status_changed_at: Time.now.getlocal('-05:00'),
-        current_account: current_account
+        current_account: @current_account
       }
 
       story_type_params.merge!(photo_bucket: @data_set.photo_bucket) if @data_set
@@ -107,7 +116,7 @@ module StoryTypes
 
     def exist_story_type_params
       attrs = params.require(:story_type).permit(:name, :comment, :gather_task)
-      attrs[:current_account] = current_account
+      attrs[:current_account] = @current_account
       attrs
     end
 

@@ -56,11 +56,7 @@
 
   </div>
 
-  <div class="col">
-    <% @scrape_task.table_locations.each do |tl| %>
-      <div class="text-truncate">
-        <%= tl.full_name %>
-      </div>
-    <% end %>
+  <div id="scrape_task_attached_tables">
+    <%= render 'scrape_tasks/table_locations/attached_tables' %>
   </div>
 </div>

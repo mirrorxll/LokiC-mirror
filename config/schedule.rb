@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require './' + File.dirname(__FILE__) + '/environment.rb'
+require "./#{File.dirname(__FILE__)}/environment.rb"
 
 every '0 0 * * *' do
   rake 'slack_accounts'
@@ -10,9 +10,7 @@ every '0 0 * * *' do
   rake 'clients_pubs_tags_sections'
   rake 'photo_buckets'
   rake 'opportunities'
-  if Rails.env.production?
-    rake 'story_type:backdate:export'
-  end
+  rake 'story_type:backdate:export' if Rails.env.production?
 end
 
 every '0 9 * * *' do

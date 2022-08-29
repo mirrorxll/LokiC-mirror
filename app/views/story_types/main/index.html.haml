@@ -20,14 +20,14 @@
                  "data-target" => "#createStoryTypeModal", "data-toggle" => "modal")
 %hr/
 
--if @current_list && @grid.assets.total_count > 0
-  .text-right.mb-2
-    =link_to('[ download CSV ]', url_for(format: 'csv', story_types_grid: request.parameters[:story_types_grid]),
-             id: '#save_as_csv_btn', class: 'small')
-
 -if @current_list
-  #filterStoryTypes.mt-3.mb-3.collapse{ class: (params[:story_types_grid] ? 'show' : '') }
+  #filterStoryTypes.mt-3.mb-3.collapse
     =datagrid_form_for @grid, url: story_types_path
+
+  -if @current_list && @grid.assets.total_count > 0
+    .text-right.mb-2
+      =link_to('[ download CSV ]', url_for(format: 'csv', story_types_grid: request.parameters[:story_types_grid]),
+               id: '#save_as_csv_btn', class: 'small')
 
   #storyTypesTable.row.small.mb-5
     .col-12

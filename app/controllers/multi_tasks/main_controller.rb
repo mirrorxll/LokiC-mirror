@@ -17,7 +17,7 @@ module MultiTasks
     end
 
     def show
-      render_401 unless current_account.manager? || @multi_task.access_for?(current_account)
+      render_401 unless @current_account.manager? || @multi_task.access_for?(@current_account)
 
       @comments = @multi_task.comments.order(created_at: :desc)
       @tab_title = "LokiC :: MultiTask ##{@multi_task.id} <#{@multi_task.title}>"
@@ -31,14 +31,16 @@ module MultiTasks
       parent_params = task_params[:parent]
       subtasks_params = task_params[:subtasks]
 
-      @multi_task_parent = MultiTask.new(parent_params.except(:assignment_to, :assistants, :notification_to, :checklists, :agencies_opportunities))
+      @multi_task_parent = MultiTask.new(parent_params.except(:assignment_to, :assistants, :notification_to,
+                                                              :checklists, :agencies_opportunities))
       if @multi_task_parent.save!
         after_task_create(@multi_task_parent, parent_params)
 
         unless subtasks_params.blank?
           subtasks_params.each do |subtask_params|
             subtask_params[:parent] = @multi_task_parent
-            subtask = MultiTask.new(subtask_params.except(:assignment_to, :assistants, :checklists, :agencies_opportunities))
+            subtask = MultiTask.new(subtask_params.except(:assignment_to, :assistants, :checklists,
+                                                          :agencies_opportunities))
             after_task_create(subtask, subtask_params) if subtask.save!
           end
         end
@@ -71,7 +73,8 @@ module MultiTasks
     end
 
     def create_subtask
-      @subtask = MultiTask.new(subtask_params.except(:assignment_to, :notification_to, :assistants, :checklists, :agencies_opportunities))
+      @subtask = MultiTask.new(subtask_params.except(:assignment_to, :notification_to, :assistants, :checklists,
+                                                     :agencies_opportunities))
 
       after_task_create(@subtask, subtask_params) if @subtask.save!
     end
@@ -79,13 +82,25 @@ module MultiTasks
     private
 
     def grid_lists
-      statuses = Status.multi_task_statuses(created: true)
+      status_ids = Status.multi_task_statuses(created: true).ids.map(&:to_s)
       @lists = HashWithIndifferentAccess.new
 
-      @lists['assigned'] = { assignment_to: current_account.id, status: statuses } if @multi_tasks_permissions['grid']['assigned']
-      @lists['created'] = { creator: current_account.id, status: statuses }        if @multi_tasks_permissions['grid']['created']
-      @lists['all'] = { status: statuses }                                         if @multi_tasks_permissions['grid']['all']
-      @lists['archived'] = { status: Status.find_by(name: 'archived') }            if @multi_tasks_permissions['grid']['archived']
+      if @multi_tasks_permissions['grid']['assigned']
+        @lists['assigned'] =
+          { assignment_to: @current_account.id.to_s, status: status_ids }
+      end
+      if @multi_tasks_permissions['grid']['created']
+        @lists['created'] =
+          { creator: @current_account.id.to_s, status: status_ids }
+      end
+      if @multi_tasks_permissions['grid']['all']
+        @lists['all'] =
+          { status: status_ids }
+      end
+      if @multi_tasks_permissions['grid']['archived']
+        @lists['archived'] =
+          { status: Status.find_by(name: 'archived').id.to_s }
+      end
     end
 
     def current_list
@@ -98,17 +113,19 @@ module MultiTasks
 
       filter_params = params[:multi_tasks_grid] || @lists[@current_list]
 
-      filter_params[:current_account] = current_account
+      filter_params[:current_account] = @current_account
 
-      @grid = MultiTasksGrid.new(filter_params.except(:collapse, :type))
+      @grid = MultiTasksGrid.new(filter_params)
       @grid.scope { |sc| sc.page(params[:page]).per(30) }
     end
 
     def access_to_show
       status_deleted = Status.find_by(name: 'archived')
 
-      return if @lists['assigned'] && @multi_task.assignment_to.include?(current_account) && @multi_task.status != status_deleted
-      return if @lists['created'] && @multi_task.creator.eql?(current_account) && @multi_task.status != status_deleted
+      if @lists['assigned'] && @multi_task.assignment_to.include?(@current_account) && @multi_task.status != status_deleted
+        return
+      end
+      return if @lists['created'] && @multi_task.creator.eql?(@current_account) && @multi_task.status != status_deleted
       return if @lists['all'] && @multi_task.status != status_deleted
       return if @lists['archived'] && @multi_task.status.eql?(status_deleted)
 
@@ -127,16 +144,16 @@ module MultiTasks
         if u_id.first(2).eql?('id')
           id = u_id.split('_').last
           MultiTaskAgencyOpportunityRevenueType.find(id)
-                                          .update!(agency: MainAgency.find(row[:agency_id]),
-                                                   opportunity: MainOpportunity.find(row[:opportunity_id]),
-                                                   revenue_type: RevenueType.find(row[:revenue_type_id]),
-                                                   percents: row[:percents])
+                                               .update!(agency: MainAgency.find(row[:agency_id]),
+                                                        opportunity: MainOpportunity.find(row[:opportunity_id]),
+                                                        revenue_type: RevenueType.find(row[:revenue_type_id]),
+                                                        percents: row[:percents])
         else
           MultiTaskAgencyOpportunityRevenueType.create!(multi_task: @multi_task,
-                                                   agency: MainAgency.find(row[:agency_id]),
-                                                   opportunity: MainOpportunity.find(row[:opportunity_id]),
-                                                   revenue_type: RevenueType.find(row[:revenue_type_id]),
-                                                   percents: row[:percents])
+                                                        agency: MainAgency.find(row[:agency_id]),
+                                                        opportunity: MainOpportunity.find(row[:opportunity_id]),
+                                                        revenue_type: RevenueType.find(row[:revenue_type_id]),
+                                                        percents: row[:percents])
         end
       end
     end
@@ -178,12 +195,12 @@ module MultiTasks
       task.comments.build(
         subtype: 'task comment',
         body: body,
-        commentator: current_account
+        commentator: @current_account
       ).save!
     end
 
     def find_note
-      @note = MultiTaskNote.find_by(multi_task: @multi_task, creator: current_account)
+      @note = MultiTaskNote.find_by(multi_task: @multi_task, creator: @current_account)
     end
 
     def send_notification(task)
@@ -202,29 +219,58 @@ module MultiTasks
 
     def task_params
       result_params = {}
-      parent_params = params.require(:multi_task_parent).permit(:title, :description, :parent, :deadline, :client_id, :reminder_frequency, :access, :gather_task, :work_request, :assignment_to, :sow, :pivotal_tracker_name, :pivotal_tracker_url, assistants: [], notification_to: [], checklists: [], agencies_opportunities: {})
-      parent_params[:reminder_frequency] = parent_params[:reminder_frequency].blank? ? nil : MultiTaskReminderFrequency.find(parent_params[:reminder_frequency])
+      parent_params = params.require(:multi_task_parent).permit(:title, :description, :parent, :deadline, :client_id,
+                                                                :reminder_frequency, :access, :gather_task, :work_request, :assignment_to, :sow, :pivotal_tracker_name, :pivotal_tracker_url, assistants: [], notification_to: [], checklists: [], agencies_opportunities: {})
+      parent_params[:reminder_frequency] =
+        parent_params[:reminder_frequency].blank? ? nil : MultiTaskReminderFrequency.find(parent_params[:reminder_frequency])
       parent_params[:client] = parent_params[:client_id].blank? ? nil : ClientsReport.find(parent_params[:client_id])
       parent_params[:work_request] = parent_params[:work_request] ? WorkRequest.find(parent_params[:work_request]) : nil
-      parent_params[:assistants] = parent_params[:assistants].blank? ? nil : parent_params[:assistants].uniq.reject(&:blank?).delete_if { |assignee| assignee == parent_params[:assignment_to] }
-      parent_params[:notification_to] = parent_params[:notification_to].blank? ? nil : parent_params[:notification_to].uniq.reject(&:blank?).delete_if { |assignee| assignee == parent_params[:assignment_to] || (!parent_params[:assistants].blank? && parent_params[:assistants].include?(assignee)) }
+      parent_params[:assistants] = if parent_params[:assistants].blank?
+                                     nil
+                                   else
+                                     parent_params[:assistants].uniq.reject(&:blank?).delete_if do |assignee|
+                                       assignee == parent_params[:assignment_to]
+                                     end
+                                   end
+      parent_params[:notification_to] = if parent_params[:notification_to].blank?
+                                          nil
+                                        else
+                                          parent_params[:notification_to].uniq.reject(&:blank?).delete_if do |assignee|
+                                            assignee == parent_params[:assignment_to] || (!parent_params[:assistants].blank? && parent_params[:assistants].include?(assignee))
+                                          end
+                                        end
       parent_params[:parent] = parent_params[:parent].blank? ? nil : MultiTask.find(parent_params[:parent])
-      parent_params[:creator] = current_account
+      parent_params[:creator] = @current_account
       result_params[:parent] = parent_params
 
-      subtasks_params = params.key?(:subtasks) ? params.require(:subtasks).each { |_number, params| params.permit(:title, :description, :parent, :deadline, :client_id, :reminder_frequency, :access, :gather_task, :assignment_to, assistants: [], notification_to: [], checklists: [], agencies_opportunities: {}) } : {}
+      subtasks_params = if params.key?(:subtasks)
+                          params.require(:subtasks).each do |_number, params|
+                            params.permit(:title, :description, :parent, :deadline, :client_id, :reminder_frequency, :access, :gather_task,
+                                          :assignment_to, assistants: [], notification_to: [], checklists: [], agencies_opportunities: {})
+                          end
+                        else
+                          {}
+                        end
       return result_params if subtasks_params.empty? || !parent_params[:parent].blank?
 
       subtasks = []
       subtasks_params.each do |_number_subtask, subtask_params|
-        subtask_params = subtask_params.permit(:title, :description, :parent, :deadline, :client_id, :reminder_frequency, :access, :gather_task, :assignment_to, assistants: [], checklists: [], agencies_opportunities: {})
+        subtask_params = subtask_params.permit(:title, :description, :parent, :deadline, :client_id,
+                                               :reminder_frequency, :access, :gather_task, :assignment_to, assistants: [], checklists: [], agencies_opportunities: {})
         subtask_params[:client] = parent_params[:client]
         subtask_params[:sow] = parent_params[:sow]
         subtask_params[:pivotal_tracker_name] = parent_params[:pivotal_tracker_name]
         subtask_params[:pivotal_tracker_url] = parent_params[:pivotal_tracker_url]
-        subtask_params[:reminder_frequency] = subtask_params[:reminder_frequency].blank? ? nil : MultiTaskReminderFrequency.find(subtask_params[:reminder_frequency])
-        subtask_params[:creator] = current_account
-        subtask_params[:assistants] = subtask_params[:assistants].blank? ? nil : subtask_params[:assistants].uniq.reject(&:blank?).delete_if { |assignee| assignee == subtask_params[:assignment_to] }
+        subtask_params[:reminder_frequency] =
+          subtask_params[:reminder_frequency].blank? ? nil : MultiTaskReminderFrequency.find(subtask_params[:reminder_frequency])
+        subtask_params[:creator] = @current_account
+        subtask_params[:assistants] = if subtask_params[:assistants].blank?
+                                        nil
+                                      else
+                                        subtask_params[:assistants].uniq.reject(&:blank?).delete_if do |assignee|
+                                          assignee == subtask_params[:assignment_to]
+                                        end
+                                      end
 
         subtasks << subtask_params
       end
@@ -234,13 +280,27 @@ module MultiTasks
     end
 
     def subtask_params
-      task_params = params.require(:multi_task).permit(:title, :description, :parent, :deadline, :client_id, :reminder_frequency, :access, :gather_task, :sow, :pivotal_tracker_name, :pivotal_tracker_url, :assignment_to, assistants: [], notification_to: [], checklists: [], agencies_opportunities: {})
-      task_params[:reminder_frequency] = task_params[:reminder_frequency].blank? ? nil : MultiTaskReminderFrequency.find(task_params[:reminder_frequency])
+      task_params = params.require(:multi_task).permit(:title, :description, :parent, :deadline, :client_id,
+                                                       :reminder_frequency, :access, :gather_task, :sow, :pivotal_tracker_name, :pivotal_tracker_url, :assignment_to, assistants: [], notification_to: [], checklists: [], agencies_opportunities: {})
+      task_params[:reminder_frequency] =
+        task_params[:reminder_frequency].blank? ? nil : MultiTaskReminderFrequency.find(task_params[:reminder_frequency])
       task_params[:parent] = task_params[:parent].blank? ? nil : MultiTask.find(task_params[:parent])
       task_params[:client] = task_params[:client_id].blank? ? nil : ClientsReport.find(task_params[:client_id])
-      task_params[:creator] = current_account
-      task_params[:assistants] = task_params[:assistants].blank? ? nil : task_params[:assistants].uniq.reject(&:blank?).delete_if { |assignee| assignee == task_params[:assignment_to] }
-      task_params[:notification_to] = task_params[:notification_to].blank? ? nil : task_params[:notification_to].uniq.reject(&:blank?).delete_if { |assignee| assignee == task_params[:assignment_to] || (!task_params[:assistants].blank? && task_params[:assistants].include?(assignee)) }
+      task_params[:creator] = @current_account
+      task_params[:assistants] = if task_params[:assistants].blank?
+                                   nil
+                                 else
+                                   task_params[:assistants].uniq.reject(&:blank?).delete_if do |assignee|
+                                     assignee == task_params[:assignment_to]
+                                   end
+                                 end
+      task_params[:notification_to] = if task_params[:notification_to].blank?
+                                        nil
+                                      else
+                                        task_params[:notification_to].uniq.reject(&:blank?).delete_if do |assignee|
+                                          assignee == task_params[:assignment_to] || (!task_params[:assistants].blank? && task_params[:assistants].include?(assignee))
+                                        end
+                                      end
       task_params
     end
 
@@ -253,8 +313,10 @@ module MultiTasks
     end
 
     def update_task_params
-      up_task_params = params.require(:multi_task).permit(:title, :description, :deadline, :parent, :access, :client_id, :reminder_frequency, :gather_task, :sow, :pivotal_tracker_name, :pivotal_tracker_url, agencies_opportunities: {})
-      up_task_params[:reminder_frequency] = up_task_params[:reminder_frequency].blank? ? nil : MultiTaskReminderFrequency.find(up_task_params[:reminder_frequency])
+      up_task_params = params.require(:multi_task).permit(:title, :description, :deadline, :parent, :access,
+                                                          :client_id, :reminder_frequency, :gather_task, :sow, :pivotal_tracker_name, :pivotal_tracker_url, agencies_opportunities: {})
+      up_task_params[:reminder_frequency] =
+        up_task_params[:reminder_frequency].blank? ? nil : MultiTaskReminderFrequency.find(up_task_params[:reminder_frequency])
       up_task_params[:client] = up_task_params[:client_id].blank? ? nil : ClientsReport.find(up_task_params[:client_id])
       up_task_params[:parent] = up_task_params[:parent].blank? ? nil : MultiTask.find(up_task_params[:parent])
       up_task_params

@@ -5,6 +5,9 @@
     <% @scrape_task.table_locations.each do |t| %>
       <%= f.check_box "table_locations[#{t.host_id}_#{t.schema_id}_#{t.sql_table_id}]", class: 'form-check-input', checked: true  %>
       <%= f.label "table_locations[#{t.host_id}_#{t.schema_id}_#{t.sql_table_id}]", t.full_name, class: 'form-check-label' %>
+      <% unless t.sql_table.presence %>
+        <span class="text-danger font-weight-bold"> - renamed or deleted!</span>
+      <% end %>
       <br/>
     <% end %>
   </div>
