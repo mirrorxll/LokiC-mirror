@@ -21,11 +21,11 @@ class SchemasTablesTask
         SqlTable.find_or_create_by!(schema: schema, name: table_row.values.first).touch
       end
 
-      schema.sql_tables.reload.where('DATE(updated_at) < CURRENT_DATE()').destroy_all
+      schema.sql_tables.reload.where('DATE(updated_at) < CURRENT_DATE()').update_all(presence: false)
       schema.touch
     end
 
-    host.schemas.reload.where('DATE(updated_at) < CURRENT_DATE()').destroy_all
+    host.schemas.reload.where('DATE(updated_at) < CURRENT_DATE()').update_all(presence: false)
 
     conn.close
   end
