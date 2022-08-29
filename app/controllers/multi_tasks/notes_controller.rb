@@ -8,7 +8,7 @@ module MultiTasks
     def new; end
 
     def create
-      @note = MultiTaskNote.new(multi_task: @multi_task, creator: current_account, body: note_params[:body])
+      @note = MultiTaskNote.new(multi_task: @multi_task, creator: @current_account, body: note_params[:body])
       @note.save!
     end
 
@@ -23,7 +23,7 @@ module MultiTasks
     private
 
     def find_note
-      @note = MultiTaskNote.find_by(multi_task: @multi_task, creator: current_account)
+      @note = MultiTaskNote.find_by(multi_task: @multi_task, creator: @current_account)
     end
 
     def find_task

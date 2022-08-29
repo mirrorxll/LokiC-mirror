@@ -11,7 +11,7 @@ module StoryTypes
 
     def create
       @feedback = @feedback_collection.build(editors_feedback_params)
-      @feedback.editor = current_account
+      @feedback.editor =@current_account
       @feedback.approvable = params[:commit].eql?('approve!')
 
       if @feedback.save
@@ -59,7 +59,7 @@ module StoryTypes
           end
         message += "Approved by *#{editors}*. #{scheduling}."
       else
-        message += "You received the *editors' feedback* by *#{current_account.name}*. "\
+        message += "You received the *editors' feedback* by *#@current_account.name}*. "\
                    "<#{story_type_fact_checking_doc_url(@story_type, @story_type.fact_checking_doc)}"\
                    '#editors_feedback|Check it>.'
       end

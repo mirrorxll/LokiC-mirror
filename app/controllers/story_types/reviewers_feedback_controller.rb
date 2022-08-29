@@ -11,7 +11,7 @@ module StoryTypes
 
     def create
       @feedback = @feedback_collection.build(reviewers_feedback_params)
-      @feedback.reviewer = current_account
+      @feedback.reviewer =@current_account
       @feedback.approvable = params[:commit].eql?('approve!')
 
       if @feedback.save
@@ -56,9 +56,9 @@ module StoryTypes
                                 "#{@feedback.body.present? ? "*Reviewer's Note*: #{note}" : ''}"
         ::SlackNotificationJob.perform_async(fcd_channel, message_to_fc_channel)
 
-        message_to_dev += "Approved by *#{current_account.name}* and sent to *#{fcd_channel}* channel"
+        message_to_dev += "Approved by *#@current_account.name}* and sent to *#{fcd_channel}* channel"
       else
-        message_to_dev += "You received the *reviewers' feedback* by *#{current_account.name}*. "\
+        message_to_dev += "You received the *reviewers' feedback* by *#@current_account.name}*. "\
                          "<#{story_type_fact_checking_doc_url(@story_type, @story_type.fact_checking_doc)}"\
                          '#reviewers_feedback|Check it>.'
       end

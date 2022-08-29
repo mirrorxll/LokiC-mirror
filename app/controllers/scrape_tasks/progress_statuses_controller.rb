@@ -7,7 +7,7 @@ module ScrapeTasks
 
     def update
       @scrape_task.status_comment.update!(body: params[:reasons]) if params[:reasons]
-      @scrape_task.update!(status: @status, current_account: current_account)
+      @scrape_task.update!(status: @status, current_account: @current_account)
     end
 
     private

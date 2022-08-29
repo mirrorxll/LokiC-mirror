@@ -16,7 +16,7 @@ module FactoidTypes
     def create
       @iteration = @factoid_type.iterations.create!(iteration_params)
 
-      @factoid_type.update!(current_iteration: @iteration, current_account: current_account)
+      @factoid_type.update!(current_iteration: @iteration, current_account: @current_account)
       @factoid_type.staging_table&.default_iter_id
 
       redirect_to @factoid_type
@@ -27,7 +27,7 @@ module FactoidTypes
     end
 
     def apply
-      @factoid_type.update!(current_iteration: @iteration, current_account: current_account)
+      @factoid_type.update!(current_iteration: @iteration, current_account:@current_account)
       @factoid_type.staging_table&.default_iter_id
 
       redirect_to @factoid_type
@@ -37,14 +37,14 @@ module FactoidTypes
       staging_table_action { @staging_table.purge_current_iteration }
 
       if flash.now[:error].nil?
-        @story_type.update!(export_configurations_created: nil, current_account: current_account)
+        @story_type.update!(export_configurations_created: nil, current_account:@current_account)
         @iteration.stories.destroy_all
         @iteration.auto_feedback.destroy_all
 
         @iteration.update!(
           population: nil, samples: nil,
           creation: nil, schedule: nil, export: nil,
-          current_account: current_account
+          current_account:@current_account
         )
       end
 
@@ -66,7 +66,7 @@ module FactoidTypes
 
       {
         name: permitted[:name],
-        current_account: current_account
+        current_account:@current_account
       }
     end
   end

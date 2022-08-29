@@ -12,7 +12,7 @@ module MultiTasks
 
         unless params[:team_work].nil?
           MultiTaskTeamWork.find_or_create_by(multi_task: @multi_task)
-                      .update(creator: current_account, sum: team_work_params[:sum].to_f.round(2), hours: team_work_params[:type].eql?('hours') ? true : false)
+                      .update(creator: @current_account, sum: team_work_params[:sum].to_f.round(2), hours: team_work_params[:type].eql?('hours') ? true : false)
         end
         @multi_task.update(done_at: Time.now, status: @status) if @multi_task.done_by_all_assignments?
       else
@@ -33,7 +33,7 @@ module MultiTasks
     end
 
     def find_assignment
-      @assignment = MultiTaskAssignment.find_by(multi_task: @multi_task, account: current_account)
+      @assignment = MultiTaskAssignment.find_by(multi_task: @multi_task, account: @current_account)
     end
 
     def team_work_params
@@ -52,7 +52,7 @@ module MultiTasks
       @comment = @multi_task.comments.build(
         subtype: subtype,
         body: body,
-        commentator: current_account
+        commentator:@current_account
       )
       @comment.save!
     end
@@ -64,7 +64,7 @@ module MultiTasks
 
         if @status.name.eql?('done') && !@multi_task.done_by_all_assignments?
           message = "*<#{multi_task_url(@multi_task)}| TASK ##{@multi_task.id}> | "\
-                    "#{current_account.name} set status #{@status.name}*. To change the status of task to done all executors must change the status.\n>#{@multi_task.title}"
+                    "#@current_account.name} set status #{@status.name}*. To change the status of task to done all executors must change the status.\n>#{@multi_task.title}"
         else
           message = "*<#{multi_task_url(@multi_task)}| TASK ##{@multi_task.id}> | "\
                     "Status changed to #{@status.name}.*\n>#{@multi_task.title}"
@@ -81,9 +81,9 @@ module MultiTasks
 
       team_work = MultiTaskTeamWork.find_by(multi_task: @multi_task)
       if team_work.nil?
-        MultiTaskTeamWork.create!(multi_task: @multi_task, creator: current_account, sum: team_work_params[:sum].to_f.round(2), hours: team_work_params[:type].eql?('hours') ? true : false)
+        MultiTaskTeamWork.create!(multi_task: @multi_task, creator:@current_account, sum: team_work_params[:sum].to_f.round(2), hours: team_work_params[:type].eql?('hours') ? true : false)
       else
-        team_work.update!(creator: current_account, sum: team_work_params[:sum].to_f.round(2), hours: team_work_params[:type].eql?('hours') ? true : false)
+        team_work.update!(creator:@current_account, sum: team_work_params[:sum].to_f.round(2), hours: team_work_params[:type].eql?('hours') ? true : false)
       end
     end
     end

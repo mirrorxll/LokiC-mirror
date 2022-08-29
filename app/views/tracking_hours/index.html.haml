@@ -1,6 +1,6 @@
 .row
   .col-2
-    %div{ id: "total_hours", developer_id: current_account.id, week_id: @week.id }
+    %div{ id: "total_hours", developer_id: @current_account.id, week_id: @week.id }
       -unless @rows_reports.empty?
         =render 'total_hours', rows_reports: @rows_reports
   .col-8
@@ -9,14 +9,14 @@
         .nav-item
           -if week.id == request[:week].to_i || (request[:week].nil? && week.begin == Date.today.beginning_of_week)
             .nav-link.active
-              =link_to week.to_text, tracking_hours_path(week: week, developer: current_account.id)
+              =link_to week.to_text, tracking_hours_path(week: week, developer: @current_account.id)
           -else
             .nav-link
-              =link_to week.to_text, tracking_hours_path(week: week, developer: current_account.id)
+              =link_to week.to_text, tracking_hours_path(week: week, developer: @current_account.id)
   .col-2.mt-1
     =button_to('Import data', properties_tracking_hours_path(week: request.query_parameters[:week]), class: "btn btn-sm btn-outline-dark", remote: true, id: 'import_data')
 
-%div{ id: "report_tracking_hour", developer_id: current_account.id, week_id: @week.id }
+%div{ id: "report_tracking_hour", developer_id: @current_account.id, week_id: @week.id }
   =render 'tracking_hours/table', rows_reports: @rows_reports
 #forms.small
   =render 'tracking_hours/form', week: @week
