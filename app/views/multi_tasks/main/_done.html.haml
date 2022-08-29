@@ -1,6 +1,6 @@
 -if task.status.name.eql?('done')
   .row.mb-2
-    .col-3.font-weight-bold
-      done:
-    .col-9
+    .col-3.pr-0.font-weight-bold.text-right
+      DONE:
+    .col-8
       =task.done_at.strftime('%Y-%m-%d')

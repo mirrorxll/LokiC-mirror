@@ -77,8 +77,10 @@
         =render 'done', task: @multi_task
       -agency_opportunity_revenue_types = @multi_task.agency_opportunity_revenue_types
       -unless agency_opportunity_revenue_types.blank?
-        .row.col.font-weight-bold.mb-2
-          AGENCY/OPPORTUNITY:
-        -agency_opportunity_revenue_types.each do |row|
-          .row.col.mb-2
-            =row.agency.name + ' / ' + row.opportunity.name + ' - ' + MiniLokiC::Formatize::Percents.format_percentage(row.percents) + '%'
+        .row.mb-2
+          .col-3.pr-0.font-weight-bold.text-right
+            AGENCY/OPPORTUNITY:
+          .col-8
+            -agency_opportunity_revenue_types.each do |row|
+              =row.agency.name + ' / ' + row.opportunity.name + ' - ' + MiniLokiC::Formatize::Percents.format_percentage(row.percents) + '%'
+              %br/
