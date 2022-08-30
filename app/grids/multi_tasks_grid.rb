@@ -100,7 +100,7 @@ class MultiTasksGrid
       body = ActionView::Base.full_sanitizer.sanitize(last_comment.body)
       attr = { 'data-toggle' => 'tooltip',
                'data-placement' => 'right',
-               title: truncate("#{last_comment.commentator.name}: #{body}", length: 150) }
+               title: truncate("#{last_comment.commentator&.name}: #{body}", length: 150) }
       content_tag(:div, last_comment.created_at.strftime('%y-%m-%d'), attr)
     end
   end
