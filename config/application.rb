@@ -43,5 +43,7 @@ module LokiC
     config.autoload_paths += %W[#{config.root}/lib/]
 
     config.active_record.yaml_column_permitted_classes = [Symbol, Array, Hash, HashWithIndifferentAccess]
+
+    config.active_record.default_timezone = :local
   end
 end
