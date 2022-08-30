@@ -13,11 +13,12 @@ module WorkRequests
 
     def index
       @tab_title = 'LokiC :: WorkRequests'
+      @grid.scope { |sc| sc.page(params[:page]).per(30) }
     end
 
     def show
       @tab_title = "LokiC :: WorkRequest ##{@work_request.id} <#{@work_request.project_order_name.body}>"
-      @delete_status = Status.find_by(name: 'deleted')
+      @delete_status = Status.find_by(name: 'archived')
     end
 
     def create
@@ -40,9 +41,9 @@ module WorkRequests
       statuses = Status.work_request_statuses(created: true)
       @lists = HashWithIndifferentAccess.new
 
-      @lists['created'] = { requester: current_account.id, status: statuses }  if @work_requests_permissions['grid']['created']
-      @lists['all'] = { status: statuses }                                     if @work_requests_permissions['grid']['all']
-      @lists['archived'] = { status: Status.find_by(name: 'archived') }        if @work_requests_permissions['grid']['archived']
+      @lists['created'] = { requester: current_account, status: statuses } if @work_requests_permissions['grid']['created']
+      @lists['all'] = { status: statuses } if @work_requests_permissions['grid']['all']
+      @lists['archived'] = { status: Status.find_by(name: 'archived') } if @work_requests_permissions['grid']['archived']
     end
 
     def current_list
@@ -53,9 +54,9 @@ module WorkRequests
     def generate_grid
       return unless @current_list
 
-      @grid = WorkRequestsGrid.new(params[:work_requests_grid] || @lists[@current_list])
-
-      @grid.scope { |sc| sc.page(params[:page]).per(30) }
+      @grid = WorkRequestsGrid.new(params[:work_requests_grid]) do |scope|
+        scope.where(@lists[@current_list])
+      end
     end
 
     def access_to_show

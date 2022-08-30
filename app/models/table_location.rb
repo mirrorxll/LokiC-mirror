@@ -8,6 +8,8 @@ class TableLocation < ApplicationRecord
   belongs_to :schema
   belongs_to :sql_table, optional: true
 
+  scope :existing, -> { joins(:sql_table).where('sql_tables.presence': true) }
+
   def full_name
     "#{host.name}.#{schema.name}.#{sql_table.name}"
   end
@@ -24,5 +26,3 @@ class TableLocation < ApplicationRecord
     sql_table.name
   end
 end
-
-DataSet.all.each { |ds| ds.general_comment.update(body: ds.comment) }

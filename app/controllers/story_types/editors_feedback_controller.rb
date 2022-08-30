@@ -11,7 +11,7 @@ module StoryTypes
 
     def create
       @feedback = @feedback_collection.build(editors_feedback_params)
-      @feedback.editor = current_account
+      @feedback.editor =current_account
       @feedback.approvable = params[:commit].eql?('approve!')
 
       if @feedback.save

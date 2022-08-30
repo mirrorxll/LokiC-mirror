@@ -2,7 +2,8 @@
   %button#scrapeTaskStatusButton.dropdown-toggle.border.rounded{ class: "bg-#{status_color(@scrape_task.status.name)}", "aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :type => "button"}
     =@scrape_task.status.name
   .small.dropdown-menu.manual-dropdown-menu.dropdown-menu-right{"aria-labelledby" => "scrapeTaskStatusButton"}
-    -Status.scrape_task_statuses(done: current_account.scrape_manager?, archived: current_account.scrape_manager?).each do |s|
+    -manager = current_account.manager? || current_account.scrape_manager?
+    -Status.scrape_task_statuses(done: manager, archived: manager).each do |s|
       .dropdown-item.small{status_id: s.id, onclick: 'changeScrapeStatus(this);'}
         =s.name
 

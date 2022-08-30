@@ -1,8 +1,8 @@
 =form_with(url: multi_tasks_path, id: 'newMultiTaskParent',  html: { onkeypress: "return event.keyCode !== 13;" }, class: 'p-3', subtaskCount: 0 ) do |form|
-  =hidden_field_tag 'task_parent[work_request]', @work_request.id
+  =hidden_field_tag 'multi_task_parent[work_request]', @work_request.id
   .row.small.col
     .form-group
-      =form.text_field 'task_parent[title]', placeholder: 'title', id: 'newTaskNameParent', class: 'form-control form-control-sm', required: true, maxlength: 500, value: @work_request.project_order_name.nil? ? '' : @work_request.project_order_name.body
+      =form.text_field 'multi_task_parent[title]', placeholder: 'title', id: 'newTaskNameParent', class: 'form-control form-control-sm', required: true, maxlength: 500, value: @work_request.project_order_name.nil? ? '' : @work_request.project_order_name.body
       #newTaskNameParentFeedback.text-danger.text-center.d-none
         MultiTask with this title already created by you. Let's use something else
   .row.small.font-weight-bold
@@ -12,7 +12,7 @@
           assignment to:
         .col
           .row.mt-1.small
-            =form.collection_select 'task_parent[assignment_to]', Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }, style: "width:130px"
+            =form.collection_select 'multi_task_parent[assignment_to]', Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }, style: "width:130px"
       %hr
       .row.justify-content-between.mt-1
         .col
@@ -32,12 +32,12 @@
             .col
               reminder frequency:
             .col.text-left.small
-              =form.collection_select 'task_parent[reminder_frequency]', sorted_reminder_frequencies, :id, :name, { prompt: '' }
+              =form.collection_select 'multi_task_parent[reminder_frequency]', sorted_reminder_frequencies, :id, :name, { prompt: '' }
           .row.mb-2
             .col
               client:
             .col.text-left.small
-              =form.collection_select 'task_parent[client_id]', ClientsReport.all.order(:name), :id, :name, { prompt: '' }, style: "width:150px"
+              =form.collection_select 'multi_task_parent[client_id]', ClientsReport.all.order(:name), :id, :name, { prompt: '' }, style: "width:150px"
           .row.mb-2.font-weight-normal
             .col
               =link_to('[ checklists ]', nil, onclick: "showChecklistsParent(event)")
@@ -47,16 +47,16 @@
             .col.text-right
               deadline:
             .col.text-left.small
-              =form.date_field 'task_parent[deadline]', type: :datetime
+              =form.date_field 'multi_task_parent[deadline]', type: :datetime
           :javascript
-            $('input[id="task_parent[deadline]"]').datepicker({
+            $('input[id="multi_task_parent[deadline]"]').datepicker({
               format: 'yyyy-mm-dd'
             });
           .row.mb-2
             .col.text-right
               access to task and its subtasks:
             .col.text-left
-              =form.check_box 'task_parent[access]', class: 'form-check-input ml-0 mt-2', checked: true
+              =form.check_box 'multi_task_parent[access]', class: 'form-check-input ml-0 mt-2', checked: true
       %hr
       .row.font-weight-bold
         .col
@@ -64,17 +64,17 @@
             .col-3
               sow:
             .col.small
-              =form.text_field 'task_parent[sow]', placeholder: 'link to google sheet', maxlength: 255, class: 'w-100', value: @work_request.sow.nil? ? '' : @work_request.sow
+              =form.text_field 'multi_task_parent[sow]', placeholder: 'link to google sheet', maxlength: 255, class: 'w-100', value: @work_request.sow.nil? ? '' : @work_request.sow
           .row.mb-2
             .col-3
               pivotal tracker:
             .col.small
-              =form.text_field 'task_parent[pivotal_tracker_name]', placeholder: 'name', maxlength: 255, class: 'w-100'
+              =form.text_field 'multi_task_parent[pivotal_tracker_name]', placeholder: 'name', maxlength: 255, class: 'w-100'
           .row.mb-2
             .col-3
               pivotal tracker link:
             .col.small
-              =form.text_field 'task_parent[pivotal_tracker_url]', placeholder: 'link', maxlength: 255, class: 'w-100'
+              =form.text_field 'multi_task_parent[pivotal_tracker_url]', placeholder: 'link', maxlength: 255, class: 'w-100'
   %hr
   .row.small
     .col.font-weight-normal.mb-2
@@ -99,14 +99,14 @@
             .col#forms_checklists_parent
   .row.small.mt-2
     .form-group
-      =form.text_area 'task_parent[description]', id: 'task_description'
+      =form.text_area 'multi_task_parent[description]', id: 'task_description'
 
   #formsSubtasks.accordion.justify-content-center
 
   .row.col.small.font-weight-bold.justify-content-center.mb-2.mt-2
     =link_to '[ add subtask ]', nil, onclick: 'addSubtask(event);'
 
-    =form.submit :create, id: 'hiddenCreateMultiTaskButton', class: 'btn btn-sm btn-outline-success'
+    =form.submit :create, id: 'hiddenCreateMultiTaskButton', class: 'd-none'
 
 =render 'multi_tasks/agencies_opportunities/form', task: 'task_parent'
 
@@ -144,7 +144,7 @@
 
     $('#notificationsToParentForm').append(
         `<div id="assistant_${hex}" class="row small mt-1 mb-1" >
-           <select id="task_parent[notification_to][]" style = "width:130px" class="mr-1" name="task_parent[notification_to][]">${buildSelect(accounts)}</select>
+           <select id="multi_task_parent[notification_to][]" style = "width:130px" class="mr-1" name="multi_task_parent[notification_to][]">${buildSelect(accounts)}</select>
            <div class="ml-1" id="rm_assistant_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
          </div>`
     );
@@ -155,7 +155,7 @@
 
     $('#assistantsParentForm').append(
         `<div id="assistant_${hex}" class="row small mt-1 mb-1" >
-           <select id="task_parent[assistants][]" style = "width:130px" class="mr-1" name="task_parent[assistants][]">${buildSelect(accounts)}</select>
+           <select id="multi_task_parent[assistants][]" style = "width:130px" class="mr-1" name="multi_task_parent[assistants][]">${buildSelect(accounts)}</select>
            <div class="ml-1" id="rm_assistant_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
          </div>`
     );
@@ -216,7 +216,7 @@
     Rails.ajax({
       type: 'GET',
       dataType: 'json',
-      url: `/api/tasks/titles`,
+      url: `/api/multi_tasks/titles`,
       data: `creator_id=${current_account_id}`,
       success: (names) => {
         let nameInput = document.querySelector('#newTaskNameParent');
@@ -268,7 +268,7 @@
     Rails.ajax({
       type: 'GET',
       dataType: 'json',
-      url: `/api/tasks/titles`,
+      url: `/api/multi_tasks/titles`,
       data: `creator_id=${current_account_id}`,
       success: (names) => {
         let nameIsUniq = isUniq(nameInput.value, names);
@@ -292,7 +292,7 @@
     $('#forms_checklists_parent').append(
         `<div id="checklist_${hex}" class="row small justify-content-center mt-2">
            <div class="small mt-1 mr-2"><i class="fa fa-circle"></i></div>
-           <input id="task_parent[checklists][]" style='width: 90%' required=required maxlength="255" name="task_parent[checklists][]"></input>
+           <input id="multi_task_parent[checklists][]" style='width: 90%' required=required maxlength="255" name="multi_task_parent[checklists][]"></input>
            <div class="ml-2" id="rm_checklist_${hex}" onclick="removeDate(this)"><i class="fa fa-minus"></i></div>
          </div>`
     );

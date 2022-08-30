@@ -20,8 +20,9 @@ class ScrapeTasksGrid
   end
 
   filter(:data_set_location, :string, header: 'Data Location(RLIKE)') do |value, scope|
+    p '!' * 100, value
     location_ids = TableLocation.all.to_a.select do |tl|
-      tl.full_name[/#{Regexp.escape(value)}/]
+      p tl.full_name[/#{Regexp.escape(value)}/i]
     end.map(&:id)
 
     scope.includes(:table_locations).where(table_locations: { id: location_ids })
@@ -48,7 +49,7 @@ class ScrapeTasksGrid
     account_list.map { |a| [a.name, a.id] }
   end
 
-  accounts = Account.joins(:assigned_scrape_tasks).distinct
+  accounts = AccountRole.find_by(name: 'Scrape Developer').accounts
   filter(:scraper, :enum, multiple: true, select: accounts.map { |r| [r.name, r.id] }.sort)
 
   filter(:status, :enum, select: :statuses, multiple: true)

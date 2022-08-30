@@ -1,4 +1,4 @@
--if purge_export_availability && (current_account.manager? || current_account.hle_content_manager?)
+-if purge_export_availability && (current_account.manager? || current_account.content_manager?)
   =link_to('remove exported stories', '#', 'aria-controls' => 'remove_exported_stories_form',
                    'aria-expanded' => false, data: { toggle: "collapse", target: "#remove_exported_stories_form" },
                    type: "button", class: 'btn btn-sm btn-outline-danger')

@@ -17,8 +17,8 @@ module MultiTasks
 
     def grid
       grid_params =
-        if params[:task_tracking_hours_grid]
-          params.require(:task_tracking_hours_grid).permit!
+        if params[:multi_task_tracking_hours_grid]
+          params.require(:multi_task_tracking_hours_grid).permit!
         else
           {}
         end

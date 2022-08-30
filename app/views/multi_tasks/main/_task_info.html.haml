@@ -1,81 +1,86 @@
-#taskInfo.pb-1
-  .card.overflow-auto{style: 'height: 245px;'}
+#taskInfo.mb-2
+  .card
     .card-header.p-1
       .d-flex.justify-content-between.small
-        main info
+        MAIN INFO
+        -if current_account_permissions('multi_tasks', ['edit_form']) && @multi_task.creator?(current_account)
+          =link_to '[ edit task ]', edit_multi_task_path(@multi_task), remote: true
+
     .card-body.small
-      -if @multi_task.parent && current_account_permissions('multi_tasks', ['sub_tasks', 'show'])
+      -if @multi_task.parent && current_account_permissions('multi_tasks', %w[sub_tasks show])
         .row.mb-2
-          .col-3.font-weight-bold
-            main task:
-          .col-9
+          .col-3.pr-0.font-weight-bold.text-right
+            MAIN TASK:
+          .col-8
             =link_to title(@multi_task.parent.title), multi_task_path(@multi_task.parent), title: @multi_task.parent.title
       -if current_account_permissions('work_requests')
         -if @multi_task.work_request
           -work_request = @multi_task.work_request
           .row.mb-2
-            .col-3.font-weight-bold
-              w. request:
-            .col-9
+            .col-3.pr-0.font-weight-bold.text-right
+              W. REQUEST:
+            .col-8
               =link_to('click', work_request)
       -unless @multi_task.sow.blank?
         -sow = @multi_task.sow
         .row.mb-2
-          .col-3.font-weight-bold
-            sow:
-          .col-9
+          .col-3.pr-0.font-weight-bold.text-right
+            SOW:
+          .col-8
             =link_to('click', sow, target: :_blank)
       -pivotal_tracker_name = @multi_task.pivotal_tracker_name
       -pivotal_tracker_url = @multi_task.pivotal_tracker_url
       -if !pivotal_tracker_name.blank? || !pivotal_tracker_url.blank?
         .row.mb-2
-          .col-3.font-weight-bold
-            pt. tracker:
-          .col-9
+          .col-3.pr-0.font-weight-bold.text-right
+            PT. TRACKER:
+          .col-8
             -if pivotal_tracker_url.blank?
               =title(pivotal_tracker_name)
             -else
               =link_to("#{pivotal_tracker_name.blank? ? 'click' : title(pivotal_tracker_name)}", pivotal_tracker_url, target: :_blank)
       .row.mb-2
-        .col-3.font-weight-bold
-          client:
-        .col-9
+        .col-3.pr-0.font-weight-bold.text-right
+          CLIENT:
+        .col-8
           =@multi_task.client ? @multi_task.client.name : 'not set'
       .row.mb-2
-        .col-3.font-weight-bold
-          creator:
-        .col-9
+        .col-3.pr-0.font-weight-bold.text-right
+          CREATOR:
+        .col-8
           =@multi_task.creator.first_name + ' ' + @multi_task.creator.last_name
       .row.mb-2
-        .col-3.font-weight-bold
-          deadline:
-        .col-9
+        .col-3.pr-0.font-weight-bold.text-right
+          DEADLINE:
+        .col-8
           =@multi_task.deadline ? @multi_task.deadline : 'not set'
       .row.mb-2
-        .col-3.font-weight-bold
-          gather task:
-        .col-9
+        .col-3.pr-0.font-weight-bold.text-right
+          GATHER TASK:
+        .col-8
           -link = @multi_task.gather_task_link
           -if link
             =link_to(nil, link, target: '_blank')
           -else
             \---
       .row.mb-2
-        .col-3.font-weight-bold
-          reminder:
-        .col-9
+        .col-3.pr-0.font-weight-bold.text-right
+          REMINDER:
+        .col-8
           =@multi_task.reminder_frequency ? @multi_task.reminder_frequency.name : 'not set'
       .row.mb-2
-        .col-3.font-weight-bold
-          created at:
-        .col-9
+        .col-3.pr-0.font-weight-bold.text-right
+          CREATED AT:
+        .col-8
           =@multi_task.created_at.strftime('%F')
       #done
         =render 'done', task: @multi_task
       -agency_opportunity_revenue_types = @multi_task.agency_opportunity_revenue_types
       -unless agency_opportunity_revenue_types.blank?
-        .row.col.font-weight-bold.mb-2
-          agency / opportunity:
-        -agency_opportunity_revenue_types.each do |row|
-          .row.col.mb-2
-            =row.agency.name + ' / ' + row.opportunity.name + ' - ' + MiniLokiC::Formatize::Percents.format_percentage(row.percents) + '%'
+        .row.mb-2
+          .col-3.pr-0.font-weight-bold.text-right
+            AGENCY/OPPORTUNITY:
+          .col-8
+            -agency_opportunity_revenue_types.each do |row|
+              =row.agency.name + ' / ' + row.opportunity.name + ' - ' + MiniLokiC::Formatize::Percents.format_percentage(row.percents) + '%'
+              %br/

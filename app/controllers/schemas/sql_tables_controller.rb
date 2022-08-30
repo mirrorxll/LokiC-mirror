@@ -5,7 +5,7 @@ module Schemas
     before_action :find_schema, only: :index
 
     def index
-      render json: { tables: @schema.sql_tables.select(:id, :name) }
+      render json: { tables: @schema.sql_tables.existing.select(:id, :name) }
     end
 
     private

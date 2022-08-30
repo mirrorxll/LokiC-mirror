@@ -1,4 +1,4 @@
-=form_with(url: confirm_task_checklist_path(task_id: @multi_task, id: checklist.id), html: { onchange: "Rails.fire(this, 'submit'); removeDangerText();" }, method: :patch) do |form|
+=form_with(url: confirm_multi_task_checklist_path(multi_task_id: @multi_task, id: checklist.id), html: { onchange: "Rails.fire(this, 'submit'); removeDangerText();" }, method: :patch) do |form|
   =form.check_box :confirm, checked: checklist.confirmed
 
 :javascript

@@ -7,8 +7,8 @@ class FactoidRequestsGrid
   scope { FactoidRequest.order(id: :desc) }
 
   # Filter
-  filter(:requester_id)
-  filter(:status)
+  filter(:requester)
+  filter(:status, multiple: true)
 
   # Columns
   column(:id, order: false)

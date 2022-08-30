@@ -5,21 +5,22 @@ module FactoidTypes
     before_action :find_factoid_type,          except: %i[index create]
     before_action :set_factoid_type_iteration, except: %i[index create]
 
-    before_action :grid_lists,     only: %i[index show]
-    before_action :current_list,   only: :index
-    before_action :generate_grid,  only: :index
-    before_action :access_to_show, only: :show
+    before_action :grid_lists,         only: %i[index show]
+    before_action :current_list,       only: :index
+    before_action :generate_grid,      only: :index
+    before_action :access_to_show,     only: :show
+    before_action :content_developers, only: %i[show update canceling_edit]
 
     def index
       @tab_title = 'LokiC :: FactoidTypes'
 
       respond_to do |f|
         f.html do
-          @grid.scope { |scope| scope.page(params[:page]) }
+          @grid.scope { |scope| scope.page(params[:page]).per(30) }
         end
         f.csv do
           send_data @grid.to_csv, type: 'text/csv', disposition: 'inline',
-                    filename: "lokiC_factoid_types_#{Time.now}.csv"
+                                  filename: "lokiC_factoid_types_#{Time.now}.csv"
         end
       end
     end
@@ -43,13 +44,13 @@ module FactoidTypes
     private
 
     def grid_lists
-      statuses = Status.hle_statuses(created: true)
+      statuses = Status.hle_statuses(created: true, migrated: true, inactive: true)
       @lists = HashWithIndifferentAccess.new
 
       @lists['assigned'] = { developer: current_account, status: statuses } if @factoid_types_permissions['grid']['assigned']
-      @lists['created'] = { editor: current_account, status: statuses }     if @factoid_types_permissions['grid']['created']
-      @lists['all'] = { status: statuses }                                  if @factoid_types_permissions['grid']['all']
-      @lists['archived'] = { status: Status.find_by(name: 'archived') }     if @factoid_types_permissions['grid']['archived']
+      @lists['created'] = { editor: current_account, status: statuses } if @factoid_types_permissions['grid']['created']
+      @lists['all'] = { status: statuses } if @factoid_types_permissions['grid']['all']
+      @lists['archived'] = { status: Status.find_by(name: 'archived') } if @factoid_types_permissions['grid']['archived']
     end
 
     def current_list
@@ -60,10 +61,12 @@ module FactoidTypes
     def generate_grid
       return unless @current_list
 
-      grid_params = request.parameters[:factoid_types_grid] || {}
-      grid_params.merge!({ current_account: current_account, env: env })
+      @grid = FactoidTypesGrid.new(params[:factoid_types_grid]) do |scope|
+        scope.where(@lists[@current_list])
+      end
 
-      @grid = FactoidTypesGrid.new(grid_params) { |scope| scope.where(@lists[@current_list]) }
+      @grid.current_account = current_account
+      @grid.env = env
     end
 
     def find_data_set
@@ -73,12 +76,17 @@ module FactoidTypes
     def access_to_show
       archived = Status.find_by(name: 'archived')
 
-      return if @lists['yours'] && @factoid_type.account.eql?(current_account)
+      return if @lists['assigned'] && @factoid_type.developer.eql?(current_account)
+      return if @lists['created'] && @factoid_type.editor.eql?(current_account)
       return if @lists['all'] && @factoid_type.status != archived
       return if @lists['archived'] && @factoid_type.status.eql?(archived)
 
       flash[:error] = { factoid_type: :unauthorized }
       redirect_back fallback_location: root_path
+    end
+
+    def content_developers
+      @content_developers = AccountRole.find_by(name: 'Content Developer').accounts
     end
 
     def env

@@ -12,7 +12,7 @@ module TasksHelper
   end
 
   def sorted_reminder_frequencies
-    TaskReminderFrequency.all.sort_by do |frequency|
+    MultiTaskReminderFrequency.all.sort_by do |frequency|
       case frequency.name
       when 'each Monday' then 2
       when 'each Tuesday' then 3
@@ -33,7 +33,7 @@ module TasksHelper
 
 
   def status_for_user(task)
-    assignment = TaskAssignment.find_by(multi_task: task, account: current_account)
+    assignment = MultiTaskAssignment.find_by(multi_task: task, account: current_account)
     if !assignment.nil? && assignment.done
       Status.find_by(name: 'done')
     else

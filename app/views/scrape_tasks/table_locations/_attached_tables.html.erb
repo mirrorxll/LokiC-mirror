@@ -1,0 +1,10 @@
+<div class="col">
+  <% @scrape_task.table_locations.each do |tl| %>
+    <div class="text-truncate">
+      <%= tl.full_name %>
+      <% unless tl.sql_table.presence %>
+        <span class="text-danger font-weight-bold"> - renamed or deleted!</span>
+      <% end %>
+    </div>
+  <% end %>
+</div>

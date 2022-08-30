@@ -62,7 +62,7 @@
                   Rails.ajax({
                     type: "PATCH",
                     dataType: 'json',
-                    url: `/api/tasks/${task_id}/statuses/${status_id}`,
+                    url: `/api/multi_tasks/${task_id}/statuses/${status_id}`,
                     success: function (data) {
                       spinner.classList.add('d-none');
                       if(data['success']) {

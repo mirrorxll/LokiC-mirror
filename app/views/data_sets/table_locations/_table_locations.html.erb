@@ -47,16 +47,8 @@
       </script>
     <% end %>
 
-    <div class="pl-3">
-      <% if @data_set.table_locations.present? %>
-        <%=link_to('[ show data views ]', '#', class: 'p-0 btn btn-sm btn-link table-locations-control', "data-target" => "#dataSamplesModal", "data-toggle" => "modal") %>
-      <% end %>
-
-      <% @data_set.table_locations.each do |tl| %>
-        <div class="text-truncate">
-          <%= tl.full_name %>
-        </div>
-      <% end %>
+    <div id="data_set_attached_tables">
+      <%= render 'data_sets/table_locations/attached_tables' %>
     </div>
   </div>
 <% end %>

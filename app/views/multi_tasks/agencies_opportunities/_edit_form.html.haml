@@ -4,19 +4,19 @@
     .col-3
       =form.collection_select :agency_id, MainAgency.all.sort_by(&:name), :id, :name,
                                      { selected: row.agency.id },
-                                     { id: "task[agencies_opportunities[#{u_id}[agency_id]]]", name: "task[agencies_opportunities[#{u_id}[agency_id]]]", class: 'w-100 task_agencies_select', required: true }
+                                     { id: "multi_task[agencies_opportunities[#{u_id}[agency_id]]]", name: "multi_task[agencies_opportunities[#{u_id}[agency_id]]]", class: 'w-100 task_agencies_select', required: true }
     .col-3
       =form.collection_select :opportunity_id, row.agency.opportunities.sort_by(&:name), :id, :name,
                                      { selected: row.opportunity.id },
-                                     { id: "task[agencies_opportunities[#{u_id}[opportunity_id]]]", name: "task[agencies_opportunities[#{u_id}[opportunity_id]]]", class: 'w-100 task_opportunities_select', required: true }
+                                     { id: "multi_task[agencies_opportunities[#{u_id}[opportunity_id]]]", name: "multi_task[agencies_opportunities[#{u_id}[opportunity_id]]]", class: 'w-100 task_opportunities_select', required: true }
 
     .col-3
       =form.collection_select :revenue_type_id, row.opportunity.revenue_types.sort_by(&:name), :id, :name,
                                      { selected: row.revenue_type.id },
-                                     { id: "task[agencies_opportunities[#{u_id}[revenue_type_id]]]", name: "task[agencies_opportunities[#{u_id}[revenue_type_id]]]", class: 'w-100 task_revenue_type_select', required: true }
+                                     { id: "multi_task[agencies_opportunities[#{u_id}[revenue_type_id]]]", name: "multi_task[agencies_opportunities[#{u_id}[revenue_type_id]]]", class: 'w-100 task_revenue_type_select', required: true }
 
-    =form.number_field :percents, value: MiniLokiC::Formatize::Percents.format_percentage(row.percents), min: 1, max: 100, id: "task[agencies_opportunities[#{u_id}[percents]]]",
-                                       name: "task[agencies_opportunities[#{u_id}[percents]]]", class: 'small task_percent_select agencies_percents', required: true, placeholder: 'percents'
+    =form.number_field :percents, value: MiniLokiC::Formatize::Percents.format_percentage(row.percents), min: 1, max: 100, id: "multi_task[agencies_opportunities[#{u_id}[percents]]]",
+                                       name: "multi_task[agencies_opportunities[#{u_id}[percents]]]", class: 'small task_percent_select agencies_percents', required: true, placeholder: 'percents'
     .col-1.my-auto.remove_x
       %strong.fa.fa-minus.remove_x
 
