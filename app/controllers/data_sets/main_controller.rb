@@ -71,27 +71,14 @@ module DataSets
     private
 
     def grid_lists
-      status_ids = Status.data_set_statuses.ids.map(&:to_s)
+      statuses = Status.data_set_statuses
       @lists = HashWithIndifferentAccess.new
 
-      if @data_sets_permissions['grid']['assigned']
-        @lists['assigned'] =
-          { sheriff: @current_account.id.to_s, status: status_ids }
-      end
-      if @data_sets_permissions['grid']['responsible']
-        @lists['responsible'] = { responsible_editor: @current_account.id.to_s, status: status_ids }
-      end
-      if @data_sets_permissions['grid']['created']
-        @lists['created'] =
-          { creator: @current_account.id.to_s, status: status_ids }
-      end
-      if @data_sets_permissions['grid']['all']
-        @lists['all'] = { status: status_ids }
-      end
-      if @data_sets_permissions['grid']['archived']
-        @lists['archived'] =
-          { status: Status.find_by(name: 'archived').id.to_s }
-      end
+      @lists['assigned'] = { sheriff: @current_account, status: statuses } if @data_sets_permissions['grid']['assigned']
+      @lists['responsible'] = { responsible_editor: @current_account, status: statuses } if @data_sets_permissions['grid']['responsible']
+      @lists['created'] = { account: @current_account, status: statuses } if @data_sets_permissions['grid']['created']
+      @lists['all'] = { status: statuses } if @data_sets_permissions['grid']['all']
+      @lists['archived'] = { status: Status.find_by(name: 'archived') } if @data_sets_permissions['grid']['archived']
     end
 
     def current_list
@@ -102,7 +89,9 @@ module DataSets
     def generate_grid
       return unless @current_list
 
-      @grid = DataSetsGrid.new(params[:data_sets_grid] || @lists[@current_list])
+      @grid = DataSetsGrid.new(params[:data_sets_grid]) do |scope|
+        scope.where(@lists[@current_list])
+      end
     end
 
     def access_to_show

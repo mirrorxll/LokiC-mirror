@@ -16,7 +16,7 @@ module StoryTypes
 
       respond_to do |f|
         f.html do
-          @grid.scope { |scope| scope.page(params[:page]) }
+          @grid.scope { |scope| scope.page(params[:page]).per(30) }
         end
         f.csv do
           send_data @grid.to_csv, type: 'text/csv', disposition: 'inline',
@@ -46,22 +46,13 @@ module StoryTypes
     private
 
     def grid_lists
-      status_ids = Status.hle_statuses(created: true, migrated: true, inactive: true).ids.map(&:to_s)
+      statuses = Status.hle_statuses(created: true, migrated: true, inactive: true)
       @lists = HashWithIndifferentAccess.new
 
-      if @story_types_permissions['grid']['assigned']
-        @lists['assigned'] = { developer: @current_account.id.to_s, status: status_ids }
-      end
-      if @story_types_permissions['grid']['created']
-        @lists['created'] = { editor: @current_account.id.to_s, status: status_ids }
-      end
-      if @story_types_permissions['grid']['all']
-        @lists['all'] = { status: status_ids }
-      end
-      if @story_types_permissions['grid']['archived']
-        @lists['archived'] =
-          { status: Status.find_by(name: 'archived').id.to_s }
-      end
+      @lists['assigned'] = { developer: @current_account, status: statuses } if @story_types_permissions['grid']['assigned']
+      @lists['created'] = { editor: @current_account, status: statuses } if @story_types_permissions['grid']['created']
+      @lists['all'] = { status: statuses } if @story_types_permissions['grid']['all']
+      @lists['archived'] = { status: Status.find_by(name: 'archived') } if @story_types_permissions['grid']['archived']
     end
 
     def current_list
@@ -72,10 +63,12 @@ module StoryTypes
     def generate_grid
       return unless @current_list
 
-      grid_params = request.parameters[:story_types_grid] || {}
-      grid_params.merge!({ current_account: @current_account, env: env })
+      @grid = StoryTypesGrid.new(params[:story_types_grid]) do |scope|
+        scope.where(@lists[@current_list])
+      end
 
-      @grid = StoryTypesGrid.new(grid_params) { |scope| scope.where(@lists[@current_list]) }
+      @grid.current_account = @current_account
+      @grid.env = env
     end
 
     def find_data_set

@@ -14,6 +14,7 @@ module ScrapeTasks
 
     def index
       @tab_title = 'LokiC :: ScrapeTasks'
+      @grid.scope { |sc| sc.page(params[:page]).per(30) }
     end
 
     def show
@@ -43,25 +44,13 @@ module ScrapeTasks
     private
 
     def grid_lists
-      status_ids = Status.scrape_task_statuses(created: true, done: true).ids.map(&:to_s)
+      statuses = Status.scrape_task_statuses(created: true, done: true)
       @lists = HashWithIndifferentAccess.new
 
-      if @scrape_tasks_permissions['grid']['assigned']
-        @lists['assigned'] =
-          { scraper: @current_account.id.to_s, status: status_ids }
-      end
-      if @scrape_tasks_permissions['grid']['created']
-        @lists['created'] =
-          { creator: @current_account.id.to_s, status: status_ids }
-      end
-      if @scrape_tasks_permissions['grid']['all']
-        @lists['all'] =
-          { status: status_ids }
-      end
-      if @scrape_tasks_permissions['grid']['archived']
-        @lists['archived'] =
-          { status: Status.find_by(name: 'archived').id.to_s }
-      end
+      @lists['assigned'] = { scraper: @current_account, status: statuses } if @scrape_tasks_permissions['grid']['assigned']
+      @lists['created'] = { creator: @current_account, status: statuses } if @scrape_tasks_permissions['grid']['created']
+      @lists['all'] = { status: statuses } if @scrape_tasks_permissions['grid']['all']
+      @lists['archived'] = { status: Status.find_by(name: 'archived') } if @scrape_tasks_permissions['grid']['archived']
     end
 
     def current_list
@@ -72,11 +61,12 @@ module ScrapeTasks
     def generate_grid
       return unless @current_list
 
-      @grid = ScrapeTasksGrid.new(params[:scrape_tasks_grid] || @lists[@current_list])
+      @grid = ScrapeTasksGrid.new(params[:scrape_tasks_grid]) do |scope|
+        scope.where(@lists[@current_list])
+      end
+
       @grid.current_account = @current_account
       @grid.current_list = @current_list
-
-      @grid.scope { |sc| sc.page(params[:page]).per(30) }
     end
 
     def access_to_show
