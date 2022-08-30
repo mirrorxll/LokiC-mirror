@@ -8,7 +8,7 @@
       .text-secondary.font-italic.small.mt-1.text-left
         =comment.created_at.strftime('%F %R %Z')
     .col-2
-      -if comment.subtype.eql?('user comment') && comment.commentator.eql?(@current_account)
+      -if comment.subtype.eql?('user comment') && comment.commentator.eql?(current_account)
         .dropdown
           %span.font-weight-bold{"data-toggle" => "dropdown", :type => "button"} ...
           %ul.dropdown-menu

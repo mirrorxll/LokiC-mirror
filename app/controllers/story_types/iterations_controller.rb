@@ -10,7 +10,7 @@ module StoryTypes
     def create
       @iteration = @story_type.iterations.create!(iteration_params)
 
-      @story_type.update!(current_iteration: @iteration, current_account: @current_account)
+      @story_type.update!(current_iteration: @iteration, current_account: current_account)
       @story_type.staging_table&.default_iter_id
 
       redirect_to @story_type
@@ -21,7 +21,7 @@ module StoryTypes
     end
 
     def apply
-      @story_type.update!(current_iteration: @iteration, current_account: @current_account)
+      @story_type.update!(current_iteration: @iteration, current_account: current_account)
       @story_type.staging_table&.default_iter_id
 
       redirect_to @story_type
@@ -31,14 +31,14 @@ module StoryTypes
       staging_table_action { @staging_table.purge_current_iteration }
 
       if flash.now[:error].nil?
-        @story_type.update!(export_configurations_created: nil, current_account: @current_account)
+        @story_type.update!(export_configurations_created: nil, current_account: current_account)
         @iteration.stories.destroy_all
         @iteration.auto_feedback.destroy_all
 
         @iteration.update!(
           population: nil, samples: nil,
           creation: nil, schedule: nil, export: nil,
-          current_account: @current_account
+          current_account: current_account
         )
       end
 
@@ -60,7 +60,7 @@ module StoryTypes
 
       {
         name: permitted[:name],
-        current_account: @current_account
+        current_account: current_account
       }
     end
   end

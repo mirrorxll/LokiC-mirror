@@ -34,14 +34,14 @@ module StoryTypes
       @report =
         @iteration.exported.editor_post_export_report ||
         @iteration.exported
-                  .create_editor_post_export_report(submitter: @current_account, report_type: 'editor')
+                  .create_editor_post_export_report(submitter: current_account, report_type: 'editor')
     end
 
     def manager_report
       @report =
         @iteration.exported.manager_post_export_report ||
         @iteration.exported
-                  .create_manager_post_export_report(submitter: @current_account, report_type: 'manager')
+                  .create_manager_post_export_report(submitter: current_account, report_type: 'manager')
     end
 
     def editor_report_params

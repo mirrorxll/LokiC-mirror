@@ -49,7 +49,7 @@ module Accounts
         :password, :password_confirmation
       ).to_h
 
-      permitted[:creator] = @current_account if action_name.eql?('create')
+      permitted[:creator] = current_account if action_name.eql?('create')
       permitted
     end
 

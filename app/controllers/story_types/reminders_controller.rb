@@ -7,7 +7,7 @@ module StoryTypes
     def confirm
       render_403 and return unless @story_type.updates?
 
-      @reminder.update!(updates_confirmed: true, current_account: @current_account)
+      @reminder.update!(updates_confirmed: true, current_account: current_account)
       render 'update_reminder_panel'
     end
 

@@ -39,7 +39,7 @@ module DataSets
     end
 
     def create
-      @data_set = @current_account.data_sets.create(data_set_params)
+      @data_set = current_account.data_sets.create(data_set_params)
 
       @data_set.scrape_task&.table_locations&.each do |table_loc|
         @data_set.table_locations.create(
@@ -74,9 +74,9 @@ module DataSets
       statuses = Status.data_set_statuses
       @lists = HashWithIndifferentAccess.new
 
-      @lists['assigned'] = { sheriff: @current_account, status: statuses } if @data_sets_permissions['grid']['assigned']
-      @lists['responsible'] = { responsible_editor: @current_account, status: statuses } if @data_sets_permissions['grid']['responsible']
-      @lists['created'] = { account: @current_account, status: statuses } if @data_sets_permissions['grid']['created']
+      @lists['assigned'] = { sheriff: current_account, status: statuses } if @data_sets_permissions['grid']['assigned']
+      @lists['responsible'] = { responsible_editor: current_account, status: statuses } if @data_sets_permissions['grid']['responsible']
+      @lists['created'] = { account: current_account, status: statuses } if @data_sets_permissions['grid']['created']
       @lists['all'] = { status: statuses } if @data_sets_permissions['grid']['all']
       @lists['archived'] = { status: Status.find_by(name: 'archived') } if @data_sets_permissions['grid']['archived']
     end
@@ -97,9 +97,9 @@ module DataSets
     def access_to_show
       archived = Status.find_by(name: 'archived')
 
-      return if @lists['assigned'] && @data_set.sheriff.eql?(@current_account)
-      return if @lists['responsible'] && @data_set.responsible_editor.eql?(@current_account)
-      return if @lists['created'] && @data_set.account.eql?(@current_account)
+      return if @lists['assigned'] && @data_set.sheriff.eql?(current_account)
+      return if @lists['responsible'] && @data_set.responsible_editor.eql?(current_account)
+      return if @lists['created'] && @data_set.account.eql?(current_account)
       return if @lists['all'] && @data_set.status != archived
       return if @lists['archived'] && @data_set.status.eql?(archived)
 
@@ -108,7 +108,7 @@ module DataSets
     end
 
     def data_sets_access
-      card = @current_account.cards.find_by(branch: Branch.find_by(name: 'data_sets'))
+      card = current_account.cards.find_by(branch: Branch.find_by(name: 'data_sets'))
       @data_sets_permissions = card.access_level.permissions if card.enabled
     end
 
@@ -139,7 +139,7 @@ module DataSets
       create = params[:scrape_task]&.fetch(:create_hidden).to_i
       return if create.zero?
 
-      scrape_task = ScrapeTask.create!(name: @data_set.name, creator: @current_account, hidden: true)
+      scrape_task = ScrapeTask.create!(name: @data_set.name, creator: current_account, hidden: true)
       @data_set.update!(scrape_task: scrape_task)
     end
   end

@@ -2,7 +2,7 @@
   %hr/
   .row.mb-1.font-weight-bold.col-12
     comment
-    -if current_account_permissions('story_types', %w(comment edit_form)) && @story_type.developer.eql?(@current_account) && %w(blocked canceled).include?(@story_type.status.name)
+    -if current_account_permissions('story_types', %w(comment edit_form)) && @story_type.developer.eql?(current_account) && %w(blocked canceled).include?(@story_type.status.name)
       .col-1.p-0.text-center
         =link_to icon('fa', 'pencil', class: ' fa-xs text-dark'), edit_story_type_path(@story_type), remote: true,
                  'data-toggle': 'collapse', role: 'button', href: '#commentForm', 'aria-expanded': 'false',

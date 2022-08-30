@@ -3,10 +3,10 @@
 module StoryTypes
   class SchedulesController < StoryTypesController # :nodoc:
     def manual
-      @iteration.update!(schedule: false, current_account: @current_account)
+      @iteration.update!(schedule: false, current_account: current_account)
       send_to_action_cable(@story_type, 'scheduler', 'scheduling in progress')
 
-      options = { params: manual_params, account: @current_account.id }
+      options = { params: manual_params, account: current_account.id }
 
       Process.spawn(
         "cd #{Rails.root} && RAILS_ENV=#{Rails.env} "\
@@ -18,11 +18,11 @@ module StoryTypes
     end
 
     def backdate
-      @iteration.update!(schedule: false, current_account: @current_account)
+      @iteration.update!(schedule: false, current_account: current_account)
 
       send_to_action_cable(@story_type, 'scheduler', 'scheduling in progress')
 
-      options = { params: backdated_params, account: @current_account.id }
+      options = { params: backdated_params, account: current_account.id }
 
       Process.spawn(
         "cd #{Rails.root} && RAILS_ENV=#{Rails.env} "\
@@ -34,11 +34,11 @@ module StoryTypes
     end
 
     def auto
-      @iteration.update!(schedule: false, current_account: @current_account)
+      @iteration.update!(schedule: false, current_account: current_account)
 
       send_to_action_cable(@story_type, 'scheduler', 'scheduling in progress')
 
-      options = { params: auto_params, account: @current_account.id }
+      options = { params: auto_params, account: current_account.id }
 
       Process.spawn(
         "cd #{Rails.root} && RAILS_ENV=#{Rails.env} "\
@@ -55,7 +55,7 @@ module StoryTypes
       @iteration.update!(schedule: nil,
                          schedule_args: nil,
                          schedule_counts: @iteration.schedule_counts.merge(counts),
-                         current_account: @current_account)
+                         current_account: current_account)
       flash.now[:message] = 'scheduling purged'
     end
 

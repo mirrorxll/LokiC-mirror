@@ -18,7 +18,7 @@ module MultiTasks
     end
 
     def show
-      render_401 unless @current_account.manager? || @multi_task.access_for?(@current_account)
+      render_401 unless current_account.manager? || @multi_task.access_for?(current_account)
 
       @comments = @multi_task.comments.order(created_at: :desc)
       @tab_title = "LokiC :: MultiTask ##{@multi_task.id} <#{@multi_task.title}>"
@@ -86,8 +86,8 @@ module MultiTasks
       statuses = Status.multi_task_statuses(created: true)
       @lists = HashWithIndifferentAccess.new
 
-      @lists['assigned'] = { assignment_to: @current_account, status: statuses } if @multi_tasks_permissions['grid']['assigned']
-      @lists['created'] = { creator: @current_account, status: statuses } if @multi_tasks_permissions['grid']['created']
+      @lists['assigned'] = { assignment_to: current_account, status: statuses } if @multi_tasks_permissions['grid']['assigned']
+      @lists['created'] = { creator: current_account, status: statuses } if @multi_tasks_permissions['grid']['created']
       @lists['all'] = { status: statuses } if @multi_tasks_permissions['grid']['all']
       @lists['archived'] = { status: Status.find_by(name: 'archived') } if @multi_tasks_permissions['grid']['archived']
     end
@@ -103,16 +103,16 @@ module MultiTasks
       @grid = MultiTasksGrid.new(params[:multi_tasks_grid]) do |scope|
         scope.where(@lists[@current_list])
       end
-      @grid.current_account = @current_account
+      @grid.current_account = current_account
     end
 
     def access_to_show
       status_deleted = Status.find_by(name: 'archived')
 
-      if @lists['assigned'] && @multi_task.assignment_to.include?(@current_account) && @multi_task.status != status_deleted
+      if @lists['assigned'] && @multi_task.assignment_to.include?(current_account) && @multi_task.status != status_deleted
         return
       end
-      return if @lists['created'] && @multi_task.creator.eql?(@current_account) && @multi_task.status != status_deleted
+      return if @lists['created'] && @multi_task.creator.eql?(current_account) && @multi_task.status != status_deleted
       return if @lists['all'] && @multi_task.status != status_deleted
       return if @lists['archived'] && @multi_task.status.eql?(status_deleted)
 
@@ -182,12 +182,12 @@ module MultiTasks
       task.comments.build(
         subtype: 'task comment',
         body: body,
-        commentator: @current_account
+        commentator: current_account
       ).save!
     end
 
     def find_note
-      @note = MultiTaskNote.find_by(multi_task: @multi_task, creator: @current_account)
+      @note = MultiTaskNote.find_by(multi_task: @multi_task, creator: current_account)
     end
 
     def send_notification(task)
@@ -227,7 +227,7 @@ module MultiTasks
                                           end
                                         end
       parent_params[:parent] = parent_params[:parent].blank? ? nil : MultiTask.find(parent_params[:parent])
-      parent_params[:creator] = @current_account
+      parent_params[:creator] = current_account
       result_params[:parent] = parent_params
 
       subtasks_params = if params.key?(:subtasks)
@@ -250,7 +250,7 @@ module MultiTasks
         subtask_params[:pivotal_tracker_url] = parent_params[:pivotal_tracker_url]
         subtask_params[:reminder_frequency] =
           subtask_params[:reminder_frequency].blank? ? nil : MultiTaskReminderFrequency.find(subtask_params[:reminder_frequency])
-        subtask_params[:creator] = @current_account
+        subtask_params[:creator] = current_account
         subtask_params[:assistants] = if subtask_params[:assistants].blank?
                                         nil
                                       else
@@ -273,7 +273,7 @@ module MultiTasks
         task_params[:reminder_frequency].blank? ? nil : MultiTaskReminderFrequency.find(task_params[:reminder_frequency])
       task_params[:parent] = task_params[:parent].blank? ? nil : MultiTask.find(task_params[:parent])
       task_params[:client] = task_params[:client_id].blank? ? nil : ClientsReport.find(task_params[:client_id])
-      task_params[:creator] = @current_account
+      task_params[:creator] = current_account
       task_params[:assistants] = if task_params[:assistants].blank?
                                    nil
                                  else

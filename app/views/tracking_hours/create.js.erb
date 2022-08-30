@@ -1,3 +1,3 @@
-$("[id='report_tracking_hour'][developer_id=<%= @current_account.id %> ][week_id=<%= @week.id %>]").html('<%= j render 'tracking_hours/table', rows_reports: @rows_reports %>')
-$("[id='reports_editable'][developer_id=<%= @current_account.id %> ][week_id=<%= @week.id %>]").empty()
-$("[id='total_hours'][developer_id=<%= @current_account.id %> ][week_id=<%= @week.id %>]").html('<%= j render 'tracking_hours/total_hours', rows_reports: @rows_reports %>')
+$("[id='report_tracking_hour'][developer_id=<%= current_account.id %> ][week_id=<%= @week.id %>]").html('<%= j render 'tracking_hours/table', rows_reports: @rows_reports %>')
+$("[id='reports_editable'][developer_id=<%= current_account.id %> ][week_id=<%= @week.id %>]").empty()
+$("[id='total_hours'][developer_id=<%= current_account.id %> ][week_id=<%= @week.id %>]").html('<%= j render 'tracking_hours/total_hours', rows_reports: @rows_reports %>')

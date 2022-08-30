@@ -12,8 +12,8 @@
     %link{ rel: "preconnect", href: "https://fonts.gstatic.com", crossorigin: true }
     %link{ href: "https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap", rel: "stylesheet" }
   %body
-    %div.container-fluid{ class: @current_account ? 'mt-5 pt-2' : ''}
-      -if @current_account
+    %div.container-fluid{ class: current_account ? 'mt-5 pt-2' : ''}
+      -if current_account
         %header
           %nav.navbar.fixed-top.navbar-expand-lg.navbar-dark.bg-dark.small.justify-content-center.text-uppercase
             .small
@@ -24,20 +24,20 @@
               %span.navbar-toggler-icon
             #navbarNavDropdown.collapse.navbar-collapse
               %ul.navbar-nav.w-100.align-items-center
-                -@current_account.branch_names.each do |branch|
+                -current_account.branch_names.each do |branch|
                   %li.nav-item{ class: controller.is_a?(Object.const_get("#{branch.camelize}Controller")) ? 'active' : '' }
                     =link_to(branch.humanize, public_send("#{branch}_path"), class: 'nav-link')
 
                 %li.nav-item.active.ml-lg-auto
                   .nav-link{ style: 'text-transform: none;'}
-                    =@current_account.name
+                    =current_account.name
 
                 %li.nav-item.active.dropdown{ class: "#{true_account.manager? ? " border-lg-right pr-lg-2 mr-lg-2" : ''}" }
                   #navbarDropdown3.nav-link.text-center{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
                     =icon('fa', 'user-circle', class: 'fa-2x')
                   .dropdown-menu.dropdown-menu-right.text-sm-center.text-lg-right{"aria-labelledby" => "navbarDropdown"}
                     .dropdown-item
-                      =link_to('tracking hours', tracking_hours_path(week: current_week, developer: @current_account), class: 'nav-link small text-dark')
+                      =link_to('tracking hours', tracking_hours_path(week: current_week, developer: current_account), class: 'nav-link small text-dark')
                     .dropdown-item
                       =link_to('edit profile', profile_path, class: 'nav-link small text-dark')
                     .dropdown-item
@@ -45,7 +45,7 @@
 
                 -if true_account.manager?
                   %li.nav-item.active
-                    -if @current_account.eql?(true_account)
+                    -if current_account.eql?(true_account)
                       =link_to(icon('fa', 'address-book-o', class: 'fa-2x'), accounts_path, class: 'nav-link small')
                     -else
                       =link_to(icon('fa', 'share', class: 'fa-2x text-light'), account_stop_impersonating_path, method: :delete, class: 'nav-link small text-dark text-dark')

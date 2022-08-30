@@ -47,8 +47,8 @@ module FactoidTypes
       statuses = Status.hle_statuses(created: true, migrated: true, inactive: true)
       @lists = HashWithIndifferentAccess.new
 
-      @lists['assigned'] = { developer: @current_account, status: statuses } if @factoid_types_permissions['grid']['assigned']
-      @lists['created'] = { editor: @current_account, status: statuses } if @factoid_types_permissions['grid']['created']
+      @lists['assigned'] = { developer: current_account, status: statuses } if @factoid_types_permissions['grid']['assigned']
+      @lists['created'] = { editor: current_account, status: statuses } if @factoid_types_permissions['grid']['created']
       @lists['all'] = { status: statuses } if @factoid_types_permissions['grid']['all']
       @lists['archived'] = { status: Status.find_by(name: 'archived') } if @factoid_types_permissions['grid']['archived']
     end
@@ -65,7 +65,7 @@ module FactoidTypes
         scope.where(@lists[@current_list])
       end
 
-      @grid.current_account = @current_account
+      @grid.current_account = current_account
       @grid.env = env
     end
 
@@ -76,8 +76,8 @@ module FactoidTypes
     def access_to_show
       archived = Status.find_by(name: 'archived')
 
-      return if @lists['assigned'] && @factoid_type.developer.eql?(@current_account)
-      return if @lists['created'] && @factoid_type.editor.eql?(@current_account)
+      return if @lists['assigned'] && @factoid_type.developer.eql?(current_account)
+      return if @lists['created'] && @factoid_type.editor.eql?(current_account)
       return if @lists['all'] && @factoid_type.status != archived
       return if @lists['archived'] && @factoid_type.status.eql?(archived)
 
@@ -100,8 +100,8 @@ module FactoidTypes
         name: permitted[:name],
         data_set_id: permitted[:data_set_id],
         status: Status.find_by(name: 'created and in queue'),
-        editor: @current_account,
-        current_account: @current_account
+        editor: current_account,
+        current_account: current_account
       }
     end
 
@@ -116,7 +116,7 @@ module FactoidTypes
         :original_publish_date
       ).reject { |_, v| v.blank? }
 
-      attrs[:current_account] = @current_account
+      attrs[:current_account] = current_account
       attrs[:topic_id] = nil if attrs[:kind_id].present? && attrs[:topic_id].blank?
       attrs
     end

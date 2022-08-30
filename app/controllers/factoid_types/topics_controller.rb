@@ -5,7 +5,7 @@ module FactoidTypes
     before_action :find_topic, only: :change
 
     def change
-      @factoid_type.update!(topic: @topic, current_account: @current_account)
+      @factoid_type.update!(topic: @topic, current_account: current_account)
     end
 
     def get_descriptions

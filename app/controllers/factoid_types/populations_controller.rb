@@ -16,7 +16,7 @@ module FactoidTypes
 
       if flash.now[:error].nil?
         population_args = population_params
-        iteration_args = population_args.merge(current_account: @current_account)
+        iteration_args = population_args.merge(current_account: current_account)
         @iteration.update!(iteration_args)
 
         PopulationJob.perform_async(@iteration.id, current_account.id, population_args)

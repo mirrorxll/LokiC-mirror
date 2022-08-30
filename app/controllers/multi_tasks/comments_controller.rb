@@ -14,7 +14,7 @@ module MultiTasks
 
     def create
       @comment = @multi_task.comments.build(subtype: comment_params[:subtype], body: comment_params[:body])
-      @comment.commentator =@current_account
+      @comment.commentator =current_account
       @comment.save!
       @comment.assignment_to << comment_assignment_to
     end

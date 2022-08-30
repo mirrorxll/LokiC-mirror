@@ -1,2 +1,2 @@
 $(`#row_<%= @row_id%>`).remove()
-$("[id='total_hours'][developer_id=<%= @current_account.id %> ][week_id=<%= @week.id %>]").html('<%= j render 'tracking_hours/total_hours', rows_reports: @rows_reports %>')
+$("[id='total_hours'][developer_id=<%= current_account.id %> ][week_id=<%= @week.id %>]").html('<%= j render 'tracking_hours/total_hours', rows_reports: @rows_reports %>')

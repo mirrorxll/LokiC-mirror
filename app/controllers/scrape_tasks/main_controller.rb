@@ -23,7 +23,7 @@ module ScrapeTasks
 
     def create
       @scrape_task = ScrapeTask.new(create_scrape_task_params)
-      @scrape_task.creator = @current_account
+      @scrape_task.creator = current_account
 
       if @scrape_task.save
         redirect_to @scrape_task
@@ -47,8 +47,8 @@ module ScrapeTasks
       statuses = Status.scrape_task_statuses(created: true, done: true)
       @lists = HashWithIndifferentAccess.new
 
-      @lists['assigned'] = { scraper: @current_account, status: statuses } if @scrape_tasks_permissions['grid']['assigned']
-      @lists['created'] = { creator: @current_account, status: statuses } if @scrape_tasks_permissions['grid']['created']
+      @lists['assigned'] = { scraper: current_account, status: statuses } if @scrape_tasks_permissions['grid']['assigned']
+      @lists['created'] = { creator: current_account, status: statuses } if @scrape_tasks_permissions['grid']['created']
       @lists['all'] = { status: statuses } if @scrape_tasks_permissions['grid']['all']
       @lists['archived'] = { status: Status.find_by(name: 'archived') } if @scrape_tasks_permissions['grid']['archived']
     end
@@ -65,15 +65,15 @@ module ScrapeTasks
         scope.where(@lists[@current_list])
       end
 
-      @grid.current_account = @current_account
+      @grid.current_account = current_account
       @grid.current_list = @current_list
     end
 
     def access_to_show
       archived = Status.find_by(name: 'archived')
 
-      return if @lists['assigned'] && @scrape_task.scraper.eql?(@current_account)
-      return if @lists['created'] && @scrape_task.creator.eql?(@current_account)
+      return if @lists['assigned'] && @scrape_task.scraper.eql?(current_account)
+      return if @lists['created'] && @scrape_task.creator.eql?(current_account)
       return if @lists['all'] && @scrape_task.status != archived
       return if @lists['archived'] && @scrape_task.status.eql?(archived)
 
@@ -82,7 +82,7 @@ module ScrapeTasks
     end
 
     def data_sets_access
-      card = @current_account.cards.find_by(branch: Branch.find_by(name: 'data_sets'))
+      card = current_account.cards.find_by(branch: Branch.find_by(name: 'data_sets'))
       @data_sets_permissions = card.access_level.permissions if card.enabled
     end
 
@@ -102,7 +102,7 @@ module ScrapeTasks
           :data_set_location, :scraper_id, :frequency_id
         )
 
-      attrs[:current_account] = @current_account
+      attrs[:current_account] = current_account
       attrs
     end
 

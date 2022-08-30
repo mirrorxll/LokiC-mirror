@@ -41,7 +41,7 @@ module WorkRequests
       statuses = Status.work_request_statuses(created: true)
       @lists = HashWithIndifferentAccess.new
 
-      @lists['created'] = { requester: @current_account, status: statuses } if @work_requests_permissions['grid']['created']
+      @lists['created'] = { requester: current_account, status: statuses } if @work_requests_permissions['grid']['created']
       @lists['all'] = { status: statuses } if @work_requests_permissions['grid']['all']
       @lists['archived'] = { status: Status.find_by(name: 'archived') } if @work_requests_permissions['grid']['archived']
     end
@@ -62,7 +62,7 @@ module WorkRequests
     def access_to_show
       archived = Status.find_by(name: 'archived')
 
-      return if @lists['created'] && @work_request.requester.eql?(@current_account) && @work_request.status != archived
+      return if @lists['created'] && @work_request.requester.eql?(current_account) && @work_request.status != archived
       return if @lists['all'] && @work_request.status != archived
       return if @lists['archived'] && @work_request.status.eql?(archived)
 
@@ -71,14 +71,14 @@ module WorkRequests
     end
 
     def multi_tasks_access
-      card = @current_account.cards.find_by(branch: Branch.find_by(name: 'multi_tasks'))
+      card = current_account.cards.find_by(branch: Branch.find_by(name: 'multi_tasks'))
       @multi_tasks_permissions = card.access_level.permissions if card.enabled
     end
 
     def work_request_params
       params
         .require(:work_request).permit!
-        .merge({ account: @current_account })
+        .merge({ account: current_account })
     end
   end
 end

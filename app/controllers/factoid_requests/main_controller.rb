@@ -43,7 +43,7 @@ module FactoidRequests
       statuses = Status.factoid_request_statuses(created: true)
       @lists = HashWithIndifferentAccess.new
 
-      @lists['created'] = { requester: @current_account, status: statuses } if @factoid_requests_permissions['grid']['created']
+      @lists['created'] = { requester: current_account, status: statuses } if @factoid_requests_permissions['grid']['created']
       @lists['all'] = { status: statuses } if @factoid_requests_permissions['grid']['all']
       @lists['archived'] = { status: Status.find_by(name: 'archived') } if @factoid_requests_permissions['grid']['archived']
     end
@@ -64,7 +64,7 @@ module FactoidRequests
     def access_to_show
       archived = Status.find_by(name: 'archived')
 
-      if @lists['created'] && @factoid_request.requester.eql?(@current_account) && @factoid_request.status != archived
+      if @lists['created'] && @factoid_request.requester.eql?(current_account) && @factoid_request.status != archived
         return
       end
       return if @lists['all'] && @factoid_request.status != archived
@@ -77,7 +77,7 @@ module FactoidRequests
     def factoid_request_params
       params
         .require(:factoid_request).permit!
-        .merge({ account: @current_account })
+        .merge({ account: current_account })
     end
   end
 end

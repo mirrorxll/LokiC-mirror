@@ -30,7 +30,7 @@ class ApplicationController < ActionController::Base
   # callback authorize! called for 'work_requests', 'factoid_requests',
   # 'multi_tasks', 'scrape_tasks', 'data_sets', 'story_types', 'factoid_types'
   def authorize!(branch_name, redirect: true)
-    account_card = @current_account.cards.find_by(branch: Branch.find_by(name: branch_name))
+    account_card = current_account.cards.find_by(branch: Branch.find_by(name: branch_name))
 
     if account_card.enabled
       instance_variable_set("@#{branch_name}_permissions", account_card.access_level.permissions)
@@ -43,7 +43,7 @@ class ApplicationController < ActionController::Base
   def staging_table_action(&block)
     flash.now[:staging_table] =
       if @staging_table.nil? || StagingTable.not_exists?(@staging_table.name)
-        @story_type.update!(staging_table_attached: nil, current_account: @current_account)
+        @story_type.update!(staging_table_attached: nil, current_account: current_account)
         @staging_table&.destroy
         staging_table_deleted
       else
@@ -98,7 +98,7 @@ class ApplicationController < ActionController::Base
       expires: DateTime.now + 15.minute
     }
 
-    multi_tasks = MultiTask.ongoing.joins(:assignment_to).where.not(creator: @current_account).where(
+    multi_tasks = MultiTask.ongoing.joins(:assignment_to).where.not(creator: current_account).where(
       'multi_task_assignments.confirmed': false,
       'multi_task_assignments.account_id': current_account
     )

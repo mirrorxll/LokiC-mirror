@@ -12,7 +12,7 @@
               How much time you spend on the task?
             .col-5
               =form.text_field :hours, id: 'hoursInput', required: true, class: 'small', placeholder: 'hours'
-          -if @multi_task.parent.nil? && @multi_task.main_assignee.eql?(@current_account)
+          -if @multi_task.parent.nil? && @multi_task.main_assignee.eql?(current_account)
             %hr.mt-3.mb-3/
             #teamWork
               -unless @multi_task.subtasks.empty?

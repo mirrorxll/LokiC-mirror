@@ -1,12 +1,12 @@
 =form_with(url: tracking_hours_path, method: 'post') do |form|
-  %div{ id: "reports_editable", developer_id: @current_account.id, week_id: @week.id }
+  %div{ id: "reports_editable", developer_id: current_account.id, week_id: @week.id }
   .d-flex.justify-content-between
     =form.hidden_field :week, value: @week.id
     #add_row.btn.btn-sm.btn-outline-dark.ml-2 add row
     =form.submit 'submit', class: 'btn btn-sm btn-outline-dark mr-2', id: 'submit'
 
 :javascript
-  var reports_block = $("[id='reports_editable'][developer_id=#{@current_account.id}][week_id=#{@week.id}]");
+  var reports_block = $("[id='reports_editable'][developer_id=#{current_account.id}][week_id=#{@week.id}]");
   $('#add_row').click(function () {
     let hex = secureRandom(6);
 

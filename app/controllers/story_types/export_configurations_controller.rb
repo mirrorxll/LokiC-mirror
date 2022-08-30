@@ -7,7 +7,7 @@ module StoryTypes
     def create
       render_403 && return if @story_type.staging_table_attached.nil?
 
-      @story_type.update!(export_configurations_created: false, current_account: @current_account)
+      @story_type.update!(export_configurations_created: false, current_account: current_account)
 
       Process.spawn(
         "cd #{Rails.root} && RAILS_ENV=#{Rails.env} "\

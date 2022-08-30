@@ -6,12 +6,12 @@ module FactoidTypes
     before_action :get_factoids, only: [:factoids, :update_section]
 
     def execute
-      @iteration.update!(export: false, current_account: @current_account)
+      @iteration.update!(export: false, current_account: current_account)
       ExportJob.perform_async(@iteration.id, current_account.id, params[:chunk])
     end
 
     def remove_exported_factoids
-      @iteration.update!(purge_export: true, current_account: @current_account)
+      @iteration.update!(purge_export: true, current_account: current_account)
       PurgeExportJob.perform_async(@iteration.id, current_account.id)
     end
 
@@ -22,7 +22,7 @@ module FactoidTypes
 
     # remove factoids from Limpar, 'articles' table and staging table
     def remove_selected_factoids
-      @iteration.update!(purge_export: true, current_account: @current_account)
+      @iteration.update!(purge_export: true, current_account: current_account)
       send_to_action_cable(@factoid_type, @iteration, 'export', 'exported_factoids', 'removing factoids')
 
       Process.spawn(

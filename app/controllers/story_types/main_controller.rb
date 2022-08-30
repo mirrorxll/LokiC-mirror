@@ -49,8 +49,8 @@ module StoryTypes
       statuses = Status.hle_statuses(created: true, migrated: true, inactive: true)
       @lists = HashWithIndifferentAccess.new
 
-      @lists['assigned'] = { developer: @current_account, status: statuses } if @story_types_permissions['grid']['assigned']
-      @lists['created'] = { editor: @current_account, status: statuses } if @story_types_permissions['grid']['created']
+      @lists['assigned'] = { developer: current_account, status: statuses } if @story_types_permissions['grid']['assigned']
+      @lists['created'] = { editor: current_account, status: statuses } if @story_types_permissions['grid']['created']
       @lists['all'] = { status: statuses } if @story_types_permissions['grid']['all']
       @lists['archived'] = { status: Status.find_by(name: 'archived') } if @story_types_permissions['grid']['archived']
     end
@@ -67,7 +67,7 @@ module StoryTypes
         scope.where(@lists[@current_list])
       end
 
-      @grid.current_account = @current_account
+      @grid.current_account = current_account
       @grid.env = env
     end
 
@@ -78,8 +78,8 @@ module StoryTypes
     def access_to_show
       archived = Status.find_by(name: 'archived')
 
-      return if @lists['assigned'] && @story_type.developer.eql?(@current_account)
-      return if @lists['created'] && @story_type.editor.eql?(@current_account)
+      return if @lists['assigned'] && @story_type.developer.eql?(current_account)
+      return if @lists['created'] && @story_type.editor.eql?(current_account)
       return if @lists['all'] && @story_type.status != archived
       return if @lists['archived'] && @story_type.status.eql?(archived)
 
@@ -95,12 +95,12 @@ module StoryTypes
       permitted = params.require(:story_type).permit(:name, :data_set_id)
 
       story_type_params = {
-        editor: @current_account,
+        editor: current_account,
         name: permitted[:name],
         data_set_id: permitted[:data_set_id],
         status: Status.find_by(name: 'created and in queue'),
         last_status_changed_at: Time.now.getlocal('-05:00'),
-        current_account: @current_account
+        current_account: current_account
       }
 
       story_type_params.merge!(photo_bucket: @data_set.photo_bucket) if @data_set
@@ -109,7 +109,7 @@ module StoryTypes
 
     def exist_story_type_params
       attrs = params.require(:story_type).permit(:name, :comment, :gather_task)
-      attrs[:current_account] = @current_account
+      attrs[:current_account] = current_account
       attrs
     end
 
