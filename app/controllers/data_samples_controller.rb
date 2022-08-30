@@ -6,7 +6,7 @@ class DataSamplesController < ApplicationController
   def index
     connections = {}
 
-    @locations_columns = @model.table_locations.each_with_object({}) do |loc, obj|
+    @locations_columns = @model.table_locations.existing.each_with_object({}) do |loc, obj|
       connections[loc.host_name] ||= MiniLokiC::Connect::Mysql.on(Object.const_get(loc.host_name))
       query = "SHOW COLUMNS FROM `#{loc.schema_name}`.`#{loc.table_name}`;"
       columns = connections[loc.host_name].query(query).to_a.map { |col| col['Field'] }

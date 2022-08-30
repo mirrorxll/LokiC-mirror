@@ -8,6 +8,8 @@ class TableLocation < ApplicationRecord
   belongs_to :schema
   belongs_to :sql_table, optional: true
 
+  scope :existing, -> { joins(:sql_table).where('sql_tables.presence': true) }
+
   def full_name
     "#{host.name}.#{schema.name}.#{sql_table.name}"
   end
