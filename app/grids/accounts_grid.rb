@@ -7,7 +7,7 @@ class AccountsGrid
 
   # Scope
   scope do
-    Account.ordered
+    Account.all
   end
 
   # filter
