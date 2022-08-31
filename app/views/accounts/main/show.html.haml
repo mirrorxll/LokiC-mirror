@@ -19,11 +19,15 @@
         #accountStatusComment
           =render 'accounts/main/status_comment'
         .d-flex.align-items-center
-          #editAccount
-            .d-inline-block.mr-2
-              %button{ type: 'button', class: 'p-0 ml-1 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#editAccountModal" }
-                [ edit ]
-          #accountStatus.d-inline-block
+          #impersonate
+            -if current_account.eql?(true_account)
+              =link_to('[ login ]', account_impersonate_path(@account), class: 'p-0 ml-1 btn btn-sm btn-link', method: :post)
+            -else
+              =link_to('[ back to origin account ]', account_stop_impersonating_path, class: 'p-0 ml-1 btn btn-sm btn-link', method: :delete)
+          #editAccount.mr-2
+            %button{ type: 'button', class: 'p-0 ml-1 btn btn-sm btn-link', 'data-toggle' => "modal", 'data-target' => "#editAccountModal" }
+              [ edit ]
+          #accountStatus
             =render 'accounts/main/statuses'
 
     .card-body.pb-0

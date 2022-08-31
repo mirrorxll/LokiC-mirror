@@ -13,9 +13,11 @@ class AccountsGrid
 
   # columns
   column(:id, mandatory: true, header: 'ID', order: false)
+
   column(:name, mandatory: true) do |account|
     format(account) { link_to(account.name, account) }
   end
+
   column(:slack, mandatory: true) do |account|
     format(account.slack_identifier) do |slack_id|
       if slack_id
@@ -25,9 +27,11 @@ class AccountsGrid
       end
     end
   end
+
   column(:roles, mandatory: true) do |account|
-    ''
+    account.role_names.join(', ')
   end
+
   column(:login, mandatory: true) do |account|
     format(account) do
       link_to('login', account_impersonate_path(account), method: :post)
