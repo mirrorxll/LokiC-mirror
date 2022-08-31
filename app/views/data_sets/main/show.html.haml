@@ -41,7 +41,8 @@
               =link_to('[ edit ]', edit_data_set_table_locations_path(@data_set),
                        class: 'p-0 btn btn-sm btn-link table-locations-control', remote: true)
       .card-body
-        =render 'data_sets/table_locations/table_locations'
+        -if current_account_permissions('data_sets', %w[table_locations show])
+          =render 'data_sets/table_locations/table_locations'
 
 -if current_account_permissions('data_sets', ['edit_form'])
   #updateDataSetModal.modal.fade.pr-0{ "aria-hidden" => "true", "aria-labelledby" => "updateDataSetModal",

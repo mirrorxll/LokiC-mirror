@@ -12,7 +12,7 @@ class TaskTrackingHoursGrid
     scope.joins(:multi_task).where('title RLIKE ?', value)
   end
 
-  filter(:creator, :enum, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] }) do |value, scope|
+  filter(:creator, :enum, select: Account.ordered.map { |a| [a.name, a.id] }) do |value, scope|
     scope.joins(:multi_task).where('tasks.creator_id= ?', value)
   end
 

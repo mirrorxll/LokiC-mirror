@@ -10,10 +10,10 @@ class StoryTypeShownSamplesGrid
   end
 
   # Filters
-  accounts = Account.all
+  accounts = Account.ordered
   filter(:developer, :enum, select: accounts.map { |r| [r.name, r.id] })
 
-  accounts = Account.all
+  accounts = Account.ordered
   filter(:editor, :enum, select: accounts.map { |r| [r.name, r.id] })
 
   datasets = DataSet.all.order(:name)

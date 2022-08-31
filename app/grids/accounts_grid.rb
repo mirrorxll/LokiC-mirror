@@ -5,7 +5,7 @@ class AccountsGrid
 
   # Scope
   scope do
-    Account.order(id: :desc)
+    Account.ordered
   end
 
   # filter

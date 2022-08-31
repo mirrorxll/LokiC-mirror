@@ -9,7 +9,6 @@ module Accounts
 
     def index
       @tab_title = 'LokiC :: Accounts'
-      @grid.scope { |scope| scope.page(params[:page]).per(30) }
     end
 
     def show

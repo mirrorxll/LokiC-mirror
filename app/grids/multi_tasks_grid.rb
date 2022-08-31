@@ -17,15 +17,14 @@ class MultiTasksGrid
     scope.where('description RLIKE ?', value)
   end
 
-  filter(:assignment_to, :enum, multiple: true, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] }) do |value, scope|
+  filter(:assignment_to, :enum, multiple: true, left: true, select: Account.ordered.map { |a| [a.name, a.id] }) do |value, scope|
     scope.where('multi_task_assignments.account_id': value)
   end
 
-  filter(:creator, :enum, multiple: true, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
+  filter(:creator, :enum, multiple: true, left: true, select: Account.ordered.map { |a| [a.name, a.id] })
 
   status_done_id = Status.find_by(name: 'done').id.to_s
   filter(:status, :enum, multiple: true, select: Status.multi_task_statuses(created: true).pluck(:name, :id)) do |value, scope, grid|
-    p '!!!!!!', value
     if value.include?(status_done_id)
       scope.joins(:assignments).where(status: value).or(scope.joins(:assignments).where('multi_task_assignments.account_id': grid.current_account.id, 'multi_task_assignments.done': true))
     else

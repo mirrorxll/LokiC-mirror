@@ -113,4 +113,8 @@ class Account < ApplicationRecord # :nodoc:
   def branch_names
     cards.where(enabled: true).includes(:branch).map { |card| card.branch.name }
   end
+
+  def self.ordered
+    order(:first_name, :last_name)
+  end
 end

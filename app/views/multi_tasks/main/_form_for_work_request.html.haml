@@ -12,7 +12,7 @@
           assignment to:
         .col
           .row.mt-1.small
-            =form.collection_select 'multi_task_parent[assignment_to]', Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }, style: "width:130px"
+            =form.collection_select 'multi_task_parent[assignment_to]', Account.ordered, :id, :name, { prompt: '' }, style: "width:130px"
       %hr
       .row.justify-content-between.mt-1
         .col
@@ -119,7 +119,7 @@
       height: 300
   });
 
-  var accounts = #{raw Account.all.order([:first_name, :last_name]).map{ |account| [account.first_name.to_s + ' ' + account.last_name.to_s, account.id]} };
+  var accounts = #{raw Account.ordered.map{ |a| [a.name, a.id]} };
   var current_account_id = #{raw current_account.id}
 
   function addSubtask(e) {
