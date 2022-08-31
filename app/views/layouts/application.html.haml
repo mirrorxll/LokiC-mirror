@@ -44,11 +44,11 @@
                       =link_to('sign out', sign_out_path, class: 'nav-link small text-dark', method: :delete)
 
                 -if true_account.manager?
-                  %li.nav-item.active
-                    -if current_account.eql?(true_account)
-                      =link_to(icon('fa', 'address-book-o', class: 'fa-2x'), accounts_path, class: 'nav-link small')
-                    -else
+                  -unless current_account.eql?(true_account)
+                    %li.nav-item.active
                       =link_to(icon('fa', 'share', class: 'fa-2x text-light'), account_stop_impersonating_path, method: :delete, class: 'nav-link small text-dark text-dark')
+                  %li.nav-item.active
+                    =link_to(icon('fa', 'address-book-o', class: 'fa-2x'), accounts_path, class: 'nav-link small')
 
                   %li.nav-item.active.dropdown
                     #navbarDropdown1.nav-link.text-center{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", role: "button"}
