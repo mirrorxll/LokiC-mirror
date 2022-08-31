@@ -24,9 +24,12 @@ class MultiTasksGrid
   filter(:creator, :enum, multiple: true, left: true, select: Account.ordered.map { |a| [a.name, a.id] })
 
   status_done_id = Status.find_by(name: 'done').id.to_s
-  filter(:status, :enum, multiple: true, select: Status.multi_task_statuses(created: true).pluck(:name, :id)) do |value, scope, grid|
+  filter(:status, :enum, multiple: true,
+                         select: Status.multi_task_statuses(created: true).pluck(:name, :id)) do |value, scope, grid|
     if value.include?(status_done_id)
-      scope.joins(:assignments).where(status: value).or(scope.joins(:assignments).where('multi_task_assignments.account_id': grid.current_account.id, 'multi_task_assignments.done': true))
+      scope.joins(:assignments).where(status: value).or(scope.joins(:assignments).where(
+                                                          'multi_task_assignments.account_id': grid.current_account.id, 'multi_task_assignments.done': true
+                                                        ))
     else
       ids_done = MultiTask.joins(:assignments).where('multi_task_assignments.account_id': grid.current_account.id, 'multi_task_assignments.done': true).map(&:id)
       scope.where(status: value).where.not(id: ids_done)
@@ -45,11 +48,7 @@ class MultiTasksGrid
 
   column(:status, mandatory: true, order: 'status_id', html: true) do |task|
     assignment = task.assignments.find_by(account: current_account)
-    status_name = if assignment.nil? || !assignment.done
-                    task.status.name
-                  else
-                    'done'
-                  end
+    status_name = assignment.nil? || !assignment.done ? task.status.name : 'done'
 
     attributes = { class: "bg-#{status_color(status_name)}" }
 
@@ -73,8 +72,9 @@ class MultiTasksGrid
     format(task.title) { |title| link_to(title, task) }
   end
 
-  column(:assignment_to, header: 'Assigned to', order: 'accounts.first_name, accounts.last_name', mandatory: true) do |task|
-    task.assignment_to.pluck(:first_name, :last_name).map { |r| [r[0] + ' ' + r[1]] }.join(', ')
+  column(:assignment_to, header: 'Assigned to', order: 'accounts.first_name, accounts.last_name',
+                         mandatory: true) do |task|
+    task.assignment_to.pluck(:first_name, :last_name).map { |r| ["#{r[0]} #{r[1]}"] }.join(', ')
   end
 
   column(:deadline, order: 'deadline', mandatory: true, &:deadline)
