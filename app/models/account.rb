@@ -70,6 +70,10 @@ class Account < ApplicationRecord # :nodoc:
     roles.map(&:name)
   end
 
+  def branch_names
+    cards.where(enabled: true).includes(:branch).map { |card| card.branch.name }
+  end
+
   def manager?
     role_names.include?('Manager')
   end
@@ -108,10 +112,6 @@ class Account < ApplicationRecord # :nodoc:
 
   def guest?
     role_names.include?('Guest')
-  end
-
-  def branch_names
-    cards.where(enabled: true).includes(:branch).map { |card| card.branch.name }
   end
 
   def self.ordered

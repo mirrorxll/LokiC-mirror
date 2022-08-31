@@ -3,6 +3,8 @@
 class AccountsGrid
   include Datagrid
 
+  attr_accessor :current_account
+
   # Scope
   scope do
     Account.ordered
@@ -29,12 +31,20 @@ class AccountsGrid
   end
 
   column(:roles, mandatory: true) do |account|
-    account.role_names.join(', ')
+    account.role_names.join('<br>').html_safe
+  end
+
+  column(:branches, mandatory: true) do |account|
+    account.branch_names.map(&:titleize).join('<br>').html_safe
   end
 
   column(:login, mandatory: true) do |account|
     format(account) do
-      link_to('login', account_impersonate_path(account), method: :post)
+      if account.eql?(current_account)
+        link_to('[ back to origin ]', account_stop_impersonating_path, method: :delete)
+      else
+        link_to('[ login ]', account_impersonate_path(account), method: :post)
+      end
     end
   end
 end
