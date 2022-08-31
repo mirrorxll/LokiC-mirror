@@ -41,7 +41,7 @@ module Accounts
       @grid = AccountsGrid.new(params[:accounts_grid]) do |scope|
         scope.where(default).order(
           Arel.sql(
-            "CASE WHEN id = #{current_account.id} THEN '1' END DESC, CONCAT(first_name, ' ', last_name)"
+            "CASE WHEN accounts.id = #{current_account.id} THEN '1' END DESC, CONCAT(first_name, ' ', last_name)"
           )
         )
       end
