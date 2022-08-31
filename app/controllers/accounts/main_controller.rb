@@ -40,7 +40,8 @@ module Accounts
       filter_params = params[:accounts_grid] || default
 
       @grid = AccountsGrid.new(filter_params)
-      @grid.current_account = current_account
+      @grid.current_account = true
+      @grid.true_account = true
     end
 
     def account_params

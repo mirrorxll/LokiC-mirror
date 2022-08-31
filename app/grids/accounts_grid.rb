@@ -3,7 +3,7 @@
 class AccountsGrid
   include Datagrid
 
-  attr_accessor :current_account
+  attr_accessor :current_account, :true_account
 
   # Scope
   scope do
@@ -40,7 +40,9 @@ class AccountsGrid
 
   column(:login, mandatory: true) do |account|
     format(account) do
-      if account.eql?(current_account)
+      if account.eql?(true_account)
+        '---'
+      elsif account.eql?(current_account)
         link_to('[ back to origin ]', account_stop_impersonating_path, method: :delete)
       else
         link_to('[ login ]', account_impersonate_path(account), method: :post)
