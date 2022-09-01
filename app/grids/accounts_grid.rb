@@ -77,6 +77,10 @@ class AccountsGrid
     account.branch_access_names.map(&:titleize).join('<br>').html_safe
   end
 
+  column(:last_activity, mandatory: true) do |account|
+    account.updated_at.localtime.strftime('%F %R (%z)')
+  end
+
   column(:login, mandatory: true) do |account|
     format(account) do
       if account.eql?(true_account)
