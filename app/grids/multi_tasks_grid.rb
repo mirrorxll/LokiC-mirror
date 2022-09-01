@@ -24,8 +24,7 @@ class MultiTasksGrid
   filter(:creator, :enum, multiple: true, left: true, select: Account.ordered.map { |a| [a.name, a.id] })
 
   status_done_id = Status.find_by(name: 'done').id.to_s
-  filter(:status, :enum, multiple: true,
-                         select: Status.multi_task_statuses(created: true).pluck(:name, :id)) do |value, scope, grid|
+  filter(:status, :enum, multiple: true, select: Status.multi_task_statuses(created: true).pluck(:name, :id)) do |value, scope, grid|
     if value.include?(status_done_id)
       scope.joins(:assignments).where(status: value).or(scope.joins(:assignments).where(
                                                           'multi_task_assignments.account_id': grid.current_account.id, 'multi_task_assignments.done': true
@@ -46,7 +45,7 @@ class MultiTasksGrid
   # Columns
   column(:id, mandatory: true, header: 'ID')
 
-  column(:status, mandatory: true, order: 'status_id', html: true) do |task|
+  column(:status, mandatory: true, order: 'statuses.name', html: true) do |task|
     assignment = task.assignments.find_by(account: current_account)
     status_name = assignment.nil? || !assignment.done ? task.status.name : 'done'
 
@@ -87,11 +86,7 @@ class MultiTasksGrid
     format('Google doc') { |sow| link_to sow, task.sow } unless task.sow.blank?
   end
 
-  column(:last_comment, header: 'Last comment', order: lambda { |scope|
-    scope.joins(:comments).group('tasks.id')
-         .select('tasks.*, MAX(comments.created_at) as max_created_at')
-         .order('max_created_at')
-  }, mandatory: true, html: true) do |task|
+  column(:last_comment, header: 'Last comment', mandatory: true, html: true) do |task|
     last_comment = task.last_comment
     if last_comment.nil?
       last_comment

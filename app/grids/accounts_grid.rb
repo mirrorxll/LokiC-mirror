@@ -53,9 +53,9 @@ class AccountsGrid
   end
 
   # columns
-  column(:id, mandatory: true, header: 'ID', order: false)
+  column(:id, mandatory: true, header: 'ID')
 
-  column(:name, mandatory: true) do |account|
+  column(:name, mandatory: true, order: 'first_name, last_name') do |account|
     format(account) { link_to(account.name, account) }
   end
 
@@ -77,7 +77,7 @@ class AccountsGrid
     account.branch_access_names.map(&:titleize).join('<br>').html_safe
   end
 
-  column(:last_activity, mandatory: true) do |account|
+  column(:last_activity, mandatory: true, order: 'accounts.updated_at') do |account|
     account.updated_at.localtime.strftime('%F %R (%z)')
   end
 

@@ -4,7 +4,7 @@ class WorkRequestsGrid
   include Datagrid
 
   # Scope
-  scope { WorkRequest.order(id: :desc) }
+  scope { WorkRequest.includes(:status, :requester).order(id: :desc) }
 
   # Filter
   accounts = WorkRequest.where.not(requester: nil).map { |wr| [wr.requester.name, wr.requester.id] }
@@ -22,7 +22,7 @@ class WorkRequestsGrid
     priorities[req.priority.name]
   end
 
-  column(:status, header: 'status', html: true) do |req|
+  column(:status, header: 'status', html: true, order: 'statuses.name') do |req|
     attributes =
       if req.status.name.in?(%w[blocked canceled])
         {
