@@ -74,7 +74,7 @@ class AccountsGrid
   end
 
   column(:branches, mandatory: true) do |account|
-    account.branch_names.map(&:titleize).join('<br>').html_safe
+    account.branch_access_names.map(&:titleize).join('<br>').html_safe
   end
 
   column(:login, mandatory: true) do |account|

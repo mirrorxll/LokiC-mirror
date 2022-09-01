@@ -74,6 +74,10 @@ class Account < ApplicationRecord # :nodoc:
     cards.where(enabled: true).includes(:branch).map { |card| card.branch.name }
   end
 
+  def branch_access_names
+    cards.where(enabled: true).includes(:branch).map { |card| "#{card.branch.name} (#{card.access_level.name})" }
+  end
+
   def manager?
     role_names.include?('Manager')
   end
