@@ -23,8 +23,8 @@ class AccountsGrid
   filter(:roles, :enum, multiple: true, select: AccountRole.pluck(:name, :id) + [nil, nil]) do |values, scope|
     scope.joins(:roles).where(account_roles: { id: values })
   end
-
-  filter(:branches, :enum, multiple: true, select: Branch.pluck(:name, :id)) do |values, scope|
+  branches = Branch.all.map { |b| [b.name.titleize, b.id]}
+  filter(:branches, :enum, multiple: true, select: branches)  do |values, scope|
     scope.includes(cards: [:branch]).where(account_cards: { enabled: true }, branches: { id: values })
   end
 
