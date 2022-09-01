@@ -5,27 +5,51 @@ class AccountsGrid
 
   attr_accessor :current_account, :true_account
 
-  scope { Account.all }
+  scope { Account.all.includes(:slack, { cards: [:branch] }) }
 
   # filter
   filter(:name, :string, header: 'Name(RLIKE)') do |value, scope|
     scope.where(
-      Arel.sql(
-        %|CONCAT(first_name, ' ', last_name) RLIKE "#{value}"|
-      )
+      Arel.sql(%|CONCAT(first_name, ' ', last_name) RLIKE "#{value}"|)
     )
   end
 
-  filter(:with_slack_account, :xboolean, header: 'With attached slack?') do |value, scope|
-    value ? scope.includes(:slack).where.not({ slack_accounts: { account_id: nil } }) : scope.includes(:slack).where({ slack_accounts: { account_id: nil } })
+  all_roles = AccountRole.pluck(:name, :id)
+  filter(:roles, :enum, multiple: true, select: all_roles) do |values, scope|
+    ids_with_filtered_roles = AccountRole.where(id: values).flat_map { |r| r.accounts.ids }.uniq
+    scope.where(id: ids_with_filtered_roles)
   end
 
-  filter(:roles, :enum, multiple: true, select: AccountRole.pluck(:name, :id) + [nil, nil]) do |values, scope|
-    scope.joins(:roles).where(account_roles: { id: values })
+  branches = Branch.all.map { |b| [b.name.titleize, b.id] }
+  filter(:branches, :enum, multiple: true, select: branches) do |values, scope|
+    scope.where(account_cards: { enabled: true }, branches: { id: values })
   end
-  branches = Branch.all.map { |b| [b.name.titleize, b.id]}
-  filter(:branches, :enum, multiple: true, select: branches)  do |values, scope|
-    scope.includes(cards: [:branch]).where(account_cards: { enabled: true }, branches: { id: values })
+
+  filter(:with_slack_account, :xboolean, header: 'With slack account?') do |value, scope|
+    where = { slack_accounts: { account_id: nil } }
+    value ? scope.where.not(where) : scope.where(where)
+  end
+
+  filter(:with_roles, :xboolean, header: 'With roles?') do |value, scope|
+    filtered_account_ids =
+      if value
+        Account.find_each.select { |a| a.roles.present? }
+      else
+        Account.find_each.select { |a| a.roles.none? }
+      end
+
+    scope.where(id: filtered_account_ids)
+  end
+
+  filter(:without_branches, :xboolean, header: 'With branches?') do |value, scope|
+    filtered_account_ids =
+      if value
+        Account.find_each.select { |a| a.branch_names.present? }
+      else
+        Account.find_each.select { |a| a.branch_names.none? }
+      end
+
+    scope.where(id: filtered_account_ids)
   end
 
   # columns

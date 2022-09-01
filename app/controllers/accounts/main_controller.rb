@@ -23,8 +23,12 @@ module Accounts
     def update
       @account.update(account_params)
       @account.update(creator: Account.first) unless @account.creator
-      @account.slack.update(account: nil) if @slack_account && @account.slack
-      @slack_account&.update(account: @account)
+
+      if @slack_account
+        @slack_account.update(account: @account)
+      else
+        @account.slack&.update(account: nil)
+      end
     end
 
     private

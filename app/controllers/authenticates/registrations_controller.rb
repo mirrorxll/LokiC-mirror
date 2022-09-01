@@ -19,7 +19,7 @@ module Authenticates
       slack_account = SlackAccount.find_by(slack_account_params)
       if slack_account != current_account.slack
         current_account.slack&.update!(account: nil)
-        slack_account.update!(account: current_account)
+        slack_account&.update!(account: current_account)
       end
 
       fcd_slack_channel = FactCheckingChannel.find_by(fcd_slack_channel_params)
