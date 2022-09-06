@@ -35,7 +35,7 @@ every '10 * * * *' do
 end
 
 every '0 0-22 * * *' do
-  rake 'scrape_task:schemas_tables'
+  rake 'schemas_tables'
 end
 
 CronTab.all.each do |tab|

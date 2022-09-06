@@ -11,7 +11,13 @@
         -@lists.each_key do |list|
           -filled = @current_list.eql?(list) ? '' : '-outline'
           =link_to(list, url_for(list: list), class: "btn btn-sm btn#{filled}-dark")
-      =icon('fa', 'sort', class: 'mr-3')
+      =icon('fa', 'sort', class: "mr-3", id: 'orderList')
+      :javascript
+        $('#orderList').popover({
+          placement: 'bottom',
+          title: 'test',
+          content: 'test'
+        })
     .btn-group
       -if @current_list
         =link_to('filter', '#', class: 'btn btn-sm btn-outline-dark',
