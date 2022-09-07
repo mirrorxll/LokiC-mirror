@@ -21,5 +21,6 @@ RailsAdmin.config do |config|
       Frequency Level MainAgency MainOpportunity PhotoBucket Publication
       Reminder RevenueType ScrapeTask SlackAccount StagingTable
       State Status StoryType StoryTypeIteration Tag MultiTask TimeFrame
+      ExceptionRecord
     ]
 end

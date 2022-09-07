@@ -3,34 +3,15 @@
 require 'action_text'
 
 class ApplicationController < ActionController::Base
+  include Error::ErrorHandler
+
   helper ActionText::Engine.helpers
   helper_method :current_account
 
   before_action :authenticate_account!
   before_action :unconfirmed_multi_tasks
 
-  rescue_from StandardError,                with: :standard_error
-  rescue_from ActiveRecord::RecordNotFound, with: :not_found
-  rescue_from ActiveRecord::RecordInvalid,
-              ActiveRecord::RecordNotSaved,  with: :unprocessable_entity
-
   private
-
-  def not_found(exception)
-    @exception = exception
-    render 'errors/not_found'
-  end
-
-  def standard_error(exception)
-    @exception = exception
-    @backtrace = exception.backtrace.first.split(' ').first
-    render 'errors/standard_error'
-  end
-
-  def unprocessable_entity(exception)
-    @exception = exception
-    render 'errors/unprocessable_entity'
-  end
 
   def authenticate_account!
     return if (cookies.encrypted[:remember_me] || session[:auth_token]) && current_account

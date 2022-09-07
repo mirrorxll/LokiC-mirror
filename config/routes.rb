@@ -24,11 +24,6 @@ Rails.application.routes.draw do
   get   'profile', to: 'authenticates/registrations#edit'
   patch 'profile', to: 'authenticates/registrations#update'
 
-  # custom error pages
-  # get '/404', to: 'errors#not_found', via: :all
-  # get '/500', to: 'errors#standard_error', via: :all
-  # get '/422', to: 'errors#unprocessable', via: :all
-
   scope module: :accounts do
     resources :accounts, controller: :main, except: :destroy do
       resource  :status, only: :update
