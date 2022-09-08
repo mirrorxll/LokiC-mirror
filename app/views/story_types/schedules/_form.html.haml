@@ -2,7 +2,7 @@
   #manual_forms
   .row.mt-3
     .col-6
-      =form.submit 'schedule', class: 'btn btn-sm btn-outline-dark'
+      =form.submit 'schedule', class: 'btn btn-sm btn-outline-dark', disabled: true
     .col-6
       #add_form.btn.btn-sm.btn-outline-dark.ml-2
         =icon('fa', 'plus')
@@ -19,7 +19,7 @@
                   <label for="start_date">start date:</label>
                 </div>
                 <div class="col-5">
-                  <input class="w-100" type="date" name="manual[${hex}[start_date]]" id="start_date_${hex}">
+                  <input class="w-100" type="date" name="manual[${hex}[start_date]]" id="start_date_${hex}" required="required">
                 </div>
              </div>
              <div class="row">
@@ -27,7 +27,7 @@
                   <label for="limit">stories per day:</label>
                 </div>
                 <div class="col-5">
-                  <input class="w-100" type="text" name="manual[${hex}[limit]]" id="limit_${hex}">
+                  <input class="w-100" type="text" name="manual[${hex}[limit]]" id="limit_${hex}" required="required">
                 </div>
              </div>
              <div class="row">
@@ -67,6 +67,8 @@
 
            </div>`
     );
+    $("input[value='schedule']").attr('disabled', false)
+
     function secureRandom(n){
       let result = '';
       while (n--){
@@ -79,5 +81,5 @@
 
   function removeForm(elem) {
     $(elem).remove();
+    if (manual_forms.children().length === 0) { $("input[value='schedule']").attr('disabled', true) }
   }
-
