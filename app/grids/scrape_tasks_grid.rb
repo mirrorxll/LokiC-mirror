@@ -72,12 +72,7 @@ class ScrapeTasksGrid
 
   scrape_task_tags = ScrapeTaskTag.pluck(:name, :id)
   filter(:tag, :enum, multiple: true, select: scrape_task_tags) do |value, scope|
-    # scp = scope.includes(:tags)
-    # p scp
-    # # p scope
-    # p "111111111111111111111111111111111"
      scope.where('scrape_task_tags.id': value)
-    #scope.where(tags: { id: value })
   end
 
   filter(:with_data_location, :xboolean, header: 'With data location?') do |value, scope|
