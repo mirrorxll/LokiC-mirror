@@ -15,7 +15,7 @@ class ScrapeTasksGrid
   end
 
   # Filters
-  filter(:name, :string, header: 'Nailsame(RLIKE)') do |value, scope|
+  filter(:name, :string, header: 'Name(RLIKE)') do |value, scope|
     scope.where('name RLIKE ?', value)
   end
 
