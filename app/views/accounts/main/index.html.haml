@@ -1,7 +1,7 @@
 %hr/
 #header.d-flex.justify-content-between.align-items-center.mt-3
   %span
-    Total: #{@grid.assets.total_count}
+    Total: #{@grid.assets.count}
   %span.font-weight-bold
     ACCOUNTS
   .d-inline-block.text-right.text-uppercase
@@ -11,23 +11,18 @@
         -filled = (!params[:list].in?(lists) && list.eql?('active')) || params[:list].eql?(list) ? '' : '-outline'
         =link_to(list, url_for(list: list), class: "btn btn-sm btn#{filled}-dark")
     .btn-group
-      =link_to('filter', '#', class: 'disabled btn btn-sm btn-outline-dark',
-               "data-target" => "#filter", "data-toggle" => "modal")
+      =link_to('filter', '#', class: 'btn btn-sm btn-outline-dark',
+               "data-target" => "#filter", "data-toggle" => "collapse")
       =link_to('create', '#', class: 'btn btn-sm btn-outline-dark',
                "data-target" => "#createAccountModal", "data-toggle" => "modal")
 %hr/
 
-#filter.mt-3.mb-3.collapse{ class: (params[:account_grid] ? 'show' : '') }
+#filter.mt-3.mb-3.collapse
   =datagrid_form_for @grid, url: accounts_path(list: @current_list)
 
 .row.small.mb-5
   .col-12
     =datagrid_table(@grid)
-
-.fixed-bottom.bg-light
-  .row
-    .col-12.p-2
-      =paginate @grid.assets
 
 #createAccountModal.modal.fade{ "aria-hidden" => "true", "aria-labelledby" => "createAccountModal",
                                 'data-backdrop' => 'static', "data-keyboard" => "false" }

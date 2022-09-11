@@ -3,7 +3,7 @@ function onEnterAddTag(event) {
 
     let checksSet =  this.form.querySelector('.form-check');
     let tags = [...checksSet.querySelectorAll('label')].map((i) => i.textContent);
-    let value = this.value.trim();
+    let value = this.value;
 
     if(tags.includes(value)) return false;
 

@@ -7,10 +7,10 @@ class StoryTypeProductionRemovalsGrid
   scope { ProductionRemoval.order(id: :desc) }
 
   # Filters
-  accounts = Account.all.map { |r| [r.name, r.id] }.sort
+  accounts = Account.ordered.map { |r| [r.name, r.id] }
   filter(:developer, :enum, select: accounts)
 
-  accounts = Account.all.map { |r| [r.name, r.id] }.sort
+  accounts = Account.ordered.map { |r| [r.name, r.id] }
   filter(:editor, :enum, select: accounts) do |value, scope|
     scope.where(iterations: { story_types: { editors: { id: value } } })
   end

@@ -5,7 +5,7 @@
         assignment to:
       .col-9
         .row.small
-          =form.collection_select 'assignment_to', Account.all.order([:first_name, :last_name]), :id, :name, { include_blank: '' , selected: task.main_assignee.nil? ? '' : task.main_assignee.id, class: 'small'}
+          =form.collection_select 'assignment_to', Account.ordered, :id, :name, { include_blank: '' , selected: task.main_assignee.nil? ? '' : task.main_assignee.id, class: 'small'}
   -if current_account_permissions('multi_tasks', ['assistants'])
     .row.small.font-weight-bold.mt-3
       .col-3
@@ -14,7 +14,7 @@
       .col-9#assistantsTaskForm.small
         -task.assistants.each  do |assistant|
           .row.mt-1
-            =form.collection_select 'assistants[]', Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' , selected: assistant.id, class: 'small'}
+            =form.collection_select 'assistants[]', Account.ordered, :id, :name, { prompt: '' , selected: assistant.id, class: 'small'}
             .ml-1{ onclick: "removeDate(this)" }
               =icon('fa', 'minus')
   -if current_account_permissions('multi_tasks', ['notification_to'])
@@ -25,7 +25,7 @@
       .col-9#notificationToTaskForm.small
         -task.notification_to.each  do |assistant|
           .row.mt-1
-            =form.collection_select 'notification_to[]', Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' , selected: assistant.id, class: 'small'}
+            =form.collection_select 'notification_to[]', Account.ordered, :id, :name, { prompt: '' , selected: assistant.id, class: 'small'}
             .ml-1{ onclick: "removeDate(this)" }
               =icon('fa', 'minus')
 

@@ -1,10 +1,14 @@
--card_name = card.branch.name.humanize.upcase
+-branch_name = card.branch.name
+-card_name = branch_name.humanize.upcase
 
 .col-4.col-lg-3.mb-4{ id: "card#{card.id}" }
   .card
     .card-body{ class: "bg-#{card.enabled ? 'light' : 'white'}" }
-      %h5.card-title{ class: "text-#{card.enabled ? 'dark' : 'muted'}" }
-        =card_name
+      %h5.card-title{ class: card.enabled ? nil : 'text-muted' }
+        -if card.enabled
+          =link_to(card_name, "/#{branch_name}", class: 'text-dark', target: '_blank')
+        -else
+          =card_name
       .card-subtitle.mb-2.text-muted.mb-2
         =card.access_level.name.upcase
       .d-flex.justify-content-between

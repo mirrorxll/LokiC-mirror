@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
 
   before_action :authenticate_account!
   before_action :unconfirmed_multi_tasks
+  before_action { @current_account&.touch }
 
   private
 

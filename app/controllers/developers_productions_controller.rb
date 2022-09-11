@@ -9,12 +9,13 @@ class DevelopersProductionsController < ApplicationController # :nodoc:
       @rows_reports = ExportedStoryType.all.public_send(key, value) if value.present?
     end
 
-    @rows_reports = @rows_reports.select("week_id,
-                                          sum(count_samples) as sum_total,
-                                          sum(if(first_export = 1, count_samples, 0)) as sum_first_export,
-                                          sum(if(first_export != 1, count_samples, 0)) as sum_follow_up_export,
-                                          count(if(first_export = 1, 1, NULL)) as count_first,
-                                          count(if(first_export != 1, 1, NULL)) as count_follow_up").group(:week_id).order(week_id: :desc)
+    @rows_reports = @rows_reports.select(
+      "week_id,
+      sum(count_samples) as sum_total,
+      sum(if(first_export = 1, count_samples, 0)) as sum_first_export,
+      sum(if(first_export != 1, count_samples, 0)) as sum_follow_up_export,
+      count(if(first_export = 1, 1, NULL)) as count_first,
+      count(if(first_export != 1, 1, NULL)) as count_follow_up").group(:week_id).order(week_id: :desc)
   end
 
   def scores

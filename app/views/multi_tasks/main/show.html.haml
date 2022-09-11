@@ -58,7 +58,7 @@
               %div{"aria-controls" => "#subtasksCollapse", "aria-expanded" => "true", "data-target" => "#subtasksCollapse", "data-toggle" => "collapse", type: "button"}
                 SUB TASKS - #{@multi_task.subtasks.count}
             .col-2.text-right
-              -if %w[show new_form].map { |access| current_account_permissions('multi_tasks', ['sub_tasks', access]) }.all? && @multi_task.creator?(current_account)
+              -if %w[show new_form].map { |access| current_account_permissions('multi_tasks', ['sub_tasks', access]) }.all?
                 =link_to '[ create ]', new_subtask_multi_tasks_path(parent_task: @multi_task), remote: true
         #subtasksCollapse.collapse.p-3{"data-parent" => "#subtasks", class: @multi_task.subtasks.count > 0 ? 'show' : '' }
           -if current_account_permissions('multi_tasks', %w[sub_tasks show])

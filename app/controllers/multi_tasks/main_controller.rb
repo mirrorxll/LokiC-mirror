@@ -86,7 +86,7 @@ module MultiTasks
       statuses = Status.multi_task_statuses(created: true)
       @lists = HashWithIndifferentAccess.new
 
-      @lists['assigned'] = { assignment_to: current_account, status: statuses } if @multi_tasks_permissions['grid']['assigned']
+      @lists['assigned'] = { 'multi_task_assignments.account_id': current_account.id, status: statuses } if @multi_tasks_permissions['grid']['assigned']
       @lists['created'] = { creator: current_account, status: statuses } if @multi_tasks_permissions['grid']['created']
       @lists['all'] = { status: statuses } if @multi_tasks_permissions['grid']['all']
       @lists['archived'] = { status: Status.find_by(name: 'archived') } if @multi_tasks_permissions['grid']['archived']
