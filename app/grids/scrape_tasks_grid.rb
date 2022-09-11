@@ -10,7 +10,7 @@ class ScrapeTasksGrid
   scope do
     ScrapeTask.includes(
       :data_set, :status, :frequency,
-      :scraper, :state, :general_comment
+      :scraper, :state, :general_comment, :tags
     ).order(id: :desc)
   end
 
@@ -70,6 +70,11 @@ class ScrapeTasksGrid
     scope.where(frequencies: { id: value })
   end
 
+  scrape_task_tags = ScrapeTaskTag.pluck(:name, :id)
+  filter(:tag, :enum, multiple: true, select: scrape_task_tags) do |value, scope|
+     scope.where('scrape_task_tags.id': value)
+  end
+
   filter(:with_data_location, :xboolean, header: 'With data location?') do |value, scope|
     scp = scope.includes(:table_locations)
     value ? scp.where.not(table_locations: { id: nil }) : scp.where(table_locations: { id: nil })
@@ -92,6 +97,8 @@ class ScrapeTasksGrid
   column(:id, header: 'Id', mandatory: true, &:id)
 
   column(:state, header: 'State', order: 'states.short_name', mandatory: true) { |s_task| s_task.state&.short_name }
+
+  column(:tags, header: 'Tag', order: 'scrape_task_tags_task.tag_id', mandatory: true) {|scrap_task| scrap_task.tags.pluck(:name).join(', ') }
 
   column(:status, order: 'statuses.name', html: true, mandatory: true) do |s_task|
     attributes = { class: "bg-#{status_color(s_task.status.name)}" }
