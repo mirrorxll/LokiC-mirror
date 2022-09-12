@@ -70,6 +70,11 @@ module StoryTypes
       @grid = StoryTypeIterationStoriesGrid.new(grid_params) do |scope|
         scope.where(story_type_id: params[:story_type_id], story_type_iteration_id: params[:iteration_id])
       end
+      @grid.env = env
+    end
+
+    def env
+      %w[staging development test].include?(Rails.env) ? 'staging' : Rails.env
     end
   end
 end

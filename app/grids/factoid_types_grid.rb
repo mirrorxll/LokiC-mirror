@@ -30,6 +30,12 @@ class FactoidTypesGrid
     status = Status.find(value)
     scope.where(status: status)
   end
+  filter(:limpar_factoid_id, :string, left: true, multiple: ',', header: 'Limpar ids') do |value, scope, grid|
+    factoids = Factoid.where(limpar_factoid_id: value.map(&:strip))
+    factoids_factoid_types_ids = factoids.pluck(:factoid_type_id)
+
+    scope.where(id: factoids_factoid_types_ids)
+  end
   filter(:condition1, :dynamic, left: false, header: 'Dynamic condition 1')
   filter(:condition2, :dynamic, left: false, header: 'Dynamic condition 2')
   column_names_filter(header: 'Extra Columns', left: false, checkboxes: false)
