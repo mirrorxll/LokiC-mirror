@@ -70,7 +70,7 @@ class ScrapeTasksGrid
     scope.where(frequencies: { id: value })
   end
 
-  scrape_task_tags = ScrapeTaskTag.pluck(:name, :id)
+  scrape_task_tags = ScrapeTaskTag.order(:name).pluck(:name, :id)
   filter(:tag, :enum, multiple: true, select: scrape_task_tags) do |value, scope|
      scope.where('scrape_task_tags.id': value)
   end
@@ -98,7 +98,7 @@ class ScrapeTasksGrid
 
   column(:state, header: 'State', order: 'states.short_name', mandatory: true) { |s_task| s_task.state&.short_name }
 
-  column(:tags, header: 'Tag', order: 'scrape_task_tags_task.tag_id', mandatory: true) {|scrap_task| scrap_task.tags.pluck(:name).join(', ') }
+  # column(:tags, header: 'Tag', order: 'scrape_task_tags_task.tag_id', mandatory: true) {|scrap_task| scrap_task.tags.pluck(:name).join(', ') }
 
   column(:status, order: 'statuses.name', html: true, mandatory: true) do |s_task|
     attributes = { class: "bg-#{status_color(s_task.status.name)}" }
@@ -118,6 +118,14 @@ class ScrapeTasksGrid
 
   column(:name, mandatory: true) do |s_task|
     format(s_task.name) { |name| link_to(name, s_task) }
+  end
+
+  column(:tags, header: 'Tag', order: 'scrape_task_tags_task.tag_id', mandatory: true) do |task|
+    format(task) do |name|
+      name.tags.map do |tag|
+        link_to tag.name, url_for(list: @current_list, scrape_tasks_grid: { tag: [tag.id] })
+      end.join('<br>').html_safe
+    end
   end
 
   column(:deadline, header: 'Deadline', mandatory: true, &:deadline)
