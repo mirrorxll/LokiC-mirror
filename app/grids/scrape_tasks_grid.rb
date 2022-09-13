@@ -98,8 +98,6 @@ class ScrapeTasksGrid
 
   column(:state, header: 'State', order: 'states.short_name', mandatory: true) { |s_task| s_task.state&.short_name }
 
-  # column(:tags, header: 'Tag', order: 'scrape_task_tags_task.tag_id', mandatory: true) {|scrap_task| scrap_task.tags.pluck(:name).join(', ') }
-
   column(:status, order: 'statuses.name', html: true, mandatory: true) do |s_task|
     attributes = { class: "bg-#{status_color(s_task.status.name)}" }
 
