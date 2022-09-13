@@ -15,7 +15,7 @@ module Api
             render json: (ScrapeTask.all.map do |scrape_task|
               {
                 number: scrape_task.id,
-                created_by: scrape_task.creator.name,
+                created_by: scrape_task.creator&.name,
                 scraper: scrape_task.scraper&.name,
                 status: scrape_task.status.name,
                 tags: scrape_task.tags.map(&:name),
