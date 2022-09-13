@@ -6,7 +6,7 @@
     #sourceProperties
       =render 'factoid_types/properties/factoid_type_source_properties'
   -if current_account_permissions('factoid_types', %w(developer show))
-    .col-10.offset-1
+    .col-10.offset-1.mt-3
       .row.mb-1.font-weight-bold
         .col
           developer
@@ -20,8 +20,9 @@
                 =render 'factoid_types/developers/form', factoid_type: @factoid_type
               -else
                 ='---'
-  .col-10.offset-1.text-center.d-none
-    =render 'factoid_types/main/additional_properties'
+  -if current_account_permissions('factoid_types', %w(comment show))
+    .col-10.offset-1.text-center
+      =render 'factoid_types/main/comment'
 .row.border-top.mx-0.mb-3.pt-3.text-center
   .col-10.offset-1
     factoid type's code
