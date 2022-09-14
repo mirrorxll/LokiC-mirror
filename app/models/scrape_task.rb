@@ -14,6 +14,9 @@ class ScrapeTask < ApplicationRecord
 
   after_create { record_to_change_history(self, 'created', name, creator) }
   before_update :tracking_changes
+  before_save do |scrap_task|
+    scrap_task.name = scrap_task.name.strip
+  end
 
   validates_presence_of   :name
   validates_uniqueness_of :name, case_sensitive: false
