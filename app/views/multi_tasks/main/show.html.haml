@@ -23,7 +23,7 @@
       .card-header.p-1
         .d-flex.justify-content-between.small
           COMMENTS
-          -if current_account_permissions('multi_tasks', %w[comments new_form]) && (current_account.manager? || current_account.eql?(@multi_task.creator) || current_account.in?(@multi_task.assignment_to))
+          -if current_account_permissions('multi_tasks', %w[comments new_form]) && (current_account.manager? || current_account.multi_tasks_manager? || current_account.eql?(@multi_task.creator) || current_account.in?(@multi_task.assignment_to))
             #comment_form
               =link_to('[ add comment ]',
                        new_multi_task_comment_path(@multi_task, subtype: 'user comment'),
@@ -47,7 +47,7 @@
               -if %w[show edit_form].map { |access| current_account_permissions('multi_tasks', ['notes', access]) }.all? && @note
                 =render 'multi_tasks/notes/link_edit', note: @note
         #notesCollapse.collapse{"data-parent" => "#notes"}
-          -if current_account_permissions('multi_tasks', %w[notes show]) && (current_account.eql?(@multi_task.creator) || current_account.in?(@multi_task.assignment_to))
+          -if current_account_permissions('multi_tasks', %w[notes show]) && (current_account.manager? || current_account.multi_tasks_manager? || current_account.eql?(@multi_task.creator) || current_account.in?(@multi_task.assignment_to))
             =render 'multi_tasks/notes/note', note: @note
   .col-12
     #subtasks
