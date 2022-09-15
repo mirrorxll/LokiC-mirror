@@ -7,7 +7,7 @@
   </div>
 
   <div class="col">
-    <% @account.roles.each do |r| %>
+    <% @account.roles.order(:order).each do |r| %>
         <%= r.name %>
       <br/>
     <% end %>
