@@ -11,7 +11,6 @@ require("trix");
 require("@rails/actiontext");
 require("datatables.net-bs4");
 require("./common");
-require("./story_types/comment_editing");
 require("./story_types/properties_form");
 require("./factoids/purge");
 require('froala-editor/js/froala_editor.min')

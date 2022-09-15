@@ -113,7 +113,8 @@ module FactoidTypes
         :source_type,
         :source_name,
         :source_link,
-        :original_publish_date
+        :original_publish_date,
+        :comment
       ).reject { |_, v| v.blank? }
 
       attrs[:current_account] = current_account

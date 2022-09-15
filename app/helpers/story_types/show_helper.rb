@@ -11,17 +11,13 @@ module StoryTypes
     end
 
     def purge_export_availability
-      stories = @iteration.stories.where(backdated: false)
-      if @story_type.iteration.eql?(@iteration) && @story_type.staging_table && @iteration.creation && @iteration.schedule
-        if @iteration.export.eql?(true) && !@iteration.purge_export.eql?(true)
-          story = stories.where.not(published_at: nil).order(:published_at).first
-          true unless story && story.published_at <= Time.now
-        elsif @iteration.export.eql?(true) && @iteration.purge_export.eql?(true)
-          false
-        else
-          exported = stories.where.not("pl_#{PL_TARGET}_story_id".to_sym => nil)
-          true if exported.count.positive?
-        end
+      if @story_type.iteration.eql?(@iteration) && @story_type.staging_table && @iteration.creation && @iteration.schedule && @iteration.export.eql?(true)
+        return false if @iteration.purge_export.eql?(true)
+
+        stories       = @iteration.stories.where(backdated: false).where.not(published_at: nil)
+        not_published = stories.map { |s| s.published_at > Time.now }.all?
+
+        true if current_account.manager? || (current_account.content_manager? && not_published)
       end
     end
   end
