@@ -20,7 +20,6 @@ class ScrapeTasksGrid
   end
 
   filter(:data_set_location, :string, header: 'Data Location(RLIKE)') do |value, scope|
-    p '!' * 100, value
     location_ids = TableLocation.all.to_a.select do |tl|
       p tl.full_name[/#{Regexp.escape(value)}/i]
     end.map(&:id)
@@ -71,8 +70,9 @@ class ScrapeTasksGrid
   end
 
   scrape_task_tags = ScrapeTaskTag.order(:name).pluck(:name, :id)
-  filter(:tag, :enum, multiple: true, select: scrape_task_tags) do |value, scope|
-     scope.where('scrape_task_tags.id': value)
+  filter(:tag, :enum, multiple: true, select: scrape_task_tags) do |values, scope|
+    ids_with_filtered_roles = ScrapeTaskTag.where(id: values).flat_map { |r| r.scrape_tasks.ids }.uniq
+    scope.where(id: ids_with_filtered_roles)
   end
 
   filter(:with_data_location, :xboolean, header: 'With data location?') do |value, scope|
@@ -122,7 +122,7 @@ class ScrapeTasksGrid
     format(task) do |name|
       name.tags.map do |tag|
         link_to tag.name, url_for(list: @current_list, scrape_tasks_grid: { tag: [tag.id] })
-      end.join('<br>').html_safe
+      end.join(', ').html_safe
     end
   end
 
