@@ -1,6 +1,10 @@
 -status = @factoid_type.status
 
 .current_progress_status
+  -if %w[blocked archived].include?(status.name)
+    .small.d-inline-block
+      =@factoid_type.status_comment.body
+
   =link_to(status.name, '#', class: "badge badge-pill badge-#{status_color(status.name)}")
 
 .change_progress_status_form.d-none

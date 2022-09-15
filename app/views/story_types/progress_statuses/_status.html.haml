@@ -1,6 +1,10 @@
 -status = @story_type.status
 
 .current_progress_status
+  -if %w[blocked archived].include?(status.name)
+    .small.d-inline-block
+      =@story_type.status_comment.body
+
   =link_to(status.name, '#', class: "badge badge-pill badge-#{status_color(status.name)}")
   :javascript
     document.querySelector('.current_progress_status a').addEventListener('click', function (evt) {
