@@ -14,7 +14,7 @@
     <div class="form-group mb-0">
       <input class="underline-input pt-0" list='tagsDataList'>
       <datalist id="tagsDataList">
-        <% ScrapeTaskTag.all.each do |tag| %>
+        <% ScrapeTaskTag.order(:name).all.each do |tag| %>
           <option value="<%= tag.name %>"></option>
         <% end %>
       </datalist>
