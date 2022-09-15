@@ -7,9 +7,7 @@ class DataSet < ApplicationRecord # :nodoc:
     build_status_comment(subtype: 'status comment')
     build_general_comment(subtype: 'general comment')
   end
-  before_save do |data_set|
-    data_set.name = data_set.name.strip
-  end
+  before_save { name.strip! }
 
   belongs_to :account
   belongs_to :sheriff, class_name: 'Account', optional: true

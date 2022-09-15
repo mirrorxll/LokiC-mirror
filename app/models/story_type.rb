@@ -23,9 +23,7 @@ class StoryType < ApplicationRecord
   end
 
   before_update -> { tracking_changes(StoryType) }
-  before_save do |story|
-    story.name = story.name.strip
-  end
+  before_save { name.strip! }
 
   validates_uniqueness_of :name, case_sensitive: true
 
