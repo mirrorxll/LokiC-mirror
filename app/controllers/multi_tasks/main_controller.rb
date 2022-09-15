@@ -18,8 +18,6 @@ module MultiTasks
     end
 
     def show
-      render_401 unless current_account.manager? || @multi_task.access_for?(current_account)
-
       @comments = @multi_task.comments.order(created_at: :desc)
       @tab_title = "LokiC :: MultiTask ##{@multi_task.id} <#{@multi_task.title}>"
     end
@@ -107,6 +105,8 @@ module MultiTasks
     end
 
     def access_to_show
+      return if @multi_task.access_for?(current_account)
+
       status_deleted = Status.find_by(name: 'archived')
 
       if @lists['assigned'] && @multi_task.assignment_to.include?(current_account) && @multi_task.status != status_deleted

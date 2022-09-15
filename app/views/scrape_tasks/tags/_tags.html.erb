@@ -7,10 +7,18 @@
   </div>
 
   <div class="col d-flex align-items-center">
-    <% @scrape_task.tags.each do |tag| %>
-      <div class="badge badge-pill badge-info mr-1">
-        <%= tag.name %>
-      </div>
+    <% if current_account_permissions('scrape_tasks', %w[grid all]) %>
+      <% @scrape_task.tags.each do |tag| %>
+        <div class="badge badge-pill badge-info mr-1">
+          <%= link_to(tag.name, scrape_tasks_path(list: :all, scrape_tasks_grid: { tag: [tag.id] }), class: 'text-white') %>
+        </div>
+      <% end %>
+    <% else %>
+      <% @scrape_task.tags.each do |tag| %>
+        <div class="badge badge-pill badge-info mr-1">
+          <%= tag.name %>
+        </div>
+      <% end %>
     <% end %>
   </div>
 </div>
