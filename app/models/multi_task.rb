@@ -95,9 +95,7 @@ class MultiTask < ApplicationRecord # :nodoc:
   end
 
   def access_for?(account)
-    if current_account.manager? || current_account.multi_tasks_manager? || assignment_to_or_creator?(account)
-      return true
-    end
+    return true if account.manager? || account.multi_tasks_manager? || assignment_to_or_creator?(account)
     return false unless access
 
     subtasks.each { |subtask| return true if subtask.assignment_to_or_creator?(account) }
