@@ -37,7 +37,7 @@ class WorkRequestObject
     params.merge!(default_sow: true) if @request.new_record?
 
     @request.update!(params)
-    @request.project_order_name.update!(body: @prm['project_order_name'])
+    @request.project_order_name.update!(body: @prm['project_order_name'].strip)
     @request.project_order_details.update!(body: @prm['project_order_details'])
     @request.most_worried_details.update!(body: @prm['most_worried_details'])
 

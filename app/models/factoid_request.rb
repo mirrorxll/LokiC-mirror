@@ -13,6 +13,9 @@ class FactoidRequest < ApplicationRecord
       public_send("build_template_#{n}_assoc", subtype: "template #{n} assoc")
     end
   end
+  before_save do |factoid|
+    factoid.name = factoid.name.strip
+  end
 
   belongs_to :requester, optional: true, class_name: 'Account'
   belongs_to :frequency, optional: true
