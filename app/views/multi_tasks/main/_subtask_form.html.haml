@@ -58,11 +58,11 @@
               client:
             .col.text-left.small
               =form.collection_select 'multi_task[client_id]', ClientsReport.all.order(:name), :id, :name, { prompt: '' }, style: "width:150px"
-          .row.mb-2
+          .row
             .col-4
-              gather_task:
+              priority:
             .col.text-left.small
-              =form.text_field 'multi_task[gather_task]', class: 'w-70'
+              =form.number_field 'multi_task[priority]', min: 1, max: 9, value: 1, required: true
         .col-6
           .row.mb-2
             .col.text-right
