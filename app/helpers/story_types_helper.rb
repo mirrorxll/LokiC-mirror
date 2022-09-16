@@ -14,7 +14,7 @@ module StoryTypesHelper # :nodoc:
   end
 
   def has_created_stories?(iteration)
-    iteration.stories.where(sampled: nil).count > 0
+    iteration.stories.count.positive?
   end
 
   def manager_or_editor
