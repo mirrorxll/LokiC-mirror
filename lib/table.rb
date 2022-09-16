@@ -131,4 +131,10 @@ module Table # :nodoc:
     delete_query = delete_st_table_rows(t_name, curr_iter, rows)
     loki_story_creator { |conn| conn.exec_query(delete_query) }
   end
+
+  # return count of rows by iteration
+  def rows_by_iter(t_name, iteration_id)
+    count_query = count_rows_by_iter_query(t_name, iteration_id)
+    loki_story_creator { |conn| conn.exec_query(count_query).first['count'] }
+  end
 end

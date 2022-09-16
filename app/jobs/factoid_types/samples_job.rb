@@ -18,6 +18,7 @@ module FactoidTypes
       edge_ids = Table.select_edge_ids(staging_table.name, column_names)
       row_ids = options[:row_ids].delete(' ').split(',')
       ids = edge_ids + row_ids
+      iteration_rows_count = Table.rows_by_iter(staging_table.name, iteration_id)
 
       options = options.merge({ ids: ids.join(','), type: 'article' })
       iteration.update!(sample_args: sample_args, current_account: account)
@@ -39,7 +40,9 @@ module FactoidTypes
       status = nil
       message = e.message
     ensure
-      iteration.update!(samples: status, current_account: account)
+      fields = { samples: status, current_account: account }
+      fields.merge!(creation: true) if iteration.factoids.count.eql?(iteration_rows_count) && status
+      iteration.update!(fields)
       send_to_action_cable(iteration.factoid_type, :samples, message)
       SlackIterationNotificationJob.perform_async(iteration.id, 'samples', message)
     end

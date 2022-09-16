@@ -41,7 +41,9 @@ class MultiTask < ApplicationRecord # :nodoc:
   has_many :assignment_to, through: :assignments, source: :account
 
   has_many :comments, -> { where(commentable_type: 'MultiTask') }, as: :commentable, class_name: 'Comment'
-  has_many :subtasks, -> { where.not(status: Status.find_by(name: 'archived')) }, foreign_key: :parent_task_id, class_name: 'MultiTask'
+  has_many :subtasks, lambda {
+                        where.not(status: Status.find_by(name: 'archived'))
+                      }, foreign_key: :parent_task_id, class_name: 'MultiTask'
 
   has_many :notes, class_name: 'MultiTaskNote'
 
@@ -69,7 +71,9 @@ class MultiTask < ApplicationRecord # :nodoc:
 
     result_uniq.map do |row|
       {
-        hours: result.select { |res| res[:agency] == row[:agency] && res[:opportunity] == row[:opportunity] }.sum { |res| res[:hours] },
+        hours: result.select do |res|
+                 res[:agency] == row[:agency] && res[:opportunity] == row[:opportunity]
+               end.sum { |res| res[:hours] },
         agency: row[:agency],
         opportunity: row[:opportunity]
       }
@@ -91,7 +95,7 @@ class MultiTask < ApplicationRecord # :nodoc:
   end
 
   def access_for?(account)
-    return true if assignment_to_or_creator?(account)
+    return true if account.manager? || account.multi_tasks_manager? || assignment_to_or_creator?(account)
     return false unless access
 
     subtasks.each { |subtask| return true if subtask.assignment_to_or_creator?(account) }
@@ -128,7 +132,7 @@ class MultiTask < ApplicationRecord # :nodoc:
   end
 
   def sum_hours
-    format('%g', assignments.sum(:hours).to_s) + ' hours'
+    "#{format('%g', assignments.sum(:hours).to_s)} hours"
   end
 
   def subtask?

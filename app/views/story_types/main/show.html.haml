@@ -16,7 +16,7 @@
     created at: #{@story_type.created_at}
 
 .row
-  .col-10
+  .col-8
     -if current_account_permissions('story_types', %w[iterations show])
       #story_type_iterations.d-inline
         =render partial: 'story_types/iterations/iteration',
@@ -25,12 +25,16 @@
       -if current_account_permissions('story_types', %w[iterations new_form])
         #new_story_type_iteration.d-inline
           =render 'story_types/iterations/new_iteration'
-  .col-2.text-right
+  .col-4.text-right
     #story_type_status
       -if current_account_permissions('story_types', %w[progress_status edit_form])
         =render 'story_types/progress_statuses/status'
       -elsif current_account_permissions('story_types', %w[progress_status show])
-        =@story_type.status.name
+        .current_progress_status
+          -if %w[blocked archived].include?(@story_type.status.name)
+            .small.d-inline-block
+              =@story_type.status_comment.body
+          =@story_type.status.name
 %hr/
 
 .row.small.justify-content-md-center.justify-content-lg-start.mx-0

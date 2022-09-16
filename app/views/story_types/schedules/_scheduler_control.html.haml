@@ -1,5 +1,5 @@
 -if @story_type.iteration.eql?(@iteration) && @iteration.export.nil? && !@iteration.schedule.eql?(false)
-  -if @iteration.stories.where.not(published_at: nil).count > 1
+  -if @iteration.stories.where.not(published_at: nil).count.positive?
     =link_to('purge schedule',
                  purge_story_type_iteration_schedules_path(@story_type, @iteration),
                  id: 'purge_schedule', class: 'btn btn-sm btn-outline-danger',

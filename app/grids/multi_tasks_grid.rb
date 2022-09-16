@@ -50,6 +50,8 @@ class MultiTasksGrid
     value ? scope.where('multi_task_assignments.confirmed': true) : scope.where.not('multi_task_assignments.confirmed': true)
   end
 
+  filter(:priority, :enum, header: 'Priority', select: Array(1..9), multiple: true)
+
   # Columns
   column(:id, mandatory: true, header: 'ID')
 
@@ -109,6 +111,10 @@ class MultiTasksGrid
 
   column(:created_at, header: 'Created at', mandatory: true) do |task|
     task.created_at.strftime('%F')
+  end
+
+  column(:priority, header: 'Priority', mandatory: true, order: 'priority') do |task|
+    task.priority
   end
 
   column(:note, header: 'Your note', mandatory: true, html: true) do |task, scope|
