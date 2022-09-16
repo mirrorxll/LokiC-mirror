@@ -110,6 +110,10 @@ class Account < ApplicationRecord # :nodoc:
     role_names.include?('Scrape Developer')
   end
 
+  def multi_tasks_manager?
+    role_names.include?('Multi Tasks Manager')
+  end
+
   def client?
     role_names.include?('Client')
   end

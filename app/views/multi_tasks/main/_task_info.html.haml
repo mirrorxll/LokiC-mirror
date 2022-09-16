@@ -3,7 +3,7 @@
     .card-header.p-1
       .d-flex.justify-content-between.small
         MAIN INFO
-        -if current_account_permissions('multi_tasks', ['edit_form']) && @multi_task.creator?(current_account)
+        -if current_account_permissions('multi_tasks', ['edit_form'])
           =link_to '[ edit task ]', edit_multi_task_path(@multi_task), remote: true
 
     .card-body.small
@@ -73,6 +73,11 @@
           CREATED AT:
         .col-8
           =@multi_task.created_at.strftime('%F')
+      .row.mb-2
+        .col-3.pr-0.font-weight-bold.text-right
+          PRIORITY:
+        .col-8
+          =@multi_task.priority
       #done
         =render 'done', task: @multi_task
       -agency_opportunity_revenue_types = @multi_task.agency_opportunity_revenue_types

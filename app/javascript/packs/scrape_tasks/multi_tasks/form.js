@@ -4,8 +4,10 @@ function onEnterAddMultiTask(event) {
     let checksSet = this.form.querySelector('.form-check');
     let multiTasksIn = [...checksSet.querySelectorAll('label')].map((i) => i.textContent);
     let multiTasksOut = [...this.form.querySelectorAll('option')].map((i) => i.value);
-    let label = this.value.trim();
+    let label = this.value;
     let id = label.match(/\d+/);
+
+    console.log(checksSet, multiTasksIn, multiTasksOut, label, id)
 
     if(multiTasksIn.includes(label) || !multiTasksOut.includes(label) ) return false;
 

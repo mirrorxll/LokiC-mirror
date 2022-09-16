@@ -35,9 +35,14 @@
                 .col.small
                   =select_tag "subtasks[#{number_subtask}][reminder_frequency]", options_from_collection_for_select(sorted_reminder_frequencies, :id, :name), { prompt: '' }
               .row.mb-2
-                .col.font-weight-normal
-                  =link_to('[ checklists ]', nil, onclick: "showChecklists(event, '#{number_subtask}')")
                 .col
+                  priority:
+                .col.small
+                  =number_field_tag "subtasks[#{number_subtask}][priority]", 1, { min: 1, max: 9, required: true }
+              -#.row.mb-2
+              -#  .col.font-weight-normal
+              -#    =link_to('[ checklists ]', nil, onclick: "showChecklists(event, '#{number_subtask}')")
+              -#  .col
             .col-6
               .row.mb-2
                 .col

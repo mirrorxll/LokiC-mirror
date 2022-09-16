@@ -43,14 +43,24 @@ module FactoidRequests
       statuses = Status.factoid_request_statuses(created: true)
       @lists = HashWithIndifferentAccess.new
 
-      @lists['created'] = { requester: current_account, status: statuses } if @factoid_requests_permissions['grid']['created']
+      if @factoid_requests_permissions['grid']['created']
+        @lists['created'] =
+          { requester: current_account, status: statuses }
+      end
       @lists['all'] = { status: statuses } if @factoid_requests_permissions['grid']['all']
-      @lists['archived'] = { status: Status.find_by(name: 'archived') } if @factoid_requests_permissions['grid']['archived']
+      if @factoid_requests_permissions['grid']['archived']
+        @lists['archived'] = { status: Status.find_by(name: 'archived') }
+      end
     end
 
     def current_list
       keys = @lists.keys
-      @current_list = keys.include?(params[:list]) ? params[:list] : keys.first
+      @current_list =
+        if keys.include?(params[:list])
+          params[:list]
+        else
+          current_account.manager? && @lists['all'] ? 'all' : keys.first
+        end
     end
 
     def generate_grid

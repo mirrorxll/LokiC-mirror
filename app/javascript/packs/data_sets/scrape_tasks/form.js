@@ -4,7 +4,7 @@ function onEnterAddScrapeTask(event) {
     let checksSet = this.form.querySelector('.form-check');
     let dataSetsIn = [...checksSet.querySelectorAll('label')].map((i) => i.textContent);
     let dataSetsOut = [...this.form.querySelectorAll('option')].map((i) => i.value);
-    let label = this.value.trim();
+    let label = this.value;
     let id = label.match(/\d+/);
 
     if(dataSetsIn.includes(label) || !dataSetsOut.includes(label) ) return false;
