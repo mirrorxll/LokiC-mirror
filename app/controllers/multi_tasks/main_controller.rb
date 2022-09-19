@@ -107,7 +107,7 @@ module MultiTasks
 
       @lists['assigned'] = { 'multi_task_assignments.account_id': current_account.id, status: statuses } if @multi_tasks_permissions['grid']['assigned']
       @lists['created'] = { creator: current_account, status: statuses } if @multi_tasks_permissions['grid']['created']
-      @lists['all@grid.column_names = [:note]'] = { status: statuses } if @multi_tasks_permissions['grid']['all']
+      @lists['all'] = { status: statuses } if @multi_tasks_permissions['grid']['all']
       @lists['archived'] = { status: Status.find_by(name: 'archived') } if @multi_tasks_permissions['grid']['archived']
     end
 
@@ -128,9 +128,6 @@ module MultiTasks
       end
 
       @grid.current_account = current_account
-
-      # p 11111111111
-      # p @grid.inspect
     end
 
     def access_to_show
