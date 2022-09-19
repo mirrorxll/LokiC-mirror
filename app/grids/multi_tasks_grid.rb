@@ -70,6 +70,7 @@ class MultiTasksGrid
         }
       )
     end
+
     content_tag(:div, status_name, attributes)
   end
 
