@@ -31,7 +31,7 @@ module MiniLokiC
 
     def load_factoid_type_class
       file = "#{Rails.root}/public/ruby_code/f#{@factoid_type.id}.rb"
-      File.open(file, 'wb') { |f| f.write(@factoid_type.code.download) }
+      File.open(file, 'wb') { |f| f.write(factoid_type_code) }
 
       load file
       factoid_type_class = Object.const_get("F#{@factoid_type.id}")
@@ -45,6 +45,12 @@ module MiniLokiC
       )
 
       factoid_type_class
+    end
+
+    def factoid_type_code
+      code = @factoid_type.code.download
+      code.sub!(/class\s[A|F]/, 'class F')
+      code.sub!(/STAGING_TABLE\s*=\s*[\'|\"][a|f]/, "STAGING_TABLE = 'f")
     end
   end
 end
