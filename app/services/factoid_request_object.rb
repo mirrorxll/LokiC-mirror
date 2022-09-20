@@ -24,7 +24,7 @@ class FactoidRequestObject
   def update!
     params = {
       requester: @request&.requester || @prm[:account],
-      name: @prm[:name],
+      name: @prm[:name].strip!,
       agency: Agency.find_by(id: @prm[:agency_id]),
       opportunity: Opportunity.find_by(id: @prm[:opportunity_id]),
       frequency: Frequency.find_by(id: @prm[:frequency_id]),

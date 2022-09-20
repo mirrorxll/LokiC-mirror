@@ -11,6 +11,7 @@ class MultiTask < ApplicationRecord # :nodoc:
              'title="Froala Editor">Froala Editor</a></p>'
 
     self.description = description&.gsub(/#{Regexp.escape(regexp)}/, '')
+    self.title = title.strip
   end
 
   validates :title, length: { maximum: 500 }
