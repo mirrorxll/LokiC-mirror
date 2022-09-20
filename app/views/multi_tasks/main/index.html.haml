@@ -20,6 +20,11 @@
                  "data-target" => "#createMultiTaskModal", "data-toggle" => "modal")
 %hr.mb-1/
 
+-if @current_list && @grid.assets.total_count > 0
+  .text-right.mb-2
+    =link_to('[ download CSV ]', url_for(format: 'csv', multi_tasks_grid: params[:multi_tasks_grid]),
+                 id: '#save_as_csv_btn', class: 'small')
+
 -if @current_list
   #filterMTasts.mt-3.mb-3.collapse
     =datagrid_form_for @grid, url: multi_tasks_path

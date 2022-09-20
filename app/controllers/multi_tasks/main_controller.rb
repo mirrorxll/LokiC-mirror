@@ -14,7 +14,28 @@ module MultiTasks
 
     def index
       @tab_title = 'LokiC :: MultiTasks'
-      @grid.scope { |sc| sc.page(params[:page]).per(30) }
+
+      respond_to do |f|
+        f.html do
+          @grid.scope { |sc| sc.page(params[:page]).per(30) }
+        end
+
+        f.csv do
+          @grid.column(:status) { |model| model.status.name }
+          @grid.column(:note) do |n|
+            next if n.note(current_account).nil?
+            ActionController::Base.helpers.strip_tags(n.note(current_account).body)
+          end
+          @grid.column(:last_comment) { |c| c.last_comment.created_at }
+
+          @grid.to_csv
+          send_data(
+            @grid.to_csv,
+            type: 'text/csv', disposition: 'inline',
+            filename: "lokiC_multi_tasks_#{Time.now}.csv"
+          )
+        end
+      end
     end
 
     def show
@@ -102,10 +123,10 @@ module MultiTasks
 
     def generate_grid
       return unless @current_list
-
       @grid = MultiTasksGrid.new(params[:multi_tasks_grid]) do |scope|
         scope.where(@lists[@current_list])
       end
+
       @grid.current_account = current_account
     end
 
