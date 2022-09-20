@@ -41,10 +41,15 @@
               client:
             .col.text-left.small
               =form.collection_select 'multi_task_parent[client_id]', ClientsReport.all.order(:name), :id, :name, { prompt: '' }, style: "width:150px"
-          .row.mb-2.font-weight-normal
-            .col.text-left
-              =link_to('[ checklists ]', nil, onclick: "showChecklistsParent(event)")
-            .col.text-left
+          .row.mb-2
+            .col-5
+              priority:
+            .col.text-left.small
+              =form.number_field 'multi_task_parent[priority]', min: 1, max: 9, value: 1, required: true
+          -#.row.mb-2.font-weight-normal
+          -#  .col.text-left
+          -#    =link_to('[ checklists ]', nil, onclick: "showChecklistsParent(event)")
+          -#  .col.text-left
         .col-6
           .row.mb-2
             .col-7.text-right

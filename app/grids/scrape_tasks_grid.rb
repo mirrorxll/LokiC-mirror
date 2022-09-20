@@ -10,7 +10,7 @@ class ScrapeTasksGrid
   scope do
     ScrapeTask.includes(
       :data_set, :status, :frequency,
-      :scraper, :state, :general_comment
+      :scraper, :state, :general_comment, :tags
     ).order(id: :desc)
   end
 
@@ -20,7 +20,6 @@ class ScrapeTasksGrid
   end
 
   filter(:data_set_location, :string, header: 'Data Location(RLIKE)') do |value, scope|
-    p '!' * 100, value
     location_ids = TableLocation.all.to_a.select do |tl|
       p tl.full_name[/#{Regexp.escape(value)}/i]
     end.map(&:id)
@@ -70,6 +69,12 @@ class ScrapeTasksGrid
     scope.where(frequencies: { id: value })
   end
 
+  scrape_task_tags = ScrapeTaskTag.order(:name).pluck(:name, :id)
+  filter(:tag, :enum, multiple: true, select: scrape_task_tags) do |values, scope|
+    ids_with_filtered_roles = ScrapeTaskTag.where(id: values).flat_map { |r| r.scrape_tasks.ids }.uniq
+    scope.where(id: ids_with_filtered_roles)
+  end
+
   filter(:with_data_location, :xboolean, header: 'With data location?') do |value, scope|
     scp = scope.includes(:table_locations)
     value ? scp.where.not(table_locations: { id: nil }) : scp.where(table_locations: { id: nil })
@@ -111,6 +116,14 @@ class ScrapeTasksGrid
 
   column(:name, mandatory: true) do |s_task|
     format(s_task.name) { |name| link_to(name, s_task) }
+  end
+
+  column(:tags, header: 'Tag', order: 'scrape_task_tags_task.tag_id', mandatory: true) do |task|
+    format(task) do |name|
+      name.tags.map do |tag|
+        link_to tag.name, url_for(list: @current_list, scrape_tasks_grid: { tag: [tag.id] })
+      end.join(', ').html_safe
+    end
   end
 
   column(:deadline, header: 'Deadline', mandatory: true, &:deadline)

@@ -21,7 +21,15 @@ class MultiTasksGrid
     scope.where('multi_task_assignments.account_id': value)
   end
 
-  filter(:creator, :enum, multiple: true, left: true, select: Account.ordered.map { |a| [a.name, a.id] })
+  filter(:assistants, :enum, multiple: true, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] }) do |value, scope|
+    scope.where('multi_task_assignments.account_id': value, 'multi_task_assignments.main': false, 'multi_task_assignments.notification_to': false)
+  end
+
+  filter(:main_assignee, :enum, multiple: true, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] }) do |value, scope|
+    scope.where('multi_task_assignments.account_id': value, 'multi_task_assignments.main': true)
+  end
+
+  filter(:creator, :enum, multiple: true, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
 
   status_done_id = Status.find_by(name: 'done').id.to_s
   filter(:status, :enum, multiple: true, select: Status.multi_task_statuses(created: true).pluck(:name, :id)) do |value, scope, grid|
@@ -41,6 +49,8 @@ class MultiTasksGrid
     scope = scope.where('multi_task_assignments.account_id': grid.current_account.id)
     value ? scope.where('multi_task_assignments.confirmed': true) : scope.where.not('multi_task_assignments.confirmed': true)
   end
+
+  filter(:priority, :enum, header: 'Priority', select: Array(1..9), multiple: true)
 
   # Columns
   column(:id, mandatory: true, header: 'ID')
@@ -101,6 +111,10 @@ class MultiTasksGrid
 
   column(:created_at, header: 'Created at', mandatory: true) do |task|
     task.created_at.strftime('%F')
+  end
+
+  column(:priority, header: 'Priority', mandatory: true, order: 'priority') do |task|
+    task.priority
   end
 
   column(:note, header: 'Your note', mandatory: true, html: true) do |task, scope|

@@ -15,8 +15,13 @@
       :javascript
         $('#orderList').popover({
           placement: 'bottom',
-          title: 'test',
-          content: 'test'
+          html: true,
+          title: () => {
+            return 'work'
+          },
+          content: () => {
+            return 'work'
+          }
         })
     .btn-group
       -if @current_list

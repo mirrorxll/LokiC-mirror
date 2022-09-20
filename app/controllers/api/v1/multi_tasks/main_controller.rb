@@ -20,7 +20,7 @@ module Api
             end
 
             assistants.each do |a|
-              task_assistant = multi_task.task_assistants.find_by(account: a)
+              task_assistant = multi_task.multi_task_assistants.find_by(account: a)
 
               assigned_to << {
                 employee: a.name,

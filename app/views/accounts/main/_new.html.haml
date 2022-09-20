@@ -145,10 +145,10 @@
         return false;
       }
 
-      // event.target.submit();
-      event.target.removeEventListener('submit', onSubmit);
-      Rails.fire(event.target, 'submit');
-      event.target.addEventListener('submit', onSubmit)
+      event.target.submit();
+      // event.target.removeEventListener('submit', onSubmit);
+      // Rails.fire(event.target, 'submit');
+      // event.target.addEventListener('submit', onSubmit)
     }
 
 
