@@ -10,6 +10,7 @@ class FactoidType < ApplicationRecord
   end
 
   before_update -> { tracking_changes(FactoidType) }
+  before_save { name.strip! }
 
   validates_uniqueness_of :name, case_sensitive: true
 
