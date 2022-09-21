@@ -1,0 +1,23 @@
+#comment
+  %hr/
+  .row.mb-1.col-12
+    .font-weight-bold
+      comment
+    -if current_account_permissions('factoid_types', %w(comment edit_form)) && (current_account.eql?(@factoid_type.developer) || current_account.manager? || current_account.content_manager?)
+      .col-1.p-0.text-center
+        =link_to icon('fa', 'pencil', class: ' fa-xs text-dark'), edit_factoid_type_path(@factoid_type), remote: true,
+                 'data-toggle': 'collapse', role: 'button', href: '#commentForm', 'aria-expanded': 'false',
+                 'aria-controls': 'commentForm'
+  -if current_account_permissions('factoid_types', %w(comment edit_form)) && (current_account.eql?(@factoid_type.developer) || current_account.manager? || current_account.content_manager?)
+    .row
+      .col-12
+        #commentForm.text-left.collapse.w-100
+          =form_with(model: @factoid_type, class: 'form') do |form|
+            .form-group.mb-2
+              =form.text_area :comment, value: @factoid_type.comment, class: 'w-100'
+            .form-group.mb-2
+              =form.submit :edit
+  -if current_account_permissions('factoid_types', %w(comment show))
+    .row.col-12
+      #factoidTypeComment
+        = simple_format(h(@factoid_type.comment&.html_safe), {}, sanitize: false)

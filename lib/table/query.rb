@@ -4,6 +4,12 @@ module Table
   # Custom queries for manipulated data
   # from staging tables
   module Query
+    # [
+    #   loki_storycreator,
+    #   loki_story_creator_dev,
+    #   loki_story_creator_staging,
+    #   loki_story_creator_test
+    # ] - depends from environment
     def schema
       Rails.configuration.database_configuration[Rails.env]['loki_story_creator']['database']
     end

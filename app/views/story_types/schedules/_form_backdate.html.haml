@@ -2,7 +2,7 @@
   #dates_editable
   .row.mt-3
     .col-6
-      =form.submit 'backdate', class: 'btn btn-sm btn-outline-dark'
+      =form.submit 'backdate', class: 'btn btn-sm btn-outline-dark', disabled: true
     .col-6
       #add_date.btn.btn-sm.btn-outline-dark.ml-2
         =icon('fa', 'plus')
@@ -21,6 +21,7 @@
             <input placeholder="where:" id="arg_${hex}_name" type="name" name="backdate[${hex}[where]]" class="mr-1">
         </div>`
     );
+    $("input[value='backdate']").attr('disabled', false)
   });
 
   function secureRandom(n){
@@ -34,4 +35,5 @@
 
   function removeDate(elem) {
     $(elem.parentNode).remove();
+    if (editable_block.children().length === 0) { $("input[value='backdate']").attr('disabled', true) }
   }

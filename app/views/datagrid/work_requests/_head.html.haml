@@ -3,4 +3,4 @@
     -next if column.header.in?(['sow', 'eta', 'last invoice']) && !current_account.manager?
     %th{:scope => "col", style: 'z-index: 1'}
       =column.header
-      -# =datagrid_order_for(grid, column, options) if column.supports_order? && options[:order]
+      =datagrid_order_for(grid, column, options) if column.supports_order? && options[:order]

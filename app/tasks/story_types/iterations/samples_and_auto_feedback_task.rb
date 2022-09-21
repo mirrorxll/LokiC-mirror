@@ -14,6 +14,7 @@ module StoryTypes
         sample_args = {}
         staging_table = iteration.story_type.staging_table
         publication_ids = iteration.story_type.publication_pl_ids
+        iteration_rows_count = Table.rows_by_iter(staging_table.name, iteration_id)
 
         options[:iteration] = iteration
         options[:publication_ids] = publication_ids
@@ -59,7 +60,9 @@ module StoryTypes
         message = e.message
         true
       ensure
-        iteration.update!(samples: status, current_account: account)
+        fields = { samples: status, current_account: account }
+        fields.merge!(creation: true) if iteration.stories.count.eql?(iteration_rows_count) && status
+        iteration.update!(fields)
         story_type.sidekiq_break.update!(cancel: false)
         send_to_action_cable(story_type, :samples, message)
 

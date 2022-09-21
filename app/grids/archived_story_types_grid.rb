@@ -25,7 +25,7 @@ class ArchivedStoryTypesGrid
   filter(:id, :string, multiple: ',', header: 'Id/Name') do |value, scope|
     scope.where(id: value).or(scope.where('story_types.name like ?', "%#{value.first}%"))
   end
-  filter(:developer, :enum, multiple: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
+  filter(:developer, :enum, multiple: true, select: Account.ordered.map { |a| [a.name, a.id] })
   # Columns
   column(:id, mandatory: true, header: 'ID')
 

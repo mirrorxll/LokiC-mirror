@@ -20,7 +20,7 @@
               assignment to:
             .col
               .row.mt-1.small
-                =select_tag "subtasks[#{number_subtask}][assignment_to]", options_from_collection_for_select(Account.all.order([:first_name, :last_name]), :id, :name), { prompt: '', style: "width:130px" }
+                =select_tag "subtasks[#{number_subtask}][assignment_to]", options_from_collection_for_select(Account.ordered, :id, :name), { prompt: '', style: "width:130px" }
           .row.justify-content-between.mt-1.mb-2
             .col
               assistants:
@@ -35,9 +35,14 @@
                 .col.small
                   =select_tag "subtasks[#{number_subtask}][reminder_frequency]", options_from_collection_for_select(sorted_reminder_frequencies, :id, :name), { prompt: '' }
               .row.mb-2
-                .col.font-weight-normal
-                  =link_to('[ checklists ]', nil, onclick: "showChecklists(event, '#{number_subtask}')")
                 .col
+                  priority:
+                .col.small
+                  =number_field_tag "subtasks[#{number_subtask}][priority]", 1, { min: 1, max: 9, required: true }
+              -#.row.mb-2
+              -#  .col.font-weight-normal
+              -#    =link_to('[ checklists ]', nil, onclick: "showChecklists(event, '#{number_subtask}')")
+              -#  .col
             .col-6
               .row.mb-2
                 .col
@@ -71,7 +76,7 @@
 =render 'multi_tasks/agencies_opportunities/form', task: "subtask_#{number_subtask}"
 
 :javascript
-  var accounts = #{raw Account.all.order([:first_name, :last_name]).map{ |account| [account.first_name.to_s + ' ' + account.last_name.to_s, account.id]} };
+  var accounts = #{raw Account.ordered.map{ |a| [a.name, a.id]} };
   var current_account_id = #{raw current_account.id}
 
   numberSubtask = #{raw number_subtask}

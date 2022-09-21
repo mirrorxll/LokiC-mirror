@@ -6,8 +6,8 @@
   %span.font-weight-bold
     MULTI TASKS
   .d-inline-block.text-right.text-uppercase
-    .btn-group.mr-3
-      -if @current_list && @lists.length > 1
+    -if @current_list && @lists.length > 1
+      .btn-group.mr-3
         -@lists.each_key do |list|
           -filled = @current_list.eql?(list) ? '' : '-outline'
           =link_to(list, url_for(list: list), class: "btn btn-sm btn#{filled}-dark")
@@ -19,6 +19,11 @@
         =link_to('create', '#', class: 'btn btn-sm btn-outline-dark',
                  "data-target" => "#createMultiTaskModal", "data-toggle" => "modal")
 %hr.mb-1/
+
+-if @current_list && @grid.assets.total_count > 0
+  .text-right.mb-2
+    =link_to('[ download CSV ]', url_for(format: 'csv', multi_tasks_grid: params[:multi_tasks_grid]),
+                 id: '#save_as_csv_btn', class: 'small')
 
 -if @current_list
   #filterMTasts.mt-3.mb-3.collapse

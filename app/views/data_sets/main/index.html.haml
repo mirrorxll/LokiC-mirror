@@ -27,7 +27,7 @@
                  id: '#save_as_csv_btn', class: 'small')
 
 -if @current_list
-  #filterDSets.mt-3.mb-3.collapse{ class: (params[:data_sets_grid] ? 'show' : '') }
+  #filterDSets.mt-3.mb-3.collapse
     =datagrid_form_for @grid, url: data_sets_path
 
   .row.small.mb-5

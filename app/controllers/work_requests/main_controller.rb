@@ -48,7 +48,12 @@ module WorkRequests
 
     def current_list
       keys = @lists.keys
-      @current_list = keys.include?(params[:list]) ? params[:list] : keys.first
+      @current_list =
+        if keys.include?(params[:list])
+          params[:list]
+        else
+          current_account.manager? && @lists['all'] ? 'all' : keys.first
+        end
     end
 
     def generate_grid

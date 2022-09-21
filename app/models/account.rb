@@ -71,6 +71,14 @@ class Account < ApplicationRecord # :nodoc:
     roles.map(&:name)
   end
 
+  def branch_names
+    cards.where(enabled: true).includes(:branch).map { |card| card.branch.name }
+  end
+
+  def branch_access_names
+    cards.where(enabled: true).includes(:branch).map { |card| "#{card.branch.name} (#{card.access_level.name})" }
+  end
+
   def manager?
     role_names.include?('Manager')
   end
@@ -103,6 +111,10 @@ class Account < ApplicationRecord # :nodoc:
     role_names.include?('Scrape Developer')
   end
 
+  def multi_tasks_manager?
+    role_names.include?('Multi Tasks Manager')
+  end
+
   def client?
     role_names.include?('Client')
   end
@@ -111,7 +123,7 @@ class Account < ApplicationRecord # :nodoc:
     role_names.include?('Guest')
   end
 
-  def branch_names
-    cards.where(enabled: true).includes(:branch).map { |card| card.branch.name }
+  def self.ordered
+    order(:first_name, :last_name)
   end
 end

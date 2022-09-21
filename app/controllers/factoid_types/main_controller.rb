@@ -55,7 +55,12 @@ module FactoidTypes
 
     def current_list
       keys = @lists.keys
-      @current_list = keys.include?(params[:list]) ? params[:list] : keys.first
+      @current_list =
+        if keys.include?(params[:list])
+          params[:list]
+        else
+          (current_account.manager? || current_account.content_manager?) && @lists['all'] ? 'all' : keys.first
+        end
     end
 
     def generate_grid
@@ -113,7 +118,8 @@ module FactoidTypes
         :source_type,
         :source_name,
         :source_link,
-        :original_publish_date
+        :original_publish_date,
+        :comment
       ).reject { |_, v| v.blank? }
 
       attrs[:current_account] = current_account

@@ -17,7 +17,7 @@
     created at: #{@factoid_type.created_at}
 
 .row
-  .col-10
+  .col-8
     -if current_account_permissions('factoid_types', %w[iterations show])
       #factoid_type_iterations.d-inline
         =render partial: 'factoid_types/iterations/iteration',
@@ -26,12 +26,16 @@
     -if current_account_permissions('factoid_types', %w[iterations new_form])
       #new_factoid_type_iteration.d-inline
         =render 'factoid_types/iterations/new_iteration'
-  .col-2.text-right
+  .col-4.text-right
     #factoid_type_status
       -if current_account_permissions('factoid_types', %w[progress_status edit_form])
         =render 'factoid_types/progress_statuses/status'
       -elsif current_account_permissions('factoid_types', %w[progress_status show])
-        =@factoid_type.status.name
+        .current_progress_status
+          -if %w[blocked archived].include?(@factoid_type.status.name)
+            .small.d-inline-block
+              =@factoid_type.status_comment.body
+          =@factoid_type.status.name
 %hr/
 
 .row.small.justify-content-md-center.justify-content-lg-start.mx-0

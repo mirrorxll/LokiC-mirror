@@ -1,2 +1,4 @@
 $('#sourceProperties').html('<%= j render 'factoid_types/properties/factoid_type_source_properties' %>');
 $('#factoid_type_<%= @factoid_type.id %>').replaceWith('<%= j render 'factoid_types/main/factoid_type', factoid_type: @factoid_type %>')
+$('#commentForm').collapse('hide');
+$('#factoidTypeComment').html('<%= j simple_format(h(@factoid_type.reload.comment.html_safe), {}, sanitize: false) %>');

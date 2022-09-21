@@ -1,0 +1,23 @@
+#comment
+  %hr/
+  .row.mb-1.col-12
+    .font-weight-bold
+      comment
+    -if current_account_permissions('story_types', %w(comment edit_form)) && (current_account.eql?(@story_type.developer) || current_account.manager? || current_account.content_manager?)
+      .col-1.p-0.text-center
+        =link_to icon('fa', 'pencil', class: ' fa-xs text-dark'), edit_story_type_path(@story_type), remote: true,
+                 'data-toggle': 'collapse', role: 'button', href: '#commentForm', 'aria-expanded': 'false',
+                 'aria-controls': 'commentForm'
+  -if current_account_permissions('story_types', %w(comment edit_form)) && (current_account.eql?(@story_type.developer) || current_account.manager? || current_account.content_manager?)
+    .row
+      .col-12
+        #commentForm.text-left.collapse.w-100
+          =form_with(model: @story_type, class: 'form') do |form|
+            .form-group.mb-2
+              =form.text_area :comment, value: @story_type.comment, class: 'w-100'
+            .form-group.mb-2
+              =form.submit :edit
+  -if current_account_permissions('story_types', %w(comment show))
+    .row.col-12
+      #storyTypeComment
+        = simple_format(h(@story_type.comment&.html_safe), {}, sanitize: false)

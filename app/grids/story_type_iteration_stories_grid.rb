@@ -2,7 +2,7 @@
 
 class StoryTypeIterationStoriesGrid
   include Datagrid
-  attr_accessor :client_ids, :exported
+  attr_accessor :client_ids, :exported, :env
 
   scope do
     Story.includes(:story_type, :iteration, :output, publication: :client).order(backdated: :asc, published_at: :asc)
@@ -23,7 +23,9 @@ class StoryTypeIterationStoriesGrid
   end
   filter(:publication, :enum, select: :pubs_select, header: 'Publication name', left: true)
   filter(:published_at, :datetime, range: true)
-  filter(:pl_staging_story_id, :integer, header: 'Pipeline ids', multiple: ',')
+  filter(:pipeline_story_id, :integer, header: 'Pipeline Story IDs', multiple: ',') do |value, scope, grid|
+    scope.where("stories.pl_#{grid.env}_story_id": value)
+  end
   # column(:id, header: "id", mandatory: true)
   column(:headline, order: 'outputs.headline, samples.id', mandatory: true)
 

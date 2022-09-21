@@ -9,7 +9,6 @@ module Accounts
 
     def index
       @tab_title = 'LokiC :: Accounts'
-      @grid.scope { |scope| scope.page(params[:page]).per(30) }
     end
 
     def show
@@ -24,8 +23,12 @@ module Accounts
     def update
       @account.update(account_params)
       @account.update(creator: Account.first) unless @account.creator
-      @account.slack.update(account: nil) if @slack_account && @account.slack
-      @slack_account&.update(account: @account)
+
+      if @slack_account
+        @slack_account.update(account: @account)
+      else
+        @account.slack&.update(account: nil)
+      end
     end
 
     private
@@ -34,13 +37,21 @@ module Accounts
       default =
         case params[:list]
         when 'deactivated'
-          { status_id: Status.find_by(name: 'deactivated').id }
+          { status: Status.find_by(name: 'deactivated') }
         else
-          { status_id: Status.find_by(name: 'active').id }
+          { status: Status.find_by(name: 'active') }
         end
-      filter_params = params[:accounts_grid] || default
 
-      @grid = AccountsGrid.new(filter_params)
+      @grid = AccountsGrid.new(params[:accounts_grid]) do |scope|
+        scope.where(default).order(
+          Arel.sql(
+            "CASE WHEN accounts.id = #{current_account.id} THEN '1' END DESC, CONCAT(first_name, ' ', last_name)"
+          )
+        )
+      end
+
+      @grid.current_account = current_account
+      @grid.true_account = true_account
     end
 
     def account_params

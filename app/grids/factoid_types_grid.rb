@@ -25,10 +25,16 @@ class FactoidTypesGrid
   filter(:location, :string, left: true, header: 'Location (like)') do |value, scope|
     scope.joins(:data_set).where('location like ?', "%#{value}%")
   end
-  filter(:developer, :enum, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
+  filter(:developer, :enum, left: true, select: Account.ordered.map { |a| [a.name, a.id] })
   filter(:status, :enum, left: true, select: Status.hle_statuses(created: true, migrated: true, inactive: true).pluck(:name, :id)) do |value, scope|
     status = Status.find(value)
     scope.where(status: status)
+  end
+  filter(:limpar_factoid_id, :string, left: true, multiple: ',', header: 'Limpar ids') do |value, scope, grid|
+    factoids = Factoid.where(limpar_factoid_id: value.map(&:strip))
+    factoids_factoid_types_ids = factoids.pluck(:factoid_type_id)
+
+    scope.where(id: factoids_factoid_types_ids)
   end
   filter(:condition1, :dynamic, left: false, header: 'Dynamic condition 1')
   filter(:condition2, :dynamic, left: false, header: 'Dynamic condition 2')

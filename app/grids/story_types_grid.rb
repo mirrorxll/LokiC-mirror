@@ -43,7 +43,7 @@ class StoryTypesGrid
   filter(:location, :string, left: true, header: 'Location (like)') do |value, scope|
     scope.joins(:data_set).where('location like ?', "%#{value}%")
   end
-  filter(:developer, :enum, multiple: true, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
+  filter(:developer, :enum, multiple: true, left: true, select: Account.ordered.map { |a| [a.name, a.id] })
   filter(:frequency, :enum, multiple: true, left: true, select: Frequency.pluck(:name, :id))
   filter(:photo_bucket, :enum, multiple: true, left: true, select: PhotoBucket.all.order(:name).pluck(:name, :id))
   filter(:status, :enum, multiple: true, left: true, select: Status.hle_statuses(created: true, migrated: true, inactive: true).pluck(:name, :id)) do |value, scope|
@@ -77,7 +77,7 @@ class StoryTypesGrid
   filter(:revised, :xboolean, left: true) do |value, scope|
     value ? scope.where.not('templates.revision': nil) : scope.where('templates.revision': nil)
   end
-  filter(:pipeline_story_id, :string, left: true, multiple: ',', header: 'Pipeline Story ID') do |value, scope, grid|
+  filter(:pipeline_story_id, :string, left: true, multiple: ',', header: 'Pipeline Story IDs') do |value, scope, grid|
     stories = Story.where("stories.pl_#{grid.env}_story_id": value)
     stories_story_types_ids = stories.pluck(:story_type_id)
 

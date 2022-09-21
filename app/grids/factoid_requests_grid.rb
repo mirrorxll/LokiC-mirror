@@ -4,14 +4,12 @@ class FactoidRequestsGrid
   include Datagrid
 
   # Scope
-  scope { FactoidRequest.order(id: :desc) }
+  scope { FactoidRequest.includes(:status, :requester).order(id: :desc) }
 
   # Filter
-  filter(:requester)
-  filter(:status, multiple: true)
 
   # Columns
-  column(:id, order: false)
+  column(:id)
 
   priorities = Priority.all.each_with_object({}) do |p, hash|
     hash[p.name] = p.name.split(' - ').first
@@ -20,7 +18,7 @@ class FactoidRequestsGrid
     priorities[req.priority.name]
   end
 
-  column(:status, html: true) do |req|
+  column(:status, html: true, order: 'statuses.name') do |req|
     attributes =
       if req.status.name.in?(%w[blocked canceled])
         {
@@ -46,8 +44,7 @@ class FactoidRequestsGrid
     end
   end
 
-
-  column(:name, order: false) do |req|
+  column(:name) do |req|
     format(req) do
       link_to(req.name, req)
     end
@@ -61,7 +58,7 @@ class FactoidRequestsGrid
     req.opportunity&.name
   end
 
-  column(:who_requested, header: 'Who requested?') do |req|
+  column(:who_requested, header: 'Who requested?', order: 'accounts.first_name, accounts.last_name' ) do |req|
     req.requester.name
   end
 end

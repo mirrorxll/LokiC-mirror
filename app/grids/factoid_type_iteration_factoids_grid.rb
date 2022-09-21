@@ -11,6 +11,10 @@ class FactoidTypeIterationFactoidsGrid
     outputs = FactoidOutput.where('body LIKE ?', '%' + value + '%')
     scope.where(id: outputs.ids)
   end
+  filter(:limpar_factoid_id, :string, header: 'Limpar ids', multiple: ',', left: true) do |value, scope|
+    scope.where(limpar_factoid_id: value.map(&:strip))
+  end
+
   filter(:exported_at, :datetime, range: true, type: 'date')
 
   column(:factoid, header: 'Factoid', mandatory: true) do |rec|

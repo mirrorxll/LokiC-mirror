@@ -23,6 +23,7 @@ class StoryType < ApplicationRecord
   end
 
   before_update -> { tracking_changes(StoryType) }
+  before_save { name.strip! }
 
   validates_uniqueness_of :name, case_sensitive: true
 
@@ -42,6 +43,7 @@ class StoryType < ApplicationRecord
   has_one :cron_tab_iteration, -> { where(cron_tab: true) }, class_name: 'StoryTypeIteration'
   has_one :reminder
   has_one :sidekiq_break, as: :breakable, class_name: 'SidekiqBreak'
+  has_one :status_comment, -> { where(subtype: 'status comment') }, as: :commentable, class_name: 'Comment'
 
   has_one_attached :code
 

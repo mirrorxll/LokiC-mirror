@@ -12,10 +12,10 @@ class ExportedStoryTypesGrid
     scope.where(iteration_id: iteration_ids)
   end
 
-  accounts = Account.all.map { |r| [r.name, r.id] }.sort
+  accounts = Account.ordered.map { |r| [r.name, r.id] }
   filter(:developer, :enum, select: accounts)
 
-  accounts = Account.all.map { |r| [r.name, r.id] }.sort
+  accounts = Account.ordered.map { |r| [r.name, r.id] }
   filter(:editor, :enum, select: accounts) do |value, scope|
     story_type_ids = StoryType.where(editor_id: value).ids
     scope.where(story_type_id: story_type_ids)

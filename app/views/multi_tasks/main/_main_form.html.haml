@@ -12,7 +12,7 @@
             assignment to:
           .col
             .row.small
-              =form.collection_select 'multi_task_parent[assignment_to]', Account.all.order([:first_name, :last_name]), :id, :name, { prompt: '' }, style: "width:130px"
+              =form.collection_select 'multi_task_parent[assignment_to]', Account.ordered, :id, :name, { prompt: '' }, style: "width:130px"
         %hr
       -if current_account_permissions('multi_tasks', ['assistants'])
         .row.justify-content-between
@@ -41,10 +41,15 @@
               client:
             .col.text-left.small
               =form.collection_select 'multi_task_parent[client_id]', ClientsReport.all.order(:name), :id, :name, { prompt: '' }, style: "width:150px"
-          .row.mb-2.font-weight-normal
-            .col.text-left
-              =link_to('[ checklists ]', nil, onclick: "showChecklistsParent(event)")
-            .col.text-left
+          .row.mb-2
+            .col-5
+              priority:
+            .col.text-left.small
+              =form.number_field 'multi_task_parent[priority]', min: 1, max: 9, value: 1, required: true
+          -#.row.mb-2.font-weight-normal
+          -#  .col.text-left
+          -#    =link_to('[ checklists ]', nil, onclick: "showChecklistsParent(event)")
+          -#  .col.text-left
         .col-6
           .row.mb-2
             .col-7.text-right
@@ -131,7 +136,7 @@
       height: 300
   });
 
-  var accounts = #{raw Account.all.order([:first_name, :last_name]).map{ |account| [account.first_name.to_s + ' ' + account.last_name.to_s, account.id]} };
+  var accounts = #{raw Account.ordered.map{ |a| [a.name, a.id]} };
   var current_account_id = #{raw current_account.id}
 
   function hideSubtasks(elem) {

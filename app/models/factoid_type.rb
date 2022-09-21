@@ -10,6 +10,7 @@ class FactoidType < ApplicationRecord
   end
 
   before_update -> { tracking_changes(FactoidType) }
+  before_save { name.strip! }
 
   validates_uniqueness_of :name, case_sensitive: true
 
@@ -24,6 +25,7 @@ class FactoidType < ApplicationRecord
   has_one :staging_table, as: :staging_tableable
   has_one :template, as: :templateable
   has_one :fact_checking_doc, as: :fcdable
+  has_one :status_comment, -> { where(subtype: 'status comment') }, as: :commentable, class_name: 'Comment'
 
   has_one_attached :code
 
