@@ -17,18 +17,27 @@ module Accounts
 
     def create
       @account = Account.create(account_params)
-      @slack_account&.update(account: @account)
+
+      if @account.persisted?
+        if @slack_account != @account.slack
+          @account.slack&.update!(account: nil)
+          @slack_account&.update!(account: @account)
+        end
+
+        redirect_to @account
+      else
+        flash[:error] = @account.errors
+        redirect_to accounts_path
+      end
     end
 
     def update
       @account.update(account_params)
       @account.update(creator: Account.first) unless @account.creator
+      return unless @slack_account != @account.slack
 
-      if @slack_account
-        @slack_account.update(account: @account)
-      else
-        @account.slack&.update(account: nil)
-      end
+      @account.slack&.update!(account: nil)
+      @slack_account&.update!(account: @account)
     end
 
     private
@@ -65,8 +74,9 @@ module Accounts
     end
 
     def find_slack_account
-      slack_params = params.require(:slack).permit(:id)
-      @slack_account = SlackAccount.find_by(slack_params)
+      @slack_account = SlackAccount.find_by(
+        params.require(:slack).permit(:identifier)
+      )
     end
   end
 end

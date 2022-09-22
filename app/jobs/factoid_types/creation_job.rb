@@ -15,7 +15,7 @@ module FactoidTypes
       message = 'Success. All factoids have been created'
 
       loop do
-        MiniLokiC::ArticleTypeCode[iteration.factoid_type].execute(:creation, options)
+        MiniLokiC::FactoidTypeCode[iteration.factoid_type].execute(:creation, options)
 
         staging_table = iteration.factoid_type.staging_table.name
         break if Table.all_factoids_created_by_iteration?(staging_table)

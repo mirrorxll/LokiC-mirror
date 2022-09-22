@@ -7,7 +7,8 @@ class CreateHleFileBlobs < ActiveRecord::Migration[6.0]
     create_table :hle_file_blobs do |t|
       t.belongs_to :story_type
       t.binary :file_blob, limit: 10.megabyte
-      t.timestamps
     end
+
+    add_index :hle_file_blobs, :story_type_id, name: :hle_file_blobs_story_type_id_uindex, unique: true
   end
 end

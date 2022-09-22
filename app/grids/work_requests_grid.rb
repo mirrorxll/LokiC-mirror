@@ -50,7 +50,7 @@ class WorkRequestsGrid
 
   column(:project_order_name, header: 'name') do |req|
     format(req) do
-      name = req.project_order_name.body.truncate(30)
+      name = req.project_order_name&.body&.truncate(30)
       link_to(name, req)
     end
   end
