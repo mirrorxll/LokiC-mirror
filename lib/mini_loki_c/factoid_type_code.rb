@@ -2,17 +2,15 @@
 
 module MiniLokiC
   # Execute uploaded stage population/article creation code
-  class ArticleTypeCode
+  class FactoidTypeCode
     def self.[](factoid_type)
       new(factoid_type)
     end
 
     def download
-      # TODO: do we need to rename article_type_id in hle_file_article_type_blobs?
-      query = "SELECT file_blob b FROM hle_file_article_type_blobs WHERE article_type_id = #{@factoid_type.id};"
-      blob = Connect::Mysql.exec_query(DB02, 'loki_storycreator', query).first
+      blob = HleFileArticleTypeBlob.select(:file_blob).where(article_type_id: @factoid_type.id).first
 
-      blob && blob['b']
+      blob && blob[:file_blob]
     end
 
     def execute(method, options = {})

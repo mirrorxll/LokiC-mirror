@@ -12,7 +12,7 @@ module FactoidTypes
       message = 'Success'
       factoid_type = iteration.factoid_type
       population_args = population_args_to_hash(options[:population_args])
-      MiniLokiC::ArticleTypeCode[factoid_type].execute(:population, population_args)
+      MiniLokiC::FactoidTypeCode[factoid_type].execute(:population, population_args)
 
       unless factoid_type.status.name.in?(['in progress', 'on cron'])
         factoid_type.update!(status: Status.find_by(name: 'in progress'), current_account: account)

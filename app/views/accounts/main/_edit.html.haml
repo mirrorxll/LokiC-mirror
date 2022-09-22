@@ -122,9 +122,7 @@
       }
     }
 
-    document.querySelector('#editAccountModal form').addEventListener('submit', onSubmit)
-
-    function onSubmit(event) {
+    document.querySelector('#editAccountModal form').addEventListener('submit', (event) => {
       event.preventDefault();
       event.stopPropagation();
 
@@ -150,11 +148,13 @@
         return false;
       }
 
-      event.target.submit();
-      // event.target.removeEventListener('submit', onSubmit);
-      // Rails.fire(event.target, 'submit');
-      // event.target.addEventListener('submit', onSubmit)
-    }
+      let form = $(event.target);
+      $.ajax({
+        type: "PATCH",
+        url: form.attr('action'),
+        data: form.serialize()
+      });
+    });
 
 
     document.querySelector('#editAccountModal .modal-body').addEventListener('scroll', () => {

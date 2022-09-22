@@ -17,10 +17,27 @@
           placement: 'bottom',
           html: true,
           title: () => {
-            return 'work'
+            return "ORDER LIST"
           },
           content: () => {
-            return 'work'
+            let container = document.createElement('div');
+
+            #{raw(@lists.keys)}.forEach((item) => {
+              let list = document.createElement('div');
+              list.className = 'd-flex justify-content-between';
+
+              let name = document.createElement('div');
+              name.textContent = item.toUpperCase();
+              list.appendChild(name);
+
+              let arrows = document.createElement('i');
+              arrows.setAttribute('class', 'fa fa-sort ml-5');
+              list.appendChild(arrows);
+
+              container.appendChild(list);
+            });
+
+            return container;
           }
         })
     .btn-group

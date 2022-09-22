@@ -20,7 +20,7 @@ task opportunities: :environment do
   OpportunitiesTask.new.perform
 end
 
-desc 'Sync schemas-tables with LokIC'
+desc 'Sync schemas-tables with LokiC'
 task schemas_tables: :environment do
   SchemasTablesTask.new.perform
 end
