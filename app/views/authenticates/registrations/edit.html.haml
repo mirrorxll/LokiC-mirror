@@ -25,7 +25,7 @@
           .col-3.pr-0.text-right.font-weight-bold
             SLACK ACCOUNT:
           .col-6
-            -slack_accounts = SlackAccount.order(:user_name)
+            -slack_accounts = SlackAccount.order(:user_name).where(account_id: [nil, current_account.id], deleted: 0)
             =select_tag 'slack_account[id]',
                         options_from_collection_for_select(slack_accounts, :id, :user_name, current_account&.slack&.id),
                         { include_blank: '-- not set --', class: 'form-control form-control-sm' }

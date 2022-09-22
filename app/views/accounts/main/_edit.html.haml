@@ -13,12 +13,12 @@
     .card-body
       .font-weight-bold.mb-2
         SLACK ACCOUNT:
-      -slack_accounts = SlackAccount.order(:user_name)
-      =f.collection_select 'slack[id]', slack_accounts, :id, :user_name,
-                           { include_blank: '-- not set --', selected: @account.slack&.id }
+      -slack_accounts = SlackAccount.order(:user_name).where(account_id: [nil, @account.id], deleted: 0)
+      =f.collection_select 'slack[identifier]', slack_accounts, :identifier, :user_name,
+                           { include_blank: '-- not set --', selected: @account.slack&.identifier }
       :javascript
         (() => {
-          let select = $('select[name="slack[id]"]').select2({});
+          let select = $('select[name="slack[identifier]"]').select2({});
           select.data('select2').$container.addClass('w-50');
           select.data('select2').$dropdown.addClass('small');
           $('.select2-selection.select2-selection--single').css('border', '1px solid #ced4da');
