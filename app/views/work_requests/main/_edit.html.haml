@@ -9,8 +9,8 @@
       =f.text_field "work_request[project_order_name]", class: 'form-control form-control-sm w-75',
                     value: @work_request.project_order_name.body, maxlength: 2000
 
-  #clientsAnchor.mb-3
-  #clients.card
+  -##clientsAnchor.mb-3
+  -##clients.card
     -clients = @work_request.clients
     .card-body
       .font-weight-bold.mb-2
@@ -99,6 +99,32 @@
         document.querySelector('#clients .processingOther').classList.add('d-none');
         document.querySelector('#clients .loadingSpinner').classList.remove('d-none');
       }
+
+  #agencyOpportunitiesAnchor.mb-3
+  #agencyOpportunities.card
+    .card-body
+      .font-weight-bold.mb-1
+        AGENCY/OPPORTUNITY/%:
+      =link_to('[add agency/opportunity/%]', '#', id: 'add_a_opp', class: 'badge badge-pill badge-light text-secondary mb-2')
+      -@work_request.opportunities.each do |row|
+        -u_id = SecureRandom.hex(3)
+        .row.mb-1{ id: u_id }
+          .col-3.pr-0
+            =f.collection_select :agency_id, MainAgency.order(:name), :id, :name, { selected: row.main_agency.id },
+                                 { id: "a_op_p_#{u_id}_agency_id", name: "work_request[a_op_p[#{u_id}[agency_id]]]", class: 'form-control form-control-sm agencies_select', required: true }
+          .col-4.pr-0
+            =f.collection_select :opportunity_id, MainOpportunity.order(:name), :id, :name,
+                                 { selected: row.main_opportunity.id },
+                                 { id: "a_op_p_#{u_id}_opportunity_id", name: "work_request[a_op_p[#{u_id}[opportunity_id]]]", class: 'form-control form-control-sm opportunities_select', required: true }
+          .col-3.pr-1
+            =f.number_field :percent, { value: row.percent, id: "a_op_p_#{u_id}_percent", name: "work_request[a_op_p[#{u_id}[percent]]]",
+                                        class: 'form-control form-control-sm percent_input', required: true }
+
+          .col-2.d-flex.align-items-center
+            %strong.remove_x.mouse-hover
+              [ X ]
+      =javascript_pack_tag 'work_requests/opportunities/form'
+
 
   #projectOrderDetailsAnchor.mb-3
   #projectOrderDetails.card

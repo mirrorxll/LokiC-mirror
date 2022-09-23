@@ -34,8 +34,8 @@
               Rails.ajax({
                 type: "GET",
                 dataType: 'json',
-                url: `#{api_factoid_request_opportunities_path}`,
-                data: `factoid_request[agency_id]=${encodeURIComponent(agency_id)}`,
+                url: `#{api_opportunities_path}`,
+                data: `agency_id=${encodeURIComponent(agency_id)}`,
                 success: function (data) {
                   let select = document.querySelector('select[name="factoid_request[opportunity_id]"]');
 
