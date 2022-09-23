@@ -7,7 +7,7 @@ module WorkRequests
       work_requester = work_request.requester
 
       url = generate_url(work_request)
-      message = "*Work Request <#{url}|#{work_request.project_order_name.body}> | #{work_requester.name}*\n>#{raw_message}"
+      message = "*<#{url}|#{work_request.project_order_name.body}> | #{work_requester.name}*\n>#{raw_message}"
 
       ::SlackNotificationTask.new.perform('lokic_work_request_messages', message)
     end

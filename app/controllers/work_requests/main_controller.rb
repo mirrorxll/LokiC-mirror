@@ -91,7 +91,7 @@ module WorkRequests
     def send_notification
       WorkRequests::SlackNotificationTask.new.perform(
         @work_request.id,
-        '<!channel> New work request has just been created.'
+        '<!channel> Work Request has just been created.'
       )
     end
   end
