@@ -11,6 +11,8 @@ module WorkRequests
     before_action :access_to_show, only: :show
     before_action :multi_tasks_access, only: :show
 
+    after_action :send_notification, only: :create
+
     def index
       @tab_title = 'LokiC :: WorkRequests'
       @grid.scope { |sc| sc.page(params[:page]).per(30) }
@@ -84,6 +86,13 @@ module WorkRequests
       params
         .require(:work_request).permit!
         .merge({ account: current_account })
+    end
+
+    def send_notification
+      WorkRequests::SlackNotificationTask.new.perform(
+        @work_request.id,
+        '<!channel> New work request has just been created.'
+      )
     end
   end
 end

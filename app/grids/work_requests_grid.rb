@@ -61,8 +61,12 @@ class WorkRequestsGrid
     end
   end
 
-  column(:clients, header: 'clients') do |req|
-    req.clients.map(&:name).join('<br/>').html_safe
+  column(:agency, header: 'Agency') do |req|
+    req.opportunities.map { |r| r.main_agency&.name }.join('<br/>').html_safe
+  end
+
+  column(:opportunity, header: 'Opportunity') do |req|
+    req.opportunities.map { |r| r.main_opportunity&.name }.join('<br/>').html_safe
   end
 
   column(:who_requested, header: 'who requested?') do |req|
