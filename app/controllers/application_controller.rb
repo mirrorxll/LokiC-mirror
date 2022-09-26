@@ -33,6 +33,7 @@ class ApplicationController < ActionController::Base
   def authorize!(branch_name, redirect: true)
     account_card = current_account.cards.find_by(branch: Branch.find_by(name: branch_name))
 
+    pp '111111111111111111'*100, account_card.access_level.permissions
     if account_card.enabled
       instance_variable_set("@#{branch_name}_permissions", account_card.access_level.permissions)
     elsif redirect

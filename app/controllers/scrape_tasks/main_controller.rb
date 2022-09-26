@@ -53,6 +53,7 @@ module ScrapeTasks
       @lists['created'] = { creator: current_account, status: statuses } if @scrape_tasks_permissions['grid']['created']
       @lists['all'] = { status: statuses } if @scrape_tasks_permissions['grid']['all']
       @lists['archived'] = { status: Status.find_by(name: 'archived') } if @scrape_tasks_permissions['grid']['archived']
+      pp '-------------'*100, @lists
     end
 
     def current_list
