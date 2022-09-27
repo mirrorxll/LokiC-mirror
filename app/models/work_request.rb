@@ -33,6 +33,7 @@ class WorkRequest < ApplicationRecord
   has_one :status_comment,        -> { where(subtype: 'status comment') },        dependent: :destroy, as: :commentable, class_name: 'Comment'
 
   has_many :multi_tasks
+  has_many :opportunities, class_name: 'WorkRequestOpportunity'
 
   has_and_belongs_to_many :work_types, join_table: 'types_of_work_work_requests', association_foreign_key: :type_of_work_id, class_name: 'WorkType'
   has_and_belongs_to_many :clients

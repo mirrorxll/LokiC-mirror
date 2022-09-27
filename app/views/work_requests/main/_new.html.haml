@@ -8,8 +8,8 @@
           *required
       =f.text_field "work_request[project_order_name]", class: 'form-control form-control-sm w-75'
 
-  #clientsAnchor.mb-3
-  #clients.card
+  -##clientsAnchor.mb-3
+  -##clients.card
     .card-body
       .font-weight-bold.mb-2
         CLIENTS:
@@ -98,7 +98,13 @@
         document.querySelector('#clients .loadingSpinner').classList.remove('d-none');
       }
 
-
+  #agencyOpportunitiesAnchor.mb-3
+  #agencyOpportunities.card
+    .card-body
+      .font-weight-bold.mb-1
+        AGENCY/OPPORTUNITY/%:
+      =link_to('[add agency/opportunity/%]', '#', id: 'add_a_opp', class: 'badge badge-pill badge-light text-secondary mb-2')
+    =javascript_pack_tag 'work_requests/opportunities/form'
 
   #projectOrderDetailsAnchor.mb-3
   #projectOrderDetails.card
