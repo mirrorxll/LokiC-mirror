@@ -1,0 +1,12 @@
+<div id="git_link" class="row mb-3">
+  <div class="col-3 text-right pr-0">
+    <b>GITHUB:</b>
+    <% if current_account_permissions('scrape_tasks', %w[git_links edit_form]) %>
+      <%= link_to(icon('fa', 'pencil-square'), edit_scrape_task_git_links_path(@scrape_task), class: 'p-0 ml-2', remote: true) %>
+    <% end %>
+  </div>
+
+  <div class="col d-flex align-items-center">
+    <%#= @scrape_task.git_link&.link.present? ? link_to(nil, @scrape_task.git_link&.link, target: '_blank') : nil %>
+  </div>
+</div>
