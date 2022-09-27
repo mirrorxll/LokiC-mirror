@@ -10,6 +10,7 @@ class ScrapeTask < ApplicationRecord
     build_general_comment(subtype: 'general comment')
     build_instruction
     build_evaluation_doc
+    build_git_link
   end
 
   after_create { record_to_change_history(self, 'created', name, creator) }
@@ -25,6 +26,7 @@ class ScrapeTask < ApplicationRecord
   belongs_to :status,     optional: true
   belongs_to :state,      optional: true
 
+
   has_one :instruction,    class_name: 'ScrapeInstruction'
   has_one :evaluation_doc, class_name: 'ScrapeEvaluationDoc'
   has_one :scrape_ability_comment, -> { where(subtype: 'scrape ability comment') }, as: :commentable, class_name: 'Comment'
@@ -32,6 +34,7 @@ class ScrapeTask < ApplicationRecord
   has_one :status_comment,         -> { where(subtype: 'status comment') }, as: :commentable, class_name: 'Comment'
   has_one :general_comment,        -> { where(subtype: 'general comment') }, as: :commentable, class_name: 'Comment'
   has_one :data_set
+  has_one :git_link, class_name: 'ScrapeTaskGitLink'
 
   has_many :change_history, as: :history
   has_many :alerts, as: :alert

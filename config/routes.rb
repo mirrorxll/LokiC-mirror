@@ -201,6 +201,7 @@ Rails.application.routes.draw do
       resource :data_sets, only: %i[show edit update]
       resource :table_locations, only: %i[show edit update]
       resource :data_samples, only: :show
+      resource :git_links, only: %i[show edit update]
     end
   end
 
