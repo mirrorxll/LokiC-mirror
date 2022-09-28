@@ -13,6 +13,7 @@ module ScrapeTasks
     before_action :data_sets_access, only: :show
 
     def index
+      pp ' *** '*100
       @tab_title = 'LokiC :: ScrapeTasks'
       @grid.scope { |sc| sc.page(params[:page]).per(30) }
     end
@@ -44,11 +45,11 @@ module ScrapeTasks
     private
 
     def grid_lists
-      statuses  = Status.scrape_task_statuses(created: true, done: true)
-      grids     = current_account.list_orders.where(branch: 'scrape_tasks').order(:position)
-      @lists    = HashWithIndifferentAccess.new
+      statuses      = Status.scrape_task_statuses(created: true, done: true)
+      allowed_grids = current_account.ordered_lists.where(branch_name: 'scrape_tasks').order(:position)
+      @lists        = HashWithIndifferentAccess.new
 
-      grids.each do |grid|
+      allowed_grids.each do |grid|
         @lists[grid.grid_name] = { status: statuses }
 
         @lists[grid.grid_name].merge!(creator: current_account) if grid.grid_name.eql?('created')
@@ -58,14 +59,16 @@ module ScrapeTasks
     end
 
     def current_list
+      pp ' <<< '*100
       keys = @lists.keys
       @current_list =
         if keys.include?(params[:list])
           params[:list]
         else
-          first_grid = current_account.list_orders.first_grid('scrape_tasks')
+          first_grid = current_account.ordered_lists.first_grid('scrape_tasks')
           (current_account.manager? || current_account.scrape_manager?) && @lists['all'] ? 'all' : @current_list = first_grid
         end
+      pp ' <<< '*100, @current_list
     end
 
     def generate_grid

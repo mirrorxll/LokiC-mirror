@@ -497,4 +497,6 @@ Rails.application.routes.draw do
     post :upload,   on: :collection
     get  :download, on: :collection
   end
+
+  patch 'reorder_lists', to: 'ordered_lists#update'
 end

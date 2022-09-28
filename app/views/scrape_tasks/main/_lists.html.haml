@@ -1,0 +1,10 @@
+.btn-group.mr-1
+  -@lists.each_key do |list|
+    -filled = @current_list.eql?(list) ? '' : '-outline'
+    =link_to(list, url_for(controller: 'scrape_tasks/main', action: 'index', list: list), class: "btn btn-sm btn#{filled}-dark")
+=icon('fa', 'sort', class: 'mr-3', id: 'orderList',
+        data: { html: 'true',
+                container: 'body',
+                toggle: 'popover',
+                placement: 'bottom',
+                content: "#{ render 'ordered_lists/popover', lists: @lists, subject: 'scrape_tasks' }" })
