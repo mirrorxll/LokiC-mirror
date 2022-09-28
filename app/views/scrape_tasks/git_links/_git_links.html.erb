@@ -7,6 +7,6 @@
   </div>
 
   <div class="col d-flex align-items-center">
-    <%#= @scrape_task.git_link&.link.present? ? link_to(nil, @scrape_task.git_link&.link, target: '_blank') : nil %>
+    <%= @scrape_task.git_link&.link.present? ? link_to(nil, @scrape_task.git_link&.link, target: '_blank') : nil %>
   </div>
 </div>

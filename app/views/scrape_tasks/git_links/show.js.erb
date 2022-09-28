@@ -1,6 +1,6 @@
 <% if flash.now[:error] %>
-  <%= toastr_js_flash %>
+  <%= toastr_js_flash(tag: false) %>
 <% else %>
-  $('#git_link>.col').html('<%= @scrape_task.git_link&.link %>');
+  $('#git_link>.col').html('<%= @scrape_task.git_link&.link.present? ? link_to(nil, @scrape_task.git_link&.link, target: '_blank') : nil %>');
   $('#git_link>:first-child>a').removeClass('disabled-link');
 <% end %>
