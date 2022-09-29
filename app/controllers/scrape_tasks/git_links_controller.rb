@@ -12,7 +12,7 @@ module ScrapeTasks
       @git_link = ScrapeTaskGitLink.find_or_create_by(scrape_task_id: @scrape_task.id)
       @git_link.update(git_params)
 
-      flash.now[:error] = { git_link: @git_link.errors.full_messages } if @git_link.errors.any?
+      flash.now[:error] = { git_hub: @git_link.errors.full_messages } if @git_link.errors.any?
       render 'scrape_tasks/git_links/show'
     end
 

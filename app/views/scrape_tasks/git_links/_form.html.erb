@@ -4,8 +4,8 @@
 
   <div id="gitLinkInputBlock" class="d-flex mb-2">
     <div class="form-group mb-0">
-      <%= f.text_field "git_link[link]", class: "underline-input pt-0", value: @scrape_task.git_link&.link %>
-      <div class="small"> *** press enter </div>
+      <%= f.text_field "git_link[link]", class: "underline-input pt-0", size: 50, value: @scrape_task.git_link&.link %>
+      <div class="small">https://github.com/localitylabs/HamsterProjects/tree/master/projects/.....</div>
     </div>
   </div>
 
