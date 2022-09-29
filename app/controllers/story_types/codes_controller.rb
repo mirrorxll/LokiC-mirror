@@ -14,14 +14,14 @@ module StoryTypes
     def attach
       render_403 && return if @story_type.code.attached? || @code.nil?
 
-      @story_type.code.attach(io: StringIO.new(@code), filename: "S#{@story_type.id}.rb")
+      @story_type.code.attach(io: StringIO.new(@code), filename: "s#{@story_type.id}.rb")
     end
 
     def reload
       render_403 && return if @code.nil?
 
       @story_type.code.purge
-      @story_type.code.attach(io: StringIO.new(@code), filename: "S#{@story_type.id}.rb")
+      @story_type.code.attach(io: StringIO.new(@code), filename: "s#{@story_type.id}.rb")
     end
 
     private
