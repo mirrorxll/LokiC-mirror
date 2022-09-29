@@ -1,0 +1,15 @@
+<hr class="mt-0">
+
+<%= form_with(url: scrape_task_git_links_path(@scrape_task), method: :patch, html: { class: 'ml-3', onkeypress: "return event.keyCode !== 13;" } ) do |f| %>
+
+  <div id="gitLinkInputBlock" class="d-flex mb-2">
+    <div class="form-group mb-0">
+      <%= f.text_field "git_link[link]", class: "underline-input pt-0", size: 50, value: @scrape_task.git_link&.link %>
+      <div class="small">https://github.com/localitylabs/HamsterProjects/tree/master/projects/.....</div>
+    </div>
+  </div>
+
+  <%= f.submit '[ save ]', class: 'btn btn-sm btn-link p-0' %>
+  <%= link_to('[ cancel ]', scrape_task_multi_tasks_path, class: 'btn btn-sm btn-link text-secondary p-0', remote: true) %>
+<% end %>
+<hr class="mb-0">
