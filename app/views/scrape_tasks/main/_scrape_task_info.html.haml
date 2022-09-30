@@ -9,6 +9,8 @@
     =render 'scrape_tasks/data_sets/data_sets'
   -if current_account_permissions('scrape_tasks', %w[table_locations show])
     =render 'scrape_tasks/table_locations/table_locations'
+  -if current_account_permissions('scrape_tasks', %w[git_links show])
+    =render 'scrape_tasks/git_links/git_links'
 
   %hr/
 
