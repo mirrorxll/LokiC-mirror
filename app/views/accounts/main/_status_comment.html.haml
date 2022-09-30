@@ -1,3 +1,7 @@
 -if @account.status.name.eql?('deactivated')
-  .text-danger.font-weight-bold
-    #{@account.status.name} - #{@status_comment.body}
+  %button.status-comment.border-0.text-danger.bg-transparent.font-weight-bold{ 'data-container' => "body", 'data-toggle' => "popover",
+                                                                'data-placement' => "bottom", 'data-content' => @status_comment.body }
+    #{@status_comment&.body&.truncate(50)}
+
+  :javascript
+    $('.status-comment').popover('enable');
