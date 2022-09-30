@@ -97,6 +97,10 @@ class MultiTasksGrid
     format('Google doc') { |sow| link_to sow, task.sow } unless task.sow.blank?
   end
 
+  column(:id, header: "Link",  html: false) do |task|
+     "https://lokic.locallabs.com/multi_tasks/#{task.id}"
+  end
+
   column(:last_comment, header: 'Last comment', mandatory: true, html: true) do |task|
     last_comment = task.last_comment
     if last_comment.nil?
