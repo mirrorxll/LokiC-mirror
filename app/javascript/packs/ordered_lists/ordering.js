@@ -15,7 +15,6 @@ $(document).on('click', '.up', function () {
 });
 
 $(document).on('click', '.down', function () {
-    console.log($(this));
     const currItem = $(this).parents('li');
     const currentPosition = parseInt(currItem.attr('data-position'));
     const itemsLength = $('li[data-position]').length
@@ -36,18 +35,15 @@ $(document).on('click', '#applyListSorting', function () {
     let newOrder = {};
     let subject;
     const urlSearchParams = new URLSearchParams(window.location.search).get('list');
-    // console.log(urlSearchParams);
     $('li[data-position]').each(function () {
         const currentPosition = parseInt($(this).attr('data-position'));
         const currentList = $.trim($(this).text());
         subject = $(this).attr('data-subject');
         newOrder[currentList] = currentPosition;
     });
-    let myData = { subject: subject, data: newOrder, current_list: urlSearchParams }
-    // if (typeof urlSearchParams !== 'undefined') {
-    //     $.merge(myData, { current_list: urlSearchParams })
-    // }
-    $("[data-toggle='popover']").popover('hide');
+    let myData = { subject: subject, data: newOrder, current_list: urlSearchParams };
+    $('#orderList').popover('dispose');
+
     $.ajax({
         url: `${window.location.origin}/reorder_lists`,
         type: 'PATCH',
@@ -55,3 +51,5 @@ $(document).on('click', '#applyListSorting', function () {
         data: myData
     });
 });
+
+$(document).on('click', '#closePopover', function () { $('#orderList').popover('hide'); });

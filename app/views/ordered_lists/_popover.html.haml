@@ -7,5 +7,6 @@
           %i.fa.fa-chevron-up
         =button_tag(class: 'btn text-secondary down') do
           %i.fa.fa-chevron-down
-=button_tag('Apply', id: 'applyListSorting')
-=button_tag('Cancel', id: 'closePopover')
+.d-flex.justify-content-around
+  =button_tag('Apply', id: 'applyListSorting', class: 'btn btn-sm btn-outline-primary')
+  =button_tag('Cancel', id: 'closePopover', class: 'btn btn-sm btn-outline-danger')

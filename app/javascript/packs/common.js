@@ -37,5 +37,3 @@ $(document).on('show.bs.collapse', ('#commentForm'), function() {
         placeholderText: 'Type here....'
     })
 });
-
-$(document).on('click', '#closePopover', function () { $("[data-toggle='popover']").popover('hide'); });

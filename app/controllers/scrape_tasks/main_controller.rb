@@ -13,7 +13,6 @@ module ScrapeTasks
     before_action :data_sets_access, only: :show
 
     def index
-      pp ' *** '*100
       @tab_title = 'LokiC :: ScrapeTasks'
       @grid.scope { |sc| sc.page(params[:page]).per(30) }
     end
@@ -59,7 +58,6 @@ module ScrapeTasks
     end
 
     def current_list
-      pp ' <<< '*100
       keys = @lists.keys
       @current_list =
         if keys.include?(params[:list])
@@ -68,7 +66,6 @@ module ScrapeTasks
           first_grid = current_account.ordered_lists.first_grid('scrape_tasks')
           (current_account.manager? || current_account.scrape_manager?) && @lists['all'] ? 'all' : @current_list = first_grid
         end
-      pp ' <<< '*100, @current_list
     end
 
     def generate_grid
