@@ -98,7 +98,15 @@ class MultiTasksGrid
   end
 
   column(:id, header: "Link",  html: false) do |task|
-     "https://lokic.locallabs.com/multi_tasks/#{task.id}"
+    host = case Rails.env
+           when 'production'
+             'https://lokic.locallabs.com'
+           when 'staging'
+             'https://lokic-staging.locallabs.com'
+           else
+             'http://localhost:3000'
+           end
+     "#{host}/multi_tasks/#{task.id}"
   end
 
   column(:last_comment, header: 'Last comment', mandatory: true, html: true) do |task|
