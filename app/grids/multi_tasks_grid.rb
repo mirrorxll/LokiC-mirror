@@ -97,6 +97,18 @@ class MultiTasksGrid
     format('Google doc') { |sow| link_to sow, task.sow } unless task.sow.blank?
   end
 
+  column(:id, header: "Link",  html: false) do |task|
+    host = case Rails.env
+           when 'production'
+             'https://lokic.locallabs.com'
+           when 'staging'
+             'https://lokic-staging.locallabs.com'
+           else
+             'http://localhost:3000'
+           end
+     "#{host}/multi_tasks/#{task.id}"
+  end
+
   column(:last_comment, header: 'Last comment', mandatory: true, html: true) do |task|
     last_comment = task.last_comment
     if last_comment.nil?
