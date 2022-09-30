@@ -17,7 +17,7 @@ namespace :scrape_task do
       data_index  = column_data.index { |v| v[0] == 'table_locations' }
       next if data_index.nil?
 
-      update_data = column_data.insert(data_index + 1, ['git_links', { 'show' => true, 'edit_form' => true }]).to_h
+      update_data = column_data.insert(data_index + 1, ['git_links', { 'show' => true, 'edit_form' => t.name.eql?('manager') }]).to_h
       t.update(permissions: update_data)
     end
   end
