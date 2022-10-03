@@ -8,7 +8,7 @@
   .d-flex.text-right.text-uppercase
     -if @current_list && @lists.length > 1
       #orderedLists
-        =render 'scrape_tasks/main/lists'
+        =render 'ordered_lists/lists', branch: 'scrape_tasks'
     .btn-group
       -if @current_list
         =link_to('filter', '#', class: 'btn btn-sm btn-outline-dark',

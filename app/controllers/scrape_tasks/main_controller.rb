@@ -64,7 +64,7 @@ module ScrapeTasks
           params[:list]
         else
           first_grid = current_account.ordered_lists.first_grid('scrape_tasks')
-          (current_account.manager? || current_account.scrape_manager?) && @lists['all'] ? 'all' : @current_list = first_grid
+          (current_account.manager? || current_account.scrape_manager?) && @lists['all'] ? 'all' : first_grid
         end
     end
 
