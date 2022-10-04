@@ -23,7 +23,7 @@ module FactoidTypes
       options = options.merge({ ids: ids.join(','), type: 'article' })
       iteration.update!(sample_args: sample_args, current_account: account)
 
-      MiniLokiC::ArticleTypeCode[iteration.factoid_type].execute(:creation, options)
+      MiniLokiC::FactoidTypeCode[iteration.factoid_type].execute(:creation, options)
 
       iteration.factoids.where(staging_row_id: ids).update_all(sampled: true)
 

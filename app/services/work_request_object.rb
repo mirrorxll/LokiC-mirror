@@ -17,8 +17,8 @@ class WorkRequestObject
 
     @work_types =
       @prm.select { |k, _v| k.start_with?('tf_work_type') }.keys.map { |k| WorkType.find(k.split('__').last) }
-    @clients =
-      @prm.select { |k, _v| k.start_with?('tf_client') }.keys.map { |k| Client.find(k.split('__').last) }
+    # @clients =
+    #   @prm.select { |k, _v| k.start_with?('tf_client') }.keys.map { |k| Client.find(k.split('__').last) }
     @rev_types =
       @prm.select { |k, _v| k.start_with?('tf_revenue_type') }.keys.map { |k| RevenueType.find(k.split('__').last) }
 
@@ -37,11 +37,13 @@ class WorkRequestObject
     params.merge!(default_sow: true) if @request.new_record?
 
     @request.update!(params)
-    @request.project_order_name.update!(body: @prm['project_order_name'].strip!)
+    @request.project_order_name.update!(body: @prm['project_order_name'].strip)
     @request.project_order_details.update!(body: @prm['project_order_details'])
     @request.most_worried_details.update!(body: @prm['most_worried_details'])
 
-    @clients.each { |cl| @request.clients << cl unless @request.clients.exists?(cl.id) }
+    # @clients.each { |cl| @request.clients << cl unless @request.clients.exists?(cl.id) }
+
+    WorkRequestAOP.setup!(@request, @prm[:a_op_p])
 
     @request
   end

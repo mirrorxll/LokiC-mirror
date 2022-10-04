@@ -40,6 +40,7 @@ module AccessLevels
         multi_tasks: { show: true, edit_form: true },
         data_sets: { show: true, edit_form: true },
         table_locations: { show: true, edit_form: true },
+        git_links: { show: true, edit_form: true },
         conversation: { show: true, post_messages: true, edit_messages: true },
         instructions: { show: true, edit_form: true },
         evaluation_document: { show: true, edit_form: true }
@@ -118,6 +119,7 @@ module AccessLevels
         multi_tasks: { show: true, edit_form: false },
         data_sets: { show: true, edit_form: false },
         table_locations: { show: true, edit_form: true },
+        git_links: { show: true, edit_form: false },
         conversation: { show: true, post_messages: true, edit_messages: true },
         instructions: { show: true, edit_form: false },
         evaluation_document: { show: true, edit_form: false }
@@ -196,6 +198,7 @@ module AccessLevels
         multi_tasks: { show: true, edit_form: false },
         data_sets: { show: true, edit_form: false },
         table_locations: { show: true, edit_form: false },
+        git_links: { show: true, edit_form: false },
         conversation: { show: true, post_messages: false, edit_messages: false },
         instructions: { show: true, edit_form: false },
         evaluation_document: { show: true, edit_form: false }

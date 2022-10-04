@@ -41,7 +41,7 @@ module Api
             main_info: {
               tags: @scrape_task.tags.map(&:name),
               name: @scrape_task.name,
-              multi_tasks: @scrape_task.tasks.pluck(:id),
+              multi_tasks: @scrape_task.multi_tasks.pluck(:id),
               gather_task_id: @scrape_task.gather_task,
               deadline: @scrape_task.deadline,
               state: @scrape_task.state&.name,

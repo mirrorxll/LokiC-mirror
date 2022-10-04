@@ -33,7 +33,7 @@
         .current_progress_status
           -if %w[blocked archived].include?(@story_type.status.name)
             .small.d-inline-block
-              =@story_type.status_comment.body
+              =@story_type.status_comment&.body
           =@story_type.status.name
 %hr/
 

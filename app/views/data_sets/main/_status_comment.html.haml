@@ -1,3 +1,7 @@
--if @data_set.status.name.eql?('deactivated')
-  .text-danger.font-weight-bold
-    #{@data_set.status.name} - #{@data_set.status_comment.body}
+-if @data_set.status.name.eql?('archived')
+  %button.status-comment.border-0.text-danger.bg-transparent.font-weight-bold{ 'data-container' => "body", 'data-toggle' => "popover", 'data-placement' => "bottom",
+                                 'data-content' => @data_set.status_comment&.body }
+    #{@data_set.status_comment&.body&.truncate(50)}
+
+  :javascript
+    $('.status-comment').popover('enable');
