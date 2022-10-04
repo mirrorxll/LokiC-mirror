@@ -17,7 +17,7 @@ $(document).on('click', '.up', function () {
 $(document).on('click', '.down', function () {
     const currItem = $(this).parents('li');
     const currentPosition = parseInt(currItem.attr('data-position'));
-    const itemsLength = $('li[data-position]').length
+    const itemsLength = $('li[data-position]').length;
     let nextPosition;
     let nextItem;
     if (currentPosition !== itemsLength - 1) {
