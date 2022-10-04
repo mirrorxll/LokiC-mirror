@@ -53,8 +53,8 @@ module StoryTypes
       allowed_grids.each do |grid|
         @lists[grid.grid_name] = { status: statuses }
 
-        @lists[grid.grid_name].merge!(developer: current_account) if grid.grid_name.eql?('assigned')
-        @lists[grid.grid_name].merge!(editor: current_account) if grid.grid_name.eql?('your')
+        @lists[grid.grid_name].merge!(developer: current_account)               if grid.grid_name.eql?('assigned')
+        @lists[grid.grid_name].merge!(editor: current_account)                  if grid.grid_name.eql?('your')
         @lists[grid.grid_name].merge!(status: Status.find_by(name: 'archived')) if grid.grid_name.eql?('archived')
       end
     end
@@ -89,7 +89,7 @@ module StoryTypes
       archived = Status.find_by(name: 'archived')
 
       return if @lists['assigned'] && @story_type.developer.eql?(current_account)
-      return if @lists['created'] && @story_type.editor.eql?(current_account)
+      return if @lists['your'] && @story_type.editor.eql?(current_account)
       return if @lists['all'] && @story_type.status != archived
       return if @lists['archived'] && @story_type.status.eql?(archived)
 

@@ -51,8 +51,8 @@ module ScrapeTasks
       allowed_grids.each do |grid|
         @lists[grid.grid_name] = { status: statuses }
 
-        @lists[grid.grid_name].merge!(creator: current_account) if grid.grid_name.eql?('created')
-        @lists[grid.grid_name].merge!(scraper: current_account) if grid.grid_name.eql?('assigned')
+        @lists[grid.grid_name].merge!(creator: current_account)                 if grid.grid_name.eql?('created')
+        @lists[grid.grid_name].merge!(scraper: current_account)                 if grid.grid_name.eql?('assigned')
         @lists[grid.grid_name].merge!(status: Status.find_by(name: 'archived')) if grid.grid_name.eql?('archived')
       end
     end

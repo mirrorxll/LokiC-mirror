@@ -44,13 +44,17 @@ module FactoidTypes
     private
 
     def grid_lists
-      statuses = Status.hle_statuses(created: true, migrated: true, inactive: true)
-      @lists = HashWithIndifferentAccess.new
+      statuses      = Status.hle_statuses(created: true, migrated: true, inactive: true)
+      allowed_grids = current_account.ordered_lists.where(branch_name: 'story_types').order(:position)
+      @lists        = HashWithIndifferentAccess.new
 
-      @lists['assigned'] = { developer: current_account, status: statuses } if @factoid_types_permissions['grid']['assigned']
-      @lists['created'] = { editor: current_account, status: statuses } if @factoid_types_permissions['grid']['created']
-      @lists['all'] = { status: statuses } if @factoid_types_permissions['grid']['all']
-      @lists['archived'] = { status: Status.find_by(name: 'archived') } if @factoid_types_permissions['grid']['archived']
+      allowed_grids.each do |grid|
+        @lists[grid.grid_name] = { status: statuses }
+
+        @lists[grid.grid_name].merge!(developer: current_account)               if grid.grid_name.eql?('assigned')
+        @lists[grid.grid_name].merge!(editor: current_account)                  if grid.grid_name.eql?('your')
+        @lists[grid.grid_name].merge!(status: Status.find_by(name: 'archived')) if grid.grid_name.eql?('archived')
+      end
     end
 
     def current_list
@@ -59,7 +63,8 @@ module FactoidTypes
         if keys.include?(params[:list])
           params[:list]
         else
-          (current_account.manager? || current_account.content_manager?) && @lists['all'] ? 'all' : keys.first
+          first_grid = current_account.ordered_lists.first_grid('factoid_types')
+          (current_account.manager? || current_account.content_manager?) && @lists['all'] ? 'all' : first_grid
         end
     end
 
@@ -82,7 +87,7 @@ module FactoidTypes
       archived = Status.find_by(name: 'archived')
 
       return if @lists['assigned'] && @factoid_type.developer.eql?(current_account)
-      return if @lists['created'] && @factoid_type.editor.eql?(current_account)
+      return if @lists['your'] && @factoid_type.editor.eql?(current_account)
       return if @lists['all'] && @factoid_type.status != archived
       return if @lists['archived'] && @factoid_type.status.eql?(archived)
 

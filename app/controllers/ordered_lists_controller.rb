@@ -7,6 +7,13 @@ class OrderedListsController < ApplicationController
       grid = lists.find_by(grid_name: k)
       grid.update(position: v)
     end
+    generate_grid_lists
+    generate_current_list
+  end
+
+  private
+
+  def generate_grid_lists
     statuses      = set_statuses
     allowed_grids = current_account.ordered_lists.where(branch_name: subject).order(:position)
     @lists        = HashWithIndifferentAccess.new
@@ -14,12 +21,15 @@ class OrderedListsController < ApplicationController
 
     allowed_grids.each do |grid|
       @lists[grid.grid_name] = { status: statuses }
-      @lists[grid.grid_name].merge!(status: Status.find_by(name: 'archived')) if grid.grid_name.eql?('archived')
 
-      @lists[grid.grid_name].merge!( "#{created_list_account}": current_account) if grid.grid_name.eql?('your')
-      @lists[grid.grid_name].merge!( "#{assigned_list_account}": current_account) if grid.grid_name.eql?('assigned')
+      @lists[grid.grid_name].merge!("#{created_list_account}": current_account)  if %w(created your).include?(grid.grid_name)
+      @lists[grid.grid_name].merge!("#{assigned_list_account}": current_account) if grid.grid_name.eql?('assigned')
+      @lists[grid.grid_name].merge!(responsible_editor: current_account)         if grid.grid_name.eql?('responsible')
+      @lists[grid.grid_name].merge!(status: Status.find_by(name: 'archived'))    if grid.grid_name.eql?('archived')
     end
+  end
 
+  def generate_current_list
     keys = @lists.keys
     @current_list =
       if current_list && keys.include?(current_list)
@@ -28,46 +38,6 @@ class OrderedListsController < ApplicationController
         first_grid = current_account.ordered_lists.first_grid(subject)
         (current_account.manager? || second_manager) && @lists['all'] ? 'all' : @current_list = first_grid
       end
-  end
-
-  private
-
-  def created_list_account
-    case subject
-    when 'data_sets'
-      'account'
-    when 'factoid_requests', 'work_requests'
-      'requester'
-    when 'factoid_types', 'story_types'
-      'developer'
-    when 'multi_tasks', 'scrape_tasks'
-      'creator'
-    end
-  end
-
-  def assigned_list_account
-    case subject
-    when 'data_sets'
-      'sheriff'
-    when 'factoid_types', 'story_types'
-      'editor'
-    when 'multi_tasks'
-      'multi_task_assignments.account_id'
-    when 'scrape_tasks'
-      'scraper'
-    end
-  end
-
-  def subject
-    params.require(:subject)
-  end
-
-  def positions
-    params.require(:data).permit!
-  end
-
-  def current_list
-    params[:current_list].present? ? params.require(:current_list) : nil
   end
 
   def set_statuses
@@ -87,6 +57,32 @@ class OrderedListsController < ApplicationController
     end
   end
 
+  def created_list_account
+    case subject
+    when 'data_sets'
+      'account'
+    when 'factoid_requests', 'work_requests'
+      'requester'
+    when 'factoid_types', 'story_types'
+      'editor'
+    when 'multi_tasks', 'scrape_tasks'
+      'creator'
+    end
+  end
+
+  def assigned_list_account
+    case subject
+    when 'data_sets'
+      'sheriff'
+    when 'factoid_types', 'story_types'
+      'developer'
+    when 'multi_tasks'
+      'multi_task_assignments.account_id'
+    when 'scrape_tasks'
+      'scraper'
+    end
+  end
+
   def second_manager
     case subject
     when 'data_sets', 'factoid_types', 'story_types'
@@ -96,5 +92,17 @@ class OrderedListsController < ApplicationController
     when 'scrape_tasks'
       current_account.scrape_manager?
     end
+  end
+
+  def subject
+    params[:subject].presence
+  end
+
+  def positions
+    params.require(:data).permit!
+  end
+
+  def current_list
+    params[:current_list].presence
   end
 end

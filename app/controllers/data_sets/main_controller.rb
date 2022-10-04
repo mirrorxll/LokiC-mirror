@@ -71,14 +71,18 @@ module DataSets
     private
 
     def grid_lists
-      statuses = Status.data_set_statuses
-      @lists = HashWithIndifferentAccess.new
+      statuses      = Status.data_set_statuses
+      allowed_grids = current_account.ordered_lists.where(branch_name: 'data_sets').order(:position)
+      @lists        = HashWithIndifferentAccess.new
 
-      @lists['assigned'] = { sheriff: current_account, status: statuses } if @data_sets_permissions['grid']['assigned']
-      @lists['responsible'] = { responsible_editor: current_account, status: statuses } if @data_sets_permissions['grid']['responsible']
-      @lists['created'] = { account: current_account, status: statuses } if @data_sets_permissions['grid']['created']
-      @lists['all'] = { status: statuses } if @data_sets_permissions['grid']['all']
-      @lists['archived'] = { status: Status.find_by(name: 'archived') } if @data_sets_permissions['grid']['archived']
+      allowed_grids.each do |grid|
+        @lists[grid.grid_name] = { status: statuses }
+
+        @lists[grid.grid_name].merge!(sheriff: current_account)                 if grid.grid_name.eql?('assigned')
+        @lists[grid.grid_name].merge!(account: current_account)                 if grid.grid_name.eql?('created')
+        @lists[grid.grid_name].merge!(responsible_editor: current_account)      if grid.grid_name.eql?('responsible')
+        @lists[grid.grid_name].merge!(status: Status.find_by(name: 'archived')) if grid.grid_name.eql?('archived')
+      end
     end
 
     def current_list
@@ -87,7 +91,8 @@ module DataSets
         if keys.include?(params[:list])
           params[:list]
         else
-          (current_account.manager? || current_account.content_manager?) && @lists['all'] ? 'all' : keys.first
+          first_grid = current_account.ordered_lists.first_grid('data_sets')
+          (current_account.manager? || current_account.content_manager?) && @lists['all'] ? 'all' : first_grid
         end
     end
 
