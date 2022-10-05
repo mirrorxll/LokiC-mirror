@@ -1,0 +1,17 @@
+<section class='text-center mt-5'>
+  <div class='container d-flex flex-column w-50 justify-content-around'>
+    <%=icon('fa', 'bug', class: 'fa-5x') %>
+    <div>
+      <h1><%= @exception.class.name %></h1>
+      <p class='lead text-muted'>
+        <%= @exception %>
+      </p>
+      <p class='lead text-muted'>
+        <%= @backtrace %>
+      </p>
+      <p>
+        <%= link_to 'Back', :back %>
+      </p>
+    </div>
+  </div>
+</section>

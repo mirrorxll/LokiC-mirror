@@ -45,5 +45,7 @@ module LokiC
     config.active_record.yaml_column_permitted_classes = [Symbol, Array, Hash, HashWithIndifferentAccess]
 
     config.active_record.default_timezone = :local
+
+    config.exceptions_app = self.routes
   end
 end
