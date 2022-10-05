@@ -121,8 +121,7 @@ module MultiTasks
         if keys.include?(params[:list])
           params[:list]
         else
-          first_grid = current_account.ordered_lists.first_grid('multi_tasks')
-          (current_account.manager? || current_account.multi_tasks_manager?) && @lists['all'] ? 'all' : first_grid
+          current_account.ordered_lists.first_grid('multi_tasks')
         end
     end
 

@@ -63,8 +63,7 @@ module FactoidTypes
         if keys.include?(params[:list])
           params[:list]
         else
-          first_grid = current_account.ordered_lists.first_grid('factoid_types')
-          (current_account.manager? || current_account.content_manager?) && @lists['all'] ? 'all' : first_grid
+          current_account.ordered_lists.first_grid('factoid_types')
         end
     end
 

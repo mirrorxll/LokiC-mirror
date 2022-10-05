@@ -35,8 +35,7 @@ class OrderedListsController < ApplicationController
       if current_list && keys.include?(current_list)
         current_list
       else
-        first_grid = current_account.ordered_lists.first_grid(subject)
-        (current_account.manager? || second_manager) && @lists['all'] ? 'all' : @current_list = first_grid
+        current_account.ordered_lists.first_grid(subject)
       end
   end
 
@@ -80,17 +79,6 @@ class OrderedListsController < ApplicationController
       'multi_task_assignments.account_id'
     when 'scrape_tasks'
       'scraper'
-    end
-  end
-
-  def second_manager
-    case subject
-    when 'data_sets', 'factoid_types', 'story_types'
-      current_account.content_manager?
-    when 'multi_tasks'
-      current_account.multi_tasks_manager?
-    when 'scrape_tasks'
-      current_account.scrape_manager?
     end
   end
 

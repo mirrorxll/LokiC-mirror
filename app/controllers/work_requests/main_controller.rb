@@ -58,8 +58,7 @@ module WorkRequests
         if keys.include?(params[:list])
           params[:list]
         else
-          first_grid = current_account.ordered_lists.first_grid('work_requests')
-          current_account.manager? && @lists['all'] ? 'all' : first_grid
+          current_account.ordered_lists.first_grid('work_requests')
         end
     end
 

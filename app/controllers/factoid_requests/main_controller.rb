@@ -58,8 +58,7 @@ module FactoidRequests
         if keys.include?(params[:list])
           params[:list]
         else
-          first_grid = current_account.ordered_lists.first_grid('factoid_requests')
-          current_account.manager? && @lists['all'] ? 'all' : first_grid
+          current_account.ordered_lists.first_grid('factoid_requests')
         end
     end
 
