@@ -46,13 +46,17 @@ module StoryTypes
     private
 
     def grid_lists
-      statuses = Status.hle_statuses(created: true, migrated: true, inactive: true)
-      @lists = HashWithIndifferentAccess.new
+      statuses      = Status.hle_statuses(created: true, migrated: true, inactive: true)
+      allowed_grids = current_account.ordered_lists.where(branch_name: 'story_types').order(:position)
+      @lists        = HashWithIndifferentAccess.new
 
-      @lists['assigned'] = { developer: current_account, status: statuses } if @story_types_permissions['grid']['assigned']
-      @lists['created'] = { editor: current_account, status: statuses } if @story_types_permissions['grid']['created']
-      @lists['all'] = { status: statuses } if @story_types_permissions['grid']['all']
-      @lists['archived'] = { status: Status.find_by(name: 'archived') } if @story_types_permissions['grid']['archived']
+      allowed_grids.each do |grid|
+        @lists[grid.grid_name] = { status: statuses }
+
+        @lists[grid.grid_name].merge!(developer: current_account)               if grid.grid_name.eql?('assigned')
+        @lists[grid.grid_name].merge!(editor: current_account)                  if grid.grid_name.eql?('created')
+        @lists[grid.grid_name].merge!(status: Status.find_by(name: 'archived')) if grid.grid_name.eql?('archived')
+      end
     end
 
     def current_list
@@ -61,7 +65,7 @@ module StoryTypes
         if keys.include?(params[:list])
           params[:list]
         else
-          (current_account.manager? || current_account.content_manager?) && @lists['all'] ? 'all' : keys.first
+          current_account.ordered_lists.first_grid('story_types')
         end
     end
 

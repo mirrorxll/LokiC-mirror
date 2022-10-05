@@ -43,6 +43,7 @@ class Account < ApplicationRecord # :nodoc:
   has_many :created_scrape_tasks,  class_name: 'ScrapeTask', foreign_key: :creator_id
   has_many :cards, class_name: 'AccountCard'
   has_many :exception_records
+  has_many :ordered_lists
 
   has_and_belongs_to_many :roles, class_name: 'AccountRole'
 

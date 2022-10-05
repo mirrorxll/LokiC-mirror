@@ -1,0 +1,12 @@
+%ul.list-unstyled
+  -lists.each_with_index do |list, i|
+    %li{ class: 'd-flex justify-content-between align-items-center', data: { position: i, subject: subject } }
+      =list.first
+      %div
+        =button_tag(class: 'btn text-secondary up') do
+          %i.fa.fa-chevron-up
+        =button_tag(class: 'btn text-secondary down') do
+          %i.fa.fa-chevron-down
+.d-flex.justify-content-around
+  =button_tag('Apply', id: 'applyListSorting', class: 'btn btn-sm btn-outline-primary')
+  =button_tag('Cancel', id: 'closePopover', class: 'btn btn-sm btn-outline-danger')

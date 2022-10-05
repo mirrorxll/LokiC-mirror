@@ -5,12 +5,10 @@
       Total: #{@grid.assets.total_count}
   %span.font-weight-bold
     DATA SETS
-  .d-inline-block.text-right.text-uppercase
+  .d-flex.text-right.text-uppercase
     -if @current_list && @lists.length > 1
-      .btn-group.mr-3
-        -@lists.each_key do |list|
-          -filled = @current_list.eql?(list) ? '' : '-outline'
-          =link_to(list, url_for(list: list), class: "btn btn-sm btn#{filled}-dark")
+      #orderedLists
+        =render 'ordered_lists/lists', branch: 'data_sets'
     .btn-group
       -if @current_list
         =link_to('filter', '#', class: 'btn btn-sm btn-outline-dark',

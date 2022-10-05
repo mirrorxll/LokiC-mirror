@@ -44,15 +44,17 @@ module ScrapeTasks
     private
 
     def grid_lists
-      statuses = Status.scrape_task_statuses(created: true, done: true)
-      @lists = HashWithIndifferentAccess.new
+      statuses      = Status.scrape_task_statuses(created: true, done: true)
+      allowed_grids = current_account.ordered_lists.where(branch_name: 'scrape_tasks').order(:position)
+      @lists        = HashWithIndifferentAccess.new
 
-      if @scrape_tasks_permissions['grid']['assigned']
-        @lists['assigned'] = { scraper: current_account, status: statuses }
+      allowed_grids.each do |grid|
+        @lists[grid.grid_name] = { status: statuses }
+
+        @lists[grid.grid_name].merge!(creator: current_account)                 if grid.grid_name.eql?('created')
+        @lists[grid.grid_name].merge!(scraper: current_account)                 if grid.grid_name.eql?('assigned')
+        @lists[grid.grid_name].merge!(status: Status.find_by(name: 'archived')) if grid.grid_name.eql?('archived')
       end
-      @lists['created'] = { creator: current_account, status: statuses } if @scrape_tasks_permissions['grid']['created']
-      @lists['all'] = { status: statuses } if @scrape_tasks_permissions['grid']['all']
-      @lists['archived'] = { status: Status.find_by(name: 'archived') } if @scrape_tasks_permissions['grid']['archived']
     end
 
     def current_list
@@ -61,7 +63,7 @@ module ScrapeTasks
         if keys.include?(params[:list])
           params[:list]
         else
-          (current_account.manager? || current_account.scrape_manager?) && @lists['all'] ? 'all' : keys.first
+          current_account.ordered_lists.first_grid('scrape_tasks')
         end
     end
 
