@@ -1,7 +1,7 @@
 %hr/
 .row
   .col-12.text-center
-    %b #{@factoid_type.id_name}
+    %b #{link_to(@factoid_type.id_name, factoid_type_iteration_samples_path(@factoid_type.id, @iteration.id))}
 %hr/
 -if @factoid_type.code.attached?
   .row
