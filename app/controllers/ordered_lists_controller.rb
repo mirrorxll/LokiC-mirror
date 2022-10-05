@@ -22,7 +22,7 @@ class OrderedListsController < ApplicationController
     allowed_grids.each do |grid|
       @lists[grid.grid_name] = { status: statuses }
 
-      @lists[grid.grid_name].merge!("#{created_list_account}": current_account)  if %w(created your).include?(grid.grid_name)
+      @lists[grid.grid_name].merge!("#{created_list_account}": current_account)  if grid.grid_name.eql?('created')
       @lists[grid.grid_name].merge!("#{assigned_list_account}": current_account) if grid.grid_name.eql?('assigned')
       @lists[grid.grid_name].merge!(responsible_editor: current_account)         if grid.grid_name.eql?('responsible')
       @lists[grid.grid_name].merge!(status: Status.find_by(name: 'archived'))    if grid.grid_name.eql?('archived')

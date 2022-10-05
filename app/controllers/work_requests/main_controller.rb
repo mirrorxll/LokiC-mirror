@@ -41,7 +41,7 @@ module WorkRequests
 
     def grid_lists
       statuses      = Status.work_request_statuses(created: true)
-      allowed_grids = current_account.ordered_lists.where(branch_name: 'factoid_requests').order(:position)
+      allowed_grids = current_account.ordered_lists.where(branch_name: 'work_requests').order(:position)
       @lists        = HashWithIndifferentAccess.new
 
       allowed_grids.each do |grid|
