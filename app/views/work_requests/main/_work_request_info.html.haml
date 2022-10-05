@@ -31,13 +31,18 @@
 
   %hr/
 
-.row.mb-1
+-#.row.mb-1
   .col-3.pr-0.text-right.font-weight-bold
     CLIENTS:
   .col-9
     -@work_request.clients.each do |cl|
       =cl.name
       %br/
+.row.mb-1.text-break
+  .col-3.pr-0.text-right.font-weight-bold
+    AGENCY/OPPORTUNITY/%:
+  .col-9
+    =@work_request.opportunities.map { |aop| "#{aop.main_agency&.name} - #{aop.main_opportunity&.name} - #{aop.percent}%" }.join('<br/>')&.html_safe
 .row.mb-1.text-break
   .col-3.pr-0.text-right.font-weight-bold
     DETAILS:

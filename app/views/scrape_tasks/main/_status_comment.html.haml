@@ -1,3 +1,7 @@
 -if @scrape_task.status.name.in?(%w[blocked canceled archived])
-  .text-danger.font-weight-bold
-    #{@scrape_task.status.name} - #{@scrape_task.status_comment&.body}
+  %button.status-comment.border-0.text-danger.bg-transparent.font-weight-bold{ 'data-container' => "body", 'data-toggle' => "popover", 'data-placement' => "bottom",
+                                 'data-content' => @scrape_task.status_comment&.body }
+    #{@scrape_task.status_comment&.body&.truncate(50)}
+
+  :javascript
+    $('.status-comment').popover('enable');

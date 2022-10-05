@@ -13,21 +13,19 @@ module ApplicationHelper
     Week.where(begin: Date.today.beginning_of_week).first
   end
 
-  def toastr_js_flash(to_flash = {})
+  def toastr_js_flash(tag: true, **to_flash)
     toast_code = lambda do |type, title, message|
       <<~SCRIPT
-        <script>
-          toastr.#{type}(`#{message}`, `#{title}`, {
-            showMethod: 'slideDown',
-            hideMethod: 'slideUp',
-            closeMethod: 'slideUp',
-            closeDuration: 300,
-            timeOut: #{type.eql?('success') ? 5000 : 0},
-            extendedTimeOut: #{type.eql?('success') ? 5000 : 0},
-            closeButton: true,
-            tapToDismiss: false
-          });
-        </script>
+        toastr.#{type}(`#{message}`, `#{title}`, {
+          showMethod: 'slideDown',
+          hideMethod: 'slideUp',
+          closeMethod: 'slideUp',
+          closeDuration: 300,
+          timeOut: #{type.eql?('success') ? 5000 : 0},
+          extendedTimeOut: #{type.eql?('success') ? 5000 : 0},
+          closeButton: true,
+          tapToDismiss: false
+        });
       SCRIPT
     end
 
@@ -43,7 +41,7 @@ module ApplicationHelper
       end
     end
 
-    toasts.join("\n").html_safe
+    toasts.join("\n").yield_self { |t| tag ? "<script>#{t}</script>" : t }.html_safe
   end
 
   def current_account_permissions(branch_name, accesses = [])

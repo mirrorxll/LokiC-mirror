@@ -28,6 +28,8 @@ module TagsHelper
         ]
       end
 
+    not_for_all ||= Tag.where(name: '_blank').pluck(:name, :id)
+
     if for_all.blank?
       [['not for all', not_for_all]]
     elsif not_for_all.blank?

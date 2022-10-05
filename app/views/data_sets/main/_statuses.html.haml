@@ -10,8 +10,8 @@
     function changeDataSetStatus(status) {
       let reasons = null;
 
-      if(status.textContent.trim() === 'deactivated') {
-        reasons = prompt(`Deactivated:(\nWhy?`);
+      if(status.textContent.trim() === 'archived') {
+        reasons = prompt(`Archiver:(\nWhy?`);
 
         if(!reasons) return false;
       }

@@ -62,6 +62,8 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :opportunities, only: :index
+
     resources :work_requests, only: :update
 
     scope module: :story_types, path: 'story_types/:story_type_id' do
@@ -74,9 +76,6 @@ Rails.application.routes.draw do
       end
     end
 
-    scope module: :factoid_requests, path: 'factoid_requests', as: 'factoid_request' do
-      resources :opportunities, only: :index
-    end
 
     scope module: :work_requests, path: 'work_requests/:id', as: 'work_request_members' do
       resources :multi_task_statuses, only: [] do
@@ -201,6 +200,7 @@ Rails.application.routes.draw do
       resource :data_sets, only: %i[show edit update]
       resource :table_locations, only: %i[show edit update]
       resource :data_samples, only: :show
+      resource :git_links, only: %i[show edit update]
     end
   end
 

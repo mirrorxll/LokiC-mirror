@@ -8,10 +8,9 @@ module MiniLokiC
     end
 
     def download
-      query = "SELECT file_blob b FROM hle_file_blobs WHERE story_type_id = #{@story_type.id};"
-      blob = Connect::Mysql.exec_query(DB02, 'loki_storycreator', query).first
+      blob = HleFileBlob.select(:file_blob).where(story_type_id: @story_type.id).first
 
-      blob && blob['b']
+      blob && blob[:file_blob]
     end
 
     def check_updates

@@ -46,6 +46,6 @@ class FactoidType < ApplicationRecord
   end
 
   def download_code_from_db
-    MiniLokiC::ArticleTypeCode[self].download
+    MiniLokiC::FactoidTypeCode[self].download
   end
 end
