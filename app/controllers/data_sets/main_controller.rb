@@ -35,7 +35,7 @@ module DataSets
       @tab_title = "LokiC :: DataSet ##{@data_set.id} <#{@data_set.name}>"
       @story_types = @data_set.story_types.order(id: :desc)
       @factoid_types = @data_set.factoid_types.order(id: :desc)
-      @content_developers = AccountRole.find_by(name: 'Content Developer').accounts
+      @content_developers = AccountRole.find_by(name: 'Content Developer').accounts.ordered
     end
 
     def create

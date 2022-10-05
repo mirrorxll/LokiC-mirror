@@ -8,7 +8,7 @@ module ScrapeTasks
     def show; end
 
     def edit
-      @scrapers = AccountRole.find_by(name: 'Scrape Developer').accounts
+      @scrapers = AccountRole.find_by(name: 'Scrape Developer').accounts.ordered
     end
 
     def update

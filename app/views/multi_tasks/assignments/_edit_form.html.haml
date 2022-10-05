@@ -33,7 +33,7 @@
   =link_to('cancel', cancel_multi_task_assignments_path(task), method: :get, remote: true, class: 'small mt-1 btn btn-sm btn-outline-dark')
 
 :javascript
-  var accounts = #{raw Account.all.order([:first_name, :last_name]).map{ |account| [account.first_name.to_s + ' ' + account.last_name.to_s, account.id]} };
+  var accounts = #{raw Account.ordered.map { |acc| [acc.name, acc.id]} };
 
   $('#addAssistantTask').click(function () {
     let hex = secureRandom(6);

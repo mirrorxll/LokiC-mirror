@@ -8,7 +8,7 @@ module DataSets
     def show; end
 
     def edit
-      @responsible_editors = AccountRole.find_by(name: 'Content Manager').accounts
+      @responsible_editors = AccountRole.find_by(name: 'Content Manager').accounts.ordered
     end
 
     def update

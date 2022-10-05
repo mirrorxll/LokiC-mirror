@@ -8,7 +8,7 @@ module DataSets
     def show; end
 
     def edit
-      @sheriffs = AccountRole.find_by(name: 'Content Data Cleaner').accounts
+      @sheriffs = AccountRole.find_by(name: 'Content Data Cleaner').accounts.ordered
     end
 
     def update

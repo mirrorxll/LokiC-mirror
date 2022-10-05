@@ -95,7 +95,7 @@ module FactoidTypes
     end
 
     def content_developers
-      @content_developers = AccountRole.find_by(name: 'Content Developer').accounts
+      @content_developers = AccountRole.find_by(name: 'Content Developer').accounts.ordered
     end
 
     def env

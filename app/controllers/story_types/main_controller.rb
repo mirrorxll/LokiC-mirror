@@ -97,7 +97,7 @@ module StoryTypes
     end
 
     def content_developers
-      @content_developers = AccountRole.find_by(name: 'Content Developer').accounts
+      @content_developers = AccountRole.find_by(name: 'Content Developer').accounts.ordered
     end
 
     def new_story_type_params
