@@ -32,6 +32,6 @@
         type: "PATCH",
         dataType: 'script',
         url: `#{account_status_path(@account)}`,
-        data: `status_id=${statusId}` + (reasons ? `&reasons=${reasons}` : '')
+        data: `status_id=${statusId}` + (reasons ? `&reasons=${encodeURIComponent(reasons)}` : '')
       })
     }
