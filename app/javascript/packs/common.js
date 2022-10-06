@@ -18,7 +18,7 @@ $(document).on('change', ('form#progress_status'), function() {
         type: 'PATCH',
         dataType: 'script',
         url: `${window.location.origin}/${subject + 's'}/${entity_id}/progress_statuses/change`,
-        data: `status_id=${statusId}` + (reason ? `&reason=${reason}` : '')
+        data: `status_id=${statusId}` + (reason ? `&reason=${encodeURIComponent(reason)}` : '')
     });
 });
 

@@ -40,12 +40,16 @@ module WorkRequests
     private
 
     def grid_lists
-      statuses = Status.work_request_statuses(created: true)
-      @lists = HashWithIndifferentAccess.new
+      statuses      = Status.work_request_statuses(created: true)
+      allowed_grids = current_account.ordered_lists.where(branch_name: 'work_requests').order(:position)
+      @lists        = HashWithIndifferentAccess.new
 
-      @lists['created'] = { requester: current_account, status: statuses } if @work_requests_permissions['grid']['created']
-      @lists['all'] = { status: statuses } if @work_requests_permissions['grid']['all']
-      @lists['archived'] = { status: Status.find_by(name: 'archived') } if @work_requests_permissions['grid']['archived']
+      allowed_grids.each do |grid|
+        @lists[grid.grid_name] = { status: statuses }
+
+        @lists[grid.grid_name].merge!(requester: current_account)               if grid.grid_name.eql?('created')
+        @lists[grid.grid_name].merge!(status: Status.find_by(name: 'archived')) if grid.grid_name.eql?('archived')
+      end
     end
 
     def current_list
@@ -54,7 +58,7 @@ module WorkRequests
         if keys.include?(params[:list])
           params[:list]
         else
-          current_account.manager? && @lists['all'] ? 'all' : keys.first
+          current_account.ordered_lists.first_grid('work_requests')
         end
     end
 

@@ -32,6 +32,6 @@
         type: "PATCH",
         dataType: 'script',
         url: `#{data_set_status_path(@data_set)}`,
-        data: `status_id=${statusId}` + (reasons ? `&reasons=${reasons}` : '')
+        data: `status_id=${statusId}` + (reasons ? `&reasons=${encodeURIComponent(reasons)}` : '')
       })
     }

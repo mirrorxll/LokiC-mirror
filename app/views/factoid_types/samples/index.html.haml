@@ -1,4 +1,9 @@
-#info.small.pt-3.pb-3
+%hr/
+.row
+  .col-12.text-center
+    %b #{link_to(@factoid_type.id_name, factoid_type_path(@factoid_type))}
+%hr/
+#info.small.pb-3
   .row
     .col-1.text-right
       developer:
@@ -27,7 +32,7 @@
          'aria-expanded' => false, data: { toggle: 'collapse', target: '#filter_form' },
          type: 'button', id: '#crt_upd_filter_btn', class: 'btn btn-sm btn-outline-dark')
 
-%hr.mt-1.mb-3/
+%hr/
 =paginate @grid.assets
 factoids
 #factoids_datagrid.small

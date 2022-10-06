@@ -14,7 +14,7 @@ module StoryTypes
       render_403 && return unless @developer
 
       @story_type.update!(developer: nil, distributed_at: nil, current_account: current_account)
-      @content_developers = AccountRole.find_by(name: 'Content Developer').accounts
+      @content_developers = AccountRole.find_by(name: 'Content Developer').accounts.ordered
     end
 
     private

@@ -3,6 +3,8 @@
 require 'action_text'
 
 class ApplicationController < ActionController::Base
+  include Error::ErrorHandler
+
   helper ActionText::Engine.helpers
   helper_method :current_account
 

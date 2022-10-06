@@ -72,11 +72,13 @@ module MiniLokiC
 
       # wrap to HTML tags
       def basic_html_substitutions_body
-        @raw_sample[:body].gsub!(/(?:^|\n\n|\n\t)(.+)(?:\n\n*|\n\t|$)/, '<p>\1</p>')
-        @raw_sample[:body].gsub!(%r{(<svg .*?/svg>)}) { |tag| tag.gsub(%r{</?p>}, '') }
-        @raw_sample[:body].gsub!(%r{(<script .*?/script>)}) { |tag| tag.gsub(%r{</?p>}, '') }
+        body = @raw_sample[:body].yield_self do |b|
+          b.gsub(/(?:^|\n\n|\n\t)(.+)(?:\n\n*|\n\t|$)/, '<p>\1</p>')
+           .gsub(%r{(<svg .*?/svg>)}) { |tag| tag.gsub(%r{</?p>}, '') }
+           .gsub(%r{(<script .*?/script>)}) { |tag| tag.gsub(%r{</?p>}, '') }
+        end
 
-        "<html><head><title></title><style></style></head><body>#{@raw_sample[:body]}</body></html>"
+        "<html><head><title></title><style></style></head><body>#{body}</body></html>"
       end
     end
   end

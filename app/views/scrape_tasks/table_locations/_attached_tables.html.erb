@@ -1,5 +1,5 @@
 <div class="col">
-  <% @scrape_task.table_locations.each do |tl| %>
+  <% @scrape_task.table_locations.reload.each do |tl| %>
     <div class="text-truncate">
       <%= tl.full_name %>
       <% unless tl.sql_table.presence %>

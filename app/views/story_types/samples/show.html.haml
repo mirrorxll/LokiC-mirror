@@ -1,7 +1,7 @@
 %hr/
 .row
   .col-12.text-center
-    %b #{@story_type.id_name}
+    %b #{link_to(@story_type.id_name, story_type_iteration_samples_path(@story_type, @iteration))}
 %hr/
 -if @story_type.code.attached?
   .row

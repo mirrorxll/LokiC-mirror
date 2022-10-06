@@ -1,4 +1,4 @@
--@content_developers ||= AccountRole.find_by(name: 'Content Developer').accounts
+-@content_developers ||= AccountRole.find_by(name: 'Content Developer').accounts.ordered
 
 =form_with(url: include_story_type_developers_path(story_type), method: :patch, html: { onchange: "Rails.fire(this, 'submit')" }) do |form|
   =form.collection_select :developer_id, @content_developers, :id, :name, { prompt: '' }, { name: :id }

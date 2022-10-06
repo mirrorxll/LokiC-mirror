@@ -8,11 +8,11 @@ module DataSets
     def show; end
 
     def edit
-      @sheriffs = AccountRole.find_by(name: 'Content Manager').accounts
+      @sheriffs = AccountRole.find_by(name: 'Content Data Cleaner').accounts.ordered
     end
 
     def update
-      if @sheriff.nil? || @sheriff.roles.find_by(name: 'Content Manager')
+      if @sheriff.nil? || @sheriff.roles.find_by(name: 'Content Data Cleaner')
         @data_set.update(sheriff: @sheriff)
       else
         flash.now[:error] = { sheriff: :error }

@@ -32,6 +32,6 @@
         type: "PATCH",
         dataType: 'script',
         url: `#{work_request_progress_status_path(@work_request)}`,
-        data: `status_id=${statusId}` + (reasons ? `&reasons=${reasons}` : '')
+        data: `status_id=${statusId}` + (reasons ? `&reasons=${encodeURIComponent(reasons)}` : '')
       })
     }

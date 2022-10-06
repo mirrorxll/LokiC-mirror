@@ -21,15 +21,15 @@ class MultiTasksGrid
     scope.where('multi_task_assignments.account_id': value)
   end
 
-  filter(:assistants, :enum, multiple: true, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] }) do |value, scope|
+  filter(:assistants, :enum, multiple: true, left: true, select: Account.ordered.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] }) do |value, scope|
     scope.where('multi_task_assignments.account_id': value, 'multi_task_assignments.main': false, 'multi_task_assignments.notification_to': false)
   end
 
-  filter(:main_assignee, :enum, multiple: true, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] }) do |value, scope|
+  filter(:main_assignee, :enum, multiple: true, left: true, select: Account.ordered.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] }) do |value, scope|
     scope.where('multi_task_assignments.account_id': value, 'multi_task_assignments.main': true)
   end
 
-  filter(:creator, :enum, multiple: true, left: true, select: Account.all.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
+  filter(:creator, :enum, multiple: true, left: true, select: Account.ordered.pluck(:first_name, :last_name, :id).map { |r| [r[0] + ' ' + r[1], r[2]] })
 
   status_done_id = Status.find_by(name: 'done').id.to_s
   filter(:status, :enum, multiple: true, select: Status.multi_task_statuses(created: true).pluck(:name, :id)) do |value, scope, grid|

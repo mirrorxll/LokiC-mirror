@@ -33,6 +33,6 @@
         type: "PATCH",
         dataType: 'script',
         url: `#{scrape_task_progress_statuses_path(@scrape_task)}`,
-        data: `status_id=${statusId}` + (reasons ? `&reasons=${reasons}` : '')
+        data: `status_id=${statusId}` + (reasons ? `&reasons=${encodeURIComponent(reasons)}` : '')
       });
     }

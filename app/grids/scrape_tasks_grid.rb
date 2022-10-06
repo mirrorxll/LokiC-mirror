@@ -40,7 +40,7 @@ class ScrapeTasksGrid
     account_list =
       case current_list
       when 'assigned', 'all', 'archived'
-        Account.joins(:created_scrape_tasks).distinct.to_a
+        Account.joins(:created_scrape_tasks).distinct.ordered.to_a
       when 'created'
         [current_account]
       end
@@ -48,7 +48,7 @@ class ScrapeTasksGrid
     account_list.map { |a| [a.name, a.id] }
   end
 
-  accounts = AccountRole.find_by(name: 'Scrape Developer').accounts
+  accounts = AccountRole.find_by(name: 'Scrape Developer').accounts.ordered
   filter(:scraper, :enum, multiple: true, select: accounts.map { |r| [r.name, r.id] }.sort)
 
   filter(:status, :enum, select: :statuses, multiple: true)

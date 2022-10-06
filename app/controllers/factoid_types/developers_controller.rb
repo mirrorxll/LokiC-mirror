@@ -14,7 +14,7 @@ module FactoidTypes
       render_403 && return unless @factoid_type.developer
 
       @factoid_type.update!(developer: nil, current_account: current_account)
-      @content_developers = AccountRole.find_by(name: 'Content Developer').accounts
+      @content_developers = AccountRole.find_by(name: 'Content Developer').accounts.ordered
     end
 
     private

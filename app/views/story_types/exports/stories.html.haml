@@ -1,4 +1,9 @@
 -if @iteration.export
+  %hr/
+  .row
+    .col-12.text-center
+      %b #{link_to(@story_type.id_name, story_type_path(@story_type))}
+  %hr/
   #info.small.pt-3.pb-3
     .row
       .col-1.text-right

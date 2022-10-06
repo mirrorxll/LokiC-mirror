@@ -17,14 +17,17 @@ class DataSetsGrid
     value ? scope.where.not(scrape_task: nil) : scope.where(scrape_task: nil)
   end
 
-  sheriffs = DataSet.where(Arel.sql('sheriff_id IS NOT NULL')).map { |s| [s.name, s.id] }
+  sheriffs = DataSet.where(Arel.sql('sheriff_id IS NOT NULL')).map(&:sheriff).uniq
+                    .map { |s| [s.name, s.id] }.sort
   filter(:sheriff, :enum, multiple: true, select: sheriffs)
 
-  responsible_editors = DataSet.where(Arel.sql('responsible_editor_id IS NOT NULL')).map { |re| [re.name, re.id] }
-  filter(:responsible_editor, :enum, multiple: true, select: responsible_editors)
+  resp_editors = DataSet.where(Arel.sql('responsible_editor_id IS NOT NULL')).map(&:responsible_editor).uniq
+                        .map { |re| [re.name, re.id] }.sort
+  filter(:responsible_editor, :enum, multiple: true, select: resp_editors)
 
-  created = DataSet.where(Arel.sql('account_id IS NOT NULL')).map { |a| [a.name, a.id] }
-  filter(:creator, :enum, multiple: true, select: created) do |value, scope|
+  creators = DataSet.where(Arel.sql('account_id IS NOT NULL')).map(&:account).uniq
+                    .map { |acc| [acc.name, acc.id] }.sort
+  filter(:creator, :enum, multiple: true, select: creators) do |value, scope|
     scope.where(account: value)
   end
 

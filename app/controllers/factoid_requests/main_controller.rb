@@ -40,16 +40,15 @@ module FactoidRequests
     private
 
     def grid_lists
-      statuses = Status.factoid_request_statuses(created: true)
-      @lists = HashWithIndifferentAccess.new
+      statuses      = Status.factoid_request_statuses(created: true)
+      allowed_grids = current_account.ordered_lists.where(branch_name: 'factoid_requests').order(:position)
+      @lists        = HashWithIndifferentAccess.new
 
-      if @factoid_requests_permissions['grid']['created']
-        @lists['created'] =
-          { requester: current_account, status: statuses }
-      end
-      @lists['all'] = { status: statuses } if @factoid_requests_permissions['grid']['all']
-      if @factoid_requests_permissions['grid']['archived']
-        @lists['archived'] = { status: Status.find_by(name: 'archived') }
+      allowed_grids.each do |grid|
+        @lists[grid.grid_name] = { status: statuses }
+
+        @lists[grid.grid_name].merge!(requester: current_account)               if grid.grid_name.eql?('created')
+        @lists[grid.grid_name].merge!(status: Status.find_by(name: 'archived')) if grid.grid_name.eql?('archived')
       end
     end
 
@@ -59,7 +58,7 @@ module FactoidRequests
         if keys.include?(params[:list])
           params[:list]
         else
-          current_account.manager? && @lists['all'] ? 'all' : keys.first
+          current_account.ordered_lists.first_grid('factoid_requests')
         end
     end
 
