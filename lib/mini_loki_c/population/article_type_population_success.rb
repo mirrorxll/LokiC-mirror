@@ -3,7 +3,7 @@
 module MiniLokiC
   module Population
     module ArticleTypePopulationSuccess
-      def self.[](staging_table); end
+      def self.[](staging_table, options); end
     end
   end
 end
