@@ -12,7 +12,7 @@
     %link{ rel: "preconnect", href: "https://fonts.gstatic.com", crossorigin: true }
     %link{ href: "https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap", rel: "stylesheet" }
   %body{ style: 'height: 100vh', class: 'bg-light' }
-    %div.container-fluid{ class: current_account ? 'mt-5 pt-2' : ''}
+    %div.container-fluid{ class: current_account ? 'pt-5' : ''}
       -if current_account
         %header
           %nav.navbar.fixed-top.navbar-expand-lg.navbar-dark.small.justify-content-center.text-uppercase{ class: Rails.env.staging? ? 'bg-secondary' : 'bg-dark' }

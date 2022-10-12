@@ -27,7 +27,7 @@
       =link_to('[ download CSV ]', url_for(format: 'csv', factoid_types_grid: request.parameters[:factoid_types_grid]),
                id: '#save_as_csv_btn', class: 'small')
 
-  .row.small.mb-5
+  .row.small.pb-5
     .col-12
       =datagrid_table(@grid)
 
