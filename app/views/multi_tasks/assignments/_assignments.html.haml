@@ -7,5 +7,6 @@
     .badge{ class: "#{assignment.notification_to ? 'badge-secondary' : 'badge-info' }" }
       =assignment.account.name
 
--if %w[assignment_to assistants notifications_to].map { |access| current_account_permissions('multi_tasks', [access]) }.any?
+-access = %w[assignment_to assistants notifications_to].map { |access| current_account_permissions('multi_tasks', [access]) }.any?
+-if (access && @multi_task.creator.eql?(current_account)) || current_account.multi_tasks_manager?  || current_account.manager?
   =link_to '[ edit ]', edit_multi_task_assignments_path(task), remote: true, class: 'small'
