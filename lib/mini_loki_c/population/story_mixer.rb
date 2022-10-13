@@ -45,7 +45,7 @@ module MiniLokiC
               publication_id,
               variety_key,
               count(*) c
-            FROM #{staging}
+            FROM #{Table.schema_table(staging)}
             #{"WHERE #{where}" if where}
             GROUP BY publication_id, variety_key;
           SQL
