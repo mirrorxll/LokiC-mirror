@@ -76,7 +76,7 @@
         editors feedback
 
         .btn-group
-          -if current_account.manager? || current_account.content_fcd_checker?
+          -if current_account.manager? || current_account.content_checker?
             =link_to("add feedback", new_factoid_type_fact_checking_doc_editors_feedback_path(@factoid_type, @fcd),
                      'data-toggle'=>'modal', 'data-target'=>'#manual_feedback_modal',
                      class: "btn btn-sm btn-light text-dark", onclick: 'hideAllPopovers();', remote: true)
