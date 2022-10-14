@@ -2,7 +2,7 @@
 
 module MiniLokiC
   module Population
-    module ArticleTypePopulationSuccess
+    module FactoidTypePopulationSuccess
       def self.[](staging_table, options = {}); end
     end
   end
