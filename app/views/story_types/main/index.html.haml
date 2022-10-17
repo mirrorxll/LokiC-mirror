@@ -27,7 +27,7 @@
       =link_to('[ download CSV ]', url_for(format: 'csv', story_types_grid: request.parameters[:story_types_grid]),
                id: '#save_as_csv_btn', class: 'small')
 
-  #storyTypesTable.row.small.mb-5
+  #storyTypesTable.row.small.pb-5
     .col-12
       =datagrid_table(@grid)
 

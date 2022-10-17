@@ -31,42 +31,43 @@ module MiniLokiC
         get_story_parts_by_key(variety_key, story_parts, true).each do |key, part|
           res[key] = bind.eval(part.first.to_s)
         rescue NameError => e
-          raise "StoryMixer: \nUndefined local variable '#{e.message[/`(.+)'/, 1]}' (`#{part.first}`) in given binding: #{bind.local_variables}.\nCheck that you declared the variable correctly in your creation before `StoryMixer.parse_key()` call."
+          raise "StoryMixer: \nUndefined local variable '#{e.message[/`(.+)'/,
+                                                                     1]}' (`#{part.first}`) in given binding: #{bind.local_variables}.\nCheck that you declared the variable correctly in your creation before `StoryMixer.parse_key()` call."
         end
 
         res
       end
 
       def self.get_pubs_statistics(staging, where = nil)
-        db02 = MiniLokiC::Connect::Mysql.on(DB02, 'loki_storycreator')
-        query = <<~SQL
-          SELECT
-            publication_id,
-            variety_key,
-            count(*) c
-          FROM #{staging}
-          #{"WHERE #{where}" if where}
-          GROUP BY publication_id, variety_key;
-        SQL
-        raw = db02.query(query).to_a
-        db02.close
+        Table.loki_story_creator do |conn|
+          query = <<~SQL
+            SELECT
+              publication_id,
+              variety_key,
+              count(*) c
+            FROM #{Table.schema_table(staging)}
+            #{"WHERE #{where}" if where}
+            GROUP BY publication_id, variety_key;
+          SQL
+          raw = conn.exec_query(query).to_a
 
-        res = {}
-        raw.group_by { |r| r['publication_id'] }.each do |pub, data|
-          res[pub] = {}
-          data.each do |key|
-            res[pub][key['variety_key']] = key['c'] if key['variety_key']
+          res = {}
+          raw.group_by { |r| r['publication_id'] }.each do |pub, data|
+            res[pub] = {}
+            data.each do |key|
+              res[pub][key['variety_key']] = key['c'] if key['variety_key']
+            end
           end
-        end
 
-        res
+          res
+        end
       end
 
       def self.all_keys(story_parts)
         parts = ['']
         story_parts.each.with_index do |part, index|
           arr = Array.new(part.last.size) { |i| "#{part.first}:#{i}" }
-          parts = if index == 0
+          parts = if index.zero?
                     arr
                   else
                     parts.product(arr).map { |x| x.join(',') }
@@ -76,7 +77,11 @@ module MiniLokiC
       end
 
       def self.next_key(pub_statistics, story_parts, bind, exclude = [], history_key = {})
-        key = pub_statistics.find { |k, v| !exclude.include?(k) && v == pub_statistics.reject { |k, _v| exclude.include?(k) }.values.min }.first
+        key = pub_statistics.find do |k, v|
+          !exclude.include?(k) && v == pub_statistics.reject do |k, _v|
+                                         exclude.include?(k)
+                                       end.values.min
+        end.first
 
         get_story_parts_by_key(key, story_parts).each do |part|
           if part.nil?
@@ -90,7 +95,8 @@ module MiniLokiC
               next_key(pub_statistics, story_parts, bind, exclude << key, history_key)
             end
           rescue NameError => e
-            raise "StoryMixer: \nUndefined local variable '#{e.message[/`(.+)'/, 1]}' (`#{part.last}`) in given binding: #{bind.local_variables}.\nCheck that you declared the variable correctly in your population before `StoryMixer.get_key()` call."
+            raise "StoryMixer: \nUndefined local variable '#{e.message[/`(.+)'/,
+                                                                       1]}' (`#{part.last}`) in given binding: #{bind.local_variables}.\nCheck that you declared the variable correctly in your population before `StoryMixer.get_key()` call."
           end
         end
 

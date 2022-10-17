@@ -3,7 +3,7 @@
 module MiniLokiC
   module Creation
     # insert created stories to stories table
-    class Articles
+    class Factoids
       def initialize(staging_table, options)
         @staging_table = staging_table
         @sampled = options[:sampled]

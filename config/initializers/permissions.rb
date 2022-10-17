@@ -98,7 +98,7 @@ module AccessLevels
         templates: { show: true, edit_form: true }
       },
       multi_tasks: {
-        grid: { assigned: true, created: true, all: false, archived: false },
+        grid: { assigned: true, created: true, all: true, archived: false },
         new_form: true,
         edit_form: true,
         progress_status: { show: true, edit_form: true },

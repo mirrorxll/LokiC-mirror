@@ -3,7 +3,7 @@
     .card-header.p-1
       .d-flex.justify-content-between.small
         MAIN INFO
-        -if current_account_permissions('multi_tasks', ['edit_form'])
+        -if (current_account_permissions('multi_tasks', ['edit_form']) && @multi_task.creator.eql?(current_account)) || current_account.multi_tasks_manager?  || current_account.manager?
           =link_to '[ edit task ]', edit_multi_task_path(@multi_task), remote: true
 
     .card-body.small

@@ -11,13 +11,16 @@
     %link{ rel: "preconnect", href:"https://fonts.googleapis.com" }
     %link{ rel: "preconnect", href: "https://fonts.gstatic.com", crossorigin: true }
     %link{ href: "https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap", rel: "stylesheet" }
-  %body
-    %div.container-fluid{ class: current_account ? 'mt-5 pt-2' : ''}
+  %body{ style: 'height: 100vh', class: 'bg-light' }
+    %div.container-fluid{ class: current_account ? 'pt-5' : ''}
       -if current_account
         %header
-          %nav.navbar.fixed-top.navbar-expand-lg.navbar-dark.bg-dark.small.justify-content-center.text-uppercase
+          %nav.navbar.fixed-top.navbar-expand-lg.navbar-dark.small.justify-content-center.text-uppercase{ class: Rails.env.staging? ? 'bg-secondary' : 'bg-dark' }
             .small
-              =link_to('lokic', root_path, class: 'navbar-brand')
+              -if Rails.env.staging?
+                =link_to(icon('fa', 'university'), root_path, class: 'navbar-brand')
+              -else
+                =link_to('lokic', root_path, class: 'navbar-brand')
             %button.navbar-toggler{"aria-controls" => "navbarNavDropdown", "aria-expanded" => "false",
                                    "aria-label" => "Toggle navigation", "data-target" => "#navbarNavDropdown",
                                    "data-toggle" => "collapse", type: "button"}
