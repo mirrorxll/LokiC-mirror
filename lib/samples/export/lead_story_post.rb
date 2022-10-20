@@ -21,7 +21,6 @@ module Samples
         lead_id = lead_post(sample, exp_config, st_opportunities)
         story_id = story_post(lead_id, sample, exp_config, cl_p_tgs)
 
-
         sample.update!(
           @pl_lead_id_key => lead_id,
           @pl_story_id_key => story_id,
