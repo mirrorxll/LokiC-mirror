@@ -92,14 +92,3 @@ module Samples
     end
   end
 end
-
-options = { backdated: true }
-begin
-  raise Samples::LeadPostError, 'ERROR'
-rescue Samples::LeadPostError, Samples::StoryPostError => e
-  raise e unless options[:backdated]
-
-  File.open("#{Dir.home}/#{DateTime.now}_backdate_export_report.txt", 'ab') do |f|
-    f.write("#{1}\t#{222}:#{e.message}\n")
-  end
-end
